@@ -32,8 +32,14 @@ import { getMenuBrowse } from './routes/menu-browse';
 import { getShuttle } from './routes/shuttle';
 import { fail, type ApiHandler, type ApiRequest } from './http';
 
-const PORT = Number(process.env.DATA_PORT || 8100);
-const HOST = process.env.DATA_HOST || '127.0.0.1';
+/**
+ * A hosting platform hands the port over in PORT and expects the process to
+ * listen on every interface; binding loopback there passes locally and then
+ * fails every health check in the container. PORT is therefore also the
+ * signal that this is a hosted run.
+ */
+const PORT = Number(process.env.PORT || process.env.DATA_PORT || 8100);
+const HOST = process.env.DATA_HOST || (process.env.PORT ? '0.0.0.0' : '127.0.0.1');
 
 /** A whole request body of JSON, with room to spare; larger than this is junk. */
 const MAX_BODY_BYTES = 256 * 1024;
