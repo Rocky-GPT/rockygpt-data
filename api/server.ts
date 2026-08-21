@@ -16,9 +16,14 @@
 
 import 'dotenv/config';
 import http from 'node:http';
+import { Readable } from 'node:stream';
 import { getArtifact } from './routes/artifacts';
 import { getHealth, getReadiness } from './routes/health';
 import { getDiningHours } from './routes/dining-hours';
+import { postFeedback } from './routes/feedback';
+import { getLogs } from './routes/logs';
+import { postLogFeedback } from './routes/logs-feedback';
+import { getLogsStream } from './routes/logs-stream';
 import { getDirectory } from './routes/directory';
 import { getMap } from './routes/map';
 import { getMenu } from './routes/menu';
@@ -46,6 +51,10 @@ const ROUTES: Record<string, ApiHandler> = {
   'GET /v1/menu/browse': getMenuBrowse,
   'GET /v1/dining-hours': getDiningHours,
   'GET /v1/directory': getDirectory,
+  'POST /v1/feedback': postFeedback,
+  'GET /v1/logs': getLogs,
+  'POST /v1/logs/feedback': postLogFeedback,
+  'GET /v1/logs/stream': getLogsStream,
 };
 
 /** Collects the request body, refusing anything past {@link MAX_BODY_BYTES}. */
@@ -83,6 +92,12 @@ function send(
     response.end();
     return;
   }
+  // A stream is handed to the client as it arrives rather than serialised.
+  if (payload instanceof ReadableStream) {
+    response.writeHead(status, merged);
+    Readable.fromWeb(payload as Parameters<typeof Readable.fromWeb>[0]).pipe(response);
+    return;
+  }
   const body = JSON.stringify(payload);
   response.writeHead(status, {
     ...merged,
@@ -112,10 +127,15 @@ export const server = http.createServer((incoming, response) => {
       return;
     }
 
+    // Long-lived handlers need to know when the client disconnects.
+    const disconnected = new AbortController();
+    incoming.on('close', () => disconnected.abort());
+
     const request: ApiRequest = {
       method,
       url,
       headers: new Headers(incoming.headers as Record<string, string>),
+      signal: disconnected.signal,
     };
 
     if (method !== 'GET' && method !== 'HEAD') {
