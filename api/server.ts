@@ -18,7 +18,11 @@ import 'dotenv/config';
 import http from 'node:http';
 import { getArtifact } from './routes/artifacts';
 import { getHealth, getReadiness } from './routes/health';
+import { getDiningHours } from './routes/dining-hours';
+import { getDirectory } from './routes/directory';
 import { getMap } from './routes/map';
+import { getMenu } from './routes/menu';
+import { getMenuBrowse } from './routes/menu-browse';
 import { getShuttle } from './routes/shuttle';
 import { fail, type ApiHandler, type ApiRequest } from './http';
 
@@ -38,6 +42,10 @@ const ROUTES: Record<string, ApiHandler> = {
   'GET /readiness': getReadiness,
   'GET /v1/shuttle': getShuttle,
   'GET /v1/map': getMap,
+  'GET /v1/menu': getMenu,
+  'GET /v1/menu/browse': getMenuBrowse,
+  'GET /v1/dining-hours': getDiningHours,
+  'GET /v1/directory': getDirectory,
 };
 
 /** Collects the request body, refusing anything past {@link MAX_BODY_BYTES}. */
