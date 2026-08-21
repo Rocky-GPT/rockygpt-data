@@ -1,0 +1,114 @@
+{
+  "name": "@rockygpt/data",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Campus data for RockyGPT: the repository layer, ingestion scrapers, publication pipeline, and the artifacts they produce.",
+  "exports": {
+    "./api/*": {
+      "types": "./dist/api/*.d.ts",
+      "default": "./dist/api/*.js"
+    },
+    "./data/*": "./data/*",
+    "./*": {
+      "types": "./dist/src/*.d.ts",
+      "default": "./dist/src/*.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && npm run build:assets",
+    "prepare": "npm run build",
+    "dev": "tsx watch api/server.ts",
+    "start": "node dist/api/server.js",
+    "build:assets": "rsync -a --include='*/' --include='*.sql' --include='*.json' --exclude='*' src/ dist/src/",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint",
+    "data:schema": "tsx pipeline/commands/apply-schema.ts",
+    "data:quality": "tsx pipeline/commands/check-quality.ts",
+    "data:publish": "tsx pipeline/commands/publish-current.ts",
+    "data:bootstrap": "tsx pipeline/commands/restore-active-release.ts",
+    "maintenance:feedback-retention": "tsx scripts/database/feedback-retention.ts",
+    "maintenance:data-retention": "tsx scripts/database/data-retention.ts",
+    "fetch:menu": "tsx ingestion/birch-menu.ts",
+    "fetch:dining-hours": "tsx ingestion/dining-hours.ts",
+    "fetch:events": "tsx ingestion/archway-events.ts",
+    "fetch:events:live": "EVENTS_FORCE_SCRAPE=1 tsx ingestion/archway-events.ts",
+    "fetch:archway": "npm run fetch:events",
+    "fetch:hours": "tsx ingestion/campus-hours.ts",
+    "fetch:clubs": "tsx ingestion/archway-clubs.ts",
+    "fetch:groupme-directory": "python3 ingestion/groupme-directory.py",
+    "merge:groupme": "python3 ingestion/merge-groupme-into-clubs.py",
+    "fetch:calendar": "tsx ingestion/academic-calendar.ts",
+    "fetch:faculty": "tsx ingestion/faculty-profiles.ts",
+    "fetch:map:rooms": "tsx ingestion/enrich-map-office-rooms.ts",
+    "fetch:transportation:raw": "tsx ingestion/transportation-raw.ts",
+    "fetch:directory:raw": "tsx ingestion/directory-raw.ts",
+    "fetch:housing:raw": "tsx ingestion/housing-raw.ts",
+    "fetch:health:raw": "tsx ingestion/health-raw.ts",
+    "fetch:counseling:raw": "tsx ingestion/counseling-raw.ts",
+    "fetch:safety:raw": "tsx ingestion/safety-raw.ts",
+    "fetch:programs:catalog": "tsx ingestion/scrape-catalog-api.ts",
+    "normalize:raw": "tsx ingestion/normalize-raw.ts",
+    "generate:menu:md": "tsx ingestion/generate-menu-md.ts",
+    "generate:dining-hours:md": "tsx ingestion/generate-dining-hours-md.ts",
+    "generate:events:md": "tsx ingestion/generate-events-md.ts",
+    "generate:hours:md": "tsx ingestion/generate-hours-md.ts",
+    "generate:clubs:md": "tsx ingestion/generate-clubs-md.ts",
+    "generate:calendar:md": "tsx ingestion/generate-calendar-md.ts",
+    "generate:faculty:md": "tsx ingestion/generate-faculty-md.ts",
+    "generate:transportation:md": "tsx ingestion/generate-transportation-md.ts",
+    "generate:directory:md": "tsx ingestion/generate-directory-md.ts",
+    "generate:housing:md": "tsx ingestion/generate-housing-md.ts",
+    "generate:health:md": "tsx ingestion/generate-health-md.ts",
+    "generate:counseling:md": "tsx ingestion/generate-counseling-md.ts",
+    "generate:safety:md": "tsx ingestion/generate-safety-md.ts",
+    "generate:programs:md": "tsx ingestion/generate-programs-md.ts",
+    "generate:context:core6": "npm run generate:transportation:md && npm run generate:directory:md && npm run generate:housing:md && npm run generate:health:md && npm run generate:counseling:md && npm run generate:safety:md",
+    "generate:context": "npm run generate:menu:md && npm run generate:dining-hours:md && npm run generate:events:md && npm run generate:hours:md && npm run generate:clubs:md && npm run generate:calendar:md && npm run generate:faculty:md && npm run generate:programs:md && npm run generate:context:core6",
+    "redact:data": "tsx ingestion/redact-personal-data.ts",
+    "quality:raw": "tsx scripts/database/quality-gates.ts --raw",
+    "refresh": "npm run fetch:menu && npm run fetch:dining-hours && npm run fetch:events:live && npm run fetch:hours && npm run fetch:clubs && npm run data:quality",
+    "refresh:all": "npm run fetch:menu && npm run fetch:dining-hours && npm run fetch:events:live && npm run fetch:hours && npm run fetch:clubs && npm run fetch:calendar && npm run fetch:faculty && npm run refresh:context && npm run data:quality",
+    "refresh:daily": "npm run fetch:menu && npm run fetch:events:live && npm run data:quality",
+    "refresh:weekly": "npm run fetch:dining-hours && npm run data:quality",
+    "refresh:monthly": "npm run fetch:clubs && npm run data:quality",
+    "refresh:semesterly": "npm run fetch:hours && npm run fetch:calendar && npm run fetch:faculty && npm run fetch:programs:catalog && npm run refresh:raw:core6 && npm run refresh:context && npm run data:quality",
+    "refresh:lifetime": "npm run fetch:map:rooms",
+    "refresh:raw:core6": "npm run fetch:transportation:raw && npm run fetch:directory:raw && npm run fetch:housing:raw && npm run fetch:health:raw && npm run fetch:counseling:raw && npm run fetch:safety:raw",
+    "refresh:raw": "RAW_ONLY=1 npm run fetch:menu && RAW_ONLY=1 npm run fetch:dining-hours && RAW_ONLY=1 npm run fetch:events:live && RAW_ONLY=1 npm run fetch:hours && RAW_ONLY=1 npm run fetch:clubs && RAW_ONLY=1 npm run fetch:calendar && RAW_ONLY=1 npm run fetch:faculty && RAW_ONLY=1 npm run fetch:programs:catalog && RAW_ONLY=1 npm run refresh:raw:core6 && npm run quality:raw",
+    "refresh:publishable": "tsx ingestion/refresh-publishable.ts",
+    "refresh:context": "npm run normalize:raw && npm run generate:context",
+    "refresh:context:publish": "npm run refresh:context && npm run data:quality && npm run data:publish",
+    "images:menu:stock": "tsx scripts/replace-menu-images.ts"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "dotenv": "^17.2.3",
+    "p-limit": "^7.3.0",
+    "pg": "^8.17.1"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-s3": "3.1087.0",
+    "@types/node": "^20.19.30",
+    "@types/pg": "^8.16.0",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.8",
+    "playwright": "^1.58.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5",
+    "typescript-eslint": "^8"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rocky-GPT/rockygpt-data.git"
+  },
+  "license": "UNLICENSED",
+  "files": [
+    "dist"
+  ],
+  "overrides": {
+    "@aws-sdk/core": "3.977.8"
+  }
+}

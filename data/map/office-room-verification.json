@@ -1,0 +1,2025 @@
+{
+  "generatedAt": "2026-02-13T16:55:37.356Z",
+  "summary": {
+    "total": 124,
+    "verified": 72,
+    "likely": 0,
+    "needsReview": 32,
+    "unverified": 20,
+    "prefixMismatch": 4
+  },
+  "report": [
+    {
+      "key": "office_college-honors-lounge-academic-building-a",
+      "office": "College Honors Lounge",
+      "building": "Academic Building A",
+      "room": "A-30",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/honors/e-symposium",
+          "line": "Taking a Beating: A 30-Minute TV Comedy"
+        }
+      ]
+    },
+    {
+      "key": "office_marketing-and-communications-academic-building-a",
+      "office": "Marketing and Communications",
+      "building": "Academic Building A",
+      "room": "A-224",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/marketing-communications/design-print",
+          "line": "Once we’ve received your request, we’ll confirm details or let you know when it’s ready for pick-up in suite A-224."
+        }
+      ]
+    },
+    {
+      "key": "office_anisfield-school-of-business-asb-anisfield-school-of-business-asb",
+      "office": "Anisfield School of Business (ASB)",
+      "building": "Anisfield School of Business (ASB)",
+      "room": "ASB-333",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/asb",
+          "line": "Office: ASB-333"
+        }
+      ]
+    },
+    {
+      "key": "office_aft-office-anisfield-school-of-business-asb",
+      "office": "AFT Office",
+      "building": "Anisfield School of Business (ASB)",
+      "room": "G-255",
+      "status": "needs-review",
+      "reasons": [
+        "code-prefix-mismatch:G not in ASB",
+        "room-text-found-on-page",
+        "verified-text-but-building-prefix-conflict"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": true,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/er",
+          "line": "Office: G-255"
+        }
+      ]
+    },
+    {
+      "key": "office_global-financial-markets-trading-lab-anisfield-school-of-business-asb",
+      "office": "Global Financial Markets Trading Lab",
+      "building": "Anisfield School of Business (ASB)",
+      "room": "ASB-333",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/asb",
+          "line": "Office: ASB-333"
+        }
+      ]
+    },
+    {
+      "key": "office_degree-completion-program-anisfield-school-of-business-asb",
+      "office": "Degree Completion Program",
+      "building": "Anisfield School of Business (ASB)",
+      "room": "Degree Completion Program",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/adult-students",
+          "line": "Degree Completion Program"
+        }
+      ]
+    },
+    {
+      "key": "office_information-technology-services-anisfield-school-of-business-asb",
+      "office": "Information Technology Services",
+      "building": "Anisfield School of Business (ASB)",
+      "room": "ASB-006",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/its",
+          "line": "Office: ASB-006"
+        }
+      ]
+    },
+    {
+      "key": "office_school-of-social-science-and-human-services-sshs-anisfield-school-of-business-asb",
+      "office": "School of Social Science and Human Services (SSHS)",
+      "building": "Anisfield School of Business (ASB)",
+      "room": "ASB-431",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/sshs",
+          "line": "Office: ASB-431"
+        }
+      ]
+    },
+    {
+      "key": "office_language-lab-academic-building-b",
+      "office": "Language Lab",
+      "building": "Academic Building B",
+      "room": "B-118",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/its/computer-labs",
+          "line": "B-118"
+        }
+      ]
+    },
+    {
+      "key": "office_rodman-gallery-of-popular-arts-academic-building-b",
+      "office": "Rodman Gallery of Popular Arts",
+      "building": "Academic Building B",
+      "room": "Selden Rodman Gallery of Popular Arts, B Wing – B-130",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_school-of-humanities-and-global-studies-academic-building-b",
+      "office": "School of Humanities and Global Studies",
+      "building": "Academic Building B",
+      "room": "B-224",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_adler-theater-berrie-center",
+      "office": "Adler Theater",
+      "building": "Berrie Center",
+      "room": "BC-154",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/berriecenter",
+          "line": "Office: BC-154"
+        }
+      ]
+    },
+    {
+      "key": "office_berrie-center-computer-lab-berrie-center",
+      "office": "Berrie Center Computer Lab",
+      "building": "Berrie Center",
+      "room": "BC-142",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/its/computer-labs",
+          "line": "BC-142"
+        }
+      ]
+    },
+    {
+      "key": "office_ingersoll-rand-dance-theater-rehearsal-hall-berrie-center",
+      "office": "Ingersoll-Rand Dance/Theater Rehearsal Hall",
+      "building": "Berrie Center",
+      "room": "BC-154",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/berriecenter",
+          "line": "Office: BC-154"
+        }
+      ]
+    },
+    {
+      "key": "office_kresge-gallery-berrie-center",
+      "office": "Kresge Gallery",
+      "building": "Berrie Center",
+      "room": "BC-154",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/berriecenter",
+          "line": "Office: BC-154"
+        }
+      ]
+    },
+    {
+      "key": "office_pascal-gallery-berrie-center",
+      "office": "Pascal Gallery",
+      "building": "Berrie Center",
+      "room": "BC-154",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/berriecenter",
+          "line": "Office: BC-154"
+        }
+      ]
+    },
+    {
+      "key": "office_photo-lounge-berrie-center",
+      "office": "Photo Lounge",
+      "building": "Berrie Center",
+      "room": "BC-154",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/berriecenter",
+          "line": "Office: BC-154"
+        }
+      ]
+    },
+    {
+      "key": "office_school-of-contemporary-arts-ca-berrie-center",
+      "office": "School of Contemporary Arts (CA)",
+      "building": "Berrie Center",
+      "room": "BC-236",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_sharp-theater-berrie-center",
+      "office": "Sharp Theater",
+      "building": "Berrie Center",
+      "room": "BC-154",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/berriecenter",
+          "line": "Office: BC-154"
+        }
+      ]
+    },
+    {
+      "key": "office_bischoff-student-lounges-pamela-m-bischoff-hall",
+      "office": "Bischoff Student Lounges",
+      "building": "Pamela M. Bischoff Hall",
+      "room": "Floor Lounges",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/reslife/bischoff-hall",
+          "line": "Flat screen televisions and Wi-Fi in all floor lounges"
+        }
+      ]
+    },
+    {
+      "key": "office_arena-bill-bradley-sports-and-recreation-center",
+      "office": "Arena",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Arena",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_athletics-office-bill-bradley-sports-and-recreation-center",
+      "office": "Athletics Office",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Athletics Office",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_auxiliary-gym-bill-bradley-sports-and-recreation-center",
+      "office": "Auxiliary Gym",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Auxiliary Gym",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_dance-studio-bill-bradley-sports-and-recreation-center",
+      "office": "Dance Studio",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Dance Studio",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_edelman-climbing-wall-bill-bradley-sports-and-recreation-center",
+      "office": "Edelman Climbing Wall",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Edelman Climbing Wall",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_hall-of-fame-bill-bradley-sports-and-recreation-center",
+      "office": "Hall of Fame",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Hall of Fame",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "http://www.ramapoathletics.com",
+          "line": "Hall of Fame"
+        }
+      ]
+    },
+    {
+      "key": "office_konica-minolta-spectator-lobby-bill-bradley-sports-and-recreation-center",
+      "office": "Konica Minolta Spectator Lobby",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Konica Minolta Spectator Lobby",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_kraus-welcome-center-bill-bradley-sports-and-recreation-center",
+      "office": "Kraus Welcome Center",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Kraus Welcome Center",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_sharp-fitness-center-bill-bradley-sports-and-recreation-center",
+      "office": "Sharp Fitness Center",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Sharp Fitness Center",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_sony-electronics-skybox-bill-bradley-sports-and-recreation-center",
+      "office": "Sony Electronics Skybox",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Sony Electronics Skybox",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_thomas-swimming-pool-bill-bradley-sports-and-recreation-center",
+      "office": "Thomas Swimming Pool",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "room": "Thomas Swimming Pool",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_cahill-center-for-experiential-and-career-services-academic-building-c",
+      "office": "Cahill Center for Experiential and Career Services",
+      "building": "Academic Building C",
+      "room": "C-209",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_international-and-intercultural-education-academic-building-c",
+      "office": "International and Intercultural Education",
+      "building": "Academic Building C",
+      "room": "C-Wing, Suite 213",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/international",
+          "line": "C-wing, Suite 213"
+        }
+      ]
+    },
+    {
+      "key": "office_study-abroad-academic-building-c",
+      "office": "Study Abroad",
+      "building": "Academic Building C",
+      "room": "C-Wing, Suite 213",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/international",
+          "line": "C-wing, Suite 213"
+        }
+      ]
+    },
+    {
+      "key": "office_roukema-center-for-international-education-academic-building-c",
+      "office": "Roukema Center for International Education",
+      "building": "Academic Building C",
+      "room": "C-Wing, Suite 213",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/international",
+          "line": "C-wing, Suite 213"
+        }
+      ]
+    },
+    {
+      "key": "office_fishbowl-lounge-academic-building-c",
+      "office": "Fishbowl Lounge",
+      "building": "Academic Building C",
+      "room": "2nd floor",
+      "status": "verified",
+      "reasons": [
+        "verified-from-mapData-location"
+      ],
+      "sourceLocation": "2nd floor",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_micro-market-self-service-kiosk-fish-bowl-academic-building-c",
+      "office": "Micro Market Self-Service Kiosk 'Fish Bowl'",
+      "building": "Academic Building C",
+      "room": "2nd floor",
+      "status": "verified",
+      "reasons": [
+        "verified-from-mapData-location"
+      ],
+      "sourceLocation": "2nd floor",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_office-of-student-conduct-academic-building-c",
+      "office": "Office of Student Conduct",
+      "building": "Academic Building C",
+      "room": "C-212",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/student-conduct",
+          "line": "Office C-212 - Phone: (201) 684-7869"
+        }
+      ]
+    },
+    {
+      "key": "office_public-safety-academic-building-c",
+      "office": "Public Safety",
+      "building": "Academic Building C",
+      "room": "Ground floor, C-Wing, C-102",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/publicsafety",
+          "line": "Office : Ground floor, C-Wing, C-102"
+        }
+      ]
+    },
+    {
+      "key": "office_specialized-services-trio-academic-building-c",
+      "office": "Specialized Services/TRIO",
+      "building": "Academic Building C",
+      "room": "C-Wing, Room 205",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/oss",
+          "line": "MAIN OFFICE: C-Wing, Room 205 - Meetings by appointment. | Office Hours Typically MON-FRI, 8:30 AM-4:30 PM | (201) 684-7514"
+        }
+      ]
+    },
+    {
+      "key": "office_student-affairs-academic-building-c",
+      "office": "Student Affairs",
+      "building": "Academic Building C",
+      "room": "The Arch (Rain/Heat: Friends Hall)",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_women-s-center-academic-building-c",
+      "office": "Women's Center",
+      "building": "Academic Building C",
+      "room": "Room C-220 (near The Fishbowl)",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/womenscenter",
+          "line": "Location: Room C-220 (near The Fishbowl)"
+        }
+      ]
+    },
+    {
+      "key": "office_alumni-lounges-student-center-sc",
+      "office": "Alumni Lounges",
+      "building": "Student Center (SC)",
+      "room": "Alumni Lounges",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_birch-tree-inn-restaurant-student-center-sc",
+      "office": "Birch Tree Inn Restaurant",
+      "building": "Student Center (SC)",
+      "room": "Birch Tree Inn Restaurant",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_bookstore-student-center-sc",
+      "office": "Bookstore",
+      "building": "Student Center (SC)",
+      "room": "Second Floor, Student Center",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_campus-ministries-student-center-sc",
+      "office": "Campus Ministries",
+      "building": "Student Center (SC)",
+      "room": "Campus Ministries",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_dining-services-office-student-center-sc",
+      "office": "Dining Services Office",
+      "building": "Student Center (SC)",
+      "room": "Dining Services Office",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_j-lee-s-lounge-student-center-sc",
+      "office": "J. Lee's Lounge",
+      "building": "Student Center (SC)",
+      "room": "J. Lee's Lounge",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_ramapo-news-student-newspaper-student-center-sc",
+      "office": "Ramapo News (Student Newspaper)",
+      "building": "Student Center (SC)",
+      "room": "SC-218",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_roadrunner-central-student-center-sc",
+      "office": "Roadrunner Central",
+      "building": "Student Center (SC)",
+      "room": "Roadrunner Central",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_center-for-student-involvement-csi-student-center-sc",
+      "office": "Center for Student Involvement (CSI)",
+      "building": "Student Center (SC)",
+      "room": "SC-202",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/csi",
+          "line": "Office: SC-202C"
+        }
+      ]
+    },
+    {
+      "key": "office_student-government-student-center-sc",
+      "office": "Student Government",
+      "building": "Student Center (SC)",
+      "room": "SC-225",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/sga",
+          "line": "Student Center, Room SC-225"
+        }
+      ]
+    },
+    {
+      "key": "office_the-atrium-food-court-student-center-sc",
+      "office": "The Atrium (Food Court)",
+      "building": "Student Center (SC)",
+      "room": "The Atrium (Food Court)",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_wrpr-fm-student-radio-station-student-center-sc",
+      "office": "WRPR-FM (Student Radio Station)",
+      "building": "Student Center (SC)",
+      "room": "The Robert A. Scott Student Center, second floor, Room SC-216",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/wrpr-fm",
+          "line": "Location: The Robert A. Scott Student Center, second floor, Room SC-216"
+        }
+      ]
+    },
+    {
+      "key": "office_facilities-administrative-services-facilities-complex",
+      "office": "Facilities Administrative Services",
+      "building": "Facilities Complex",
+      "room": "P-FAC",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/facilities/facilities-contacts",
+          "line": "Office: P-FAC"
+        }
+      ]
+    },
+    {
+      "key": "office_building-maintenance-repairs-and-amp-trades-shops-facilities-complex",
+      "office": "Building Maintenance (Repairs &amp; Trades Shops)",
+      "building": "Facilities Complex",
+      "room": "P-FAC",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/facilities/facilities-contacts",
+          "line": "Office: P-FAC"
+        }
+      ]
+    },
+    {
+      "key": "office_building-services-housekeeping-and-amp-events-setups-facilities-complex",
+      "office": "Building Services (Housekeeping &amp; Events - Setups)",
+      "building": "Facilities Complex",
+      "room": "P-FAC",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/facilities/facilities-contacts",
+          "line": "Office: P-FAC"
+        }
+      ]
+    },
+    {
+      "key": "office_grounds-facilities-complex",
+      "office": "Grounds",
+      "building": "Facilities Complex",
+      "room": "P-FAC",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/facilities/facilities-contacts",
+          "line": "Office: P-FAC"
+        }
+      ]
+    },
+    {
+      "key": "office_receiving-storeroom-facilities-complex",
+      "office": "Receiving/Storeroom",
+      "building": "Facilities Complex",
+      "room": "P-FAC",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/facilities/facilities-contacts",
+          "line": "Office: P-FAC"
+        }
+      ]
+    },
+    {
+      "key": "office_utilities-boiler-and-amp-ac-rooms-facilities-complex",
+      "office": "Utilities (Boiler &amp; AC Rooms)",
+      "building": "Facilities Complex",
+      "room": "P-FAC",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/facilities/facilities-contacts",
+          "line": "Office: P-FAC"
+        }
+      ]
+    },
+    {
+      "key": "office_administration-and-finance-academic-building-d",
+      "office": "Administration and Finance",
+      "building": "Academic Building D",
+      "room": "Administration and Finance",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_budget-and-fiscal-affairs-academic-building-d",
+      "office": "Budget and Fiscal Affairs",
+      "building": "Academic Building D",
+      "room": "2nd floor",
+      "status": "verified",
+      "reasons": [
+        "verified-from-mapData-location"
+      ],
+      "sourceLocation": "2nd floor",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_equity-diversity-inclusion-and-compliance-office-academic-building-d",
+      "office": "Equity, Diversity, Inclusion, and Compliance Office",
+      "building": "Academic Building D",
+      "room": "Equity, Diversity, Inclusion, and Compliance Office",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_benefits-academic-building-d",
+      "office": "Benefits",
+      "building": "Academic Building D",
+      "room": "Benefits",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_grants-administration-academic-building-d",
+      "office": "Grants Administration",
+      "building": "Academic Building D",
+      "room": "D-211L",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_office-of-student-accounts-academic-building-d",
+      "office": "Office of Student Accounts",
+      "building": "Academic Building D",
+      "room": "D-Wing, First Floor",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/student-accounts",
+          "line": "Office: D-Wing, First Floor"
+        }
+      ]
+    },
+    {
+      "key": "office_center-for-student-success-academic-building-d",
+      "office": "Center for Student Success",
+      "building": "Academic Building D",
+      "room": "D-202",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/studentsuccess",
+          "line": "Office: D-202"
+        }
+      ]
+    },
+    {
+      "key": "office_counseling-health-services-academic-building-d",
+      "office": "Counseling/Health Services",
+      "building": "Academic Building D",
+      "room": "Building D, room D-216 (entrance behind stairwell on left)",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/chcs",
+          "line": "Location: Building D, room D-216 (entrance behind stairwell on left)"
+        }
+      ]
+    },
+    {
+      "key": "office_educational-opportunity-fund-eof-academic-building-d",
+      "office": "Educational Opportunity Fund (EOF)",
+      "building": "Academic Building D",
+      "room": "D-101",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/eof-program",
+          "line": "Phone : (201) 684-7541 | Location: D-101 | Email: EOFdesk@ramapo.edu"
+        }
+      ]
+    },
+    {
+      "key": "office_events-and-conferences-academic-building-d",
+      "office": "Events and Conferences",
+      "building": "Academic Building D",
+      "room": "D-211",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_human-resources-academic-building-d",
+      "office": "Human Resources",
+      "building": "Academic Building D",
+      "room": "Human Resources",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/hr",
+          "line": "Human Resources Generalist"
+        }
+      ]
+    },
+    {
+      "key": "office_payroll-academic-building-d",
+      "office": "Payroll",
+      "building": "Academic Building D",
+      "room": "D-119",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/payroll",
+          "line": "Office: D-119"
+        }
+      ]
+    },
+    {
+      "key": "office_registrar-academic-building-d",
+      "office": "Registrar",
+      "building": "Academic Building D",
+      "room": "D-224",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/registrar",
+          "line": "*After Hours Drop Box: Gray mailbox located outside D-224"
+        }
+      ]
+    },
+    {
+      "key": "office_financial-aid-academic-building-e",
+      "office": "Financial Aid",
+      "building": "Academic Building E",
+      "room": "E-210",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/finaid",
+          "line": "Location: E-210 (Academic Building)"
+        }
+      ]
+    },
+    {
+      "key": "office_institutional-effectiveness-research-and-planning-academic-building-e",
+      "office": "Institutional Effectiveness, Research and Planning",
+      "building": "Academic Building E",
+      "room": "Institutional Effectiveness, Research and Planning",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_teacher-education-program-academic-building-e",
+      "office": "Teacher Education Program",
+      "building": "Academic Building E",
+      "room": "E-234",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_veterans-affairs-academic-building-e",
+      "office": "Veterans' Affairs",
+      "building": "Academic Building E",
+      "room": "E-210 (Academic Building)",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/finaid",
+          "line": "Location: E-210 (Academic Building)"
+        }
+      ]
+    },
+    {
+      "key": "office_employee-relations-academic-building-g",
+      "office": "Employee Relations",
+      "building": "Academic Building G",
+      "room": "G-255",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/er",
+          "line": "Office: G-255"
+        }
+      ]
+    },
+    {
+      "key": "office_g-wing-computer-labs-academic-building-g",
+      "office": "G Wing Computer Labs",
+      "building": "Academic Building G",
+      "room": "G-135",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/its/computer-labs",
+          "line": "G-135"
+        }
+      ]
+    },
+    {
+      "key": "office_school-of-theoretical-and-applied-science-tas-academic-building-g",
+      "office": "School of Theoretical and Applied Science (TAS)",
+      "building": "Academic Building G",
+      "room": "ASB-422",
+      "status": "needs-review",
+      "reasons": [
+        "code-prefix-mismatch:ASB not in G",
+        "room-text-found-on-page",
+        "verified-text-but-building-prefix-conflict"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": true,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/tas",
+          "line": "Office: ASB-422"
+        }
+      ]
+    },
+    {
+      "key": "office_master-of-science-in-contemporary-instructional-design-academic-building-g",
+      "office": "Master of Science in Contemporary Instructional Design",
+      "building": "Academic Building G",
+      "room": "Master of Science in Contemporary Instructional Design",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/mcid",
+          "line": "At this time, Ramapo College is no longer accepting applications to the Master of Science in Contemporary Instructional Design (MCID) program. Further updates regarding this program will be posted as they become available. Please research o"
+        }
+      ]
+    },
+    {
+      "key": "office_master-of-science-nursing-adler-center-for-nursing-excellence",
+      "office": "Master of Science, Nursing",
+      "building": "Adler Center for Nursing Excellence",
+      "room": "Master of Science, Nursing",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_nursing-program-adler-center-for-nursing-excellence",
+      "office": "Nursing Program",
+      "building": "Adler Center for Nursing Excellence",
+      "room": "AC-215",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/nursing",
+          "line": "Office: AC-215"
+        }
+      ]
+    },
+    {
+      "key": "office_academic-media-services-academic-building-h",
+      "office": "Academic Media Services",
+      "building": "Academic Building H",
+      "room": "H-205",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/ams",
+          "line": "Please feel free to visit us in H-205 or send an email to mediahelpdesk@ramapo.edu with any inquiries. For emergencies, please phone the helpdesk at 201.684.7777."
+        }
+      ]
+    },
+    {
+      "key": "office_h-wing-computer-lab-academic-building-h",
+      "office": "H Wing Computer Lab",
+      "building": "Academic Building H",
+      "room": "H-105",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/its/computer-labs",
+          "line": "H-105"
+        }
+      ]
+    },
+    {
+      "key": "office_h-wing-auditorium-academic-building-h",
+      "office": "H-Wing Auditorium",
+      "building": "Academic Building H",
+      "room": "H-Wing Auditorium",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/conferences",
+          "line": "H-Wing Auditorium"
+        }
+      ]
+    },
+    {
+      "key": "office_recording-studio-academic-building-h",
+      "office": "Recording Studio",
+      "building": "Academic Building H",
+      "room": "H-205",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/ams",
+          "line": "Please feel free to visit us in H-205 or send an email to mediahelpdesk@ramapo.edu with any inquiries. For emergencies, please phone the helpdesk at 201.684.7777."
+        }
+      ]
+    },
+    {
+      "key": "office_television-studio-academic-building-h",
+      "office": "Television Studio",
+      "building": "Academic Building H",
+      "room": "H-205",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/ams",
+          "line": "Please feel free to visit us in H-205 or send an email to mediahelpdesk@ramapo.edu with any inquiries. For emergencies, please phone the helpdesk at 201.684.7777."
+        }
+      ]
+    },
+    {
+      "key": "office_health-services-student-health-services",
+      "office": "Health Services",
+      "building": "Student Health Services",
+      "room": "D-216C",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/health",
+          "line": "Office: D-216C"
+        }
+      ]
+    },
+    {
+      "key": "office_testing-center-laurel-hall-north-building",
+      "office": "Testing Center",
+      "building": "Laurel Hall North Building",
+      "room": "Laurel Hall, North",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/testing",
+          "line": "Location: Laurel Hall, North"
+        }
+      ]
+    },
+    {
+      "key": "office_laurel-hall-computer-lab-laurel-hall-north-building",
+      "office": "Laurel Hall Computer Lab",
+      "building": "Laurel Hall North Building",
+      "room": "Laurel Hall Computer Lab",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_laurel-hall-screening-room-laurel-hall-south-building",
+      "office": "Laurel Hall Screening Room",
+      "building": "Laurel Hall South Building",
+      "room": "First Floor Screening Room",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_laurel-hall-student-lounges-laurel-hall-south-building",
+      "office": "Laurel Hall Student Lounges",
+      "building": "Laurel Hall South Building",
+      "room": "First and Second Floor Lounges",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_instructional-design-center-peter-p-mercer-learning-commons",
+      "office": "Instructional Design Center",
+      "building": "Peter P. Mercer Learning Commons",
+      "room": "E-230",
+      "status": "needs-review",
+      "reasons": [
+        "code-prefix-mismatch:E not in LIB,LIBRARY",
+        "room-text-found-on-page",
+        "verified-text-but-building-prefix-conflict"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": true,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/idc",
+          "line": "Office: E-230"
+        }
+      ]
+    },
+    {
+      "key": "office_center-for-reading-and-writing-peter-p-mercer-learning-commons",
+      "office": "Center for Reading and Writing",
+      "building": "Peter P. Mercer Learning Commons",
+      "room": "LC-424",
+      "status": "needs-review",
+      "reasons": [
+        "code-prefix-mismatch:LC not in LIB,LIBRARY",
+        "room-text-found-on-page",
+        "verified-text-but-building-prefix-conflict"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": true,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/crw",
+          "line": "Office: LC-424"
+        }
+      ]
+    },
+    {
+      "key": "office_center-for-holocaust-and-genocide-studies-peter-p-mercer-learning-commons",
+      "office": "Center for Holocaust and Genocide Studies",
+      "building": "Peter P. Mercer Learning Commons",
+      "room": "Center for Holocaust and Genocide Studies",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/holocaust",
+          "line": "Home - Center for Holocaust and Genocide Studies (CHGS) || Ramapo College of New Jersey"
+        }
+      ]
+    },
+    {
+      "key": "office_library-computer-lab-peter-p-mercer-learning-commons",
+      "office": "Library Computer Lab",
+      "building": "Peter P. Mercer Learning Commons",
+      "room": "Library Computer Lab",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_residence-life-the-lodge-cpa",
+      "office": "Residence Life",
+      "building": "The Lodge (CPA)",
+      "room": "The Lodge",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/reslife",
+          "line": "The Lodge - Phone: (201) 684-7461"
+        }
+      ]
+    },
+    {
+      "key": "office_environmental-health-and-safety-the-lodge-cpa",
+      "office": "Environmental Health and Safety",
+      "building": "The Lodge (CPA)",
+      "room": "EHS",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/ehs",
+          "line": "EHS Intranet Site"
+        }
+      ]
+    },
+    {
+      "key": "office_fire-safety-officer-the-lodge-cpa",
+      "office": "Fire Safety Officer",
+      "building": "The Lodge (CPA)",
+      "room": "EHS",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/ehs/fire-safety",
+          "line": "EHS Intranet Site"
+        }
+      ]
+    },
+    {
+      "key": "office_laundry-room-the-lodge-cpa",
+      "office": "Laundry Room",
+      "building": "The Lodge (CPA)",
+      "room": "The Lodge",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/reslife/college-park-apartments-cpa",
+          "line": "Office Location: The Lodge"
+        }
+      ]
+    },
+    {
+      "key": "office_lodge-the-lodge-cpa",
+      "office": "Lodge",
+      "building": "The Lodge (CPA)",
+      "room": "The Lodge",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/reslife/college-park-apartments-cpa",
+          "line": "Office Location: The Lodge"
+        }
+      ]
+    },
+    {
+      "key": "office_resident-activities-center-rac-the-lodge-cpa",
+      "office": "Resident Activities Center (RAC)",
+      "building": "The Lodge (CPA)",
+      "room": "The Lodge",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/reslife/college-park-apartments-cpa",
+          "line": "Office Location: The Lodge"
+        }
+      ]
+    },
+    {
+      "key": "office_ombuds-office-the-lodge-cpa",
+      "office": "Ombuds Office",
+      "building": "The Lodge (CPA)",
+      "room": "Ombuds Office",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/ombuds",
+          "line": "Home - Ombuds Office of Ramapo College Home || Ramapo College of New Jersey"
+        }
+      ]
+    },
+    {
+      "key": "office_mackin-student-lounges-nancy-mackin-hall",
+      "office": "Mackin Student Lounges",
+      "building": "Nancy Mackin Hall",
+      "room": "Common Lounge (Each Floor)",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_academic-affairs-birch-mansion",
+      "office": "Academic Affairs",
+      "building": "Birch Mansion",
+      "room": "First Floor, Birch Mansion",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_alumni-relations-birch-mansion",
+      "office": "Alumni Relations",
+      "building": "Birch Mansion",
+      "room": "Birch Mansion",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_board-room-birch-mansion",
+      "office": "Board Room",
+      "building": "Birch Mansion",
+      "room": "Board Room",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_friends-of-ramapo-office-birch-mansion",
+      "office": "Friends of Ramapo Office",
+      "building": "Birch Mansion",
+      "room": "Birch Mansion",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/foundation/friends",
+          "line": "Institutional Advancement, Birch Mansion"
+        }
+      ]
+    },
+    {
+      "key": "office_institutional-advancement-birch-mansion",
+      "office": "Institutional Advancement",
+      "building": "Birch Mansion",
+      "room": "Birch Mansion",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_president-s-office-birch-mansion",
+      "office": "President's Office",
+      "building": "Birch Mansion",
+      "room": "President's Office",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_provost-s-office-birch-mansion",
+      "office": "Provost's Office",
+      "building": "Birch Mansion",
+      "room": "First Floor, Birch Mansion",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_ramapo-college-foundation-birch-mansion",
+      "office": "Ramapo College Foundation",
+      "building": "Birch Mansion",
+      "room": "Birch Mansion",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_york-room-birch-mansion",
+      "office": "York Room",
+      "building": "Birch Mansion",
+      "room": "York Room",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_campus-tours-mcbride-house",
+      "office": "Campus Tours",
+      "building": "McBride House",
+      "room": "Campus Tours",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/campustours",
+          "line": "Home - Campus Tours || Ramapo College of New Jersey"
+        }
+      ]
+    },
+    {
+      "key": "office_enrollment-management-mcbride-house",
+      "office": "Enrollment Management",
+      "building": "McBride House",
+      "room": "M-213",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/em",
+          "line": "Office: M-213"
+        }
+      ]
+    },
+    {
+      "key": "office_office-of-undergraduate-admissions-mcbride-house",
+      "office": "Office of Undergraduate Admissions",
+      "building": "McBride House",
+      "room": "E-210 (Academic Complex)",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/admissions/financial-aid-tuition",
+          "line": "Location: E-210 (Academic Complex)"
+        }
+      ]
+    },
+    {
+      "key": "office_the-overlook-student-lounges-the-overlook",
+      "office": "The Overlook Student Lounges",
+      "building": "The Overlook",
+      "room": "Common Lounge (Each Floor)",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_conference-center-trustees-pavilion",
+      "office": "Conference Center",
+      "building": "Trustees Pavilion",
+      "room": "Conference Center",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/conferences",
+          "line": "Trustees Pavillion / Conference Center"
+        }
+      ]
+    },
+    {
+      "key": "office_pavilion-restaurant-trustees-pavilion",
+      "office": "Pavilion Restaurant",
+      "building": "Trustees Pavilion",
+      "room": "Pavilion Restaurant",
+      "status": "needs-review",
+      "reasons": [
+        "fallback-room-equals-office-name"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_micro-market-self-service-kiosk-the-pav-trustees-pavilion",
+      "office": "Micro Market Self-Service Kiosk 'The Pav'",
+      "building": "Trustees Pavilion",
+      "room": "Trustees Pavilion",
+      "status": "verified",
+      "reasons": [
+        "verified-from-mapData-location"
+      ],
+      "sourceLocation": "Trustees Pavilion",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_pine-hall-student-lounge-pine-hall",
+      "office": "Pine Hall Student Lounge",
+      "building": "Pine Hall",
+      "room": "The Lodge",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/reslife",
+          "line": "The Lodge - Phone: (201) 684-7461"
+        }
+      ]
+    },
+    {
+      "key": "office_master-of-science-sustainability-studies-sharp-sustainability-education-center",
+      "office": "Master of Science, Sustainability Studies",
+      "building": "Sharp Sustainability Education Center",
+      "room": "G-226",
+      "status": "unverified",
+      "reasons": [],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": []
+    },
+    {
+      "key": "office_lounge-area-for-the-village-residents-thomases-commons",
+      "office": "Lounge area for The Village residents",
+      "building": "Thomases Commons",
+      "room": "The Lodge",
+      "status": "verified",
+      "reasons": [
+        "room-text-found-on-page"
+      ],
+      "sourceLocation": "",
+      "prefixMismatch": false,
+      "evidence": [
+        {
+          "type": "page-line",
+          "url": "https://www.ramapo.edu/reslife",
+          "line": "The Lodge - Phone: (201) 684-7461"
+        }
+      ]
+    }
+  ]
+}

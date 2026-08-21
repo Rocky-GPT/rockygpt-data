@@ -1,0 +1,87 @@
+{
+  "safety": {
+    "sourceId": "public-safety",
+    "title": "Public Safety",
+    "url": "https://www.ramapo.edu/publicsafety/"
+  },
+  "password": {
+    "sourceId": "password-reset",
+    "title": "Password Reset",
+    "url": "https://password.ramapo.edu/"
+  },
+  "technology": {
+    "sourceId": "information-technology-services",
+    "title": "Information Technology Services",
+    "url": "https://www.ramapo.edu/its/"
+  },
+  "tuition": {
+    "sourceId": "tuition-costs",
+    "title": "Tuition & Costs",
+    "url": "https://www.ramapo.edu/admissions/financial-aid-tuition/tuition-costs/"
+  },
+  "calendar": {
+    "sourceId": "academic-calendar",
+    "title": "Academic Calendar",
+    "url": "https://www.ramapo.edu/academic-calendars/"
+  },
+  "dining": {
+    "sourceId": "dining",
+    "title": "Ramapo Dining",
+    "url": "https://ramapo.sodexomyway.com/"
+  },
+  "hours": {
+    "sourceId": "campus-hours",
+    "title": "Campus Hours",
+    "url": "https://www.ramapo.edu/about/campus-hours/"
+  },
+  "events": {
+    "sourceId": "archway-events",
+    "title": "Archway Events",
+    "url": "https://archway.ramapo.edu/events"
+  },
+  "clubs": {
+    "sourceId": "archway-clubs",
+    "title": "Archway Student Organizations",
+    "url": "https://archway.ramapo.edu/club_signup?view=all&"
+  },
+  "programs": {
+    "sourceId": "academic-programs",
+    "title": "Ramapo Programs",
+    "url": "https://www.ramapo.edu/majors-minors/"
+  },
+  "directory": {
+    "sourceId": "campus-directory",
+    "title": "Campus Directory",
+    "url": "https://www.ramapo.edu/campus-directory/"
+  },
+  "transportation": {
+    "sourceId": "transportation",
+    "title": "Transportation Services",
+    "url": "https://www.ramapo.edu/about/transportation-services/ramapo-roadrunner-express-shuttle/"
+  },
+  "parking": {
+    "sourceId": "parking-permits",
+    "title": "Parking Permits and Regulations",
+    "url": "https://www.ramapo.edu/publicsafety/parking-permits/"
+  },
+  "health": {
+    "sourceId": "health",
+    "title": "Health Services",
+    "url": "https://www.ramapo.edu/health/"
+  },
+  "housing": {
+    "sourceId": "housing",
+    "title": "Residence Life",
+    "url": "https://www.ramapo.edu/reslife/"
+  },
+  "counseling": {
+    "sourceId": "counseling",
+    "title": "Counseling Services",
+    "url": "https://www.ramapo.edu/counseling/"
+  },
+  "faculty": {
+    "sourceId": "faculty",
+    "title": "Faculty Profiles",
+    "url": "https://www.ramapo.edu/academics/faculty/"
+  }
+}

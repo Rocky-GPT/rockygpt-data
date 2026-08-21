@@ -1,0 +1,676 @@
+import type { Pool } from 'pg';
+import { getRuntimePool } from '../../db/runtime-pool';
+import type {
+  CriticalFactRecord,
+  DatasetContext,
+  EvidenceItem,
+  SourceReference,
+} from '../types';
+import type {
+  AcademicDateRecord,
+  ClubRecord,
+  ContactRecord,
+  DiningVenueRecord,
+  EventRecord,
+  HoursRecord,
+  MenuItemRecord,
+  ProgramRecord,
+  ShuttleServiceDay,
+  ShuttleTripRecord,
+} from '../schemas';
+import { CURRENT_MENU_VENUE_NAME, diningVenueRecord } from '../dining-venues';
+import type { RockyRepositoryV2, SearchOptions } from './types';
+import { inferProgramKind, parseProgramSearch, type ProgramKind } from './program-search';
+import { buildTermFrequencies, searchTermsFor, type TermFrequencies } from './search-terms';
+import { campusLocalDate } from '../dining-seasons';
+
+type Row = Record<string, unknown>;
+
+function requiredString(row: Row, key: string): string {
+  const value = row[key];
+  return typeof value === 'string' ? value : String(value ?? '');
+}
+
+function optionalString(row: Row, key: string): string | undefined {
+  const value = row[key];
+  return typeof value === 'string' && value.trim() ? value : undefined;
+}
+
+function sourceFromRow(row: Row): SourceReference {
+  return {
+    sourceId: requiredString(row, 'source_id'),
+    title: requiredString(row, 'source_title'),
+    url: requiredString(row, 'source_url'),
+    collectedAt: optionalString(row, 'collected_at'),
+  };
+}
+
+function programKindFromRow(row: Row): ProgramKind | undefined {
+  const value = optionalString(row, 'program_kind');
+  if (value === 'major' ||
+    value === 'minor' ||
+    value === 'certificate' ||
+    value === 'undeclared' ||
+    value === 'other' ||
+    value === 'special') {
+    return value;
+  }
+  const name = requiredString(row, 'name');
+  return name ? inferProgramKind({ name, degree: optionalString(row, 'degree') }) : undefined;
+}
+
+export class PostgresRepositoryV2 implements RockyRepositoryV2 {
+  /**
+   * Word frequencies per searchable table, keyed by dataset so a published
+   * release never reads another version's statistics. Computed once per table
+   * per process: the tables are small and immutable within a dataset version.
+   */
+  private readonly termFrequencies = new Map<string, Promise<TermFrequencies>>();
+  private readonly pool: Pool;
+  /** When set, every read in this view is scoped to one immutable dataset. */
+  private pinnedDataset: DatasetContext | null = null;
+
+  constructor(connectionString: string) {
+    const pool = getRuntimePool(connectionString);
+    if (!pool) throw new Error('DATABASE_URL is required for PostgreSQL repository access.');
+    this.pool = pool;
+  }
+
+  withDataset(dataset: DatasetContext): RockyRepositoryV2 {
+    // A prototype view shares the pool but pins the dataset, so every query
+    // (they all resolve ids through getDatasetContext) reads one version
+    // without re-resolving active state mid-request (PROB-013).
+    const view = Object.create(this) as PostgresRepositoryV2;
+    view.pinnedDataset = dataset;
+    return view;
+  }
+
+  async getDatasetContext(): Promise<DatasetContext> {
+    if (this.pinnedDataset) return this.pinnedDataset;
+    const result = await this.pool.query<Row>(
+      `SELECT id::text, version, activated_at::text
+       FROM rockygpt_v2.dataset_versions
+       WHERE status = 'active'
+       ORDER BY activated_at DESC
+       LIMIT 1`
+    );
+    const row = result.rows[0];
+    if (!row) throw new Error('No active dataset version.');
+    return {
+      id: requiredString(row, 'id'),
+      version: requiredString(row, 'version'),
+      activatedAt: requiredString(row, 'activated_at'),
+    };
+  }
+
+  private async activeDatasetId(): Promise<string> {
+    return (await this.getDatasetContext()).id;
+  }
+
+  async getCriticalFact(key: string): Promise<CriticalFactRecord | null> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT f.fact_key, f.fact_value, f.verified_at::text, f.valid_from::text, f.valid_until::text,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              f.collected_at::text
+       FROM rockygpt_v2.critical_facts f
+       JOIN rockygpt_v2.sources s ON s.id = f.source_id
+       WHERE f.dataset_version_id = $1::uuid
+         AND f.fact_key = $2
+         AND (f.valid_from IS NULL OR f.valid_from <= CURRENT_DATE)
+         AND (f.valid_until IS NULL OR f.valid_until >= CURRENT_DATE)
+       LIMIT 1`,
+      [datasetId, key]
+    );
+    const row = result.rows[0];
+    if (!row) return null;
+    return {
+      key: requiredString(row, 'fact_key'),
+      value: requiredString(row, 'fact_value'),
+      source: sourceFromRow(row),
+      verifiedAt: requiredString(row, 'verified_at'),
+      validFrom: optionalString(row, 'valid_from'),
+      validUntil: optionalString(row, 'valid_until'),
+    };
+  }
+
+  async listDiningVenues(): Promise<DiningVenueRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT DISTINCT h.name
+       FROM rockygpt_v2.dining_hours h
+       WHERE h.dataset_version_id = $1::uuid
+       ORDER BY h.name`,
+      [datasetId]
+    );
+    const names = result.rows.map((row) => requiredString(row, 'name'));
+    return [...new Set([...names, CURRENT_MENU_VENUE_NAME])].map(diningVenueRecord);
+  }
+
+  async findMenuItems(query: string, meal?: string): Promise<MenuItemRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT m.meal, m.station, m.name, m.calories, m.vegan, m.vegetarian, m.allergens,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              m.collected_at::text
+       FROM rockygpt_v2.menu_items m JOIN rockygpt_v2.sources s ON s.id = m.source_id
+       WHERE m.dataset_version_id = $1::uuid
+         AND ($2::text IS NULL OR lower(m.meal) = lower($2))
+         AND ($3::text = '' OR to_tsvector('english', m.meal || ' ' || m.station || ' ' || m.name)
+              @@ plainto_tsquery('english', $3))
+       ORDER BY m.meal, m.station, m.name
+       LIMIT 12`,
+      [datasetId, meal || null, query]
+    );
+    return result.rows.map((row) => ({
+      meal: requiredString(row, 'meal'),
+      station: requiredString(row, 'station'),
+      name: requiredString(row, 'name'),
+      calories: optionalString(row, 'calories'),
+      vegan: row.vegan === true,
+      vegetarian: row.vegetarian === true,
+      allergens: Array.isArray(row.allergens) ? row.allergens.filter((value): value is string => typeof value === 'string') : [],
+      source: sourceFromRow(row),
+    }));
+  }
+
+  /** Word frequencies for one table's searchable text, computed once. */
+  private async frequenciesFor(cacheKey: string, sql: string): Promise<TermFrequencies> {
+    const datasetId = await this.activeDatasetId();
+    const key = `${datasetId}:${cacheKey}`;
+    const cached = this.termFrequencies.get(key);
+    if (cached) return cached;
+
+    const pending = this.pool
+      .query<Row>(sql, [datasetId])
+      .then((result) => buildTermFrequencies(result.rows.map((row) => requiredString(row, 'text'))))
+      .catch((error) => {
+        // A statistics failure must never break a lookup; an empty table simply
+        // prunes nothing, leaving the strict behaviour that shipped before.
+        this.termFrequencies.delete(key);
+        throw error;
+      });
+    this.termFrequencies.set(key, pending);
+    return pending;
+  }
+
+  /**
+   * Runs a lookup on the words that can actually identify a record, then once
+   * more on every non-generic word if that found nothing. The match itself stays
+   * strict — every word must be present — because relaxing it lets one generic
+   * word choose the answer.
+   */
+  private async searchWithPrunedTerms<T>(
+    query: string,
+    frequenciesKey: string,
+    frequenciesSql: string,
+    run: (queryText: string) => Promise<T[]>
+  ): Promise<T[]> {
+    if (!query.trim()) return run(query);
+
+    let terms;
+    try {
+      terms = searchTermsFor(query, await this.frequenciesFor(frequenciesKey, frequenciesSql));
+    } catch {
+      return run(query);
+    }
+    if (!terms.primary) return run(query);
+
+    const primary = await run(terms.primary);
+    if (primary.length || !terms.fallback) return primary;
+    return run(terms.fallback);
+  }
+
+  private async findHours(
+    table: 'dining_hours' | 'campus_hours',
+    query: string,
+    day: string,
+    at?: Date
+  ): Promise<HoursRecord[]> {
+    return this.searchWithPrunedTerms(
+      query,
+      table,
+      `SELECT DISTINCT h.name AS text FROM rockygpt_v2.${table} h WHERE h.dataset_version_id = $1::uuid`,
+      (queryText) => this.findHoursMatching(table, queryText, day, at)
+    );
+  }
+
+  private async findHoursMatching(
+    table: 'dining_hours' | 'campus_hours',
+    query: string,
+    day: string,
+    at: Date | undefined
+  ): Promise<HoursRecord[]> {
+    const toQuery = "plainto_tsquery('english', $3)";
+    const datasetId = await this.activeDatasetId();
+    // PROB-010: dated exception rows (valid_from/valid_until) apply only when
+    // the campus-local date falls inside their window. Rank the eligible rows
+    // per venue/day and retain only the governing row; merely sorting seasonal
+    // rows first would also return the superseded standard schedule.
+    // Without a date only standard rows are visible.
+    const onDate = at ? campusLocalDate(at) : null;
+    const result = await this.pool.query<Row>(
+      `WITH eligible_hours AS (
+         SELECT h.*,
+                ROW_NUMBER() OVER (
+                  PARTITION BY lower(h.name), lower(h.day)
+                  ORDER BY
+                    (h.valid_from IS NOT NULL) DESC,
+                    h.valid_from ASC NULLS LAST,
+                    h.valid_until ASC NULLS LAST,
+                    h.source_record_key ASC
+                ) AS precedence_rank
+           FROM rockygpt_v2.${table} h
+          WHERE h.dataset_version_id = $1::uuid
+            AND lower(h.day) = lower($2)
+            AND (
+              (h.valid_from IS NULL AND h.valid_until IS NULL)
+              OR ($4::date IS NOT NULL AND $4::date BETWEEN h.valid_from AND h.valid_until)
+            )
+            AND ($3::text = '' OR to_tsvector('english', h.name) @@ ${toQuery})
+       )
+       SELECT h.name, h.day, h.schedule,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              h.collected_at::text
+         FROM eligible_hours h JOIN rockygpt_v2.sources s ON s.id = h.source_id
+        WHERE h.precedence_rank = 1
+       ORDER BY
+         CASE WHEN $3::text = '' THEN 0 ELSE
+           ts_rank(to_tsvector('english', h.name), ${toQuery})
+         END DESC,
+         h.name
+       LIMIT 10`,
+      [datasetId, day, query, onDate]
+    );
+    return result.rows.map((row) => ({
+      name: requiredString(row, 'name'),
+      day: requiredString(row, 'day'),
+      schedule: requiredString(row, 'schedule'),
+      source: sourceFromRow(row),
+    }));
+  }
+
+  findDiningHours(query: string, day: string, at?: Date): Promise<HoursRecord[]> {
+    return this.findHours('dining_hours', query, day, at);
+  }
+
+  findCampusHours(query: string, day: string, at?: Date): Promise<HoursRecord[]> {
+    // Campus hours carry a validity window now, and the eligibility filter
+    // treats a dated row as ineligible unless it is given a date to compare
+    // against. Omitting this made every dated row disappear.
+    return this.findHours('campus_hours', query, day, at);
+  }
+
+  async listCampusHourVenues(): Promise<string[]> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT DISTINCT h.name
+         FROM rockygpt_v2.campus_hours h
+        WHERE h.dataset_version_id = $1::uuid
+        ORDER BY h.name`,
+      [datasetId]
+    );
+    return result.rows.map((row) => requiredString(row, 'name'));
+  }
+
+  findCampusHoursByVenue(name: string, day: string, at?: Date): Promise<HoursRecord[]> {
+    return this.findHoursByVenue('campus_hours', name, day, at);
+  }
+
+  findDiningHoursByVenue(name: string, day: string, at?: Date): Promise<HoursRecord[]> {
+    return this.findHoursByVenue('dining_hours', name, day, at);
+  }
+
+  /**
+   * An exact-name fetch, not a text match. A question that has already resolved
+   * to a venue cannot come back with a different one, which is the whole point
+   * of resolving first.
+   */
+  private async findHoursByVenue(
+    table: 'dining_hours' | 'campus_hours',
+    name: string,
+    day: string,
+    at?: Date
+  ): Promise<HoursRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const onDate = at ? campusLocalDate(at) : null;
+    const result = await this.pool.query<Row>(
+      `WITH eligible_hours AS (
+         SELECT h.*,
+                ROW_NUMBER() OVER (
+                  PARTITION BY lower(h.name), lower(h.day)
+                  ORDER BY
+                    (h.valid_from IS NOT NULL) DESC,
+                    h.valid_from ASC NULLS LAST,
+                    h.valid_until ASC NULLS LAST,
+                    h.source_record_key ASC
+                ) AS precedence_rank
+           FROM rockygpt_v2.${table} h
+          WHERE h.dataset_version_id = $1::uuid
+            AND lower(h.day) = lower($2)
+            AND h.name = $3
+            AND (
+              (h.valid_from IS NULL AND h.valid_until IS NULL)
+              OR ($4::date IS NOT NULL AND $4::date BETWEEN h.valid_from AND h.valid_until)
+            )
+       )
+       SELECT h.name, h.day, h.schedule,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              h.collected_at::text
+         FROM eligible_hours h JOIN rockygpt_v2.sources s ON s.id = h.source_id
+        WHERE h.precedence_rank = 1
+        LIMIT 10`,
+      [datasetId, day, name, onDate]
+    );
+    return result.rows.map((row) => ({
+      name: requiredString(row, 'name'),
+      day: requiredString(row, 'day'),
+      schedule: requiredString(row, 'schedule'),
+      source: sourceFromRow(row),
+    }));
+  }
+
+  async findAcademicDates(query: string): Promise<AcademicDateRecord[]> {
+    return this.searchWithPrunedTerms(
+      query,
+      'academic_dates',
+      `SELECT a.title AS text FROM rockygpt_v2.academic_dates a
+        WHERE a.dataset_version_id = $1::uuid`,
+      (queryText) => this.findAcademicDatesMatching(queryText)
+    );
+  }
+
+  private async findAcademicDatesMatching(query: string): Promise<AcademicDateRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT a.term, a.date_label, a.title, a.description,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              a.collected_at::text
+       FROM rockygpt_v2.academic_dates a JOIN rockygpt_v2.sources s ON s.id = a.source_id
+       WHERE a.dataset_version_id = $1::uuid
+         AND to_tsvector('english', a.term || ' ' || a.title || ' ' || coalesce(a.description, ''))
+             @@ plainto_tsquery('english', $2)
+       ORDER BY ts_rank(
+         to_tsvector('english', a.term || ' ' || a.title || ' ' || coalesce(a.description, '')),
+         plainto_tsquery('english', $2)
+       ) DESC
+       LIMIT 5`,
+      [datasetId, query]
+    );
+    return result.rows.map((row) => ({
+      term: requiredString(row, 'term'),
+      date: requiredString(row, 'date_label'),
+      title: requiredString(row, 'title'),
+      description: optionalString(row, 'description'),
+      source: sourceFromRow(row),
+    }));
+  }
+
+  async findEvents(query: string, now: Date): Promise<EventRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT e.title, e.date_label, e.start_time, e.end_time, e.organizer, e.description, e.event_url,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              e.collected_at::text
+       FROM rockygpt_v2.campus_events e JOIN rockygpt_v2.sources s ON s.id = e.source_id
+       WHERE e.dataset_version_id = $1::uuid
+         AND (e.starts_at IS NULL OR e.starts_at >= $2::timestamptz - interval '1 day')
+         AND ($3::text = '' OR to_tsvector('english', e.title || ' ' || coalesce(e.organizer, '') || ' ' || coalesce(e.description, ''))
+              @@ plainto_tsquery('english', $3))
+       ORDER BY e.starts_at NULLS LAST, e.title
+       LIMIT 40`,
+      [datasetId, now.toISOString(), query]
+    );
+    return result.rows.map((row) => ({
+      title: requiredString(row, 'title'),
+      date: requiredString(row, 'date_label'),
+      startTime: optionalString(row, 'start_time'),
+      endTime: optionalString(row, 'end_time'),
+      organizer: optionalString(row, 'organizer'),
+      description: optionalString(row, 'description'),
+      eventUrl: optionalString(row, 'event_url'),
+      source: sourceFromRow(row),
+    }));
+  }
+
+  async findClubs(query: string): Promise<ClubRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT c.name, c.category, c.website_url,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              c.collected_at::text
+       FROM rockygpt_v2.clubs c JOIN rockygpt_v2.sources s ON s.id = c.source_id
+       WHERE c.dataset_version_id = $1::uuid
+         AND ($2::text = '' OR to_tsvector('english', c.name || ' ' || coalesce(c.category, ''))
+             @@ plainto_tsquery('english', $2))
+       ORDER BY c.name LIMIT 8`,
+      [datasetId, query]
+    );
+    return result.rows.map((row) => ({
+      name: requiredString(row, 'name'),
+      category: optionalString(row, 'category'),
+      websiteUrl: optionalString(row, 'website_url'),
+      source: sourceFromRow(row),
+    }));
+  }
+
+  async findPrograms(query: string): Promise<ProgramRecord[]> {
+    // Only the subject text is pruned; the degree and kind filters come from the
+    // original question and must keep constraining the search, or "nursing
+    // minor" could come back as the nursing major.
+    const criteria = parseProgramSearch(query);
+    return this.searchWithPrunedTerms(
+      criteria.subject,
+      'programs',
+      `SELECT p.name AS text FROM rockygpt_v2.programs p WHERE p.dataset_version_id = $1::uuid`,
+      (subject) => this.findProgramsMatching(criteria, subject)
+    );
+  }
+
+  private async findProgramsMatching(
+    criteria: ReturnType<typeof parseProgramSearch>,
+    subject: string
+  ): Promise<ProgramRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT p.name, p.degree, p.program_kind, p.school, p.description, p.program_url,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              p.collected_at::text
+       FROM rockygpt_v2.programs p JOIN rockygpt_v2.sources s ON s.id = p.source_id
+       WHERE p.dataset_version_id = $1::uuid
+         AND ($2::text = '' OR to_tsvector('english', p.name) @@ plainto_tsquery('english', $2))
+         AND ($3::text = '' OR
+           coalesce(
+             p.program_kind,
+             CASE
+               WHEN p.name ~* '\\m4\\s*\\+\\s*1\\M' THEN 'special'
+               WHEN coalesce(p.degree, p.name) ~* 'certificate' THEN 'certificate'
+               WHEN coalesce(p.degree, p.name) ~* '\\mminor\\M' THEN 'minor'
+               WHEN p.name ~* 'undeclared|non-degree' THEN 'undeclared'
+               ELSE 'major'
+             END
+           ) = $3
+         )
+         AND ($4::text = '' OR lower(coalesce(p.degree, '')) = lower($4))
+       ORDER BY
+         CASE WHEN $2::text = '' THEN 0 ELSE
+           ts_rank(to_tsvector('english', p.name), plainto_tsquery('english', $2))
+         END DESC,
+         CASE coalesce(
+           p.program_kind,
+           CASE
+             WHEN p.name ~* '\\m4\\s*\\+\\s*1\\M' THEN 'special'
+             WHEN coalesce(p.degree, p.name) ~* 'certificate' THEN 'certificate'
+             WHEN coalesce(p.degree, p.name) ~* '\\mminor\\M' THEN 'minor'
+             WHEN p.name ~* 'undeclared|non-degree' THEN 'undeclared'
+             ELSE 'major'
+           END
+         )
+           WHEN 'major' THEN 0
+           WHEN 'minor' THEN 1
+           WHEN 'certificate' THEN 2
+           WHEN 'special' THEN 3
+           ELSE 4
+         END,
+         p.name
+       LIMIT 6`,
+      [datasetId, subject, criteria.requestedKind || '', criteria.requestedDegree || '']
+    );
+    return result.rows.map((row) => ({
+      name: requiredString(row, 'name'),
+      degree: optionalString(row, 'degree'),
+      programKind: programKindFromRow(row),
+      school: optionalString(row, 'school'),
+      description: optionalString(row, 'description'),
+      programUrl: optionalString(row, 'program_url'),
+      source: sourceFromRow(row),
+    }));
+  }
+
+  async findContacts(query: string): Promise<ContactRecord[]> {
+    return this.searchWithPrunedTerms(
+      query,
+      'campus_contacts',
+      `SELECT c.name || ' ' || coalesce(c.department, '') AS text
+         FROM rockygpt_v2.campus_contacts c WHERE c.dataset_version_id = $1::uuid`,
+      (queryText) => this.findContactsMatching(queryText)
+    );
+  }
+
+  async listContacts(): Promise<Array<{ name: string; department?: string }>> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT DISTINCT c.name, c.department
+         FROM rockygpt_v2.campus_contacts c
+        WHERE c.dataset_version_id = $1::uuid
+        ORDER BY c.name`,
+      [datasetId]
+    );
+    return result.rows.map((row) => ({
+      name: requiredString(row, 'name'),
+      department: optionalString(row, 'department'),
+    }));
+  }
+
+  /** An exact-name fetch, so a resolved contact cannot return a different one. */
+  async findContactByName(name: string): Promise<ContactRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT c.name, c.department, c.phone, c.email, c.office,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              c.collected_at::text
+         FROM rockygpt_v2.campus_contacts c JOIN rockygpt_v2.sources s ON s.id = c.source_id
+        WHERE c.dataset_version_id = $1::uuid AND c.name = $2
+        LIMIT 5`,
+      [datasetId, name]
+    );
+    return result.rows.map((row) => ({
+      name: requiredString(row, 'name'),
+      department: optionalString(row, 'department'),
+      phone: optionalString(row, 'phone'),
+      email: optionalString(row, 'email'),
+      office: optionalString(row, 'office'),
+      source: sourceFromRow(row),
+    }));
+  }
+
+  private async findContactsMatching(query: string): Promise<ContactRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT c.name, c.department, c.phone, c.email, c.office,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              c.collected_at::text
+       FROM rockygpt_v2.campus_contacts c JOIN rockygpt_v2.sources s ON s.id = c.source_id
+       WHERE c.dataset_version_id = $1::uuid
+         AND ($2::text = '' OR to_tsvector('english', c.name || ' ' || coalesce(c.department, ''))
+             @@ plainto_tsquery('english', $2))
+       ORDER BY c.name LIMIT 5`,
+      [datasetId, query]
+    );
+    return result.rows.map((row) => ({
+      name: requiredString(row, 'name'),
+      department: optionalString(row, 'department'),
+      phone: optionalString(row, 'phone'),
+      email: optionalString(row, 'email'),
+      office: optionalString(row, 'office'),
+      source: sourceFromRow(row),
+    }));
+  }
+
+  async getShuttleTrips(
+    routeHint?: string,
+    serviceDay?: ShuttleServiceDay
+  ): Promise<ShuttleTripRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    // Without a route hint the generic Roadrunner timetable answers, matching
+    // file-repository behavior; a NULL service_day (datasets published before
+    // the additive column) stays eligible for any day.
+    const result = await this.pool.query<Row>(
+      `SELECT r.name AS route, t.departure, t.arrival, t.stops,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              t.collected_at::text
+       FROM rockygpt_v2.shuttle_trips t
+       JOIN rockygpt_v2.shuttle_routes r ON r.id = t.route_id
+       JOIN rockygpt_v2.sources s ON s.id = t.source_id
+       WHERE t.dataset_version_id = $1::uuid
+         AND (
+           ($2::text <> '' AND lower(r.name) LIKE '%' || lower($2) || '%')
+           OR ($2::text = '' AND lower(r.name) LIKE '%roadrunner%')
+         )
+         AND ($3::text = '' OR r.service_day IS NULL OR r.service_day = $3::text)
+       ORDER BY t.sequence LIMIT 50`,
+      [datasetId, routeHint || '', serviceDay || '']
+    );
+    return result.rows.map((row) => ({
+      route: requiredString(row, 'route'),
+      departure: requiredString(row, 'departure'),
+      arrival: requiredString(row, 'arrival'),
+      stops: Array.isArray(row.stops)
+        ? row.stops.flatMap((stop): Array<{ location: string; time: string }> =>
+            stop && typeof stop === 'object'
+              ? [{
+                  location: requiredString(stop as Row, 'location'),
+                  time: requiredString(stop as Row, 'time'),
+                }]
+              : []
+          )
+        : [],
+      source: sourceFromRow(row),
+    }));
+  }
+
+  async searchDocuments(query: string, options: SearchOptions): Promise<EvidenceItem[]> {
+    const datasetId = await this.activeDatasetId();
+    const sql = `
+      SELECT c.id::text, coalesce(c.metadata->>'headingPath', d.title) AS title,
+             coalesce(c.metadata->>'canonicalUrl', s.canonical_url) AS url,
+             c.content, s.domain, s.trust_tier,
+             d.collected_at::text,
+             (ts_rank(c.lexical_vector, plainto_tsquery('english', $2)) * 0.90 +
+              CASE s.trust_tier WHEN 'official_primary' THEN 0.10
+                                WHEN 'official_secondary' THEN 0.06 ELSE 0 END) AS score
+      FROM rockygpt_v2.document_chunks c
+      JOIN rockygpt_v2.documents d ON d.id = c.document_id
+      JOIN rockygpt_v2.sources s ON s.id = d.source_id
+      WHERE d.dataset_version_id = $1::uuid
+        AND ($3::text = 'general' OR s.domain = $3)
+        AND c.lexical_vector @@ plainto_tsquery('english', $2)
+      ORDER BY score DESC
+      LIMIT $4
+    `;
+    const values = [datasetId, query, options.domain, options.limit];
+    const result = await this.pool.query<Row>(sql, values);
+    return result.rows.map((row) => ({
+      id: requiredString(row, 'id'),
+      title: requiredString(row, 'title'),
+      url: requiredString(row, 'url'),
+      content: requiredString(row, 'content'),
+      domain: requiredString(row, 'domain'),
+      trustTier: ['official_primary', 'official_secondary', 'community'].includes(requiredString(row, 'trust_tier'))
+        ? requiredString(row, 'trust_tier') as EvidenceItem['trustTier']
+        : 'unknown',
+      collectedAt: requiredString(row, 'collected_at'),
+      score: Number(row.score || 0),
+    }));
+  }
+}
