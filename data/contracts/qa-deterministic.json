@@ -1,0 +1,336 @@
+{
+  "generatedAt": "2026-06-19T20:32:09.527Z",
+  "timezone": "America/New_York",
+  "sourceGeneratedAt": {
+    "menu": "2026-04-29T20:31:30.465Z",
+    "diningHours": "2026-03-21T14:19:14.481Z",
+    "campusHours": "2026-03-21T14:19:15.138Z",
+    "events": "2026-04-29T20:33:51.731Z",
+    "transportation": "2026-03-21T14:19:16.997Z"
+  },
+  "hours": {
+    "campus": {
+      "Administrative Offices (Normal Hours)": {
+        "Monday": "8:30am-4:30pm",
+        "Tuesday": "8:30am-4:30pm",
+        "Wednesday": "8:30am-4:30pm",
+        "Thursday": "8:30am-4:30pm",
+        "Friday": "8:30am-4:30pm",
+        "Saturday": "CLOSED",
+        "Sunday": "CLOSED"
+      },
+      "Auxiliary Gym": {
+        "Monday": "8:00am-9:30am and 11:30am-12:30pm",
+        "Tuesday": "8:00am-9:30am and 11:30am-12:30pm",
+        "Wednesday": "8:00am-9:30am and 11:30am-12:30pm",
+        "Thursday": "8:00am-9:30am and 11:30am-12:30pm",
+        "Friday": "8:00am-9:30am and 11:30am-12:30pm",
+        "Saturday": "CLOSED",
+        "Sunday": "12:00pm-4:00pm"
+      },
+      "Bradley Center (Student & Recreation Lounge)": {
+        "Monday": "8:00am-10:00pm",
+        "Tuesday": "8:00am-10:00pm",
+        "Wednesday": "8:00am-10:00pm",
+        "Thursday": "8:00am-10:00pm",
+        "Friday": "8:00am-10:00pm",
+        "Saturday": "10:30am-4:30pm",
+        "Sunday": "12:00pm-8:00pm"
+      },
+      "Center for Student Involvement (CSI)": {
+        "Monday": "8:00am-12:00am",
+        "Tuesday": "8:00am-12:00am",
+        "Wednesday": "8:00am-12:00am",
+        "Thursday": "8:00am-12:00am",
+        "Friday": "8:00am-12:00am",
+        "Saturday": "4:00pm-10:00pm",
+        "Sunday": "3:00pm-8:00pm"
+      },
+      "Game Lab": {
+        "Monday": "9:00am-8:00pm",
+        "Tuesday": "9:00am-8:00pm",
+        "Wednesday": "9:00am-8:00pm",
+        "Thursday": "9:00am-8:00pm",
+        "Friday": "9:00am-6:00pm",
+        "Saturday": "CLOSED",
+        "Sunday": "CLOSED"
+      },
+      "J. Lee's (Student Lounge & Game Room)": {
+        "Monday": "9:00am-10:00pm",
+        "Tuesday": "9:00am-10:00pm",
+        "Wednesday": "9:00am-10:00pm",
+        "Thursday": "9:00am-10:00pm",
+        "Friday": "9:00am-9:00pm",
+        "Saturday": "CLOSED",
+        "Sunday": "1:00pm-6:00pm"
+      },
+      "Library (Main Building)": {
+        "Monday": "7:45am-12:00am",
+        "Tuesday": "7:45am-12:00am",
+        "Wednesday": "7:45am-12:00am",
+        "Thursday": "7:45am-12:00am",
+        "Friday": "7:45am-6:00pm",
+        "Saturday": "10:00am-6:00pm",
+        "Sunday": "12:00pm-12:00am"
+      },
+      "Lodge Fitness Center (College Park Apartments)": {
+        "Monday": "5:00pm-8:00pm",
+        "Tuesday": "CLOSED",
+        "Wednesday": "5:00pm-8:00pm",
+        "Thursday": "CLOSED",
+        "Friday": "5:00pm-8:00pm",
+        "Saturday": "CLOSED",
+        "Sunday": "CLOSED"
+      },
+      "Ramapo Bookstore": {
+        "Monday": "9:00am-5:00pm",
+        "Tuesday": "9:00am-5:00pm",
+        "Wednesday": "9:00am-5:00pm",
+        "Thursday": "9:00am-5:00pm",
+        "Friday": "9:00am-4:00pm",
+        "Saturday": "CLOSED",
+        "Sunday": "CLOSED"
+      },
+      "Research Help Desk": {
+        "Monday": "9:00am-9:00pm",
+        "Tuesday": "9:00am-9:00pm",
+        "Wednesday": "9:00am-9:00pm",
+        "Thursday": "9:00am-9:00pm",
+        "Friday": "9:00am-4:00pm",
+        "Saturday": "3:00pm-6:00pm",
+        "Sunday": "3:00pm-6:00pm"
+      },
+      "Rock Climbing Wall": {
+        "Monday": "6:00pm-9:00pm",
+        "Tuesday": "CLOSED",
+        "Wednesday": "6:00pm-9:00pm",
+        "Thursday": "CLOSED",
+        "Friday": "CLOSED",
+        "Saturday": "CLOSED",
+        "Sunday": "CLOSED"
+      },
+      "Sharp Fitness Center (Weight Room)": {
+        "Monday": "8:00am-9:45pm",
+        "Tuesday": "8:00am-9:45pm",
+        "Wednesday": "8:00am-9:45pm",
+        "Thursday": "8:00am-9:45pm",
+        "Friday": "8:00am-9:45pm",
+        "Saturday": "10:45am-4:15pm",
+        "Sunday": "12:15pm-7:45pm"
+      }
+    },
+    "dining": {
+      "The Atrium": {
+        "Monday": "07:30 AM - 07:00 PM",
+        "Tuesday": "07:30 AM - 07:00 PM",
+        "Wednesday": "07:30 AM - 07:00 PM",
+        "Thursday": "07:30 AM - 07:00 PM",
+        "Friday": "07:30 AM - 07:00 PM",
+        "Saturday": "Closed",
+        "Sunday": "Closed"
+      }
+    }
+  },
+  "menu": {
+    "highlights": {
+      "BREAKFAST": [
+        "Cage Free Hard Cooked Egg",
+        "Diced Peach",
+        "Fresh Cantaloupe",
+        "Fresh Honeydew Melon",
+        "Low Fat Strawberry Yogurt",
+        "Scrambled Eggs",
+        "Yoplait Low Fat Vanilla Yogurt",
+        "Chocolate Chip Pancakes",
+        "Flour Tortilla",
+        "Fresh Roasted Salsa",
+        "Oatmeal",
+        "Roasted Red Bliss Potatoes"
+      ],
+      "DINNER": [
+        "Farfalle Pasta",
+        "Fresh Italian Parsley",
+        "Garlic Roasted Green Beans",
+        "Shrimp Scampi",
+        "American Cheese",
+        "Cheddar Cheese",
+        "Dill Pickle Chip",
+        "Fresh Garlic Grilled Halal Chicken",
+        "Genoa Salami",
+        "House Made Tuna Salad",
+        "Hummus",
+        "Provolone Cheese"
+      ],
+      "LATE NIGHT": [
+        "American Cheese",
+        "Cheddar Cheese",
+        "Dill Pickle Chip",
+        "Fresh Garlic Grilled Halal Chicken",
+        "House Made Tuna Salad",
+        "Hummus",
+        "Provolone Cheese",
+        "Sea Salt Dusted Deli Chips",
+        "Shredded Lettuce",
+        "Sliced Red Onions",
+        "Sliced Tomato",
+        "Smoked Ham"
+      ],
+      "LUNCH": [
+        "Fried Brown Rice",
+        "Halal Honey Ginger Chicken Thigh",
+        "Sesame Ginger Sauce",
+        "Sliced Green Onions",
+        "Steamed Broccoli",
+        "Spicy Teriyaki Glaze",
+        "Sweet And Sour Dipping Sauce",
+        "Sweet Thai Chile Sauce",
+        "Teriyaki Sauce",
+        "American Cheese",
+        "Cheddar Cheese",
+        "Dill Pickle Chip"
+      ]
+    },
+    "veganHighlights": {
+      "BREAKFAST": [
+        "Cage Free Hard Cooked Egg",
+        "Diced Peach",
+        "Fresh Cantaloupe",
+        "Fresh Honeydew Melon",
+        "Low Fat Strawberry Yogurt",
+        "Scrambled Eggs",
+        "Yoplait Low Fat Vanilla Yogurt",
+        "Chocolate Chip Pancakes",
+        "Flour Tortilla",
+        "Fresh Roasted Salsa",
+        "Oatmeal",
+        "Roasted Red Bliss Potatoes"
+      ],
+      "DINNER": [
+        "Farfalle Pasta",
+        "Fresh Italian Parsley",
+        "Garlic Roasted Green Beans",
+        "American Cheese",
+        "Cheddar Cheese",
+        "Dill Pickle Chip",
+        "Hummus",
+        "Provolone Cheese",
+        "Sea Salt Dusted Deli Chips",
+        "Shredded Lettuce",
+        "Sliced Red Onions",
+        "Sliced Tomato"
+      ],
+      "LATE NIGHT": [
+        "American Cheese",
+        "Cheddar Cheese",
+        "Dill Pickle Chip",
+        "Hummus",
+        "Provolone Cheese",
+        "Sea Salt Dusted Deli Chips",
+        "Shredded Lettuce",
+        "Sliced Red Onions",
+        "Sliced Tomato",
+        "Swiss Cheese",
+        "French Fries",
+        "Hand Cut French Fries"
+      ],
+      "LUNCH": [
+        "Fried Brown Rice",
+        "Sesame Ginger Sauce",
+        "Sliced Green Onions",
+        "Steamed Broccoli",
+        "Spicy Teriyaki Glaze",
+        "Sweet And Sour Dipping Sauce",
+        "Sweet Thai Chile Sauce",
+        "Teriyaki Sauce",
+        "American Cheese",
+        "Cheddar Cheese",
+        "Dill Pickle Chip",
+        "Hummus"
+      ]
+    }
+  },
+  "directory": {
+    "counseling": {
+      "location": "Building D, Room D-216",
+      "phone": "(201)-684-7522",
+      "sourceUrl": "https://www.ramapo.edu/counseling/",
+      "sourcePath": "campus/counseling.md"
+    },
+    "anisfield": {
+      "phone": "201-684-7378",
+      "email": "asb@ramapo.edu",
+      "sourceUrl": "https://www.ramapo.edu/directory/",
+      "sourcePath": "campus/directory.md"
+    },
+    "studentLife": {
+      "csi": {
+        "displayName": "Center for Student Involvement (CSI)",
+        "location": "Student Center (SC), room SC-202",
+        "room": "SC-202",
+        "mapKey": "office_center-for-student-involvement-csi-student-center-sc",
+        "sourceUrl": "https://www.ramapo.edu/csi/",
+        "sourcePath": "campus/transportation.md"
+      },
+      "jLees": {
+        "displayName": "J. Lee's Lounge",
+        "location": "Student Center (SC), second floor",
+        "room": "J. Lee's Lounge",
+        "mapKey": "office_j-lee-s-lounge-student-center-sc",
+        "sourceUrl": "https://www.ramapo.edu/csi/commuter-affairs/",
+        "sourcePath": "campus/transportation.md"
+      },
+      "sga": {
+        "displayName": "Student Government Association (SGA)",
+        "location": "Student Center (SC), second floor",
+        "room": "SC-225",
+        "mapKey": "office_student-government-student-center-sc",
+        "sourceUrl": "https://www.ramapo.edu/sga/",
+        "sourcePath": "campus/transportation.md"
+      },
+      "bsu": {
+        "displayName": "Black Student Union (BSU)",
+        "location": "Student Center (SC)",
+        "mapKey": "building_student-center-sc",
+        "sourceUrl": "https://www.ramapo.edu/csi/commuter-affairs/",
+        "sourcePath": "campus/transportation.md"
+      }
+    }
+  },
+  "general": {
+    "printing": {
+      "freePagesPerYear": 200,
+      "sourceUrl": "https://www.ramapo.edu/its/",
+      "sourcePath": "campus/technology.md"
+    },
+    "financialAid": {
+      "deadlinePolicy": "Financial aid deadlines vary by aid type and term; confirm in your student portal.",
+      "sourceUrl": "https://www.ramapo.edu/finaid/",
+      "sourcePath": "campus/financial-aid.md"
+    },
+    "library": {
+      "location": "Peter P. Mercer Learning Commons",
+      "sourceUrl": "https://www.ramapo.edu/library/",
+      "sourcePath": "campus/hours.md"
+    }
+  },
+  "sources": {
+    "eventsUrl": "https://www.ramapo.edu/events/",
+    "eventsPath": "campus/live-events.md",
+    "transportationUrl": "https://www.ramapo.edu/about/transportation-services/ramapo-roadrunner-express-shuttle/",
+    "transportationPath": "campus/transportation.md",
+    "csiUrl": "https://www.ramapo.edu/csi/",
+    "commuterAffairsUrl": "https://www.ramapo.edu/csi/commuter-affairs/",
+    "sgaUrl": "https://www.ramapo.edu/sga/",
+    "residenceLifeUrl": "https://www.ramapo.edu/reslife/",
+    "tutoringUrl": "https://tutoring.ramapo.edu/",
+    "healthUrl": "https://www.ramapo.edu/health/",
+    "financialAidUrl": "https://www.ramapo.edu/finaid/",
+    "studentAccountsUrl": "https://www.ramapo.edu/student-accounts/",
+    "handshakeUrl": "https://ramapo.joinhandshake.com",
+    "parkingUrl": "https://www.ramapo.edu/publicsafety/parking/",
+    "diningBirchUrl": "https://ramapo.sodexomyway.com/en-us/locations/birch-tree-inn",
+    "archwayUrl": "https://archway.ramapo.edu",
+    "campusHoursUrl": "https://www.ramapo.edu/about/campus-hours/",
+    "diningHoursUrl": "https://ramapo.sodexomyway.com/en-us/locations/hours"
+  }
+}
