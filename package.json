@@ -19,7 +19,7 @@
     "prepare": "npm run build",
     "dev": "tsx watch api/server.ts",
     "start": "node dist/api/server.js",
-    "build:assets": "rsync -a --include='*/' --include='*.sql' --include='*.json' --exclude='*' src/ dist/src/",
+    "build:assets": "node scripts/copy-assets.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
     "data:schema": "tsx pipeline/commands/apply-schema.ts",
