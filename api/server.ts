@@ -19,6 +19,7 @@ import http from 'node:http';
 import { Readable } from 'node:stream';
 import { getArtifact } from './routes/artifacts';
 import { getHealth, getReadiness } from './routes/health';
+import { getDataExplorer, getEntityRegistry, getScrapeStatus } from './routes/dev';
 import { getDiningHours } from './routes/dining-hours';
 import { postFeedback } from './routes/feedback';
 import { getLogs } from './routes/logs';
@@ -55,6 +56,9 @@ const ROUTES: Record<string, ApiHandler> = {
   'GET /v1/logs': getLogs,
   'POST /v1/logs/feedback': postLogFeedback,
   'GET /v1/logs/stream': getLogsStream,
+  'GET /v1/dev/entity-registry': getEntityRegistry,
+  'GET /v1/dev/scrape-status': getScrapeStatus,
+  'GET /v1/dev/data-explorer': getDataExplorer,
 };
 
 /** Collects the request body, refusing anything past {@link MAX_BODY_BYTES}. */
