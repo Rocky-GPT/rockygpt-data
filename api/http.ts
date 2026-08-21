@@ -17,11 +17,21 @@ export interface ApiRequest {
   headers: Headers;
   /** Present for methods that carry one, already JSON-parsed. */
   body?: unknown;
+  /**
+   * Aborts when the client goes away. A handler holding a connection open
+   * must listen to this, or its subscriptions outlive the request.
+   */
+  signal: AbortSignal;
 }
 
 /** What a handler returns. */
 export interface ApiResponse {
   status: number;
+  /**
+   * Serialised as JSON, unless it is a {@link ReadableStream}, which the
+   * server pipes to the client instead. That is how a handler holds a
+   * connection open without reaching for node:http itself.
+   */
   body: unknown;
   headers?: Record<string, string>;
 }
@@ -51,3 +61,20 @@ export function fail(
 export const PUBLIC_READ_HEADERS: Record<string, string> = {
   'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
 };
+
+/**
+ * An open event stream. The caller keeps the connection and receives events
+ * until it disconnects, so caching and buffering are both disabled.
+ */
+export function eventStream(stream: ReadableStream): ApiResponse {
+  return {
+    status: 200,
+    body: stream,
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+      'X-Accel-Buffering': 'no',
+    },
+  };
+}

@@ -11,14 +11,16 @@
 import { OFFICE_DIRECTORY_CONTACTS, OTHER_DIRECTORY_CONTACTS } from '../../src/directory/static-contacts';
 import { loadReleaseArtifact } from '../../src/data-v2/release-artifacts';
 
-import { ok, type ApiHandler, type ApiResponse } from '../http';
+import type { ApiHandler, ApiResponse } from '../http';
 
 /**
  * Mirrors the response helper these handlers were written against, so the
  * logic below is the same code that ran inside the web app.
  */
-const json = (body: unknown, init?: { status?: number }): ApiResponse =>
-  init?.status && init.status !== 200 ? { status: init.status, body } : ok(body);
+const json = (
+  body: unknown,
+  init?: { status?: number; headers?: Record<string, string> }
+): ApiResponse => ({ status: init?.status ?? 200, body, headers: init?.headers });
 
 import type {
   DirectoryApiResponse,
