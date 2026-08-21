@@ -10,6 +10,7 @@ import {
   type SourceProvenanceState,
 } from '../pipeline/quality/provenance';
 import { validateFacultyProfiles } from './schema';
+import { hoursValidityErrors } from '../src/data-v2/validity';
 
 /**
  * Collector commands that can renew each non-static publishable source.
@@ -75,23 +76,48 @@ export function facultyArtifactRequiresRefresh(input: unknown): boolean {
   }
 }
 
+/**
+ * Hours whose own note says they stopped applying need recollecting, and no
+ * age check will ever ask for it: freshness measures when a source was
+ * collected, not whether what it collected still applies. Campus hours are
+ * collected twice a year, so a schedule that expired in May stays "fresh" for
+ * months while the publication gate rejects it every single day — the refresh
+ * that would fix it never runs, and nothing publishes until someone notices.
+ */
+export function hoursArtifactRequiresRefresh(input: unknown, now = new Date()): boolean {
+  if (input === undefined) return true;
+  return hoursValidityErrors(input, now).errors.length > 0;
+}
+
 export function refreshScriptsForArtifactCompatibility(
-  artifacts: Readonly<{ faculty?: unknown }>
+  artifacts: Readonly<{ faculty?: unknown; hours?: unknown }>,
+  now = new Date()
 ): string[] {
-  return facultyArtifactRequiresRefresh(artifacts.faculty)
-    ? [...SOURCE_REFRESH_SCRIPTS.faculty]
-    : [];
+  return [
+    ...(facultyArtifactRequiresRefresh(artifacts.faculty)
+      ? SOURCE_REFRESH_SCRIPTS.faculty
+      : []),
+    ...(hoursArtifactRequiresRefresh(artifacts.hours, now)
+      ? SOURCE_REFRESH_SCRIPTS['campus-hours']
+      : []),
+  ];
+}
+
+function readNormalized(cwd: string, name: string): unknown {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(cwd, 'data', 'normalized', name), 'utf8')) as unknown;
+  } catch {
+    // Unreadable reads as "needs recollecting", which is what each check does
+    // with an undefined artifact.
+    return undefined;
+  }
 }
 
 function restoredArtifactCompatibilityScripts(cwd = process.cwd()): string[] {
-  const facultyPath = path.join(cwd, 'data', 'normalized', 'faculty.json');
-  let faculty: unknown;
-  try {
-    faculty = JSON.parse(fs.readFileSync(facultyPath, 'utf8')) as unknown;
-  } catch {
-    return [...SOURCE_REFRESH_SCRIPTS.faculty];
-  }
-  return refreshScriptsForArtifactCompatibility({ faculty });
+  return refreshScriptsForArtifactCompatibility({
+    faculty: readNormalized(cwd, 'faculty.json'),
+    hours: readNormalized(cwd, 'hours.json'),
+  });
 }
 
 function runNpmScript(script: string, rawOnly: boolean): void {
