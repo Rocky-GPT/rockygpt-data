@@ -21,6 +21,7 @@
     "data:quality": "tsx pipeline/commands/check-quality.ts",
     "data:publish": "tsx pipeline/commands/publish-current.ts",
     "data:bootstrap": "tsx pipeline/commands/restore-active-release.ts",
+    "staging:sync-public": "tsx scripts/database/sync-public-staging.ts",
     "maintenance:data-retention": "tsx scripts/database/data-retention.ts",
     "fetch:menu": "tsx ingestion/birch-menu.ts",
     "fetch:dining-hours": "tsx ingestion/dining-hours.ts",
