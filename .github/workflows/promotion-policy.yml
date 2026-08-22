@@ -1,0 +1,17 @@
+name: Promotion Policy
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  staging-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Runtime promotions to main originate from staging
+        env: { HEAD_BRANCH: '${{ github.head_ref }}' }
+        run: |
+          if [ "$HEAD_BRANCH" != staging ]; then
+            echo "Open runtime promotion PRs from the long-lived staging branch." >&2
+            exit 1
+          fi

@@ -1,0 +1,50 @@
+name: SDK Build and Release
+on:
+  pull_request:
+    branches: [main, staging]
+    paths: [api/openapi.yaml, scripts/generate-sdks.mjs, sdk/generator.json, package.json, package-lock.json]
+  push:
+    tags: ['api-v*']
+permissions:
+  contents: write
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with: { node-version: '22', cache: npm }
+      - run: npm ci
+      - run: npm run contract:validate
+      - name: Require tag and OpenAPI versions to match
+        if: startsWith(github.ref, 'refs/tags/')
+        run: test "${GITHUB_REF_NAME#api-v}" = "$(node -e "console.log(require('yaml').parse(require('fs').readFileSync('api/openapi.yaml','utf8')).info.version)")"
+      - run: SDK_VERSION="${GITHUB_REF_NAME#api-v}" npm run sdk:generate
+      - name: Compile TypeScript client
+        working-directory: build/sdk/typescript
+        run: npm install && npm run build
+      - name: Compile Kotlin client on Java 17
+        working-directory: build/sdk/kotlin
+        run: chmod +x gradlew && ./gradlew test
+      - name: Package generated clients and spec
+        run: |
+          tar -czf rockygpt-data-typescript-sdk.tgz -C build/sdk/typescript .
+          tar -czf rockygpt-data-swift-sdk.tgz -C build/sdk/swift .
+          tar -czf rockygpt-data-kotlin-sdk.tgz -C build/sdk/kotlin .
+          cp api/openapi.yaml rockygpt-data-openapi.yaml
+      - uses: actions/upload-artifact@v6
+        with: { name: data-sdks, path: 'rockygpt-data-*.tgz' }
+      - uses: actions/upload-artifact@v6
+        with: { name: data-openapi, path: rockygpt-data-openapi.yaml }
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: gh release create "$GITHUB_REF_NAME" rockygpt-data-*.tgz rockygpt-data-openapi.yaml --verify-tag --generate-notes
+  swift:
+    runs-on: macos-latest
+    needs: generate
+    steps:
+      - uses: actions/download-artifact@v7
+        with: { name: data-sdks }
+      - run: mkdir swift && tar -xzf rockygpt-data-swift-sdk.tgz -C swift && cd swift && swift build

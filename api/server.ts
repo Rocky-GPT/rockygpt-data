@@ -17,6 +17,7 @@
 import 'dotenv/config';
 import http from 'node:http';
 import { Readable } from 'node:stream';
+import { timingSafeEqual } from 'node:crypto';
 import { getArtifact } from './routes/artifacts';
 import { getHealth, getReadiness } from './routes/health';
 import { getDataExplorer, getEntityRegistry, getEntityRows, getScrapeStatus } from './routes/dev';
@@ -43,6 +44,22 @@ const MAX_BODY_BYTES = 256 * 1024;
 /** Bounds parsing work before an endpoint applies its parameter-specific limits. */
 const MAX_REQUEST_TARGET_CHARS = 8_192;
 const MAX_QUERY_PARAMETERS = 32;
+
+const ENVIRONMENT_TOKEN_HEADER = 'x-rockygpt-environment-token';
+
+function environmentAccessAllowed(
+  incoming: http.IncomingMessage,
+  configuredToken: string | undefined
+): boolean {
+  const expected = configuredToken?.trim();
+  if (!expected) return true;
+  const supplied = incoming.headers[ENVIRONMENT_TOKEN_HEADER];
+  const provided = Array.isArray(supplied) ? supplied[0] : supplied;
+  if (!provided) return false;
+  const expectedBytes = Buffer.from(expected);
+  const providedBytes = Buffer.from(provided);
+  return expectedBytes.length === providedBytes.length && timingSafeEqual(expectedBytes, providedBytes);
+}
 
 /**
  * Exact paths first, then the one prefix route. Kept deliberately small: every
@@ -109,7 +126,7 @@ function send(
 ): void {
   const merged: Record<string, string> = {
     'access-control-allow-origin': '*',
-    'access-control-allow-headers': 'content-type, if-none-match',
+    'access-control-allow-headers': `content-type, if-none-match, ${ENVIRONMENT_TOKEN_HEADER}`,
     ...headers,
   };
   if (payload === null || status === 304) {
@@ -134,7 +151,8 @@ function send(
 
 async function handleRequest(
   incoming: http.IncomingMessage,
-  response: http.ServerResponse
+  response: http.ServerResponse,
+  environmentToken?: string
 ): Promise<void> {
   const requestTarget = incoming.url ?? '/';
   const method = incoming.method ?? 'GET';
@@ -169,6 +187,14 @@ async function handleRequest(
   // Browsers ask before a cross-origin read; native clients never do.
   if (method === 'OPTIONS') {
     send(response, 204, null, { 'access-control-allow-methods': 'GET, OPTIONS' });
+    return;
+  }
+
+  if (url.pathname !== '/health' && url.pathname !== '/readiness' &&
+      !environmentAccessAllowed(incoming, environmentToken)) {
+    send(response, 401, {
+      error: { code: 'UNAUTHORIZED', message: 'Service authorization required.', retryable: false },
+    });
     return;
   }
 
@@ -219,9 +245,9 @@ async function handleRequest(
 }
 
 /** Creates an unstarted server so integration tests can bind an ephemeral port. */
-export function createDataServer(): http.Server {
+export function createDataServer(env: NodeJS.ProcessEnv = process.env): http.Server {
   const service = http.createServer((incoming, response) => {
-    void handleRequest(incoming, response).catch((error) => {
+    void handleRequest(incoming, response, env.STAGING_SERVICE_TOKEN).catch((error) => {
       // This is the final process boundary. No malformed request or unexpected
       // route bug is allowed to become an unhandled rejection that exits Node.
       console.error('Unhandled data request failure:', error);

@@ -1,0 +1,32 @@
+name: Staging Data Sync
+on:
+  schedule:
+    - cron: '25 9 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  restore-verified-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: staging
+    steps:
+      - uses: actions/checkout@v7
+        with: { ref: staging }
+      - uses: actions/setup-node@v6
+        with: { node-version: '22', cache: npm }
+      - run: npm ci
+      - name: Restore the verified campus artifact into the independent staging database
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+          RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          RAW_ARTIFACT_ACCESS_KEY_ID: ${{ secrets.STAGING_RAW_ARTIFACT_ACCESS_KEY_ID }}
+          RAW_ARTIFACT_SECRET_ACCESS_KEY: ${{ secrets.STAGING_RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+          RAW_ARTIFACT_REQUIRED: '1'
+        run: npm run data:bootstrap -- --require-raw
+      - name: Verify the restored staging release
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+        run: npm run data:quality

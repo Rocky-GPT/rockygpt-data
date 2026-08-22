@@ -147,7 +147,7 @@ export interface DiningHoursResponse {
 /** Every failure this service reports. */
 export interface ApiError {
   error: {
-    code: 'NOT_FOUND' | 'INVALID_REQUEST' | 'UNAVAILABLE';
+    code: 'NOT_FOUND' | 'INVALID_REQUEST' | 'UNAVAILABLE' | 'UNAUTHORIZED';
     message: string;
     retryable: boolean;
   };
