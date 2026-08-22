@@ -35,7 +35,7 @@ from playwright.sync_api import TimeoutError as PwTimeout
 from playwright.sync_api import sync_playwright
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 CLUBS_RAW = ROOT / "data" / "raw" / "clubs.raw.json"
 
 DEFAULT_OUT = ROOT / "data" / "raw" / "clubs-about.raw.json"

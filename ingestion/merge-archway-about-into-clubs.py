@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 
 CLUBS_RAW = ROOT / "data" / "raw" / "clubs.raw.json"
 ABOUT_RAW = ROOT / "data" / "raw" / "clubs-about.raw.json"

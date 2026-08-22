@@ -22,7 +22,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 DETAIL = ROOT / 'data' / 'raw' / 'clubs-detail.raw.json'
 ABOUT = ROOT / 'data' / 'raw' / 'clubs-about.raw.json'
 PUBLIC = ROOT / 'public' / 'data' / 'clubs.json'

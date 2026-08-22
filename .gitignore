@@ -30,6 +30,7 @@ npm-debug.log*
 /data/capability-test-questions.json
 /data/slang-test-results.json
 /data/*.backup-*/
+/public/
 
 **/browser-profile/
 **/playwright-profile/

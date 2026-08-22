@@ -5,10 +5,10 @@
  * The web app used to read this package directly, which made it both a client
  * and a server: every route that served a menu or a directory listing was a
  * Next.js handler importing the repository layer. Nothing else could reach that
- * data — a native client, or anything not written in TypeScript, had no way in.
+ * data — a native client had no way in.
  *
- * Behind HTTP the web app becomes one client among several, and a second one,
- * in whatever language, is an ordinary thing to build rather than a rewrite.
+ * Behind HTTP the web app becomes one client among several. A second client can
+ * use the same interface without sharing application source.
  *
  * Campus data is public and read-mostly, so responses are cacheable and
  * cross-origin reads are allowed. Nothing here writes.
@@ -19,17 +19,14 @@ import http from 'node:http';
 import { Readable } from 'node:stream';
 import { getArtifact } from './routes/artifacts';
 import { getHealth, getReadiness } from './routes/health';
-import { getDataExplorer, getEntityRegistry, getScrapeStatus } from './routes/dev';
+import { getDataExplorer, getEntityRegistry, getEntityRows, getScrapeStatus } from './routes/dev';
 import { getDiningHours } from './routes/dining-hours';
-import { postFeedback } from './routes/feedback';
-import { getLogs } from './routes/logs';
-import { postLogFeedback } from './routes/logs-feedback';
-import { getLogsStream } from './routes/logs-stream';
 import { getDirectory } from './routes/directory';
 import { getMap } from './routes/map';
 import { getMenu } from './routes/menu';
 import { getMenuBrowse } from './routes/menu-browse';
 import { getShuttle } from './routes/shuttle';
+import { getSafetyResources, getSearch } from './routes/search';
 import { fail, type ApiHandler, type ApiRequest } from './http';
 
 /**
@@ -58,11 +55,18 @@ const ROUTES: Record<string, ApiHandler> = {
   'GET /v1/menu/browse': getMenuBrowse,
   'GET /v1/dining-hours': getDiningHours,
   'GET /v1/directory': getDirectory,
-  'POST /v1/feedback': postFeedback,
-  'GET /v1/logs': getLogs,
-  'POST /v1/logs/feedback': postLogFeedback,
-  'GET /v1/logs/stream': getLogsStream,
+  'GET /v1/search/campus-hours': getSearch,
+  'GET /v1/search/dining-hours': getSearch,
+  'GET /v1/search/menu': getSearch,
+  'GET /v1/search/contacts': getSearch,
+  'GET /v1/search/clubs': getSearch,
+  'GET /v1/search/events': getSearch,
+  'GET /v1/search/programs': getSearch,
+  'GET /v1/search/academic-dates': getSearch,
+  'GET /v1/search/shuttles': getSearch,
+  'GET /v1/safety-resources': getSafetyResources,
   'GET /v1/dev/entity-registry': getEntityRegistry,
+  'GET /v1/dev/entity-rows': getEntityRows,
   'GET /v1/dev/scrape-status': getScrapeStatus,
   'GET /v1/dev/data-explorer': getDataExplorer,
 };

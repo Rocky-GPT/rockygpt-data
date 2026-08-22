@@ -316,6 +316,9 @@ CREATE TABLE IF NOT EXISTS rockygpt_v2.release_artifacts (
   PRIMARY KEY (dataset_version_id, artifact_key)
 );
 
+-- Legacy compatibility only. Feedback is now owned by rockygpt-brain in the
+-- rockygpt_brain schema. Keep this definition until every deployed database
+-- has passed the historic migrations that reference it.
 CREATE TABLE IF NOT EXISTS rockygpt_v2.feedback (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   request_id UUID NOT NULL,

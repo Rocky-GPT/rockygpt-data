@@ -2,15 +2,6 @@
  * @module lib/paths
  * Where this package's own files live, and where the campus data lives.
  *
- * These are two different questions and they were previously answered the same
- * way, by walking up from the working directory to find the package root. That
- * held while the packages were sibling checkouts. It stops holding the moment
- * this one is installed into a consumer's `node_modules`: walking up from the
- * consumer's directory never reaches this package, and the search quietly
- * falls back to the wrong root.
- *
- * So they are separated here.
- *
  * Assets that ship inside the package — the schema and its migrations — are
  * resolved from this module's own location, which is correct whether the code
  * is running from `src` under tsx or from the compiled `dist`.
@@ -67,10 +58,8 @@ function findRepositoryRoot(start: string): string {
 /**
  * The root the campus data directory hangs off.
  *
- * A deployment that installs this package as a dependency must set
- * `ROCKY_DATA_ROOT`, since there is no repository to find. Deployments reading
- * releases from PostgreSQL never need it — the file artifacts are a fallback,
- * not the source.
+ * Tooling may set `ROCKY_DATA_ROOT` when its working directory is elsewhere.
+ * The runtime service reads published releases from PostgreSQL.
  */
 export const DATA_ROOT = process.env.ROCKY_DATA_ROOT
   ? path.resolve(process.env.ROCKY_DATA_ROOT)
@@ -81,7 +70,7 @@ export function dataRootPath(...segments: string[]): string {
   return path.join(/*turbopackIgnore: true*/ DATA_ROOT, ...segments);
 }
 
-/** Campus data artifacts produced by the pipeline and read by the brain. */
+/** Campus data artifacts produced and consumed inside this repository. */
 export const DATA_DIR = dataRootPath('data');
 
 /** Joins path segments against the data directory. */
@@ -89,20 +78,10 @@ export function dataPath(...segments: string[]): string {
   return path.join(/*turbopackIgnore: true*/ DATA_DIR, ...segments);
 }
 
-/**
- * The web app's static directory, which the pipeline writes browser-fetchable
- * JSON into.
- *
- * This is the one place the pipeline reaches outside itself, and it is a
- * convenience rather than a requirement: the app serves release artifacts from
- * PostgreSQL and only falls back to these files when explicitly told to.
- * `ROCKY_PUBLIC_DIR` names the directory when the app is not a sibling.
- */
-export const PUBLIC_DIR = process.env.ROCKY_PUBLIC_DIR
-  ? path.resolve(process.env.ROCKY_PUBLIC_DIR)
-  : path.join(/*turbopackIgnore: true*/ DATA_ROOT, '..', 'ui', 'public');
+/** Browser-shaped release artifacts staged inside the data repository. */
+export const PUBLIC_DIR = dataRootPath('public');
 
-/** Joins path segments against the web app's static directory. */
+/** Joins path segments against the internal release-artifact staging area. */
 export function publicPath(...segments: string[]): string {
   return path.join(/*turbopackIgnore: true*/ PUBLIC_DIR, ...segments);
 }

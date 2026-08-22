@@ -1,9 +1,7 @@
 import 'dotenv/config';
 import { Pool } from 'pg';
-import { maintainFeedbackRetention } from './feedback-retention';
 
 interface RetentionSummary {
-  feedbackDeleted: number;
   failedDatasetsDeleted: number;
   retiredDatasetsDeleted: number;
   sourceSnapshotsDeleted: number;
@@ -19,30 +17,10 @@ async function tableExists(pool: Pool, table: string): Promise<boolean> {
   return result.rows[0]?.present === true;
 }
 
-async function tableHasColumn(
-  pool: Pool,
-  table: string,
-  column: string
-): Promise<boolean> {
-  const result = await pool.query<{ present: boolean }>(
-    `SELECT EXISTS (
-       SELECT 1 FROM information_schema.columns
-       WHERE table_schema = 'rockygpt_v2' AND table_name = $1 AND column_name = $2
-     ) AS present`,
-    [table, column]
-  );
-  return result.rows[0]?.present === true;
-}
-
 export async function runDataRetention(
   pool: Pool,
   dryRun = false
 ): Promise<RetentionSummary> {
-  const feedback = await maintainFeedbackRetention(
-    (sql, values) => pool.query(sql, values),
-    { dryRun }
-  );
-
   let failedDatasetsDeleted = 0;
   let retiredDatasetsDeleted = 0;
   if (await tableExists(pool, 'dataset_versions')) {
@@ -134,12 +112,6 @@ export async function runDataRetention(
   }
 
   return {
-    feedbackDeleted:
-      feedback.status === 'completed'
-        ? feedback.deletedRows
-        : feedback.status === 'dry-run'
-          ? feedback.expiredRows
-          : 0,
     failedDatasetsDeleted,
     retiredDatasetsDeleted,
     sourceSnapshotsDeleted,

@@ -590,7 +590,7 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
     const payload = this.readJson<{
       generatedAt?: string;
       schools?: Array<{ school: string; majors?: JsonRecord[] }>;
-    }>('../ui/public/data/programs.json');
+    }>('public/data/programs.json');
     const source = withCollectedAt(V2_SOURCES.programs, payload.generatedAt);
     const records = (payload.schools || []).flatMap((school) =>
       (school.majors || []).flatMap((major): ProgramRecord[] =>
