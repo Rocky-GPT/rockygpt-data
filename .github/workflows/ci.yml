@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, staging]
   push:
-    branches: [main]
+    branches: [main, staging]
 
 jobs:
   check:
@@ -35,3 +35,6 @@ jobs:
 
       - name: Unit and HTTP regression tests
         run: npm test
+
+      - name: Validate OpenAPI contract and runtime coverage
+        run: npm run contract:validate

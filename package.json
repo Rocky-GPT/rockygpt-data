@@ -15,6 +15,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
     "test": "node scripts/run-tests.mjs",
+    "contract:validate": "node scripts/validate-openapi.mjs",
+    "sdk:generate": "node scripts/generate-sdks.mjs",
     "data:schema": "tsx pipeline/commands/apply-schema.ts",
     "data:quality": "tsx pipeline/commands/check-quality.ts",
     "data:publish": "tsx pipeline/commands/publish-current.ts",
@@ -87,7 +89,8 @@
     "playwright": "^1.58.0",
     "tsx": "^4.21.0",
     "typescript": "^5",
-    "typescript-eslint": "^8"
+    "typescript-eslint": "^8",
+    "yaml": "2.8.1"
   },
   "repository": {
     "type": "git",

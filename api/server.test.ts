@@ -66,3 +66,21 @@ test('oversized request targets are rejected without taking down the server', as
     await close(server);
   }
 });
+
+test('staging token gates data routes while probes stay public', async () => {
+  const server = createDataServer({ ...process.env, STAGING_SERVICE_TOKEN: 'stage-secret' });
+  const port = await listen(server);
+  try {
+    assert.equal((await fetch(`http://127.0.0.1:${port}/health`)).status, 200);
+    assert.equal((await fetch(`http://127.0.0.1:${port}/v1/map`)).status, 401);
+    assert.equal((await fetch(`http://127.0.0.1:${port}/v1/map`, {
+      headers: { 'x-rockygpt-environment-token': 'wrong' },
+    })).status, 401);
+    const allowed = await fetch(`http://127.0.0.1:${port}/v1/map`, {
+      headers: { 'x-rockygpt-environment-token': 'stage-secret' },
+    });
+    assert.notEqual(allowed.status, 401);
+  } finally {
+    await close(server);
+  }
+});

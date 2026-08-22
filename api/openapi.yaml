@@ -3,6 +3,9 @@ info:
   title: RockyGPT Campus Data API
   version: 1.1.0
   description: Public, read-only campus information owned by rockygpt-data.
+security:
+  - environmentToken: []
+  - {}
 servers:
   - url: http://127.0.0.1:8100
 paths:
@@ -203,6 +206,12 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '503': { $ref: '#/components/responses/Unavailable' }
 components:
+  securitySchemes:
+    environmentToken:
+      type: apiKey
+      in: header
+      name: x-rockygpt-environment-token
+      description: Required on non-health staging routes when STAGING_SERVICE_TOKEN is configured; omitted in production.
   parameters:
     Query:
       name: q

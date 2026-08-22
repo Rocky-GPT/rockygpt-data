@@ -41,3 +41,4 @@ npm-debug.log*
 
 # Build output, produced by npm run build and shipped by npm publish
 /dist/
+/build/sdk/
