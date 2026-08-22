@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, rmSync } from 'node:fs';
+import { mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -19,4 +19,15 @@ for (const [generator, folder, properties] of runs) {
     'generate', '-i', '/local/api/openapi.yaml', '-g', generator, '-o', `/local/build/sdk/${folder}`,
     '--additional-properties', properties], { stdio: 'inherit' });
   if (result.status !== 0) process.exit(result.status || 1);
+}
+
+// OpenAPI Generator 7.16 emits an invalid Swift enum case for an anyOf array
+// (`type[AnyCodable]`). Keep the spec truthful and repair only that generated
+// identifier until the pinned upstream generator contains the fix.
+for (const entry of readdirSync(`${output}swift`, { recursive: true })) {
+  const path = `${output}swift/${entry}`;
+  if (!statSync(path).isFile() || !path.endsWith('.swift')) continue;
+  const source = readFileSync(path, 'utf8');
+  const repaired = source.replaceAll('type[AnyCodable]', 'typeArrayAnyCodable');
+  if (repaired !== source) writeFileSync(path, repaired);
 }

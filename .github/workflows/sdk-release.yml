@@ -37,10 +37,6 @@ jobs:
         with: { name: data-sdks, path: 'rockygpt-data-*.tgz' }
       - uses: actions/upload-artifact@v6
         with: { name: data-openapi, path: rockygpt-data-openapi.yaml }
-      - name: Publish GitHub release
-        if: startsWith(github.ref, 'refs/tags/')
-        env: { GH_TOKEN: '${{ github.token }}' }
-        run: gh release create "$GITHUB_REF_NAME" rockygpt-data-*.tgz rockygpt-data-openapi.yaml --verify-tag --generate-notes
   swift:
     runs-on: macos-latest
     needs: generate
@@ -48,3 +44,15 @@ jobs:
       - uses: actions/download-artifact@v7
         with: { name: data-sdks }
       - run: mkdir swift && tar -xzf rockygpt-data-swift-sdk.tgz -C swift && cd swift && swift build
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [generate, swift]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v7
+        with: { name: data-sdks }
+      - uses: actions/download-artifact@v7
+        with: { name: data-openapi }
+      - name: Publish only fully compiled SDKs
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: gh release create "$GITHUB_REF_NAME" rockygpt-data-*.tgz rockygpt-data-openapi.yaml --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes
