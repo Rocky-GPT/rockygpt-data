@@ -155,7 +155,7 @@ function repositoryStaticVerificationTime(): string {
   try {
     const committed = execFileSync(
       'git',
-      ['log', '-1', '--format=%cI', '--', 'core/pipeline/commands/check-quality.ts', 'pipeline-v2/commands/check-quality.ts'],
+      ['log', '-1', '--format=%cI', '--', 'pipeline/commands/check-quality.ts'],
       { cwd: process.cwd(), encoding: 'utf8' }
     ).trim();
     const parsed = new Date(committed);
