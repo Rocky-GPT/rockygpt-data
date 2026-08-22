@@ -28,6 +28,11 @@ const PUBLIC_TABLES = [
 const EXPECTED_SOURCE_ROLE = 'rockygpt_staging_sync';
 const BATCH_SIZE = 100;
 
+type CopyColumn = {
+  column_name: string;
+  data_type: string;
+};
+
 function quoteIdentifier(value: string): string {
   return `"${value.replaceAll('"', '""')}"`;
 }
@@ -60,19 +65,24 @@ async function assertSafeSource(source: PoolClient): Promise<void> {
 async function insertBatch(
   destination: PoolClient,
   table: string,
-  columns: string[],
+  columns: CopyColumn[],
   rows: QueryResultRow[]
 ): Promise<void> {
   if (rows.length === 0) return;
   const values: unknown[] = [];
   const tuples = rows.map((row) => {
     const placeholders = columns.map((column) => {
-      values.push(row[column]);
+      const value = row[column.column_name];
+      values.push(
+        value !== null && (column.data_type === 'json' || column.data_type === 'jsonb')
+          ? JSON.stringify(value)
+          : value
+      );
       return `$${values.length}`;
     });
     return `(${placeholders.join(', ')})`;
   });
-  const columnList = columns.map(quoteIdentifier).join(', ');
+  const columnList = columns.map((column) => quoteIdentifier(column.column_name)).join(', ');
   await destination.query(
     `INSERT INTO rockygpt_v2.${quoteIdentifier(table)} (${columnList}) VALUES ${tuples.join(', ')}`,
     values
@@ -80,8 +90,8 @@ async function insertBatch(
 }
 
 async function copyTable(source: PoolClient, destination: PoolClient, table: string): Promise<number> {
-  const columnResult = await destination.query<{ column_name: string }>(
-    `SELECT column_name
+  const columnResult = await destination.query<CopyColumn>(
+    `SELECT column_name, data_type
        FROM information_schema.columns
       WHERE table_schema = 'rockygpt_v2'
         AND table_name = $1
@@ -89,10 +99,10 @@ async function copyTable(source: PoolClient, destination: PoolClient, table: str
       ORDER BY ordinal_position`,
     [table]
   );
-  const columns = columnResult.rows.map((row) => row.column_name);
+  const columns = columnResult.rows;
   if (columns.length === 0) throw new Error(`Destination table rockygpt_v2.${table} is missing.`);
 
-  const columnList = columns.map(quoteIdentifier).join(', ');
+  const columnList = columns.map((column) => quoteIdentifier(column.column_name)).join(', ');
   let offset = 0;
   for (;;) {
     const result = await source.query(
