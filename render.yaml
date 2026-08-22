@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: rockygpt-data
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev
+    startCommand: npm start
+    healthCheckPath: /readiness
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false

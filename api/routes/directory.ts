@@ -11,16 +11,7 @@
 import { OFFICE_DIRECTORY_CONTACTS, OTHER_DIRECTORY_CONTACTS } from '../../src/directory/static-contacts';
 import { loadReleaseArtifact } from '../../src/data-v2/release-artifacts';
 
-import type { ApiHandler, ApiResponse } from '../http';
-
-/**
- * Mirrors the response helper these handlers were written against, so the
- * logic below is the same code that ran inside the web app.
- */
-const json = (
-  body: unknown,
-  init?: { status?: number; headers?: Record<string, string> }
-): ApiResponse => ({ status: init?.status ?? 200, body, headers: init?.headers });
+import { fail, ok, type ApiHandler } from '../http';
 
 import type {
   DirectoryApiResponse,
@@ -257,7 +248,7 @@ export const getDirectory: ApiHandler = async () => {
     const parsed: unknown = loaded.payload;
 
     if (!Array.isArray(parsed)) {
-      return json({ error: 'Invalid directory dataset shape' }, { status: 500 });
+      return fail(503, 'UNAVAILABLE', 'Directory data is unavailable.', true);
     }
 
     const byKey = new Map<string, FacultyStaffContact>();
@@ -301,12 +292,9 @@ export const getDirectory: ApiHandler = async () => {
       releaseVersion: loaded.releaseVersion,
     };
 
-    return json(payload);
+    return ok(payload);
   } catch (error) {
     console.error('Error reading directory contacts:', error);
-    return json(
-      { error: 'Failed to load directory contacts' },
-      { status: 500 }
-    );
+    return fail(503, 'UNAVAILABLE', 'Directory data is unavailable.', true);
   }
 }

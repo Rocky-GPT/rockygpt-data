@@ -64,7 +64,9 @@ const RANGE = new RegExp(
   'i'
 );
 
-const TERM = /\b(spring|summer|fall|autumn|winter)\b(?:\s+(?:semester|term|session))?\s*(\d{4})?/i;
+// A bare season word in ordinary prose ("Summer hours") is not a bounded
+// academic term. Require either an academic-term label or an explicit year.
+const TERM = /\b(spring|summer|fall|autumn|winter)\b(?:\s+(?:semester|term|session)\b(?:\s+20\d{2})?|\s+20\d{2}\b)/i;
 
 const YEAR = /\b(20\d{2})\b/;
 
@@ -124,6 +126,40 @@ export function isWindowExpired(window: ValidityWindow, now: Date): boolean {
 interface HoursRecord {
   name?: unknown;
   notes?: unknown;
+}
+
+export interface OmittedHoursRecord<T> {
+  record: T;
+  reason: 'expired' | 'unbounded-term';
+}
+
+/**
+ * Splits schedules that can be safely published from schedules whose own
+ * metadata says they are unavailable. Future dated schedules remain eligible:
+ * repositories already enforce their valid-from boundary. Expired schedules
+ * and named terms with no dates are omitted rather than replaced with guessed
+ * current hours.
+ */
+export function partitionHoursForPublication<T extends HoursRecord>(
+  records: readonly T[],
+  now = new Date()
+): { publishable: T[]; omitted: Array<OmittedHoursRecord<T>> } {
+  const publishable: T[] = [];
+  const omitted: Array<OmittedHoursRecord<T>> = [];
+
+  for (const record of records) {
+    const notes = typeof record.notes === 'string' ? record.notes : undefined;
+    const { window, termWithoutDates } = readValidityFromNotes(notes);
+    if (window && isWindowExpired(window, now)) {
+      omitted.push({ record, reason: 'expired' });
+    } else if (termWithoutDates) {
+      omitted.push({ record, reason: 'unbounded-term' });
+    } else {
+      publishable.push(record);
+    }
+  }
+
+  return { publishable, omitted };
 }
 
 /**

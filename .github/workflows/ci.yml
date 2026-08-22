@@ -32,3 +32,6 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Unit and HTTP regression tests
+        run: npm test

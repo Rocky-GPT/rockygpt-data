@@ -10,7 +10,7 @@ import {
   type SourceProvenanceState,
 } from '../pipeline/quality/provenance';
 import { validateFacultyProfiles } from './schema';
-import { hoursValidityErrors } from '../src/data-v2/validity';
+import { partitionHoursForPublication } from '../src/data-v2/validity';
 
 /**
  * Collector commands that can renew each non-static publishable source.
@@ -85,8 +85,8 @@ export function facultyArtifactRequiresRefresh(input: unknown): boolean {
  * that would fix it never runs, and nothing publishes until someone notices.
  */
 export function hoursArtifactRequiresRefresh(input: unknown, now = new Date()): boolean {
-  if (input === undefined) return true;
-  return hoursValidityErrors(input, now).errors.length > 0;
+  if (!Array.isArray(input)) return true;
+  return partitionHoursForPublication(input, now).omitted.length > 0;
 }
 
 export function refreshScriptsForArtifactCompatibility(

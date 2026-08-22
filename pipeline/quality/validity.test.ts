@@ -45,6 +45,7 @@ test('does not mistake schedule prose for a validity window', () => {
     'Saturday hours pending varsity swim practice',
     'Front doors lock 15 mins before closing.',
     'Additional Open Recreation times may be available; check IMLeagues for details.',
+    'Summer hours: Mon-Thu 8:00am-5:15pm, Fri CLOSED',
     undefined,
     '',
   ]) {

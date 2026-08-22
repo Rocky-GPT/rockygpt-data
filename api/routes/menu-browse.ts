@@ -9,16 +9,9 @@
 import { loadReleaseArtifact } from '../../src/data-v2/release-artifacts';
 import { activeSeasonSchedule, SEASONAL_CLOSURE } from '../../src/data-v2/dining-seasons';
 
-import type { ApiHandler, ApiResponse } from '../http';
-
-/**
- * Mirrors the response helper these handlers were written against, so the
- * logic below is the same code that ran inside the web app.
- */
-const json = (
-  body: unknown,
-  init?: { status?: number; headers?: Record<string, string> }
-): ApiResponse => ({ status: init?.status ?? 200, body, headers: init?.headers });
+import type { MenuBrowseResponse } from '../contract';
+import { fail, ok, type ApiHandler } from '../http';
+import { parseIsoDate, validateQueryLengths } from '../query';
 
 
 async function isBirchClosedOnDate(dateStr: string): Promise<boolean> {
@@ -129,23 +122,26 @@ function buildMarkdown(sections: MenuSection[]): string {
  * Returns menu data filtered for browsing by meal, date, or section query parameters.
  */
 export const getMenuBrowse: ApiHandler = async (request) => {
+  const invalidLength = validateQueryLengths(request, { date: 10 });
+  if (invalidLength) return invalidLength;
+
   const dateParam = request.url.searchParams.get('date');
 
-  if (!dateParam || !/^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
-    return json({ error: 'Missing or invalid date parameter (YYYY-MM-DD)' }, { status: 400 });
+  if (!dateParam || !parseIsoDate(dateParam)) {
+    return fail(400, 'INVALID_REQUEST', '`date` must be a real date in YYYY-MM-DD form.');
   }
 
   try {
     const isClosed = await isBirchClosedOnDate(dateParam);
     if (isClosed) {
-      return json({
+      return ok({
         content: null,
         success: true,
         available: false,
         closed: true,
         closureReason: 'Seasonal closure',
         date: dateParam,
-      });
+      } satisfies MenuBrowseResponse);
     }
 
     const loaded = await loadReleaseArtifact('menu-week');
@@ -159,13 +155,13 @@ export const getMenuBrowse: ApiHandler = async (request) => {
 
     // Validate: must be an array with at least one section containing items
     if (!Array.isArray(rawData) || rawData.length === 0) {
-      return json({
+      return ok({
         content: null,
         success: true,
         available: false,
         date: dateParam,
         releaseVersion: loaded.releaseVersion,
-      });
+      } satisfies MenuBrowseResponse);
     }
 
     // Check if any section has valid items
@@ -186,31 +182,26 @@ export const getMenuBrowse: ApiHandler = async (request) => {
     });
 
     if (!hasItems) {
-      return json({
+      return ok({
         content: null,
         success: true,
         available: false,
         date: dateParam,
         releaseVersion: loaded.releaseVersion,
-      });
+      } satisfies MenuBrowseResponse);
     }
 
     const markdown = buildMarkdown(rawData as MenuSection[]);
 
-    return json({
+    return ok({
       content: markdown,
       success: true,
       available: true,
       date: dateParam,
       releaseVersion: loaded.releaseVersion,
-    });
+    } satisfies MenuBrowseResponse);
   } catch (error) {
     console.error(`Error loading released menu for ${dateParam}:`, error);
-    return json({
-      content: null,
-      success: true,
-      available: false,
-      date: dateParam,
-    });
+    return fail(503, 'UNAVAILABLE', 'Menu data is unavailable.', true);
   }
 }

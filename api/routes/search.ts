@@ -4,9 +4,16 @@ import { getRepositoryV2 } from '../../src/data-v2/repositories/index';
 import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
 import { V2_SOURCES } from '../../src/data-v2/sources';
 import { fail, ok, PUBLIC_READ_HEADERS, type ApiHandler } from '../http';
+import { parseIsoInstant, validateQueryLengths } from '../query';
 
 const CAMPUS_TIME_ZONE = 'America/New_York';
 const SERVICE_DAYS = new Set<ShuttleServiceDay>(['weekday', 'saturday', 'sunday']);
+const WEEKDAYS = new Map(
+  ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => [
+    day.toLowerCase(),
+    day,
+  ])
+);
 
 function text(request: Parameters<ApiHandler>[0], key: string): string {
   return request.url.searchParams.get(key)?.trim() ?? '';
@@ -15,8 +22,7 @@ function text(request: Parameters<ApiHandler>[0], key: string): string {
 function instant(request: Parameters<ApiHandler>[0]): Date | null {
   const raw = text(request, 'at');
   if (!raw) return new Date();
-  const value = new Date(raw);
-  return Number.isNaN(value.getTime()) ? null : value;
+  return parseIsoInstant(raw);
 }
 
 function campusWeekday(at: Date): string {
@@ -38,22 +44,47 @@ function response(dataset: { id: string; version: string; activatedAt: string },
  * that was active when the request began.
  */
 export const getSearch: ApiHandler = async (request) => {
+  const invalidLength = validateQueryLengths(request, {
+    q: 200,
+    day: 16,
+    at: 64,
+    meal: 64,
+    route: 120,
+    serviceDay: 16,
+  });
+  if (invalidLength) return invalidLength;
+
   const at = instant(request);
   if (!at) return fail(400, 'INVALID_REQUEST', '`at` must be an ISO 8601 timestamp.');
+
+  const path = request.url.pathname;
+  const requestedDay = text(request, 'day');
+  const day = requestedDay ? WEEKDAYS.get(requestedDay.toLowerCase()) : campusWeekday(at);
+  if (
+    (path === '/v1/search/campus-hours' || path === '/v1/search/dining-hours') &&
+    !day
+  ) {
+    return fail(400, 'INVALID_REQUEST', '`day` must be a weekday name.');
+  }
+  const requestedServiceDay = text(request, 'serviceDay');
+  if (
+    path === '/v1/search/shuttles' &&
+    requestedServiceDay &&
+    !SERVICE_DAYS.has(requestedServiceDay as ShuttleServiceDay)
+  ) {
+    return fail(400, 'INVALID_REQUEST', '`serviceDay` must be weekday, saturday, or sunday.');
+  }
 
   const repository = getRepositoryV2();
   const dataset = await repository.getDatasetContext();
   const pinned = repository.withDataset(dataset);
   const query = text(request, 'q');
-  const path = request.url.pathname;
 
   if (path === '/v1/search/campus-hours') {
-    const day = text(request, 'day') || campusWeekday(at);
-    return response(dataset, await pinned.findCampusHours(query, day, at));
+    return response(dataset, await pinned.findCampusHours(query, day!, at));
   }
   if (path === '/v1/search/dining-hours') {
-    const day = text(request, 'day') || campusWeekday(at);
-    return response(dataset, await pinned.findDiningHours(query, day, at));
+    return response(dataset, await pinned.findDiningHours(query, day!, at));
   }
   if (path === '/v1/search/menu') {
     return response(dataset, await pinned.findMenuItems(query, text(request, 'meal') || undefined));
@@ -74,15 +105,11 @@ export const getSearch: ApiHandler = async (request) => {
     return response(dataset, await pinned.findAcademicDates(query));
   }
   if (path === '/v1/search/shuttles') {
-    const requested = text(request, 'serviceDay');
-    if (requested && !SERVICE_DAYS.has(requested as ShuttleServiceDay)) {
-      return fail(400, 'INVALID_REQUEST', '`serviceDay` must be weekday, saturday, or sunday.');
-    }
     return response(
       dataset,
       await pinned.getShuttleTrips(
         text(request, 'route') || undefined,
-        (requested as ShuttleServiceDay) || undefined
+        (requestedServiceDay as ShuttleServiceDay) || undefined
       )
     );
   }

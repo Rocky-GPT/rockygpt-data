@@ -11,6 +11,7 @@ import {
 } from './pipeline-utils';
 import { validateCampusHours, type LocationHours } from './schema';
 import { publicPath } from '../src/paths';
+import { partitionHoursForPublication } from '../src/data-v2/validity';
 
 const RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'hours.raw.json');
 const PUBLIC_JSON_PATH = publicPath('data', 'hours.json');
@@ -274,106 +275,96 @@ async function fetchAthleticsLocations(): Promise<LocationHours[]> {
     }
 }
 
+export function buildCampusHourLocations(
+    athleticsLocations: LocationHours[],
+    now = new Date()
+): LocationHours[] {
+    // Library and research-help hours are deliberately absent: their only
+    // verified schedules expired in Spring 2026, and no collector-compatible
+    // current source is available. Never roll the year forward or guess times.
+    const compiled: LocationHours[] = [
+        {
+            name: "Administrative Offices (Normal Hours)",
+            hours: {
+                "Monday": "8:30am-4:30pm",
+                "Tuesday": "8:30am-4:30pm",
+                "Wednesday": "8:30am-4:30pm",
+                "Thursday": "8:30am-4:30pm",
+                "Friday": "8:30am-4:30pm",
+                "Saturday": "CLOSED",
+                "Sunday": "CLOSED"
+            },
+            notes: "Summer hours: Mon-Thu 8:00am-5:15pm, Fri CLOSED"
+        },
+        {
+            name: "Game Lab",
+            hours: {
+                "Monday": "9:00am-8:00pm",
+                "Tuesday": "9:00am-8:00pm",
+                "Wednesday": "9:00am-8:00pm",
+                "Thursday": "9:00am-8:00pm",
+                "Friday": "9:00am-6:00pm",
+                "Saturday": "CLOSED",
+                "Sunday": "CLOSED"
+            },
+            notes: "Gaming classes have priority 11am-2pm daily"
+        },
+        ...athleticsLocations,
+        {
+            name: "Center for Student Involvement (CSI)",
+            hours: {
+                "Monday": "8:00am-12:00am",
+                "Tuesday": "8:00am-12:00am",
+                "Wednesday": "8:00am-12:00am",
+                "Thursday": "8:00am-12:00am",
+                "Friday": "8:00am-12:00am",
+                "Saturday": "4:00pm-10:00pm",
+                "Sunday": "3:00pm-8:00pm"
+            },
+            notes: "Includes Roadrunner Central, J. Lee's, and Women's Center"
+        },
+        {
+            name: "J. Lee's (Student Lounge & Game Room)",
+            hours: {
+                "Monday": "9:00am-10:00pm",
+                "Tuesday": "9:00am-10:00pm",
+                "Wednesday": "9:00am-10:00pm",
+                "Thursday": "9:00am-10:00pm",
+                "Friday": "9:00am-9:00pm",
+                "Saturday": "CLOSED",
+                "Sunday": "1:00pm-6:00pm"
+            },
+            notes: "Also called jlees, jlee's, or student lounge. Part of the Bradley Center complex."
+        },
+        {
+            name: "Ramapo Bookstore",
+            hours: {
+                "Monday": "9:00am-5:00pm",
+                "Tuesday": "9:00am-5:00pm",
+                "Wednesday": "9:00am-5:00pm",
+                "Thursday": "9:00am-5:00pm",
+                "Friday": "9:00am-4:00pm",
+                "Saturday": "CLOSED",
+                "Sunday": "CLOSED"
+            },
+            notes: "Summer hours: Mon-Fri 10:00am-3:00pm"
+        }
+    ];
+
+    const availability = partitionHoursForPublication(compiled, now);
+    for (const omitted of availability.omitted) {
+        const name = typeof omitted.record.name === 'string' ? omitted.record.name : 'unnamed schedule';
+        console.warn(`Omitting unavailable hours for ${name}: ${omitted.reason}.`);
+    }
+    return availability.publishable;
+}
+
 async function fetchCampusHours() {
     try {
         const athleticsLocations = await fetchAthleticsLocations();
-        
-        // Consolidated data (manually structured based on extracted info)
-        const locations: LocationHours[] = [
-            {
-                name: "Administrative Offices (Normal Hours)",
-                hours: {
-                    "Monday": "8:30am-4:30pm",
-                    "Tuesday": "8:30am-4:30pm",
-                    "Wednesday": "8:30am-4:30pm",
-                    "Thursday": "8:30am-4:30pm",
-                    "Friday": "8:30am-4:30pm",
-                    "Saturday": "CLOSED",
-                    "Sunday": "CLOSED"
-                },
-                notes: "Summer hours: Mon-Thu 8:00am-5:15pm, Fri CLOSED"
-            },
-            {
-                name: "Library (Main Building)",
-                hours: {
-                    "Monday": "7:45am-12:00am",
-                    "Tuesday": "7:45am-12:00am",
-                    "Wednesday": "7:45am-12:00am",
-                    "Thursday": "7:45am-12:00am",
-                    "Friday": "7:45am-6:00pm",
-                    "Saturday": "10:00am-6:00pm",
-                    "Sunday": "12:00pm-12:00am"
-                },
-                notes: "Spring Semester 2026 (Jan 20 – May 12). Front doors lock 15 mins before closing."
-            },
-            {
-                name: "Research Help Desk",
-                hours: {
-                    "Monday": "9:00am-9:00pm",
-                    "Tuesday": "9:00am-9:00pm",
-                    "Wednesday": "9:00am-9:00pm",
-                    "Thursday": "9:00am-9:00pm",
-                    "Friday": "9:00am-4:00pm",
-                    "Saturday": "3:00pm-6:00pm",
-                    "Sunday": "3:00pm-6:00pm"
-                },
-                notes: "Spring Semester 2026"
-            },
-            {
-                name: "Game Lab",
-                hours: {
-                    "Monday": "9:00am-8:00pm",
-                    "Tuesday": "9:00am-8:00pm",
-                    "Wednesday": "9:00am-8:00pm",
-                    "Thursday": "9:00am-8:00pm",
-                    "Friday": "9:00am-6:00pm",
-                    "Saturday": "CLOSED",
-                    "Sunday": "CLOSED"
-                },
-                notes: "Gaming classes have priority 11am-2pm daily"
-            },
-            ...athleticsLocations,
-            {
-                name: "Center for Student Involvement (CSI)",
-                hours: {
-                    "Monday": "8:00am-12:00am",
-                    "Tuesday": "8:00am-12:00am",
-                    "Wednesday": "8:00am-12:00am",
-                    "Thursday": "8:00am-12:00am",
-                    "Friday": "8:00am-12:00am",
-                    "Saturday": "4:00pm-10:00pm",
-                    "Sunday": "3:00pm-8:00pm"
-                },
-                notes: "Includes Roadrunner Central, J. Lee's, and Women's Center"
-            },
-            {
-                name: "J. Lee's (Student Lounge & Game Room)",
-                hours: {
-                    "Monday": "9:00am-10:00pm",
-                    "Tuesday": "9:00am-10:00pm",
-                    "Wednesday": "9:00am-10:00pm",
-                    "Thursday": "9:00am-10:00pm",
-                    "Friday": "9:00am-9:00pm",
-                    "Saturday": "CLOSED",
-                    "Sunday": "1:00pm-6:00pm"
-                },
-                notes: "Also called jlees, jlee's, or student lounge. Part of the Bradley Center complex."
-            },
-            {
-                name: "Ramapo Bookstore",
-                hours: {
-                    "Monday": "9:00am-5:00pm",
-                    "Tuesday": "9:00am-5:00pm",
-                    "Wednesday": "9:00am-5:00pm",
-                    "Thursday": "9:00am-5:00pm",
-                    "Friday": "9:00am-4:00pm",
-                    "Saturday": "CLOSED",
-                    "Sunday": "CLOSED"
-                },
-                notes: "Summer hours: Mon-Fri 10:00am-3:00pm"
-            }
-        ];
-        
+
+        const locations = buildCampusHourLocations(athleticsLocations);
+
         console.log(`Successfully compiled hours for ${locations.length} locations`);
         const normalizedHours = validateCampusHours(locations);
         assertCollectionCount({
@@ -398,7 +389,7 @@ async function fetchCampusHours() {
         console.log(`Saved normalized hours to ${PUBLIC_JSON_PATH} and ${RAG_JSON_PATH}`);
 
         runGeneratorScript(MARKDOWN_GENERATOR_PATH);
-        
+
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
         console.error('Error fetching campus hours:', message);
@@ -406,6 +397,8 @@ async function fetchCampusHours() {
     }
 }
 
-void fetchCampusHours().catch(() => {
-    process.exitCode = 1;
-});
+if (process.argv[1]?.endsWith('campus-hours.ts')) {
+    void fetchCampusHours().catch(() => {
+        process.exitCode = 1;
+    });
+}

@@ -1,21 +1,10 @@
 {
   "name": "@rockygpt/data",
   "version": "0.1.0",
-  "private": false,
+  "private": true,
   "description": "Campus data for RockyGPT: the repository layer, ingestion scrapers, publication pipeline, and the artifacts they produce.",
   "engines": {
     "node": "22.x"
-  },
-  "exports": {
-    "./api/*": {
-      "types": "./dist/api/*.d.ts",
-      "default": "./dist/api/*.js"
-    },
-    "./data/*": "./data/*",
-    "./*": {
-      "types": "./dist/src/*.d.ts",
-      "default": "./dist/src/*.js"
-    }
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && npm run build:assets",
@@ -25,6 +14,7 @@
     "build:assets": "node scripts/copy-assets.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
+    "test": "node scripts/run-tests.mjs",
     "data:schema": "tsx pipeline/commands/apply-schema.ts",
     "data:quality": "tsx pipeline/commands/check-quality.ts",
     "data:publish": "tsx pipeline/commands/publish-current.ts",
@@ -99,17 +89,11 @@
     "typescript": "^5",
     "typescript-eslint": "^8"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Rocky-GPT/rockygpt-data.git"
   },
   "license": "UNLICENSED",
-  "files": [
-    "dist"
-  ],
   "overrides": {
     "@aws-sdk/core": "3.977.8"
   }

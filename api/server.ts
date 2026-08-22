@@ -40,6 +40,9 @@ const HOST = process.env.DATA_HOST || (process.env.PORT ? '0.0.0.0' : '127.0.0.1
 
 /** A whole request body of JSON, with room to spare; larger than this is junk. */
 const MAX_BODY_BYTES = 256 * 1024;
+/** Bounds parsing work before an endpoint applies its parameter-specific limits. */
+const MAX_REQUEST_TARGET_CHARS = 8_192;
+const MAX_QUERY_PARAMETERS = 32;
 
 /**
  * Exact paths first, then the one prefix route. Kept deliberately small: every
@@ -65,11 +68,19 @@ const ROUTES: Record<string, ApiHandler> = {
   'GET /v1/search/academic-dates': getSearch,
   'GET /v1/search/shuttles': getSearch,
   'GET /v1/safety-resources': getSafetyResources,
-  'GET /v1/dev/entity-registry': getEntityRegistry,
-  'GET /v1/dev/entity-rows': getEntityRows,
-  'GET /v1/dev/scrape-status': getScrapeStatus,
-  'GET /v1/dev/data-explorer': getDataExplorer,
 };
+
+// Development inspectors expose release metadata and broad database reads.
+// They are not part of the public/native-client contract and are not even
+// registered in a production process; each handler retains its own guard too.
+if (process.env.NODE_ENV === 'development') {
+  Object.assign(ROUTES, {
+    'GET /v1/dev/entity-registry': getEntityRegistry,
+    'GET /v1/dev/entity-rows': getEntityRows,
+    'GET /v1/dev/scrape-status': getScrapeStatus,
+    'GET /v1/dev/data-explorer': getDataExplorer,
+  });
+}
 
 /** Collects the request body, refusing anything past {@link MAX_BODY_BYTES}. */
 function readBody(request: http.IncomingMessage): Promise<string> {
@@ -121,59 +132,123 @@ function send(
   response.end(body);
 }
 
-export const server = http.createServer((incoming, response) => {
-  void (async () => {
-    const url = new URL(incoming.url ?? '/', `http://${incoming.headers.host ?? 'localhost'}`);
-    const method = incoming.method ?? 'GET';
+async function handleRequest(
+  incoming: http.IncomingMessage,
+  response: http.ServerResponse
+): Promise<void> {
+  const requestTarget = incoming.url ?? '/';
+  const method = incoming.method ?? 'GET';
 
-    // Browsers ask before a cross-origin read; native clients never do.
-    if (method === 'OPTIONS') {
-      send(response, 204, null, { 'access-control-allow-methods': 'GET, OPTIONS' });
+  if (
+    !requestTarget.startsWith('/') ||
+    requestTarget.length > MAX_REQUEST_TARGET_CHARS
+  ) {
+    const invalid = fail(400, 'INVALID_REQUEST', 'invalid request target');
+    send(response, invalid.status, invalid.body);
+    return;
+  }
+
+  let url: URL;
+  try {
+    // The Host header is untrusted request data and is not needed to route this
+    // service. A fixed base prevents malformed Host values from reaching the
+    // URL constructor and terminating the process through an unhandled reject.
+    url = new URL(requestTarget, 'http://rockygpt-data.local');
+  } catch {
+    const invalid = fail(400, 'INVALID_REQUEST', 'invalid request target');
+    send(response, invalid.status, invalid.body);
+    return;
+  }
+
+  if (url.searchParams.size > MAX_QUERY_PARAMETERS) {
+    const invalid = fail(400, 'INVALID_REQUEST', 'too many query parameters');
+    send(response, invalid.status, invalid.body);
+    return;
+  }
+
+  // Browsers ask before a cross-origin read; native clients never do.
+  if (method === 'OPTIONS') {
+    send(response, 204, null, { 'access-control-allow-methods': 'GET, OPTIONS' });
+    return;
+  }
+
+  const handler =
+    ROUTES[`${method} ${url.pathname}`] ??
+    (method === 'GET' && /^\/v1\/data\/[^/]+$/.test(url.pathname) ? getArtifact : undefined);
+
+  if (!handler) {
+    send(response, 404, fail(404, 'NOT_FOUND', `No route for ${method} ${url.pathname}`).body);
+    return;
+  }
+
+  // Long-lived handlers need to know about a premature disconnect. The
+  // request's `close` event also fires after an ordinary completed request on
+  // modern Node versions, so using it directly would abort healthy handlers.
+  const disconnected = new AbortController();
+  incoming.once('aborted', () => disconnected.abort());
+  response.once('close', () => {
+    if (!response.writableEnded) disconnected.abort();
+  });
+
+  const request: ApiRequest = {
+    method,
+    url,
+    headers: new Headers(incoming.headers as Record<string, string>),
+    signal: disconnected.signal,
+  };
+
+  if (method !== 'GET' && method !== 'HEAD') {
+    try {
+      const raw = await readBody(incoming);
+      request.body = raw ? JSON.parse(raw) : undefined;
+    } catch {
+      const invalid = fail(400, 'INVALID_REQUEST', 'invalid JSON body');
+      send(response, invalid.status, invalid.body);
       return;
     }
+  }
 
-    const handler =
-      ROUTES[`${method} ${url.pathname}`] ??
-      (method === 'GET' && url.pathname.startsWith('/v1/data/') ? getArtifact : undefined);
+  try {
+    const result = await handler(request);
+    send(response, result.status, result.body, result.headers);
+  } catch (error) {
+    console.error(`${method} ${url.pathname} failed:`, error);
+    const unavailable = fail(503, 'UNAVAILABLE', 'Campus data is unavailable.', true);
+    send(response, unavailable.status, unavailable.body);
+  }
+}
 
-    if (!handler) {
-      send(response, 404, fail(404, 'NOT_FOUND', `No route for ${method} ${url.pathname}`).body);
-      return;
-    }
-
-    // Long-lived handlers need to know when the client disconnects.
-    const disconnected = new AbortController();
-    incoming.on('close', () => disconnected.abort());
-
-    const request: ApiRequest = {
-      method,
-      url,
-      headers: new Headers(incoming.headers as Record<string, string>),
-      signal: disconnected.signal,
-    };
-
-    if (method !== 'GET' && method !== 'HEAD') {
-      try {
-        const raw = await readBody(incoming);
-        request.body = raw ? JSON.parse(raw) : undefined;
-      } catch {
-        const invalid = fail(400, 'INVALID_REQUEST', 'invalid JSON body');
-        send(response, invalid.status, invalid.body);
+/** Creates an unstarted server so integration tests can bind an ephemeral port. */
+export function createDataServer(): http.Server {
+  const service = http.createServer((incoming, response) => {
+    void handleRequest(incoming, response).catch((error) => {
+      // This is the final process boundary. No malformed request or unexpected
+      // route bug is allowed to become an unhandled rejection that exits Node.
+      console.error('Unhandled data request failure:', error);
+      if (response.headersSent || response.destroyed) {
+        response.destroy();
         return;
       }
-    }
-
-    try {
-      const result = await handler(request);
-      send(response, result.status, result.body, result.headers);
-    } catch (error) {
-      console.error(`${method} ${url.pathname} failed:`, error);
       const unavailable = fail(503, 'UNAVAILABLE', 'Campus data is unavailable.', true);
       send(response, unavailable.status, unavailable.body);
+    });
+  });
+  service.headersTimeout = 10_000;
+  service.requestTimeout = 20_000;
+  service.keepAliveTimeout = 5_000;
+  service.maxRequestsPerSocket = 100;
+  service.on('clientError', (_error, socket) => {
+    if (socket.writable) {
+      socket.end('HTTP/1.1 400 Bad Request\r\nConnection: close\r\nContent-Length: 0\r\n\r\n');
     }
-  })();
-});
+  });
+  return service;
+}
 
-server.listen(PORT, HOST, () => {
-  console.log(`rockygpt-data listening on http://${HOST}:${PORT}`);
-});
+export const server = createDataServer();
+
+if (require.main === module) {
+  server.listen(PORT, HOST, () => {
+    console.log(`rockygpt-data listening on http://${HOST}:${PORT}`);
+  });
+}
