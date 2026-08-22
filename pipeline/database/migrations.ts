@@ -11,6 +11,12 @@ export async function applyDatabaseSchema(pool: Pool): Promise<string[]> {
     // Serialize them at the database session level so a numbered migration is
     // never applied twice by competing processes.
     await client.query(`SELECT pg_advisory_lock(hashtext('rockygpt_v2_schema_migrations'))`);
+    const namespace = await client.query<{ exists: boolean }>(`
+      SELECT to_regnamespace('rockygpt_v2') IS NOT NULL AS exists
+    `);
+    if (!namespace.rows[0]?.exists) {
+      await client.query(`CREATE SCHEMA rockygpt_v2`);
+    }
     const schema = fs.readFileSync(packageAsset('data-v2/schema.sql'), 'utf8');
     await client.query(schema);
 
