@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": false,
   "description": "Campus data for RockyGPT: the repository layer, ingestion scrapers, publication pipeline, and the artifacts they produce.",
+  "engines": {
+    "node": "22.x"
+  },
   "exports": {
     "./api/*": {
       "types": "./dist/api/*.d.ts",
