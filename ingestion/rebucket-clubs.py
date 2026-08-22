@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public" / "data" / "clubs.json"
 NORMALIZED = ROOT / "data" / "normalized" / "clubs.json"
 

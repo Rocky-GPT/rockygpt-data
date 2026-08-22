@@ -71,12 +71,12 @@ export interface RestoreActiveReleaseSummary {
  * same validated object for public and normalized consumers.
  */
 export const RELEASE_ARTIFACT_TARGETS: Readonly<Record<string, readonly string[]>> = {
-  calendar: ['../ui/public/data/calendar.json', 'data/normalized/calendar.json'],
-  clubs: ['../ui/public/data/clubs.json', 'data/normalized/clubs.json'],
-  courses: ['../ui/public/data/courses.json'],
-  events: ['../ui/public/data/events.json', 'data/normalized/events.json'],
-  hours: ['../ui/public/data/hours.json', 'data/normalized/hours.json'],
-  programs: ['../ui/public/data/programs.json', 'data/normalized/programs.json'],
+  calendar: ['public/data/calendar.json', 'data/normalized/calendar.json'],
+  clubs: ['public/data/clubs.json', 'data/normalized/clubs.json'],
+  courses: ['public/data/courses.json'],
+  events: ['public/data/events.json', 'data/normalized/events.json'],
+  hours: ['public/data/hours.json', 'data/normalized/hours.json'],
+  programs: ['public/data/programs.json', 'data/normalized/programs.json'],
   menu: ['data/normalized/menu.json'],
   'menu-week': ['data/normalized/menu-week.json'],
   'dining-hours': ['data/normalized/dining-hours.json'],

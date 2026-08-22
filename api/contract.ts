@@ -18,6 +18,29 @@ export interface WireSource {
   collectedAt?: string;
 }
 
+/** The immutable campus-data release one request was pinned to. */
+export interface WireDatasetContext {
+  id: string;
+  version: string;
+  activatedAt: string;
+}
+
+/** A structured repository search, with records retaining their own sources. */
+export interface SearchResponse<TRecord extends Record<string, unknown> = Record<string, unknown>> {
+  dataset: WireDatasetContext;
+  records: TRecord[];
+}
+
+/** Emergency facts used by deterministic safety replies. */
+export interface SafetyResourcesResponse {
+  dataset: WireDatasetContext;
+  emergencyPhone: string | null;
+  sources: {
+    safety: WireSource;
+    counseling: WireSource;
+  };
+}
+
 /** The published datasets a client can request wholesale. */
 export type ArtifactKey = 'calendar' | 'clubs' | 'courses' | 'events' | 'hours' | 'programs';
 

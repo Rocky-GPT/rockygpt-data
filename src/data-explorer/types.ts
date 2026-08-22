@@ -8,7 +8,7 @@ export interface ExplorerColumn {
 export interface ExplorerDataset {
   key: string;
   label: string;
-  group: 'Campus data' | 'Retrieval' | 'Releases' | 'Analytics' | 'Telemetry';
+  group: 'Campus data' | 'Retrieval' | 'Releases';
   description: string;
   columns: ExplorerColumn[];
   count: number;
@@ -49,27 +49,10 @@ export interface ExplorerReleaseSummary {
   sourceStatuses: Array<{ status: string; count: number }>;
 }
 
-export interface ExplorerAnalytics {
-  days: number;
-  requestCount: number;
-  averageLatencyMs: number | null;
-  p50LatencyMs: number | null;
-  p95LatencyMs: number | null;
-  deferralCount: number;
-  validationFailureCount: number;
-  feedbackCount: number;
-  positiveFeedbackCount: number;
-  negativeFeedbackCount: number;
-  routes: Array<{ label: string; count: number; averageLatencyMs: number | null }>;
-  intents: Array<{ label: string; count: number }>;
-  dailyRequests: Array<{ date: string; count: number; averageLatencyMs: number | null }>;
-}
-
 export interface DataExplorerPayload {
   generatedAt: string;
   datasets: ExplorerDataset[];
   records: ExplorerRecords;
   filterOptions: ExplorerFilterOptions;
   release: ExplorerReleaseSummary;
-  analytics: ExplorerAnalytics;
 }

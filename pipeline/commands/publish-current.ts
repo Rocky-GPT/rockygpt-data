@@ -322,7 +322,7 @@ async function insertStructured(
     counts.clubs = (counts.clubs || 0) + 1;
   }
 
-  const programs = readJson<{ schools?: Array<{ school: string; majors?: JsonRecord[] }> }>('../ui/public/data/programs.json');
+  const programs = readJson<{ schools?: Array<{ school: string; majors?: JsonRecord[] }> }>('public/data/programs.json');
   for (const school of programs.schools || []) {
     for (const program of school.majors || []) {
       const name = cleanText(program.name);
@@ -456,12 +456,12 @@ async function insertDocuments(
 }
 
 const RELEASE_ARTIFACT_FILES: Record<string, string> = {
-  calendar: '../ui/public/data/calendar.json',
-  clubs: '../ui/public/data/clubs.json',
-  courses: '../ui/public/data/courses.json',
-  events: '../ui/public/data/events.json',
-  hours: '../ui/public/data/hours.json',
-  programs: '../ui/public/data/programs.json',
+  calendar: 'public/data/calendar.json',
+  clubs: 'public/data/clubs.json',
+  courses: 'public/data/courses.json',
+  events: 'public/data/events.json',
+  hours: 'public/data/hours.json',
+  programs: 'public/data/programs.json',
   menu: 'data/normalized/menu.json',
   'menu-week': 'data/normalized/menu-week.json',
   'menu-context': 'data/context/dining/menu.md',

@@ -54,8 +54,8 @@ const REQUIRED_FILES = [
   'data/normalized/events.json',
   'data/normalized/clubs.json',
   'data/normalized/faculty.json',
-  '../ui/public/data/courses.json',
-  '../ui/public/data/programs.json',
+  'public/data/courses.json',
+  'public/data/programs.json',
 ] as const;
 
 const MAX_AGE_HOURS: Partial<Record<(typeof REQUIRED_FILES)[number], number>> = {
@@ -65,8 +65,8 @@ const MAX_AGE_HOURS: Partial<Record<(typeof REQUIRED_FILES)[number], number>> = 
   'data/normalized/events.json': 36,
   'data/normalized/clubs.json': 4_320,
   'data/normalized/faculty.json': 720,
-  '../ui/public/data/courses.json': 4_320,
-  '../ui/public/data/programs.json': 4_320,
+  'public/data/courses.json': 4_320,
+  'public/data/programs.json': 4_320,
 };
 
 const MIN_RECORD_COUNTS: Partial<Record<(typeof REQUIRED_FILES)[number], number>> = {
@@ -76,8 +76,8 @@ const MIN_RECORD_COUNTS: Partial<Record<(typeof REQUIRED_FILES)[number], number>
   'data/normalized/events.json': 1,
   'data/normalized/clubs.json': 100,
   'data/normalized/faculty.json': 150,
-  '../ui/public/data/courses.json': 1_000,
-  '../ui/public/data/programs.json': 50,
+  'public/data/courses.json': 1_000,
+  'public/data/programs.json': 50,
 };
 
 const CRITICAL_FACT_KEYS = [
@@ -111,7 +111,7 @@ function countTopLevel(value: unknown): number {
 
 function countDataset(relativePath: (typeof REQUIRED_FILES)[number], value: unknown): number {
   if (
-    relativePath === '../ui/public/data/programs.json' &&
+    relativePath === 'public/data/programs.json' &&
     value &&
     typeof value === 'object'
   ) {
@@ -159,7 +159,7 @@ function schemaErrors(
   } else if (relativePath === 'data/normalized/faculty.json') {
     requireArrayPreservation(validateFacultyProfiles, 'Faculty');
     errors.push(...facultyQualityErrors(value));
-  } else if (relativePath === '../ui/public/data/courses.json') {
+  } else if (relativePath === 'public/data/courses.json') {
     if (!isRecord(value)) {
       errors.push('Course catalog must be an object keyed by course code');
     } else {
@@ -192,7 +192,7 @@ function schemaErrors(
       // Course names intentionally are not unique: transfer electives,
       // independent studies, and cross-listed offerings legitimately repeat.
     }
-  } else if (relativePath === '../ui/public/data/programs.json') {
+  } else if (relativePath === 'public/data/programs.json') {
     if (!isRecord(value) || !Array.isArray(value.schools)) {
       errors.push('Program catalog must contain a schools array');
     } else {

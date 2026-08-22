@@ -6,7 +6,7 @@ type UnknownRecord = Record<string, unknown>;
 const PUBLISHABLE_ARTIFACT_ROOTS = [
   { relativePath: 'data/normalized', extensions: new Set(['.json']) },
   { relativePath: 'data/context', extensions: new Set(['.md']) },
-  { relativePath: '../ui/public/data', extensions: new Set(['.json']) },
+  { relativePath: 'public/data', extensions: new Set(['.json']) },
 ] as const;
 
 const CHALLENGE_SIGNATURES: Array<{ label: string; pattern: RegExp }> = [

@@ -2,10 +2,8 @@ import type { QueryResultRow } from 'pg';
 import { getRuntimePool } from '../db/runtime-pool';
 import type {
   DataExplorerPayload,
-  ExplorerAnalytics,
   ExplorerColumn,
   ExplorerDataset,
-  ExplorerFilterOptions,
   ExplorerRecords,
   ExplorerReleaseSummary,
   ExplorerValue,
@@ -462,70 +460,11 @@ const DATASETS: readonly DatasetDefinition[] = [
     searchSql: ['t.artifact_key', 't.payload::text', 't.content_hash'],
     orderBySql: 't.artifact_key',
   },
-  {
-    key: 'feedback-metadata',
-    label: 'Feedback metadata',
-    group: 'Analytics',
-    description:
-      'Ratings and retention state. Stored question, answer, and comment text are intentionally not displayed.',
-    fromSql: 'rockygpt_v2.feedback t',
-    selectSql:
-      "t.id, t.request_id, t.rating, t.category, (NULLIF(t.question, '') IS NOT NULL) AS has_question_text, (NULLIF(t.answer, '') IS NOT NULL) AS has_answer_text, (NULLIF(t.comments, '') IS NOT NULL) AS has_comment_text, t.created_at, t.expires_at",
-    columns: columns(
-      ['id', 'ID'],
-      ['request_id', 'Request ID'],
-      ['rating', 'Rating'],
-      ['category', 'Category'],
-      ['has_question_text', 'Question stored'],
-      ['has_answer_text', 'Answer stored'],
-      ['has_comment_text', 'Comment stored'],
-      ['created_at', 'Created'],
-      ['expires_at', 'Expires']
-    ),
-    searchSql: ['t.id::text', 't.request_id::text', 't.rating::text'],
-    orderBySql: 't.created_at DESC',
-  },
-  {
-    key: 'chat-logs',
-    label: 'Live chat logs',
-    group: 'Telemetry',
-    description:
-      'Real-time record of student inquiries, assistant replies, invoked tools, citations, and execution latency.',
-    fromSql: 'rockygpt_v2.chat_logs t',
-    selectSql:
-      "t.created_at, t.user_message, t.assistant_message, t.route, t.tools_invoked::text, t.latency_ms, t.session_id, COALESCE(t.feedback, 'none') AS feedback",
-    columns: columns(
-      ['created_at', 'Time'],
-      ['user_message', 'Student question'],
-      ['assistant_message', 'Rocky response'],
-      ['route', 'Route / Strategy'],
-      ['tools_invoked', 'Tools invoked'],
-      ['latency_ms', 'Latency (ms)'],
-      ['session_id', 'Session ID'],
-      ['feedback', 'Feedback']
-    ),
-    searchSql: ['t.user_message', 't.assistant_message', 't.route', 't.session_id'],
-    orderBySql: 't.created_at DESC',
-    sortSql: {
-      time: 't.created_at',
-      student_question: 't.user_message',
-      route: 't.route',
-      latency: 't.latency_ms',
-    },
-    defaultSort: { key: 'time', direction: 'desc' },
-    charted: true,
-  },
 ] as const;
 
 function toFiniteNumber(value: unknown, fallback = 0): number {
   const parsed = typeof value === 'number' ? value : Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
-}
-
-function toNullableNumber(value: unknown): number | null {
-  if (value === null || value === undefined) return null;
-  const parsed = typeof value === 'number' ? value : Number(value);
-  return Number.isFinite(parsed) ? Math.round(parsed) : null;
 }
 
 function normalizeValue(value: unknown): ExplorerValue {
@@ -556,14 +495,9 @@ function normalizeSearch(search: string | undefined): string {
   return (search || '').trim().slice(0, MAX_SEARCH_LENGTH);
 }
 
-function normalizeFilterValue(value: string | undefined): string {
-  return (value || '').trim().slice(0, 80);
-}
-
 function recordFilterClause(
   definition: DatasetDefinition,
-  search: string,
-  _filters: ExplorerRecords['filters']
+  search: string
 ): {
   sql: string;
   values: string[];
@@ -577,11 +511,6 @@ function recordFilterClause(
       `CONCAT_WS(' ', ${definition.searchSql.map((value) => `COALESCE(${value}, '')`).join(', ')}) ILIKE $${values.length}`
     );
   }
-
-  return {
-    sql: clauses.length ? ` WHERE ${clauses.join(' AND ')}` : '',
-    values,
-  };
 
   return {
     sql: clauses.length ? ` WHERE ${clauses.join(' AND ')}` : '',
@@ -636,7 +565,7 @@ async function loadRecords(
   const pool = getRuntimePool();
   if (!pool) throw new Error('DATABASE_URL is not configured.');
 
-  const filter = recordFilterClause(definition, search, filters);
+  const filter = recordFilterClause(definition, search);
   const sort = normalizedSort(definition, requestedSort, requestedDirection);
   const offset = (page - 1) * PAGE_SIZE;
   const countValues = [...filter.values];
@@ -724,75 +653,6 @@ async function loadReleaseSummary(counts: Map<string, number>): Promise<Explorer
   };
 }
 
-async function loadAnalytics(): Promise<ExplorerAnalytics> {
-  const pool = getRuntimePool();
-  if (!pool) throw new Error('DATABASE_URL is not configured.');
-
-  const [headline, dailyRequests, feedback] = await Promise.all([
-    pool.query(
-      `SELECT
-         count(*)::integer AS request_count,
-         round(avg(latency_ms))::integer AS average_latency_ms,
-         round(percentile_cont(0.5) WITHIN GROUP (ORDER BY latency_ms))::integer AS p50_latency_ms,
-         round(percentile_cont(0.95) WITHIN GROUP (ORDER BY latency_ms))::integer AS p95_latency_ms,
-         0::integer AS deferral_count,
-         0::integer AS validation_failure_count
-       FROM rockygpt_v2.chat_logs
-       WHERE created_at >= CURRENT_TIMESTAMP - interval '30 days'`
-    ),
-    pool.query(
-      `WITH days AS (
-         SELECT generate_series(
-           CURRENT_DATE - interval '29 days',
-           CURRENT_DATE,
-           interval '1 day'
-         )::date AS date
-       ),
-       logs AS (
-         SELECT created_at::date AS date, count(*)::integer AS count,
-                round(avg(latency_ms))::integer AS average_latency_ms
-         FROM rockygpt_v2.chat_logs
-         WHERE created_at >= CURRENT_TIMESTAMP - interval '30 days'
-         GROUP BY created_at::date
-       )
-       SELECT days.date, COALESCE(logs.count, 0)::integer AS count,
-              logs.average_latency_ms
-       FROM days
-       LEFT JOIN logs USING (date)
-       ORDER BY days.date`
-    ),
-    pool.query(
-      `SELECT count(*)::integer AS feedback_count,
-              count(*) FILTER (WHERE rating = 1)::integer AS positive_feedback_count,
-              count(*) FILTER (WHERE rating = -1)::integer AS negative_feedback_count
-       FROM rockygpt_v2.feedback
-       WHERE created_at >= CURRENT_TIMESTAMP - interval '30 days'`
-    ),
-  ]);
-
-  const headlineRow = headline.rows[0] || {};
-  const feedbackRow = feedback.rows[0] || {};
-  return {
-    days: 30,
-    requestCount: toFiniteNumber(headlineRow.request_count),
-    averageLatencyMs: toNullableNumber(headlineRow.average_latency_ms),
-    p50LatencyMs: toNullableNumber(headlineRow.p50_latency_ms),
-    p95LatencyMs: toNullableNumber(headlineRow.p95_latency_ms),
-    deferralCount: toFiniteNumber(headlineRow.deferral_count),
-    validationFailureCount: toFiniteNumber(headlineRow.validation_failure_count),
-    feedbackCount: toFiniteNumber(feedbackRow.feedback_count),
-    positiveFeedbackCount: toFiniteNumber(feedbackRow.positive_feedback_count),
-    negativeFeedbackCount: toFiniteNumber(feedbackRow.negative_feedback_count),
-    routes: [],
-    intents: [],
-    dailyRequests: dailyRequests.rows.map((row) => ({
-      date: String(normalizeValue(row.date)).slice(0, 10),
-      count: toFiniteNumber(row.count),
-      averageLatencyMs: toNullableNumber(row.average_latency_ms),
-    })),
-  };
-}
-
 export async function loadDataExplorer(input: {
   datasetKey?: string;
   page?: number;
@@ -821,10 +681,9 @@ export async function loadDataExplorer(input: {
     dateTo: '',
     origins: [],
   };
-  const [counts, records, analytics] = await Promise.all([
+  const [counts, records] = await Promise.all([
     loadDatasetCounts(),
     loadRecords(definition, page, search, input.sort, input.direction, filters),
-    loadAnalytics(),
   ]);
   const release = await loadReleaseSummary(counts);
 
@@ -843,6 +702,5 @@ export async function loadDataExplorer(input: {
     records,
     filterOptions: { topics: [], routes: [] },
     release,
-    analytics,
   };
 }

@@ -1,0 +1,235 @@
+openapi: 3.1.0
+info:
+  title: RockyGPT Campus Data API
+  version: 1.0.0
+  description: Public, read-only campus information owned by rockygpt-data.
+servers:
+  - url: http://127.0.0.1:8100
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      responses:
+        '200':
+          description: Process is alive.
+  /readiness:
+    get:
+      operationId: getReadiness
+      responses:
+        '200':
+          description: An active campus dataset is available.
+        '503':
+          $ref: '#/components/responses/Unavailable'
+  /v1/search/campus-hours:
+    get:
+      operationId: searchCampusHours
+      parameters:
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/Day'
+        - $ref: '#/components/parameters/At'
+      responses:
+        '200': { $ref: '#/components/responses/Search' }
+        '400': { $ref: '#/components/responses/Invalid' }
+  /v1/search/dining-hours:
+    get:
+      operationId: searchDiningHours
+      parameters:
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/Day'
+        - $ref: '#/components/parameters/At'
+      responses:
+        '200': { $ref: '#/components/responses/Search' }
+        '400': { $ref: '#/components/responses/Invalid' }
+  /v1/search/menu:
+    get:
+      operationId: searchMenu
+      parameters:
+        - $ref: '#/components/parameters/Query'
+        - name: meal
+          in: query
+          schema: { type: string }
+        - $ref: '#/components/parameters/At'
+      responses:
+        '200': { $ref: '#/components/responses/Search' }
+  /v1/search/contacts:
+    get:
+      operationId: searchContacts
+      parameters:
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/At'
+      responses:
+        '200': { $ref: '#/components/responses/Search' }
+  /v1/search/clubs:
+    get:
+      operationId: searchClubs
+      parameters:
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/At'
+      responses:
+        '200': { $ref: '#/components/responses/Search' }
+  /v1/search/events:
+    get:
+      operationId: searchEvents
+      parameters:
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/At'
+      responses:
+        '200': { $ref: '#/components/responses/Search' }
+        '400': { $ref: '#/components/responses/Invalid' }
+  /v1/search/programs:
+    get:
+      operationId: searchPrograms
+      parameters:
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/At'
+      responses:
+        '200': { $ref: '#/components/responses/Search' }
+  /v1/search/academic-dates:
+    get:
+      operationId: searchAcademicDates
+      parameters:
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/At'
+      responses:
+        '200': { $ref: '#/components/responses/Search' }
+  /v1/search/shuttles:
+    get:
+      operationId: searchShuttles
+      parameters:
+        - name: route
+          in: query
+          schema: { type: string }
+        - name: serviceDay
+          in: query
+          schema:
+            type: string
+            enum: [weekday, saturday, sunday]
+        - $ref: '#/components/parameters/At'
+      responses:
+        '200': { $ref: '#/components/responses/Search' }
+        '400': { $ref: '#/components/responses/Invalid' }
+  /v1/safety-resources:
+    get:
+      operationId: getSafetyResources
+      responses:
+        '200':
+          description: Deterministic safety contacts with official sources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SafetyResources'
+  /v1/map:
+    get:
+      operationId: getMap
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Campus locations and optional resolution.
+  /v1/shuttle:
+    get:
+      operationId: getShuttleSchedule
+      responses:
+        '200':
+          description: Published shuttle schedule.
+  /v1/data/{artifact}:
+    get:
+      operationId: getArtifact
+      parameters:
+        - name: artifact
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [calendar, clubs, courses, events, hours, programs]
+      responses:
+        '200':
+          description: Published release artifact.
+        '404': { $ref: '#/components/responses/NotFound' }
+components:
+  parameters:
+    Query:
+      name: q
+      in: query
+      schema: { type: string, default: '' }
+    Day:
+      name: day
+      in: query
+      schema: { type: string }
+    At:
+      name: at
+      in: query
+      description: ISO 8601 instant used for all time-sensitive resolution.
+      schema: { type: string, format: date-time }
+  responses:
+    Search:
+      description: Records from one pinned dataset release.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/SearchResponse' }
+    Invalid:
+      description: Invalid query.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }
+    Unavailable:
+      description: Campus data is unavailable.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }
+  schemas:
+    Source:
+      type: object
+      required: [sourceId, title, url]
+      properties:
+        sourceId: { type: string }
+        title: { type: string }
+        url: { type: string, format: uri }
+        collectedAt: { type: string }
+    Dataset:
+      type: object
+      required: [id, version, activatedAt]
+      properties:
+        id: { type: string }
+        version: { type: string }
+        activatedAt: { type: string }
+    SearchResponse:
+      type: object
+      required: [dataset, records]
+      properties:
+        dataset: { $ref: '#/components/schemas/Dataset' }
+        records:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    SafetyResources:
+      type: object
+      required: [dataset, emergencyPhone, sources]
+      properties:
+        dataset: { $ref: '#/components/schemas/Dataset' }
+        emergencyPhone: { type: [string, 'null'] }
+        sources:
+          type: object
+          required: [safety, counseling]
+          properties:
+            safety: { $ref: '#/components/schemas/Source' }
+            counseling: { $ref: '#/components/schemas/Source' }
+    ApiError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, retryable]
+          properties:
+            code: { type: string }
+            message: { type: string }
+            retryable: { type: boolean }

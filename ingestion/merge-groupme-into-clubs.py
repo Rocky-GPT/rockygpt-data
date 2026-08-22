@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 GROUPME_RAW = ROOT / "data" / "raw" / "groupme-directory.raw.json"
 PUBLIC_CLUBS = ROOT / "public" / "data" / "clubs.json"
 NORMALIZED_CLUBS = ROOT / "data" / "normalized" / "clubs.json"
