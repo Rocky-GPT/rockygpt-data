@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 jobs:
-  restore-verified-release:
+  sync-public-release:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: staging
@@ -16,17 +16,17 @@ jobs:
       - uses: actions/setup-node@v6
         with: { node-version: '22', cache: npm }
       - run: npm ci
-      - name: Restore the verified campus artifact into the independent staging database
+      - name: Apply the current schema to the independent staging database
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-          RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
-          RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
-          RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
-          RAW_ARTIFACT_ACCESS_KEY_ID: ${{ secrets.STAGING_RAW_ARTIFACT_ACCESS_KEY_ID }}
-          RAW_ARTIFACT_SECRET_ACCESS_KEY: ${{ secrets.STAGING_RAW_ARTIFACT_SECRET_ACCESS_KEY }}
-          RAW_ARTIFACT_REQUIRED: '1'
-        run: npm run data:bootstrap -- --require-raw
-      - name: Verify the restored staging release
+        run: npm run data:schema
+      - name: Copy only allowlisted public campus data into staging
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+          SOURCE_DATABASE_URL: ${{ secrets.STAGING_SOURCE_DATABASE_URL }}
+          ALLOW_STAGING_DATABASE_RESET: '1'
+        run: npm run staging:sync-public
+      - name: Verify the synced staging release
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
         run: npm run data:quality
