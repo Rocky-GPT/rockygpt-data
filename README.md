@@ -24,6 +24,14 @@ bottom of the dependency graph.
 
 Scripts resolve paths against this repository root, so run them from here.
 
+## Service boundary
+
+Run the read-only HTTP service with `npm run dev` locally or `npm start` after
+`npm run build`. Its contract is [`api/openapi.yaml`](api/openapi.yaml). This
+package is private on purpose: the UI, brain, and native clients must use HTTP
+instead of importing repository or ingestion source across application
+boundaries.
+
 Browser-shaped artifacts are staged under this repository's ignored `public/`
 directory, published into PostgreSQL, and served through
 `GET /v1/data/:artifact`. The pipeline never writes into a client repository.

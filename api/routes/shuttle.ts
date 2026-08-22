@@ -12,4 +12,5 @@ import { shuttleSchedule } from '../../src/static/shuttleSchedule';
 import { ok, PUBLIC_READ_HEADERS, type ApiHandler } from '../http';
 import type { ShuttleResponse } from '../contract';
 
-export const getShuttle: ApiHandler = () => ok(shuttleSchedule as ShuttleResponse, PUBLIC_READ_HEADERS);
+export const getShuttle: ApiHandler = () =>
+  ok(shuttleSchedule satisfies ShuttleResponse, PUBLIC_READ_HEADERS);

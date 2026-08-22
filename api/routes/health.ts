@@ -10,7 +10,7 @@
 
 import { getRepositoryV2 } from '../../src/data-v2/repositories/index';
 import { ok, type ApiHandler } from '../http';
-import type { ServiceHealth } from '../contract';
+import type { ServiceHealth, ServiceReadiness } from '../contract';
 
 const startedAt = Date.now();
 const PROBE_TIMEOUT_MS = 3_000;
@@ -23,16 +23,19 @@ export const getHealth: ApiHandler = () =>
   } satisfies ServiceHealth);
 
 function bounded<T>(work: Promise<T>): Promise<T> {
+  let timer: NodeJS.Timeout | undefined;
   return Promise.race([
     work,
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('probe timeout')), PROBE_TIMEOUT_MS)
-    ),
-  ]);
+    new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('probe timeout')), PROBE_TIMEOUT_MS);
+    }),
+  ]).finally(() => {
+    if (timer) clearTimeout(timer);
+  });
 }
 
 export const getReadiness: ApiHandler = async () => {
-  const failing: string[] = [];
+  const failing: Array<'database' | 'dataset'> = [];
   try {
     await bounded(getRepositoryV2().getDatasetContext());
   } catch (error) {
@@ -43,8 +46,15 @@ export const getReadiness: ApiHandler = async () => {
   if (failing.length) {
     return {
       status: 503,
-      body: { status: 'unready', failing, timestamp: new Date().toISOString() },
+      body: {
+        status: 'unready',
+        failing,
+        timestamp: new Date().toISOString(),
+      } satisfies ServiceReadiness,
     };
   }
-  return ok({ status: 'ready', timestamp: new Date().toISOString() });
+  return ok({
+    status: 'ready',
+    timestamp: new Date().toISOString(),
+  } satisfies ServiceReadiness);
 };

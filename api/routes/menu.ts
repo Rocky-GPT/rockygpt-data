@@ -10,16 +10,8 @@
 import { loadReleaseArtifact } from '../../src/data-v2/release-artifacts';
 import { activeSeasonSchedule, SEASONAL_CLOSURE } from '../../src/data-v2/dining-seasons';
 
-import type { ApiHandler, ApiResponse } from '../http';
-
-/**
- * Mirrors the response helper these handlers were written against, so the
- * logic below is the same code that ran inside the web app.
- */
-const json = (
-  body: unknown,
-  init?: { status?: number; headers?: Record<string, string> }
-): ApiResponse => ({ status: init?.status ?? 200, body, headers: init?.headers });
+import type { MenuResponse } from '../contract';
+import { fail, ok, type ApiHandler } from '../http';
 
 
 
@@ -63,13 +55,13 @@ export const getMenu: ApiHandler = async () => {
   try {
     const isClosed = await isBirchClosedToday();
     if (isClosed) {
-      return json({
+      return ok({
         content: null,
         success: true,
         available: false,
         closed: true,
         closureReason: 'Seasonal closure',
-      });
+      } satisfies MenuResponse);
     }
 
     const loaded = await loadReleaseArtifact('menu-context');
@@ -79,19 +71,16 @@ export const getMenu: ApiHandler = async () => {
     const generatedMatch = fileContent.match(/\*Generated \(UTC\):\s*([^\*]+)\*/);
     const generatedUtc = generatedMatch?.[1]?.trim() || null;
 
-    return json({
+    return ok({
       content: fileContent,
       success: true,
       available: true,
       generatedUtc,
       fileUpdatedUtc: generatedUtc,
       releaseVersion: loaded.releaseVersion,
-    });
+    } satisfies MenuResponse);
   } catch (error) {
     console.error('Error serving menu file:', error);
-    return json(
-      { error: 'Menu data unavailable' }, 
-      { status: 404 }
-    );
+    return fail(503, 'UNAVAILABLE', 'Menu data is unavailable.', true);
   }
 }

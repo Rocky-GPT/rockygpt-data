@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 
@@ -11,7 +14,33 @@ import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository
  */
 
 const LIBRARY = 'Library (Main Building)';
-const repo = new FileRepositoryV2();
+const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'rockygpt-hours-validity-'));
+fs.mkdirSync(path.join(fixtureRoot, 'data', 'normalized'), { recursive: true });
+fs.writeFileSync(
+  path.join(fixtureRoot, 'data', 'normalized', 'hours.json'),
+  JSON.stringify([
+    {
+      name: LIBRARY,
+      hours: {
+        Monday: '7:45am-12:00am',
+        Tuesday: '7:45am-12:00am',
+        Wednesday: '7:45am-12:00am',
+        Thursday: '7:45am-12:00am',
+        Friday: '7:45am-6:00pm',
+        Saturday: '10:00am-6:00pm',
+        Sunday: '12:00pm-12:00am',
+      },
+      notes: 'Spring Semester 2026 (Jan 20 – May 12)',
+    },
+    {
+      name: 'Bradley Center (Student & Recreation Lounge)',
+      hours: { Thursday: '8:00am-10:00pm' },
+    },
+  ])
+);
+const repo = new FileRepositoryV2(fixtureRoot);
+
+test.after(() => fs.rmSync(fixtureRoot, { recursive: true, force: true }));
 
 /** Noon UTC keeps a date-only comparison off the day boundary. */
 function on(date: string): Date {

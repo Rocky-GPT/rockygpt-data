@@ -73,13 +73,16 @@ export interface ShuttleResponse {
 export interface WireMapLocation {
   key: string;
   name: string;
-  kind: string;
-  aliases?: string[];
-  building?: string;
-  room?: string;
-  latitude?: number;
-  longitude?: number;
-  [field: string]: unknown;
+  type: 'building' | 'office' | 'parking' | 'layer';
+  mapUrl: string;
+  aliases: string[];
+  roomPrefixes: string[];
+  category?: string;
+  description?: string;
+  buildingKey?: string;
+  buildingName?: string;
+  officeUrl?: string | null;
+  room?: string | null;
 }
 
 /** The campus map, and the resolution a query asked for. */
@@ -87,6 +90,58 @@ export interface MapResponse {
   locations: WireMapLocation[];
   /** Present only when the request carried a `q` parameter. */
   resolved?: WireMapLocation | null;
+}
+
+/** Menu markdown rendered by the current-menu client. */
+export interface MenuResponse {
+  content: string | null;
+  success: true;
+  available: boolean;
+  generatedUtc?: string | null;
+  fileUpdatedUtc?: string | null;
+  releaseVersion?: string;
+  closed?: boolean;
+  closureReason?: string;
+}
+
+/** Date-specific menu markdown rendered by the menu browser. */
+export interface MenuBrowseResponse {
+  content: string | null;
+  success: true;
+  available: boolean;
+  date: string;
+  releaseVersion?: string;
+  closed?: boolean;
+  closureReason?: string;
+}
+
+export interface WireHoursRange {
+  label?: string;
+  time: string;
+}
+
+export interface WireDiningLocation {
+  name: string;
+  emoji: string;
+  todayLabel: string;
+  isOverride: boolean;
+  overrideNote?: string;
+  hours: WireHoursRange[];
+}
+
+export interface WireGeneralDiningLocation {
+  name: string;
+  emoji: string;
+  schedule: Array<{ days: string; hours: WireHoursRange[] }>;
+}
+
+export interface DiningHoursResponse {
+  success: true;
+  today: string;
+  dateFormatted: string;
+  locations: WireDiningLocation[];
+  generalHours: WireGeneralDiningLocation[];
+  releaseVersion: string;
 }
 
 /** Every failure this service reports. */
@@ -107,7 +162,7 @@ export interface ServiceHealth {
 
 /** Whether the service can actually serve campus data, not merely respond. */
 export interface ServiceReadiness {
-  status: 'ready' | 'degraded';
-  datasetVersion?: string;
-  detail?: string;
+  status: 'ready' | 'unready';
+  failing?: Array<'database' | 'dataset'>;
+  timestamp: string;
 }

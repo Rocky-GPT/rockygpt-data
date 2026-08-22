@@ -7,15 +7,26 @@
  * content hash on the response so a client can cache against them.
  */
 
-import {
-  isReleaseArtifactKey,
-  loadReleaseArtifact,
-} from '../../src/data-v2/release-artifacts';
+import { loadReleaseArtifact } from '../../src/data-v2/release-artifacts';
+import type { ArtifactKey } from '../contract';
 import { fail, ok, PUBLIC_READ_HEADERS, type ApiHandler } from '../http';
+
+const PUBLIC_ARTIFACT_KEYS = new Set<ArtifactKey>([
+  'calendar',
+  'clubs',
+  'courses',
+  'events',
+  'hours',
+  'programs',
+]);
+
+function isPublicArtifactKey(value: string): value is ArtifactKey {
+  return PUBLIC_ARTIFACT_KEYS.has(value as ArtifactKey);
+}
 
 export const getArtifact: ApiHandler = async (request) => {
   const key = request.url.pathname.split('/').pop() ?? '';
-  if (!isReleaseArtifactKey(key)) {
+  if (!isPublicArtifactKey(key)) {
     return fail(404, 'NOT_FOUND', `Unknown data artifact: ${key}`);
   }
 
