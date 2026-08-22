@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: RockyGPT Campus Data API
-  version: 1.1.0
+  version: 1.1.1
   description: Public, read-only campus information owned by rockygpt-data.
 security:
   - environmentToken: []
@@ -264,8 +264,8 @@ components:
       additionalProperties: false
       required: [status, service, uptimeSeconds]
       properties:
-        status: { const: healthy }
-        service: { const: rockygpt-data }
+        status: { type: string, enum: [healthy] }
+        service: { type: string, enum: [rockygpt-data] }
         uptimeSeconds: { type: number, minimum: 0 }
     ServiceReadiness:
       type: object
@@ -349,9 +349,9 @@ components:
       type: object
       additionalProperties: false
       required: [content, success, available]
-      properties: &menuProperties
+      properties:
         content: { type: [string, 'null'] }
-        success: { const: true }
+        success: { type: boolean, enum: [true] }
         available: { type: boolean }
         generatedUtc: { type: [string, 'null'] }
         fileUpdatedUtc: { type: [string, 'null'] }
@@ -363,7 +363,14 @@ components:
       additionalProperties: false
       required: [content, success, available, date]
       properties:
-        <<: *menuProperties
+        content: { type: [string, 'null'] }
+        success: { type: boolean, enum: [true] }
+        available: { type: boolean }
+        generatedUtc: { type: [string, 'null'] }
+        fileUpdatedUtc: { type: [string, 'null'] }
+        releaseVersion: { type: string }
+        closed: { type: boolean }
+        closureReason: { type: string }
         date: { type: string, format: date }
     HoursRange:
       type: object
@@ -404,7 +411,7 @@ components:
       additionalProperties: false
       required: [success, today, dateFormatted, locations, generalHours, releaseVersion]
       properties:
-        success: { const: true }
+        success: { type: boolean, enum: [true] }
         today: { type: string }
         dateFormatted: { type: string }
         locations: { type: array, items: { $ref: '#/components/schemas/DiningLocation' } }
