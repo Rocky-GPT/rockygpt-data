@@ -1,0 +1,30 @@
+# Build context only needs sources and the manifests. Everything here is
+# either rebuilt inside the image, irrelevant to it, or must never enter it.
+
+node_modules
+dist
+.next
+.git
+.github
+.vscode
+
+# Secrets. The image reads its configuration from the environment.
+.env
+.env.*
+!.env.example
+
+*.tsbuildinfo
+.DS_Store
+__pycache__/
+*.pyc
+npm-debug.log*
+
+# Campus artifacts are rebuilt by the pipeline and read from Postgres at
+# runtime, so the service has no use for them.
+data/raw/
+data/normalized/
+data/context/
+data/cache/
+data/playwright/
+**/browser-profile/
+**/playwright-profile/
