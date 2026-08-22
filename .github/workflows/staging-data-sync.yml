@@ -29,4 +29,4 @@ jobs:
       - name: Verify the synced staging release
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-        run: npm run data:quality
+        run: npm run staging:verify-public
