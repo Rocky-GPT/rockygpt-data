@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: RockyGPT Campus Data API
-  version: 1.1.1
+  version: 1.1.2
   description: Public, read-only campus information owned by rockygpt-data.
 security:
   - environmentToken: []
@@ -351,7 +351,7 @@ components:
       required: [content, success, available]
       properties:
         content: { type: [string, 'null'] }
-        success: { type: boolean, enum: [true] }
+        success: { type: boolean }
         available: { type: boolean }
         generatedUtc: { type: [string, 'null'] }
         fileUpdatedUtc: { type: [string, 'null'] }
@@ -364,7 +364,7 @@ components:
       required: [content, success, available, date]
       properties:
         content: { type: [string, 'null'] }
-        success: { type: boolean, enum: [true] }
+        success: { type: boolean }
         available: { type: boolean }
         generatedUtc: { type: [string, 'null'] }
         fileUpdatedUtc: { type: [string, 'null'] }
@@ -411,7 +411,7 @@ components:
       additionalProperties: false
       required: [success, today, dateFormatted, locations, generalHours, releaseVersion]
       properties:
-        success: { type: boolean, enum: [true] }
+        success: { type: boolean }
         today: { type: string }
         dateFormatted: { type: string }
         locations: { type: array, items: { $ref: '#/components/schemas/DiningLocation' } }
