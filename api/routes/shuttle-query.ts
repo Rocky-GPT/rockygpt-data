@@ -44,6 +44,11 @@ const VALID_SCOPE_BY_SELECTION: Record<ShuttleSelection, ReadonlySet<ShuttleTime
 };
 
 const V2_HEADERS = { 'Cache-Control': 'no-store' };
+const SHUTTLE_ORDERING = [
+  { field: 'serviceDate', direction: 'asc' as const },
+  { field: 'matchedOrigin.time', direction: 'asc' as const },
+  { field: 'route', direction: 'asc' as const },
+];
 
 interface ParsedQuery {
   request: ShuttleQueryRequest;
@@ -57,8 +62,16 @@ interface TimedStop {
   minutes: number | null;
 }
 
+interface DatedTrip {
+  trip: ShuttleTripRecord;
+  serviceDate: string;
+  serviceDay: WireShuttleServiceDay;
+}
+
 interface MatchedTrip {
   trip: ShuttleTripRecord;
+  serviceDate: string;
+  serviceDay: WireShuttleServiceDay;
   departure: TimedStop;
   stops: TimedStop[];
   arrival: TimedStop;
@@ -66,6 +79,7 @@ interface MatchedTrip {
   destination: TimedStop;
   originMinutes: number | null;
   destinationMinutes: number | null;
+  originSortMinutes: number | null;
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -102,6 +116,11 @@ function serviceDayForDate(date: string): WireShuttleServiceDay {
   if (weekday === 6) return 'saturday';
   if (weekday === 0) return 'sunday';
   return 'weekday';
+}
+
+function previousDate(date: string): string {
+  const [year, month, day] = date.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day - 1)).toISOString().slice(0, 10);
 }
 
 function parseQuery(body: unknown): ParsedQuery | string {
@@ -142,6 +161,9 @@ function parseQuery(body: unknown): ParsedQuery | string {
     serviceDate = body.serviceDate;
   }
   const derivedServiceDay = serviceDayForDate(serviceDate);
+  if (body.serviceDay !== undefined && body.serviceDate === undefined) {
+    return '`serviceDate` is required when `serviceDay` is supplied.';
+  }
   if (
     body.serviceDay !== undefined &&
     (typeof body.serviceDay !== 'string' ||
@@ -172,12 +194,19 @@ function parseQuery(body: unknown): ParsedQuery | string {
     timeScope,
     ...(body.limit === undefined ? {} : { limit: body.limit as number }),
   };
+  const serviceDatesConsidered =
+    selection === 'current' &&
+    timeScope === 'at_time' &&
+    serviceDate === campusDate(asOf)
+      ? [serviceDate, previousDate(serviceDate)]
+      : [serviceDate];
   const filters: ShuttleAppliedFilters = {
     ...(route ? { route } : {}),
     ...(origin ? { origin } : {}),
     ...(destination ? { destination } : {}),
     serviceDate,
     serviceDay: derivedServiceDay,
+    serviceDatesConsidered,
     asOf: asOf.toISOString(),
     selection,
     timeScope,
@@ -290,10 +319,11 @@ function monotonicStops(stops: WireShuttleQueryStop[]): TimedStop[] {
 }
 
 function matchTrip(
-  trip: ShuttleTripRecord,
+  datedTrip: DatedTrip,
   originQuery: string | undefined,
   destinationQuery: string | undefined
 ): MatchedTrip | null {
+  const { trip, serviceDate, serviceDay } = datedTrip;
   const arrivalLocation = clockMinutes(trip.arrival) === null ? 'End of service' : CAMPUS_STOP;
   const timed = monotonicStops([
     { location: CAMPUS_STOP, time: trip.departure },
@@ -338,6 +368,8 @@ function matchTrip(
   const lastKnownMinute = [...timed].reverse().find((entry) => entry.minutes !== null)?.minutes ?? null;
   return {
     trip,
+    serviceDate,
+    serviceDay,
     departure,
     stops: timed.slice(1, -1),
     arrival,
@@ -345,6 +377,8 @@ function matchTrip(
     destination,
     originMinutes: origin.minutes,
     destinationMinutes: destination.minutes ?? lastKnownMinute,
+    originSortMinutes:
+      origin.minutes === null ? null : dateOrdinal(serviceDate) * 24 * 60 + origin.minutes,
   };
 }
 
@@ -391,14 +425,12 @@ function sourceEvidence(sources: SourceReference[]): WireEvidence[] {
 }
 
 function toWireRecord(
-  matched: MatchedTrip,
-  serviceDate: string,
-  serviceDay: WireShuttleServiceDay
+  matched: MatchedTrip
 ): WireShuttleQueryRecord {
   return {
     route: matched.trip.route,
-    serviceDate,
-    serviceDay,
+    serviceDate: matched.serviceDate,
+    serviceDay: matched.serviceDay,
     departure: matched.departure.stop,
     stops: matched.stops.map(({ stop }) => stop),
     arrival: matched.arrival.stop,
@@ -416,47 +448,86 @@ export const postShuttleQuery: ApiHandler = async (apiRequest) => {
   const repository = getRepositoryV2();
   const dataset = await repository.getDatasetContext();
   const pinned = repository.withDataset(dataset);
-  const allTrips = await pinned.listShuttleTrips(parsed.filters.serviceDay);
-  const authoritativeSources = allTrips.length > 0
-    ? allTrips.map((trip) => trip.source)
-    : [V2_SOURCES.transportation];
-
-  const reference = referenceMinutes(parsed.asOf, parsed.filters.serviceDate);
-  let matches = allTrips
-    .filter((trip) => routeMatches(trip.route, parsed.request.route))
-    .flatMap((trip) => {
-      const match = matchTrip(trip, parsed.request.origin, parsed.request.destination);
+  let allTrips: DatedTrip[];
+  try {
+    const byDate = await Promise.all(
+      parsed.filters.serviceDatesConsidered.map(async (serviceDate) => {
+        const serviceDay = serviceDayForDate(serviceDate);
+        const trips = await pinned.listShuttleTrips(serviceDay);
+        return trips.map((trip) => ({ trip, serviceDate, serviceDay }));
+      })
+    );
+    allTrips = byDate.flat();
+  } catch {
+    const unavailable: ShuttleQueryResponse = {
+      outcome: 'unavailable',
+      records: [],
+      completeness: {
+        state: 'unknown',
+        returned: 0,
+        limit: parsed.limit,
+        truncated: false,
+        reason: 'dependency_unavailable',
+      },
+      appliedFilters: parsed.filters,
+      ordering: SHUTTLE_ORDERING,
+      dataset,
+      evidence: sourceEvidence([V2_SOURCES.transportation]),
+      safeErrorCode: 'SHUTTLE_DATA_UNAVAILABLE',
+    };
+    return {
+      status: 503,
+      body: unavailable,
+      headers: { ...V2_HEADERS, 'X-RockyGPT-Release': dataset.version },
+    };
+  }
+  const entityMatches = allTrips
+    .filter(({ trip }) => routeMatches(trip.route, parsed.request.route))
+    .flatMap((datedTrip) => {
+      const match = matchTrip(datedTrip, parsed.request.origin, parsed.request.destination);
       return match ? [match] : [];
-    })
+    });
+  const timeMatches = entityMatches
     .filter((match) => {
       if (parsed.filters.timeScope === 'full_day') return true;
       if (match.originMinutes === null) return false;
+      const reference = referenceMinutes(parsed.asOf, match.serviceDate);
       if (parsed.filters.timeScope === 'remaining') return match.originMinutes > reference;
       return (
         match.destinationMinutes !== null &&
         match.originMinutes <= reference &&
         reference < match.destinationMinutes
       );
-    })
+    });
+  let selectedMatches = timeMatches
     .sort((left, right) => {
-      const byTime = (left.originMinutes ?? Number.POSITIVE_INFINITY) -
-        (right.originMinutes ?? Number.POSITIVE_INFINITY);
+      const byTime = (left.originSortMinutes ?? Number.POSITIVE_INFINITY) -
+        (right.originSortMinutes ?? Number.POSITIVE_INFINITY);
       if (byTime !== 0) return byTime;
       const byRoute = left.trip.route.localeCompare(right.trip.route);
       return byRoute || left.trip.departure.localeCompare(right.trip.departure);
     });
 
   if (parsed.filters.selection === 'first' || parsed.filters.selection === 'next') {
-    matches = matches.slice(0, 1);
+    selectedMatches = selectedMatches.slice(0, 1);
   }
-  const matched = matches.length;
-  const bounded = matches.slice(0, parsed.limit);
+  const matched = selectedMatches.length;
+  const bounded = selectedMatches.slice(0, parsed.limit);
   const truncated = bounded.length < matched;
-  const records = bounded.map((match) =>
-    toWireRecord(match, parsed.filters.serviceDate, parsed.filters.serviceDay)
-  );
+  const records = bounded.map(toWireRecord);
+  const negativeReason = allTrips.length === 0
+    ? 'dataset_empty' as const
+    : entityMatches.length === 0
+      ? 'entity_no_match' as const
+      : parsed.filters.timeScope === 'remaining'
+        ? 'no_remaining' as const
+        : 'not_current' as const;
   const body: ShuttleQueryResponse = {
-    outcome: records.length > 0 ? 'success' : allTrips.length === 0 ? 'empty' : 'no_match',
+    outcome: records.length > 0
+      ? 'success'
+      : entityMatches.length === 0 && allTrips.length > 0
+        ? 'no_match'
+        : 'empty',
     records,
     completeness: {
       state: truncated ? 'partial' : 'complete',
@@ -464,16 +535,14 @@ export const postShuttleQuery: ApiHandler = async (apiRequest) => {
       matched,
       limit: parsed.limit,
       truncated,
-      ...(truncated ? { reason: 'limit' } : {}),
+      ...(truncated ? { reason: 'limit' as const } : records.length === 0 ? { reason: negativeReason } : {}),
     },
     appliedFilters: parsed.filters,
-    ordering: [
-      { field: 'matchedOrigin.time', direction: 'asc' },
-      { field: 'route', direction: 'asc' },
-    ],
+    ordering: SHUTTLE_ORDERING,
     dataset,
-    evidence: sourceEvidence(authoritativeSources),
+    evidence: records.length > 0
+      ? sourceEvidence(bounded.map((match) => match.trip.source))
+      : sourceEvidence([V2_SOURCES.transportation]),
   };
   return ok(body, { ...V2_HEADERS, 'X-RockyGPT-Release': dataset.version });
 };
-

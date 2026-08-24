@@ -7,6 +7,7 @@ import type { RetrieveResponse } from '../contract';
 import type { ApiRequest } from '../http';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 import { setRepositoryV2ForTests } from '../../src/data-v2/repositories/index';
+import type { RockyRepositoryV2 } from '../../src/data-v2/repositories/types';
 import { postRetrieve } from './retrieve';
 
 const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'rockygpt-retrieve-'));
@@ -38,8 +39,11 @@ function request(body: Record<string, unknown>): ApiRequest {
   };
 }
 
-async function retrieve(body: Record<string, unknown>) {
-  setRepositoryV2ForTests(new FileRepositoryV2(fixtureRoot));
+async function retrieve(
+  body: Record<string, unknown>,
+  repository: RockyRepositoryV2 = new FileRepositoryV2(fixtureRoot)
+) {
+  setRepositoryV2ForTests(repository);
   try {
     return await postRetrieve(request(body));
   } finally {
@@ -58,8 +62,8 @@ test('retrieval returns bounded untrusted chunks with immutable source evidence'
   assert.equal(body.outcome, 'success');
   assert.equal(body.records.length, 1);
   assert.equal(body.records[0].contentTrust, 'untrusted');
-  assert.match(body.records[0].chunkId, /^campus\/transportation\.md:/);
-  assert.equal(body.records[0].documentId, 'campus/transportation.md');
+  assert.match(body.records[0].chunkId, /^file-chunk:[a-f0-9]{64}$/);
+  assert.match(body.records[0].documentId, /^file-document:[a-f0-9]{64}$/);
   assert.deepEqual(body.records[0].evidenceIds, [body.evidence[0].evidenceId]);
   assert.equal(body.evidence[0].sourceId, 'transportation');
   assert.equal(body.indexVersion, body.dataset.version);
@@ -95,3 +99,19 @@ test('retrieval body, domain, query, and topK bounds are strict', async () => {
   assert.equal((await retrieve({ query: 'shuttle', tool: 'shuttle' })).status, 400);
 });
 
+test('a pinned index failure is a typed unavailable outcome', async () => {
+  class UnavailableRetrievalRepository extends FileRepositoryV2 {
+    override async searchDocuments(): Promise<never> {
+      throw new Error('fixture index failure');
+    }
+  }
+  const result = await retrieve(
+    { query: 'shuttle' },
+    new UnavailableRetrievalRepository(fixtureRoot)
+  );
+  const body = result.body as RetrieveResponse;
+  assert.equal(result.status, 503);
+  assert.equal(body.outcome, 'unavailable');
+  assert.equal(body.completeness.state, 'unknown');
+  assert.equal(body.safeErrorCode, 'DOCUMENT_RETRIEVAL_UNAVAILABLE');
+});

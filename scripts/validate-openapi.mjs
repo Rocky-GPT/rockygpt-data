@@ -29,14 +29,23 @@ function walk(value) {
 walk(spec);
 
 const server = await readFile(new URL('../api/server.ts', import.meta.url), 'utf8');
-const documented = new Set(Object.keys(spec.paths));
-for (const match of server.matchAll(/'GET ([^']+)':/g)) {
-  if (!match[1].includes('/dev/') && !documented.has(match[1])) throw new Error(`Runtime route is absent from OpenAPI: GET ${match[1]}`);
+const documented = new Set(
+  Object.entries(spec.paths || {}).flatMap(([path, item]) =>
+    ['get', 'post', 'put', 'patch', 'delete']
+      .filter((method) => item?.[method])
+      .map((method) => `${method.toUpperCase()} ${path}`)
+  )
+);
+for (const match of server.matchAll(/'(GET|POST|PUT|PATCH|DELETE) ([^']+)':/g)) {
+  const operation = `${match[1]} ${match[2]}`;
+  if (!match[2].includes('/dev/') && !documented.has(operation)) {
+    throw new Error(`Runtime route is absent from OpenAPI: ${operation}`);
+  }
 }
-for (const path of documented) {
-  if (path === '/v1/data/{artifact}') continue;
-  if (!server.includes(`'GET ${path}'`) && path !== '/health' && path !== '/readiness') {
-    throw new Error(`OpenAPI route is not registered at runtime: GET ${path}`);
+for (const operation of documented) {
+  if (operation === 'GET /v1/data/{artifact}') continue;
+  if (!server.includes(`'${operation}'`)) {
+    throw new Error(`OpenAPI route is not registered at runtime: ${operation}`);
   }
 }
 console.log(`OpenAPI ${spec.info.version}: ${operationIds.size} unique operations, all refs resolved and routes covered.`);

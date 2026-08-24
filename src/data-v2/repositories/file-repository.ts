@@ -779,13 +779,13 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
         const relative = path.relative(root, file).replace(/\\/g, '/');
         const baseName = path.basename(relative, '.md');
         const sourceKey = sourceAliases[baseName] || baseName;
-        const fallbackSource = V2_SOURCES[sourceKey];
         const topLevel = relative.split('/')[0];
         const domain = topLevel === 'dining'
           ? 'dining'
           : sourceKey === 'faculty'
             ? 'directory'
             : sourceKey;
+        const fallbackSource = V2_SOURCES[topLevel === 'dining' ? 'dining' : sourceKey];
         if (options.domains.length > 0 && !options.domains.includes(domain)) return [];
         // Strip only a leading YAML frontmatter block. The previous
         // multiline-anchored pattern matched the first pair of "---" section
@@ -810,10 +810,16 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
               const chunk = stripIngestionMetadata(rawChunk);
               if (chunk.length <= 40) return [];
               const score = textScore(query, chunk);
+              const documentId = `file-document:${createHash('sha256')
+                .update(relative)
+                .digest('hex')}`;
+              const chunkId = `file-chunk:${createHash('sha256')
+                .update(`${relative}\0${index}\0${chunk}`)
+                .digest('hex')}`;
               return [
                 {
-                  id: `${relative}:${index}`,
-                  documentId: relative,
+                  id: chunkId,
+                  documentId,
                   sourceId: fallbackSource?.sourceId || `context:${relative}`,
                   title: chunk.match(/^#{1,3}\s+(.+)$/m)?.[1]?.trim() || relative,
                   url: sectionUrl || fallbackSource?.url || 'https://www.ramapo.edu/',

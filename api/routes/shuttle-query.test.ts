@@ -4,6 +4,8 @@ import type { ShuttleQueryResponse } from '../contract';
 import type { ApiRequest } from '../http';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 import { setRepositoryV2ForTests } from '../../src/data-v2/repositories/index';
+import type { RockyRepositoryV2 } from '../../src/data-v2/repositories/types';
+import type { ShuttleServiceDay, ShuttleTripRecord } from '../../src/data-v2/schemas';
 import { postShuttleQuery } from './shuttle-query';
 
 function request(body: Record<string, unknown>): ApiRequest {
@@ -16,8 +18,11 @@ function request(body: Record<string, unknown>): ApiRequest {
   };
 }
 
-async function query(body: Record<string, unknown>) {
-  setRepositoryV2ForTests(new FileRepositoryV2(process.cwd()));
+async function query(
+  body: Record<string, unknown>,
+  repository: RockyRepositoryV2 = new FileRepositoryV2(process.cwd())
+) {
+  setRepositoryV2ForTests(repository);
   try {
     return await postShuttleQuery(request(body));
   } finally {
@@ -63,7 +68,9 @@ test('route and destination are distinct filters', async () => {
     selection: 'first',
     timeScope: 'full_day',
   });
-  assert.equal((mistakenRoute.body as ShuttleQueryResponse).outcome, 'no_match');
+  const mistakenBody = mistakenRoute.body as ShuttleQueryResponse;
+  assert.equal(mistakenBody.outcome, 'no_match');
+  assert.equal(mistakenBody.completeness.reason, 'entity_no_match');
 
   const destination = await query({
     ...monday,
@@ -75,6 +82,10 @@ test('route and destination are distinct filters', async () => {
   assert.equal(body.outcome, 'success');
   assert.equal(body.records[0].route, 'Weekday Roadrunner Express');
   assert.equal(body.records[0].matchedDestination.location, 'Garden State Plaza');
+  assert.deepEqual(
+    new Set(body.evidence.map((entry) => entry.evidenceId)),
+    new Set(body.records.flatMap((record) => record.evidenceIds))
+  );
 });
 
 test('next compares asOf with the selected origin stop, not route departure', async () => {
@@ -130,7 +141,9 @@ test('current uses a half-open trip interval and all declares limit truncation',
     selection: 'current',
     timeScope: 'at_time',
   });
-  assert.equal((atArrival.body as ShuttleQueryResponse).outcome, 'no_match');
+  const atArrivalBody = atArrival.body as ShuttleQueryResponse;
+  assert.equal(atArrivalBody.outcome, 'empty');
+  assert.equal(atArrivalBody.completeness.reason, 'not_current');
 
   const bounded = await query({
     ...monday,
@@ -155,7 +168,8 @@ test('a valid no-remaining result keeps authoritative negative-claim evidence', 
     timeScope: 'remaining',
   });
   const body = result.body as ShuttleQueryResponse;
-  assert.equal(body.outcome, 'no_match');
+  assert.equal(body.outcome, 'empty');
+  assert.equal(body.completeness.reason, 'no_remaining');
   assert.deepEqual(body.records, []);
   assert.ok(body.evidence.length > 0);
   assert.equal(body.evidence[0].sourceId, 'transportation');
@@ -173,5 +187,64 @@ test('selection/timeScope pairings and unknown request fields are strict', async
     timeScope: 'full_day',
     destinationRoute: 'Garden State Plaza',
   })).status, 400);
+  assert.equal((await query({
+    asOf: monday.asOf,
+    serviceDay: 'weekday',
+    selection: 'first',
+    timeScope: 'full_day',
+  })).status, 400);
 });
 
+test('current checks at most the current and prior service dates for cross-midnight trips', async () => {
+  const calls: ShuttleServiceDay[] = [];
+  class OvernightRepository extends FileRepositoryV2 {
+    override async listShuttleTrips(serviceDay: ShuttleServiceDay): Promise<ShuttleTripRecord[]> {
+      calls.push(serviceDay);
+      if (serviceDay !== 'sunday') return [];
+      return [{
+        route: 'Overnight Roadrunner Express',
+        departure: '11:50 PM',
+        stops: [],
+        arrival: '12:20 AM',
+        source: {
+          sourceId: 'overnight-transportation',
+          title: 'Overnight Transportation Schedule',
+          url: 'https://www.ramapo.edu/about/transportation-services/',
+        },
+      }];
+    }
+  }
+  const result = await query({
+    asOf: '2026-08-24T00:05:00-04:00',
+    route: 'Overnight Roadrunner Express',
+    selection: 'current',
+    timeScope: 'at_time',
+  }, new OvernightRepository(process.cwd()));
+  const body = result.body as ShuttleQueryResponse;
+  assert.equal(body.outcome, 'success');
+  assert.equal(body.records[0].serviceDate, '2026-08-23');
+  assert.deepEqual(body.appliedFilters.serviceDatesConsidered, ['2026-08-24', '2026-08-23']);
+  assert.deepEqual(calls, ['weekday', 'sunday']);
+  assert.equal(body.ordering[0].field, 'serviceDate');
+  assert.equal(body.evidence[0].sourceId, 'overnight-transportation');
+  assert.deepEqual(body.records[0].evidenceIds, [body.evidence[0].evidenceId]);
+});
+
+test('a pinned shuttle dependency failure is a typed unavailable outcome', async () => {
+  class UnavailableShuttleRepository extends FileRepositoryV2 {
+    override async listShuttleTrips(): Promise<never> {
+      throw new Error('fixture dependency failure');
+    }
+  }
+  const result = await query({
+    ...monday,
+    selection: 'first',
+    timeScope: 'full_day',
+  }, new UnavailableShuttleRepository(process.cwd()));
+  const body = result.body as ShuttleQueryResponse;
+  assert.equal(result.status, 503);
+  assert.equal(body.outcome, 'unavailable');
+  assert.equal(body.completeness.state, 'unknown');
+  assert.equal(body.safeErrorCode, 'SHUTTLE_DATA_UNAVAILABLE');
+  assert.ok(body.evidence.length > 0);
+});

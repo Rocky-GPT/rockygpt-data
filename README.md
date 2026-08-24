@@ -35,3 +35,17 @@ boundaries.
 Browser-shaped artifacts are staged under this repository's ignored `public/`
 directory, published into PostgreSQL, and served through
 `GET /v1/data/:artifact`. The pipeline never writes into a client repository.
+
+Hybrid clients use the additive typed endpoints
+`POST /v2/capabilities/shuttle/query` and `POST /v2/retrieve`. DATA, rather
+than the caller, owns filtering, chronological ordering, result bounds,
+completeness, dataset identity, and public source evidence. Retrieved document
+text is explicitly marked `contentTrust: "untrusted"`. The existing `/v1`
+routes and response shapes remain unchanged.
+
+Shuttle entity misses are distinct from an authoritative empty time window:
+unknown route/stop constraints use `no_match` with `entity_no_match`, while no
+remaining or currently active service uses `empty` with `no_remaining` or
+`not_current`. A `current/at_time` query checks only its service date and, when
+needed, the immediately prior date for a cross-midnight trip; the response
+lists both under `appliedFilters.serviceDatesConsidered`.
