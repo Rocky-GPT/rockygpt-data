@@ -3,6 +3,7 @@
 import { getRepositoryV2 } from '../../src/data-v2/repositories/index';
 import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
 import { V2_SOURCES } from '../../src/data-v2/sources';
+import { scheduleStatusAt } from '../../src/data-v2/schedule-status';
 import { fail, ok, PUBLIC_READ_HEADERS, type ApiHandler } from '../http';
 import { parseIsoInstant, validateQueryLengths } from '../query';
 
@@ -30,6 +31,89 @@ function campusWeekday(at: Date): string {
     timeZone: CAMPUS_TIME_ZONE,
     weekday: 'long',
   }).format(at);
+}
+
+function campusServiceDay(at: Date): ShuttleServiceDay {
+  const weekday = campusWeekday(at);
+  if (weekday === 'Saturday') return 'saturday';
+  if (weekday === 'Sunday') return 'sunday';
+  return 'weekday';
+}
+
+function campusMinutesOfDay(at: Date): number {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: CAMPUS_TIME_ZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).formatToParts(at);
+  const hour = Number(parts.find((part) => part.type === 'hour')?.value ?? '0');
+  const minute = Number(parts.find((part) => part.type === 'minute')?.value ?? '0');
+  return (hour % 24) * 60 + minute;
+}
+
+/** "7:00 AM" -> minutes past midnight. Null when the text is not a clock time. */
+function departureMinutes(departure: string): number | null {
+  const match = /(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?/i.exec(departure.trim());
+  if (!match) return null;
+  const hour = Number(match[1]) % 12;
+  const minute = Number(match[2] ?? 0);
+  return (match[3].toLowerCase() === 'p' ? hour + 12 : hour) * 60 + minute;
+}
+
+/**
+ * The trips a caller asking "at" this moment can still catch, in departure
+ * order.
+ *
+ * `at` was previously accepted, length-checked, and then dropped before it
+ * reached retrieval, so this endpoint answered every question about a service
+ * day with that day's entire timetable — including trips that had already left.
+ * Callers had no way to ask for the remainder of the day.
+ *
+ * Filtering applies only when the requested timetable is the one `at` actually
+ * falls on. "After now" means nothing for a question about Saturday asked on a
+ * Tuesday: that asks for the whole Saturday timetable, and gets it. A departure
+ * whose text does not parse is kept rather than dropped, so a format this
+ * function does not recognise cannot silently remove real service.
+ */
+function upcomingTrips<T extends { departure: string }>(
+  trips: T[],
+  at: Date,
+  requestedServiceDay: ShuttleServiceDay
+): T[] {
+  const ordered = [...trips].sort((left, right) => {
+    const a = departureMinutes(left.departure);
+    const b = departureMinutes(right.departure);
+    if (a === null || b === null) return 0;
+    return a - b;
+  });
+  if (requestedServiceDay !== campusServiceDay(at)) return ordered;
+  const nowMinutes = campusMinutesOfDay(at);
+  return ordered.filter((trip) => {
+    const minutes = departureMinutes(trip.departure);
+    return minutes === null || minutes > nowMinutes;
+  });
+}
+
+/**
+ * Attaches computed open/closed status to hours records.
+ *
+ * Only when the row describes the day `at` actually falls on. A question about
+ * Saturday's hours asked on a Tuesday wants the published schedule, not a
+ * status derived from Tuesday afternoon — attaching one there would be a
+ * confident wrong answer rather than a missing field.
+ *
+ * Interval semantics and the unparseable case are owned by
+ * `src/data-v2/schedule-status.ts`.
+ */
+function withScheduleStatus<T extends { day: string; schedule: string }>(
+  records: T[],
+  at: Date,
+  requestedDay: string
+): T[] {
+  if (requestedDay !== campusWeekday(at)) return records;
+  const minutes = campusMinutesOfDay(at);
+  return records.map((record) => ({ ...record, ...scheduleStatusAt(record.schedule, minutes) }));
 }
 
 function response(dataset: { id: string; version: string; activatedAt: string }, records: unknown[]) {
@@ -81,10 +165,16 @@ export const getSearch: ApiHandler = async (request) => {
   const query = text(request, 'q');
 
   if (path === '/v1/search/campus-hours') {
-    return response(dataset, await pinned.findCampusHours(query, day!, at));
+    return response(
+      dataset,
+      withScheduleStatus(await pinned.findCampusHours(query, day!, at), at, day!)
+    );
   }
   if (path === '/v1/search/dining-hours') {
-    return response(dataset, await pinned.findDiningHours(query, day!, at));
+    return response(
+      dataset,
+      withScheduleStatus(await pinned.findDiningHours(query, day!, at), at, day!)
+    );
   }
   if (path === '/v1/search/menu') {
     return response(dataset, await pinned.findMenuItems(query, text(request, 'meal') || undefined));
@@ -105,13 +195,12 @@ export const getSearch: ApiHandler = async (request) => {
     return response(dataset, await pinned.findAcademicDates(query));
   }
   if (path === '/v1/search/shuttles') {
-    return response(
-      dataset,
-      await pinned.getShuttleTrips(
-        text(request, 'route') || undefined,
-        (requestedServiceDay as ShuttleServiceDay) || undefined
-      )
-    );
+    // With no explicit serviceDay, the timetable that applies is the one `at`
+    // falls on — not the repository's weekday default, which answered Sunday
+    // questions with the weekday schedule.
+    const serviceDay = (requestedServiceDay as ShuttleServiceDay) || campusServiceDay(at);
+    const trips = await pinned.getShuttleTrips(text(request, 'route') || undefined, serviceDay);
+    return response(dataset, upcomingTrips(trips, at, serviceDay));
   }
 
   return fail(404, 'NOT_FOUND', `Unknown campus search: ${path}`);
