@@ -729,10 +729,55 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
     }));
   }
 
+  async listShuttleTrips(serviceDay: ShuttleServiceDay): Promise<ShuttleTripRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const result = await this.pool.query<Row>(
+      `SELECT r.name AS route, t.departure, t.arrival, t.stops,
+              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+              t.collected_at::text
+         FROM rockygpt_v2.shuttle_trips t
+         JOIN rockygpt_v2.shuttle_routes r ON r.id = t.route_id
+         JOIN rockygpt_v2.sources s ON s.id = t.source_id
+        WHERE t.dataset_version_id = $1::uuid
+          AND (
+            r.service_day = $2::text
+            OR (
+              r.service_day IS NULL
+              AND CASE $2::text
+                WHEN 'weekday' THEN lower(r.name) NOT LIKE '%saturday%'
+                                  AND lower(r.name) NOT LIKE '%sunday%'
+                WHEN 'saturday' THEN lower(r.name) LIKE '%saturday%'
+                WHEN 'sunday' THEN lower(r.name) LIKE '%sunday%'
+                ELSE false
+              END
+            )
+          )
+        ORDER BY t.sequence, r.name`,
+      [datasetId, serviceDay]
+    );
+    return result.rows.map((row) => ({
+      route: requiredString(row, 'route'),
+      departure: requiredString(row, 'departure'),
+      arrival: requiredString(row, 'arrival'),
+      stops: Array.isArray(row.stops)
+        ? row.stops.flatMap((stop): Array<{ location: string; time: string }> =>
+            stop && typeof stop === 'object'
+              ? [{
+                  location: requiredString(stop as Row, 'location'),
+                  time: requiredString(stop as Row, 'time'),
+                }]
+              : []
+          )
+        : [],
+      source: sourceFromRow(row),
+    }));
+  }
+
   async searchDocuments(query: string, options: SearchOptions): Promise<EvidenceItem[]> {
     const datasetId = await this.activeDatasetId();
     const sql = `
-      SELECT c.id::text, coalesce(c.metadata->>'headingPath', d.title) AS title,
+      SELECT c.id::text, d.id::text AS document_id, s.id::text AS source_id,
+             coalesce(c.metadata->>'headingPath', d.title) AS title,
              coalesce(c.metadata->>'canonicalUrl', s.canonical_url) AS url,
              c.content, s.domain, s.trust_tier,
              d.collected_at::text,
@@ -743,15 +788,17 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
       JOIN rockygpt_v2.documents d ON d.id = c.document_id
       JOIN rockygpt_v2.sources s ON s.id = d.source_id
       WHERE d.dataset_version_id = $1::uuid
-        AND ($3::text = 'general' OR s.domain = $3)
+        AND (cardinality($3::text[]) = 0 OR s.domain = ANY($3::text[]))
         AND c.lexical_vector @@ plainto_tsquery('english', $2)
-      ORDER BY score DESC
+      ORDER BY score DESC, c.id
       LIMIT $4
     `;
-    const values = [datasetId, query, options.domain, options.limit];
+    const values = [datasetId, query, options.domains, options.limit];
     const result = await this.pool.query<Row>(sql, values);
     return result.rows.map((row) => ({
       id: requiredString(row, 'id'),
+      documentId: requiredString(row, 'document_id'),
+      sourceId: requiredString(row, 'source_id'),
       title: requiredString(row, 'title'),
       url: requiredString(row, 'url'),
       content: requiredString(row, 'content'),

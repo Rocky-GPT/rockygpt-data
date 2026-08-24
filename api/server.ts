@@ -27,6 +27,8 @@ import { getMap } from './routes/map';
 import { getMenu } from './routes/menu';
 import { getMenuBrowse } from './routes/menu-browse';
 import { getShuttle } from './routes/shuttle';
+import { postShuttleQuery } from './routes/shuttle-query';
+import { postRetrieve } from './routes/retrieve';
 import { getSafetyResources, getSearch } from './routes/search';
 import { fail, type ApiHandler, type ApiRequest } from './http';
 
@@ -85,6 +87,8 @@ const ROUTES: Record<string, ApiHandler> = {
   'GET /v1/search/academic-dates': getSearch,
   'GET /v1/search/shuttles': getSearch,
   'GET /v1/safety-resources': getSafetyResources,
+  'POST /v2/capabilities/shuttle/query': postShuttleQuery,
+  'POST /v2/retrieve': postRetrieve,
 };
 
 // Development inspectors expose release metadata and broad database reads.
@@ -186,7 +190,7 @@ async function handleRequest(
 
   // Browsers ask before a cross-origin read; native clients never do.
   if (method === 'OPTIONS') {
-    send(response, 204, null, { 'access-control-allow-methods': 'GET, OPTIONS' });
+    send(response, 204, null, { 'access-control-allow-methods': 'GET, POST, OPTIONS' });
     return;
   }
 

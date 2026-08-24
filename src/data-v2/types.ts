@@ -30,7 +30,12 @@ export interface CriticalFactRecord {
 
 /** A retrieved passage and how much it should be trusted. */
 export interface EvidenceItem {
+  /** Immutable chunk identifier within the pinned dataset/index. */
   id: string;
+  /** Immutable parent document identifier within the pinned dataset/index. */
+  documentId: string;
+  /** Stable owner of the public citation metadata below. */
+  sourceId: string;
   title: string;
   url: string;
   content: string;

@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: RockyGPT Campus Data API
-  version: 1.1.3
-  description: Public, read-only campus information owned by rockygpt-data.
+  version: 2.0.0
+  description: Public, read-only campus information owned by rockygpt-data. V2 adds typed capability and retrieval results without changing V1.
 security:
   - environmentToken: []
   - {}
@@ -204,6 +204,46 @@ paths:
                     items: {}
         '304': { description: The supplied ETag still identifies the active artifact. }
         '404': { $ref: '#/components/responses/NotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v2/capabilities/shuttle/query:
+    post:
+      operationId: queryShuttleCapability
+      description: Deterministically filters, chronologically orders, selects, and bounds shuttle trips from one pinned release.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ShuttleQueryRequest' }
+      responses:
+        '200':
+          description: A typed shuttle result. Valid authoritative misses use outcome empty or no_match.
+          headers:
+            X-RockyGPT-Release:
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ShuttleQueryResponse' }
+        '400': { $ref: '#/components/responses/Invalid' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /v2/retrieve:
+    post:
+      operationId: retrieveDocuments
+      description: Retrieves bounded document chunks as untrusted content with server-owned source evidence.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RetrieveRequest' }
+      responses:
+        '200':
+          description: Ranked chunks from one immutable release/index, including explicit truncation.
+          headers:
+            X-RockyGPT-Release:
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RetrieveResponse' }
+        '400': { $ref: '#/components/responses/Invalid' }
         '503': { $ref: '#/components/responses/Unavailable' }
 components:
   securitySchemes:
