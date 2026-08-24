@@ -195,9 +195,8 @@ function parseQuery(body: unknown): ParsedQuery | string {
     ...(body.limit === undefined ? {} : { limit: body.limit as number }),
   };
   const serviceDatesConsidered =
-    selection === 'current' &&
-    timeScope === 'at_time' &&
-    serviceDate === campusDate(asOf)
+    serviceDate === campusDate(asOf) &&
+    (timeScope === 'at_time' || timeScope === 'remaining')
       ? [serviceDate, previousDate(serviceDate)]
       : [serviceDate];
   const filters: ShuttleAppliedFilters = {

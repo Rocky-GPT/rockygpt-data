@@ -114,7 +114,7 @@ export interface ShuttleAppliedFilters {
   destination?: string;
   serviceDate: string;
   serviceDay: WireShuttleServiceDay;
-  /** One date normally; current/at_time may add the immediately prior date. */
+  /** One date normally; at_time or remaining may add the immediately prior date. */
   serviceDatesConsidered: string[];
   asOf: string;
   selection: ShuttleSelection;

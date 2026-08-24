@@ -230,6 +230,44 @@ test('current checks at most the current and prior service dates for cross-midni
   assert.deepEqual(body.records[0].evidenceIds, [body.evidence[0].evidenceId]);
 });
 
+test('next includes an upcoming origin pickup from the prior service date', async () => {
+  const calls: ShuttleServiceDay[] = [];
+  class OvernightPickupRepository extends FileRepositoryV2 {
+    override async listShuttleTrips(serviceDay: ShuttleServiceDay): Promise<ShuttleTripRecord[]> {
+      calls.push(serviceDay);
+      if (serviceDay !== 'sunday') return [];
+      return [{
+        route: 'Overnight Roadrunner Express',
+        departure: '11:50 PM',
+        stops: [
+          { location: 'Garden State Plaza (Drop-off)', time: '12:00 AM' },
+          { location: 'Garden State Plaza (Pick-up)', time: '12:10 AM' },
+        ],
+        arrival: '12:30 AM',
+        source: {
+          sourceId: 'overnight-transportation',
+          title: 'Overnight Transportation Schedule',
+          url: 'https://www.ramapo.edu/about/transportation-services/',
+        },
+      }];
+    }
+  }
+  const result = await query({
+    asOf: '2026-08-24T00:05:00-04:00',
+    origin: 'Garden State Plaza',
+    destination: 'campus',
+    selection: 'next',
+    timeScope: 'remaining',
+  }, new OvernightPickupRepository(process.cwd()));
+  const body = result.body as ShuttleQueryResponse;
+  assert.equal(body.outcome, 'success');
+  assert.equal(body.records[0].serviceDate, '2026-08-23');
+  assert.equal(body.records[0].matchedOrigin.time, '12:10 AM');
+  assert.equal(body.records[0].matchedDestination.location, 'Ramapo College');
+  assert.deepEqual(body.appliedFilters.serviceDatesConsidered, ['2026-08-24', '2026-08-23']);
+  assert.deepEqual(calls, ['weekday', 'sunday']);
+});
+
 test('a pinned shuttle dependency failure is a typed unavailable outcome', async () => {
   class UnavailableShuttleRepository extends FileRepositoryV2 {
     override async listShuttleTrips(): Promise<never> {

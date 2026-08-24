@@ -423,7 +423,7 @@ components:
           minItems: 1
           maxItems: 2
           uniqueItems: true
-          description: Normally the requested date. current/at_time may add only the immediately prior service date for a cross-midnight trip.
+          description: Normally the requested date. at_time or remaining may add only the immediately prior service date for a cross-midnight trip.
           items: { type: string, format: date }
         asOf: { type: string, format: date-time }
         selection: { type: string, enum: [first, next, all, current] }
