@@ -30,6 +30,19 @@ export function getRuntimePool(connectionString = process.env.DATABASE_URL): Poo
     connectionTimeoutMillis: 8_000,
     application_name: 'rockygpt-runtime',
   });
+
+  // node-postgres emits 'error' on the pool when a client fails while idle,
+  // and an unhandled 'error' event terminates the process. That is not a
+  // theoretical risk here: the endpoint is serverless Postgres, which drops
+  // idle connections as a matter of course, so a dropped socket
+  // (EHOSTUNREACH/ECONNRESET) on a checked-in client took the whole data
+  // service down mid-session. The pool discards the broken client and opens
+  // a fresh one on the next checkout, so surviving this is just a matter of
+  // listening: an idle-connection failure must not outrank a live request.
+  pool.on('error', (error) => {
+    console.error('[runtime-pool] idle client error (connection discarded):', error);
+  });
+
   pools.set(connectionString, pool);
   return pool;
 }

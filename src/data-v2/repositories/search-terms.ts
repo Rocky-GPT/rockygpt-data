@@ -14,9 +14,17 @@
  * Africana Studies on "studies". A confidently wrong answer is worse than a
  * deferral in a system built to fail closed.
  *
- * So the match stays strict and the junk is removed first, from two sources: a
- * fixed list of words that phrase questions in any domain, and a per-table
- * measurement of words too common in that table to distinguish anything.
+ * So the match stays strict and the junk is removed first, from three sources:
+ * a fixed list of words that phrase questions in any domain, a per-table
+ * measurement of words too common in that table to distinguish anything, and a
+ * per-table list of words naming what the table *is*.
+ *
+ * That third source exists because the measurement cannot see these words at
+ * all. Frequency pruning only discards words that appear *in the records*, but
+ * "clubs" never appears inside a club's own name, so it measures as maximally
+ * distinctive while identifying nothing — and "what clubs can i join" then
+ * required a record literally containing "clubs". Only the caller knows which
+ * noun names its own table, so each finder passes its own.
  */
 
 /**
@@ -59,11 +67,17 @@ export interface TermFrequencies {
 const COMMON_SHARE = 0.1;
 const COMMON_MINIMUM_ROWS = 4;
 
-export function splitQueryWords(query: string): string[] {
+export function splitQueryWords(
+  query: string,
+  domainWords?: ReadonlySet<string>
+): string[] {
   return query
     .toLowerCase()
     .split(/[^\p{L}\p{N}]+/u)
-    .filter((word) => word.length > 1 && !GENERIC_QUERY_WORDS.has(word));
+    .filter(
+      (word) =>
+        word.length > 1 && !GENERIC_QUERY_WORDS.has(word) && !domainWords?.has(word)
+    );
 }
 
 export function buildTermFrequencies(texts: string[]): TermFrequencies {
@@ -97,8 +111,12 @@ export interface SearchTerms {
   fallback: string | null;
 }
 
-export function searchTermsFor(query: string, frequencies: TermFrequencies): SearchTerms {
-  const words = splitQueryWords(query);
+export function searchTermsFor(
+  query: string,
+  frequencies: TermFrequencies,
+  domainWords?: ReadonlySet<string>
+): SearchTerms {
+  const words = splitQueryWords(query, domainWords);
   if (!words.length) return { primary: '', fallback: null };
 
   const distinctive = words.filter((word) => !isTooCommon(word, frequencies));
