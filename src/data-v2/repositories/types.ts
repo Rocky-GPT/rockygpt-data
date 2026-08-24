@@ -17,7 +17,8 @@ import type {
 } from '../schemas';
 
 export interface SearchOptions {
-  domain: string;
+  /** Empty means every public document domain. */
+  domains: readonly string[];
   limit: number;
 }
 
@@ -64,5 +65,11 @@ export interface RockyRepositoryV2 {
     routeHint?: string,
     serviceDay?: ShuttleServiceDay
   ): Promise<ShuttleTripRecord[]>;
+  /**
+   * All shuttle routes serving one timetable day. Unlike getShuttleTrips this
+   * has no historical default-route behavior and is therefore safe for V2's
+   * separate route/origin/destination filters.
+   */
+  listShuttleTrips(serviceDay: ShuttleServiceDay): Promise<ShuttleTripRecord[]>;
   searchDocuments(query: string, options: SearchOptions): Promise<EvidenceItem[]>;
 }

@@ -25,6 +25,143 @@ export interface WireDatasetContext {
   activatedAt: string;
 }
 
+/** The semantic result of a typed DATA V2 operation. */
+export type WireOutcome =
+  | 'success'
+  | 'empty'
+  | 'no_match'
+  | 'needs_clarification'
+  | 'unsupported'
+  | 'unavailable'
+  | 'error';
+
+/** Whether DATA returned the whole result set promised by the request. */
+export interface WireCompleteness {
+  state: 'complete' | 'partial' | 'unknown';
+  returned: number;
+  matched?: number;
+  limit: number;
+  truncated: boolean;
+  reason?: string;
+}
+
+/** One stable ordering rule, evaluated from left to right. */
+export interface WireOrdering {
+  field: string;
+  direction: 'asc' | 'desc';
+}
+
+/** Server-owned citation metadata. Model output must refer to evidenceId only. */
+export interface WireEvidence extends WireSource {
+  evidenceId: string;
+}
+
+export type WireAppliedFilterValue = string | number | boolean | null | string[];
+export type WireAppliedFilters = Record<string, WireAppliedFilterValue>;
+
+/** Fields shared by every successful typed V2 capability or retrieval response. */
+export interface WireV2Result<
+  TRecord extends Record<string, unknown>,
+  TFilters extends object = WireAppliedFilters,
+> {
+  outcome: WireOutcome;
+  records: TRecord[];
+  completeness: WireCompleteness;
+  appliedFilters: TFilters;
+  ordering: WireOrdering[];
+  dataset: WireDatasetContext;
+  evidence: WireEvidence[];
+  warnings?: string[];
+  safeErrorCode?: string;
+}
+
+export type ShuttleSelection = 'first' | 'next' | 'all' | 'current';
+export type ShuttleTimeScope = 'full_day' | 'remaining' | 'at_time';
+export type WireShuttleServiceDay = 'weekday' | 'saturday' | 'sunday';
+
+/** Strict body accepted by POST /v2/capabilities/shuttle/query. */
+export interface ShuttleQueryRequest {
+  route?: string;
+  origin?: string;
+  destination?: string;
+  serviceDate?: string;
+  serviceDay?: WireShuttleServiceDay;
+  asOf: string;
+  selection: ShuttleSelection;
+  timeScope: ShuttleTimeScope;
+  limit?: number;
+}
+
+export interface ShuttleAppliedFilters {
+  route?: string;
+  origin?: string;
+  destination?: string;
+  serviceDate: string;
+  serviceDay: WireShuttleServiceDay;
+  asOf: string;
+  selection: ShuttleSelection;
+  timeScope: ShuttleTimeScope;
+}
+
+export interface WireShuttleQueryStop {
+  location: string;
+  time: string;
+}
+
+/** One trip selected by the typed shuttle query pipeline. */
+export interface WireShuttleQueryRecord extends Record<string, unknown> {
+  route: string;
+  serviceDate: string;
+  serviceDay: WireShuttleServiceDay;
+  departure: WireShuttleQueryStop;
+  stops: WireShuttleQueryStop[];
+  arrival: WireShuttleQueryStop;
+  matchedOrigin: WireShuttleQueryStop;
+  matchedDestination: WireShuttleQueryStop;
+  evidenceIds: string[];
+}
+
+export type ShuttleQueryResponse = WireV2Result<
+  WireShuttleQueryRecord,
+  ShuttleAppliedFilters
+>;
+
+export type RetrievalTrustTier =
+  | 'official_primary'
+  | 'official_secondary'
+  | 'community'
+  | 'unknown';
+
+/** Strict body accepted by POST /v2/retrieve. */
+export interface RetrieveRequest {
+  query: string;
+  domains?: string[];
+  topK?: number;
+}
+
+export interface RetrieveAppliedFilters {
+  query: string;
+  domains: string[];
+}
+
+/** Retrieved prose is always data, never executable instructions. */
+export interface WireRetrievedChunk extends Record<string, unknown> {
+  chunkId: string;
+  documentId: string;
+  content: string;
+  contentTrust: 'untrusted';
+  domain: string;
+  trustTier: RetrievalTrustTier;
+  score: number;
+  evidenceIds: string[];
+}
+
+export interface RetrieveResponse
+  extends WireV2Result<WireRetrievedChunk, RetrieveAppliedFilters> {
+  /** The immutable search index is published as part of this dataset release. */
+  indexVersion: string;
+}
+
 /** A structured repository search, with records retaining their own sources. */
 export interface SearchResponse<TRecord extends Record<string, unknown> = Record<string, unknown>> {
   dataset: WireDatasetContext;

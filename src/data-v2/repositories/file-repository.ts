@@ -737,6 +737,26 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
     return timetable.trips.map((trip) => ({ route: timetable.route, ...trip, source }));
   }
 
+  async listShuttleTrips(serviceDay: ShuttleServiceDay): Promise<ShuttleTripRecord[]> {
+    const source = V2_SOURCES.transportation;
+    const timetables: Record<ShuttleServiceDay, { route: string; trips: ShuttleRoute[] }> = {
+      weekday: { route: 'Weekday Roadrunner Express', trips: shuttleSchedule.weekday },
+      saturday: { route: 'Saturday Roadrunner Express', trips: shuttleSchedule.saturday },
+      sunday: { route: 'Sunday Roadrunner Express', trips: shuttleSchedule.sunday },
+    };
+    const timetable = timetables[serviceDay];
+    const trips = timetable.trips.map((trip) => ({ route: timetable.route, ...trip, source }));
+    if (serviceDay !== 'weekday') return trips;
+    return [
+      ...trips,
+      ...shuttleSchedule.trainLoop.map((trip) => ({
+        route: 'Ramsey Route 17 Express',
+        ...trip,
+        source,
+      })),
+    ];
+  }
+
   async searchDocuments(query: string, options: SearchOptions): Promise<EvidenceItem[]> {
     const root = path.join(/*turbopackIgnore: true*/ this.rootDir, 'data', 'context');
     const files: string[] = [];
@@ -757,11 +777,16 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
     return files
       .flatMap((file) => {
         const relative = path.relative(root, file).replace(/\\/g, '/');
-        const domain = relative.split('/')[0] || 'general';
-        if (options.domain !== 'general' && !relative.includes(options.domain)) return [];
         const baseName = path.basename(relative, '.md');
-        const fallbackSource =
-          V2_SOURCES[domain] || V2_SOURCES[sourceAliases[baseName] || baseName];
+        const sourceKey = sourceAliases[baseName] || baseName;
+        const fallbackSource = V2_SOURCES[sourceKey];
+        const topLevel = relative.split('/')[0];
+        const domain = topLevel === 'dining'
+          ? 'dining'
+          : sourceKey === 'faculty'
+            ? 'directory'
+            : sourceKey;
+        if (options.domains.length > 0 && !options.domains.includes(domain)) return [];
         // Strip only a leading YAML frontmatter block. The previous
         // multiline-anchored pattern matched the first pair of "---" section
         // separators anywhere in the document and silently deleted the whole
@@ -788,6 +813,8 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
               return [
                 {
                   id: `${relative}:${index}`,
+                  documentId: relative,
+                  sourceId: fallbackSource?.sourceId || `context:${relative}`,
                   title: chunk.match(/^#{1,3}\s+(.+)$/m)?.[1]?.trim() || relative,
                   url: sectionUrl || fallbackSource?.url || 'https://www.ramapo.edu/',
                   content: chunk,
@@ -801,7 +828,7 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
         );
       })
       .filter((item) => item.score > 0)
-      .sort((a, b) => b.score - a.score)
+      .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))
       .slice(0, options.limit);
   }
 }

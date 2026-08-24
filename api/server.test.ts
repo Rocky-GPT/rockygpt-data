@@ -3,6 +3,8 @@ import net from 'node:net';
 import test from 'node:test';
 import type http from 'node:http';
 import { createDataServer } from './server';
+import { FileRepositoryV2 } from '../src/data-v2/repositories/file-repository';
+import { setRepositoryV2ForTests } from '../src/data-v2/repositories/index';
 
 async function listen(server: http.Server): Promise<number> {
   await new Promise<void>((resolve, reject) => {
@@ -73,6 +75,11 @@ test('staging token gates data routes while probes stay public', async () => {
   try {
     assert.equal((await fetch(`http://127.0.0.1:${port}/health`)).status, 200);
     assert.equal((await fetch(`http://127.0.0.1:${port}/v1/map`)).status, 401);
+    assert.equal((await fetch(`http://127.0.0.1:${port}/v2/capabilities/shuttle/query`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: '{}',
+    })).status, 401);
     assert.equal((await fetch(`http://127.0.0.1:${port}/v1/map`, {
       headers: { 'x-rockygpt-environment-token': 'wrong' },
     })).status, 401);
@@ -81,6 +88,43 @@ test('staging token gates data routes while probes stay public', async () => {
     });
     assert.notEqual(allowed.status, 401);
   } finally {
+    await close(server);
+  }
+});
+
+test('V2 POST routes are registered and advertised by CORS', async () => {
+  setRepositoryV2ForTests(new FileRepositoryV2(process.cwd()));
+  const server = createDataServer();
+  const port = await listen(server);
+  try {
+    const preflight = await fetch(`http://127.0.0.1:${port}/v2/capabilities/shuttle/query`, {
+      method: 'OPTIONS',
+    });
+    assert.equal(preflight.status, 204);
+    assert.match(preflight.headers.get('access-control-allow-methods') ?? '', /POST/);
+
+    const response = await fetch(`http://127.0.0.1:${port}/v2/capabilities/shuttle/query`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        serviceDate: '2026-08-24',
+        asOf: '2026-08-24T06:00:00-04:00',
+        route: 'Roadrunner',
+        selection: 'first',
+        timeScope: 'full_day',
+      }),
+    });
+    assert.equal(response.status, 200);
+    assert.equal((await response.json() as { outcome?: unknown }).outcome, 'success');
+
+    const retrieve = await fetch(`http://127.0.0.1:${port}/v2/retrieve`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+    assert.equal(retrieve.status, 400);
+  } finally {
+    setRepositoryV2ForTests(null);
     await close(server);
   }
 });
