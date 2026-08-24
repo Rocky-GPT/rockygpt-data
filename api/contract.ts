@@ -42,8 +42,17 @@ export interface WireCompleteness {
   matched?: number;
   limit: number;
   truncated: boolean;
-  reason?: string;
+  reason?: WireCompletenessReason;
 }
+
+export type WireCompletenessReason =
+  | 'limit'
+  | 'top_k'
+  | 'entity_no_match'
+  | 'no_remaining'
+  | 'not_current'
+  | 'dataset_empty'
+  | 'dependency_unavailable';
 
 /** One stable ordering rule, evaluated from left to right. */
 export interface WireOrdering {
@@ -79,18 +88,25 @@ export type ShuttleSelection = 'first' | 'next' | 'all' | 'current';
 export type ShuttleTimeScope = 'full_day' | 'remaining' | 'at_time';
 export type WireShuttleServiceDay = 'weekday' | 'saturday' | 'sunday';
 
-/** Strict body accepted by POST /v2/capabilities/shuttle/query. */
-export interface ShuttleQueryRequest {
+interface ShuttleQueryRequestBase {
   route?: string;
   origin?: string;
   destination?: string;
-  serviceDate?: string;
-  serviceDay?: WireShuttleServiceDay;
   asOf: string;
   selection: ShuttleSelection;
   timeScope: ShuttleTimeScope;
   limit?: number;
 }
+
+/**
+ * Strict body accepted by POST /v2/capabilities/shuttle/query.
+ * A service day never floats free of a date: when serviceDay is supplied,
+ * serviceDate is required and must derive to that same day category.
+ */
+export type ShuttleQueryRequest = ShuttleQueryRequestBase & (
+  | { serviceDate?: undefined; serviceDay?: undefined }
+  | { serviceDate: string; serviceDay?: WireShuttleServiceDay }
+);
 
 export interface ShuttleAppliedFilters {
   route?: string;
@@ -98,6 +114,8 @@ export interface ShuttleAppliedFilters {
   destination?: string;
   serviceDate: string;
   serviceDay: WireShuttleServiceDay;
+  /** One date normally; current/at_time may add the immediately prior date. */
+  serviceDatesConsidered: string[];
   asOf: string;
   selection: ShuttleSelection;
   timeScope: ShuttleTimeScope;

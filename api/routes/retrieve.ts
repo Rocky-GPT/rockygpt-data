@@ -18,6 +18,10 @@ const MAX_DOMAINS = 8;
 const REQUEST_KEYS = new Set(['query', 'domains', 'topK']);
 const DOMAIN_PATTERN = /^[a-z][a-z0-9_-]{0,63}$/;
 const V2_HEADERS = { 'Cache-Control': 'no-store' };
+const RETRIEVAL_ORDERING = [
+  { field: 'score', direction: 'desc' as const },
+  { field: 'chunkId', direction: 'asc' as const },
+];
 
 interface ParsedRetrieve {
   request: RetrieveRequest;
@@ -102,10 +106,36 @@ export const postRetrieve: ApiHandler = async (apiRequest) => {
   const pinned = repository.withDataset(dataset);
   // One look-ahead row is enough to declare truncation without loading an
   // unbounded corpus into the service process.
-  const matches = await pinned.searchDocuments(parsed.request.query, {
-    domains: parsed.filters.domains,
-    limit: parsed.topK + 1,
-  });
+  let matches: EvidenceItem[];
+  try {
+    matches = await pinned.searchDocuments(parsed.request.query, {
+      domains: parsed.filters.domains,
+      limit: parsed.topK + 1,
+    });
+  } catch {
+    const unavailable: RetrieveResponse = {
+      outcome: 'unavailable',
+      records: [],
+      completeness: {
+        state: 'unknown',
+        returned: 0,
+        limit: parsed.topK,
+        truncated: false,
+        reason: 'dependency_unavailable',
+      },
+      appliedFilters: parsed.filters,
+      ordering: RETRIEVAL_ORDERING,
+      dataset,
+      indexVersion: dataset.version,
+      evidence: [],
+      safeErrorCode: 'DOCUMENT_RETRIEVAL_UNAVAILABLE',
+    };
+    return {
+      status: 503,
+      body: unavailable,
+      headers: { ...V2_HEADERS, 'X-RockyGPT-Release': dataset.version },
+    };
+  }
   const ordered = [...matches].sort(
     (left, right) => right.score - left.score || left.id.localeCompare(right.id)
   );
@@ -124,14 +154,10 @@ export const postRetrieve: ApiHandler = async (apiRequest) => {
       ...(truncated ? { reason: 'top_k' } : {}),
     },
     appliedFilters: parsed.filters,
-    ordering: [
-      { field: 'score', direction: 'desc' },
-      { field: 'chunkId', direction: 'asc' },
-    ],
+    ordering: RETRIEVAL_ORDERING,
     dataset,
     indexVersion: dataset.version,
     evidence: selected.map(toEvidence),
   };
   return ok(body, { ...V2_HEADERS, 'X-RockyGPT-Release': dataset.version });
 };
-
