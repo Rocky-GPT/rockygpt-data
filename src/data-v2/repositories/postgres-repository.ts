@@ -37,12 +37,34 @@ function optionalString(row: Row, key: string): string | undefined {
   return typeof value === 'string' && value.trim() ? value : undefined;
 }
 
+/** Normalize PostgreSQL timestamp text to the RFC 3339 wire format promised by OpenAPI. */
+export function toWireDateTime(value: unknown): string {
+  const parsed = value instanceof Date
+    ? value
+    : new Date(typeof value === 'string' ? value : String(value ?? ''));
+  if (Number.isNaN(parsed.valueOf())) {
+    throw new Error('Repository returned an invalid timestamp.');
+  }
+  return parsed.toISOString();
+}
+
+function requiredDateTime(row: Row, key: string): string {
+  return toWireDateTime(row[key]);
+}
+
+function optionalDateTime(row: Row, key: string): string | undefined {
+  const value = row[key];
+  return value === null || value === undefined || value === ''
+    ? undefined
+    : toWireDateTime(value);
+}
+
 function sourceFromRow(row: Row): SourceReference {
   return {
     sourceId: requiredString(row, 'source_id'),
     title: requiredString(row, 'source_title'),
     url: requiredString(row, 'source_url'),
-    collectedAt: optionalString(row, 'collected_at'),
+    collectedAt: optionalDateTime(row, 'collected_at'),
   };
 }
 
@@ -121,7 +143,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
     return {
       id: requiredString(row, 'id'),
       version: requiredString(row, 'version'),
-      activatedAt: requiredString(row, 'activated_at'),
+      activatedAt: requiredDateTime(row, 'activated_at'),
     };
   }
 
@@ -806,7 +828,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
       trustTier: ['official_primary', 'official_secondary', 'community'].includes(requiredString(row, 'trust_tier'))
         ? requiredString(row, 'trust_tier') as EvidenceItem['trustTier']
         : 'unknown',
-      collectedAt: requiredString(row, 'collected_at'),
+      collectedAt: requiredDateTime(row, 'collected_at'),
       score: Number(row.score || 0),
     }));
   }
