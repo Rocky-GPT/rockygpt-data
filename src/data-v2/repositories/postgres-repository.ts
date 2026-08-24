@@ -59,6 +59,19 @@ function programKindFromRow(row: Row): ProgramKind | undefined {
   return name ? inferProgramKind({ name, degree: optionalString(row, 'degree') }) : undefined;
 }
 
+/**
+ * Words naming what a table *is*, per table. These describe the question, not
+ * any row in it, and the measured frequencies cannot catch them because they
+ * never appear inside the records themselves (see search-terms.ts). Keep each
+ * list to nouns for the table's own subject — anything that could identify a
+ * specific row belongs in the search, not here.
+ */
+const DOMAIN_WORDS: Record<string, ReadonlySet<string>> = {
+  clubs: new Set(['club', 'clubs', 'organization', 'organizations', 'org', 'orgs', 'join', 'society']),
+  campus_events: new Set(['event', 'events', 'happening', 'happenings', 'going']),
+  menu_items: new Set(['menu', 'menus', 'food', 'eat', 'eating', 'option', 'options', 'serving', 'serve', 'served', 'dish', 'dishes', 'meal', 'meals']),
+};
+
 export class PostgresRepositoryV2 implements RockyRepositoryV2 {
   /**
    * Word frequencies per searchable table, keyed by dataset so a published
@@ -148,6 +161,17 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
   }
 
   async findMenuItems(query: string, meal?: string): Promise<MenuItemRecord[]> {
+    return this.searchWithPrunedTerms(
+      query,
+      'menu_items',
+      `SELECT m.meal || ' ' || m.station || ' ' || m.name AS text
+         FROM rockygpt_v2.menu_items m WHERE m.dataset_version_id = $1::uuid`,
+      (queryText) => this.findMenuItemsMatching(queryText, meal),
+      DOMAIN_WORDS.menu_items
+    );
+  }
+
+  private async findMenuItemsMatching(query: string, meal?: string): Promise<MenuItemRecord[]> {
     const datasetId = await this.activeDatasetId();
     const result = await this.pool.query<Row>(
       `SELECT m.meal, m.station, m.name, m.calories, m.vegan, m.vegetarian, m.allergens,
@@ -156,7 +180,12 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
        FROM rockygpt_v2.menu_items m JOIN rockygpt_v2.sources s ON s.id = m.source_id
        WHERE m.dataset_version_id = $1::uuid
          AND ($2::text IS NULL OR lower(m.meal) = lower($2))
-         AND ($3::text = '' OR to_tsvector('english', m.meal || ' ' || m.station || ' ' || m.name)
+         AND ($3::text = '' OR to_tsvector('english',
+                m.meal || ' ' || m.station || ' ' || m.name
+                -- Diet is stored as booleans, so "vegan options" matched
+                -- nothing until these words existed in the index.
+                || CASE WHEN m.vegan THEN ' vegan' ELSE '' END
+                || CASE WHEN m.vegetarian THEN ' vegetarian' ELSE '' END)
               @@ plainto_tsquery('english', $3))
        ORDER BY m.meal, m.station, m.name
        LIMIT 12`,
@@ -204,17 +233,26 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
     query: string,
     frequenciesKey: string,
     frequenciesSql: string,
-    run: (queryText: string) => Promise<T[]>
+    run: (queryText: string) => Promise<T[]>,
+    domainWords?: ReadonlySet<string>
   ): Promise<T[]> {
     if (!query.trim()) return run(query);
 
     let terms;
     try {
-      terms = searchTermsFor(query, await this.frequenciesFor(frequenciesKey, frequenciesSql));
+      terms = searchTermsFor(
+        query,
+        await this.frequenciesFor(frequenciesKey, frequenciesSql),
+        domainWords
+      );
     } catch {
       return run(query);
     }
-    if (!terms.primary) return run(query);
+    // Nothing identifying survived: the question named the table but no
+    // record in it ("what clubs can i join"). Listing the table answers that;
+    // re-running the original words only reproduces the empty result that
+    // made pruning necessary.
+    if (!terms.primary) return run('');
 
     const primary = await run(terms.primary);
     if (primary.length || !terms.fallback) return primary;
@@ -407,6 +445,17 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
   }
 
   async findEvents(query: string, now: Date): Promise<EventRecord[]> {
+    return this.searchWithPrunedTerms(
+      query,
+      'campus_events',
+      `SELECT e.title || ' ' || coalesce(e.organizer, '') AS text
+         FROM rockygpt_v2.campus_events e WHERE e.dataset_version_id = $1::uuid`,
+      (queryText) => this.findEventsMatching(queryText, now),
+      DOMAIN_WORDS.campus_events
+    );
+  }
+
+  private async findEventsMatching(query: string, now: Date): Promise<EventRecord[]> {
     const datasetId = await this.activeDatasetId();
     const result = await this.pool.query<Row>(
       `SELECT e.title, e.date_label, e.start_time, e.end_time, e.organizer, e.description, e.event_url,
@@ -434,6 +483,17 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
   }
 
   async findClubs(query: string): Promise<ClubRecord[]> {
+    return this.searchWithPrunedTerms(
+      query,
+      'clubs',
+      `SELECT c.name || ' ' || coalesce(c.category, '') AS text
+         FROM rockygpt_v2.clubs c WHERE c.dataset_version_id = $1::uuid`,
+      (queryText) => this.findClubsMatching(queryText),
+      DOMAIN_WORDS.clubs
+    );
+  }
+
+  private async findClubsMatching(query: string): Promise<ClubRecord[]> {
     const datasetId = await this.activeDatasetId();
     const result = await this.pool.query<Row>(
       `SELECT c.name, c.category, c.website_url,
