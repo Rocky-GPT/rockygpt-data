@@ -1,4 +1,5 @@
 import type { Pool } from 'pg';
+import { contactSearchTermArrays } from '../contact-search-terms';
 import { getRuntimePool } from '../../db/runtime-pool';
 import type {
   CriticalFactRecord,
@@ -66,10 +67,18 @@ function programKindFromRow(row: Row): ProgramKind | undefined {
  * list to nouns for the table's own subject — anything that could identify a
  * specific row belongs in the search, not here.
  */
+// Extra search vocabulary joined into the contact document; see
+// data-v2/contact-search-terms.ts for why it is not a looser match.
 const DOMAIN_WORDS: Record<string, ReadonlySet<string>> = {
   clubs: new Set(['club', 'clubs', 'organization', 'organizations', 'org', 'orgs', 'join', 'society']),
   campus_events: new Set(['event', 'events', 'happening', 'happenings', 'going']),
   menu_items: new Set(['menu', 'menus', 'food', 'eat', 'eating', 'option', 'options', 'serving', 'serve', 'served', 'dish', 'dishes', 'meal', 'meals']),
+  // "campus" names the institution every one of these records belongs to and
+  // appears inside none of them, so frequency pruning measures it as maximally
+  // distinctive while it can only ever eliminate. Measured: `q=safety` returns
+  // both Public Safety numbers, `q=campus safety` returns nothing, because the
+  // conjunction requires a word no record contains.
+  campus_contacts: new Set(['campus', 'directory', 'reach', 'call']),
 };
 
 export class PostgresRepositoryV2 implements RockyRepositoryV2 {
@@ -204,14 +213,18 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
   }
 
   /** Word frequencies for one table's searchable text, computed once. */
-  private async frequenciesFor(cacheKey: string, sql: string): Promise<TermFrequencies> {
+  private async frequenciesFor(
+    cacheKey: string,
+    sql: string,
+    extraParams: unknown[] = []
+  ): Promise<TermFrequencies> {
     const datasetId = await this.activeDatasetId();
     const key = `${datasetId}:${cacheKey}`;
     const cached = this.termFrequencies.get(key);
     if (cached) return cached;
 
     const pending = this.pool
-      .query<Row>(sql, [datasetId])
+      .query<Row>(sql, [datasetId, ...extraParams])
       .then((result) => buildTermFrequencies(result.rows.map((row) => requiredString(row, 'text'))))
       .catch((error) => {
         // A statistics failure must never break a lookup; an empty table simply
@@ -234,7 +247,10 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
     frequenciesKey: string,
     frequenciesSql: string,
     run: (queryText: string) => Promise<T[]>,
-    domainWords?: ReadonlySet<string>
+    domainWords?: ReadonlySet<string>,
+    // Extra vocabulary joined into `frequenciesSql`, so the pruning statistics
+    // are measured over the same document the match will run against.
+    vocabulary?: { names: string[]; terms: string[] }
   ): Promise<T[]> {
     if (!query.trim()) return run(query);
 
@@ -242,7 +258,11 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
     try {
       terms = searchTermsFor(
         query,
-        await this.frequenciesFor(frequenciesKey, frequenciesSql),
+        await this.frequenciesFor(
+          frequenciesKey,
+          frequenciesSql,
+          vocabulary ? [vocabulary.names, vocabulary.terms] : []
+        ),
         domainWords
       );
     } catch {
@@ -591,9 +611,14 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
     return this.searchWithPrunedTerms(
       query,
       'campus_contacts',
-      `SELECT c.name || ' ' || coalesce(c.department, '') AS text
-         FROM rockygpt_v2.campus_contacts c WHERE c.dataset_version_id = $1::uuid`,
-      (queryText) => this.findContactsMatching(queryText)
+      `SELECT c.name || ' ' || coalesce(c.department, '') || ' ' || coalesce(v.terms, '') AS text
+         FROM rockygpt_v2.campus_contacts c
+         LEFT JOIN (SELECT * FROM unnest($2::text[], $3::text[]) AS t(name, terms)) v
+           ON v.name = c.name
+        WHERE c.dataset_version_id = $1::uuid`,
+      (queryText) => this.findContactsMatching(queryText),
+      DOMAIN_WORDS.campus_contacts,
+      contactSearchTermArrays()
     );
   }
 
@@ -636,16 +661,21 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
 
   private async findContactsMatching(query: string): Promise<ContactRecord[]> {
     const datasetId = await this.activeDatasetId();
+    const vocabulary = contactSearchTermArrays();
     const result = await this.pool.query<Row>(
       `SELECT c.name, c.department, c.phone, c.email, c.office,
               s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
               c.collected_at::text
-       FROM rockygpt_v2.campus_contacts c JOIN rockygpt_v2.sources s ON s.id = c.source_id
+       FROM rockygpt_v2.campus_contacts c
+       JOIN rockygpt_v2.sources s ON s.id = c.source_id
+       LEFT JOIN (SELECT * FROM unnest($3::text[], $4::text[]) AS t(name, terms)) v
+         ON v.name = c.name
        WHERE c.dataset_version_id = $1::uuid
-         AND ($2::text = '' OR to_tsvector('english', c.name || ' ' || coalesce(c.department, ''))
+         AND ($2::text = '' OR to_tsvector('english',
+               c.name || ' ' || coalesce(c.department, '') || ' ' || coalesce(v.terms, ''))
              @@ plainto_tsquery('english', $2))
        ORDER BY c.name LIMIT 5`,
-      [datasetId, query]
+      [datasetId, query, vocabulary.names, vocabulary.terms]
     );
     return result.rows.map((row) => ({
       name: requiredString(row, 'name'),
