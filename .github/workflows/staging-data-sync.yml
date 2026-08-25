@@ -12,7 +12,7 @@ jobs:
     environment: staging
     steps:
       - uses: actions/checkout@v7
-        with: { ref: staging }
+        with: { ref: main }
       - uses: actions/setup-node@v6
         with: { node-version: '22', cache: npm }
       - run: npm ci

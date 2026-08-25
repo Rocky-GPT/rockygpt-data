@@ -1,7 +1,7 @@
 name: SDK Build and Release
 on:
   pull_request:
-    branches: [main, staging]
+    branches: [main, dev]
     paths: [api/openapi.yaml, scripts/generate-sdks.mjs, sdk/generator.json, package.json, package-lock.json]
   push:
     tags: ['api-v*']
