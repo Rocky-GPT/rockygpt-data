@@ -21,6 +21,28 @@ import type {
 } from '../schemas';
 import { CURRENT_MENU_VENUE_NAME, diningVenueRecord } from '../dining-venues';
 import type { RockyRepositoryV2, SearchOptions } from './types';
+
+/**
+ * The relevance a passage must reach to be returned at all.
+ *
+ * Measured against this corpus rather than chosen. Gibberish tops out at
+ * 0.0043 and words absent from the corpus score 0, while the weakest correct
+ * match found — "class withdrawal deadline" onto the calendar entry that
+ * answers it — reaches 0.0091. The floor sits between the two.
+ *
+ * The bands do touch: a plainly off-topic question ("who won the world cup")
+ * reaches 0.0104, above real matches at the bottom of their range. No floor
+ * separates those, and this one is deliberately set to admit the weak match
+ * rather than exclude the off-topic one, for two reasons. A wrong `no_match`
+ * is the worse error — a model can decline to use a thin passage, but cannot
+ * use one that was never returned. And off-topic questions do not arrive
+ * here: this lane is only reached when the planner has already decided the
+ * answer lives in a campus document.
+ *
+ * Re-measure it when the corpus changes size. It is a property of this index,
+ * not a constant.
+ */
+const MIN_RELEVANCE = 0.005;
 import { inferProgramKind, parseProgramSearch, type ProgramKind } from './program-search';
 import { buildTermFrequencies, searchTermsFor, type TermFrequencies } from './search-terms';
 import { campusLocalDate } from '../dining-seasons';
@@ -797,25 +819,66 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
 
   async searchDocuments(query: string, options: SearchOptions): Promise<EvidenceItem[]> {
     const datasetId = await this.activeDatasetId();
+    // `plainto_tsquery` joins every term with `&`, so a chunk had to contain
+    // all of them. Retrieval then got worse the more precise a question was:
+    // "guest policy" found the guest policy, "Ramapo overnight guest policy"
+    // found nothing, though every one of those words is in the corpus.
+    //
+    // Matching is OR now — any term qualifies a chunk — and relevance decides
+    // the order rather than admission. Three parts to it:
+    //
+    //   coverage    how much of the question a chunk answers, as a fraction so
+    //               a four-word question and a one-word one score on the same
+    //               scale. Squared, so covering more of the question beats
+    //               mentioning one word of it often.
+    //   ts_rank_cd  cover density: rewards query terms appearing near one
+    //               another, which is what separates a passage about the
+    //               subject from one mentioning it in passing. Length-
+    //               normalised (flag 1) so a long page cannot win by length.
+    //   trust       a multiplier, never an addend. It was `+0.10` while
+    //               relevance sat around 0.03, so an official page about
+    //               nothing outranked the right answer. It breaks ties now.
+    //
+    // Below MIN_RELEVANCE nothing comes back and the caller reports
+    // `no_match`, which is a better answer than a passage that happens to
+    // share a preposition with the question.
     const sql = `
-      SELECT c.id::text, d.id::text AS document_id, s.id::text AS source_id,
-             coalesce(c.metadata->>'headingPath', d.title) AS title,
-             coalesce(c.metadata->>'canonicalUrl', s.canonical_url) AS url,
-             c.content, s.domain, s.trust_tier,
-             d.collected_at::text,
-             (ts_rank(c.lexical_vector, plainto_tsquery('english', $2)) * 0.90 +
-              CASE s.trust_tier WHEN 'official_primary' THEN 0.10
-                                WHEN 'official_secondary' THEN 0.06 ELSE 0 END) AS score
-      FROM rockygpt_v2.document_chunks c
-      JOIN rockygpt_v2.documents d ON d.id = c.document_id
-      JOIN rockygpt_v2.sources s ON s.id = d.source_id
-      WHERE d.dataset_version_id = $1::uuid
-        AND (cardinality($3::text[]) = 0 OR s.domain = ANY($3::text[]))
-        AND c.lexical_vector @@ plainto_tsquery('english', $2)
-      ORDER BY score DESC, c.id
+      WITH q AS (
+        SELECT replace(plainto_tsquery('english', $2)::text, '&', '|')::tsquery AS loose,
+               string_to_array(
+                 replace(replace(plainto_tsquery('english', $2)::text, '''', ''), ' & ', ','),
+                 ','
+               ) AS terms
+      ),
+      scored AS (
+        SELECT c.id::text, d.id::text AS document_id, s.id::text AS source_id,
+               coalesce(c.metadata->>'headingPath', d.title) AS title,
+               coalesce(c.metadata->>'canonicalUrl', s.canonical_url) AS url,
+               c.content, s.domain, s.trust_tier, d.collected_at::text,
+               power(
+                 (SELECT count(*) FROM unnest(q.terms) AS t
+                   WHERE c.lexical_vector @@ plainto_tsquery('english', t))::float
+                 / greatest(array_length(q.terms, 1), 1),
+                 2
+               ) * ts_rank_cd(c.lexical_vector, q.loose, 1) AS relevance,
+               CASE s.trust_tier WHEN 'official_primary' THEN 1.05
+                                 WHEN 'official_secondary' THEN 1.02 ELSE 1 END AS trust
+        FROM rockygpt_v2.document_chunks c
+        JOIN rockygpt_v2.documents d ON d.id = c.document_id
+        JOIN rockygpt_v2.sources s ON s.id = d.source_id
+        CROSS JOIN q
+        WHERE d.dataset_version_id = $1::uuid
+          AND (cardinality($3::text[]) = 0 OR s.domain = ANY($3::text[]))
+          AND c.lexical_vector @@ q.loose
+      )
+      SELECT id, document_id, source_id, title, url, content, domain, trust_tier,
+             collected_at, (relevance * trust) AS score
+      FROM scored
+      WHERE relevance >= $5
+      ORDER BY score DESC, id
       LIMIT $4
     `;
-    const values = [datasetId, query, options.domains, options.limit];
+    const values = [datasetId, query, options.domains, options.limit, MIN_RELEVANCE];
     const result = await this.pool.query<Row>(sql, values);
     return result.rows.map((row) => ({
       id: requiredString(row, 'id'),
