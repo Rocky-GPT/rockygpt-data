@@ -186,6 +186,16 @@ export interface SearchResponse<TRecord extends Record<string, unknown> = Record
   records: TRecord[];
 }
 
+export interface CourseSearchRecord extends Record<string, unknown> {
+  code: string;
+  name: string;
+  description?: string;
+  credits?: string;
+  attributes: string[];
+  courseUrl: string;
+  source: WireSource;
+}
+
 /** Emergency facts used by deterministic safety replies. */
 export interface SafetyResourcesResponse {
   dataset: WireDatasetContext;

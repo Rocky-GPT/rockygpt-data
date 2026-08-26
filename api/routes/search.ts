@@ -188,6 +188,9 @@ export const getSearch: ApiHandler = async (request) => {
   if (path === '/v1/search/events') {
     return response(dataset, await pinned.findEvents(query, at));
   }
+  if (path === '/v1/search/courses') {
+    return response(dataset, await pinned.findCourses(query));
+  }
   if (path === '/v1/search/programs') {
     return response(dataset, await pinned.findPrograms(query));
   }

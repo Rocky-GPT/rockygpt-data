@@ -11,6 +11,7 @@ import type {
   AcademicDateRecord,
   ClubRecord,
   ContactRecord,
+  CourseRecord,
   DiningVenueRecord,
   EventRecord,
   HoursRecord,
@@ -20,6 +21,8 @@ import type {
   ShuttleTripRecord,
 } from '../schemas';
 import { CURRENT_MENU_VENUE_NAME, diningVenueRecord } from '../dining-venues';
+import { V2_SOURCES } from '../sources';
+import { courseCredits } from '../course-record';
 import type { RockyRepositoryV2, SearchOptions } from './types';
 
 /**
@@ -517,6 +520,56 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
       (queryText) => this.findEventsMatching(queryText, now),
       DOMAIN_WORDS.campus_events
     );
+  }
+
+  async findCourses(query: string): Promise<CourseRecord[]> {
+    const datasetId = await this.activeDatasetId();
+    const compactQuery = query.replace(/\s+/g, '').toLowerCase();
+    const result = await this.pool.query<Row>(
+      `SELECT course.value->>'code' AS code,
+              course.value->>'name' AS name,
+              course.value->>'description' AS description,
+              course.value->'credits' AS credits,
+              course.value->'attributes' AS attributes
+       FROM rockygpt_v2.release_artifacts artifact
+       CROSS JOIN LATERAL jsonb_each(artifact.payload) AS course(key, value)
+       WHERE artifact.dataset_version_id = $1::uuid
+         AND artifact.artifact_key = 'courses'
+         AND (
+           $2::text = ''
+           OR lower(regexp_replace(course.value->>'code', '\\s+', '', 'g')) = $3
+           OR to_tsvector(
+                'english',
+                coalesce(course.value->>'code', '') || ' ' ||
+                coalesce(course.value->>'name', '') || ' ' ||
+                coalesce(course.value->>'description', '') || ' ' ||
+                coalesce(course.value->>'attributes', '')
+              ) @@ plainto_tsquery('english', $2)
+         )
+       ORDER BY
+         (lower(regexp_replace(course.value->>'code', '\\s+', '', 'g')) = $3) DESC,
+         course.value->>'code'
+       LIMIT 20`,
+      [datasetId, query.trim(), compactQuery]
+    );
+    return result.rows.map((row) => {
+      const code = requiredString(row, 'code');
+      const attributes = Array.isArray(row.attributes)
+        ? row.attributes.filter((value): value is string => typeof value === 'string')
+        : [];
+      return {
+        code,
+        name: requiredString(row, 'name'),
+        description: optionalString(row, 'description'),
+        credits: courseCredits(row.credits),
+        attributes,
+        courseUrl: `https://catalog.ramapo.edu/courses/${code.replace(/\s+/g, '')}`,
+        source: {
+          ...V2_SOURCES.programs,
+          title: `${code} - Ramapo Course Catalog`,
+        },
+      };
+    });
   }
 
   private async findEventsMatching(query: string, now: Date): Promise<EventRecord[]> {

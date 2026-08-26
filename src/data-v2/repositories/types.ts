@@ -7,6 +7,7 @@ import type {
   AcademicDateRecord,
   ClubRecord,
   ContactRecord,
+  CourseRecord,
   DiningVenueRecord,
   EventRecord,
   HoursRecord,
@@ -58,6 +59,7 @@ export interface RockyRepositoryV2 {
   findContactByName(name: string): Promise<ContactRecord[]>;
   findAcademicDates(query: string): Promise<AcademicDateRecord[]>;
   findEvents(query: string, now: Date): Promise<EventRecord[]>;
+  findCourses(query: string): Promise<CourseRecord[]>;
   findClubs(query: string): Promise<ClubRecord[]>;
   findPrograms(query: string): Promise<ProgramRecord[]>;
   findContacts(query: string): Promise<ContactRecord[]>;

@@ -83,6 +83,7 @@ const ROUTES: Record<string, ApiHandler> = {
   'GET /v1/search/contacts': getSearch,
   'GET /v1/search/clubs': getSearch,
   'GET /v1/search/events': getSearch,
+  'GET /v1/search/courses': getSearch,
   'GET /v1/search/programs': getSearch,
   'GET /v1/search/academic-dates': getSearch,
   'GET /v1/search/shuttles': getSearch,

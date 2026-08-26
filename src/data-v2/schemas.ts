@@ -36,6 +36,16 @@ export interface EventRecord {
   source: SourceReference;
 }
 
+export interface CourseRecord {
+  code: string;
+  name: string;
+  description?: string;
+  credits?: string;
+  attributes: string[];
+  courseUrl: string;
+  source: SourceReference;
+}
+
 export interface ClubRecord {
   name: string;
   category?: string;
