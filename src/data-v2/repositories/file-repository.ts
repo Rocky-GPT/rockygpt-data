@@ -16,6 +16,7 @@ import type {
   AcademicDateRecord,
   ClubRecord,
   ContactRecord,
+  CourseRecord,
   DiningVenueRecord,
   EventRecord,
   HoursRecord,
@@ -38,6 +39,7 @@ import {
 } from './program-search';
 import { CURRENT_MENU_VENUE_NAME, diningVenueRecord } from '../dining-venues';
 import { readValidityFromNotes } from '../validity';
+import { courseCredits } from '../course-record';
 
 type JsonRecord = Record<string, unknown>;
 
@@ -629,6 +631,52 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
       )
       .map(({ record }) => record)
       .slice(0, 6);
+  }
+
+  async findCourses(query: string): Promise<CourseRecord[]> {
+    const payload = this.readJson<Record<string, JsonRecord>>('public/data/courses.json');
+    const compactQuery = normalize(query).replace(/\s+/g, '');
+    const records = Object.values(payload).flatMap((course): CourseRecord[] => {
+      const code = typeof course.code === 'string' ? course.code.trim() : '';
+      const name = typeof course.name === 'string' ? course.name.trim() : '';
+      if (!code || !name) return [];
+      const compactCode = normalize(code).replace(/\s+/g, '');
+      const attributes = Array.isArray(course.attributes)
+        ? course.attributes.filter((value): value is string => typeof value === 'string')
+        : [];
+      return [
+        {
+          code,
+          name,
+          description:
+            typeof course.description === 'string' && course.description.trim()
+              ? course.description.trim()
+              : undefined,
+          credits: courseCredits(course.credits),
+          attributes,
+          courseUrl: `https://catalog.ramapo.edu/courses/${compactCode.toUpperCase()}`,
+          source: {
+            ...V2_SOURCES.programs,
+            title: `${code} - Ramapo Course Catalog`,
+          },
+        },
+      ];
+    });
+    return records
+      .map((record) => ({
+        record,
+        score:
+          compactQuery && normalize(record.code).replace(/\s+/g, '') === compactQuery
+            ? 2
+            : textScore(
+                query,
+                `${record.code} ${record.name} ${record.description || ''} ${record.attributes.join(' ')}`
+              ),
+      }))
+      .filter(({ score }) => !query.trim() || score > 0)
+      .sort((a, b) => b.score - a.score || a.record.code.localeCompare(b.record.code))
+      .map(({ record }) => record)
+      .slice(0, 20);
   }
 
   async listContacts(): Promise<Array<{ name: string; department?: string }>> {
