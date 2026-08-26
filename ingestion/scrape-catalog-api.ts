@@ -394,7 +394,7 @@ function isFourPlusOneMajorName(name: string): boolean {
   return isFourPlusOneText(name);
 }
 
-function inferProgramType(prog: CoursedogProgram): 'undergraduate' | 'graduate' | null {
+export function inferProgramType(prog: CoursedogProgram): 'undergraduate' | 'graduate' | null {
   const code = (prog.code || '').toUpperCase();
   const name = (prog.name || prog.longName || '').toLowerCase();
 
@@ -403,12 +403,13 @@ function inferProgramType(prog: CoursedogProgram): 'undergraduate' | 'graduate' 
     code.includes('-MS-') ||
     code.includes('-MA-') ||
     code.includes('-MBA-') ||
+    code.includes('-MFA-') ||
     code.includes('-MPP-') ||
     code.includes('-MSN-') ||
     code.includes('-MSW-') ||
     code.includes('-DNP-')
   ) return 'graduate';
-  if (/master|m\.s\.|m\.a\.|mba|mpp|msac|mael|mase|msn|msw|dnp/.test(name)) return 'graduate';
+  if (/master|m\.s\.|m\.a\.|mba|mfa|mpp|msac|mael|mase|msn|msw|dnp/.test(name)) return 'graduate';
   if (/bachelor|b\.s\.|b\.a\./.test(name)) return 'undergraduate';
   return null;
 }
@@ -425,7 +426,7 @@ function inferProgramKind(prog: CoursedogProgram): NonNullable<MajorEntry['progr
   return 'major';
 }
 
-function inferDegreeLabel(prog: CoursedogProgram, inferredType: 'undergraduate' | 'graduate'): string {
+export function inferDegreeLabel(prog: CoursedogProgram, inferredType: 'undergraduate' | 'graduate'): string {
   const provided = (prog.degreeDesignation || '').trim();
   if (provided) return provided;
 
@@ -440,6 +441,7 @@ function inferDegreeLabel(prog: CoursedogProgram, inferredType: 'undergraduate' 
   if (code.includes('-MSW-') || /\bmsw\b/.test(name)) return 'Master of Social Work';
   if (code.includes('-MA-')) return 'Master of Arts';
   if (code.includes('-MBA-') || /\bmba\b/.test(name)) return 'Master of Business Administration';
+  if (code.includes('-MFA-') || /\bmfa\b/.test(name)) return 'Master of Fine Arts';
   if (code.includes('-MPP-') || /\bmpp\b/.test(name)) return 'Master of Public Policy';
   if (code.includes('-DNP-') || /\bdnp\b/.test(name)) return 'Doctor of Nursing Practice';
   if (code.includes('-MN-') || /\bminor\b/.test(name)) return 'Minor';

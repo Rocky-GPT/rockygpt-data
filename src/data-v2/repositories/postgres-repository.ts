@@ -46,7 +46,12 @@ import type { RockyRepositoryV2, SearchOptions } from './types';
  * not a constant.
  */
 const MIN_RELEVANCE = 0.005;
-import { inferProgramKind, parseProgramSearch, type ProgramKind } from './program-search';
+import {
+  inferProgramKind,
+  parseProgramSearch,
+  programMatchesCriteria,
+  type ProgramKind,
+} from './program-search';
 import { buildTermFrequencies, searchTermsFor, type TermFrequencies } from './search-terms';
 import { campusLocalDate } from '../dining-seasons';
 
@@ -668,7 +673,6 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
              END
            ) = $3
          )
-         AND ($4::text = '' OR lower(coalesce(p.degree, '')) = lower($4))
        ORDER BY
          CASE WHEN $2::text = '' THEN 0 ELSE
            ts_rank(to_tsvector('english', p.name), plainto_tsquery('english', $2))
@@ -690,18 +694,21 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
            ELSE 4
          END,
          p.name
-       LIMIT 6`,
-      [datasetId, subject, criteria.requestedKind || '', criteria.requestedDegree || '']
+       LIMIT 200`,
+      [datasetId, subject, criteria.requestedKind || '']
     );
-    return result.rows.map((row) => ({
-      name: requiredString(row, 'name'),
-      degree: optionalString(row, 'degree'),
-      programKind: programKindFromRow(row),
-      school: optionalString(row, 'school'),
-      description: optionalString(row, 'description'),
-      programUrl: optionalString(row, 'program_url'),
-      source: sourceFromRow(row),
-    }));
+    return result.rows
+      .map((row): ProgramRecord => ({
+        name: requiredString(row, 'name'),
+        degree: optionalString(row, 'degree'),
+        programKind: programKindFromRow(row),
+        school: optionalString(row, 'school'),
+        description: optionalString(row, 'description'),
+        programUrl: optionalString(row, 'program_url'),
+        source: sourceFromRow(row),
+      }))
+      .filter((record) => programMatchesCriteria(record, criteria))
+      .slice(0, 6);
   }
 
   async findContacts(query: string): Promise<ContactRecord[]> {
@@ -742,8 +749,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
               s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
               c.collected_at::text
          FROM rockygpt_v2.campus_contacts c JOIN rockygpt_v2.sources s ON s.id = c.source_id
-        WHERE c.dataset_version_id = $1::uuid AND c.name = $2
-        LIMIT 5`,
+        WHERE c.dataset_version_id = $1::uuid AND c.name = $2`,
       [datasetId, name]
     );
     return result.rows.map((row) => ({
@@ -771,7 +777,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
          AND ($2::text = '' OR to_tsvector('english',
                c.name || ' ' || coalesce(c.department, '') || ' ' || coalesce(v.terms, ''))
              @@ plainto_tsquery('english', $2))
-       ORDER BY c.name LIMIT 5`,
+       ORDER BY c.name LIMIT 6`,
       [datasetId, query, vocabulary.names, vocabulary.terms]
     );
     return result.rows.map((row) => ({
