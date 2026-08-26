@@ -176,26 +176,36 @@ async function insertStructured(
   collectedAtFor: (sourceKey: string) => string
 ): Promise<Record<string, number>> {
   const counts: Record<string, number> = {};
-  const menu = readJson<Array<{ name: string; groups?: Array<{ name: string; items?: JsonRecord[] }> }>>('data/normalized/menu.json');
-  for (const meal of menu) {
-    for (const station of meal.groups || []) {
-      for (const item of station.items || []) {
-        const name = cleanText(item.formalName);
-        if (!name) continue;
-        const recordKey = `${meal.name}:${station.name}:${name}`;
-        const allergens = Array.isArray(item.allergens)
-          ? item.allergens.flatMap((entry) => cleanText((entry as JsonRecord)?.name) || [])
-          : [];
-        await client.query(
-          `INSERT INTO rockygpt_v2.menu_items
-           (dataset_version_id, source_id, source_record_key, meal, station, name, calories,
-            vegan, vegetarian, allergens, collected_at, content_hash)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12)`,
-          [datasetId, sources.get('dining'), recordKey, meal.name, station.name, name,
-            cleanText(item.calories) || null, item.isVegan === true, item.isVegetarian === true,
-            JSON.stringify(allergens), collectedAtFor('dining'), sha256(recordKey)]
-        );
-        counts.menu_items = (counts.menu_items || 0) + 1;
+  const menuWeek = fs.existsSync(path.join(process.cwd(), 'data/normalized/menu-week.json'))
+    ? readJson<{ dates?: Array<{ date: string; sections?: Array<{ name: string; groups?: Array<{ name: string; items?: JsonRecord[] }> }> }> }>('data/normalized/menu-week.json')
+    : { dates: [] };
+
+  const datesToPublish = (menuWeek.dates && menuWeek.dates.length > 0)
+    ? menuWeek.dates
+    : [{ date: new Date().toISOString().slice(0, 10), sections: readJson<Array<{ name: string; groups?: Array<{ name: string; items?: JsonRecord[] }> }>>('data/normalized/menu.json') }];
+
+  for (const dateEntry of datesToPublish) {
+    const dateStr = dateEntry.date;
+    for (const meal of dateEntry.sections || []) {
+      for (const station of meal.groups || []) {
+        for (const item of station.items || []) {
+          const name = cleanText(item.formalName);
+          if (!name) continue;
+          const recordKey = `${dateStr}:${meal.name}:${station.name}:${name}`;
+          const allergens = Array.isArray(item.allergens)
+            ? item.allergens.flatMap((entry) => cleanText((entry as JsonRecord)?.name) || [])
+            : [];
+          await client.query(
+            `INSERT INTO rockygpt_v2.menu_items
+             (dataset_version_id, source_id, source_record_key, meal, station, name, calories,
+              vegan, vegetarian, allergens, collected_at, valid_from, valid_until, content_hash)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12,$12,$13)`,
+            [datasetId, sources.get('dining'), recordKey, meal.name, station.name, name,
+              cleanText(item.calories) || null, item.isVegan === true, item.isVegetarian === true,
+              JSON.stringify(allergens), collectedAtFor('dining'), dateStr, sha256(recordKey)]
+          );
+          counts.menu_items = (counts.menu_items || 0) + 1;
+        }
       }
     }
   }

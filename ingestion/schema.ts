@@ -734,17 +734,33 @@ function validateDiningTime(input: unknown): DiningHoursTime | undefined {
   return { hour, minute, period };
 }
 
+function parseAllDayBoolean(value: unknown): boolean {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  if (typeof value === 'string') {
+    const lower = value.trim().toLowerCase();
+    return lower === 'true' || lower === 'closed';
+  }
+  if (isRecord(value)) {
+    const val = asOptionalString(value.value);
+    if (val) {
+      const lower = val.trim().toLowerCase();
+      return lower === 'true' || lower === 'closed';
+    }
+  }
+  return false;
+}
+
 function validateDiningHoursRange(input: unknown): DiningHoursRange | null {
   if (!isRecord(input)) {
     return null;
   }
 
-  if (typeof input.allDay !== 'boolean') {
-    return null;
-  }
+  const allDay = parseAllDayBoolean(input.allDay);
 
   return {
-    allDay: input.allDay,
+    allDay,
     startTime: validateDiningTime(input.startTime),
     finishTime: validateDiningTime(input.finishTime),
     label: asOptionalString(input.label),
@@ -759,14 +775,17 @@ function validateDiningHoursGroup(input: unknown): DiningHoursGroup | null {
   const daysRaw = Array.isArray(input.days) ? input.days : [];
   const days = daysRaw
     .map((day) => {
-      if (!isRecord(day)) {
-        return null;
+      if (typeof day === 'string') {
+        const trimmed = day.trim();
+        return trimmed ? { value: trimmed } : null;
       }
-      const value = asOptionalString(day.value);
-      if (!value) {
-        return null;
+      if (isRecord(day)) {
+        const value = asOptionalString(day.value);
+        if (value) {
+          return { value };
+        }
       }
-      return { value };
+      return null;
     })
     .filter((day): day is { value: string } => day !== null);
 
