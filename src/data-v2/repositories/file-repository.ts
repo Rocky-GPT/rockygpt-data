@@ -8,9 +8,9 @@ import type {
   SourceReference,
 } from '../types';
 import {
-  OFFICE_DIRECTORY_CONTACTS,
-  OTHER_DIRECTORY_CONTACTS,
-} from '../../directory/static-contacts';
+  buildStructuredDirectoryContacts,
+  type StructuredDirectoryContact,
+} from '../../directory/structured-contacts';
 import { shuttleSchedule, type ShuttleRoute } from '../../static/shuttleSchedule';
 import type {
   AcademicDateRecord,
@@ -680,69 +680,37 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
   }
 
   async listContacts(): Promise<Array<{ name: string; department?: string }>> {
-    return (await this.findContacts('')).map((record) => ({
+    return this.directoryContacts().map((record) => ({
       name: record.name,
       department: record.department,
     }));
   }
 
   async findContactByName(name: string): Promise<ContactRecord[]> {
-    return (await this.findContacts('')).filter((record) => record.name === name);
+    return this.directoryContacts()
+      .filter((record) => record.name === name)
+      .map(({ name: contactName, department, phone, email, office, source }) => ({
+        name: contactName,
+        department,
+        phone,
+        email,
+        office,
+        source,
+      }));
+  }
+
+  private directoryContacts(): StructuredDirectoryContact[] {
+    try {
+      return buildStructuredDirectoryContacts(
+        this.readJson<unknown>('data/normalized/faculty.json')
+      );
+    } catch {
+      return buildStructuredDirectoryContacts([]);
+    }
   }
 
   async findContacts(query: string): Promise<ContactRecord[]> {
-    let facultyRecords: Array<ContactRecord & { searchable: string }> = [];
-    try {
-      const rawFaculty = this.readJson<Array<JsonRecord>>('data/normalized/faculty.json');
-      facultyRecords = rawFaculty.flatMap((f) => {
-        if (typeof f.name !== 'string') return [];
-        const title = typeof f.title === 'string' ? f.title : '';
-        const school = typeof f.school === 'string' ? f.school : '';
-        const department = title ? `${title} (${school})` : school;
-        const phone = typeof f.phone === 'string' && f.phone.trim().length > 0 ? f.phone : undefined;
-        const email = typeof f.email === 'string' && f.email.trim().length > 0 ? f.email : undefined;
-        const office = typeof f.office === 'string' && f.office.trim().length > 0 ? f.office : undefined;
-        const bio = typeof f.bio === 'string' ? f.bio : '';
-        const profileUrl = typeof f.profileUrl === 'string' ? f.profileUrl : 'https://www.ramapo.edu/directory/';
-        return [{
-          name: f.name,
-          department: department || undefined,
-          phone,
-          email,
-          office,
-          source: {
-            sourceId: 'faculty-directory',
-            title: `${f.name} - Directory Profile`,
-            url: profileUrl,
-          },
-          searchable: `${f.name} ${title} ${school} ${office || ''} ${email || ''} ${bio}`,
-        }];
-      });
-    } catch {
-      // ignore
-    }
-
-    const records: Array<ContactRecord & { searchable: string }> = [
-      ...OFFICE_DIRECTORY_CONTACTS.map((entry) => ({
-        name: entry.name,
-        department: entry.department,
-        phone: entry.phone,
-        email: entry.email,
-        office: entry.office,
-        source: V2_SOURCES.directory,
-        searchable: `${entry.name} ${entry.department || ''} ${entry.office || ''} ${entry.helpsWith ? entry.helpsWith.join(' ') : ''}`,
-      })),
-      ...OTHER_DIRECTORY_CONTACTS.map((entry) => ({
-        name: entry.name,
-        department: entry.unit,
-        phone: entry.phone,
-        email: entry.email,
-        source: V2_SOURCES.directory,
-        searchable: `${entry.name} ${entry.unit || ''}`,
-      })),
-      ...facultyRecords,
-    ];
-    return records
+    return this.directoryContacts()
       .map((item) => ({
         record: {
           name: item.name,

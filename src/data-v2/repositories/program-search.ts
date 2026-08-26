@@ -1,12 +1,14 @@
 import type { ProgramRecord } from '../schemas';
 
 export type ProgramKind = NonNullable<ProgramRecord['programKind']>;
+export type ProgramDegreeLevel = 'undergraduate' | 'graduate' | 'masters' | 'doctoral' | 'phd';
 
 export interface ProgramSearchCriteria {
   subject: string;
   subjectTokens: string[];
   requestedKind?: ProgramKind;
   requestedDegree?: string;
+  requestedLevel?: ProgramDegreeLevel;
 }
 
 const QUESTION_AND_PROGRAM_WORDS = new Set([
@@ -31,6 +33,7 @@ const QUESTION_AND_PROGRAM_WORDS = new Set([
   'i',
   'in',
   'is',
+  'list',
   'major',
   'majors',
   'me',
@@ -43,6 +46,7 @@ const QUESTION_AND_PROGRAM_WORDS = new Set([
   'programs',
   'ramapo',
   'school',
+  'show',
   'tell',
   'the',
   'there',
@@ -58,6 +62,7 @@ const PROGRAM_ALIASES: Record<string, string[]> = {
 };
 
 const DEGREE_PATTERNS: Array<{ pattern: RegExp; degree: string }> = [
+  { pattern: /\b(?:doctor of philosophy|ph\.?\s*d\.?)\b/i, degree: 'Doctor of Philosophy' },
   { pattern: /\b(?:bachelor of science in nursing|bsn)\b/i, degree: 'Bachelor of Science in Nursing' },
   { pattern: /\b(?:master of science in nursing|msn)\b/i, degree: 'Master of Science in Nursing' },
   { pattern: /\b(?:doctor of nursing practice|dnp)\b/i, degree: 'Doctor of Nursing Practice' },
@@ -71,6 +76,14 @@ const DEGREE_PATTERNS: Array<{ pattern: RegExp; degree: string }> = [
   { pattern: /\b(?:bachelor of arts|ba)\b/i, degree: 'Bachelor of Arts' },
   { pattern: /\b(?:master of science|ms)\b/i, degree: 'Master of Science' },
   { pattern: /\b(?:master of arts|ma)\b/i, degree: 'Master of Arts' },
+];
+
+const DEGREE_LEVEL_PATTERNS: Array<{ pattern: RegExp; level: ProgramDegreeLevel }> = [
+  { pattern: /\b(?:doctor of philosophy|ph\.?\s*d\.?)\b/i, level: 'phd' },
+  { pattern: /\b(?:doctoral|doctorate)\b/i, level: 'doctoral' },
+  { pattern: /\b(?:master(?:['’]s|s)?|master-level)\b/i, level: 'masters' },
+  { pattern: /\bgraduate\b/i, level: 'graduate' },
+  { pattern: /\bundergraduate\b/i, level: 'undergraduate' },
 ];
 
 function normalize(value: string): string {
@@ -89,9 +102,23 @@ function requestedDegree(query: string): string | undefined {
   return DEGREE_PATTERNS.find(({ pattern }) => pattern.test(query))?.degree;
 }
 
+function requestedLevel(query: string, degree?: string): ProgramDegreeLevel | undefined {
+  const explicit = DEGREE_LEVEL_PATTERNS.find(({ pattern }) => pattern.test(query))?.level;
+  if (explicit) return explicit;
+  if (!degree) return undefined;
+  if (degree === 'Doctor of Philosophy') return 'phd';
+  if (degree.startsWith('Doctor of ')) return 'doctoral';
+  if (degree.startsWith('Master of ')) return 'masters';
+  if (degree === 'Graduate Certificate') return 'graduate';
+  return undefined;
+}
+
 export function parseProgramSearch(query: string): ProgramSearchCriteria {
   let subjectText = query.replace(/\b(?:4\s*\+\s*1|five[ -]year|combined degree)\b/gi, ' ');
   for (const { pattern } of DEGREE_PATTERNS) {
+    subjectText = subjectText.replace(new RegExp(pattern.source, pattern.flags.includes('g') ? pattern.flags : `${pattern.flags}g`), ' ');
+  }
+  for (const { pattern } of DEGREE_LEVEL_PATTERNS) {
     subjectText = subjectText.replace(new RegExp(pattern.source, pattern.flags.includes('g') ? pattern.flags : `${pattern.flags}g`), ' ');
   }
 
@@ -108,11 +135,13 @@ export function parseProgramSearch(query: string): ProgramSearchCriteria {
   }
 
   subjectTokens = Array.from(new Set(subjectTokens));
+  const degree = requestedDegree(query);
   return {
     subject: subjectTokens.join(' '),
     subjectTokens,
     requestedKind: requestedKind(query),
-    requestedDegree: requestedDegree(query),
+    requestedDegree: degree,
+    requestedLevel: requestedLevel(query, degree),
   };
 }
 
@@ -128,8 +157,62 @@ export function inferProgramKind(record: Pick<ProgramRecord, 'name' | 'degree' |
 
 export function programMatchesCriteria(record: ProgramRecord, criteria: ProgramSearchCriteria): boolean {
   if (criteria.requestedKind && inferProgramKind(record) !== criteria.requestedKind) return false;
-  if (criteria.requestedDegree && normalize(record.degree || '') !== normalize(criteria.requestedDegree)) return false;
+  if (criteria.requestedDegree && !programMatchesRequestedDegree(record, criteria.requestedDegree)) return false;
+  if (criteria.requestedLevel && !programMatchesDegreeLevel(record, criteria.requestedLevel)) return false;
   return true;
+}
+
+function programMatchesRequestedDegree(
+  record: Pick<ProgramRecord, 'name' | 'degree'>,
+  requestedDegree: string
+): boolean {
+  if (normalize(record.degree || '') === normalize(requestedDegree)) return true;
+
+  // A few catalog rows historically carried a generic degree label even
+  // though the program name retained an unambiguous credential. Keep those
+  // searchable while a corrected catalog artifact moves through publication.
+  const distinctiveAliases: Record<string, RegExp> = {
+    'bachelor of science in nursing': /\bbsn\b/i,
+    'bachelor of social work': /\bbsw\b/i,
+    'doctor of nursing practice': /\bdnp\b/i,
+    'doctor of philosophy': /\bph\.?\s*d\.?\b/i,
+    'master of business administration': /\bmba\b/i,
+    'master of fine arts': /\bmfa\b/i,
+    'master of public policy': /\bmpp\b/i,
+    'master of science in nursing': /\bmsn\b/i,
+    'master of social work': /\bmsw\b/i,
+    'graduate certificate': /\bgraduate certificate\b/i,
+  };
+  return distinctiveAliases[normalize(requestedDegree)]?.test(record.name) ?? false;
+}
+
+export function programMatchesDegreeLevel(
+  record: Pick<ProgramRecord, 'name' | 'degree'>,
+  requested: ProgramDegreeLevel
+): boolean {
+  const degree = normalize(record.degree || '');
+  const name = normalize(record.name);
+  const isPhd =
+    /\b(?:doctor of philosophy|phd|ph d)\b/.test(degree) ||
+    /\b(?:phd|ph d)\b/.test(name);
+  const isDoctoral =
+    isPhd ||
+    /\b(?:doctor(?: of)?|doctoral)\b/.test(degree) ||
+    /\bdnp\b/.test(name);
+  const isMasters =
+    /\bmaster(?: of)?\b/.test(degree) ||
+    /\b(?:mba|mfa|mpp|msn|msw)\b/.test(name);
+  const isGraduateCertificate = /\bgraduate certificate\b/.test(`${degree} ${name}`);
+  const isGraduate =
+    isDoctoral || isMasters || isGraduateCertificate || /\bgraduate program\b/.test(degree);
+  const isUndergraduate =
+    !isGraduate && /\b(?:bachelor|undergraduate|minor|ba|bs|bsn|bsw)\b/.test(`${degree} ${name}`);
+
+  if (requested === 'phd') return isPhd;
+  if (requested === 'doctoral') return isDoctoral;
+  if (requested === 'masters') return isMasters;
+  if (requested === 'graduate') return isGraduate;
+  return isUndergraduate;
 }
 
 function tokensMatch(queryToken: string, nameToken: string): boolean {

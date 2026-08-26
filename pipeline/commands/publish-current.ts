@@ -4,7 +4,7 @@ import path from 'path';
 import { execFileSync } from 'child_process';
 import 'dotenv/config';
 import { Pool, type PoolClient } from 'pg';
-import { OFFICE_DIRECTORY_CONTACTS, OTHER_DIRECTORY_CONTACTS } from '../../src/directory/static-contacts';
+import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
 import { shuttleSchedule, type ShuttleRoute } from '../../src/static/shuttleSchedule';
 import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
 import { parseEventStart } from '../../src/data-v2/event-time';
@@ -341,18 +341,24 @@ async function insertStructured(
     }
   }
 
-  for (const contact of [...OFFICE_DIRECTORY_CONTACTS, ...OTHER_DIRECTORY_CONTACTS]) {
-    const record = contact as unknown as JsonRecord;
-    const name = cleanText(record.name);
+  const directoryContacts = buildStructuredDirectoryContacts(
+    readJson<unknown>('data/normalized/faculty.json')
+  );
+  for (const contact of directoryContacts) {
+    const name = cleanText(contact.name);
     if (!name) continue;
+    const department = cleanText(contact.department) || null;
+    const phone = cleanText(contact.phone) || null;
+    const email = cleanText(contact.email) || null;
+    const office = cleanText(contact.office) || null;
     await client.query(
       `INSERT INTO rockygpt_v2.campus_contacts
        (dataset_version_id, source_id, source_record_key, name, department, phone, email, office,
         collected_at, content_hash)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
-      [datasetId, sources.get('campus-directory'), name, name, cleanText(record.department) || null,
-        cleanText(record.phone) || null, cleanText(record.email) || null, cleanText(record.office) || null,
-        collectedAtFor('campus-directory'), sha256(name)]
+      [datasetId, sources.get(contact.publicationSourceKey), contact.sourceRecordKey, name,
+        department, phone, email, office, collectedAtFor(contact.publicationSourceKey),
+        sha256(JSON.stringify({ name, department, phone, email, office }))]
     );
     counts.campus_contacts = (counts.campus_contacts || 0) + 1;
   }
