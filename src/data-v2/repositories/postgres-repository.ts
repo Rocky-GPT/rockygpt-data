@@ -26,6 +26,26 @@ import { courseCredits } from '../course-record';
 import type { RockyRepositoryV2, SearchOptions } from './types';
 
 /**
+ * The most rows any capability lookup will return.
+ *
+ * A ceiling, not an answer size. Each lookup used to cap itself — six
+ * programs, eight clubs, twelve menu items — from a time when nothing
+ * downstream could decide how much of a result to use. The brain decides that
+ * now, per question, with the plan's `operation.limit`: "tell me about nursing
+ * programs" asks for a handful and "what majors does Ramapo offer" asks for
+ * all of them, and only the plan can tell those apart.
+ *
+ * Capping here as well meant the lower number always won, silently: the brain
+ * asked for everything, got six, and had no way to know a hundred and forty
+ * were dropped. What is left is a bound on what one query can drag into
+ * memory, which is the only thing this layer is in a position to judge. It is
+ * set above the largest table rather than at a round number that looks
+ * generous: at 200 the clubs lookup returned exactly 200 of 254, which is the
+ * failure this whole change was about, wearing a bigger number.
+ */
+const MAX_RECORDS = 5000;
+
+/**
  * The relevance a passage must reach to be returned at all.
  *
  * Measured against this corpus rather than chosen. Gibberish tops out at
@@ -249,7 +269,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
                 || CASE WHEN m.vegetarian THEN ' vegetarian' ELSE '' END)
               @@ plainto_tsquery('english', $3))
        ORDER BY m.meal, m.station, m.name
-       LIMIT 12`,
+       LIMIT ${MAX_RECORDS}`,
       [datasetId, meal || null, query]
     );
     return result.rows.map((row) => ({
@@ -389,7 +409,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
            ts_rank(to_tsvector('english', h.name), ${toQuery})
          END DESC,
          h.name
-       LIMIT 10`,
+       LIMIT ${MAX_RECORDS}`,
       [datasetId, day, query, onDate]
     );
     return result.rows.map((row) => ({
@@ -469,7 +489,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
               h.collected_at::text
          FROM eligible_hours h JOIN rockygpt_v2.sources s ON s.id = h.source_id
         WHERE h.precedence_rank = 1
-        LIMIT 10`,
+        LIMIT ${MAX_RECORDS}`,
       [datasetId, day, name, onDate]
     );
     return result.rows.map((row) => ({
@@ -498,13 +518,14 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
               a.collected_at::text
        FROM rockygpt_v2.academic_dates a JOIN rockygpt_v2.sources s ON s.id = a.source_id
        WHERE a.dataset_version_id = $1::uuid
-         AND to_tsvector('english', a.term || ' ' || a.title || ' ' || coalesce(a.description, ''))
-             @@ plainto_tsquery('english', $2)
+         AND ($2::text = '' OR
+              to_tsvector('english', a.term || ' ' || a.title || ' ' || coalesce(a.description, ''))
+              @@ plainto_tsquery('english', $2))
        ORDER BY ts_rank(
          to_tsvector('english', a.term || ' ' || a.title || ' ' || coalesce(a.description, '')),
          plainto_tsquery('english', $2)
        ) DESC
-       LIMIT 5`,
+       LIMIT ${MAX_RECORDS}`,
       [datasetId, query]
     );
     return result.rows.map((row) => ({
@@ -554,7 +575,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
        ORDER BY
          (lower(regexp_replace(course.value->>'code', '\\s+', '', 'g')) = $3) DESC,
          course.value->>'code'
-       LIMIT 20`,
+       LIMIT ${MAX_RECORDS}`,
       [datasetId, query.trim(), compactQuery]
     );
     return result.rows.map((row) => {
@@ -589,7 +610,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
          AND ($3::text = '' OR to_tsvector('english', e.title || ' ' || coalesce(e.organizer, '') || ' ' || coalesce(e.description, ''))
               @@ plainto_tsquery('english', $3))
        ORDER BY e.starts_at NULLS LAST, e.title
-       LIMIT 40`,
+       LIMIT ${MAX_RECORDS}`,
       [datasetId, now.toISOString(), query]
     );
     return result.rows.map((row) => ({
@@ -625,7 +646,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
        WHERE c.dataset_version_id = $1::uuid
          AND ($2::text = '' OR to_tsvector('english', c.name || ' ' || coalesce(c.category, ''))
              @@ plainto_tsquery('english', $2))
-       ORDER BY c.name LIMIT 8`,
+       ORDER BY c.name LIMIT ${MAX_RECORDS}`,
       [datasetId, query]
     );
     return result.rows.map((row) => ({
@@ -694,7 +715,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
            ELSE 4
          END,
          p.name
-       LIMIT 200`,
+       LIMIT ${MAX_RECORDS}`,
       [datasetId, subject, criteria.requestedKind || '']
     );
     return result.rows
@@ -707,8 +728,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
         programUrl: optionalString(row, 'program_url'),
         source: sourceFromRow(row),
       }))
-      .filter((record) => programMatchesCriteria(record, criteria))
-      .slice(0, 6);
+      .filter((record) => programMatchesCriteria(record, criteria));
   }
 
   async findContacts(query: string): Promise<ContactRecord[]> {
@@ -777,7 +797,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
          AND ($2::text = '' OR to_tsvector('english',
                c.name || ' ' || coalesce(c.department, '') || ' ' || coalesce(v.terms, ''))
              @@ plainto_tsquery('english', $2))
-       ORDER BY c.name LIMIT 6`,
+       ORDER BY c.name LIMIT ${MAX_RECORDS}`,
       [datasetId, query, vocabulary.names, vocabulary.terms]
     );
     return result.rows.map((row) => ({
@@ -811,7 +831,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
            OR ($2::text = '' AND lower(r.name) LIKE '%roadrunner%')
          )
          AND ($3::text = '' OR r.service_day IS NULL OR r.service_day = $3::text)
-       ORDER BY t.sequence LIMIT 50`,
+       ORDER BY t.sequence LIMIT ${MAX_RECORDS}`,
       [datasetId, routeHint || '', serviceDay || '']
     );
     return result.rows.map((row) => ({
