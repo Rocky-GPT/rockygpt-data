@@ -1,0 +1,89 @@
+{
+  "$comment": [
+    "What each campus location is called on Ramapo's map, where the two differ.",
+    "",
+    "Ramapo rebuilt the map on Concept3D and the names moved with it. Resolution",
+    "is exact-name-or-alias and nothing else: an entry here is a mapping someone",
+    "checked, not a guess a matcher made. A location with no exact name and no",
+    "alias resolves to nothing and opens the plain campus map, which is what it",
+    "did before any of this and is never wrong.",
+    "",
+    "`locations` maps our name to theirs. `categories` maps our name to a whole",
+    "category, for entries that describe a kind of place rather than one place.",
+    "Deliberately absent: Competition Soccer Field, Running Track and Stadium",
+    "Field, and Visitor's Circle. The new map has no track at all, and the field",
+    "names it does carry are different places, not different spellings."
+  ],
+
+  "locations": {
+    "Academic Building A": "Academic Building A Wing",
+    "Academic Building B": "Academic Building B Wing",
+    "Academic Building C": "Academic Building C Wing",
+    "Academic Building D": "Academic Building D Wing",
+    "Academic Building E": "Academic Building E Wing",
+    "Academic Building G": "Academic Building G Wing",
+    "Academic Building H": "Academic Building H Wing",
+    "Berrie Center": "Berrie Center for Visual and Performing Arts",
+    "McBride House": "McBride House - Admissions",
+
+    "Arch (Havemeyer)": "Havemeyer House",
+    "Anisfield School of Business (ASB)": "Anisfield School of Business",
+    "Student Center (SC)": "Student Center",
+    "The Lodge (CPA)": "The Lodge",
+
+    "Security Booth": "Public Safety Booth",
+    "Green House": "Greenhouse",
+    "Adler Center for Nursing Excellence": "Adler Center for Nursing",
+    "Sculpture Studios": "Sculpture Studio",
+    "North Field": "North Fields",
+    "Multipurpose Field": "Turf Multipurpose Field",
+    "Jeff Maund Memorial Baseball Field": "Baseball Field",
+
+    "Laurel Hall North Building": "Laurel Hall",
+    "Laurel Hall South Building": "Laurel Hall",
+
+    "College Park Apartments - Buckeye": "College Park Apartments",
+    "College Park Apartments - Butternut": "College Park Apartments",
+    "College Park Apartments - Cypress": "College Park Apartments",
+    "College Park Apartments - Elm": "College Park Apartments",
+    "College Park Apartments - Hickory": "College Park Apartments",
+    "College Park Apartments - Holly": "College Park Apartments",
+    "College Park Apartments - International": "College Park Apartments",
+    "College Park Apartments - Mimosa": "College Park Apartments",
+    "College Park Apartments - Mulberry": "College Park Apartments",
+    "College Park Apartments - Palm": "College Park Apartments",
+    "College Park Apartments - Redwood": "College Park Apartments",
+    "College Park Apartments - Science": "College Park Apartments",
+    "College Park Apartments - Sycamore": "College Park Apartments",
+    "College Park Apartments - Tamarack": "College Park Apartments",
+
+    "The Village - Buildings 1-3": "Village Apartments",
+    "The Village - Building 4": "Village Apartments",
+    "The Village - Buildings 5-7": "Village Apartments",
+    "The Village - Building 8": "Village Apartments",
+    "The Village - Buildings 9-11": "Village Apartments",
+    "The Village - Building 12": "Village Apartments",
+    "The Village - Buildings 13-15": "Village Apartments",
+    "The Village - Building 16": "Village Apartments",
+    "The Village - Buildings 17-18": "Village Apartments",
+    "The Village - Building 19": "Village Apartments",
+    "The Village - Buildings 20-21": "Village Apartments",
+    "The Village - Building 22": "Village Apartments"
+  },
+
+  "categories": {
+    "$comment": [
+      "Our parking entries name a kind of permit, not a lot: the new map has",
+      "lettered lots (A-1, B-2) and no way to say which of them a faculty permit",
+      "opens. The parking category shows every lot, which answers the question",
+      "the entry is actually asking without inventing a specific one."
+    ],
+    "Student Parking Lots": "Parking",
+    "Faculty/Staff Parking Lots": "Parking",
+    "Reserved Only Parking Lots": "Parking",
+    "Overflow Parking Lots": "Parking",
+    "Guest Parking Lot": "Parking",
+    "Handicapped Parking Spots": "Parking",
+    "Dining Locations": "Food and Dining"
+  }
+}
