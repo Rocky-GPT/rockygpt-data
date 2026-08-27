@@ -133,6 +133,15 @@ paths:
               schema: { $ref: '#/components/schemas/CourseSearchResponse' }
         '400': { $ref: '#/components/responses/Invalid' }
         '503': { $ref: '#/components/responses/Unavailable' }
+  /v1/search/course-subjects:
+    get:
+      operationId: searchCourseSubjects
+      description: >-
+        The closed set of course subjects a subject mention resolves against.
+        Each entry carries its canonical code, the upstream department name
+        where there is one, and the short forms the data owns.
+      parameters: *textSearchParameters
+      responses: *searchResponses
   /v1/search/programs:
     get:
       operationId: searchPrograms

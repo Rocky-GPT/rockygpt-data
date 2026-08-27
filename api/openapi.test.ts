@@ -19,6 +19,7 @@ test('OpenAPI documents every public production route', () => {
     '/v1/search/clubs',
     '/v1/search/events',
     '/v1/search/courses',
+    '/v1/search/course-subjects',
     '/v1/search/programs',
     '/v1/search/academic-dates',
     '/v1/search/shuttles',

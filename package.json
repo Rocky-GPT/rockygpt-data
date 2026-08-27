@@ -43,6 +43,7 @@
     "fetch:counseling:raw": "tsx ingestion/counseling-raw.ts",
     "fetch:safety:raw": "tsx ingestion/safety-raw.ts",
     "fetch:programs:catalog": "tsx ingestion/scrape-catalog-api.ts",
+    "fetch:course-subjects": "tsx ingestion/course-subjects.ts",
     "normalize:raw": "tsx ingestion/normalize-raw.ts",
     "normalize:calendar:concepts": "tsx scripts/backfill-calendar-concepts.ts",
     "generate:menu:md": "tsx ingestion/generate-menu-md.ts",

@@ -12,6 +12,7 @@ import {
   type CalendarFamily,
   type CalendarKind,
 } from '../../src/data-v2/calendar-concepts';
+import courseSubjects from '../../src/reference/course-subjects.json';
 
 const CAMPUS_TIME_ZONE = 'America/New_York';
 const SERVICE_DAYS = new Set<ShuttleServiceDay>(['weekday', 'saturday', 'sunday']);
@@ -252,6 +253,13 @@ export const getSearch: ApiHandler = async (request) => {
   }
   if (path === '/v1/search/courses') {
     return response(dataset, await pinned.findCourses(query));
+  }
+  if (path === '/v1/search/course-subjects') {
+    // The closed set a subject mention resolves against. Served whole: which
+    // subjects currently have courses is the courses lookup's answer, not this
+    // one's, and a catalogue that shrank with the timetable would make a
+    // mention resolvable one week and ambiguous the next.
+    return response(dataset, courseSubjects);
   }
   if (path === '/v1/search/programs') {
     return response(dataset, await pinned.findPrograms(query));
