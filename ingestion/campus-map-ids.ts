@@ -8,10 +8,18 @@
  * layer, landed on the identical default view. The map drew, so nothing looked
  * broken; it simply stopped answering the question that was asked.
  *
- * The new scheme addresses a place by id rather than by name:
+ * The new scheme addresses a place by id rather than by name, and every link
+ * closes the map's own sidebar, because ours is already a panel inside a modal:
  *
- *     #!m/<locationId>     one place        (Birch Tree Inn Dining = 1218379)
- *     #!ce/<categoryId>    a whole category (Food and Dining      =  108795)
+ *     #!ct/<labels>?sbc/              the campus, drawn plain
+ *     #!m/<id>?sbc/                   one place, pinned and centred
+ *     #!ct/<labels>,<catId>?sbc/      a category, pinned across the map
+ *
+ * `sbc` is the sidebar. Without it the map opens its own Tours panel and
+ * category tree over the left third of the frame and leaves the place you
+ * asked for uncentred behind a card — which is what the first repair looked
+ * like: correct, and unreadable. `ct` rather than `ce` for a category, since
+ * `ce` expands a list in the sidebar we just closed and pins nothing.
  *
  * Resolution is exact name, then an alias the data owns, and nothing else.
  * No fuzzy matching and no taking whichever result a search ranked first:
@@ -36,6 +44,16 @@ const RAW_OUT = path.join(process.cwd(), 'data', 'raw', 'campus-map-concept3d.ra
 
 /** Category holding building geometry rather than a place worth pinning. */
 const GEOMETRY_CATEGORY = 100767;
+
+/**
+ * The label layers the map turns on for itself, kept on every link so a
+ * building keeps its name. Taken from the redirect the college's own stub
+ * still points at.
+ */
+const LABEL_CATEGORIES = '99549,99550,99551';
+
+/** Closes the map's sidebar. Ours is the panel; theirs is in the way. */
+const SIDEBAR_CLOSED = '?sbc/';
 
 /** Layers whose content the new map no longer carries at all. */
 const RETIRED_LAYERS = new Set(['layer_emergency_phones', 'layer_aed', 'layer_pabc']);
@@ -157,6 +175,16 @@ export interface Resolution {
   how: 'exact' | 'alias' | 'category' | 'unresolved';
 }
 
+/** The campus, drawn plain. */
+export const plainMap = (): string => `${MAP_BASE}#!ct/${LABEL_CATEGORIES}${SIDEBAR_CLOSED}`;
+
+/** One place, pinned and centred. */
+const marker = (id: number): string => `${MAP_BASE}#!m/${id}${SIDEBAR_CLOSED}`;
+
+/** Every place in a category, pinned at once. */
+const layer = (id: number): string =>
+  `${MAP_BASE}#!ct/${LABEL_CATEGORIES},${id}${SIDEBAR_CLOSED}`;
+
 /** The URL a record should carry, and why it carries it. */
 export function resolve(
   name: string,
@@ -164,21 +192,21 @@ export function resolve(
   categories: Map<string, number>
 ): Resolution {
   const exact = locations.get(normalize(name));
-  if (exact) return { url: `${MAP_BASE}#!m/${exact}`, how: 'exact' };
+  if (exact) return { url: marker(exact), how: 'exact' };
 
   const aliased = aliases.locations[name];
   if (aliased) {
     const id = locations.get(normalize(aliased));
-    if (id) return { url: `${MAP_BASE}#!m/${id}`, how: 'alias' };
+    if (id) return { url: marker(id), how: 'alias' };
   }
 
   const category = aliases.categories[name];
   if (category) {
     const id = categories.get(normalize(category));
-    if (id) return { url: `${MAP_BASE}#!ce/${id}`, how: 'category' };
+    if (id) return { url: layer(id), how: 'category' };
   }
 
-  return { url: MAP_BASE, how: 'unresolved' };
+  return { url: plainMap(), how: 'unresolved' };
 }
 
 async function main(): Promise<void> {
@@ -209,7 +237,7 @@ async function main(): Promise<void> {
   for (const group of [data.buildings, data.parking, data.layers] as MapRecord[][]) {
     for (const record of group) {
       if (record.key === BASE_MAP_LAYER) {
-        record.mapUrl = MAP_BASE;
+        record.mapUrl = plainMap();
         continue;
       }
       const { url, how } = resolve(record.name, byName, byCategory);
