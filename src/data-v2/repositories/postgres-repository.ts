@@ -23,6 +23,7 @@ import type {
 import { CURRENT_MENU_VENUE_NAME, diningVenueRecord } from '../dining-venues';
 import { V2_SOURCES } from '../sources';
 import { courseCredits } from '../course-record';
+import { CALENDAR_FAMILIES, CALENDAR_KINDS, calendarConcept } from '../calendar-concepts';
 import type { RockyRepositoryV2, SearchOptions } from './types';
 
 /**
@@ -514,7 +515,8 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
   private async findAcademicDatesMatching(query: string): Promise<AcademicDateRecord[]> {
     const datasetId = await this.activeDatasetId();
     const result = await this.pool.query<Row>(
-      `SELECT a.term, a.date_label, a.title, a.description,
+      `SELECT a.family, a.kind, a.term, a.term_id, a.session, a.session_id,
+              a.date_label, a.starts_at::text, a.title, a.description,
               s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
               a.collected_at::text
        FROM rockygpt_v2.academic_dates a JOIN rockygpt_v2.sources s ON s.id = a.source_id
@@ -529,13 +531,32 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
        LIMIT ${MAX_RECORDS}`,
       [datasetId, query]
     );
-    return result.rows.map((row) => ({
-      term: requiredString(row, 'term'),
-      date: requiredString(row, 'date_label'),
-      title: requiredString(row, 'title'),
-      description: optionalString(row, 'description'),
-      source: sourceFromRow(row),
-    }));
+    return result.rows.map((row) => {
+      const term = requiredString(row, 'term');
+      const date = requiredString(row, 'date_label');
+      const title = requiredString(row, 'title');
+      const description = optionalString(row, 'description');
+      const fallback = calendarConcept(term, { date, title, description });
+      const family = optionalString(row, 'family');
+      const kind = optionalString(row, 'kind');
+      return {
+        family: CALENDAR_FAMILIES.has(family as AcademicDateRecord['family'])
+          ? (family as AcademicDateRecord['family'])
+          : fallback.family,
+        kind: CALENDAR_KINDS.has(kind as AcademicDateRecord['kind'])
+          ? (kind as AcademicDateRecord['kind'])
+          : fallback.kind,
+        term,
+        termId: optionalString(row, 'term_id') || fallback.termId,
+        session: optionalString(row, 'session') || fallback.session,
+        sessionId: optionalString(row, 'session_id') || fallback.sessionId,
+        date,
+        startsAt: optionalString(row, 'starts_at') || fallback.startsAt,
+        title,
+        description,
+        source: sourceFromRow(row),
+      };
+    });
   }
 
   async findEvents(query: string, now: Date): Promise<EventRecord[]> {

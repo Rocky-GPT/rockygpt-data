@@ -60,4 +60,14 @@ test('routes reject invalid parameters before accessing release storage', async 
     (await getMap(request(`http://local.test/v1/map?q=${'x'.repeat(201)}`))).status,
     400
   );
+  assert.equal(
+    (await getSearch(request('http://local.test/v1/search/academic-dates?family=made_up')))
+      .status,
+    400
+  );
+  assert.equal(
+    (await getSearch(request('http://local.test/v1/search/academic-dates?date=2026-02-30')))
+      .status,
+    400
+  );
 });

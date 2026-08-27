@@ -8,6 +8,7 @@ import { buildStructuredDirectoryContacts } from '../../src/directory/structured
 import { shuttleSchedule, type ShuttleRoute } from '../../src/static/shuttleSchedule';
 import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
 import { parseEventStart } from '../../src/data-v2/event-time';
+import { calendarConcept } from '../../src/data-v2/calendar-concepts';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 import { assertQualityV2, validateCurrentDatasetV2 } from '../quality/validate';
@@ -277,13 +278,18 @@ async function insertStructured(
   const terms = readJson<Array<{ name: string; events?: Array<{ date: string; title: string; description?: string }> }>>('data/normalized/calendar.json');
   for (const term of terms) {
     for (const event of term.events || []) {
+      const concept = calendarConcept(term.name, event);
       const recordKey = `${term.name}:${event.date}:${event.title}`;
       await client.query(
         `INSERT INTO rockygpt_v2.academic_dates
-         (dataset_version_id, source_id, source_record_key, term, date_label, title, description, collected_at, content_hash)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-        [datasetId, sources.get('academic-calendar'), recordKey, term.name, event.date, cleanText(event.title),
-          cleanText(event.description) || null, collectedAtFor('academic-calendar'), sha256(recordKey)]
+         (dataset_version_id, source_id, source_record_key, family, kind, term, term_id,
+          session, session_id, date_label, starts_at, title, description, collected_at, content_hash)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
+        [datasetId, sources.get('academic-calendar'), recordKey, concept.family, concept.kind,
+          term.name, concept.termId, concept.session || null, concept.sessionId || null, event.date,
+          concept.startsAt || null, cleanText(event.title), cleanText(event.description) || null,
+          collectedAtFor('academic-calendar'),
+          sha256(`${recordKey}:${concept.family}:${concept.kind}:${concept.sessionId || ''}:${concept.startsAt || ''}`)]
       );
       counts.academic_dates = (counts.academic_dates || 0) + 1;
     }

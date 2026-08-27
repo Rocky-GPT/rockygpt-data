@@ -1,3 +1,5 @@
+import type { CalendarFamily, CalendarKind } from '../src/data-v2/calendar-concepts';
+
 type UnknownRecord = Record<string, unknown>;
 
 function isRecord(value: unknown): value is UnknownRecord {
@@ -116,6 +118,12 @@ export interface CalendarEvent {
   date: string;
   title: string;
   description?: string;
+  family?: CalendarFamily;
+  kind?: CalendarKind;
+  termId?: string;
+  session?: string;
+  sessionId?: string;
+  startsAt?: string;
 }
 
 export interface Semester {
@@ -476,6 +484,18 @@ export function validateAcademicCalendar(input: unknown): Semester[] {
       const normalized: CalendarEvent = { date, title };
       const description = asOptionalString(event.description);
       if (description) normalized.description = description;
+      const family = asOptionalString(event.family) as CalendarFamily | undefined;
+      const kind = asOptionalString(event.kind) as CalendarKind | undefined;
+      const termId = asOptionalString(event.termId);
+      const session = asOptionalString(event.session);
+      const sessionId = asOptionalString(event.sessionId);
+      const startsAt = asOptionalString(event.startsAt);
+      if (family) normalized.family = family;
+      if (kind) normalized.kind = kind;
+      if (termId) normalized.termId = termId;
+      if (session) normalized.session = session;
+      if (sessionId) normalized.sessionId = sessionId;
+      if (startsAt) normalized.startsAt = startsAt;
       events.push(normalized);
     });
 
