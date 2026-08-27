@@ -141,7 +141,30 @@ paths:
   /v1/search/academic-dates:
     get:
       operationId: searchAcademicDates
-      parameters: *textSearchParameters
+      parameters:
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/At'
+        - name: family
+          in: query
+          schema: { type: string, maxLength: 64 }
+        - name: kind
+          in: query
+          schema: { type: string, maxLength: 64 }
+        - name: termId
+          in: query
+          schema: { type: string, maxLength: 120 }
+        - name: sessionId
+          in: query
+          schema: { type: string, maxLength: 120 }
+        - name: date
+          in: query
+          schema: { type: string, format: date }
+        - name: startsAfter
+          in: query
+          schema: { type: string, format: date-time }
+        - name: startsBefore
+          in: query
+          schema: { type: string, format: date-time }
       responses: *searchResponses
   /v1/search/shuttles:
     get:

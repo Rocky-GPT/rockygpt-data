@@ -13,6 +13,7 @@ import { writeJsonFile } from './pipeline-utils';
 import { validateProgramsData } from './programs-data';
 import { validateRawDatasetV1 } from './raw-types';
 import { publicPath } from '../src/paths';
+import { calendarWithConcepts } from '../src/data-v2/calendar-concepts';
 
 type Validator = (input: unknown) => unknown;
 
@@ -74,7 +75,7 @@ const TASKS: NormalizationTask[] = [
     name: 'calendar',
     inputFile: 'calendar.raw.json',
     normalizedFile: 'calendar.json',
-    validator: validateAcademicCalendar,
+    validator: (input) => calendarWithConcepts(validateAcademicCalendar(input)),
   },
   {
     name: 'faculty',

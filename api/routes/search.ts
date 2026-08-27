@@ -1,11 +1,17 @@
 /** Structured campus searches used by the brain and any future client. */
 
 import { getRepositoryV2 } from '../../src/data-v2/repositories/index';
-import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
+import type { AcademicDateRecord, ShuttleServiceDay } from '../../src/data-v2/schemas';
 import { V2_SOURCES } from '../../src/data-v2/sources';
 import { scheduleStatusAt } from '../../src/data-v2/schedule-status';
 import { fail, ok, PUBLIC_READ_HEADERS, type ApiHandler } from '../http';
-import { parseIsoInstant, validateQueryLengths } from '../query';
+import { parseIsoDate, parseIsoInstant, validateQueryLengths } from '../query';
+import {
+  CALENDAR_FAMILIES,
+  CALENDAR_KINDS,
+  type CalendarFamily,
+  type CalendarKind,
+} from '../../src/data-v2/calendar-concepts';
 
 const CAMPUS_TIME_ZONE = 'America/New_York';
 const SERVICE_DAYS = new Set<ShuttleServiceDay>(['weekday', 'saturday', 'sunday']);
@@ -123,6 +129,33 @@ function response(dataset: { id: string; version: string; activatedAt: string },
   );
 }
 
+function academicDatesFor(
+  request: Parameters<ApiHandler>[0],
+  records: AcademicDateRecord[]
+): AcademicDateRecord[] {
+  const exact = (field: 'family' | 'kind' | 'termId' | 'sessionId'): string =>
+    text(request, field).toLowerCase();
+  const family = exact('family');
+  const kind = exact('kind');
+  const termId = exact('termId');
+  const sessionId = exact('sessionId');
+  const wantedDate = text(request, 'date');
+  const startsAfter = text(request, 'startsAfter').slice(0, 10);
+  const startsBefore = text(request, 'startsBefore').slice(0, 10);
+
+  return records.filter((record) => {
+    if (family && record.family !== family) return false;
+    if (kind && record.kind !== kind) return false;
+    if (termId && record.termId.toLowerCase() !== termId) return false;
+    if (sessionId && record.sessionId?.toLowerCase() !== sessionId) return false;
+    const recordDate = record.startsAt?.slice(0, 10) || '';
+    if (wantedDate && recordDate !== wantedDate) return false;
+    if (startsAfter && (!recordDate || recordDate < startsAfter)) return false;
+    if (startsBefore && (!recordDate || recordDate >= startsBefore)) return false;
+    return true;
+  });
+}
+
 /**
  * Resolves one repository operation while pinning every read to the dataset
  * that was active when the request began.
@@ -135,6 +168,13 @@ export const getSearch: ApiHandler = async (request) => {
     meal: 64,
     route: 120,
     serviceDay: 16,
+    family: 64,
+    kind: 64,
+    termId: 120,
+    sessionId: 120,
+    date: 10,
+    startsAfter: 64,
+    startsBefore: 64,
   });
   if (invalidLength) return invalidLength;
 
@@ -157,6 +197,28 @@ export const getSearch: ApiHandler = async (request) => {
     !SERVICE_DAYS.has(requestedServiceDay as ShuttleServiceDay)
   ) {
     return fail(400, 'INVALID_REQUEST', '`serviceDay` must be weekday, saturday, or sunday.');
+  }
+  if (path === '/v1/search/academic-dates') {
+    const family = text(request, 'family');
+    const kind = text(request, 'kind');
+    const date = text(request, 'date');
+    const startsAfter = text(request, 'startsAfter');
+    const startsBefore = text(request, 'startsBefore');
+    if (family && !CALENDAR_FAMILIES.has(family as CalendarFamily)) {
+      return fail(400, 'INVALID_REQUEST', '`family` is not a canonical calendar family.');
+    }
+    if (kind && !CALENDAR_KINDS.has(kind as CalendarKind)) {
+      return fail(400, 'INVALID_REQUEST', '`kind` is not a canonical calendar kind.');
+    }
+    if (date && !parseIsoDate(date)) {
+      return fail(400, 'INVALID_REQUEST', '`date` must be an ISO 8601 date.');
+    }
+    if (startsAfter && !parseIsoInstant(startsAfter)) {
+      return fail(400, 'INVALID_REQUEST', '`startsAfter` must be an ISO 8601 timestamp.');
+    }
+    if (startsBefore && !parseIsoInstant(startsBefore)) {
+      return fail(400, 'INVALID_REQUEST', '`startsBefore` must be an ISO 8601 timestamp.');
+    }
   }
 
   const repository = getRepositoryV2();
@@ -195,7 +257,7 @@ export const getSearch: ApiHandler = async (request) => {
     return response(dataset, await pinned.findPrograms(query));
   }
   if (path === '/v1/search/academic-dates') {
-    return response(dataset, await pinned.findAcademicDates(query));
+    return response(dataset, academicDatesFor(request, await pinned.findAcademicDates(query)));
   }
   if (path === '/v1/search/shuttles') {
     // With no explicit serviceDay, the timetable that applies is the one `at`

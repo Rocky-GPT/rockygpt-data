@@ -40,6 +40,7 @@ import {
 import { CURRENT_MENU_VENUE_NAME, diningVenueRecord } from '../dining-venues';
 import { readValidityFromNotes } from '../validity';
 import { courseCredits } from '../course-record';
+import { calendarConcept } from '../calendar-concepts';
 
 type JsonRecord = Record<string, unknown>;
 
@@ -491,6 +492,7 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
     >('data/normalized/calendar.json');
     const records = terms.flatMap((term) =>
       term.events.map((event) => ({
+        ...calendarConcept(term.name, event),
         term: term.name,
         date: event.date,
         title: event.title,
@@ -503,7 +505,7 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
         record,
         score: textScore(query, `${record.term} ${record.title} ${record.date}`),
       }))
-      .filter(({ score }) => score >= 1)
+      .filter(({ score }) => !query.trim() || score >= 1)
       .sort((a, b) => b.score - a.score)
       .map(({ record }) => record);
   }

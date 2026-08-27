@@ -1,4 +1,5 @@
 import type { SourceReference } from './types';
+import type { CalendarFamily, CalendarKind } from './calendar-concepts';
 
 export interface MenuItemRecord {
   date?: string;
@@ -74,8 +75,14 @@ export interface ContactRecord {
 }
 
 export interface AcademicDateRecord {
+  family: CalendarFamily;
+  kind: CalendarKind;
   term: string;
+  termId: string;
+  session?: string;
+  sessionId?: string;
   date: string;
+  startsAt?: string;
   title: string;
   description?: string;
   source: SourceReference;

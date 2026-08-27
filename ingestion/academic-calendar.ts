@@ -12,6 +12,7 @@ import {
 } from './pipeline-utils';
 import { type CalendarEvent, type Semester, validateAcademicCalendar } from './schema';
 import { publicPath } from '../src/paths';
+import { calendarWithConcepts } from '../src/data-v2/calendar-concepts';
 
 const CURRENT_CALENDAR_URL = 'https://www.ramapo.edu/academic-calendars/';
 const FUTURE_CALENDAR_URL =
@@ -227,7 +228,7 @@ async function fetchAcademicCalendar(): Promise<void> {
     return;
   }
 
-  const normalizedSemesters = addResidenceLifeDates(semesters);
+  const normalizedSemesters = calendarWithConcepts(addResidenceLifeDates(semesters));
   writeJsonFile(JSON_OUTPUT_PATH, normalizedSemesters);
   writeJsonFile(PUBLIC_JSON_OUTPUT_PATH, normalizedSemesters);
   runGeneratorScript(MARKDOWN_GENERATOR_PATH);
