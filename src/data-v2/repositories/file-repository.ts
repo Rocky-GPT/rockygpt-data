@@ -505,8 +505,7 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
       }))
       .filter(({ score }) => score >= 1)
       .sort((a, b) => b.score - a.score)
-      .map(({ record }) => record)
-      .slice(0, 5);
+      .map(({ record }) => record);
   }
 
   async findEvents(query: string, now: Date): Promise<EventRecord[]> {
