@@ -1,6 +1,7 @@
 import type { SourceReference } from './types';
 
 export interface MenuItemRecord {
+  date?: string;
   meal: string;
   station: string;
   name: string;

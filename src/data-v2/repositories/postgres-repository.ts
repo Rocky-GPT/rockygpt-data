@@ -255,7 +255,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
   private async findMenuItemsMatching(query: string, meal?: string): Promise<MenuItemRecord[]> {
     const datasetId = await this.activeDatasetId();
     const result = await this.pool.query<Row>(
-      `SELECT m.meal, m.station, m.name, m.calories, m.vegan, m.vegetarian, m.allergens,
+      `SELECT m.valid_from::text AS date, m.meal, m.station, m.name, m.calories, m.vegan, m.vegetarian, m.allergens,
               s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
               m.collected_at::text
        FROM rockygpt_v2.menu_items m JOIN rockygpt_v2.sources s ON s.id = m.source_id
@@ -268,11 +268,12 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
                 || CASE WHEN m.vegan THEN ' vegan' ELSE '' END
                 || CASE WHEN m.vegetarian THEN ' vegetarian' ELSE '' END)
               @@ plainto_tsquery('english', $3))
-       ORDER BY m.meal, m.station, m.name
+       ORDER BY m.valid_from, m.meal, m.station, m.name
        LIMIT ${MAX_RECORDS}`,
       [datasetId, meal || null, query]
     );
     return result.rows.map((row) => ({
+      date: optionalString(row, 'date') || undefined,
       meal: requiredString(row, 'meal'),
       station: requiredString(row, 'station'),
       name: requiredString(row, 'name'),
