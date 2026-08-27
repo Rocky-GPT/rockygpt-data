@@ -1,0 +1,20 @@
+{
+  "CMPS": ["CS", "Comp Sci", "Computer Sci"],
+  "POLI": ["Poli Sci", "PoliSci"],
+  "PSYC": ["Psych"],
+  "BIOL": ["Bio"],
+  "CHEM": ["Chem"],
+  "ECON": ["Econ"],
+  "ANTH": ["Anthro"],
+  "SOCI": ["Soc", "Sociol"],
+  "LITR": ["Literature", "Lit"],
+  "ENGL": ["English"],
+  "INFO": ["Info Sys", "Information Systems"],
+  "BADM": ["Business", "Business Admin"],
+  "CRWT": ["Critical Reading", "Crit Writing"],
+  "MATH": ["Maths"],
+  "THEA": ["Theatre", "Theater"],
+  "FILM": ["Film Studies"],
+  "SPAN": ["Spanish"],
+  "HIST": ["History"]
+}
