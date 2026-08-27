@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-02-12T21:47:13.183Z",
-  "source": "https://www.ramapo.edu/map/data/mapData.json",
+  "generatedAt": "2026-08-27T16:05:47.721Z",
+  "source": "https://api.concept3d.com/locations?map=2292",
   "counts": {
     "buildings": 70,
     "offices": 126,
     "parking": 6,
-    "layers": 5
+    "layers": 2
   },
   "buildings": [
     {
       "key": "building_arch-havemeyer",
       "name": "Arch (Havemeyer)",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Arch%20(Havemeyer)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1219436",
       "aliases": [
         "arch",
         "arch (havemeyer)",
@@ -24,7 +24,7 @@
       "key": "building_security-booth",
       "name": "Security Booth",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Security%20Booth",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1217444",
       "aliases": [
         "security booth"
       ],
@@ -34,7 +34,7 @@
       "key": "building_academic-building-a",
       "name": "Academic Building A",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20A",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133343",
       "aliases": [
         "a building",
         "a wing",
@@ -49,7 +49,7 @@
       "key": "building_anisfield-school-of-business-asb",
       "name": "Anisfield School of Business (ASB)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Anisfield%20School%20of%20Business%20(ASB)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133424",
       "aliases": [
         "anisfield school of business",
         "anisfield school of business (asb)",
@@ -63,7 +63,7 @@
       "key": "building_bandshell",
       "name": "Bandshell",
       "category": "The Arts",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bandshell",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1209039",
       "aliases": [
         "bandshell"
       ],
@@ -73,7 +73,7 @@
       "key": "building_jeff-maund-memorial-baseball-field",
       "name": "Jeff Maund Memorial Baseball Field",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Jeff%20Maund%20Memorial%20Baseball%20Field",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133436",
       "aliases": [
         "jeff maund memorial baseball field"
       ],
@@ -83,7 +83,7 @@
       "key": "building_academic-building-b",
       "name": "Academic Building B",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20B",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133344",
       "aliases": [
         "academic building b",
         "b building",
@@ -98,7 +98,7 @@
       "key": "building_berrie-center",
       "name": "Berrie Center",
       "category": "The Arts",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Berrie%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133432",
       "aliases": [
         "berrie center"
       ],
@@ -110,7 +110,7 @@
       "key": "building_pamela-m-bischoff-hall",
       "name": "Pamela M. Bischoff Hall",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Pamela%20M.%20Bischoff%20Hall",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133464",
       "aliases": [
         "pamela m. bischoff hall"
       ],
@@ -120,7 +120,7 @@
       "key": "building_bill-bradley-sports-and-recreation-center",
       "name": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "aliases": [
         "bill bradley sports and recreation center",
         "bradley center",
@@ -135,7 +135,7 @@
       "key": "building_college-park-apartments-buckeye",
       "name": "College Park Apartments - Buckeye",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Buckeye",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - buckeye"
       ],
@@ -145,7 +145,7 @@
       "key": "building_college-park-apartments-butternut",
       "name": "College Park Apartments - Butternut",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Butternut",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - butternut"
       ],
@@ -155,7 +155,7 @@
       "key": "building_academic-building-c",
       "name": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "aliases": [
         "academic building c",
         "c building",
@@ -170,7 +170,7 @@
       "key": "building_student-center-sc",
       "name": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "aliases": [
         "atrium",
         "sc",
@@ -185,7 +185,7 @@
       "key": "building_visitor-s-circle",
       "name": "Visitor's Circle",
       "category": "Other",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Visitor's%20Circle",
+      "mapUrl": "https://map.ramapo.edu/?id=2292",
       "aliases": [
         "visitor's circle"
       ],
@@ -195,7 +195,7 @@
       "key": "building_college-park-apartments-cypress",
       "name": "College Park Apartments - Cypress",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Cypress",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - cypress"
       ],
@@ -205,7 +205,7 @@
       "key": "building_college-park-apartments-elm",
       "name": "College Park Apartments - Elm",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Elm",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - elm"
       ],
@@ -215,7 +215,7 @@
       "key": "building_facilities-complex",
       "name": "Facilities Complex",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Facilities%20Complex",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133426",
       "aliases": [
         "facilities complex"
       ],
@@ -225,7 +225,7 @@
       "key": "building_green-house",
       "name": "Green House",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Green%20House",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133444",
       "aliases": [
         "green house"
       ],
@@ -235,7 +235,7 @@
       "key": "building_academic-building-d",
       "name": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "aliases": [
         "academic building d",
         "d building",
@@ -250,7 +250,7 @@
       "key": "building_academic-building-e",
       "name": "Academic Building E",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20E",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133372",
       "aliases": [
         "academic building e",
         "e building",
@@ -265,7 +265,7 @@
       "key": "building_academic-building-g",
       "name": "Academic Building G",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20G",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133373",
       "aliases": [
         "academic building g",
         "g building",
@@ -280,7 +280,7 @@
       "key": "building_adler-center-for-nursing-excellence",
       "name": "Adler Center for Nursing Excellence",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Adler%20Center%20for%20Nursing%20Excellence",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133423",
       "aliases": [
         "adler center",
         "adler center for nursing excellence"
@@ -293,7 +293,7 @@
       "key": "building_havemeyer-house",
       "name": "Havemeyer House",
       "category": "Residences   Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Havemeyer%20House",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1219436",
       "aliases": [
         "havemeyer house"
       ],
@@ -303,7 +303,7 @@
       "key": "building_academic-building-h",
       "name": "Academic Building H",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20H",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133374",
       "aliases": [
         "academic building h",
         "h building",
@@ -318,7 +318,7 @@
       "key": "building_student-health-services",
       "name": "Student Health Services",
       "category": "Student Services",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Health%20Services",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133482",
       "aliases": [
         "student health services"
       ],
@@ -328,7 +328,7 @@
       "key": "building_college-park-apartments-hickory",
       "name": "College Park Apartments - Hickory",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Hickory",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - hickory"
       ],
@@ -338,7 +338,7 @@
       "key": "building_college-park-apartments-holly",
       "name": "College Park Apartments - Holly",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Holly",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - holly"
       ],
@@ -348,7 +348,7 @@
       "key": "building_college-park-apartments-international",
       "name": "College Park Apartments - International",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20International",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - international"
       ],
@@ -358,7 +358,7 @@
       "key": "building_laurel-hall-north-building",
       "name": "Laurel Hall North Building",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Laurel%20Hall%20North%20Building",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133458",
       "aliases": [
         "laurel hall",
         "laurel hall north building"
@@ -369,7 +369,7 @@
       "key": "building_laurel-hall-south-building",
       "name": "Laurel Hall South Building",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Laurel%20Hall%20South%20Building",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133458",
       "aliases": [
         "laurel hall",
         "laurel hall south building"
@@ -380,7 +380,7 @@
       "key": "building_peter-p-mercer-learning-commons",
       "name": "Peter P. Mercer Learning Commons",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Peter%20P.%20Mercer%20Learning%20Commons",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133431",
       "aliases": [
         "learning commons",
         "library",
@@ -396,7 +396,7 @@
       "key": "building_the-lodge-cpa",
       "name": "The Lodge (CPA)",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Lodge%20(CPA)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133346",
       "aliases": [
         "cpa",
         "the lodge",
@@ -410,7 +410,7 @@
       "key": "building_nancy-mackin-hall",
       "name": "Nancy Mackin Hall",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Nancy%20Mackin%20Hall",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133462",
       "aliases": [
         "nancy mackin hall"
       ],
@@ -420,7 +420,7 @@
       "key": "building_birch-mansion",
       "name": "Birch Mansion",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Birch%20Mansion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133345",
       "aliases": [
         "birch mansion"
       ],
@@ -430,7 +430,7 @@
       "key": "building_mcbride-house",
       "name": "McBride House",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=McBride%20House",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133430",
       "aliases": [
         "mcbride house"
       ],
@@ -440,7 +440,7 @@
       "key": "building_college-park-apartments-mimosa",
       "name": "College Park Apartments - Mimosa",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Mimosa",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - mimosa"
       ],
@@ -450,7 +450,7 @@
       "key": "building_college-park-apartments-mulberry",
       "name": "College Park Apartments - Mulberry",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Mulberry",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - mulberry"
       ],
@@ -460,7 +460,7 @@
       "key": "building_multipurpose-field",
       "name": "Multipurpose Field",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Multipurpose%20Field",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133443",
       "aliases": [
         "multipurpose field"
       ],
@@ -470,7 +470,7 @@
       "key": "building_multipurpose-field_2",
       "name": "Multipurpose Field",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Multipurpose%20Field",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133443",
       "aliases": [
         "multipurpose field"
       ],
@@ -480,7 +480,7 @@
       "key": "building_north-field",
       "name": "North Field",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=North%20Field",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133437",
       "aliases": [
         "north field"
       ],
@@ -490,7 +490,7 @@
       "key": "building_the-overlook",
       "name": "The Overlook",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Overlook",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133347",
       "aliases": [
         "the overlook"
       ],
@@ -500,7 +500,7 @@
       "key": "building_college-park-apartments-palm",
       "name": "College Park Apartments - Palm",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Palm",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - palm"
       ],
@@ -510,7 +510,7 @@
       "key": "building_trustees-pavilion",
       "name": "Trustees Pavilion",
       "category": "Meeting &amp; Conference Centers",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Trustees%20Pavilion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1099060",
       "aliases": [
         "trustees pavilion"
       ],
@@ -520,7 +520,7 @@
       "key": "building_pine-hall",
       "name": "Pine Hall",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Pine%20Hall",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133465",
       "aliases": [
         "pine hall"
       ],
@@ -530,7 +530,7 @@
       "key": "building_practice-field",
       "name": "Practice Field",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Practice%20Field",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133438",
       "aliases": [
         "practice field"
       ],
@@ -540,7 +540,7 @@
       "key": "building_padovano-commons",
       "name": "Padovano Commons",
       "category": "Meeting &amp; Conference Centers",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Padovano%20Commons",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1228460",
       "aliases": [
         "padovano commons"
       ],
@@ -550,7 +550,7 @@
       "key": "building_college-park-apartments-redwood",
       "name": "College Park Apartments - Redwood",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Redwood",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - redwood"
       ],
@@ -560,7 +560,7 @@
       "key": "building_college-park-apartments-science",
       "name": "College Park Apartments - Science",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Science",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - science"
       ],
@@ -570,7 +570,7 @@
       "key": "building_sculpture-studios",
       "name": "Sculpture Studios",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Sculpture%20Studios",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133440",
       "aliases": [
         "sculpture studios"
       ],
@@ -580,7 +580,7 @@
       "key": "building_sharp-sustainability-education-center",
       "name": "Sharp Sustainability Education Center",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Sharp%20Sustainability%20Education%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133446",
       "aliases": [
         "sharp sustainability education center"
       ],
@@ -590,7 +590,7 @@
       "key": "building_competition-soccer-field",
       "name": "Competition Soccer Field",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Competition%20Soccer%20Field",
+      "mapUrl": "https://map.ramapo.edu/?id=2292",
       "aliases": [
         "competition soccer field"
       ],
@@ -600,7 +600,7 @@
       "key": "building_softball-field",
       "name": "Softball Field",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Softball%20Field",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133441",
       "aliases": [
         "softball field"
       ],
@@ -610,7 +610,7 @@
       "key": "building_running-track-and-stadium-field",
       "name": "Running Track and Stadium Field",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Running%20Track%20and%20Stadium%20Field",
+      "mapUrl": "https://map.ramapo.edu/?id=2292",
       "aliases": [
         "running track and stadium field"
       ],
@@ -620,7 +620,7 @@
       "key": "building_college-park-apartments-sycamore",
       "name": "College Park Apartments - Sycamore",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Sycamore",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - sycamore"
       ],
@@ -630,7 +630,7 @@
       "key": "building_college-park-apartments-tamarack",
       "name": "College Park Apartments - Tamarack",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=College%20Park%20Apartments%20-%20Tamarack",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133467",
       "aliases": [
         "college park apartments - tamarack"
       ],
@@ -640,7 +640,7 @@
       "key": "building_tennis-courts",
       "name": "Tennis Courts",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Tennis%20Courts",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133442",
       "aliases": [
         "tennis courts"
       ],
@@ -650,7 +650,7 @@
       "key": "building_thomases-commons",
       "name": "Thomases Commons",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Thomases%20Commons",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133469",
       "aliases": [
         "thomases commons"
       ],
@@ -660,7 +660,7 @@
       "key": "building_the-village-building-12",
       "name": "The Village - Building 12",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Building%2012",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - building 12"
       ],
@@ -670,7 +670,7 @@
       "key": "building_the-village-buildings-1-3",
       "name": "The Village - Buildings 1-3",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Buildings%201-3",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - buildings 1-3"
       ],
@@ -680,7 +680,7 @@
       "key": "building_the-village-buildings-13-15",
       "name": "The Village - Buildings 13-15",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Buildings%2013-15",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - buildings 13-15"
       ],
@@ -690,7 +690,7 @@
       "key": "building_the-village-building-16",
       "name": "The Village - Building 16",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Building%2016",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - building 16"
       ],
@@ -700,7 +700,7 @@
       "key": "building_the-village-buildings-17-18",
       "name": "The Village - Buildings 17-18",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Buildings%2017-18",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - buildings 17-18"
       ],
@@ -710,7 +710,7 @@
       "key": "building_the-village-building-19",
       "name": "The Village - Building 19",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Building%2019",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - building 19"
       ],
@@ -720,7 +720,7 @@
       "key": "building_the-village-buildings-20-21",
       "name": "The Village - Buildings 20-21",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Buildings%2020-21",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - buildings 20-21"
       ],
@@ -730,7 +730,7 @@
       "key": "building_the-village-building-22",
       "name": "The Village - Building 22",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Building%2022",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - building 22"
       ],
@@ -740,7 +740,7 @@
       "key": "building_the-village-building-4",
       "name": "The Village - Building 4",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Building%204",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - building 4"
       ],
@@ -750,7 +750,7 @@
       "key": "building_the-village-buildings-5-7",
       "name": "The Village - Buildings 5-7",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Buildings%205-7",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - buildings 5-7"
       ],
@@ -760,7 +760,7 @@
       "key": "building_the-village-building-8",
       "name": "The Village - Building 8",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Building%208",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - building 8"
       ],
@@ -770,7 +770,7 @@
       "key": "building_the-village-buildings-9-11",
       "name": "The Village - Buildings 9-11",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Village%20-%20Buildings%209-11",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133474",
       "aliases": [
         "the village - buildings 9-11"
       ],
@@ -784,7 +784,7 @@
       "buildingKey": "building_academic-building-a",
       "buildingName": "Academic Building A",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20A",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133343",
       "officeUrl": "https://www.ramapo.edu/honors/",
       "aliases": [
         "college honors lounge",
@@ -798,7 +798,7 @@
       "buildingKey": "building_academic-building-a",
       "buildingName": "Academic Building A",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20A",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133343",
       "officeUrl": "https://www.ramapo.edu/marketing-communications/",
       "aliases": [
         "marketing and communications",
@@ -812,7 +812,7 @@
       "buildingKey": "building_anisfield-school-of-business-asb",
       "buildingName": "Anisfield School of Business (ASB)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Anisfield%20School%20of%20Business%20(ASB)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133424",
       "officeUrl": "https://www.ramapo.edu/asb/",
       "aliases": [
         "anisfield school of business (asb)",
@@ -826,7 +826,7 @@
       "buildingKey": "building_anisfield-school-of-business-asb",
       "buildingName": "Anisfield School of Business (ASB)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Anisfield%20School%20of%20Business%20(ASB)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133424",
       "officeUrl": "https://www.ramapo.edu/er/",
       "aliases": [
         "aft office",
@@ -840,7 +840,7 @@
       "buildingKey": "building_anisfield-school-of-business-asb",
       "buildingName": "Anisfield School of Business (ASB)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Anisfield%20School%20of%20Business%20(ASB)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133424",
       "officeUrl": "https://www.ramapo.edu/asb/tradinglab/",
       "aliases": [
         "global financial markets trading lab",
@@ -854,7 +854,7 @@
       "buildingKey": "building_anisfield-school-of-business-asb",
       "buildingName": "Anisfield School of Business (ASB)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Anisfield%20School%20of%20Business%20(ASB)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133424",
       "officeUrl": "https://www.ramapo.edu/adult-students/",
       "aliases": [
         "degree completion program",
@@ -868,7 +868,7 @@
       "buildingKey": "building_anisfield-school-of-business-asb",
       "buildingName": "Anisfield School of Business (ASB)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Anisfield%20School%20of%20Business%20(ASB)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133424",
       "officeUrl": "https://www.ramapo.edu/its/",
       "aliases": [
         "information technology services",
@@ -882,7 +882,7 @@
       "buildingKey": "building_anisfield-school-of-business-asb",
       "buildingName": "Anisfield School of Business (ASB)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Anisfield%20School%20of%20Business%20(ASB)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133424",
       "officeUrl": "https://www.ramapo.edu/sshs/",
       "aliases": [
         "school of social science and human services (sshs)",
@@ -896,7 +896,7 @@
       "buildingKey": "building_academic-building-b",
       "buildingName": "Academic Building B",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20B",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133344",
       "officeUrl": "https://www.ramapo.edu/its/computer-labs/",
       "aliases": [
         "language lab",
@@ -910,7 +910,7 @@
       "buildingKey": "building_academic-building-b",
       "buildingName": "Academic Building B",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20B",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133344",
       "officeUrl": "https://www.ramapo.edu/berriecenter/art-galleries/selden-rodman/",
       "aliases": [
         "rodman gallery of popular arts",
@@ -924,7 +924,7 @@
       "buildingKey": "building_academic-building-b",
       "buildingName": "Academic Building B",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20B",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133344",
       "officeUrl": "https://www.ramapo.edu/hgs/",
       "aliases": [
         "school of humanities and global studies",
@@ -938,7 +938,7 @@
       "buildingKey": "building_berrie-center",
       "buildingName": "Berrie Center",
       "category": "The Arts",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Berrie%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133432",
       "officeUrl": "https://www.ramapo.edu/berriecenter/",
       "aliases": [
         "adler theater",
@@ -952,7 +952,7 @@
       "buildingKey": "building_berrie-center",
       "buildingName": "Berrie Center",
       "category": "The Arts",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Berrie%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133432",
       "officeUrl": "https://www.ramapo.edu/its/computer-labs/",
       "aliases": [
         "berrie center computer lab",
@@ -966,7 +966,7 @@
       "buildingKey": "building_berrie-center",
       "buildingName": "Berrie Center",
       "category": "The Arts",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Berrie%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133432",
       "officeUrl": "https://www.ramapo.edu/berriecenter/",
       "aliases": [
         "ingersoll-rand dance/theater rehearsal hall",
@@ -980,7 +980,7 @@
       "buildingKey": "building_berrie-center",
       "buildingName": "Berrie Center",
       "category": "The Arts",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Berrie%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133432",
       "officeUrl": "https://www.ramapo.edu/berriecenter/art-galleries/kresge-pascal/",
       "aliases": [
         "kresge gallery",
@@ -994,7 +994,7 @@
       "buildingKey": "building_berrie-center",
       "buildingName": "Berrie Center",
       "category": "The Arts",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Berrie%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133432",
       "officeUrl": "https://www.ramapo.edu/berriecenter/art-galleries/kresge-pascal/",
       "aliases": [
         "pascal gallery",
@@ -1008,7 +1008,7 @@
       "buildingKey": "building_berrie-center",
       "buildingName": "Berrie Center",
       "category": "The Arts",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Berrie%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133432",
       "officeUrl": "https://www.ramapo.edu/berriecenter/art-galleries/",
       "aliases": [
         "photo lounge",
@@ -1022,7 +1022,7 @@
       "buildingKey": "building_berrie-center",
       "buildingName": "Berrie Center",
       "category": "The Arts",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Berrie%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133432",
       "officeUrl": "https://www.ramapo.edu/ca/",
       "aliases": [
         "school of contemporary arts (ca)",
@@ -1036,7 +1036,7 @@
       "buildingKey": "building_berrie-center",
       "buildingName": "Berrie Center",
       "category": "The Arts",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Berrie%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133432",
       "officeUrl": "https://www.ramapo.edu/berriecenter/",
       "aliases": [
         "sharp theater",
@@ -1050,7 +1050,7 @@
       "buildingKey": "building_pamela-m-bischoff-hall",
       "buildingName": "Pamela M. Bischoff Hall",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Pamela%20M.%20Bischoff%20Hall",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133464",
       "officeUrl": "https://www.ramapo.edu/reslife/bischoff-hall/",
       "aliases": [
         "bischoff student lounges",
@@ -1064,7 +1064,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "arena",
@@ -1078,7 +1078,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "athletics office",
@@ -1092,7 +1092,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "auxiliary gym",
@@ -1106,7 +1106,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "dance studio",
@@ -1120,7 +1120,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "edelman climbing wall",
@@ -1134,7 +1134,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "hall of fame",
@@ -1148,7 +1148,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "konica minolta spectator lobby",
@@ -1162,7 +1162,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "kraus welcome center",
@@ -1176,7 +1176,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "sharp fitness center",
@@ -1190,7 +1190,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "sony electronics skybox",
@@ -1204,7 +1204,7 @@
       "buildingKey": "building_bill-bradley-sports-and-recreation-center",
       "buildingName": "Bill Bradley Sports and Recreation Center",
       "category": "Athletics",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Bill%20Bradley%20Sports%20and%20Recreation%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133348",
       "officeUrl": "http://www.ramapoathletics.com/",
       "aliases": [
         "thomas swimming pool",
@@ -1218,7 +1218,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": "https://www.ramapo.edu/careercenter/",
       "aliases": [
         "cahill center for experiential and career services",
@@ -1232,7 +1232,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": "https://www.ramapo.edu/international/",
       "aliases": [
         "international and intercultural education",
@@ -1246,7 +1246,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": "https://www.ramapo.edu/international/",
       "aliases": [
         "study abroad",
@@ -1260,7 +1260,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": "https://www.ramapo.edu/international/",
       "aliases": [
         "roukema center for international education",
@@ -1274,7 +1274,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": null,
       "aliases": [
         "fishbowl lounge",
@@ -1288,7 +1288,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": null,
       "aliases": [
         "micro market self-service kiosk 'fish bowl'",
@@ -1302,7 +1302,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": "https://www.ramapo.edu/student-conduct/",
       "aliases": [
         "office of student conduct",
@@ -1316,7 +1316,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": "https://www.ramapo.edu/publicsafety/",
       "aliases": [
         "public safety",
@@ -1330,7 +1330,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": "https://www.ramapo.edu/oss/",
       "aliases": [
         "specialized services/trio",
@@ -1344,7 +1344,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": "https://www.ramapo.edu/student-affairs/",
       "aliases": [
         "student affairs",
@@ -1358,7 +1358,7 @@
       "buildingKey": "building_academic-building-c",
       "buildingName": "Academic Building C",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20C",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133370",
       "officeUrl": "https://www.ramapo.edu/womenscenter/",
       "aliases": [
         "women's center",
@@ -1372,7 +1372,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://www.ramapo.edu/conferences/",
       "aliases": [
         "alumni lounges",
@@ -1386,7 +1386,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://ramapo.sodexomyway.com/",
       "aliases": [
         "birch tree inn restaurant",
@@ -1400,7 +1400,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://www.ramapo.edu/bookstore/",
       "aliases": [
         "bookstore",
@@ -1414,7 +1414,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://www.ramapo.edu/ministries/",
       "aliases": [
         "campus ministries",
@@ -1428,7 +1428,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://ramapo.sodexomyway.com/",
       "aliases": [
         "dining services office",
@@ -1442,7 +1442,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://www.ramapo.edu/conferences/",
       "aliases": [
         "j. lee's lounge",
@@ -1456,7 +1456,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "http://www.ramaponews.com/",
       "aliases": [
         "ramapo news (student newspaper)",
@@ -1470,7 +1470,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://www.ramapo.edu/in-the-loop/roadrunner-central/",
       "aliases": [
         "roadrunner central",
@@ -1484,7 +1484,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://www.ramapo.edu/csi/",
       "aliases": [
         "center for student involvement (csi)",
@@ -1498,7 +1498,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://www.ramapo.edu/sga/",
       "aliases": [
         "student government",
@@ -1512,7 +1512,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://ramapo.sodexomyway.com/",
       "aliases": [
         "the atrium (food court)",
@@ -1526,7 +1526,7 @@
       "buildingKey": "building_student-center-sc",
       "buildingName": "Student Center (SC)",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Center%20(SC)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1218428",
       "officeUrl": "https://www.ramapo.edu/wrpr-fm/",
       "aliases": [
         "wrpr-fm (student radio station)",
@@ -1540,7 +1540,7 @@
       "buildingKey": "building_facilities-complex",
       "buildingName": "Facilities Complex",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Facilities%20Complex",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133426",
       "officeUrl": "https://www.ramapo.edu/facilities/",
       "aliases": [
         "facilities administrative services",
@@ -1554,7 +1554,7 @@
       "buildingKey": "building_facilities-complex",
       "buildingName": "Facilities Complex",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Facilities%20Complex",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133426",
       "officeUrl": "https://www.ramapo.edu/facilities/",
       "aliases": [
         "building maintenance (repairs &amp; trades shops)",
@@ -1568,7 +1568,7 @@
       "buildingKey": "building_facilities-complex",
       "buildingName": "Facilities Complex",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Facilities%20Complex",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133426",
       "officeUrl": "https://www.ramapo.edu/facilities/",
       "aliases": [
         "building services (housekeeping &amp; events - setups)",
@@ -1582,7 +1582,7 @@
       "buildingKey": "building_facilities-complex",
       "buildingName": "Facilities Complex",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Facilities%20Complex",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133426",
       "officeUrl": "https://www.ramapo.edu/facilities/",
       "aliases": [
         "grounds",
@@ -1596,7 +1596,7 @@
       "buildingKey": "building_facilities-complex",
       "buildingName": "Facilities Complex",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Facilities%20Complex",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133426",
       "officeUrl": "https://www.ramapo.edu/facilities/",
       "aliases": [
         "receiving/storeroom",
@@ -1610,7 +1610,7 @@
       "buildingKey": "building_facilities-complex",
       "buildingName": "Facilities Complex",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Facilities%20Complex",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133426",
       "officeUrl": "https://www.ramapo.edu/facilities/",
       "aliases": [
         "utilities (boiler &amp; ac rooms)",
@@ -1624,7 +1624,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/admin-fin/",
       "aliases": [
         "administration and finance",
@@ -1638,7 +1638,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/admin-fin/",
       "aliases": [
         "budget and fiscal affairs",
@@ -1652,7 +1652,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/affirmaction/",
       "aliases": [
         "equity, diversity, inclusion, and compliance office",
@@ -1666,7 +1666,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/hr/employee-benefits/",
       "aliases": [
         "benefits",
@@ -1680,7 +1680,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/grants/",
       "aliases": [
         "grants administration",
@@ -1694,7 +1694,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/student-accounts/",
       "aliases": [
         "office of student accounts",
@@ -1708,7 +1708,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/studentsuccess/",
       "aliases": [
         "center for student success",
@@ -1722,7 +1722,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/chcs/",
       "aliases": [
         "counseling/health services",
@@ -1736,7 +1736,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/eof-program/",
       "aliases": [
         "educational opportunity fund (eof)",
@@ -1750,7 +1750,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/conferences/",
       "aliases": [
         "events and conferences",
@@ -1764,7 +1764,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/hr/",
       "aliases": [
         "human resources",
@@ -1778,7 +1778,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/payroll/",
       "aliases": [
         "payroll",
@@ -1792,7 +1792,7 @@
       "buildingKey": "building_academic-building-d",
       "buildingName": "Academic Building D",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20D",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133371",
       "officeUrl": "https://www.ramapo.edu/registrar/",
       "aliases": [
         "registrar",
@@ -1806,7 +1806,7 @@
       "buildingKey": "building_academic-building-e",
       "buildingName": "Academic Building E",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20E",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133372",
       "officeUrl": "https://www.ramapo.edu/finaid/",
       "aliases": [
         "financial aid",
@@ -1820,7 +1820,7 @@
       "buildingKey": "building_academic-building-e",
       "buildingName": "Academic Building E",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20E",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133372",
       "officeUrl": "https://www.ramapo.edu/iep/",
       "aliases": [
         "institutional effectiveness, research and planning",
@@ -1834,7 +1834,7 @@
       "buildingKey": "building_academic-building-e",
       "buildingName": "Academic Building E",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20E",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133372",
       "officeUrl": "https://www.ramapo.edu/te/",
       "aliases": [
         "teacher education program",
@@ -1848,7 +1848,7 @@
       "buildingKey": "building_academic-building-e",
       "buildingName": "Academic Building E",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20E",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133372",
       "officeUrl": "https://www.ramapo.edu/finaid/vet-prog/",
       "aliases": [
         "veterans' affairs",
@@ -1862,7 +1862,7 @@
       "buildingKey": "building_academic-building-g",
       "buildingName": "Academic Building G",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20G",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133373",
       "officeUrl": "https://www.ramapo.edu/er/",
       "aliases": [
         "employee relations",
@@ -1876,7 +1876,7 @@
       "buildingKey": "building_academic-building-g",
       "buildingName": "Academic Building G",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20G",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133373",
       "officeUrl": "https://www.ramapo.edu/its/computer-labs/",
       "aliases": [
         "g wing computer labs",
@@ -1890,7 +1890,7 @@
       "buildingKey": "building_academic-building-g",
       "buildingName": "Academic Building G",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20G",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133373",
       "officeUrl": "https://www.ramapo.edu/tas/",
       "aliases": [
         "school of theoretical and applied science (tas)",
@@ -1904,7 +1904,7 @@
       "buildingKey": "building_academic-building-g",
       "buildingName": "Academic Building G",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20G",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133373",
       "officeUrl": "https://www.ramapo.edu/mcid/",
       "aliases": [
         "master of science in contemporary instructional design",
@@ -1918,7 +1918,7 @@
       "buildingKey": "building_adler-center-for-nursing-excellence",
       "buildingName": "Adler Center for Nursing Excellence",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Adler%20Center%20for%20Nursing%20Excellence",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133423",
       "officeUrl": "https://ramapo.sodexomyway.com/en-us/locations/dunkin'",
       "aliases": [
         "dunkin",
@@ -1936,7 +1936,7 @@
       "buildingKey": "building_adler-center-for-nursing-excellence",
       "buildingName": "Adler Center for Nursing Excellence",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Adler%20Center%20for%20Nursing%20Excellence",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133423",
       "officeUrl": "https://www.ramapo.edu/msn/",
       "aliases": [
         "master of science, nursing",
@@ -1950,7 +1950,7 @@
       "buildingKey": "building_adler-center-for-nursing-excellence",
       "buildingName": "Adler Center for Nursing Excellence",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Adler%20Center%20for%20Nursing%20Excellence",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133423",
       "officeUrl": "https://www.ramapo.edu/nursing/",
       "aliases": [
         "nursing program",
@@ -1964,7 +1964,7 @@
       "buildingKey": "building_academic-building-h",
       "buildingName": "Academic Building H",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20H",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133374",
       "officeUrl": "https://www.ramapo.edu/ams/",
       "aliases": [
         "academic media services",
@@ -1978,7 +1978,7 @@
       "buildingKey": "building_academic-building-h",
       "buildingName": "Academic Building H",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20H",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133374",
       "officeUrl": "https://www.ramapo.edu/its/computer-labs/",
       "aliases": [
         "h wing computer lab",
@@ -1992,7 +1992,7 @@
       "buildingKey": "building_academic-building-h",
       "buildingName": "Academic Building H",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20H",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133374",
       "officeUrl": "https://www.ramapo.edu/conferences/",
       "aliases": [
         "h-wing auditorium",
@@ -2006,7 +2006,7 @@
       "buildingKey": "building_academic-building-h",
       "buildingName": "Academic Building H",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20H",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133374",
       "officeUrl": "https://www.ramapo.edu/ams/",
       "aliases": [
         "recording studio",
@@ -2020,7 +2020,7 @@
       "buildingKey": "building_academic-building-h",
       "buildingName": "Academic Building H",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Academic%20Building%20H",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133374",
       "officeUrl": "https://www.ramapo.edu/ams/",
       "aliases": [
         "television studio",
@@ -2034,7 +2034,7 @@
       "buildingKey": "building_student-health-services",
       "buildingName": "Student Health Services",
       "category": "Student Services",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Student%20Health%20Services",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133482",
       "officeUrl": "https://www.ramapo.edu/health/",
       "aliases": [
         "health services",
@@ -2048,7 +2048,7 @@
       "buildingKey": "building_laurel-hall-north-building",
       "buildingName": "Laurel Hall North Building",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Laurel%20Hall%20North%20Building",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133458",
       "officeUrl": "https://www.ramapo.edu/testing/",
       "aliases": [
         "testing center",
@@ -2062,7 +2062,7 @@
       "buildingKey": "building_laurel-hall-north-building",
       "buildingName": "Laurel Hall North Building",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Laurel%20Hall%20North%20Building",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133458",
       "officeUrl": "https://www.ramapo.edu/its/computer-labs/",
       "aliases": [
         "laurel hall computer lab",
@@ -2076,7 +2076,7 @@
       "buildingKey": "building_laurel-hall-south-building",
       "buildingName": "Laurel Hall South Building",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Laurel%20Hall%20South%20Building",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133458",
       "officeUrl": "https://www.ramapo.edu/reslife/laurel-hall/",
       "aliases": [
         "laurel hall screening room",
@@ -2090,7 +2090,7 @@
       "buildingKey": "building_laurel-hall-south-building",
       "buildingName": "Laurel Hall South Building",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Laurel%20Hall%20South%20Building",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133458",
       "officeUrl": "https://www.ramapo.edu/reslife/laurel-hall/",
       "aliases": [
         "laurel hall student lounges",
@@ -2104,7 +2104,7 @@
       "buildingKey": "building_peter-p-mercer-learning-commons",
       "buildingName": "Peter P. Mercer Learning Commons",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Peter%20P.%20Mercer%20Learning%20Commons",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133431",
       "officeUrl": "https://ramapo.sodexomyway.com/en-us/locations/we-proudly-serve-starbucks-at-common-grounds",
       "aliases": [
         "common grounds",
@@ -2121,7 +2121,7 @@
       "buildingKey": "building_peter-p-mercer-learning-commons",
       "buildingName": "Peter P. Mercer Learning Commons",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Peter%20P.%20Mercer%20Learning%20Commons",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133431",
       "officeUrl": "https://www.ramapo.edu/idc/",
       "aliases": [
         "instructional design center",
@@ -2135,7 +2135,7 @@
       "buildingKey": "building_peter-p-mercer-learning-commons",
       "buildingName": "Peter P. Mercer Learning Commons",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Peter%20P.%20Mercer%20Learning%20Commons",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133431",
       "officeUrl": "https://www.ramapo.edu/crw/",
       "aliases": [
         "center for reading and writing",
@@ -2149,7 +2149,7 @@
       "buildingKey": "building_peter-p-mercer-learning-commons",
       "buildingName": "Peter P. Mercer Learning Commons",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Peter%20P.%20Mercer%20Learning%20Commons",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133431",
       "officeUrl": "https://www.ramapo.edu/holocaust/",
       "aliases": [
         "center for holocaust and genocide studies",
@@ -2163,7 +2163,7 @@
       "buildingKey": "building_peter-p-mercer-learning-commons",
       "buildingName": "Peter P. Mercer Learning Commons",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Peter%20P.%20Mercer%20Learning%20Commons",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133431",
       "officeUrl": "https://www.ramapo.edu/its/computer-labs/",
       "aliases": [
         "library computer lab",
@@ -2177,7 +2177,7 @@
       "buildingKey": "building_the-lodge-cpa",
       "buildingName": "The Lodge (CPA)",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Lodge%20(CPA)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133346",
       "officeUrl": "https://www.ramapo.edu/reslife/",
       "aliases": [
         "residence life",
@@ -2191,7 +2191,7 @@
       "buildingKey": "building_the-lodge-cpa",
       "buildingName": "The Lodge (CPA)",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Lodge%20(CPA)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133346",
       "officeUrl": "https://www.ramapo.edu/ehs/",
       "aliases": [
         "environmental health and safety",
@@ -2205,7 +2205,7 @@
       "buildingKey": "building_the-lodge-cpa",
       "buildingName": "The Lodge (CPA)",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Lodge%20(CPA)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133346",
       "officeUrl": "https://www.ramapo.edu/ehs/fire-safety/",
       "aliases": [
         "fire safety officer",
@@ -2219,7 +2219,7 @@
       "buildingKey": "building_the-lodge-cpa",
       "buildingName": "The Lodge (CPA)",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Lodge%20(CPA)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133346",
       "officeUrl": "https://www.ramapo.edu/reslife/college-park-apartments-cpa/",
       "aliases": [
         "laundry room",
@@ -2233,7 +2233,7 @@
       "buildingKey": "building_the-lodge-cpa",
       "buildingName": "The Lodge (CPA)",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Lodge%20(CPA)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133346",
       "officeUrl": "https://www.ramapo.edu/reslife/college-park-apartments-cpa/",
       "aliases": [
         "lodge",
@@ -2247,7 +2247,7 @@
       "buildingKey": "building_the-lodge-cpa",
       "buildingName": "The Lodge (CPA)",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Lodge%20(CPA)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133346",
       "officeUrl": "https://www.ramapo.edu/reslife/college-park-apartments-cpa/",
       "aliases": [
         "resident activities center (rac)",
@@ -2261,7 +2261,7 @@
       "buildingKey": "building_the-lodge-cpa",
       "buildingName": "The Lodge (CPA)",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Lodge%20(CPA)",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133346",
       "officeUrl": "https://www.ramapo.edu/ombuds/",
       "aliases": [
         "ombuds office",
@@ -2275,7 +2275,7 @@
       "buildingKey": "building_nancy-mackin-hall",
       "buildingName": "Nancy Mackin Hall",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Nancy%20Mackin%20Hall",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133462",
       "officeUrl": "https://www.ramapo.edu/reslife/mackin-hall/",
       "aliases": [
         "mackin student lounges",
@@ -2289,7 +2289,7 @@
       "buildingKey": "building_birch-mansion",
       "buildingName": "Birch Mansion",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Birch%20Mansion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133345",
       "officeUrl": "https://www.ramapo.edu/provost/aap/",
       "aliases": [
         "academic affairs",
@@ -2303,7 +2303,7 @@
       "buildingKey": "building_birch-mansion",
       "buildingName": "Birch Mansion",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Birch%20Mansion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133345",
       "officeUrl": "https://www.ramapo.edu/alumni/",
       "aliases": [
         "alumni relations",
@@ -2317,7 +2317,7 @@
       "buildingKey": "building_birch-mansion",
       "buildingName": "Birch Mansion",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Birch%20Mansion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133345",
       "officeUrl": "https://www.ramapo.edu/president/",
       "aliases": [
         "board room",
@@ -2331,7 +2331,7 @@
       "buildingKey": "building_birch-mansion",
       "buildingName": "Birch Mansion",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Birch%20Mansion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133345",
       "officeUrl": "https://www.ramapo.edu/foundation/friends/",
       "aliases": [
         "friends of ramapo office",
@@ -2345,7 +2345,7 @@
       "buildingKey": "building_birch-mansion",
       "buildingName": "Birch Mansion",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Birch%20Mansion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133345",
       "officeUrl": "https://www.ramapo.edu/institutional-advancement/",
       "aliases": [
         "institutional advancement",
@@ -2359,7 +2359,7 @@
       "buildingKey": "building_birch-mansion",
       "buildingName": "Birch Mansion",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Birch%20Mansion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133345",
       "officeUrl": "https://www.ramapo.edu/president/",
       "aliases": [
         "president's office",
@@ -2373,7 +2373,7 @@
       "buildingKey": "building_birch-mansion",
       "buildingName": "Birch Mansion",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Birch%20Mansion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133345",
       "officeUrl": "https://www.ramapo.edu/provost/",
       "aliases": [
         "provost's office",
@@ -2387,7 +2387,7 @@
       "buildingKey": "building_birch-mansion",
       "buildingName": "Birch Mansion",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Birch%20Mansion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133345",
       "officeUrl": "https://www.ramapo.edu/foundation/",
       "aliases": [
         "ramapo college foundation",
@@ -2401,7 +2401,7 @@
       "buildingKey": "building_birch-mansion",
       "buildingName": "Birch Mansion",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Birch%20Mansion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133345",
       "officeUrl": "https://www.ramapo.edu/conferences/",
       "aliases": [
         "york room",
@@ -2415,7 +2415,7 @@
       "buildingKey": "building_mcbride-house",
       "buildingName": "McBride House",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=McBride%20House",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133430",
       "officeUrl": "https://www.ramapo.edu/campustours/",
       "aliases": [
         "campus tours",
@@ -2429,7 +2429,7 @@
       "buildingKey": "building_mcbride-house",
       "buildingName": "McBride House",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=McBride%20House",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133430",
       "officeUrl": "https://www.ramapo.edu/em/",
       "aliases": [
         "enrollment management",
@@ -2443,7 +2443,7 @@
       "buildingKey": "building_mcbride-house",
       "buildingName": "McBride House",
       "category": "Administration/Operations",
-      "mapUrl": "https://www.ramapo.edu/map/?building=McBride%20House",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133430",
       "officeUrl": "https://www.ramapo.edu/admissions/",
       "aliases": [
         "office of undergraduate admissions",
@@ -2457,7 +2457,7 @@
       "buildingKey": "building_the-overlook",
       "buildingName": "The Overlook",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=The%20Overlook",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133347",
       "officeUrl": "https://www.ramapo.edu/reslife/the-overlook/",
       "aliases": [
         "the overlook student lounges",
@@ -2471,7 +2471,7 @@
       "buildingKey": "building_trustees-pavilion",
       "buildingName": "Trustees Pavilion",
       "category": "Meeting &amp; Conference Centers",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Trustees%20Pavilion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1099060",
       "officeUrl": "https://www.ramapo.edu/conferences/",
       "aliases": [
         "conference center",
@@ -2485,7 +2485,7 @@
       "buildingKey": "building_trustees-pavilion",
       "buildingName": "Trustees Pavilion",
       "category": "Meeting &amp; Conference Centers",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Trustees%20Pavilion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1099060",
       "officeUrl": "https://ramapo.sodexomyway.com/",
       "aliases": [
         "pavilion restaurant",
@@ -2499,7 +2499,7 @@
       "buildingKey": "building_trustees-pavilion",
       "buildingName": "Trustees Pavilion",
       "category": "Meeting &amp; Conference Centers",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Trustees%20Pavilion",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1099060",
       "officeUrl": null,
       "aliases": [
         "micro market self-service kiosk 'the pav'",
@@ -2513,7 +2513,7 @@
       "buildingKey": "building_pine-hall",
       "buildingName": "Pine Hall",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Pine%20Hall",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133465",
       "officeUrl": "https://www.ramapo.edu/reslife/pine-hall/",
       "aliases": [
         "pine hall student lounge",
@@ -2527,7 +2527,7 @@
       "buildingKey": "building_sharp-sustainability-education-center",
       "buildingName": "Sharp Sustainability Education Center",
       "category": "Academic Buildings",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Sharp%20Sustainability%20Education%20Center",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133446",
       "officeUrl": "https://www.ramapo.edu/mass/",
       "aliases": [
         "master of science, sustainability studies",
@@ -2541,7 +2541,7 @@
       "buildingKey": "building_thomases-commons",
       "buildingName": "Thomases Commons",
       "category": "Residences",
-      "mapUrl": "https://www.ramapo.edu/map/?building=Thomases%20Commons",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!m/1133469",
       "officeUrl": "https://www.ramapo.edu/reslife/village/",
       "aliases": [
         "lounge area for the village residents",
@@ -2554,7 +2554,7 @@
     {
       "key": "parking_student-parking-lots",
       "name": "Student Parking Lots",
-      "mapUrl": "https://www.ramapo.edu/map/",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!ce/99539",
       "aliases": [
         "student parking lots"
       ]
@@ -2562,7 +2562,7 @@
     {
       "key": "parking_faculty-staff-parking-lots",
       "name": "Faculty/Staff Parking Lots",
-      "mapUrl": "https://www.ramapo.edu/map/",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!ce/99539",
       "aliases": [
         "faculty/staff parking lots"
       ]
@@ -2570,7 +2570,7 @@
     {
       "key": "parking_reserved-only-parking-lots",
       "name": "Reserved Only Parking Lots",
-      "mapUrl": "https://www.ramapo.edu/map/",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!ce/99539",
       "aliases": [
         "reserved only parking lots"
       ]
@@ -2578,7 +2578,7 @@
     {
       "key": "parking_overflow-parking-lots",
       "name": "Overflow Parking Lots",
-      "mapUrl": "https://www.ramapo.edu/map/",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!ce/99539",
       "aliases": [
         "overflow parking lots"
       ]
@@ -2586,7 +2586,7 @@
     {
       "key": "parking_guest-parking-lot",
       "name": "Guest Parking Lot",
-      "mapUrl": "https://www.ramapo.edu/map/",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!ce/99539",
       "aliases": [
         "guest parking lot"
       ]
@@ -2594,7 +2594,7 @@
     {
       "key": "parking_handicapped-parking-spots",
       "name": "Handicapped Parking Spots",
-      "mapUrl": "https://www.ramapo.edu/map/",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!ce/99539",
       "aliases": [
         "handicapped parking spots"
       ]
@@ -2605,7 +2605,7 @@
       "key": "layer_campus_map",
       "name": "Campus Map Overview",
       "description": "Base campus map with buildings and paths.",
-      "mapUrl": "https://www.ramapo.edu/map/",
+      "mapUrl": "https://map.ramapo.edu/?id=2292",
       "aliases": [
         "campus map",
         "map",
@@ -2616,45 +2616,12 @@
       "key": "layer_dining",
       "name": "Dining Locations",
       "description": "Pins all dining points shown on the official map.",
-      "mapUrl": "https://www.ramapo.edu/map/?dining=true",
+      "mapUrl": "https://map.ramapo.edu/?id=2292#!ce/108795",
       "aliases": [
         "dining map",
         "food map",
         "cafeteria map",
         "dining locations"
-      ]
-    },
-    {
-      "key": "layer_emergency_phones",
-      "name": "Emergency Phones",
-      "description": "Pins all emergency phone locations.",
-      "mapUrl": "https://www.ramapo.edu/map/?phones=true",
-      "aliases": [
-        "emergency phones",
-        "blue light phones",
-        "phones map"
-      ]
-    },
-    {
-      "key": "layer_aed",
-      "name": "AED Locations",
-      "description": "Pins all AED device locations.",
-      "mapUrl": "https://www.ramapo.edu/map/?aed=true",
-      "aliases": [
-        "aed map",
-        "defibrillator map",
-        "aed locations"
-      ]
-    },
-    {
-      "key": "layer_pabc",
-      "name": "Panic Button Locations",
-      "description": "Pins all panic button locations.",
-      "mapUrl": "https://www.ramapo.edu/map/?pabc=true",
-      "aliases": [
-        "panic button map",
-        "panic buttons",
-        "pabc"
       ]
     }
   ]

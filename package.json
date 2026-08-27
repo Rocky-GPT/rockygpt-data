@@ -36,6 +36,7 @@
     "fetch:calendar": "tsx ingestion/academic-calendar.ts",
     "fetch:faculty": "tsx ingestion/faculty-profiles.ts",
     "fetch:map:rooms": "tsx ingestion/enrich-map-office-rooms.ts",
+    "fetch:map:ids": "tsx ingestion/campus-map-ids.ts",
     "fetch:transportation:raw": "tsx ingestion/transportation-raw.ts",
     "fetch:directory:raw": "tsx ingestion/directory-raw.ts",
     "fetch:housing:raw": "tsx ingestion/housing-raw.ts",
