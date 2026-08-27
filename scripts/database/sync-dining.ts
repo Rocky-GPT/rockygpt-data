@@ -134,7 +134,7 @@ async function syncDiningToActiveDataset() {
             if (!name) continue;
             const recordKey = `${dateStr}:${meal.name}:${station.name}:${name}`;
             const allergens = Array.isArray(item.allergens)
-              ? item.allergens.flatMap((entry: any) => cleanText(entry?.name) || [])
+              ? item.allergens.flatMap((entry: { name?: unknown }) => cleanText(entry?.name) || [])
               : [];
             await client.query(
               `INSERT INTO rockygpt_v2.menu_items
