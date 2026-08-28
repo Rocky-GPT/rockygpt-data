@@ -61,20 +61,3 @@ export function fail(
 export const PUBLIC_READ_HEADERS: Record<string, string> = {
   'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
 };
-
-/**
- * An open event stream. The caller keeps the connection and receives events
- * until it disconnects, so caching and buffering are both disabled.
- */
-export function eventStream(stream: ReadableStream): ApiResponse {
-  return {
-    status: 200,
-    body: stream,
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive',
-      'X-Accel-Buffering': 'no',
-    },
-  };
-}

@@ -302,14 +302,6 @@ function criticalFactTimestamp(rootDir: string, key: string): string {
   }
 }
 
-function rawDatasetCollectedAt(value: unknown): string | undefined {
-  if (value && typeof value === 'object' && 'collectedAt' in value) {
-    const collectedAt = (value as { collectedAt?: unknown }).collectedAt;
-    return typeof collectedAt === 'string' ? collectedAt : undefined;
-  }
-  return undefined;
-}
-
 export class FileRepositoryV2 implements RockyRepositoryV2 {
   private readonly rootDir: string;
 
@@ -853,16 +845,5 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
       .filter((item) => item.score > 0)
       .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))
       .slice(0, options.limit);
-  }
-}
-
-export function fileDatasetCollectedAt(
-  relativePath: string,
-  rootDir = configuredDataRoot()
-): string | undefined {
-  try {
-    return rawDatasetCollectedAt(readJson<unknown>(rootDir, relativePath));
-  } catch {
-    return undefined;
   }
 }

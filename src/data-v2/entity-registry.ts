@@ -170,21 +170,3 @@ export async function loadEntityRows(
   );
   return result.rows;
 }
-
-/** Counts per kind, for a report that fits on one screen. */
-export function registrySummary(registry: EntityRegistry): Array<{ kind: EntityKind; count: number }> {
-  const counts = new Map<EntityKind, number>();
-  for (const entity of registry.entities) {
-    counts.set(entity.kind, (counts.get(entity.kind) || 0) + 1);
-  }
-  return [...counts.entries()].map(([kind, count]) => ({ kind, count }));
-}
-
-/**
- * Keys whose names disagree — the same record appearing under more than one
- * label. This is the shape the library bug took, visible before a student
- * finds it.
- */
-export function ambiguousEntities(registry: EntityRegistry): RegistryEntity[] {
-  return registry.entities.filter((entity) => entity.names.length > 1);
-}

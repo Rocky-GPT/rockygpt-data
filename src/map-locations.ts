@@ -156,10 +156,6 @@ export const MAP_LOCATIONS: MapLocation[] = [
 
 const MAP_LOCATION_BY_KEY = new Map(MAP_LOCATIONS.map((location) => [location.key, location]));
 const BUILDINGS_BY_ROOM_PREFIX = new Map<string, MapLocation>();
-const DEFAULT_PARKING_KEY =
-  MAP_PARKING.find((location) => location.name.toLowerCase().includes('student parking'))?.key ??
-  MAP_PARKING[0]?.key ??
-  CAMPUS_MAP_KEY;
 const QUERY_STOP_WORDS = new Set([
   'where',
   'what',
@@ -203,18 +199,6 @@ for (const building of MAP_BUILDINGS) {
 
 function normalizeQuery(query: string): string {
   return query.toLowerCase().replace(/\s+/g, ' ').trim();
-}
-
-function extractRoomPrefix(query: string): string | null {
-  // Match explicit room-like codes (E-210, ASB108), not natural phrases ("for 12 credits").
-  const roomMatch = query.match(/\b([a-z]{1,4})-?(\d{2,4}[a-z]?)\b/i);
-  const rawPrefix = roomMatch?.[1];
-  if (!rawPrefix) return null;
-
-  const normalizedPrefix = rawPrefix.toLowerCase();
-  if (QUERY_STOP_WORDS.has(normalizedPrefix)) return null;
-
-  return rawPrefix.toUpperCase();
 }
 
 function extractQueryTokens(query: string): string[] {
@@ -282,16 +266,6 @@ function scoreAliasMatch(query: string, location: MapLocation): number {
   return bestScore;
 }
 
-function hasGeneralMapIntent(query: string): boolean {
-  return (
-    /\bmap\b/.test(query) ||
-    query.includes('where is') ||
-    query.includes('where can i find') ||
-    query.includes('how do i get to') ||
-    query.includes('directions to')
-  );
-}
-
 /**
  * Resolves a room number, building prefix, office name, or raw key into a MapLocation.
  */
@@ -337,13 +311,6 @@ export function resolveMapLocation(queryOrKey?: string | null): MapLocation | nu
 }
 
 /**
- * Looks up a normalized map location by key or room number.
- */
-export function getMapLocationByKey(key: string): MapLocation | null {
-  return MAP_LOCATION_BY_KEY.get(key) ?? resolveMapLocation(key);
-}
-
-/**
  * Searches map locations by name, alias, building, room, and optional location type.
  */
 export function filterMapLocations(query: string, filter: MapLocationFilter = 'all'): MapLocation[] {
@@ -378,76 +345,4 @@ export function filterMapLocations(query: string, filter: MapLocationFilter = 'a
     .map((entry) => entry.location);
 
   return ranked;
-}
-
-/**
- * Infers the best map location for natural-language chat queries with location intent.
- */
-export function inferMapLocationKey(query: string): MapLocationKey | null {
-  const normalized = normalizeQuery(query);
-  if (!normalized) return null;
-
-  const sgaLocationIntent =
-    /\b(sga|student government|student government association)\b/.test(normalized) &&
-    /\b(where|location|map|office|directions)\b/.test(normalized);
-  if (sgaLocationIntent) {
-    return 'building_student-center-sc';
-  }
-
-  const csiLocationIntent =
-    /\b(csi|center for student involvement)\b/.test(normalized) &&
-    /\b(where|location|map|office|directions)\b/.test(normalized);
-  if (csiLocationIntent) {
-    return 'office_center-for-student-involvement-csi-student-center-sc';
-  }
-
-  const jLeesLocationIntent =
-    (/\bj[\.\s']*lee(?:s)?\b/.test(normalized) || normalized.includes('jlees') || normalized.includes('j lees')) &&
-    /\b(where|location|map|directions)\b/.test(normalized);
-  if (jLeesLocationIntent) {
-    return 'office_j-lee-s-lounge-student-center-sc';
-  }
-
-  const bsuLocationIntent =
-    /\b(bsu|black student union)\b/.test(normalized) &&
-    /\b(where|location|map|office|directions)\b/.test(normalized);
-  if (bsuLocationIntent) {
-    return 'building_student-center-sc';
-  }
-
-  const prefix = extractRoomPrefix(normalized);
-  if (prefix) {
-    const building = BUILDINGS_BY_ROOM_PREFIX.get(prefix);
-    if (building) return building.key;
-  }
-
-  const hasParkingIntent =
-    /\bparking\b/.test(normalized) ||
-    normalized.includes('where can i park') ||
-    normalized.includes('where should i park');
-
-  if (hasParkingIntent) {
-    const parkingMatches = filterMapLocations(normalized, 'parking');
-    if (parkingMatches.length > 0) {
-      return parkingMatches[0]?.key ?? DEFAULT_PARKING_KEY;
-    }
-    return DEFAULT_PARKING_KEY;
-  }
-
-  // Avoid accidental map hits for non-location queries.
-  // Only infer generic map targets when the user expresses map/location intent.
-  if (!hasGeneralMapIntent(normalized)) {
-    return null;
-  }
-
-  const ranked = filterMapLocations(normalized, 'all');
-  if (ranked.length > 0) {
-    return ranked[0]?.key ?? null;
-  }
-
-  if (hasGeneralMapIntent(normalized)) {
-    return CAMPUS_MAP_KEY;
-  }
-
-  return null;
 }
