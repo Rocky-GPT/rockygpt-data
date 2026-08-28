@@ -168,11 +168,6 @@ export function parseDepartmentIdsFromDepartmentsHtml(html: string): string[] {
   return Array.from(ids).sort((a, b) => a.localeCompare(b));
 }
 
-export function parseCourseCodesFromDepartmentCoursesHtml(html: string): string[] {
-  const matches = html.match(/\b[A-Z]{4}\d{3}[A-Z]?\b/g) || [];
-  return Array.from(new Set(matches)).sort((a, b) => a.localeCompare(b));
-}
-
 export function extractNuxtExpressionFromHtml(html: string): string | null {
   const markerMatch = /window\.__NUXT__\s*=\s*/.exec(html);
   if (!markerMatch || markerMatch.index === undefined) return null;
@@ -341,27 +336,6 @@ function buildFailedRawPage(
     contacts: [],
     documents: [],
   };
-}
-
-export function parseCourseCodesFromCatalogApiPayload(payload: unknown): string[] {
-  let entries: unknown[] = [];
-  if (Array.isArray(payload)) {
-    entries = payload;
-  } else if (isRecord(payload)) {
-    if (Array.isArray(payload.data)) entries = payload.data;
-    else if (Array.isArray(payload.results)) entries = payload.results;
-    else if (Array.isArray(payload.courses)) entries = payload.courses;
-  }
-
-  const codes = new Set<string>();
-  entries.forEach((entry) => {
-    if (!isRecord(entry) || typeof entry.code !== 'string') return;
-    const status = typeof entry.status === 'string' ? entry.status.toLowerCase() : '';
-    if (status && status !== 'active') return;
-    const code = entry.code.replace(/\s+/g, '').toUpperCase();
-    if (/^[A-Z]{2,6}\d{3}[A-Z]?$/.test(code)) codes.add(code);
-  });
-  return Array.from(codes).sort((a, b) => a.localeCompare(b));
 }
 
 async function discoverUrls(options: CollectionOptions): Promise<DiscoveryResult> {

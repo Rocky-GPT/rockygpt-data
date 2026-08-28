@@ -29,10 +29,6 @@ export interface LoadedReleaseArtifact {
   source: 'postgres' | 'file-fallback';
 }
 
-export function isReleaseArtifactKey(value: string): value is ReleaseArtifactKey {
-  return Object.hasOwn(FALLBACK_FILES, value);
-}
-
 async function loadFileArtifact(key: ReleaseArtifactKey): Promise<LoadedReleaseArtifact> {
   const relativePath = FALLBACK_FILES[key];
   const fallbackPath = process.env.ROCKY_DATA_ROOT

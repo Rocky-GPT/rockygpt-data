@@ -73,11 +73,6 @@ export function dataRootPath(...segments: string[]): string {
 /** Campus data artifacts produced and consumed inside this repository. */
 export const DATA_DIR = dataRootPath('data');
 
-/** Joins path segments against the data directory. */
-export function dataPath(...segments: string[]): string {
-  return path.join(/*turbopackIgnore: true*/ DATA_DIR, ...segments);
-}
-
 /** Browser-shaped release artifacts staged inside the data repository. */
 export const PUBLIC_DIR = dataRootPath('public');
 

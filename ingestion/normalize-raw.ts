@@ -168,12 +168,6 @@ function readJson(filePath: string): unknown {
   return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 }
 
-export function normalizationTaskNames(excludeCollectorManaged = false): string[] {
-  return TASKS.filter(
-    (task) => !excludeCollectorManaged || !COLLECTOR_MANAGED_NORMALIZATION_TASKS.has(task.name)
-  ).map((task) => task.name);
-}
-
 function normalizeRaw() {
   console.log('Starting step 2: normalize raw JSON into data/normalized...');
 
