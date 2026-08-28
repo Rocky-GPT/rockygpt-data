@@ -16,7 +16,6 @@
     "lint": "eslint",
     "test": "node scripts/run-tests.mjs",
     "contract:validate": "node scripts/validate-openapi.mjs",
-    "sdk:generate": "node scripts/generate-sdks.mjs",
     "data:schema": "tsx pipeline/commands/apply-schema.ts",
     "data:quality": "tsx pipeline/commands/check-quality.ts",
     "data:publish": "tsx pipeline/commands/publish-current.ts",
