@@ -26,15 +26,29 @@ Scripts resolve paths against this repository root, so run them from here.
 
 ## Service boundary
 
-Run the read-only HTTP service with `npm run dev` locally or `npm start` after
-`npm run build`. Its contract is [`api/openapi.yaml`](api/openapi.yaml). This
-package is private on purpose: the UI, brain, and native clients must use HTTP
-instead of importing repository or ingestion source across application
-boundaries.
+**This repository no longer runs a deployed service.** Ingestion and
+publication are what it is for: scrapers collect, the pipeline validates, and
+`npm run data:publish` writes the result into PostgreSQL. Nothing here is
+deployed, and no client reaches this package over HTTP in production.
+
+The brain reads the published dataset straight from PostgreSQL and serves the
+campus reads the web app used to take from here. The Render service that
+answered `/v1/...` was deleted on 2026-08-28 once those endpoints reached
+parity, and its blueprint was removed with it so applying one cannot bring it
+back. Restoring it would mean writing a new blueprint deliberately.
+
+The HTTP server in `api/` stays for local development only. It backs the web
+app's `/ids`, `/data-explorer` and collector-status pages, which read further
+into the database than the brain exposes, and it registers those routes only
+when `NODE_ENV=development` — which is why `run-local.sh` sets it. Its contract
+is [`api/openapi.yaml`](api/openapi.yaml).
+
+This package stays private on purpose: nothing should import repository or
+ingestion source across application boundaries.
 
 Browser-shaped artifacts are staged under this repository's ignored `public/`
-directory, published into PostgreSQL, and served through
-`GET /v1/data/:artifact`. The pipeline never writes into a client repository.
+directory and published into PostgreSQL. The pipeline never writes into a
+client repository.
 
 Hybrid clients use the additive typed endpoints
 `POST /v2/capabilities/shuttle/query` and `POST /v2/retrieve`, plus structured
