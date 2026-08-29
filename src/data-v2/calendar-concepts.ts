@@ -136,7 +136,12 @@ function conceptFrom(title: string): Pick<CalendarConcept, 'family' | 'kind'> {
   if (/\bclasses? begin\b|\bfirst day of classes\b/i.test(title)) {
     return { family: 'instruction', kind: 'classes_begin' };
   }
-  if (/\blast day of (?:classes|the session)\b|\bclasses end\b/i.test(title)) {
+  // `the semester` alongside `the session`: a term's own last day of
+  // instruction was filed as `other`, so `classes_end` held only the
+  // sub-sessions and "when does the fall semester end" had no correct row to
+  // find. Six rows across every published term read
+  // "Full and Session II Courses - Last Day of the Semester".
+  if (/\blast day of (?:classes|the session|the semester)\b|\bclasses end\b/i.test(title)) {
     return { family: 'instruction', kind: 'classes_end' };
   }
   if (/\bfinal(?:s| examinations?| exams?)\b/i.test(title)) {
