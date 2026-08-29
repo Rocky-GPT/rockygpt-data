@@ -40,8 +40,14 @@ back. Restoring it would mean writing a new blueprint deliberately.
 The HTTP server in `api/` stays for local development only. It backs the web
 app's `/ids`, `/data-explorer` and collector-status pages, which read further
 into the database than the brain exposes, and it registers those routes only
-when `NODE_ENV=development` — which is why `run-local.sh` sets it. Its contract
-is [`api/openapi.yaml`](api/openapi.yaml).
+when `NODE_ENV=development`. Its contract is
+[`api/openapi.yaml`](api/openapi.yaml).
+
+**Nothing starts it for you.** `run-local.sh` brings up the brain and the web
+app only, so those three pages report that they cannot connect until you run
+`npm run dev` here as well, on :8100. Whether that gap is worth closing or the
+pages are worth retiring is an open question — until it is answered, this
+server is the only reason the `api/` directory exists.
 
 This package stays private on purpose: nothing should import repository or
 ingestion source across application boundaries.
@@ -50,10 +56,14 @@ Browser-shaped artifacts are staged under this repository's ignored `public/`
 directory and published into PostgreSQL. The pipeline never writes into a
 client repository.
 
-Hybrid clients use the additive typed endpoints
-`POST /v2/capabilities/shuttle/query` and `POST /v2/retrieve`, plus structured
-searches for menus, events, campus/dining hours, and courses under `/v1/search`.
-DATA, rather than the caller, owns repository matching, dataset identity, and
+The rest of the surface — `POST /v2/capabilities/shuttle/query`,
+`POST /v2/retrieve`, and the structured `/v1/search` routes for menus, events,
+campus and dining hours, and courses — is the retired public contract. It still
+runs when this server is started, and the `rockygpt-evals` suites still read
+their expected values from it, but no deployed client reaches any of it. The
+behaviour below is recorded for whoever decides what happens to that surface.
+
+DATA, rather than the caller, owned repository matching, dataset identity, and
 public source records. Retrieved document text is explicitly marked
 `contentTrust: "untrusted"`.
 
