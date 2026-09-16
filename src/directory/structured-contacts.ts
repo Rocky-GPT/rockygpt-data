@@ -20,6 +20,8 @@ export interface StructuredDirectoryContact extends ContactRecord {
   searchable: string;
   publicationSourceKey: DirectoryPublicationSourceKey;
   sourceRecordKey: string;
+  /** Alternative names explicitly present in the published directory. */
+  aliases: string[];
 }
 
 interface FacultyContactSeed {
@@ -125,6 +127,7 @@ function facultyContacts(input: unknown): StructuredDirectoryContact[] {
           .join(' '),
         publicationSourceKey: 'faculty',
         sourceRecordKey: `faculty:${keyPart(contact.name)}:${keyPart(contact.school) || 'unknown-school'}`,
+        aliases: [],
       };
     });
 }
@@ -145,6 +148,7 @@ export function buildStructuredDirectoryContacts(
       .join(' '),
     publicationSourceKey: 'campus-directory',
     sourceRecordKey: `office:${keyPart(entry.name)}`,
+    aliases: entry.department && entry.department !== entry.name ? [entry.department] : [],
   }));
   const others: StructuredDirectoryContact[] = OTHER_DIRECTORY_CONTACTS.map((entry) => ({
     name: entry.name,
@@ -156,6 +160,7 @@ export function buildStructuredDirectoryContacts(
     searchable: [entry.name, entry.title, entry.unit, entry.office].filter(Boolean).join(' '),
     publicationSourceKey: 'campus-directory',
     sourceRecordKey: `other:${keyPart(entry.name)}`,
+    aliases: [],
   }));
   return [...offices, ...others, ...facultyContacts(facultyInput)];
 }
