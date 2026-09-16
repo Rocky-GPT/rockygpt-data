@@ -7,7 +7,7 @@ import path from 'node:path';
  * so they must not survive into an answerable chunk.
  */
 const INGESTION_METADATA_LINE =
-  /^[ \t]*(?:\*Generated \(UTC\):[^\n]*\*?|Context extracted from[^\n]*|-\s*(?:Dataset|Seed URLs?|Pages Fetched|Pages Failed|Pages Included in Context|Source Type|Status):[^\n]*)[ \t]*$/gim;
+  /^[ \t]*(?:\*Generated \(UTC\):[^\n]*\*?|Context extracted from[^\n]*|-\s*(?:Dataset|Seed URLs?|Pages Fetched|Pages Failed|Pages Included in Context|Collected At|Source Type|Status):[^\n]*)[ \t]*$/gim;
 
 /** The specific official page a context section was extracted from. */
 const SECTION_URL_LINE = /^[ \t]*-\s*URL:\s*(https?:\/\/\S+)[ \t]*$/im;
@@ -55,6 +55,7 @@ export interface SectionChunk {
   content: string;
   canonicalUrl?: string;
   headingPath?: string;
+  collectedAt?: string;
 }
 
 /**
@@ -67,6 +68,7 @@ export function chunkDocumentSections(text: string): SectionChunk[] {
   const rawSections = withoutFrontmatter.split(/\n(?=#{1,3}\s)/);
   const headings: Array<string | undefined> = [];
   const urls: Array<string | undefined> = [];
+  const collectedTimes: Array<string | undefined> = [];
   const chunks: SectionChunk[] = [];
 
   for (const rawSection of rawSections) {
@@ -79,16 +81,21 @@ export function chunkDocumentSections(text: string): SectionChunk[] {
       // from their ancestors, never from a previous sibling page.
       urls.length = level;
       urls[level - 1] = undefined;
+      collectedTimes.length = level;
+      collectedTimes[level - 1] = undefined;
     }
 
     const sectionUrl = extractSectionUrl(rawSection);
     if (sectionUrl && level > 0) urls[level - 1] = sectionUrl;
     const canonicalUrl = sectionUrl || [...urls].reverse().find(Boolean);
+    const collectedAt = rawSection.match(/^- Collected At:\s*(\S+)/m)?.[1];
+    if (collectedAt && level > 0) collectedTimes[level - 1] = collectedAt;
     const cleaned = stripIngestionMetadata(rawSection);
     if (cleaned.length <= 40) continue;
     const headingPath = headings.filter(Boolean).join(' › ') || undefined;
     for (const content of chunkDocumentText(cleaned)) {
-      chunks.push({ content, canonicalUrl, headingPath });
+      chunks.push({ content, canonicalUrl, headingPath,
+        collectedAt: collectedAt || [...collectedTimes].reverse().find(Boolean) });
     }
   }
   return chunks;
