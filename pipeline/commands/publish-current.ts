@@ -374,12 +374,13 @@ async function insertStructured(
     await client.query(
       `INSERT INTO rockygpt_v2.campus_contacts
        (dataset_version_id, source_id, source_record_key, name, department, phone, email, office,
-        collected_at, content_hash, aliases)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb)`,
+        collected_at, content_hash, aliases, search_text)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12)`,
       [datasetId, sources.get(contact.publicationSourceKey), contact.sourceRecordKey, name,
         department, phone, email, office, collectedAtFor(contact.publicationSourceKey),
-        sha256(JSON.stringify({ name, department, phone, email, office, aliases: contact.aliases })),
-        JSON.stringify(contact.aliases)]
+        sha256(JSON.stringify({ name, department, phone, email, office, aliases: contact.aliases,
+          search_text: contact.searchable })),
+        JSON.stringify(contact.aliases), contact.searchable]
     );
     counts.campus_contacts = (counts.campus_contacts || 0) + 1;
   }
@@ -438,6 +439,7 @@ function prepareDocuments(
         domain: SOURCES.find((source) => source.key === sourceKey)?.domain,
         canonicalUrl: chunk.canonicalUrl,
         headingPath: chunk.headingPath,
+        collectedAt: chunk.collectedAt,
       },
     }));
     documents.push({
@@ -483,6 +485,7 @@ async function insertDocuments(
 }
 
 const RELEASE_ARTIFACT_FILES: Record<string, string> = {
+  'search-vocabulary': 'src/reference/search-vocabulary.json',
   calendar: 'public/data/calendar.json',
   clubs: 'public/data/clubs.json',
   courses: 'public/data/courses.json',

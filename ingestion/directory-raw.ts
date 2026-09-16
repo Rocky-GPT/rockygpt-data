@@ -5,6 +5,8 @@ const OUTPUT_PATH = path.join(process.cwd(), 'data', 'raw', 'directory.raw.json'
 const SEED_URLS = [
   'https://www.ramapo.edu/campus-directory/',
   'https://www.ramapo.edu/about/phone/',
+  'https://www.ramapo.edu/registrar/',
+  'https://www.ramapo.edu/registrar/forms-transcripts/',
 ];
 
 function isDirectoryDetail(url: URL): boolean {
@@ -12,6 +14,7 @@ function isDirectoryDetail(url: URL): boolean {
     url.host === 'www.ramapo.edu' &&
     (/^\/campus-directory/.test(url.pathname) ||
       /^\/about\/phone/.test(url.pathname) ||
+      /^\/registrar\//.test(url.pathname) ||
       /directory/i.test(url.pathname))
   );
 }

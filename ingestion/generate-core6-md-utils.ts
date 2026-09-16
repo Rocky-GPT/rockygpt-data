@@ -23,12 +23,13 @@ export interface ContextSection {
   text: string;
 }
 
-const DEFAULT_MAX_PAGES = 30;
-const DEFAULT_MAX_SECTIONS_PER_PAGE = 6;
+// The collector bounds the crawl; downstream chunking bounds retrieval. Do not
+// silently discard policy conditions when producing the source document.
+const DEFAULT_MAX_PAGES = Infinity;
+const DEFAULT_MAX_SECTIONS_PER_PAGE = Infinity;
 const DEFAULT_MAX_CONTACTS_PER_PAGE = 6;
 const DEFAULT_MAX_DOCUMENTS_PER_PAGE = 8;
 const SECTION_MIN_LENGTH = 24;
-const SECTION_MAX_LENGTH = 450;
 // A contact repeated across most of a dataset is site template furniture, not a
 // fact about any one page. Repeating it per page dilutes each chunk's relevance
 // and lets near-identical chunks crowd out distinct results, so hoist it into a
@@ -101,11 +102,6 @@ function normalizeTitle(value: string | null, fallbackUrl: string): string {
   return 'Untitled Page';
 }
 
-function truncate(value: string, maxLength: number): string {
-  if (value.length <= maxLength) return value;
-  return `${value.slice(0, maxLength - 3).trimEnd()}...`;
-}
-
 function isNoiseHeading(value: string): boolean {
   return NOISE_HEADING_PATTERNS.some((pattern) => pattern.test(value));
 }
@@ -114,7 +110,7 @@ function isNoiseText(value: string): boolean {
   // Preserve official care actions even when a shared navigation block also
   // contains otherwise noisy footer labels such as "Careers".
   if (/make an appointment|save your spot/i.test(value)) return false;
-  return NOISE_TEXT_PATTERNS.some((pattern) => pattern.test(value));
+  return NOISE_TEXT_PATTERNS.filter((pattern) => pattern.test(value)).length >= 4;
 }
 
 function dedupeByKey<T>(items: T[], keyGetter: (item: T) => string): T[] {
@@ -132,7 +128,6 @@ function dedupeByKey<T>(items: T[], keyGetter: (item: T) => string): T[] {
 function pickSections(
   page: RawPageV1,
   maxSections: number,
-  seenAcrossDataset: Set<string>,
   derivedSections: readonly ContextSection[] = []
 ): Array<{ heading: string; text: string }> {
   const candidates = [...derivedSections, ...page.sections]
@@ -146,7 +141,7 @@ function pickSections(
 
       return {
         heading,
-        text: truncate(text, SECTION_MAX_LENGTH),
+        text,
       };
     })
     .filter((section): section is { heading: string; text: string } => section !== null);
@@ -155,12 +150,6 @@ function pickSections(
     candidates,
     (section) => `${section.heading.toLowerCase()}|${section.text.toLowerCase()}`
   )
-    .filter((section) => {
-      const fingerprint = `${section.heading.toLowerCase()}|${section.text.toLowerCase()}`;
-      if (seenAcrossDataset.has(fingerprint)) return false;
-      seenAcrossDataset.add(fingerprint);
-      return true;
-    })
     .slice(0, maxSections);
 }
 
@@ -353,13 +342,11 @@ export function generateCore6Markdown(options: Core6MarkdownOptions): void {
       markdown += '\n---\n\n';
     }
 
-    const seenSections = new Set<string>();
     selectedPages.forEach((page) => {
       const title = normalizeTitle(page.title, page.url);
       const sections = pickSections(
         page,
         maxSectionsPerPage,
-        seenSections,
         options.derivedSections?.(page)
       );
       const contacts = pickContacts(page, maxContactsPerPage, sharedContactFingerprints);
@@ -367,6 +354,7 @@ export function generateCore6Markdown(options: Core6MarkdownOptions): void {
 
       markdown += `## ${title}\n\n`;
       markdown += `- URL: ${page.url}\n`;
+      markdown += `- Collected At: ${page.fetchedAt}\n`;
       markdown += `- Source Type: ${page.sourceType}\n`;
       if (page.statusCode !== null) {
         markdown += `- Status: ${page.statusCode}\n`;
@@ -374,9 +362,8 @@ export function generateCore6Markdown(options: Core6MarkdownOptions): void {
       markdown += '\n';
 
       if (sections.length > 0) {
-        markdown += '### Key Details\n\n';
         sections.forEach((section) => {
-          markdown += `- **${section.heading}:** ${section.text}\n`;
+          markdown += `### ${section.heading}\n\n${section.text}\n\n`;
         });
         markdown += '\n';
       }

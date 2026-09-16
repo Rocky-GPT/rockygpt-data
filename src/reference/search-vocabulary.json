@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "purpose": "Lexical candidate discovery only; never identity aliases or factual evidence.",
+  "groups": [
+    ["dorm", "dorms", "dormitory", "dormitories", "room", "rooms", "housing", "residence"],
+    ["switch", "switching", "change", "changing"]
+  ]
+}

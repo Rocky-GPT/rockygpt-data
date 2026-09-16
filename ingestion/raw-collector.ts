@@ -128,41 +128,36 @@ function isLikelyDocument(url: string): boolean {
 
 function extractSections($: ReturnType<typeof load>): RawPageV1['sections'] {
   const sections: RawPageV1['sections'] = [];
-
-  $('h1, h2, h3, h4').each((_, element) => {
-    const heading = cleanText($(element).text());
-    if (!heading) return;
-
-    const textParts: string[] = [];
-    let sibling = $(element).next();
-    while (sibling.length > 0 && textParts.length < 6) {
-      if (sibling.is('h1, h2, h3, h4')) break;
-      const candidates = sibling.is('p, li')
-        ? sibling
-        : sibling.find('p, li').slice(0, 3);
-      candidates.each((__, candidate) => {
-        const text = cleanText($(candidate).text());
-        if (text && !textParts.includes(text)) textParts.push(text);
-      });
-      sibling = sibling.next();
+  let heading = cleanText($('h1').first().text()) || 'Overview';
+  let parts: string[] = [];
+  const flush = () => {
+    if (parts.length) sections.push({ heading, text: parts.join(' ') });
+    parts = [];
+  };
+  // Walk in document order, including tables and nested content wrappers.
+  // Never clip a policy at a paragraph/character count: later chunks bound reads.
+  $('h1, h2, h3, h4, p, li, table').each((_, element) => {
+    const node = $(element);
+    if (node.is('h1, h2, h3, h4')) {
+      flush();
+      heading = cleanText(node.text()) || heading;
+      return;
     }
-
-    const text = cleanText(textParts.join(' ')).slice(0, 2000);
-    if (!text) return;
-
-    sections.push({ heading, text });
+    if (node.parents('li, table').length) return;
+    const text = node.is('table')
+      ? node.find('tr').toArray().map((row) => $(row).find('th, td').toArray()
+        .map((cell) => cleanText($(cell).text())).join(' | ')).join('; ')
+      : cleanText(node.text());
+    if (text && !parts.includes(text)) parts.push(text);
   });
-
-  if (sections.length === 0) {
-    const fallback = cleanText(
+  flush();
+  if (!sections.length) {
+    const text = cleanText(
       $('main, article, #content-block, [role="main"]').first().text() || $('body').text()
-    ).slice(0, 2000);
-    if (fallback) {
-      sections.push({ heading: 'content', text: fallback });
-    }
+    );
+    if (text) sections.push({ heading, text });
   }
-
-  return sections.slice(0, 100);
+  return sections;
 }
 
 function extractLists($: ReturnType<typeof load>): RawPageV1['lists'] {
