@@ -9,6 +9,7 @@ import { shuttleSchedule, type ShuttleRoute } from '../../src/static/shuttleSche
 import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
 import { parseEventStart } from '../../src/data-v2/event-time';
 import { calendarConcept } from '../../src/data-v2/calendar-concepts';
+import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 import { assertQualityV2, validateCurrentDatasetV2 } from '../quality/validate';
@@ -196,14 +197,17 @@ async function insertStructured(
           const allergens = Array.isArray(item.allergens)
             ? item.allergens.flatMap((entry) => cleanText((entry as JsonRecord)?.name) || [])
             : [];
+          const labels = dietaryLabels(item);
           await client.query(
             `INSERT INTO rockygpt_v2.menu_items
              (dataset_version_id, source_id, source_record_key, meal, station, name, calories,
-              vegan, vegetarian, allergens, collected_at, valid_from, valid_until, content_hash)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12,$12,$13)`,
+              vegan, vegetarian, allergens, collected_at, valid_from, valid_until, content_hash, label_coverage)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12,$12,$13,$14::jsonb)`,
             [datasetId, sources.get('dining'), recordKey, meal.name, station.name, name,
-              cleanText(item.calories) || null, item.isVegan === true, item.isVegetarian === true,
-              JSON.stringify(allergens), collectedAtFor('dining'), dateStr, sha256(recordKey)]
+              cleanText(item.calories) || null, labels.vegan, labels.vegetarian,
+              JSON.stringify(allergens), collectedAtFor('dining'), dateStr,
+              sha256(JSON.stringify({ recordKey, labels, allergens, calories: item.calories })),
+              JSON.stringify(labels.coverage)]
           );
           counts.menu_items = (counts.menu_items || 0) + 1;
         }
@@ -370,11 +374,12 @@ async function insertStructured(
     await client.query(
       `INSERT INTO rockygpt_v2.campus_contacts
        (dataset_version_id, source_id, source_record_key, name, department, phone, email, office,
-        collected_at, content_hash)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+        collected_at, content_hash, aliases)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb)`,
       [datasetId, sources.get(contact.publicationSourceKey), contact.sourceRecordKey, name,
         department, phone, email, office, collectedAtFor(contact.publicationSourceKey),
-        sha256(JSON.stringify({ name, department, phone, email, office }))]
+        sha256(JSON.stringify({ name, department, phone, email, office, aliases: contact.aliases })),
+        JSON.stringify(contact.aliases)]
     );
     counts.campus_contacts = (counts.campus_contacts || 0) + 1;
   }

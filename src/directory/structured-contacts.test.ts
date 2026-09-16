@@ -68,6 +68,9 @@ test('structured contacts preserve static records and merge duplicate faculty pr
   assert.match(schoolOne?.searchable ?? '', /First profile biography/);
   assert.match(schoolOne?.searchable ?? '', /Duplicate profile biography/);
   assert.equal(new Set(contacts.map((contact) => contact.sourceRecordKey)).size, contacts.length);
+  assert.deepEqual(schoolOne?.aliases, []);
+  const office = contacts.find((contact) => contact.name === 'Registrar');
+  assert.deepEqual(office?.aliases, ['Office of the Registrar']);
 });
 
 test('file repository entity listing uses the full shared contact population', async (t) => {
