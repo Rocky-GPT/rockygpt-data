@@ -65,13 +65,31 @@ export interface ProgramRecord {
   source: SourceReference;
 }
 
+export interface PhoneEntry {
+  number?: string;
+  extension?: string;
+  type?: string;
+}
+
+export type PhoneNormalizationStatus =
+  | 'normalized'
+  | 'extension_only'
+  | 'multi_phone'
+  | 'none'
+  | 'unparsed';
+
 export interface ContactRecord {
   name: string;
   department?: string;
   phone?: string;
   email?: string;
   office?: string;
+  phones?: PhoneEntry[];
+  preferred_contact?: string;
+  contact_note?: string;
   prefers_email?: boolean;
+  raw_phone?: string;
+  phone_normalization_status?: PhoneNormalizationStatus;
   source: SourceReference;
 }
 

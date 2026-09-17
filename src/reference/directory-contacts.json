@@ -2,7 +2,7 @@
   "office": [
     {
       "name": "Public Safety (Emergency)",
-      "phone": "201-684-6666",
+      "phone": "(201) 684-6666",
       "category": "Emergency",
       "email": "publicsafety@ramapo.edu",
       "department": "Public Safety",
@@ -15,7 +15,7 @@
     },
     {
       "name": "Public Safety (Non-Emergency)",
-      "phone": "201-684-7432",
+      "phone": "(201) 684-7432",
       "category": "Emergency",
       "email": "secdesk@ramapo.edu",
       "department": "Public Safety",
@@ -28,7 +28,7 @@
     },
     {
       "name": "Birch Tree Inn",
-      "phone": "201-684-7592",
+      "phone": "(201) 684-7592",
       "category": "Dining",
       "email": "jeff.dannhardt@sodexo.com",
       "department": "Dining Services",
@@ -39,7 +39,7 @@
     },
     {
       "name": "Registrar",
-      "phone": "201-684-7695",
+      "phone": "(201) 684-7695",
       "category": "Academic",
       "email": "registrar@ramapo.edu",
       "department": "Office of the Registrar",
@@ -52,7 +52,7 @@
     },
     {
       "name": "Center for Student Success (Academic Advising)",
-      "phone": "201-684-7441",
+      "phone": "(201) 684-7441",
       "category": "Academic",
       "email": "success@ramapo.edu",
       "department": "Center for Student Success",
@@ -66,7 +66,7 @@
     },
     {
       "name": "Anisfield School of Business",
-      "phone": "201-684-7378",
+      "phone": "(201) 684-7378",
       "category": "Academic",
       "email": "asb@ramapo.edu",
       "department": "Anisfield School of Business",
@@ -79,7 +79,7 @@
     },
     {
       "name": "Financial Aid",
-      "phone": "201-684-7549",
+      "phone": "(201) 684-7549",
       "category": "Financial",
       "email": "finaid@ramapo.edu",
       "department": "Financial Aid",
@@ -92,7 +92,7 @@
     },
     {
       "name": "IT Help Desk",
-      "phone": "201-684-7777",
+      "phone": "(201) 684-7777",
       "category": "Services",
       "email": "helpdesk@ramapo.edu",
       "department": "Information Technology Services",
@@ -106,7 +106,7 @@
     },
     {
       "name": "Health Services",
-      "phone": "201-684-7536",
+      "phone": "(201) 684-7536",
       "category": "Health",
       "email": "immunize@ramapo.edu",
       "department": "Health Services",
@@ -119,7 +119,7 @@
     },
     {
       "name": "Counseling Center",
-      "phone": "201-684-7522",
+      "phone": "(201) 684-7522",
       "category": "Health",
       "email": "studentwellness@ramapo.edu",
       "department": "Counseling Services",
@@ -132,7 +132,7 @@
     },
     {
       "name": "Housing & Residence Life",
-      "phone": "201-684-7453",
+      "phone": "(201) 684-7453",
       "category": "Housing",
       "email": "reslife@ramapo.edu",
       "department": "Residence Life",
@@ -145,7 +145,7 @@
     },
     {
       "name": "Center for Student Involvement",
-      "phone": "201-684-7593",
+      "phone": "(201) 684-7593",
       "category": "Student Life",
       "email": "csi@ramapo.edu",
       "department": "Center for Student Involvement",
@@ -158,7 +158,7 @@
     },
     {
       "name": "Athletics",
-      "phone": "201-684-7095",
+      "phone": "(201) 684-7095",
       "category": "Athletics",
       "email": "information@ramapo.edu",
       "department": "Athletics",
@@ -169,7 +169,7 @@
     },
     {
       "name": "Library",
-      "phone": "201-684-7578",
+      "phone": "(201) 684-7578",
       "category": "Academic",
       "email": "refdesk@ramapo.edu",
       "department": "Potter Library",
@@ -185,7 +185,7 @@
       "name": "Cindy R. Jebb, Ph.D.",
       "title": "President",
       "unit": "Office of the President",
-      "phone": "201-684-7500",
+      "phone": "(201) 684-7500",
       "email": "information@ramapo.edu",
       "profileUrl": "https://www.ramapo.edu/president/biography/"
     },
