@@ -4,6 +4,7 @@ import {
   OFFICE_DIRECTORY_CONTACTS,
   OTHER_DIRECTORY_CONTACTS,
 } from './static-contacts';
+import { parseAndNormalizePhone } from './phone-normalizer';
 
 type JsonRecord = Record<string, unknown>;
 
@@ -104,19 +105,19 @@ function facultyContacts(input: unknown): StructuredDirectoryContact[] {
           ? `${contact.title} (${contact.school})`
           : contact.title
         : contact.school || undefined;
-      let phone = contact.phone;
-      let prefers_email = false;
-      if (phone && /email|e-mail/i.test(phone)) {
-        prefers_email = true;
-        phone = phone.replace(/\s*\([^)]*(?:email|e-mail)[^)]*\)/i, '').trim() || undefined;
-      }
+      const normalizedPhone = parseAndNormalizePhone(contact.phone);
       return {
         name: contact.name,
         department,
-        phone,
+        phone: normalizedPhone.phone || undefined,
+        phones: normalizedPhone.phones,
+        preferred_contact: normalizedPhone.preferred_contact || undefined,
+        contact_note: normalizedPhone.contact_note || undefined,
+        prefers_email: normalizedPhone.prefers_email,
+        raw_phone: normalizedPhone.raw_phone || undefined,
+        phone_normalization_status: normalizedPhone.phone_normalization_status,
         email: contact.email,
         office: contact.office,
-        prefers_email,
         source: {
           sourceId: 'faculty-directory',
           title: `${contact.name} - Directory Profile`,
@@ -139,35 +140,58 @@ function facultyContacts(input: unknown): StructuredDirectoryContact[] {
     });
 }
 
+export function normalizePhoneNumber(phone: string | undefined | null): string | undefined {
+  if (!phone) return undefined;
+  return parseAndNormalizePhone(phone).phone || undefined;
+}
+
 /** Builds the authoritative structured contact population for both repositories. */
 export function buildStructuredDirectoryContacts(
   facultyInput: unknown
 ): StructuredDirectoryContact[] {
-  const offices: StructuredDirectoryContact[] = OFFICE_DIRECTORY_CONTACTS.map((entry) => ({
-    name: entry.name,
-    department: entry.department,
-    phone: entry.phone,
-    email: entry.email,
-    office: entry.office,
-    source: V2_SOURCES.directory,
-    searchable: [entry.name, entry.department, entry.office, ...entry.helpsWith]
-      .filter(Boolean)
-      .join(' '),
-    publicationSourceKey: 'campus-directory',
-    sourceRecordKey: `office:${keyPart(entry.name)}`,
-    aliases: entry.department && entry.department !== entry.name ? [entry.department] : [],
-  }));
-  const others: StructuredDirectoryContact[] = OTHER_DIRECTORY_CONTACTS.map((entry) => ({
-    name: entry.name,
-    department: entry.unit,
-    phone: entry.phone,
-    email: entry.email,
-    office: entry.office,
-    source: V2_SOURCES.directory,
-    searchable: [entry.name, entry.title, entry.unit, entry.office].filter(Boolean).join(' '),
-    publicationSourceKey: 'campus-directory',
-    sourceRecordKey: `other:${keyPart(entry.name)}`,
-    aliases: [],
-  }));
+  const offices: StructuredDirectoryContact[] = OFFICE_DIRECTORY_CONTACTS.map((entry) => {
+    const normalized = parseAndNormalizePhone(entry.phone);
+    return {
+      name: entry.name,
+      department: entry.department,
+      phone: normalized.phone || undefined,
+      phones: normalized.phones,
+      preferred_contact: normalized.preferred_contact || undefined,
+      contact_note: normalized.contact_note || undefined,
+      prefers_email: normalized.prefers_email,
+      raw_phone: normalized.raw_phone || undefined,
+      phone_normalization_status: normalized.phone_normalization_status,
+      email: entry.email,
+      office: entry.office,
+      source: V2_SOURCES.directory,
+      searchable: [entry.name, entry.department, entry.office, ...entry.helpsWith]
+        .filter(Boolean)
+        .join(' '),
+      publicationSourceKey: 'campus-directory',
+      sourceRecordKey: `office:${keyPart(entry.name)}`,
+      aliases: entry.department && entry.department !== entry.name ? [entry.department] : [],
+    };
+  });
+  const others: StructuredDirectoryContact[] = OTHER_DIRECTORY_CONTACTS.map((entry) => {
+    const normalized = parseAndNormalizePhone(entry.phone);
+    return {
+      name: entry.name,
+      department: entry.unit,
+      phone: normalized.phone || undefined,
+      phones: normalized.phones,
+      preferred_contact: normalized.preferred_contact || undefined,
+      contact_note: normalized.contact_note || undefined,
+      prefers_email: normalized.prefers_email,
+      raw_phone: normalized.raw_phone || undefined,
+      phone_normalization_status: normalized.phone_normalization_status,
+      email: entry.email,
+      office: entry.office,
+      source: V2_SOURCES.directory,
+      searchable: [entry.name, entry.title, entry.unit, entry.office].filter(Boolean).join(' '),
+      publicationSourceKey: 'campus-directory',
+      sourceRecordKey: `other:${keyPart(entry.name)}`,
+      aliases: [],
+    };
+  });
   return [...offices, ...others, ...facultyContacts(facultyInput)];
 }

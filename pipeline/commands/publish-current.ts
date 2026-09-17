@@ -371,16 +371,52 @@ async function insertStructured(
     const phone = cleanText(contact.phone) || null;
     const email = cleanText(contact.email) || null;
     const office = cleanText(contact.office) || null;
+    const raw_phone = contact.raw_phone || null;
+    const phones = JSON.stringify(contact.phones || []);
+    const preferred_contact = contact.preferred_contact || null;
+    const contact_note = contact.contact_note || null;
+    const prefers_email = contact.prefers_email || false;
+    const phone_normalization_status = contact.phone_normalization_status || 'none';
     await client.query(
       `INSERT INTO rockygpt_v2.campus_contacts
        (dataset_version_id, source_id, source_record_key, name, department, phone, email, office,
+        raw_phone, phones, preferred_contact, contact_note, prefers_email, phone_normalization_status,
         collected_at, content_hash, aliases, search_text)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12)`,
-      [datasetId, sources.get(contact.publicationSourceKey), contact.sourceRecordKey, name,
-        department, phone, email, office, collectedAtFor(contact.publicationSourceKey),
-        sha256(JSON.stringify({ name, department, phone, email, office, aliases: contact.aliases,
-          search_text: contact.searchable })),
-        JSON.stringify(contact.aliases), contact.searchable]
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12,$13,$14,$15,$16,$17::jsonb,$18)`,
+      [
+        datasetId,
+        sources.get(contact.publicationSourceKey),
+        contact.sourceRecordKey,
+        name,
+        department,
+        phone,
+        email,
+        office,
+        raw_phone,
+        phones,
+        preferred_contact,
+        contact_note,
+        prefers_email,
+        phone_normalization_status,
+        collectedAtFor(contact.publicationSourceKey),
+        sha256(
+          JSON.stringify({
+            name,
+            department,
+            phone,
+            email,
+            office,
+            phones,
+            preferred_contact,
+            contact_note,
+            raw_phone,
+            aliases: contact.aliases,
+            search_text: contact.searchable,
+          })
+        ),
+        JSON.stringify(contact.aliases),
+        contact.searchable,
+      ]
     );
     counts.campus_contacts = (counts.campus_contacts || 0) + 1;
   }
