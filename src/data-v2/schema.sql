@@ -124,6 +124,7 @@ CREATE TABLE IF NOT EXISTS rockygpt_v2.campus_contacts (
   phone TEXT,
   email TEXT,
   office TEXT,
+  prefers_email BOOLEAN NOT NULL DEFAULT false,
   aliases JSONB NOT NULL DEFAULT '[]'::jsonb,
   collected_at TIMESTAMPTZ NOT NULL,
   valid_from DATE,

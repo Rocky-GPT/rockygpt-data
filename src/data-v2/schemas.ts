@@ -71,6 +71,7 @@ export interface ContactRecord {
   phone?: string;
   email?: string;
   office?: string;
+  prefers_email?: boolean;
   source: SourceReference;
 }
 
