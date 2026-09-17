@@ -104,12 +104,19 @@ function facultyContacts(input: unknown): StructuredDirectoryContact[] {
           ? `${contact.title} (${contact.school})`
           : contact.title
         : contact.school || undefined;
+      let phone = contact.phone;
+      let prefers_email = false;
+      if (phone && /email|e-mail/i.test(phone)) {
+        prefers_email = true;
+        phone = phone.replace(/\s*\([^)]*(?:email|e-mail)[^)]*\)/i, '').trim() || undefined;
+      }
       return {
         name: contact.name,
         department,
-        phone: contact.phone,
+        phone,
         email: contact.email,
         office: contact.office,
+        prefers_email,
         source: {
           sourceId: 'faculty-directory',
           title: `${contact.name} - Directory Profile`,
