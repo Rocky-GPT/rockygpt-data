@@ -125,3 +125,60 @@ test('parses unlabeled multi-phone numbers preserving order without inventing ty
   assert.equal(res.prefers_email, false);
   assert.equal(res.phone_normalization_status, 'multi_phone');
 });
+
+test('validates all 242 campus contacts normalize cleanly and strictly without unparsed records', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const { buildStructuredDirectoryContacts } = await import('./structured-contacts');
+
+  const facultyPath = path.resolve(__dirname, '../../data/normalized/faculty.json');
+  const facultyRaw = JSON.parse(fs.readFileSync(facultyPath, 'utf8'));
+  const contacts = buildStructuredDirectoryContacts(facultyRaw);
+
+  assert.equal(contacts.length, 242, 'Expected exactly 242 campus directory contacts');
+
+  let totalPhoneEntries = 0;
+  let preferredEmailCount = 0;
+
+  for (const contact of contacts) {
+    assert.notEqual(
+      contact.phone_normalization_status,
+      'unparsed',
+      `Contact ${contact.name} has unparsed phone normalization status`
+    );
+
+    if (contact.preferred_contact) {
+      assert.equal(
+        contact.preferred_contact,
+        'email',
+        `Contact ${contact.name} has invalid preferred_contact: ${contact.preferred_contact}`
+      );
+      preferredEmailCount++;
+    }
+
+    if (contact.phones && contact.phones.length > 0) {
+      totalPhoneEntries += contact.phones.length;
+      for (const p of contact.phones) {
+        if ('number' in p && typeof p.number === 'string') {
+          assert.match(
+            p.number,
+            /^\d{3}-\d{3}-\d{4}$/,
+            `Phone number ${p.number} for ${contact.name} is not in standard XXX-XXX-XXXX format`
+          );
+        } else if ('extension' in p && typeof p.extension === 'string') {
+          assert.match(
+            p.extension,
+            /^\d+$/,
+            `Extension ${p.extension} for ${contact.name} is not all digits`
+          );
+        } else {
+          assert.fail(`Phone entry for ${contact.name} has neither number nor extension`);
+        }
+      }
+    }
+  }
+
+  assert.equal(preferredEmailCount, 2, 'Expected exactly 2 contacts with preferred_contact: email');
+  assert.equal(totalPhoneEntries, 218, 'Expected 218 normalized phone/extension entries');
+});
+
