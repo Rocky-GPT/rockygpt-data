@@ -137,10 +137,10 @@ export function parseAndNormalizePhone(raw: string | undefined | null): Normaliz
       const area = digitsMatch[1];
       const prefix = digitsMatch[2];
       const line = digitsMatch[3];
-      const e164 = `+1${area}${prefix}${line}`;
+      const formattedNumber = `${area}-${prefix}-${line}`;
       const display = `(${area}) ${prefix}-${line}`;
 
-      const entry: PhoneEntry = { number: e164 };
+      const entry: PhoneEntry = { number: formattedNumber };
       if (explicitType) {
         entry.type = explicitType;
       }

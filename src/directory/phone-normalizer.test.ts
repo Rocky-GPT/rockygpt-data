@@ -57,7 +57,7 @@ test('normalizes standard 10-digit phone numbers with various punctuations', () 
     const res = parseAndNormalizePhone(input);
     assert.equal(res.raw_phone, input.trim());
     assert.equal(res.phone, '(201) 684-7392');
-    assert.deepEqual(res.phones, [{ number: '+12016847392' }]);
+    assert.deepEqual(res.phones, [{ number: '201-684-7392' }]);
     assert.equal(res.prefers_email, false);
     assert.equal(res.preferred_contact, null);
     assert.equal(res.contact_note, null);
@@ -84,7 +84,7 @@ test('extracts email preference notes while normalizing the dialable number', ()
   const res1 = parseAndNormalizePhone('(201) 684-7852 (best to use e-mail)');
   assert.equal(res1.raw_phone, '(201) 684-7852 (best to use e-mail)');
   assert.equal(res1.phone, '(201) 684-7852');
-  assert.deepEqual(res1.phones, [{ number: '+12016847852' }]);
+  assert.deepEqual(res1.phones, [{ number: '201-684-7852' }]);
   assert.equal(res1.prefers_email, true);
   assert.equal(res1.preferred_contact, 'email');
   assert.equal(res1.contact_note, 'best to use e-mail');
@@ -93,7 +93,7 @@ test('extracts email preference notes while normalizing the dialable number', ()
   const res2 = parseAndNormalizePhone('(201) 684-7293 (use email instead)');
   assert.equal(res2.raw_phone, '(201) 684-7293 (use email instead)');
   assert.equal(res2.phone, '(201) 684-7293');
-  assert.deepEqual(res2.phones, [{ number: '+12016847293' }]);
+  assert.deepEqual(res2.phones, [{ number: '201-684-7293' }]);
   assert.equal(res2.prefers_email, true);
   assert.equal(res2.preferred_contact, 'email');
   assert.equal(res2.contact_note, 'use email instead');
@@ -106,8 +106,8 @@ test('parses multi-phone numbers with explicit labels (Cort Engelken)', () => {
   assert.equal(res.raw_phone, input);
   assert.equal(res.phone, '(201) 684-9953 (Office) / (914) 582-7093 (Cell)');
   assert.deepEqual(res.phones, [
-    { number: '+12016849953', type: 'office' },
-    { number: '+19145827093', type: 'cell' },
+    { number: '201-684-9953', type: 'office' },
+    { number: '914-582-7093', type: 'cell' },
   ]);
   assert.equal(res.prefers_email, false);
   assert.equal(res.phone_normalization_status, 'multi_phone');
@@ -119,8 +119,8 @@ test('parses unlabeled multi-phone numbers preserving order without inventing ty
   assert.equal(res.raw_phone, input);
   assert.equal(res.phone, '(201) 684-7814 / (201) 684-7624');
   assert.deepEqual(res.phones, [
-    { number: '+12016847814' },
-    { number: '+12016847624' },
+    { number: '201-684-7814' },
+    { number: '201-684-7624' },
   ]);
   assert.equal(res.prefers_email, false);
   assert.equal(res.phone_normalization_status, 'multi_phone');
