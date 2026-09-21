@@ -150,6 +150,7 @@ CREATE TABLE IF NOT EXISTS rockygpt_v2.campus_hours (
   name TEXT NOT NULL,
   day TEXT NOT NULL,
   schedule TEXT NOT NULL,
+  hours JSONB,
   collected_at TIMESTAMPTZ NOT NULL,
   valid_from DATE,
   valid_until DATE,
