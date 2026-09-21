@@ -49,6 +49,25 @@ Shared numbers involving retired people, missing contact methods, unfinished
 titles, and unusual trailing name accents are flagged for source review, never
 silently corrected or merged.
 
+## Campus opening intervals
+
+`src/data-v2/opening-hours.ts` converts full source schedules into `hours` arrays
+with `open`/`close` clocks in `HH:MM` format. Split intervals keep their gaps;
+next-day closings have `close_day_offset: 1`. An empty array means explicitly
+closed. Missing, ambiguous, overlapping, or partially parsed text stays NULL
+(unknown), never closed. Original `schedule` text and effective dates are retained.
+
+```sh
+npm run normalize:campus-hours -- --report /tmp/campus-hours-review.json
+npm run normalize:campus-hours -- --apply --backup /tmp/campus-hours-before.json --report /tmp/campus-hours-review.json
+```
+
+The default is read-only; applying migration 019 and backfilling the active
+release requires a new backup file and happens in one transaction. It preserves
+IDs, facility/day rows, source schedules, timestamps, and validity bounds. Future
+publication uses the same parser. This describes weekly hours; it does not verify
+holiday exceptions or establish that a weekly schedule applies to a given date.
+
 ## Service boundary
 
 **This repository no longer runs a deployed service.** Ingestion and

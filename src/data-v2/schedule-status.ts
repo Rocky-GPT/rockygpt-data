@@ -24,6 +24,8 @@
  * a formatting problem into a false factual claim.
  */
 
+import { normalizeOpeningHours } from './opening-hours';
+
 export type ScheduleStatusReason =
   | 'open'
   | 'before_first_open'
@@ -48,15 +50,6 @@ interface Window {
 }
 
 const MINUTES_PER_DAY = 24 * 60;
-const TIME = /(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?/gi;
-/** Windows are separated by "and", a semicolon, or a comma. */
-const SEPARATOR = /\s+and\s+|;|,/i;
-
-function toMinutes(hour: number, minute: number, meridiem: string): number {
-  const base = hour % 12;
-  return (meridiem.toLowerCase() === 'p' ? base + 12 : base) * 60 + minute;
-}
-
 /** Minutes past midnight rendered the way the datasets publish times. */
 export function formatMinutes(minutes: number): string {
   const normalized = ((minutes % MINUTES_PER_DAY) + MINUTES_PER_DAY) % MINUTES_PER_DAY;
@@ -73,30 +66,18 @@ export function formatMinutes(minutes: number): string {
  * callers must not treat as closed.
  */
 export function parseSchedule(schedule: string): Window[] | null {
-  const text = (schedule || '').trim();
-  if (!text) return null;
-  if (/^closed\b/i.test(text)) return [];
-  // "Unknown" is what the repositories emit for a day a venue publishes no
-  // hours for. It is an absence of data, not a closure.
-  if (/^unknown\b/i.test(text)) return null;
-
-  const windows: Window[] = [];
-  for (const segment of text.split(SEPARATOR)) {
-    const times = [...segment.matchAll(TIME)];
-    if (times.length !== 2) continue;
-    const [open, close] = times.map((match) =>
-      toMinutes(Number(match[1]), Number(match[2] ?? 0), match[3])
-    );
-    windows.push({ start: open, end: close });
-  }
-  return windows.length ? windows.sort((left, right) => left.start - right.start) : null;
+  const hours = normalizeOpeningHours(schedule);
+  if (hours === null) return null;
+  const minute = (clock: string) => Number(clock.slice(0, 2)) * 60 + Number(clock.slice(3));
+  return hours.map(interval => ({
+    start: minute(interval.open),
+    end: minute(interval.close) + (interval.close_day_offset ?? 0) * MINUTES_PER_DAY,
+  })).sort((left, right) => left.start - right.start);
 }
 
-/** True when a window covers `minutes`, half-open, wrapping past midnight. */
+/** Half-open minutes relative to the schedule’s service day, including next-day endpoints. */
 function covers(window: Window, minutes: number): boolean {
-  return window.end > window.start
-    ? minutes >= window.start && minutes < window.end
-    : minutes >= window.start || minutes < window.end;
+  return minutes >= window.start && minutes < window.end;
 }
 
 /**
@@ -104,6 +85,8 @@ function covers(window: Window, minutes: number): boolean {
  *
  * `minutes` is minutes past midnight in campus local time; the caller owns the
  * timezone conversion, so this stays a pure function of a schedule and a clock.
+ * For overnight carryover, callers must also consult the preceding service day
+ * using minutes + 1440; this function never invents a previous-day schedule.
  */
 export function scheduleStatusAt(schedule: string, minutes: number): ScheduleStatus {
   const windows = parseSchedule(schedule);

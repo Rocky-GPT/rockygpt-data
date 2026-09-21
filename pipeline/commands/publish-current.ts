@@ -8,6 +8,7 @@ import { buildStructuredDirectoryContacts } from '../../src/directory/structured
 import { shuttleSchedule, type ShuttleRoute } from '../../src/static/shuttleSchedule';
 import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
 import { parseEventStart } from '../../src/data-v2/event-time';
+import { normalizeOpeningHours } from '../../src/data-v2/opening-hours';
 import { calendarConcept } from '../../src/data-v2/calendar-concepts';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
@@ -226,14 +227,16 @@ async function insertStructured(
     const { window } = readValidityFromNotes(location.notes);
     for (const [day, schedule] of Object.entries(location.hours || {})) {
       const recordKey = `${location.name}:${day}`;
+      const hours = normalizeOpeningHours(schedule);
       await client.query(
         `INSERT INTO rockygpt_v2.campus_hours
          (dataset_version_id, source_id, source_record_key, name, day, schedule, collected_at,
-          valid_from, valid_until, content_hash)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+          valid_from, valid_until, content_hash, hours)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb)`,
         [datasetId, sources.get('campus-hours'), recordKey, location.name, day, schedule, collectedAtFor('campus-hours'),
           window?.validFrom || null, window?.validUntil || null,
-          sha256(`${recordKey}:${schedule}:${window?.validFrom ?? ''}:${window?.validUntil ?? ''}`)]
+          sha256(`${recordKey}:${schedule}:${window?.validFrom ?? ''}:${window?.validUntil ?? ''}`),
+          hours === null ? null : JSON.stringify(hours)]
       );
       counts.campus_hours = (counts.campus_hours || 0) + 1;
     }
