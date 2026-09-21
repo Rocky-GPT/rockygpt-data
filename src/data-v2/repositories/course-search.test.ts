@@ -48,4 +48,7 @@ test('course names, descriptions, and attributes are searchable', async (t) => {
 test('catalog min/max credit objects become useful wire text', () => {
   assert.equal(courseCredits({ min: 0, max: 4, operator: '' }), '4');
   assert.equal(courseCredits({ min: 1, max: 4, operator: 'TO' }), '1-4');
+  assert.equal(courseCredits({ min: 0, max: 4, operator: 'TO' }), '0-4');
+  assert.equal(courseCredits({ min: 0, max: 0, operator: '' }), '0');
+  assert.equal(courseCredits({ min: 0, operator: '' }), undefined);
 });

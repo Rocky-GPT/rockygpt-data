@@ -1333,7 +1333,7 @@ async function main() {
         code: fmtCode,
         name: (c.longName || c.name || '').trim(),
         description: stripHtml(c.description || '').trim(),
-        credits: c.credits?.creditHours?.min || c.credits?.creditHours || '',
+        credits: c.credits?.creditHours ?? '',
         attributes: c.attributes || []
       };
     });

@@ -1,3 +1,4 @@
+import { isMenuArtifact, menuCalories } from '../../src/data-v2/menu-normalization';
 /**
  * @module api/menu/browse/route
  * Date-specific dining menu browsing from the active RockyGPT release.
@@ -54,7 +55,7 @@ async function isBirchClosedOnDate(dateStr: string): Promise<boolean> {
 interface MenuItem {
   formalName?: string;
   description?: string;
-  calories?: string;
+  calories?: number;
   isVegan?: boolean;
   isVegetarian?: boolean;
   allergens?: { name: string }[];
@@ -69,11 +70,11 @@ function normalizeItem(raw: unknown): MenuItem | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Record<string, unknown>;
   const formalName = typeof r.formalName === 'string' ? r.formalName.trim() : '';
-  if (!formalName) return null;
+  if (!formalName || isMenuArtifact(formalName)) return null;
   return {
     formalName,
     description: typeof r.description === 'string' ? r.description.trim() : undefined,
-    calories: typeof r.calories === 'string' ? r.calories.trim() : undefined,
+    calories: menuCalories(r.calories),
     isVegan: typeof r.isVegan === 'boolean' ? r.isVegan : undefined,
     isVegetarian: typeof r.isVegetarian === 'boolean' ? r.isVegetarian : undefined,
   };
@@ -104,7 +105,7 @@ function buildMarkdown(sections: MenuSection[]): string {
         const normalized = normalizeItem(item);
         if (!normalized) continue;
         let line = `- **${normalized.formalName}**`;
-        if (normalized.calories) line += ` (${normalized.calories}cal)`;
+        if (normalized.calories !== undefined) line += ` (${normalized.calories}cal)`;
         const tags: string[] = [];
         if (normalized.isVegan) tags.push('Vegan');
         if (normalized.isVegetarian) tags.push('Vegetarian');

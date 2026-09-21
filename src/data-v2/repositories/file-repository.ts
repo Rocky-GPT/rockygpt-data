@@ -1,3 +1,5 @@
+import { isMenuArtifact, menuCalories } from '../menu-normalization';
+import { dietaryLabels } from '../dietary-labels';
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
@@ -358,7 +360,7 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
       for (const station of mealGroup.groups || []) {
         for (const item of station.items || []) {
           const name = typeof item.formalName === 'string' ? item.formalName : '';
-          if (!name) continue;
+          if (!name || isMenuArtifact(name)) continue;
           const searchable = `${mealGroup.name} ${station.name} ${name}`;
           const score = textScore(query, searchable);
           // Only the explicit empty string means "list the dataset." A
@@ -369,9 +371,10 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
             meal: mealGroup.name,
             station: station.name,
             name,
-            calories: typeof item.calories === 'string' ? item.calories : undefined,
-            vegan: item.isVegan === true,
-            vegetarian: item.isVegetarian === true,
+            calories: menuCalories(item.calories),
+            portionSize: typeof item.portionSize === 'string' ? item.portionSize : undefined,
+            vegan: dietaryLabels(item).vegan,
+            vegetarian: dietaryLabels(item).vegetarian,
             allergens: Array.isArray(item.allergens)
               ? item.allergens.flatMap((entry) =>
                   entry &&
@@ -380,7 +383,7 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
                     ? [(entry as JsonRecord).name as string]
                     : []
                 )
-              : [],
+              : null,
             source: V2_SOURCES.dining,
           });
         }

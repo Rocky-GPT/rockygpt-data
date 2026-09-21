@@ -143,7 +143,7 @@ const DATASETS: readonly DatasetDefinition[] = [
       ['source', 'Source'],
       ['collected_at', 'Collected']
     ),
-    searchSql: ['t.valid_from::text', 't.meal', 't.station', 't.name', 't.calories', 't.allergens::text'],
+    searchSql: ['t.valid_from::text', 't.meal', 't.station', 't.name', 't.calories::text', 't.allergens::text'],
     orderBySql: 't.valid_from, t.meal, t.station, t.name',
     charted: true,
   },

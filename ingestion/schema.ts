@@ -1,3 +1,4 @@
+import { isMenuArtifact, menuCalories } from '../src/data-v2/menu-normalization';
 import type { CalendarFamily, CalendarKind } from '../src/data-v2/calendar-concepts';
 
 type UnknownRecord = Record<string, unknown>;
@@ -49,7 +50,8 @@ function asOptionalBoolean(value: unknown): boolean | undefined {
 export interface MenuItem {
   formalName: string;
   description?: string;
-  calories?: string;
+  calories?: number;
+  portionSize?: string;
   isVegan?: boolean;
   isVegetarian?: boolean;
   isMindful?: boolean;
@@ -203,7 +205,7 @@ function validateMenuItem(input: unknown): MenuItem | null {
   }
 
   const formalName = asOptionalString(input.formalName);
-  if (!formalName) {
+  if (!formalName || isMenuArtifact(formalName)) {
     return null;
   }
 
@@ -224,12 +226,14 @@ function validateMenuItem(input: unknown): MenuItem | null {
   return {
     formalName,
     description: asOptionalString(input.description),
-    calories: asOptionalString(input.calories),
+    calories: menuCalories(input.calories),
+    portionSize: asOptionalString(input.portionSize) || asOptionalString(input.portion),
     isVegan: asOptionalBoolean(input.isVegan),
     isVegetarian: asOptionalBoolean(input.isVegetarian),
     isMindful: asOptionalBoolean(input.isMindful),
     isPlantBased: asOptionalBoolean(input.isPlantBased),
-    allergens: allergens.length > 0 ? allergens : undefined,
+    allergens: Array.isArray(input.allergens) && allergens.length === allergensRaw.length
+      ? allergens : allergens.length ? allergens : undefined,
   };
 }
 

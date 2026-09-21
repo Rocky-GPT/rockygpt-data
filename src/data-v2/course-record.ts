@@ -14,13 +14,14 @@ export function courseCredits(value: unknown): string | undefined {
     return trimmed;
   }
   if (!value || typeof value !== 'object') return undefined;
-  const credits = value as { min?: unknown; max?: unknown };
+  const credits = value as { min?: unknown; max?: unknown; operator?: unknown };
   const min = typeof credits.min === 'number' ? credits.min : Number(credits.min);
   const max = typeof credits.max === 'number' ? credits.max : Number(credits.max);
-  if (Number.isFinite(min) && min > 0 && Number.isFinite(max) && max > min) {
+  if (Number.isFinite(min) && min >= 0 && Number.isFinite(max) && max > min
+      && (min > 0 || credits.operator === 'TO')) {
     return `${min}-${max}`;
   }
-  if (Number.isFinite(max) && max > 0) return String(max);
+  if (Number.isFinite(max) && max >= 0) return String(max);
   if (Number.isFinite(min) && min > 0) return String(min);
   return undefined;
 }

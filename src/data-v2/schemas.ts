@@ -6,10 +6,11 @@ export interface MenuItemRecord {
   meal: string;
   station: string;
   name: string;
-  calories?: string;
-  vegan: boolean;
-  vegetarian: boolean;
-  allergens: string[];
+  calories?: number;
+  portionSize?: string;
+  vegan: boolean | null;
+  vegetarian: boolean | null;
+  allergens: string[] | null;
   source: SourceReference;
 }
 
