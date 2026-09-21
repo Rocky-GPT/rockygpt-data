@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "entities": [
+    {
+      "id": "9f4a8a53-67a1-4ce4-b4da-5d19630f135b",
+      "kind": "office",
+      "name": "Center for Student Involvement",
+      "aliases": ["CSI", "Center for Student Involvement (CSI)"],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": ["office:center-for-student-involvement"]
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [
+            "Center for Student Involvement (CSI):Monday",
+            "Center for Student Involvement (CSI):Tuesday",
+            "Center for Student Involvement (CSI):Wednesday",
+            "Center for Student Involvement (CSI):Thursday",
+            "Center for Student Involvement (CSI):Friday",
+            "Center for Student Involvement (CSI):Saturday",
+            "Center for Student Involvement (CSI):Sunday"
+          ]
+        }
+      ]
+    }
+  ]
+}
