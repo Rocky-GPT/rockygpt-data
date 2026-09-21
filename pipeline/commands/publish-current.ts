@@ -10,6 +10,7 @@ import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
 import { parseEventStart } from '../../src/data-v2/event-time';
 import { normalizeOpeningHours } from '../../src/data-v2/opening-hours';
 import { calendarConcept } from '../../src/data-v2/calendar-concepts';
+import { validateCampusIdentities } from '../../src/data-v2/campus-identities';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
@@ -533,6 +534,7 @@ async function insertDocuments(
 }
 
 const RELEASE_ARTIFACT_FILES: Record<string, string> = {
+  'campus-identities': 'src/reference/campus-identities.json',
   'search-vocabulary': 'src/reference/search-vocabulary.json',
   calendar: 'public/data/calendar.json',
   clubs: 'public/data/clubs.json',
@@ -555,6 +557,7 @@ function prepareReleaseArtifacts(): PreparedArtifact[] {
     const payload = relativePath.endsWith('.json')
       ? JSON.parse(content) as unknown
       : { content };
+    if (key === 'campus-identities') validateCampusIdentities(payload);
     return { key, payload, contentHash: sha256(content) };
   });
 }

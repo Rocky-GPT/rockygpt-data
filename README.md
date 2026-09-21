@@ -68,6 +68,32 @@ IDs, facility/day rows, source schedules, timestamps, and validity bounds. Futur
 publication uses the same parser. This describes weekly hours; it does not verify
 holiday exceptions or establish that a weekly schedule applies to a given date.
 
+## Campus identity links
+
+`src/reference/campus-identities.json` assigns persistent UUIDs to curated campus
+identities and links them to existing records by collection, source key, and
+source record key. The publisher validates it and stores it as the
+`campus-identities` artifact in every new dataset release. The Brain's
+`lookup_profile` tool reads that artifact and the linked records from the same
+release. No schema migration or record consolidation is needed.
+
+CSI is the first entry. Its contact link matches the directory's published key;
+its seven schedule links match the existing campus-hours keys. The CSI schedule
+does not distinguish staff, desk, or facility availability. The collector's note
+says it includes Roadrunner Central, J. Lee's, and the Women's Center; linking it
+does not establish phone-answering hours for any of them. The identity artifact
+contains no copied contact facts, schedules, or invented verification dates.
+
+To add another verified entity, assign a UUID once, add its published name and
+verified aliases, and list its exact source record keys. Preserve the UUID through
+renames, and update aliases/links after reviewing changed source keys; never
+regenerate the UUID from a name or a release's row IDs. Shared aliases deliberately
+remain ambiguous. The same source record cannot belong to multiple identities:
+sharing a location or schedule is a relationship, not proof of shared identity.
+Missing linked records are handled as unavailable information at retrieval, not
+silently rematched by name. Older releases without this artifact continue serving
+existing tools; profile lookup reports unavailable until a new release includes it.
+
 ## Service boundary
 
 **This repository no longer runs a deployed service.** Ingestion and
