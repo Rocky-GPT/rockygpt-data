@@ -1,3 +1,4 @@
+import { menuCalories } from '../menu-normalization';
 import type { Pool } from 'pg';
 import { contactSearchTermArrays } from '../contact-search-terms';
 import { getRuntimePool } from '../../db/runtime-pool';
@@ -256,11 +257,12 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
   private async findMenuItemsMatching(query: string, meal?: string): Promise<MenuItemRecord[]> {
     const datasetId = await this.activeDatasetId();
     const result = await this.pool.query<Row>(
-      `SELECT m.valid_from::text AS date, m.meal, m.station, m.name, m.calories, m.vegan, m.vegetarian, m.allergens,
+      `SELECT m.valid_from::text AS date, m.meal, m.station, m.name, m.calories, to_jsonb(m)->>'portion_size' AS portion_size, m.vegan, m.vegetarian, m.allergens, m.label_coverage,
               s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
               m.collected_at::text
        FROM rockygpt_v2.menu_items m JOIN rockygpt_v2.sources s ON s.id = m.source_id
        WHERE m.dataset_version_id = $1::uuid
+         AND lower(btrim(m.name)) <> 'have a nice day'
          AND ($2::text IS NULL OR lower(m.meal) = lower($2))
          AND ($3::text = '' OR to_tsvector('english',
                 m.meal || ' ' || m.station || ' ' || m.name
@@ -278,10 +280,12 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
       meal: requiredString(row, 'meal'),
       station: requiredString(row, 'station'),
       name: requiredString(row, 'name'),
-      calories: optionalString(row, 'calories'),
-      vegan: row.vegan === true,
-      vegetarian: row.vegetarian === true,
-      allergens: Array.isArray(row.allergens) ? row.allergens.filter((value): value is string => typeof value === 'string') : [],
+      calories: menuCalories(row.calories),
+      portionSize: optionalString(row, 'portion_size'),
+      vegan: row.vegan === true ? true : row.vegan === false && (row.label_coverage as Record<string, unknown>)?.vegan === 'published' ? false : null,
+      vegetarian: row.vegetarian === true ? true : row.vegetarian === false && (row.label_coverage as Record<string, unknown>)?.vegetarian === 'published' ? false : null,
+      allergens: Array.isArray(row.allergens) && (row.allergens.length > 0 || (row.label_coverage as Record<string, unknown>)?.allergens === 'published')
+        ? row.allergens.filter((value): value is string => typeof value === 'string') : null,
       source: sourceFromRow(row),
     }));
   }

@@ -6,7 +6,7 @@ import { type MenuSection, validateMenuData } from './schema';
 
 interface ContextMenuItem {
   name: string;
-  calories?: string;
+  calories?: number;
   traits: string[];
   description?: string;
 }
@@ -73,7 +73,7 @@ function toContextMenu(menuData: MenuSection[]): ContextMenuSection[] {
                     const description = normalizeText(item.description);
                     return {
                       name,
-                      calories: normalizeText(item.calories),
+                      calories: item.calories,
                       traits: Array.from(traits).sort((a, b) => a.localeCompare(b)),
                       description: description
                         ? truncate(description, MAX_DESCRIPTION_LENGTH)
@@ -160,7 +160,7 @@ function generateMarkdown() {
       }
       group.items.forEach((item) => {
         let itemLine = `- **${item.name}**`;
-        if (item.calories) {
+        if (item.calories !== undefined) {
           itemLine += ` (${item.calories} cal)`;
         }
         if (item.traits.length > 0) {
