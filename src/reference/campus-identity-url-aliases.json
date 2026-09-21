@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "aliases": [
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/christopher-reali",
+      "to": "https://www.ramapo.edu/ahe/faculty/christopher-reali",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/gilad-cohen",
+      "to": "https://www.ramapo.edu/ahe/faculty/gilad-cohen",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/joel-weissman",
+      "to": "https://www.ramapo.edu/ahe/faculty/joel-weissman",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/meredith-davis",
+      "to": "https://www.ramapo.edu/ahe/faculty/meredith-davis",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/peter-campbell",
+      "to": "https://www.ramapo.edu/ahe/faculty/peter-campbell",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/regina-clark",
+      "to": "https://www.ramapo.edu/ahe/faculty/regina-clark",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/rowlett-neel-scott",
+      "to": "https://www.ramapo.edu/ahe/faculty/rowlett-neel-scott",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/ruma-sen",
+      "to": "https://www.ramapo.edu/ahe/faculty/ruma-sen",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/satarupa-dasgupta",
+      "to": "https://www.ramapo.edu/ahe/faculty/satarupa-dasgupta",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/yolanda-del-amo-ozaeta",
+      "to": "https://www.ramapo.edu/ahe/faculty/yolanda-del-amo",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/zach-layton",
+      "to": "https://www.ramapo.edu/ahe/faculty/zach-layton",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/david-colman",
+      "to": "https://www.ramapo.edu/ahe/faculty/david-colman",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/hugh-sheehy",
+      "to": "https://www.ramapo.edu/ahe/faculty/hugh-sheehy",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/ira-spar",
+      "to": "https://www.ramapo.edu/ahe/faculty/ira-spar",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/james-hoch",
+      "to": "https://www.ramapo.edu/ahe/faculty/james-hoch",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/karl-ellis-johnson",
+      "to": "https://www.ramapo.edu/ahe/faculty/karl-ellis-johnson",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/lisa-m-cassidy",
+      "to": "https://www.ramapo.edu/ahe/faculty/lisa-m-cassidy",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/natalia-santamaria-laorden",
+      "to": "https://www.ramapo.edu/ahe/faculty/natalia-santamaria-laorden",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/paula-d-straile-costa",
+      "to": "https://www.ramapo.edu/ahe/faculty/paula-d-straile-costa",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/pinar-kayaalp",
+      "to": "https://www.ramapo.edu/ahe/faculty/pinar-kayaalp",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/rosetta-dangelo",
+      "to": "https://www.ramapo.edu/ahe/faculty/rosetta-dangelo",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/stephen-p-rice",
+      "to": "https://www.ramapo.edu/ahe/faculty/stephen-p-rice",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/tae-yang-kwak",
+      "to": "https://www.ramapo.edu/ahe/faculty/tae-yang-kwak",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/todd-landon-barnes",
+      "to": "https://www.ramapo.edu/ahe/faculty/todd-landon-barnes",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/ashwani-vasishth",
+      "to": "https://www.ramapo.edu/sssw/faculty/ashwani-vasishth",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/christian-reich",
+      "to": "https://www.ramapo.edu/sssw/faculty/christian-reich",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/eileen-klein",
+      "to": "https://www.ramapo.edu/sssw/faculty/eileen-klein",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/emily-leskinen",
+      "to": "https://www.ramapo.edu/sssw/faculty/emily-leskinen",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/jeffrey-ellsworth",
+      "to": "https://www.ramapo.edu/sssw/faculty/jeffrey-ellsworth",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/kathleen-ray",
+      "to": "https://www.ramapo.edu/sssw/faculty/kathleen-ray",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/kristin-kenneavy",
+      "to": "https://www.ramapo.edu/sssw/faculty/kristin-kenneavy",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/leah-warner",
+      "to": "https://www.ramapo.edu/sssw/faculty/leah-warner",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/mihaela-serban",
+      "to": "https://www.ramapo.edu/sssw/faculty/mihaela-serban",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/nathaniel-otjen",
+      "to": "https://www.ramapo.edu/sssw/faculty/nathaniel-otjen",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/sanghamitra-padhy",
+      "to": "https://www.ramapo.edu/sssw/faculty/sanghamitra-padhy",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/stephanie-elias-sarabia",
+      "to": "https://www.ramapo.edu/sssw/faculty/stephanie-elias-sarabia",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/daniela-buna",
+      "to": "https://www.ramapo.edu/snh/faculty/daniela-buna",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/debbie-yuster",
+      "to": "https://www.ramapo.edu/snh/faculty/debbie-yuster",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/emma-c-rainforth",
+      "to": "https://www.ramapo.edu/snh/faculty/emma-c-rainforth",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/eta-rena-bacon",
+      "to": "https://www.ramapo.edu/snh/faculty/eta-rena-bacon",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/julie-fitzgerald",
+      "to": "https://www.ramapo.edu/snh/faculty/julie-fitzgerald",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/katarzyna-kowal",
+      "to": "https://www.ramapo.edu/snh/faculty/katarzyna-kowal",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/kathleen-m-burke",
+      "to": "https://www.ramapo.edu/snh/faculty/kathleen-m-burke",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/maxim-j-goldberg-rugalev",
+      "to": "https://www.ramapo.edu/snh/faculty/maxim-j-goldberg-rugalev",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/paramjeet-bagga",
+      "to": "https://www.ramapo.edu/snh/faculty/paramjeet-bagga",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/robert-mentore",
+      "to": "https://www.ramapo.edu/snh/faculty/robert-mentore",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/scott-frees",
+      "to": "https://www.ramapo.edu/snh/faculty/scott-frees",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/shantha-franks",
+      "to": "https://www.ramapo.edu/snh/faculty/shantha-franks",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/stephen-anderson",
+      "to": "https://www.ramapo.edu/snh/faculty/stephen-anderson",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/wiliam-c-mitchell",
+      "to": "https://www.ramapo.edu/snh/faculty/wiliam-c-mitchell",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/yan-xu",
+      "to": "https://www.ramapo.edu/snh/faculty/yan-xu",
+      "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
+      "observed_at": "2026-09-21T20:24:50.714Z"
+    }
+  ]
+}

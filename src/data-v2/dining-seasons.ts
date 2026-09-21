@@ -3,14 +3,14 @@ import { CAMPUS_TIME_ZONE } from './event-time';
 /**
  * Seasonal dining-hours resolution (PROB-010), shared by the file
  * repository, the publisher, and (semantically) the dedicated dining-hours
- * API: the first season covering the instant governs; a season with no
- * opening hours — or none for the requested day — is a closure; otherwise
- * standard weekly hours apply.
+ * API: the first season covering the instant governs. Missing seasonal
+ * details are unknown, not a closure or permission to use standard hours.
  */
 
 type JsonRecord = Record<string, unknown>;
 
 export const SEASONAL_CLOSURE = 'Closed (seasonal closure)';
+export const DINING_HOURS_UNKNOWN = 'Hours unavailable';
 
 const WEEK = [
   'Sunday',
@@ -28,11 +28,17 @@ interface SeasonTime {
   period?: unknown;
 }
 
-function formatRange(range: JsonRecord): string {
+export function formatDiningRange(range: JsonRecord): string {
   const start = range.startTime as SeasonTime | undefined;
   const finish = range.finishTime as SeasonTime | undefined;
-  if (!start || !finish) return 'Closed';
-  return `${start.hour}:${start.minute} ${start.period} - ${finish.hour}:${finish.minute} ${finish.period}`;
+  const label = typeof range.label === 'string' ? range.label.trim() : '';
+  if (/^(closed|no service)\b/i.test(label)) return 'Closed';
+  const valid = (time: SeasonTime | undefined): boolean => Boolean(time &&
+    /^(0?[1-9]|1[0-2])$/.test(String(time.hour)) &&
+    /^[0-5]\d$/.test(String(time.minute)) && /^(AM|PM)$/i.test(String(time.period)));
+  if (!valid(start) || !valid(finish)) return label ? `${label}: ${DINING_HOURS_UNKNOWN}` : DINING_HOURS_UNKNOWN;
+  const prefix = label ? `${label}: ` : '';
+  return `${prefix}${start!.hour}:${start!.minute} ${start!.period} - ${finish!.hour}:${finish!.minute} ${finish!.period}`;
 }
 
 function seasonList(openingHours: JsonRecord): JsonRecord[] {
@@ -42,21 +48,22 @@ function seasonList(openingHours: JsonRecord): JsonRecord[] {
 }
 
 function dayGroupSchedule(groups: JsonRecord[], day: string): string | null {
+  const schedules: string[] = [];
   for (const group of groups) {
     const days = Array.isArray(group.days) ? (group.days as JsonRecord[]) : [];
     if (!days.some((entry) => entry.value === day)) continue;
     const hours = Array.isArray(group.hours) ? (group.hours as JsonRecord[]) : [];
-    const schedule = hours.map(formatRange).join('; ');
-    return schedule || 'Closed';
+    const schedule = hours.map(formatDiningRange).join('; ');
+    schedules.push(schedule || DINING_HOURS_UNKNOWN);
   }
-  return null;
+  return schedules.length ? schedules.join('; ') : null;
 }
 
 /**
  * The schedule imposed by an active seasonal override for `day` at the
  * instant `at`, or null when no season covers the instant (standard weekly
  * hours then apply). Matches the dedicated dining-hours API: empty seasonal
- * hours, or an active season without this day, mean the venue is closed.
+ * hours, or an active season without this day, mean hours are unavailable.
  */
 export function activeSeasonSchedule(
   openingHours: JsonRecord,
@@ -71,9 +78,9 @@ export function activeSeasonSchedule(
     const groups = Array.isArray(season.openingHours)
       ? (season.openingHours as JsonRecord[])
       : [];
-    if (!groups.length) return SEASONAL_CLOSURE;
+    if (!groups.length) return DINING_HOURS_UNKNOWN;
     const schedule = dayGroupSchedule(groups, day);
-    return schedule === null || schedule === 'Closed' ? SEASONAL_CLOSURE : schedule;
+    return schedule === 'Closed' ? SEASONAL_CLOSURE : schedule ?? DINING_HOURS_UNKNOWN;
   }
   return null;
 }
@@ -97,8 +104,8 @@ export interface SeasonalPublicationRow {
 /**
  * Database rows for each season × weekday, bounded by the season's
  * campus-local dates. Day-granular bounds round outward, so an override can
- * only over-apply on its boundary day — the conservative direction (a venue
- * may be reported closed while briefly open, never open while closed).
+ * only over-apply on its boundary day. A missing override remains unknown;
+ * it must never be rendered as a confirmed closure.
  */
 export function seasonalPublicationRows(openingHours: JsonRecord): SeasonalPublicationRow[] {
   const rows: SeasonalPublicationRow[] = [];
@@ -115,7 +122,7 @@ export function seasonalPublicationRows(openingHours: JsonRecord): SeasonalPubli
       const schedule = groups.length ? dayGroupSchedule(groups, day) : null;
       rows.push({
         day,
-        schedule: schedule === null || schedule === 'Closed' ? SEASONAL_CLOSURE : schedule,
+        schedule: schedule === 'Closed' ? SEASONAL_CLOSURE : schedule ?? DINING_HOURS_UNKNOWN,
         validFrom,
         validUntil,
       });
