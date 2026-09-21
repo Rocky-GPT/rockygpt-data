@@ -28,7 +28,7 @@ import type {
 import { V2_SOURCES } from '../sources';
 import { DATA_ROOT } from '../../paths';
 import { parseEventStart } from '../event-time';
-import { activeSeasonSchedule } from '../dining-seasons';
+import { activeSeasonSchedule, DINING_HOURS_UNKNOWN, formatDiningRange } from '../dining-seasons';
 import { extractSectionUrl, stripIngestionMetadata } from '../document-text';
 import type { RockyRepositoryV2, SearchOptions } from './types';
 import {
@@ -414,16 +414,11 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
             typeof entry.value === 'string' ? [entry.value] : []
           );
           if (!days.includes(day)) continue;
-          const schedules = ((group.hours as JsonRecord[]) || []).map((range) => {
-            const start = range.startTime as JsonRecord | undefined;
-            const finish = range.finishTime as JsonRecord | undefined;
-            if (!start || !finish) return 'Closed';
-            return `${start.hour}:${start.minute} ${start.period} - ${finish.hour}:${finish.minute} ${finish.period}`;
-          });
+          const schedules = ((group.hours as JsonRecord[]) || []).map(formatDiningRange);
           records.push({
             name,
             day,
-            schedule: schedules.join('; ') || 'Closed',
+            schedule: schedules.join('; ') || DINING_HOURS_UNKNOWN,
             source: V2_SOURCES.dining,
           });
         }

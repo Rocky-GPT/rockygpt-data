@@ -10,7 +10,8 @@ import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
 import { parseEventStart } from '../../src/data-v2/event-time';
 import { normalizeOpeningHours } from '../../src/data-v2/opening-hours';
 import { calendarConcept } from '../../src/data-v2/calendar-concepts';
-import { validateCampusIdentities } from '../../src/data-v2/campus-identities';
+import { validateCampusIdentities, type CampusIdentities } from '../../src/data-v2/campus-identities';
+import { insertCampusIdentityArtifacts } from '../campus-identity-artifacts';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
@@ -534,7 +535,6 @@ async function insertDocuments(
 }
 
 const RELEASE_ARTIFACT_FILES: Record<string, string> = {
-  'campus-identities': 'src/reference/campus-identities.json',
   'search-vocabulary': 'src/reference/search-vocabulary.json',
   calendar: 'public/data/calendar.json',
   clubs: 'public/data/clubs.json',
@@ -557,7 +557,6 @@ function prepareReleaseArtifacts(): PreparedArtifact[] {
     const payload = relativePath.endsWith('.json')
       ? JSON.parse(content) as unknown
       : { content };
-    if (key === 'campus-identities') validateCampusIdentities(payload);
     return { key, payload, contentHash: sha256(content) };
   });
 }
@@ -629,7 +628,7 @@ async function verifyStagingDataset(
     clubs: 100,
     programs: 50,
     document_chunks: 100,
-    release_artifacts: Object.keys(RELEASE_ARTIFACT_FILES).length,
+    release_artifacts: Object.keys(RELEASE_ARTIFACT_FILES).length + 3,
   };
   for (const [key, minimum] of Object.entries(minimums)) {
     if ((counts[key] || 0) < minimum) {
@@ -859,6 +858,9 @@ async function main(): Promise<void> {
     releaseId = manifest.releaseId;
     const preparedDocuments = prepareDocuments(collectedAtFor);
     const artifacts = prepareReleaseArtifacts();
+    const identitySeed = readJson<CampusIdentities>('src/reference/campus-identities.json');
+    validateCampusIdentities(identitySeed);
+    const rawCatalog = readJson<unknown>('data/raw/catalog-programs-api.raw.json');
 
     // Build the candidate release transactionally, but do not hold this
     // transaction open across object-storage calls.
@@ -886,7 +888,9 @@ async function main(): Promise<void> {
       sources,
       preparedDocuments
     );
-    const releaseArtifactCount = await insertReleaseArtifacts(client, datasetId, artifacts);
+    const sourceArtifactCount = await insertReleaseArtifacts(client, datasetId, artifacts);
+    const identityArtifacts = await insertCampusIdentityArtifacts(client, datasetId, identitySeed, rawCatalog);
+    const releaseArtifactCount = sourceArtifactCount + identityArtifacts.count;
     if (criticalCount !== Object.keys(CRITICAL_FACT_VALUES_V2).length) throw new Error('Critical fact verification failed.');
 
     // PROB-002: source runs record each source's authentic collection event,
@@ -924,6 +928,7 @@ async function main(): Promise<void> {
       structured,
       ...documents,
       releaseArtifactCount,
+      identityCoverage: identityArtifacts.coverage,
       rawArtifactsStored: [...archived.values()].filter((artifact) => artifact.stored).length,
       manifestHash: manifest.manifestHash,
       verifiedCounts,

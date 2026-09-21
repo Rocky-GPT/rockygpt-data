@@ -1,0 +1,112 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import type { CampusIdentities } from './campus-identities';
+import { catalogConvenersArtifact, compileCampusIdentities, explicitCatalogConveners, facultyRecordKey, type IdentitySnapshot } from './compile-campus-identities';
+
+const personId = '97d9efbf-6c8e-4549-8ec6-98c61e49e375';
+const venueId = 'c3c6968f-407d-43f3-bab5-e06c37945991';
+const programId = '4d39b206-5c1f-44be-950b-ec54dd67ca29';
+const faculty = { name: 'Test Professor', school: 'School', email: 'prof@ramapo.edu', profileUrl: 'https://www.ramapo.edu/tas/faculty/test/', courses: ['CMPS 147 - Computer Science I', 'Some title with no code'], phone: '201-684-1111' };
+const seed: CampusIdentities = { schema_version: 1, entities: [
+  { id: personId, kind: 'person', name: 'Test Professor', aliases: [], links: [
+    { collection: 'contacts', source_key: 'faculty', source_record_keys: [], selector: { field: 'faculty_identity', values: ['email:prof@ramapo.edu', 'url:https://www.ramapo.edu/tas/faculty/test'], evidence: 'Original profile and derived contact' } },
+    { collection: 'faculty', source_key: 'faculty', source_record_keys: [], selector: { field: 'faculty_identity', values: ['email:prof@ramapo.edu', 'url:https://www.ramapo.edu/tas/faculty/test'], evidence: 'Original profile and unique institutional email' } },
+  ] },
+  { id: venueId, kind: 'venue', name: 'Birch Tree Inn', aliases: [], links: [
+    { collection: 'dining_hours', source_key: 'dining', source_record_keys: [], selector: { field: 'name', values: ['Birch Tree Inn'], evidence: 'Reviewed official venue' } },
+    { collection: 'menu', source_key: 'dining', source_record_keys: [], selector: { field: 'menu_venue', values: ['Birch Tree Inn'], evidence: 'Collector explicitly serves this venue' } },
+  ] },
+  { id: programId, kind: 'program', name: 'Computer Science BS', aliases: [], links: [
+    { collection: 'programs', source_key: 'academic-programs', source_record_keys: [], selector: { field: 'catalog_code', values: ['TS-BS-CMPS'], evidence: 'Original catalog code' } },
+  ] },
+] };
+function snapshot(): IdentitySnapshot { return {
+  campus_contacts: [{ source_key: 'faculty', source_record_key: 'faculty:test-professor:school', name: 'Test Professor', email: faculty.email, phone: '201-684-9999' }],
+  campus_hours: [], dining_hours: [{ source_key: 'dining', source_record_key: 'Birch Tree Inn:Monday', name: 'Birch Tree Inn', day: 'Monday', schedule: 'Lunch: 11:00am - 2:00pm' }],
+  menu_items: [{ source_key: 'dining', source_record_key: '2026-09-21:Lunch:Station:Food', meal: 'Lunch', valid_from: '2026-09-21' }],
+  programs: [{ source_key: 'academic-programs', source_record_key: 'School:Computer Science BS', name: 'Computer Science BS' }],
+  artifacts: { faculty: [structuredClone(faculty)], courses: { 'CMPS 147': { code: 'CMPS 147', name: 'COMPUTER SCIENCE I' } }, programs: { schools: [{ school: 'School', majors: [{ name: 'Computer Science BS', catalogCode: 'TS-BS-CMPS', convener: { name: 'Wrong fallback' } }] }] } },
+}; }
+const raw = { scrapedAt: '2026-09-20T01:02:03Z', programs: [{ code: 'TS-BS-CMPS', customFields: { rJQmj: `<p><a href="${faculty.profileUrl}">Test Professor</a></p>`, xiQxl: '<p>Wrong fallback</p>' } }] };
+
+test('compiled source links and evidence retain originals and preserve field conflicts', () => {
+  const input = snapshot(); const before = structuredClone(input);
+  const result = compileCampusIdentities(seed, input, raw);
+  assert.deepEqual(input, before);
+  assert.equal(result.registry.entities[0].id, personId);
+  assert.equal(result.report.linked_records.contacts, 1);
+  assert.equal(result.report.relationships.convener, 1);
+  assert.equal(result.report.relationships.profile_course, 1);
+  assert.equal(result.registry.entities[0].relationships?.[0].type, 'profile_course');
+  assert.equal('selector' in result.registry.entities[0].links[0], false);
+  assert.ok(result.report.unresolved.some(r => r.reason.includes('no explicit catalog code')));
+  assert.deepEqual(catalogConvenersArtifact(raw), { collected_at: raw.scrapedAt, source_url: 'https://app.coursedog.com/api/v1/cm/ramapo_banner_ethos/programs/search/%24filters', programs: [{ catalogCode: 'TS-BS-CMPS', catalogUrl: 'https://catalog.ramapo.edu/programs/TS-BS-CMPS', customFields: { rJQmj: raw.programs[0].customFields.rJQmj } }] });
+});
+
+test('refresh resolves renamed contacts/profiles and newly ingested meals/exceptions without changing identity', () => {
+  const input = snapshot();
+  const renamed = input.artifacts.faculty as typeof faculty[];
+  renamed[0].name = 'Renamed Professor'; renamed[0].profileUrl = 'https://www.ramapo.edu/new/faculty/renamed/';
+  input.campus_contacts[0].name = 'Renamed Professor'; input.campus_contacts[0].source_record_key = 'faculty:renamed-professor:school';
+  input.menu_items = [{ source_key: 'dining', source_record_key: '2026-09-22:Dinner:Station:New Food' }];
+  input.dining_hours.push({ source_key: 'dining', source_record_key: 'Birch Tree Inn:Monday:2026-09-21:2026-09-22', name: 'Birch Tree Inn', schedule: 'Closed', valid_from: '2026-09-21', valid_until: '2026-09-22' });
+  const result = compileCampusIdentities(seed, input);
+  assert.equal(result.registry.entities[0].id, personId);
+  assert.ok(result.registry.entities[0].aliases.includes('Renamed Professor'));
+  assert.equal(result.registry.entities[0].links[0].source_record_keys[0], 'faculty:renamed-professor:school');
+  assert.deepEqual(result.registry.entities[1].links.find(l => l.collection === 'menu')?.source_record_keys, ['2026-09-22:Dinner:Station:New Food']);
+  assert.equal(result.registry.entities[1].links[0].source_record_keys.length, 2);
+});
+
+test('unknown/missing sections and broken keys are reported without discarding available sections', () => {
+  const input = snapshot(); input.dining_hours = [];
+  const map = structuredClone(seed);
+  map.entities[0].links.push({ collection: 'campus_hours', source_key: 'campus-hours', source_record_keys: ['Missing Office:Monday'] });
+  const result = compileCampusIdentities(map, input);
+  assert.equal(result.registry.entities[0].links.length, 2);
+  assert.equal(result.registry.entities[1].links[0].collection, 'menu');
+  assert.ok(result.report.unresolved.some(r => r.entity === 'Birch Tree Inn' && r.collection === 'dining_hours'));
+});
+
+test('shared aliases are not merged; reused email or shared faculty directory URL does not cross-link people', () => {
+  const input = snapshot();
+  (input.artifacts.faculty as typeof faculty[]).push({ ...faculty, name: 'Different Person' });
+  input.campus_contacts.push({ ...input.campus_contacts[0], name: 'Different Person', source_record_key: 'faculty:different-person:school' });
+  const result = compileCampusIdentities(seed, input, raw);
+  assert.equal(result.registry.entities.some(e => e.id === personId), false);
+  assert.equal(result.report.relationships.convener, undefined);
+  assert.notEqual(facultyRecordKey({ ...faculty, email: 'one@ramapo.edu' }), facultyRecordKey({ ...faculty, email: 'two@ramapo.edu' }));
+});
+
+test('repeated compilation is deterministic and does not append duplicate links', () => {
+  const first = compileCampusIdentities(seed, snapshot(), raw);
+  const second = compileCampusIdentities(seed, snapshot(), raw);
+  assert.deepEqual(second, first);
+});
+
+test('convener is only established by the reviewed explicit field, never first faculty or lone link elsewhere', () => {
+  assert.equal(explicitCatalogConveners({ programs: [{ code: 'P', customFields: { xiQxl: raw.programs[0].customFields.rJQmj } }] }).size, 0);
+  const result = compileCampusIdentities(seed, snapshot(), { programs: [] });
+  assert.equal(result.report.relationships.convener, undefined);
+  assert.ok(result.report.unresolved.some(r => r.reason.includes('first-faculty fallback')));
+});
+
+test('distinct catalog programs with colliding original record keys remain unresolved', () => {
+  const input = snapshot();
+  (input.artifacts.programs as { schools: { majors: Record<string, unknown>[] }[] }).schools[0].majors.push({ name: 'Computer Science BS', catalogCode: 'OTHER' });
+  const result = compileCampusIdentities(seed, input, raw);
+  assert.equal(result.registry.entities.some(e => e.id === programId), false);
+  assert.ok(result.report.unresolved.some(r => r.collection === 'programs'));
+});
+
+test('disagreeing independent anchors cannot silently merge a reassigned email with its previous owner', () => {
+  const input = snapshot();
+  const people = input.artifacts.faculty as typeof faculty[];
+  people[0].email = 'changed@ramapo.edu';
+  people.push({ ...faculty, name: 'New Account Owner', profileUrl: 'https://www.ramapo.edu/new/faculty/different/' });
+  input.campus_contacts[0].email = 'changed@ramapo.edu';
+  input.campus_contacts.push({ source_key: 'faculty', source_record_key: 'faculty:new-account-owner:school', email: faculty.email, name: 'New Account Owner' });
+  const result = compileCampusIdentities(seed, input);
+  assert.equal(result.registry.entities.some(e => e.id === personId), false);
+  assert.ok(result.report.unresolved.some(r => r.reason.includes('multiple distinct subjects')));
+});

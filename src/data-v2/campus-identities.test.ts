@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import seed from '../reference/campus-identities.json';
+import rawSeed from '../reference/campus-identities.json';
 import { buildStructuredDirectoryContacts } from '../directory/structured-contacts';
-import { validateCampusIdentities } from './campus-identities';
+import { validateCampusIdentities, type CampusIdentities } from './campus-identities';
+
+const seed = rawSeed as CampusIdentities;
 
 test('the CSI seed links the published contact key without copying its facts', () => {
   validateCampusIdentities(seed);
@@ -28,7 +30,7 @@ test('identity is retained across a reviewed rename and upstream record-key chan
 });
 
 test('shared aliases are valid data for an ambiguous lookup, not an automatic merge', () => {
-  const registry = structuredClone(seed);
+  const registry = { schema_version: 1 as const, entities: [structuredClone(seed.entities[0])] };
   registry.entities.push({
     ...structuredClone(seed.entities[0]),
     id: 'b2e836ce-b832-44ca-8a92-42f0fbd1fdb1',
@@ -63,7 +65,7 @@ test('malformed mappings fail before publication instead of guessing identity', 
     entity({ id: 'center-for-student-involvement' }),
     entity({ aliases: [' '] }),
     link({ collection: 'documents' }),
-    link({ source_record_keys: [] }),
+    link({ source_record_keys: [], selector: undefined }),
     link({ source_key: '' }),
     link({ source_record_keys: ['office:duplicate', 'office:duplicate'] }),
     entity({ verified_at: '2026-09-21' }),
