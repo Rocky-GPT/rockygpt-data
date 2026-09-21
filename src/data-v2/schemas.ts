@@ -80,6 +80,12 @@ export type PhoneNormalizationStatus =
 
 export interface ContactRecord {
   name: string;
+  type?: 'person' | 'office';
+  title?: string;
+  status?: 'retired';
+  offices?: string[];
+  /** Ingestion audit information; excluded from clean record exports. */
+  normalization_metadata?: Record<string, unknown>;
   department?: string;
   phone?: string;
   email?: string;

@@ -24,6 +24,31 @@ bottom of the dependency graph.
 
 Scripts resolve paths against this repository root, so run them from here.
 
+## Contact normalization
+
+`src/directory/contact-normalizer.ts` owns the meaning and formatting of contact
+fields. The publisher uses it for every new release: `title` is the supplied role,
+`department` is the supplied organizational unit, and `offices` is an array.
+Only explicit retirement markers set `status: retired`; an absent marker does not
+establish active employment. Existing phone entries keep their numbers, labels,
+extensions, and contact preferences.
+
+To preview or update an existing active release using `DATABASE_URL` from `.env`:
+
+```sh
+npm run normalize:contacts -- --report /tmp/contact-review.json
+npm run normalize:contacts -- --apply --backup /tmp/contacts-before.json --report /tmp/contact-review.json
+```
+
+The default is read-only. Applying requires a new backup file, applies migration
+018, and updates only the active release in one transaction. IDs and contact
+methods remain unchanged. A second preview should report zero changed records.
+Original strings and review flags live in `normalization_metadata`; source and
+collection timestamps remain ingestion metadata, separate from the clean export.
+Shared numbers involving retired people, missing contact methods, unfinished
+titles, and unusual trailing name accents are flagged for source review, never
+silently corrected or merged.
+
 ## Service boundary
 
 **This repository no longer runs a deployed service.** Ingestion and

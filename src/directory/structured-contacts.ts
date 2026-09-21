@@ -5,6 +5,7 @@ import {
   OTHER_DIRECTORY_CONTACTS,
 } from './static-contacts';
 import { parseAndNormalizePhone } from './phone-normalizer';
+import { normalizeContactFields, reviewContacts } from './contact-normalizer';
 
 type JsonRecord = Record<string, unknown>;
 
@@ -100,15 +101,12 @@ function facultyContacts(input: unknown): StructuredDirectoryContact[] {
       left.school.localeCompare(right.school, 'en', { sensitivity: 'base' })
     )
     .map((contact) => {
-      const department = contact.title
-        ? contact.school
-          ? `${contact.title} (${contact.school})`
-          : contact.title
-        : contact.school || undefined;
       const normalizedPhone = parseAndNormalizePhone(contact.phone);
       return {
         name: contact.name,
-        department,
+        type: 'person' as const,
+        title: contact.title || undefined,
+        department: contact.school || undefined,
         phone: normalizedPhone.phone || undefined,
         phones: normalizedPhone.phones,
         preferred_contact: normalizedPhone.preferred_contact || undefined,
@@ -153,6 +151,7 @@ export function buildStructuredDirectoryContacts(
     const normalized = parseAndNormalizePhone(entry.phone);
     return {
       name: entry.name,
+      type: 'office',
       department: entry.department,
       phone: normalized.phone || undefined,
       phones: normalized.phones,
@@ -176,6 +175,8 @@ export function buildStructuredDirectoryContacts(
     const normalized = parseAndNormalizePhone(entry.phone);
     return {
       name: entry.name,
+      type: 'person',
+      title: entry.title,
       department: entry.unit,
       phone: normalized.phone || undefined,
       phones: normalized.phones,
@@ -193,5 +194,24 @@ export function buildStructuredDirectoryContacts(
       aliases: [],
     };
   });
-  return [...offices, ...others, ...facultyContacts(facultyInput)];
+  const contacts = [...offices, ...others, ...facultyContacts(facultyInput)].map(contact => {
+    const fields = normalizeContactFields(contact);
+    return {
+      ...contact,
+      ...fields,
+      title: fields.title,
+      department: fields.department,
+      office: fields.offices?.join(' / '),
+      normalization_metadata: {
+        version: 1,
+        raw_fields: { name: contact.name, title: contact.title, department: contact.department, office: contact.office },
+        review_flags: [],
+      },
+    };
+  });
+  const reviews = reviewContacts(contacts.map(contact => ({ ...contact, id: contact.sourceRecordKey })));
+  return contacts.map(contact => ({
+    ...contact,
+    normalization_metadata: { ...contact.normalization_metadata, review_flags: reviews[contact.sourceRecordKey] },
+  }));
 }
