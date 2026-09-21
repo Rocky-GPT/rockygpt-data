@@ -1,0 +1,57 @@
+{
+  "description": "Reviewed public event-page captures. These are historical assertions with individual capture times, not verification of current organizers. Future captures use the same generic extraction and conflicting organizer assertions fail closed.",
+  "pages": [
+    {
+      "url": "https://archway.ramapo.edu/trading/rsvp_boot?id=1410383",
+      "sourceType": "detail",
+      "fetchedAt": "2026-09-21T22:02:56.359392+00:00",
+      "statusCode": 200,
+      "title": "TCG Club General Meeting - Trading Card Game Club",
+      "links": [
+        "https://archway.ramapo.edu/events?event_type=35101",
+        "https://archway.ramapo.edu/events?group_ids=65153",
+        "https://archway.ramapo.edu/otp_signup?module=event&event_id=1410383",
+        "https://archway.ramapo.edu/trading/"
+      ],
+      "externalLinks": [],
+      "sections": [
+        {
+          "heading": "TCG Club General Meeting",
+          "text": "Loading... Oct 01 FREE"
+        },
+        {
+          "heading": "TCG Club General Meeting",
+          "text": "by Trading Card Game Club Sports/Recreation Thu, Oct 1, 2026 7 PM – 10 PM EDT (GMT-4) Private Location (sign in to display)"
+        },
+        {
+          "heading": "Registration",
+          "text": "Options | Sales Start | Sales End | Availability | Price; Option RSVP | Sales Start - | Sales End - | Availability Unlimited | Price FREE"
+        }
+      ],
+      "lists": [],
+      "tables": [
+        {
+          "headers": [
+            "Options",
+            "Sales Start",
+            "Sales End",
+            "Availability",
+            "Price"
+          ],
+          "rows": [
+            [
+              "Option RSVP",
+              "Sales Start -",
+              "Sales End -",
+              "Availability Unlimited",
+              "Price FREE"
+            ]
+          ]
+        }
+      ],
+      "contacts": [],
+      "documents": [],
+      "source_content_sha256": "f49695f7c950050e111498c1452c6c4ccd417cf964ff2e553ea37f88e623f382"
+    }
+  ]
+}

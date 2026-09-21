@@ -2,7 +2,7 @@
 
 The Git registry holds persistent UUIDs and reviewed selectors, not duplicated profiles. A release contains exact links to the original contact, schedule, faculty, program and menu records in that release. Names and aliases locate an identity; relationship evidence distinguishes a program's convener and an undated profile-listed course from the identity itself. Menu items are offerings at a venue, not identities of the venue.
 
-`pipeline/commands/publish-current.ts` inserts original rows and artifacts before calling `insertCampusIdentityArtifacts` inside the candidate transaction. The installer refuses active/retired datasets. It writes three release artifacts: `campus-identities`, `campus-identity-coverage`, and `catalog-conveners`. Repeating compilation/upsert against the same staging dataset is idempotent. Activation remains the established atomic release pointer swap.
+`pipeline/commands/publish-current.ts` inserts original rows and artifacts before calling `insertCampusIdentityArtifacts` inside the candidate transaction. The installer refuses active/retired datasets. It writes four release artifacts: `campus-identities`, `campus-identity-coverage`, `catalog-conveners`, and `event-organizers`. Repeating compilation/upsert against the same staging dataset is idempotent. Activation remains the established atomic release pointer swap.
 
 Selectors are compiled against candidate rows each time: new menu dates/meals and seasonal exceptions join automatically; a person renamed in the faculty source retains their UUID via a unique institutional email or verified unique profile URL. Candidate record keys remain original. Contradictory identity anchors fail closed, including an old email reassigned to a different profile. Shared directory-page URLs are never unique person anchors. Source fields and differing phone/office values are not overwritten. Alias additions capture newly encountered display names without changing UUIDs.
 
@@ -40,6 +40,35 @@ Read-only export compilation:
 node --import tsx pipeline/commands/compile-identities.ts SNAPSHOT_JSON OUTPUT_DIR data/raw/catalog-programs-api.raw.json
 ```
 
-`SNAPSHOT_JSON` holds source rows (`campus_contacts`, `campus_hours`, `dining_hours`, `menu_items`, `programs`) and `artifacts` keyed by artifact name. `loadIdentitySnapshot` reads that shape from a chosen dataset. The offline command never changes a database. The emitted trio is installed only into a complete inactive candidate; no separate entities table or destructive migration is needed.
+`SNAPSHOT_JSON` holds source rows (`campus_contacts`, `campus_hours`, `dining_hours`, `menu_items`, `programs`, `clubs`, `events`) and `artifacts` keyed by artifact name. `loadIdentitySnapshot` reads that shape from a chosen dataset. The offline command never changes a database. The emitted artifacts are installed only into a complete inactive candidate; no separate entities table or destructive migration is needed.
 
 Rollback uses the established previous release/dataset pointer and the previous Brain revision together. Do not run the publisher against a shared production database to activate a dev feature; isolated dev activation is managed by the workspace dev workflow. Artifact hashes and coverage belong to the candidate release and should be verified before activation.
+
+## Clubs and dated event occurrences
+
+The Archway extension uses the same registry and four release artifacts: `campus-identities`, `campus-identity-coverage`, `catalog-conveners`, and `event-organizers`. It adds `club` and `event` kinds and links original `clubs` / `events` records. It does not create a new table or copy complete profiles.
+
+Club IDs are UUIDv5 values in the fixed namespace in `archway-identities.ts`, based on the official numeric Archway group ID. The initial bridge requires a unique exact published website URL in both the original club row and the official raw/published group-ID record. Name, shared email and phone are not identity evidence. Normal club ingestion now retains `clubId`, so subsequent publication can retain identity through name or website changes. Missing or conflicting identifiers remain unresolved. The fixed namespace and source-ID derivation are a persistence contract and must not be changed.
+
+Only directory categories `Student Organization`, `Honor Society`, `Greek Life`, and `Office Sponsored Organization` become club identities. The directory also includes departments, teams, residences, schools and seminars; those stay searchable but are not automatically merged with existing office/facility identities or relabeled as student clubs.
+
+Each event uses its explicit Archway RSVP ID. Distinct IDs remain distinct even when title, date, or the legacy `date:title` key collide. The displayed name includes the published New York date, with the bare title as an alias for ambiguity handling. Renames, rescheduling, and replacement database row UUIDs do not change the persistent event ID. A unique occurrence ID with missing date still has an identity; date remains unknown. Multiple original rows claiming one external occurrence ID fail closed. No recurring-series identity is inferred from titles.
+
+Compiled links may add `source_record_ids`, and relationship evidence may add `source_record_id`. These are original database UUIDs, regenerated against every candidate release, in addition to the unchanged original source keys. Shared keys are accepted only with disjoint pinned row IDs. This disambiguates the five current legacy event-key collisions without rewriting source rows.
+
+`organized_by` targets a club identity only when a captured event page has a unique official group-ID filter, a linked group page, and a matching explicit by-line. `event-organizers` retains a separate assertion per source page/capture with its real `collected_at`, source URL, exact event key and original row ID. An older captured organizer must agree with the current event's organizer text; conflicting source assertions stay unresolved. Repeated agreeing captures retain their timestamps. Organizer/location names, login-protected locations and general page links do not establish organizer, adviser or venue identity relationships.
+
+The public TCG October 1 page capture is preserved in `src/reference/archway-event-identity-captures.json`, including its actual September 21 capture time and original HTML hash. It runs through the same extraction as future `data/raw/events-detail.raw.json` captures. It is historical source evidence, not an event-specific code branch, and cannot silently override a changed future organizer. The existing event collector already preserves page URLs, group-filter links, by-lines and per-page capture times; the publisher now consumes these on every release.
+
+Initial verified coverage against `dev-profiles-full-20260921`: **905 identities**, comprising 402 existing identities, 187 clubs, and all 316 event instances. The new records preserve original IDs, keys and timestamps. Of 254 directory records, 66 non-club categories and Visual Arts Society's missing website identity bridge remain unresolved. One real `organized_by` edge links `TCG Club General Meeting (2026-10-01)` to Trading Card Game Club. There are 56 fully supported captured organizer assertions: 55 target administrative/non-club directory entries and one supports the TCG edge. The other 315 event relationships remain unresolved. These 382 new issues plus the previous 671 produce 1,053 coverage issues; an unresolved relationship does not prevent retrieval of its event profile.
+
+Reproduce compilation without database writes:
+
+```sh
+node --import tsx pipeline/commands/compile-identities.ts \
+  ../.local-logs/profile-feature/clubs-events-snapshot.json \
+  ../.local-logs/profile-feature/clubs-events-identity-bundle \
+  data/raw/catalog-programs-api.raw.json data/raw/clubs.raw.json data/raw/events-detail.raw.json
+```
+
+The normal publisher performs this same compilation after the candidate's original rows and artifacts exist, installs all four artifacts only in `staging` or `validating`, and refreshes links for newly ingested records. The opt-in PostgreSQL publishing test verifies repeat publication, newly added clubs/events, colliding event keys, rescheduling and regenerated row UUIDs, and rejection of active-release mutation.

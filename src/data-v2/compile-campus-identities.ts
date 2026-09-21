@@ -2,11 +2,13 @@ import { load } from 'cheerio';
 import type { PoolClient } from 'pg';
 import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
+import { compileArchwayIdentities, type ArchwayIdentityInputs, type EventOrganizersArtifact } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
   campus_contacts: Row[]; campus_hours: Row[]; dining_hours: Row[]; menu_items: Row[]; programs: Row[];
+  clubs?: Row[]; events?: Row[];
   artifacts: Record<string, unknown>;
 }
 export interface IdentityCoverageIssue { entity?: string; collection: string; record?: string; reason: string }
@@ -117,7 +119,7 @@ export function catalogConvenersArtifact(raw: unknown): Record<string, unknown> 
  * export. Selectors remain in Git; consumers receive concrete record references.
  * A lost selector is reported, not replaced by a similarity/phone-number guess.
  */
-export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown): { registry: CampusIdentities; report: IdentityCoverageReport } {
+export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, archwayInputs: ArchwayIdentityInputs = {}): { registry: CampusIdentities; report: IdentityCoverageReport; eventOrganizers: EventOrganizersArtifact } {
   validateCampusIdentities(seed);
   const candidates = identityCandidates(snapshot);
   const unresolved: IdentityCoverageIssue[] = [];
@@ -195,6 +197,9 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   for (const candidate of candidates) if (!owners.has(`${candidate.collection}:${candidate.source}:${candidate.key}`)) {
     unresolved.push({ collection: candidate.collection, record: candidate.key, reason: 'No reviewed persistent identity selector covers this original record; existing search remains available.' });
   }
+  const archway = compileArchwayIdentities(snapshot, archwayInputs);
+  entities.push(...archway.entities);
+  unresolved.push(...archway.unresolved);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved };
@@ -203,16 +208,20 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     for (const link of entity.links) report.linked_records[link.collection] = (report.linked_records[link.collection] || 0) + link.source_record_keys.length;
     for (const relation of entity.relationships || []) report.relationships[relation.type] = (report.relationships[relation.type] || 0) + 1;
   }
-  return { registry, report };
+  return { registry, report, eventOrganizers: archway.organizers };
 }
 function listStrings(value: unknown): string[] { return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []; }
 
 /** Use inside the publisher transaction after original rows/artifacts exist. */
 export async function loadIdentitySnapshot(client: Pick<PoolClient, 'query'>, datasetId: string): Promise<IdentitySnapshot> {
-  const snapshot: IdentitySnapshot = { campus_contacts: [], campus_hours: [], dining_hours: [], menu_items: [], programs: [], artifacts: {} };
+  const snapshot: IdentitySnapshot = { campus_contacts: [], campus_hours: [], dining_hours: [], menu_items: [], programs: [], clubs: [], events: [], artifacts: {} };
   for (const table of ['campus_contacts', 'campus_hours', 'dining_hours', 'menu_items', 'programs'] as const) {
     const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
     snapshot[table] = result.rows;
+  }
+  for (const [collection, table] of [['clubs', 'clubs'], ['events', 'campus_events']] as const) {
+    const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
+    snapshot[collection] = result.rows;
   }
   const artifacts = await client.query('SELECT artifact_key,payload FROM rockygpt_v2.release_artifacts WHERE dataset_version_id=$1::uuid', [datasetId]);
   snapshot.artifacts = Object.fromEntries(artifacts.rows.map((r: Row) => [r.artifact_key, r.payload]));
