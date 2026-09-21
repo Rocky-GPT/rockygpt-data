@@ -58,7 +58,7 @@ test('structured contacts preserve static records and merge duplicate faculty pr
       sourceKey: schoolOne?.publicationSourceKey,
     },
     {
-      department: 'Professor (School One)',
+      department: 'School One',
       email: 'alex@example.edu',
       phone: '(201) 684-7000',
       office: 'A-101',

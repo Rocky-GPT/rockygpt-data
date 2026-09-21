@@ -381,8 +381,8 @@ async function insertStructured(
       `INSERT INTO rockygpt_v2.campus_contacts
        (dataset_version_id, source_id, source_record_key, name, department, phone, email, office,
         raw_phone, phones, preferred_contact, contact_note, prefers_email, phone_normalization_status,
-        collected_at, content_hash, aliases, search_text)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12,$13,$14,$15,$16,$17::jsonb,$18)`,
+        collected_at, content_hash, aliases, search_text, type, title, status, offices, normalization_metadata)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11,$12,$13,$14,$15,$16,$17::jsonb,$18,$19,$20,$21,$22::jsonb,$23::jsonb)`,
       [
         datasetId,
         sources.get(contact.publicationSourceKey),
@@ -402,6 +402,10 @@ async function insertStructured(
         sha256(
           JSON.stringify({
             name,
+            type: contact.type,
+            title: contact.title,
+            status: contact.status,
+            offices: contact.offices,
             department,
             phone,
             email,
@@ -416,6 +420,11 @@ async function insertStructured(
         ),
         JSON.stringify(contact.aliases),
         contact.searchable,
+        contact.type || null,
+        contact.title || null,
+        contact.status || null,
+        JSON.stringify(contact.offices || []),
+        JSON.stringify(contact.normalization_metadata || {}),
       ]
     );
     counts.campus_contacts = (counts.campus_contacts || 0) + 1;

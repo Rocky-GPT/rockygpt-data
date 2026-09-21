@@ -682,8 +682,9 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
   async findContactByName(name: string): Promise<ContactRecord[]> {
     return this.directoryContacts()
       .filter((record) => record.name === name)
-      .map(({ name: contactName, department, phone, email, office, source }) => ({
+      .map(({ name: contactName, type, title, status, offices, phones, preferred_contact, department, phone, email, office, source }) => ({
         name: contactName,
+        type, title, status, offices, phones, preferred_contact,
         department,
         phone,
         email,
@@ -707,6 +708,8 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
       .map((item) => ({
         record: {
           name: item.name,
+          type: item.type, title: item.title, status: item.status, offices: item.offices,
+          phones: item.phones, preferred_contact: item.preferred_contact,
           department: item.department,
           phone: item.phone,
           email: item.email,

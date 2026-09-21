@@ -757,7 +757,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
     return this.searchWithPrunedTerms(
       query,
       'campus_contacts',
-      `SELECT c.name || ' ' || coalesce(c.department, '') || ' ' || coalesce(v.terms, '') AS text
+      `SELECT c.name || ' ' || coalesce(to_jsonb(c)->>'title', '') || ' ' || coalesce(c.department, '') || ' ' || coalesce(v.terms, '') AS text
          FROM rockygpt_v2.campus_contacts c
          LEFT JOIN (SELECT * FROM unnest($2::text[], $3::text[]) AS t(name, terms)) v
            ON v.name = c.name
@@ -787,7 +787,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
   async findContactByName(name: string): Promise<ContactRecord[]> {
     const datasetId = await this.activeDatasetId();
     const result = await this.pool.query<Row>(
-      `SELECT c.name, c.department, c.phone, c.email, c.office,
+      `SELECT c.*,
               s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
               c.collected_at::text
          FROM rockygpt_v2.campus_contacts c JOIN rockygpt_v2.sources s ON s.id = c.source_id
@@ -796,6 +796,12 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
     );
     return result.rows.map((row) => ({
       name: requiredString(row, 'name'),
+      type: row.type === 'person' || row.type === 'office' ? row.type : undefined,
+      title: optionalString(row, 'title'),
+      status: row.status === 'retired' ? 'retired' : undefined,
+      offices: row.offices as ContactRecord['offices'],
+      phones: row.phones as ContactRecord['phones'],
+      preferred_contact: optionalString(row, 'preferred_contact'),
       department: optionalString(row, 'department'),
       phone: optionalString(row, 'phone'),
       email: optionalString(row, 'email'),
@@ -808,7 +814,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
     const datasetId = await this.activeDatasetId();
     const vocabulary = contactSearchTermArrays();
     const result = await this.pool.query<Row>(
-      `SELECT c.name, c.department, c.phone, c.email, c.office,
+      `SELECT c.*,
               s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
               c.collected_at::text
        FROM rockygpt_v2.campus_contacts c
@@ -817,13 +823,19 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
          ON v.name = c.name
        WHERE c.dataset_version_id = $1::uuid
          AND ($2::text = '' OR to_tsvector('english',
-               c.name || ' ' || coalesce(c.department, '') || ' ' || coalesce(v.terms, ''))
+               c.name || ' ' || coalesce(to_jsonb(c)->>'title', '') || ' ' || coalesce(c.department, '') || ' ' || coalesce(v.terms, ''))
              @@ plainto_tsquery('english', $2))
        ORDER BY c.name LIMIT ${MAX_RECORDS}`,
       [datasetId, query, vocabulary.names, vocabulary.terms]
     );
     return result.rows.map((row) => ({
       name: requiredString(row, 'name'),
+      type: row.type === 'person' || row.type === 'office' ? row.type : undefined,
+      title: optionalString(row, 'title'),
+      status: row.status === 'retired' ? 'retired' : undefined,
+      offices: row.offices as ContactRecord['offices'],
+      phones: row.phones as ContactRecord['phones'],
+      preferred_contact: optionalString(row, 'preferred_contact'),
       department: optionalString(row, 'department'),
       phone: optionalString(row, 'phone'),
       email: optionalString(row, 'email'),
