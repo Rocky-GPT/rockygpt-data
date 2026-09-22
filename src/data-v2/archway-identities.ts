@@ -127,9 +127,10 @@ export function eventOrganizersArtifact(snapshot: IdentitySnapshot, inputs: Arch
   return { schema_version: 1, events: [...new Map(events.map(e => [JSON.stringify(e), e])).values()].sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b))) };
 }
 
-/** `reserved` holds normalized names and aliases of reviewed identities. A
- * non-club group with one of those names would make that name ambiguous, so it
- * needs a reviewed link instead of a second identity. */
+/** `reserved` holds normalized names and aliases of reviewed identities, and the
+ * departments their own contact records publish. A non-club group with one of
+ * those names is most likely the same office, so it needs a reviewed link
+ * instead of a second identity that would make that name ambiguous. */
 export function compileArchwayIdentities(snapshot: IdentitySnapshot, inputs: ArchwayIdentityInputs = {}, reserved: ReadonlySet<string> = new Set()): { entities: CampusIdentity[]; unresolved: IdentityCoverageIssue[]; organizers: EventOrganizersArtifact } {
   const entities: CampusIdentity[] = []; const unresolved: IdentityCoverageIssue[] = [];
   const sources = clubSources(snapshot, inputs);
@@ -141,7 +142,7 @@ export function compileArchwayIdentities(snapshot: IdentitySnapshot, inputs: Arc
     // Student groups are clubs; departments, residence halls, teams, schools and
     // seminars are other campus organizations. The published category decides.
     const kind = groupCategories.has(text(row.category).split(' - ')[0]) ? 'club' : 'organization';
-    if (kind === 'organization' && reserved.has(normalizeName(text(row.name)))) { issue('An Archway group with the same name as a reviewed campus identity needs a reviewed link; no duplicate identity is created. Existing search remains available.'); continue; }
+    if (kind === 'organization' && reserved.has(normalizeName(text(row.name)))) { issue('An Archway group named like a reviewed campus identity or its published department needs a reviewed link; no duplicate identity is created. Existing search remains available.'); continue; }
     const url = canonicalClubUrl(row.website_url);
     const matches = url ? sourcesByUrl.get(url) || [] : [];
     const ids = new Set(matches.map(r => numericId(r.clubId)).filter(Boolean));

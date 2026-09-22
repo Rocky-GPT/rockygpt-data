@@ -125,6 +125,10 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const unresolved: IdentityCoverageIssue[] = [];
   const entities: CampusIdentity[] = [];
   const owners = new Map<string, string>();
+  // Names a reviewed place already answers to, including the department its own
+  // contact record publishes (the Library's is "Potter Library"). An Archway group
+  // with one of these names needs a reviewed link rather than a second identity.
+  const reserved = new Set<string>();
   for (const entity of seed.entities) {
     const links: CampusIdentityLink[] = [];
     const displayNames = new Set(entity.aliases);
@@ -146,6 +150,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
         if (owners.has(key) && owners.get(key) !== entity.id) throw new Error(`Conflicting identity ownership of ${key}.`);
         owners.set(key, entity.id);
         if (row.collection !== 'menu' && string(row.row.name) !== entity.name && string(row.row.name)) displayNames.add(string(row.row.name));
+        if (row.collection === 'contacts' && ['office', 'facility', 'venue'].includes(entity.kind) && string(row.row.department)) reserved.add(normalizeName(string(row.row.department)));
       }
       links.push({ collection: link.collection, source_key: link.source_key, source_record_keys: [...new Set(found.map(r => r.key))].sort() });
     }
@@ -197,7 +202,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   for (const candidate of candidates) if (!owners.has(`${candidate.collection}:${candidate.source}:${candidate.key}`)) {
     unresolved.push({ collection: candidate.collection, record: candidate.key, reason: 'No reviewed persistent identity selector covers this original record; existing search remains available.' });
   }
-  const reserved = new Set(entities.flatMap(entity => [entity.name, ...entity.aliases]).map(normalizeName));
+  for (const name of entities.flatMap(entity => [entity.name, ...entity.aliases])) reserved.add(normalizeName(name));
   const archway = compileArchwayIdentities(snapshot, archwayInputs, reserved);
   entities.push(...archway.entities);
   unresolved.push(...archway.unresolved);

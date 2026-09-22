@@ -121,6 +121,19 @@ test('an Archway group named like a reviewed identity is reported instead of dup
   assert.ok(reviewed.report.unresolved.some(i => i.record === 'CSI' && i.reason.includes('needs a reviewed link')));
 });
 
+test('an Archway group named like the published department of a reviewed office is not duplicated', () => {
+  const snapshot = fixture();
+  snapshot.clubs!.push({ ...club, id: id(7), name: 'Potter Library', source_record_key: 'Potter', category: 'Department', website_url: 'https://archway.ramapo.edu/Potter/' });
+  snapshot.artifacts.clubs = [{ ...sourceClub }, { name: 'Potter Library', category: 'Department', websiteUrl: 'https://archway.ramapo.edu/Potter/', clubId: '34230' }];
+  const office = (kind: 'office' | 'person') => compileCampusIdentities({ schema_version: 1, entities: [{
+    id: id(91), kind, name: 'Library', aliases: [],
+    links: [{ collection: 'contacts', source_key: 'directory', source_record_keys: ['office:library'] }],
+  }] }, { ...snapshot, campus_contacts: [{ source_key: 'directory', source_record_key: 'office:library', name: 'Library', department: 'Potter Library' }] });
+  assert.equal(office('office').registry.entities.filter(e => e.kind === 'organization').length, 0);
+  // A person's department is where they work, not their own name.
+  assert.equal(office('person').registry.entities.filter(e => e.kind === 'organization').length, 1);
+});
+
 test('ambiguous URL→group ID, missing website and malformed source URLs never create identities', () => {
   const snapshot = fixture();
   const result = compileArchwayIdentities(snapshot, { clubs: [{ ...sourceClub, clubId: '999' }] });
