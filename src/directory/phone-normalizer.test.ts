@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   parseAndNormalizePhone,
   formatE164ToDisplay,
@@ -126,12 +128,14 @@ test('parses unlabeled multi-phone numbers preserving order without inventing ty
   assert.equal(res.phone_normalization_status, 'multi_phone');
 });
 
-test('validates all 242 campus contacts normalize cleanly and strictly without unparsed records', async () => {
-  const fs = await import('node:fs');
-  const path = await import('node:path');
+// Local ingestion output; data/normalized/ is not committed, so CI has no copy.
+const facultyPath = path.resolve(__dirname, '../../data/normalized/faculty.json');
+
+test('validates all 242 campus contacts normalize cleanly and strictly without unparsed records', {
+  skip: !fs.existsSync(facultyPath) && 'needs local ingestion output data/normalized/faculty.json',
+}, async () => {
   const { buildStructuredDirectoryContacts } = await import('./structured-contacts');
 
-  const facultyPath = path.resolve(__dirname, '../../data/normalized/faculty.json');
   const facultyRaw = JSON.parse(fs.readFileSync(facultyPath, 'utf8'));
   const contacts = buildStructuredDirectoryContacts(facultyRaw);
 
