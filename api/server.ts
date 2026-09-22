@@ -20,7 +20,7 @@ import { Readable } from 'node:stream';
 import { timingSafeEqual } from 'node:crypto';
 import { getArtifact } from './routes/artifacts';
 import { getHealth, getReadiness } from './routes/health';
-import { getDataExplorer, getEntityRegistry, getEntityRows, getScrapeStatus } from './routes/dev';
+import { getDataExplorer, getScrapeStatus } from './routes/dev';
 import { getDiningHours } from './routes/dining-hours';
 import { getDirectory } from './routes/directory';
 import { getMap } from './routes/map';
@@ -98,8 +98,6 @@ const ROUTES: Record<string, ApiHandler> = {
 // registered in a production process; each handler retains its own guard too.
 if (process.env.NODE_ENV === 'development') {
   Object.assign(ROUTES, {
-    'GET /v1/dev/entity-registry': getEntityRegistry,
-    'GET /v1/dev/entity-rows': getEntityRows,
     'GET /v1/dev/scrape-status': getScrapeStatus,
     'GET /v1/dev/data-explorer': getDataExplorer,
   });

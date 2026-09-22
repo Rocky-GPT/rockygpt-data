@@ -1,21 +1,15 @@
 /**
  * @module api/routes/dev
- * Endpoints behind the development-only pages: the entity registry, collector
- * status, and the data explorer.
+ * Endpoints behind the development-only pages: collector status and the data
+ * explorer.
  *
  * They read further into the database than anything else here, so they answer
  * 404 outside development — the same guard the pages themselves applied when
  * this logic lived inside the web app.
  */
 
-import {
-  buildEntityRegistry,
-  loadEntityRows,
-  type EntityKind,
-} from '../../src/data-v2/entity-registry';
 import { getScrapeSourceStatuses, STATIC_DATA_NOT_SCRAPED } from '../../src/data-v2/scrape-status';
 import { loadDataExplorer } from '../../src/data-explorer/server';
-import { getRuntimePool } from '../../src/db/runtime-pool';
 import { fail, ok, type ApiHandler } from '../http';
 import { parseIsoDate, validateQueryLengths } from '../query';
 
@@ -26,52 +20,6 @@ const isDevelopment = () => process.env.NODE_ENV === 'development';
 
 const notInDevelopment = () =>
   fail(404, 'NOT_FOUND', 'This endpoint is only available in development.');
-
-/** Every entity in the active dataset, by its stable record key. */
-export const getEntityRegistry: ApiHandler = async () => {
-  if (!isDevelopment()) return notInDevelopment();
-
-  const pool = getRuntimePool();
-  if (!pool) {
-    return fail(503, 'UNAVAILABLE', 'DATABASE_URL is not configured, so there is no active dataset to read.', true);
-  }
-
-  const active = await pool.query<{ id: string; version: string }>(
-    `SELECT id::text, version FROM rockygpt_v2.dataset_versions WHERE status = 'active' LIMIT 1`
-  );
-  const dataset = active.rows[0];
-  if (!dataset) return fail(503, 'UNAVAILABLE', 'No active dataset version.', true);
-
-  return ok(await buildEntityRegistry(pool, dataset.id, dataset.version));
-};
-
-const ENTITY_KINDS = new Set<EntityKind>([
-  'campus_hours',
-  'dining_hours',
-  'campus_contacts',
-  'clubs',
-  'programs',
-]);
-
-/** Rows behind one registry entity, used only by the development inspector. */
-export const getEntityRows: ApiHandler = async (request) => {
-  if (!isDevelopment()) return notInDevelopment();
-  const invalidLength = validateQueryLengths(request, { kind: 32, key: 200 });
-  if (invalidLength) return invalidLength;
-  const kind = request.url.searchParams.get('kind') as EntityKind | null;
-  const key = request.url.searchParams.get('key')?.trim();
-  if (!kind || !ENTITY_KINDS.has(kind) || !key) {
-    return fail(400, 'INVALID_REQUEST', '`kind` and `key` are required.');
-  }
-  const pool = getRuntimePool();
-  if (!pool) return fail(503, 'UNAVAILABLE', 'DATABASE_URL is not configured.', true);
-  const active = await pool.query<{ id: string }>(
-    `SELECT id::text FROM rockygpt_v2.dataset_versions WHERE status = 'active' LIMIT 1`
-  );
-  const dataset = active.rows[0];
-  if (!dataset) return fail(503, 'UNAVAILABLE', 'No active dataset version.', true);
-  return ok({ rows: await loadEntityRows(pool, dataset.id, kind, key) });
-};
 
 /** Freshness of every collector, for the data-sources page. */
 export const getScrapeStatus: ApiHandler = () => {
