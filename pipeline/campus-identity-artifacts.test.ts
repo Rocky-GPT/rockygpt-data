@@ -32,7 +32,10 @@ test('PostgreSQL staged publishing is repeatable, refreshes links and refuses ac
     }] };
     const publish = async () => {
       await client.query('BEGIN');
-      try { const result = await insertCampusIdentityArtifacts(client, dataset, seed, { programs: [] }); await client.query('COMMIT'); return result; }
+      try { const result = await insertCampusIdentityArtifacts(client, dataset, seed, { programs: [] }, { eventDetails: { pages: [{
+        url: 'https://archway.ramapo.edu/test/rsvp_boot?id=992', statusCode: 200, fetchedAt: '2026-09-22T19:00:00Z',
+        archwayOrganizers: [{ groupId: '991', groupUrl: 'https://archway.ramapo.edu/test/', name: 'Test Club' }],
+      }] } }); await client.query('COMMIT'); return result; }
       catch (error) { await client.query('ROLLBACK'); throw error; }
     };
     await publish();
@@ -59,6 +62,12 @@ test('PostgreSQL staged publishing is repeatable, refreshes links and refuses ac
     assert.equal(expanded.entities.length, 4);
     const originalEvent = expanded.entities.find((e: { kind: string; links: { source_record_ids?: string[] }[] }) => e.kind === 'event' && e.links[0].source_record_ids?.includes('31877c21-cbb6-417d-9f9f-f6a7852d3122'));
     assert.ok(originalEvent);
+    assert.equal(originalEvent.relationships[0].type, 'organized_by');
+    const storedOrganizers = (await client.query("SELECT payload FROM rockygpt_v2.release_artifacts WHERE artifact_key='event-organizers'")).rows[0].payload;
+    assert.equal(storedOrganizers.events.length, 1);
+    assert.equal(storedOrganizers.events[0].organizer_group_id, '991');
+    assert.equal(storedOrganizers.events[0].source_record_id, '31877c21-cbb6-417d-9f9f-f6a7852d3122');
+    assert.equal(storedOrganizers.events[0].collected_at, '2026-09-22T19:00:00Z');
     await client.query("UPDATE rockygpt_v2.campus_events SET id='31877c21-cbb6-417d-9f9f-f6a7852d3124',title='Renamed Meeting',source_record_key='Oct 1:Renamed Meeting',starts_at='2026-10-01T18:00:00Z' WHERE event_url='https://archway.ramapo.edu/rsvp_boot?id=992'");
     await publish();
     const latest = (await client.query("SELECT payload FROM rockygpt_v2.release_artifacts WHERE artifact_key='campus-identities'")).rows[0].payload;

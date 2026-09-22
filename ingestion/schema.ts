@@ -76,6 +76,9 @@ export interface ArchwayEvent {
   endTime?: string;
   location?: string;
   organizer?: string;
+  organizerIdentity?: {
+    groupId: string; groupLogin?: string; sourceUrl: string; collectedAt: string;
+  };
   description?: string;
   url?: string;
   imageUrl?: string;
@@ -321,6 +324,17 @@ export function validateArchwayEvents(input: unknown): ArchwayEvent[] {
     if (endTime) normalized.endTime = endTime;
     if (location) normalized.location = location;
     if (organizer) normalized.organizer = organizer;
+    if (isRecord(event.organizerIdentity)) {
+      const identity = event.organizerIdentity;
+      const groupId = asOptionalString(identity.groupId);
+      const groupLogin = asOptionalString(identity.groupLogin);
+      const sourceUrl = asOptionalString(identity.sourceUrl);
+      const collectedAt = asOptionalString(identity.collectedAt);
+      if (groupId && /^\d+$/.test(groupId) && sourceUrl === 'https://archway.ramapo.edu/home/events/' &&
+          collectedAt && Number.isFinite(Date.parse(collectedAt))) {
+        normalized.organizerIdentity = { groupId, ...(groupLogin ? { groupLogin } : {}), sourceUrl, collectedAt };
+      }
+    }
     if (description) normalized.description = description;
     if (url) normalized.url = url;
     if (imageUrl) normalized.imageUrl = imageUrl;
