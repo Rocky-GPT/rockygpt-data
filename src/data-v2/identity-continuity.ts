@@ -10,13 +10,17 @@ import type { CampusIdentities, CampusIdentityRelationship } from './campus-iden
  *
  * Expected churn does not count as a loss: event occurrences whose linked rows
  * have all started, and identities deliberately removed from the reviewed Git
- * seed. A changed kind for the same ID always fails. Otherwise a kind or
+ * seed. A changed kind for the same ID fails, except a club becoming an
+ * organization or back (Archway recategorized the same group). Otherwise a kind or
  * relationship type fails only when it loses more than 10% of its previous
  * members (at least 2), so one departure does not stop a daily refresh while a
  * broken source or ID derivation does. Every unexpected loss is reported.
  */
 
 export const LOSS_RATIO = 0.1;
+/** Archway recategorizes groups; a club becoming an organization is the same group. */
+const KIND_FAMILIES: Record<string, string> = { club: 'archway-group', organization: 'archway-group' };
+const family = (kind: string): string => KIND_FAMILIES[kind] ?? kind;
 export const LOSS_MINIMUM = 2;
 const REPORTED_LOSSES = 100;
 
@@ -109,7 +113,9 @@ export function compareIdentityRegistries(
   }
 
   for (const change of report.kind_changes) {
-    report.failures.push(`identity ${change.id} changed kind from ${change.from} to ${change.to}`);
+    if (family(change.from) !== family(change.to)) {
+      report.failures.push(`identity ${change.id} changed kind from ${change.from} to ${change.to}`);
+    }
   }
   for (const [kind, count] of Object.entries(report.lost_by_kind)) {
     const limit = allowedLoss(previousByKind[kind]);

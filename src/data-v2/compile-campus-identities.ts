@@ -2,7 +2,7 @@ import { load } from 'cheerio';
 import type { PoolClient } from 'pg';
 import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
-import { compileArchwayIdentities, type ArchwayIdentityInputs, type EventOrganizersArtifact } from './archway-identities';
+import { compileArchwayIdentities, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 
 type Row = Record<string, unknown>;
@@ -197,7 +197,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   for (const candidate of candidates) if (!owners.has(`${candidate.collection}:${candidate.source}:${candidate.key}`)) {
     unresolved.push({ collection: candidate.collection, record: candidate.key, reason: 'No reviewed persistent identity selector covers this original record; existing search remains available.' });
   }
-  const archway = compileArchwayIdentities(snapshot, archwayInputs);
+  const reserved = new Set(entities.flatMap(entity => [entity.name, ...entity.aliases]).map(normalizeName));
+  const archway = compileArchwayIdentities(snapshot, archwayInputs, reserved);
   entities.push(...archway.entities);
   unresolved.push(...archway.unresolved);
   validateCampusIdentities(registry);

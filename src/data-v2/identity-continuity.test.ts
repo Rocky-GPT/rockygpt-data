@@ -44,6 +44,13 @@ test('a persistent ID must keep its kind', () => {
     [`identity ${uuid(1)} changed kind from office to facility`]);
 });
 
+test('an Archway group moving between club and organization is not a kind failure', () => {
+  const group = entity(700, 'club');
+  const report = compareIdentityRegistries(registry([group]), registry([{ ...group, kind: 'organization' }]), seed);
+  assert.deepEqual(report.kind_changes, [{ id: uuid(700), from: 'club', to: 'organization' }]);
+  assert.deepEqual(report.failures, []);
+});
+
 test('past event occurrences and deliberate seed retirements are expected losses', () => {
   const events = range(500, 100).map(n => entity(n, 'event'));
   const previous = registry([...offices, ...events]);
