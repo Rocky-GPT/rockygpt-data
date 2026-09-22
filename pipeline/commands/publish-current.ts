@@ -12,7 +12,7 @@ import { parseEventStart } from '../../src/data-v2/event-time';
 import { normalizeOpeningHours } from '../../src/data-v2/opening-hours';
 import { calendarConcept } from '../../src/data-v2/calendar-concepts';
 import { validateCampusIdentities, type CampusIdentities } from '../../src/data-v2/campus-identities';
-import { insertCampusIdentityArtifacts } from '../campus-identity-artifacts';
+import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
@@ -926,6 +926,7 @@ async function main(): Promise<void> {
     // a separate short pointer-swap transaction, so readers never see partial
     // data and a failed gate leaves the previous release untouched.
     const verifiedCounts = await verifyStagingDataset(client, datasetId);
+    const identityContinuity = await verifyIdentityContinuity(client, datasetId, identitySeed);
     const summary = {
       ...quality,
       criticalCount,
@@ -933,6 +934,7 @@ async function main(): Promise<void> {
       ...documents,
       releaseArtifactCount,
       identityCoverage: identityArtifacts.coverage,
+      identityContinuity,
       rawArtifactsStored: [...archived.values()].filter((artifact) => artifact.stored).length,
       manifestHash: manifest.manifestHash,
       verifiedCounts,

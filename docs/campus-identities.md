@@ -42,6 +42,8 @@ node --import tsx pipeline/commands/compile-identities.ts SNAPSHOT_JSON OUTPUT_D
 
 `SNAPSHOT_JSON` holds source rows (`campus_contacts`, `campus_hours`, `dining_hours`, `menu_items`, `programs`, `clubs`, `events`) and `artifacts` keyed by artifact name. `loadIdentitySnapshot` reads that shape from a chosen dataset. The offline command never changes a database. The emitted artifacts are installed only into a complete inactive candidate; no separate entities table or destructive migration is needed.
 
+Before activation, the publisher compares the candidate registry with the active release's (`verifyIdentityContinuity`). A persistent ID that changes kind fails the publish. So does a kind or relationship type that loses more than 10% of its previous members (at least 2): that catches a broken source, a selector that stopped matching, or a changed ID derivation, while one departure does not stop a daily refresh. Event occurrences whose linked rows have all started, and identities removed from the reviewed seed, are expected losses. Relationships are compared by source, type and target, because evidence row IDs are regenerated each release. The full report, including every unexpected loss, is stored as `identityContinuity` in the release quality summary. A release without a comparable active registry records `baseline: "none"`.
+
 Rollback uses the established previous release/dataset pointer and the previous Brain revision together. Do not run the publisher against a shared production database to activate a dev feature; isolated dev activation is managed by the workspace dev workflow. Artifact hashes and coverage belong to the candidate release and should be verified before activation.
 
 ## Clubs and dated event occurrences
