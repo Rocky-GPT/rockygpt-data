@@ -4,7 +4,8 @@ import path from 'path';
 import pLimit from 'p-limit';
 import { load } from 'cheerio';
 import { chromium, type BrowserContext, type Page } from 'playwright';
-import { assertRawCollectionCandidate, buildRawPageFromHtml } from './raw-collector';
+import { assertRawCollectionCandidate } from './raw-collector';
+import { buildArchwayEventDetailPage } from './archway-event-detail';
 import { fetchWithPolicy } from './http-client';
 import {
   assertCollectionCount,
@@ -71,7 +72,7 @@ function htmlText(value: string | undefined): string | undefined {
   return normalizeText(load(`<div>${value}</div>`)('div').text());
 }
 
-function publicListingEvent(row: PublicListingRow): ArchwayEvent | null {
+export function publicListingEvent(row: PublicListingRow, collectedAt = new Date().toISOString()): ArchwayEvent | null {
   if (listingField(row, 'displayType') !== 'event') return null;
   const title = htmlText(listingField(row, 'eventName'));
   const datesHtml = listingField(row, 'eventDates');
@@ -88,6 +89,8 @@ function publicListingEvent(row: PublicListingRow): ArchwayEvent | null {
     .filter(Boolean);
   const relativeUrl = listingField(row, 'eventUrl');
   const relativeImage = listingField(row, 'eventPicture');
+  const groupId = listingField(row, 'clubId')?.trim();
+  const groupLogin = listingField(row, 'clubLogin')?.trim();
   const tags = load(`<div>${listingField(row, 'eventTags') ?? ''}</div>`)('.label')
     .toArray()
     .map((tag) => htmlText(load(`<div>${listingField(row, 'eventTags') ?? ''}</div>`)(tag).html() ?? undefined))
@@ -95,6 +98,9 @@ function publicListingEvent(row: PublicListingRow): ArchwayEvent | null {
   const event: ArchwayEvent = {
     title,
     date,
+    ...(groupId && /^\d+$/.test(groupId) ? { organizerIdentity: {
+      groupId, ...(groupLogin ? { groupLogin } : {}), sourceUrl: ARCHWAY_PUBLIC_EVENTS_URL, collectedAt,
+    } } : {}),
     ...(times[0] ? { time: times[0] } : {}),
     ...(times[1] ? { endTime: times[1] } : {}),
     ...(htmlText(listingField(row, 'clubName'))
@@ -117,7 +123,7 @@ function publicListingEvent(row: PublicListingRow): ArchwayEvent | null {
   return event;
 }
 
-async function fetchPublicArchwayEvents(): Promise<ArchwayEvent[]> {
+export async function fetchPublicArchwayEvents(): Promise<ArchwayEvent[]> {
   const cookies = new Map<string, string>();
   const updateCookies = (response: { headers: Headers }) => {
     const headersWithCookies = response.headers as Headers & {
@@ -183,7 +189,7 @@ async function fetchPublicArchwayEvents(): Promise<ArchwayEvent[]> {
     if (total > maximumEvents) {
       throw new Error(`Public Archway listing reported an implausible total of ${total} events.`);
     }
-    events.push(...rows.map(publicListingEvent).filter((event): event is ArchwayEvent => Boolean(event)));
+    events.push(...rows.map(row => publicListingEvent(row)).filter((event): event is ArchwayEvent => Boolean(event)));
     if (total === 0) break;
   }
   const unique = events.filter(
@@ -548,6 +554,14 @@ function tryBuildFromRawCache(): boolean {
     return false;
   }
 
+  // Upgrade old caches that predate scoped organizer capture. In particular,
+  // login responses once counted as HTTP-200 detail successes. Rebuilding only
+  // listing text would perpetuate missing relationships indefinitely.
+  if (!fs.existsSync(DETAIL_RAW_JSON_PATH)) return false;
+  const cachedDetails = validateRawDatasetV1(JSON.parse(fs.readFileSync(DETAIL_RAW_JSON_PATH, 'utf8')));
+  const captured = cachedDetails.pages.filter(page => page.statusCode === 200 && Array.isArray(page.archwayOrganizers));
+  if (!captured.length || captured.length / Math.max(1, cachedDetails.pages.length) < 0.3) return false;
+
   console.log(`Using raw cache from ${RAW_JSON_PATH} (set EVENTS_FORCE_SCRAPE=1 to refresh live).`);
 
   const rawEvents = validateArchwayEvents(JSON.parse(fs.readFileSync(RAW_JSON_PATH, 'utf-8')));
@@ -737,7 +751,7 @@ function buildEventDetailScrapeResult(
   };
 }
 
-async function scrapePublicEventDetailRaw(
+export async function scrapePublicEventDetailRaw(
   events: ArchwayEvent[]
 ): Promise<EventDetailScrapeResult> {
   const detailLimit = parseDetailLimit(process.env.ARCHWAY_EVENT_DETAIL_LIMIT, events.length);
@@ -765,21 +779,16 @@ async function scrapePublicEventDetailRaw(
             finalPath.startsWith('/home_login') ||
             finalPath.startsWith('/login_only')
           ) {
-            return failedDetailPage(url, response.status);
+            return failedDetailPage(url, response.ok ? null : response.status);
           }
           const html = response.text();
-          if (!html) return failedDetailPage(url, response.status);
+          if (!html) return failedDetailPage(url);
+          const page = buildArchwayEventDetailPage({ requestedUrl: url, url: response.url || url, html, statusCode: response.status });
           const signal = extractEventDetailSignalFromHtml(html);
           if (hasEventSignal(signal)) {
             signalByUrl.set(normalizeEventUrlForLookup(url), signal);
           }
-          return buildRawPageFromHtml({
-            url,
-            html,
-            sourceType: 'detail',
-            statusCode: response.status,
-            allowedHost: 'archway.ramapo.edu',
-          });
+          return page;
         } catch {
           return failedDetailPage(url);
         }
@@ -812,6 +821,8 @@ async function scrapeEventDetailRaw(
             return failedDetailPage(url);
           }
 
+          const page = buildArchwayEventDetailPage({ requestedUrl: url, url: response.url(), html, statusCode });
+
           const eventDetailSignal = extractEventDetailSignalFromHtml(html);
           if (
             eventDetailSignal.offersFreeFood !== undefined ||
@@ -821,13 +832,7 @@ async function scrapeEventDetailRaw(
             signalByUrl.set(normalizeEventUrlForLookup(url), eventDetailSignal);
           }
 
-          return buildRawPageFromHtml({
-            url,
-            html,
-            sourceType: 'detail',
-            statusCode,
-            allowedHost: 'archway.ramapo.edu',
-          });
+          return page;
         } catch {
           return failedDetailPage(url);
         }

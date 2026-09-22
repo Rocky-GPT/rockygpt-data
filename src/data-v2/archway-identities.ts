@@ -57,13 +57,52 @@ function clubSources(snapshot: IdentitySnapshot, inputs: ArchwayIdentityInputs):
  * telephone numbers never establish relationships. Preserve per-page time. */
 export function eventOrganizersArtifact(snapshot: IdentitySnapshot, inputs: ArchwayIdentityInputs = {}): EventOrganizersArtifact {
   const groups = uniqueBy(clubSources(snapshot, inputs), r => numericId(r.clubId));
-  const pages = [...rows((inputs.eventDetails as Row)?.pages), ...reviewedCaptures.pages];
+  const pages: Row[] = [...rows((inputs.eventDetails as Row)?.pages), ...reviewedCaptures.pages];
   const events: EventOrganizerEvidence[] = [];
+  // The official listing identifies the primary organizer by immutable clubId.
+  // Normalization preserves that assertion in the release's events artifact;
+  // the club directory supplies its independently published website, never a
+  // name-based join. Details can corroborate or conflict with this assertion.
+  for (const listing of rows(snapshot.artifacts.events)) {
+    const identity = listing.organizerIdentity as Row | undefined;
+    if (!identity || identity.sourceUrl !== 'https://archway.ramapo.edu/home/events/') continue;
+    const eventId = archwayEventId(listing.url); const groupId = numericId(identity.groupId);
+    const collectedAt = text(identity.collectedAt); const name = text(listing.organizer);
+    const matches = groups.get(groupId) || [];
+    const names = new Set(matches.map(r => text(r.name))); const urls = new Set(matches.map(r => canonicalClubUrl(r.websiteUrl)));
+    if (!eventId || !collectedAt || Number.isNaN(Date.parse(collectedAt)) || !name || names.size !== 1 || !names.has(name) || urls.size !== 1) continue;
+    const url = [...urls][0];
+    if (!url) continue;
+    const website = new URL(url);
+    if (website.hostname !== 'archway.ramapo.edu' || (text(identity.groupLogin) && website.pathname.replace(/^\/|\/$/g, '') !== text(identity.groupLogin))) continue;
+    for (const row of snapshot.events || []) {
+      if (archwayEventId(row.event_url) !== eventId || !UUID.test(text(row.id))) continue;
+      events.push({ source_key: text(row.source_key), source_record_key: text(row.source_record_key), source_record_id: text(row.id), event_url: text(row.event_url), organizer_group_id: groupId, organizer_url: url, organizer_name: name, collected_at: collectedAt, source_url: text(identity.sourceUrl) });
+    }
+  }
   for (const page of pages) {
     const eventId = archwayEventId(page.url);
     const collectedAt = text(page.fetchedAt);
     if (!eventId || page.statusCode !== 200 || !collectedAt || Number.isNaN(Date.parse(collectedAt))) continue;
     const links = Array.isArray(page.links) ? page.links.filter((v): v is string => typeof v === 'string') : [];
+    if (page.archwayOrganizers !== undefined) {
+      // New captures associate these values within the actual Hosted By block.
+      // Resolve by publisher ID, then verify exact URL/name consistency. An
+      // empty or invalid scoped capture must never use the legacy fallback.
+      for (const organizer of rows(page.archwayOrganizers)) {
+        const groupId = numericId(organizer.groupId);
+        const matches = groups.get(groupId) || [];
+        const name = text(organizer.name); const url = canonicalClubUrl(organizer.groupUrl);
+        const names = new Set(matches.map(r => text(r.name)));
+        const urls = new Set(matches.map(r => canonicalClubUrl(r.websiteUrl)));
+        if (!groupId || !name || !url || names.size !== 1 || urls.size !== 1 || !names.has(name) || !urls.has(url)) continue;
+        for (const row of snapshot.events || []) {
+          if (archwayEventId(row.event_url) !== eventId || !UUID.test(text(row.id))) continue;
+          events.push({ source_key: text(row.source_key), source_record_key: text(row.source_record_key), source_record_id: text(row.id), event_url: text(row.event_url), organizer_group_id: groupId, organizer_url: url, organizer_name: name, collected_at: collectedAt, source_url: text(page.url) });
+        }
+      }
+      continue;
+    }
     const ids = new Set(links.flatMap(link => {
       try { const url = new URL(link); const id = numericId(url.searchParams.get('group_ids')); return url.hostname === 'archway.ramapo.edu' && url.pathname === '/events' && id ? [id] : []; } catch { return []; }
     }));

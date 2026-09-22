@@ -20,6 +20,7 @@ export type RawPageV1 = {
   tables: { headers: string[]; rows: string[][] }[];
   contacts: { name?: string; email?: string; phone?: string; office?: string }[];
   documents: { label: string; url: string }[];
+  archwayOrganizers?: { groupId: string; groupUrl: string; name: string }[];
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -105,6 +106,19 @@ function validateRawPageV1(page: unknown, index: number): RawPageV1 {
     return { label: document.label, url: document.url };
   });
 
+  let archwayOrganizers: RawPageV1['archwayOrganizers'];
+  if (page.archwayOrganizers !== undefined) {
+    assert(Array.isArray(page.archwayOrganizers), `${pathPrefix}.archwayOrganizers must be an array`);
+    archwayOrganizers = page.archwayOrganizers.map((entry, organizerIndex) => {
+      const prefix = `${pathPrefix}.archwayOrganizers[${organizerIndex}]`;
+      assert(isRecord(entry), `${prefix} must be an object`);
+      assert(typeof entry.groupId === 'string' && /^\d+$/.test(entry.groupId), `${prefix}.groupId must be numeric`);
+      assert(typeof entry.groupUrl === 'string', `${prefix}.groupUrl must be a string`);
+      assert(typeof entry.name === 'string' && Boolean(entry.name.trim()), `${prefix}.name must be nonempty`);
+      return { groupId: entry.groupId, groupUrl: entry.groupUrl, name: entry.name };
+    });
+  }
+
   return {
     url: page.url,
     sourceType: page.sourceType,
@@ -118,6 +132,7 @@ function validateRawPageV1(page: unknown, index: number): RawPageV1 {
     tables,
     contacts,
     documents,
+    ...(archwayOrganizers !== undefined ? { archwayOrganizers } : {}),
   };
 }
 
