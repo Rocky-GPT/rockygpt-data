@@ -78,14 +78,47 @@ test('missing date preserves occurrence identity without pretending a date is kn
   assert.ok(result.unresolved.some(i => i.reason.includes('date is not published')));
 });
 
-test('organizer name and venue text alone never join identities; non-club directory categories stay unresolved', () => {
+test('organizer name and venue text alone never join identities; a group needs its explicit ID bridge', () => {
   const snapshot = fixture();
   snapshot.clubs!.push({ ...club, id: id(4), name: 'Center for Student Involvement', source_record_key: 'CSI', category: 'Department', website_url: 'https://archway.ramapo.edu/CSI/' });
   const result = compileArchwayIdentities(snapshot);
   assert.equal(result.entities.filter(e => e.kind === 'club').length, 1);
+  assert.equal(result.entities.filter(e => e.kind === 'organization').length, 0);
   assert.equal(result.entities.find(e => e.kind === 'event')!.relationships, undefined);
-  assert.ok(result.unresolved.some(i => i.reason.includes('not an approved student-group')));
+  assert.ok(result.unresolved.some(i => i.record === 'CSI' && i.reason.includes('No unique explicit Archway group ID')));
   assert.ok(result.unresolved.some(i => i.reason.includes('organizer and location names remain source text')));
+});
+
+test('non-club directory groups become organizations that can organize events and keep IDs across categories', () => {
+  const snapshot = fixture();
+  const center = { ...club, id: id(5), name: "Women's Center", source_record_key: "Women's Center", category: 'Department', website_url: 'https://archway.ramapo.edu/Womens/' };
+  snapshot.clubs = [center];
+  snapshot.artifacts.clubs = [{ name: "Women's Center", category: 'Department', websiteUrl: center.website_url, clubId: '34151' }];
+  snapshot.events = [{ ...event, organizer: "Women's Center" }];
+  const detail = { ...structuredClone(page), links: [center.website_url, 'https://archway.ramapo.edu/events?group_ids=34151'], sections: [{ heading: 'Meeting', text: "by Women's Center Social" }] };
+  const result = compileCampusIdentities({ schema_version: 1, entities: [] }, snapshot, undefined, { eventDetails: { pages: [detail] } });
+  validateCampusIdentities(result.registry);
+  const organization = result.registry.entities.find(e => e.kind === 'organization')!;
+  assert.equal(organization.id, archwayIdentityId('club', '34151'));
+  const occurrence = result.registry.entities.find(e => e.kind === 'event')!;
+  assert.equal(occurrence.relationships?.[0].type, 'organized_by');
+  assert.equal(occurrence.relationships?.[0].target_entity_id, organization.id);
+  snapshot.clubs[0].category = 'Student Organization';
+  const recategorized = compileArchwayIdentities(snapshot, { eventDetails: { pages: [detail] } });
+  assert.equal(recategorized.entities.find(e => e.kind === 'club')!.id, organization.id);
+});
+
+test('an Archway group named like a reviewed identity is reported instead of duplicated', () => {
+  const snapshot = fixture();
+  snapshot.clubs!.push({ ...club, id: id(6), name: 'Center for Student Involvement', source_record_key: 'CSI', category: 'Department', website_url: 'https://archway.ramapo.edu/CSI/' });
+  snapshot.artifacts.clubs = [{ ...sourceClub }, { name: 'Center for Student Involvement', category: 'Department', websiteUrl: 'https://archway.ramapo.edu/CSI/', clubId: '34106' }];
+  assert.equal(compileArchwayIdentities(snapshot).entities.filter(e => e.kind === 'organization').length, 1);
+  const reviewed = compileCampusIdentities({ schema_version: 1, entities: [{
+    id: id(90), kind: 'office', name: 'Center for Student Involvement', aliases: ['CSI'],
+    links: [{ collection: 'contacts', source_key: 'directory', source_record_keys: ['office:csi'] }],
+  }] }, { ...snapshot, campus_contacts: [{ source_key: 'directory', source_record_key: 'office:csi', name: 'Center for Student Involvement' }] });
+  assert.equal(reviewed.registry.entities.filter(e => e.kind === 'organization').length, 0);
+  assert.ok(reviewed.report.unresolved.some(i => i.record === 'CSI' && i.reason.includes('needs a reviewed link')));
 });
 
 test('ambiguous URL→group ID, missing website and malformed source URLs never create identities', () => {
