@@ -1,5 +1,7 @@
 /**
  * @module api/directory/route
+ * @deprecated Source-oriented compatibility endpoint. Canonical student directory
+ * reads use Brain /v1/directory and /v1/entities/{entity_id}/facts.
  * Campus directory endpoint merging offices, faculty/staff, and other contacts.
  *
  * Reads the scraped `faculty.json` dataset, de-duplicates and normalises
