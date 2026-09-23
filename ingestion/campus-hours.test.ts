@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
-  ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, campusHoursFromCaptures,
-  campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours,
+  ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, campusHoursFromCaptures,
+  campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
 } from './campus-hours';
 import { validateCampusHours } from './schema';
 import { hoursSourceErrors } from '../pipeline/quality/hours-coverage';
@@ -60,6 +60,35 @@ Fall Semester
 (Aug. 26 - Dec. 15, 2025)
 Mon-Thu: 9:00am - 9:00pm`;
 
+const general = `Normal Office Hours:
+Fall / Spring Hours: Mon.- Fri. 8:30 a.m. 4:30 p.m.
+Summer Hours: Mon.- Thurs. 8 a.m. 5:15 p.m., Fri. Closed
+Clarification of Terms in the Event of a College Closure
+The College is closed. This means offices are closed.
+Center for Student Involvement (CSI)
+The CSI main office is open Monday through Fridays 8:00am-midnight, Saturday from 4:00-10:00pm and Sunday from 3:00-8:00pm.
+*Updated as of September 23rd, 2022
+ROADRUNNER CENTRAL
+Roadrunner Central is currently closed. Please visit CSI for assistance.
+J. LEE’S
+Please visit the Center for Student Involvement for assistance.
+Women’s Center
+Please visit the Center for Student Involvement for assistance.
+Bookstore
+Summer Store Hours:
+Starting May 14th we will be switching to our Summer Hours
+Mon – Thu: 10 am – 3 pm
+Fri: CLOSED
+Sat: CLOSED
+Sun: CLOSED
+Normal Store Hours:
+Mon – Thu: 9am-5pm
+Fri: 9am – 4pm
+Sat: CLOSED
+Sun: CLOSED
+Bookstore FAQ:
+Last Day to return Spring textbooks for full refund is January 30, 2026.`;
+
 test('a facility closure parses without an opening-time line and unlisted days remain unknown', () => {
   const rows = parseAthleticsFacilityHours(athletics);
   assert.equal(rows.length, 6);
@@ -84,19 +113,20 @@ test('library capture keeps term bounds and withholds conflicting repeated resea
 
 test('every published hour has its own capture provenance and every omission is accounted for', () => {
   const collectedAt = '2026-09-23T20:00:00Z';
-  const captures = [[ATHLETICS_HOURS_URL, athletics], [LIBRARY_HOURS_URL, library]]
+  const captures = [[ATHLETICS_HOURS_URL, athletics], [LIBRARY_HOURS_URL, library], [GENERAL_CAMPUS_HOURS_URL, general]]
     .map(([sourceUrl, text]) => ({ sourceUrl, collectedAt,
       html: `<body><script>untrusted layout text</script>${text.split('\n').map((line) => `<p>${line}</p>`).join('')}</body>` }));
-  const raw = campusHoursFromCaptures(captures);
+  const raw = campusHoursFromCaptures(captures, true);
   assert.deepEqual(hoursSourceErrors(raw, { version: 1, captures }), []);
   assert.match(hoursSourceErrors(raw.map((row, i) => i === 0
     ? { ...row, hours: { ...row.hours, Monday: 'CLOSED' } } : row), { version: 1, captures }).join(), /differ/);
-  assert.equal(raw.length, 9);
+  assert.equal(raw.length, 13);
   const result = campusHoursPublication(raw, new Date(collectedAt));
-  assert.deepEqual(result.publishable.map((row) => row.name), [
+  assert.deepEqual(result.publishable.filter(row => !row.availabilityIssue).map((row) => row.name), [
     'Swimming Pool', 'Lodge Fitness Center (College Park Apartments)', 'Library (Main Building)', 'Game Lab',
   ]);
-  assert.equal(result.omitted.length, 5);
+  assert.equal(result.publishable.length, 13);
+  assert.equal(result.omitted.length, 9);
   assert.equal(result.omitted.filter((row) => row.reason === 'unbounded-term').length, 4);
   assert.deepEqual(validateCampusHours(raw), raw);
   for (const row of raw) assert.equal(row.collectedAt, collectedAt);
@@ -108,4 +138,35 @@ test('every published hour has its own capture provenance and every omission is 
   assert.deepEqual([main.validFrom, main.validUntil], ['2026-08-26', '2026-12-15']);
   assert.equal(main.hours.Monday, '7:45am-12:00am');
   assert.throws(() => campusHoursFromCaptures(captures.slice(0, 1)), /exactly one hours capture/);
+  assert.equal(campusHoursFromCaptures(captures.slice(0, 2)).length, 9);
+  assert.throws(() => campusHoursFromCaptures(captures.slice(0, 2), true), /exactly one hours capture/);
+  assert.throws(() => campusHoursFromCaptures([...captures, captures[2]]), /exactly one hours capture/);
+  for (const row of result.publishable.filter(row => row.availabilityIssue === 'unverified-hours')) {
+    assert.ok(Object.values(row.hours).every(value => value === 'Hours unavailable'));
+    assert.equal(row.validFrom, undefined);
+    assert.equal(row.validUntil, undefined);
+  }
+  assert.ok(result.omitted.some(({record}) => record.name.startsWith('Administrative') && /8:30/.test(record.notes!)));
+  assert.ok(!result.publishable.find(row => row.name.startsWith('Administrative'))?.notes?.includes('8:30'));
+});
+
+test('parent page preserves facility evidence without selecting ambiguous hours or inventing a closure', () => {
+  const records = parseGeneralCampusHours(general);
+  assert.deepEqual(records.map(row => [row.name, row.availabilityIssue]), [
+    ['Administrative Offices (Normal Hours)', 'ambiguous-source-season'],
+    ['Center for Student Involvement (CSI)', 'source-update-only'],
+    ["J. Lee's (Student Lounge & Game Room)", 'missing-schedule'],
+    ['Ramapo Bookstore', 'ambiguous-source-season'],
+  ]);
+  assert.match(records[0].notes!, /Fall \/ Spring Hours/);
+  assert.match(records[0].notes!, /Summer Hours/);
+  assert.match(records[1].notes!, /September 23rd, 2022/);
+  assert.match(records[2].notes!, /Please visit the Center for Student Involvement/);
+  assert.doesNotMatch(records[2].notes!, /Roadrunner Central is currently closed/);
+  assert.doesNotMatch(records[3].notes!, /January 30, 2026/);
+  assert.ok(records.every(row => Object.values(row.hours).every(value => value === 'Hours unavailable')));
+  assert.deepEqual(validateCampusHours(records), records);
+  assert.deepEqual(parseGeneralCampusHours(`Bookstore\nUnrelated navigation\n${general}`), records);
+  assert.throws(() => parseGeneralCampusHours(general.replace('J. LEE’S', 'Other facility')), /Could not find heading/);
+  assert.throws(() => parseGeneralCampusHours(general.replace('Normal Store Hours:', 'Other hours:')), /seasonal schedules/);
 });

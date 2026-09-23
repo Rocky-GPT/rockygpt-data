@@ -10,6 +10,7 @@ import {
 import { validateCampusHours, type LocationHours } from './schema';
 import { publicPath } from '../src/paths';
 import { partitionHoursForPublication, readValidityFromNotes } from '../src/data-v2/validity';
+import { withheldHoursRecord } from './unverified-hours';
 
 const RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'hours.raw.json');
 const PUBLIC_JSON_PATH = publicPath('data', 'hours.json');
@@ -18,6 +19,7 @@ const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-hours-md.ts');
 export const ATHLETICS_HOURS_URL = 'https://ramapoathletics.com/sports/2008/1/21/bradleycenterhours.aspx';
 
 export const LIBRARY_HOURS_URL = 'https://www.ramapo.edu/library/library-hours/';
+export const GENERAL_CAMPUS_HOURS_URL = 'https://www.ramapo.edu/about/campus-hours/';
 const SOURCE_CAPTURE_PATH = path.join(process.cwd(), 'data', 'raw', 'hours-sources.raw.json');
 const OMISSIONS_PATH = path.join(process.cwd(), 'data', 'normalized', 'hours-omissions.json');
 
@@ -95,7 +97,7 @@ function indexOfInsensitive(text: string, pattern: string, fromIndex = 0): numbe
 function sectionBetween(text: string, startHeading: string, endHeading?: string): string {
     const startIndex = indexOfInsensitive(text, startHeading);
     if (startIndex === -1) {
-        throw new Error(`Could not find heading "${startHeading}" in athletics hours page`);
+        throw new Error(`Could not find heading "${startHeading}" in hours page`);
     }
 
     const contentStart = startIndex + startHeading.length;
@@ -320,6 +322,43 @@ export function parseLibraryHours(pageText: string): LocationHours[] {
     return [library, help, lab];
 }
 
+/** The parent page verifies these facilities but does not establish which
+ * seasonal schedules currently apply. Preserve its facts without selecting a
+ * season, extending an old update date, or interpreting assistance as closure. */
+export function parseGeneralCampusHours(pageText: string): LocationHours[] {
+    const text = normalizePageText(pageText);
+    const offices = sectionBetween(text, 'Normal Office Hours:', 'Clarification of Terms');
+    // The global navigation also says "Bookstore"; start at this page's
+    // distinctive first content heading before selecting facility sections.
+    const content = sectionBetween(text, 'Normal Office Hours:');
+    const fallSpring = findLine(offices, /^Fall\s*\/\s*Spring Hours:/i, 'office Fall/Spring hours');
+    const summer = findLine(offices, /^Summer Hours:/i, 'office Summer hours');
+    const csi = sectionBetween(content, 'Center for Student Involvement (CSI)', 'ROADRUNNER CENTRAL');
+    const csiHours = findLine(csi, /^The CSI main office is open/i, 'CSI hours');
+    const csiUpdate = findLine(csi, /^\*?Updated as of/i, 'CSI source update');
+    const jLee = sectionBetween(content, "J. LEE'S", "Women's Center");
+    const assistance = findLine(jLee, /^Please visit the Center for Student Involvement for assistance\.?$/i,
+        "J. Lee's assistance notice");
+    const bookstore = sectionBetween(content, 'Bookstore', 'Bookstore FAQ:');
+    if (!/Summer Store Hours:/i.test(bookstore) || !/Normal Store Hours:/i.test(bookstore)) {
+        throw new Error('Bookstore source seasonal schedules are unavailable');
+    }
+    return [
+        { name: 'Administrative Offices (Normal Hours)', hours: createUnknownWeek(),
+            availabilityIssue: 'ambiguous-source-season',
+            notes: `${fallSpring}\n${summer}\nThe source gives no dates selecting the applicable season.` },
+        { name: 'Center for Student Involvement (CSI)', hours: createUnknownWeek(),
+            availabilityIssue: 'source-update-only',
+            notes: `${csiHours}\n${csiUpdate}\nThis is a source update date, not a current schedule validity period.` },
+        { name: "J. Lee's (Student Lounge & Game Room)", hours: createUnknownWeek(),
+            availabilityIssue: 'missing-schedule',
+            notes: `${assistance}\nThe source does not publish a schedule or a closure for J. Lee's.` },
+        { name: 'Ramapo Bookstore', hours: createUnknownWeek(),
+            availabilityIssue: 'ambiguous-source-season',
+            notes: `${bookstore}\nThe source lists Summer and Normal schedules without a complete applicability period.` },
+    ];
+}
+
 export interface HoursSourceCapture {
     sourceUrl: string;
     collectedAt: string;
@@ -334,7 +373,7 @@ async function fetchHoursSource(sourceUrl: string): Promise<HoursSourceCapture> 
     return { sourceUrl, collectedAt: new Date().toISOString(), html: response.text() };
 }
 
-export function campusHoursFromCaptures(captures: HoursSourceCapture[]): LocationHours[] {
+export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireGeneralSource = false): LocationHours[] {
     const source = (url: string, parser: (text: string) => LocationHours[]): LocationHours[] => {
         const found = captures.filter((capture) => capture.sourceUrl === url);
         if (found.length !== 1) throw new Error(`Expected exactly one hours capture from ${url}`);
@@ -347,17 +386,22 @@ export function campusHoursFromCaptures(captures: HoursSourceCapture[]): Locatio
                 ...(window ? { validFrom: window.validFrom, validUntil: window.validUntil } : {}) };
         });
     };
+    // Replay older two-source captures faithfully. Every new collection below
+    // requires and archives the primary parent page as its third source.
+    const general = requireGeneralSource || captures.some(capture => capture.sourceUrl === GENERAL_CAMPUS_HOURS_URL)
+        ? source(GENERAL_CAMPUS_HOURS_URL, parseGeneralCampusHours) : [];
     return [...source(ATHLETICS_HOURS_URL, parseAthleticsFacilityHours),
-        ...source(LIBRARY_HOURS_URL, parseLibraryHours)];
+        ...source(LIBRARY_HOURS_URL, parseLibraryHours), ...general];
 }
 
 export function campusHoursPublication(records: LocationHours[], now = new Date()) {
     const ambiguous = records.filter((record) => record.availabilityIssue);
     const resolved = partitionHoursForPublication(records.filter((record) => !record.availabilityIssue), now);
-    return { publishable: resolved.publishable, omitted: [
+    const omitted = [
         ...resolved.omitted,
         ...ambiguous.map((record) => ({ record, reason: record.availabilityIssue! })),
-    ] };
+    ];
+    return { publishable: [...resolved.publishable, ...omitted.map(withheldHoursRecord)], omitted };
 }
 
 export function buildCampusHourLocations(locations: LocationHours[], now = new Date()): LocationHours[] {
@@ -367,19 +411,20 @@ export function buildCampusHourLocations(locations: LocationHours[], now = new D
 async function fetchCampusHours() {
     const captures = await Promise.all([
         fetchHoursSource(ATHLETICS_HOURS_URL), fetchHoursSource(LIBRARY_HOURS_URL),
+        fetchHoursSource(GENERAL_CAMPUS_HOURS_URL),
     ]);
     const fetchedAt = new Date(Math.min(...captures.map((capture) => Date.parse(capture.collectedAt)))).toISOString();
     const capturedSources = { version: 1, captures };
-    writeJsonFile(SOURCE_CAPTURE_PATH, capturedSources);
-    writeRawProvenance('hours-sources', { sourceUrl: 'https://www.ramapo.edu/about/campus-hours/',
-        fetchedAt, recordCount: captures.length, payload: capturedSources });
-    const locations = campusHoursFromCaptures(captures);
+    const locations = campusHoursFromCaptures(captures, true);
     const publication = campusHoursPublication(locations);
     // Every expected source section is parsed or the collector fails. Count alone
     // cannot distinguish a source disappearance from honest applicability omissions.
-    if (locations.length !== 9) throw new Error('Hours source section coverage changed');
+    if (locations.length !== 13) throw new Error('Hours source section coverage changed');
+    writeJsonFile(SOURCE_CAPTURE_PATH, capturedSources);
+    writeRawProvenance('hours-sources', { sourceUrl: GENERAL_CAMPUS_HOURS_URL,
+        fetchedAt, recordCount: captures.length, payload: capturedSources });
     writeJsonFile(RAW_JSON_PATH, locations);
-    writeRawProvenance('hours', { sourceUrl: 'https://www.ramapo.edu/about/campus-hours/',
+    writeRawProvenance('hours', { sourceUrl: GENERAL_CAMPUS_HOURS_URL,
         fetchedAt, recordCount: locations.length, payload: locations });
     for (const omitted of publication.omitted) console.warn(`Withheld hours for ${omitted.record.name}: ${omitted.reason}`);
     if (isRawOnlyMode()) return;

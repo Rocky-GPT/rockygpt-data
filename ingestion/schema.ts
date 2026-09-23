@@ -114,6 +114,9 @@ export interface ArchwayClub {
   groupmeGroups?: Array<{ name: string; url: string }>;
 }
 
+export const HOURS_AVAILABILITY_ISSUES = ['conflicting-source-validity', 'ambiguous-source-season',
+  'source-update-only', 'missing-schedule', 'unverified-hours'] as const;
+
 export interface LocationHours {
   name: string;
   hours: Record<string, string>;
@@ -122,7 +125,7 @@ export interface LocationHours {
   collectedAt?: string;
   validFrom?: string;
   validUntil?: string;
-  availabilityIssue?: 'conflicting-source-validity';
+  availabilityIssue?: (typeof HOURS_AVAILABILITY_ISSUES)[number];
 }
 
 export interface CalendarEvent {
@@ -479,8 +482,9 @@ export function validateCampusHours(input: unknown): LocationHours[] {
       const value = asOptionalString(location[key]);
       if (value) normalized[key] = value;
     }
-    if (location.availabilityIssue === 'conflicting-source-validity') {
-      normalized.availabilityIssue = location.availabilityIssue;
+    if (typeof location.availabilityIssue === 'string' &&
+      (HOURS_AVAILABILITY_ISSUES as readonly string[]).includes(location.availabilityIssue)) {
+      normalized.availabilityIssue = location.availabilityIssue as LocationHours['availabilityIssue'];
     }
     locations.push(normalized);
   });

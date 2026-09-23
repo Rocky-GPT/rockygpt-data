@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { buildFrontmatter } from './frontmatter';
 import { getGeneratedTimestamp, sortByName } from './pipeline-utils';
 import { type LocationHours, validateCampusHours } from './schema';
+import { hoursUncertaintyReason } from './unverified-hours';
 
 interface ContextLocationHours {
   name: string;
@@ -29,6 +30,7 @@ function normalizeText(value?: string): string | undefined {
 function toContextHours(locations: LocationHours[]): ContextLocationHours[] {
   return sortByName(
     locations
+      .filter(location => location.availabilityIssue !== 'unverified-hours')
       .map((location): ContextLocationHours | null => {
         const name = normalizeText(location.name);
         if (!name) return null;
@@ -60,11 +62,7 @@ interface WithheldHours {
 /** Unverified schedules must not leak back into retrieval through markdown. */
 export function renderWithheldHours(omissions: WithheldHours[]): string {
   return omissions.map(({ record, reason }) => {
-    const explanation = reason === 'conflicting-source-validity'
-      ? 'The official source contains conflicting applicability dates.'
-      : reason === 'unbounded-term'
-        ? 'The official source gives a semester label without explicit start and end dates.'
-        : 'The captured schedule could not be verified as applicable to the current date.';
+    const explanation = hoursUncertaintyReason(reason);
     return `## ${record.name}\n\n`
       + (record.sourceUrl ? `- URL: ${record.sourceUrl}\n` : '')
       + (record.collectedAt ? `- Collected At: ${record.collectedAt}\n` : '')

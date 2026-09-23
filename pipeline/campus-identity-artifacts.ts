@@ -2,7 +2,8 @@ import crypto from 'node:crypto';
 import type { PoolClient } from 'pg';
 import { validateCampusIdentities, type CampusIdentities } from '../src/data-v2/campus-identities';
 import { catalogConvenersArtifact, compileCampusIdentities, loadIdentitySnapshot, type IdentityInputs } from '../src/data-v2/compile-campus-identities';
-import { compareIdentityRegistries, type IdentityContinuityReport } from '../src/data-v2/identity-continuity';
+import { compareIdentityRegistries, type IdentityContinuityEvidence, type IdentityContinuityReport } from '../src/data-v2/identity-continuity';
+import { reviewConvenerReplacements } from '../src/data-v2/convener-continuity';
 
 /** Install only against a fully populated inactive candidate in its publisher
  * transaction. ON CONFLICT makes safe staging retries/repeated compilation
@@ -37,7 +38,7 @@ export async function insertCampusIdentityArtifacts(client: Pick<PoolClient, 'qu
 /** Compare the committed candidate's registry with the active release's before
  * activation. Fails the publish when identities or relationships disappear
  * beyond the tolerated churn; the report goes into the release quality summary. */
-export async function verifyIdentityContinuity(client: Pick<PoolClient, 'query'>, datasetId: string, seed: CampusIdentities): Promise<IdentityContinuityReport> {
+export async function verifyIdentityContinuity(client: Pick<PoolClient, 'query'>, datasetId: string, seed: CampusIdentities, evidence: Omit<IdentityContinuityEvidence, 'candidateCourses' | 'convenerReplacements'> = {}): Promise<IdentityContinuityReport> {
   const candidateRows = await client.query(
     "SELECT payload FROM rockygpt_v2.release_artifacts WHERE dataset_version_id=$1::uuid AND artifact_key='campus-identities'", [datasetId]);
   if (!candidateRows.rows[0]?.payload) throw new Error('Staging verification failed: the candidate has no campus-identities artifact.');
@@ -75,7 +76,14 @@ export async function verifyIdentityContinuity(client: Pick<PoolClient, 'query'>
       }
     }
   }
-  const report = compareIdentityRegistries(previous, candidate, seed, pastEventIds);
+  const courseRows = evidence.catalog ? await client.query(
+    "SELECT payload FROM rockygpt_v2.release_artifacts WHERE dataset_version_id=$1::uuid AND artifact_key='courses'", [datasetId]) : undefined;
+  const convenerRows = previous && active ? await client.query(
+    "SELECT dataset_version_id::text AS dataset_id,payload FROM rockygpt_v2.release_artifacts WHERE dataset_version_id=ANY($1::uuid[]) AND artifact_key='catalog-conveners'", [[active.id, datasetId]]) : undefined;
+  const convenerReplacements = previous && active ? reviewConvenerReplacements(previous, candidate,
+    convenerRows?.rows.find((row: { dataset_id: string }) => row.dataset_id === active.id)?.payload,
+    convenerRows?.rows.find((row: { dataset_id: string }) => row.dataset_id === datasetId)?.payload) : undefined;
+  const report = compareIdentityRegistries(previous, candidate, seed, pastEventIds, { ...evidence, candidateCourses: courseRows?.rows[0]?.payload, convenerReplacements });
   if (baselineNote) report.baseline_note = baselineNote;
   if (report.failures.length) {
     throw new Error(`Staging verification failed: identity continuity: ${report.failures.join('; ')}.`);

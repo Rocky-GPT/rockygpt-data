@@ -928,7 +928,7 @@ async function main(): Promise<void> {
     // a separate short pointer-swap transaction, so readers never see partial
     // data and a failed gate leaves the previous release untouched.
     const verifiedCounts = await verifyStagingDataset(client, datasetId);
-    const identityContinuity = await verifyIdentityContinuity(client, datasetId, identitySeed);
+    const identityContinuity = await verifyIdentityContinuity(client, datasetId, identitySeed, { catalog: rawCatalog });
     const summary = {
       ...quality,
       criticalCount,
