@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { createHash } from 'node:crypto';
 import path from 'path';
 import * as cheerio from 'cheerio';
 import pLimit from 'p-limit';
@@ -12,8 +13,27 @@ import {
 } from './pipeline-utils';
 import { type FacultyProfile, validateFacultyProfiles } from './schema';
 import { publicPath } from '../src/paths';
+import { assertFacultyProfileCoverage, parseFacultyProfileHtml, parseLibraryStaffHtml, type FacultyParseDiagnostic, type FacultyProfileParseResult } from './faculty-profile-parser';
 
 const RAW_JSON_OUTPUT_PATH = path.join(process.cwd(), 'data', 'raw', 'faculty.raw.json');
+const SOURCE_OUTPUT_PATH = path.join(process.cwd(), 'data', 'raw', 'faculty-sources.raw.json');
+const sourceCaptures: FacultySourceCapture[] = [];
+
+interface FacultySourceCapture {
+  requestedUrl: string; url: string; role: 'profile' | 'school' | 'library'; school?: string;
+  fetchedAt: string; status: number; contentType: string; contentHash: string; html: string;
+  parser?: { sectionCounts: FacultyProfileParseResult['sectionCounts']; diagnostics: FacultyParseDiagnostic[] };
+}
+
+function captureSource(response: { url: string; status: number; headers: Headers; text(): string }, requestedUrl: string, role: FacultySourceCapture['role'], school?: string): FacultySourceCapture {
+  const html = response.text();
+  const capture: FacultySourceCapture = { requestedUrl, url: response.url, role, ...(school ? { school } : {}),
+    fetchedAt: new Date().toISOString(), status: response.status, contentType: response.headers.get('content-type') || '',
+    contentHash: createHash('sha256').update(html).digest('hex'), html };
+  sourceCaptures.push(capture);
+  return capture;
+}
+
 const JSON_OUTPUT_PATH = path.join(process.cwd(), 'data', 'normalized', 'faculty.json');
 const IMAGES_DIR = publicPath('images', 'faculty');
 const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-faculty-md.ts');
@@ -28,13 +48,7 @@ function getErrorMessage(error: unknown): string {
 
 const limit = pLimit(5); // Concurrency limit
 
-function dedupeList(values: string[]): string[] {
-  return Array.from(
-    new Set(values.map((value) => value.replace(/\s+/g, ' ').trim()).filter(Boolean))
-  );
-}
-
-async function fetchPage(url: string) {
+async function fetchPage(url: string, role: 'school' | 'library', school?: string) {
   try {
     const response = await fetchWithPolicy(
       url,
@@ -46,8 +60,9 @@ async function fetchPage(url: string) {
       },
       { expectedContentTypes: ['text/html', 'application/xhtml+xml'] }
     );
+    const capture = captureSource(response, url, role, school);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return cheerio.load(response.text());
+    return cheerio.load(capture.html);
   } catch (error: unknown) {
     console.error(`Error fetching ${url}:`, getErrorMessage(error));
     return null;
@@ -89,231 +104,24 @@ async function scrapeProfile(url: string, schoolName: string): Promise<FacultyPr
       },
       { expectedContentTypes: ['text/html', 'application/xhtml+xml'] }
     );
+    const capture = captureSource(response, url, 'profile', schoolName);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const $ = cheerio.load(response.text());
-
-    // 1. Extract Name
-    // Found in <div class="callout-no-image"><h1>Name</h1></div>
-    let name = $('.callout-no-image h1').text().trim();
-    if (!name) {
-        name = $('h1').first().text().trim();
-    }
-    // Fallback to title tag if h1 is missing
-    if (!name) {
-         const titleTag = $('title').text().trim(); // e.g., "Rikki Abzug - Anisfield..."
-         if (titleTag) {
-             name = titleTag.split('-')[0].trim();
-         }
-    }
-
-    if (!name) {
-        console.warn(`[WARN] No name found for ${url}`);
-        return null; // Skip if no name
-    }
-
-    // 2. Extract Photo & Title
-    // <div class="col-lg-9" id="content-block"> ... <h3><img ... class="facphotoLarge ...">Title</h3>
-    const contentBlock = $('#content-block .col-lg-12').first();
-    const photoEl = contentBlock.find('.facphotoLarge');
-    
-    let photoUrl = photoEl.attr('src') || '';
-    if (photoUrl && !photoUrl.startsWith('http')) {
-        photoUrl = `https://www.ramapo.edu${photoUrl}`;
-    }
-
-    // Title is the text of the h3 tag that contains the photo
-    let title = photoEl.closest('h3').text().trim();
-    if (!title) {
-        // Fallback: looking for h3 in content block if photo structure is different
-        title = contentBlock.find('h3').first().text().trim();
-    }
-
-    // 3. Extract Contact Info
-    // <h4>Contact Information</h4><ul><li>Phone: ...</li>...</ul>
-    let email = '';
-    let phone = '';
-    let office = '';
-
-    const contactHeader = contentBlock.find('h4').filter((i, el) => $(el).text().includes('Contact Information'));
-    if (contactHeader.length > 0) {
-        const contactList = contactHeader.next('ul');
-        contactList.find('li').each((i, el) => {
-            const text = $(el).text();
-            if (text.includes('Email:')) {
-                email = $(el).find('a').text().trim();
-            } else if (text.includes('Phone:')) {
-                phone = text.replace('Phone:', '').trim();
-            } else if (text.includes('Office:')) {
-                office = text.replace('Office:', '').trim();
-            }
-        });
-    }
-
-    // 4. Extract Structured Info & Bio
-    const education: string[] = [];
-    const courses: string[] = [];
-    const teachingInterests: string[] = [];
-    const researchInterests: string[] = [];
-    const publishedResearch: string[] = [];
-
-    // Helper to extract list items after a header
-    const extractList = (headerText: string, targetArray: string[]) => {
-        const header = contentBlock.find('h4').filter((i, el) => $(el).text().toLowerCase().includes(headerText.toLowerCase()));
-        if (header.length > 0) {
-            let nextElem = header.next();
-            // It could be a ul directly, or some intermediate text/div
-            if (nextElem.is('ul')) {
-                nextElem.find('li').each((i, el) => {
-                    targetArray.push($(el).text().trim());
-                });
-            } else {
-                 // Try one more next if it was a div or something
-                 nextElem = nextElem.next();
-                 if (nextElem.is('ul')) {
-                    nextElem.find('li').each((i, el) => {
-                        targetArray.push($(el).text().trim());
-                    });
-                 }
-            }
-        }
-    };
-
-    const extractSectionEntries = (headerTexts: string[], targetArray: string[]) => {
-      const lowerHeaders = headerTexts.map((header) => header.toLowerCase());
-      const header = contentBlock
-        .find('h4')
-        .filter((_, el) => {
-          const text = $(el).text().toLowerCase();
-          return lowerHeaders.some((candidate) => text.includes(candidate));
-        })
-        .first();
-
-      if (!header.length) return;
-
-      let current = header.next();
-      while (current.length > 0) {
-        const currentText = current.text().replace(/\s+/g, ' ').trim();
-        if (
-          current.is('h4, h3, .collapsableContent, .disclaimer, footer') ||
-          current.find('.collapsableTitle, .disclaimer').length > 0 ||
-          /^more about\s+/i.test(currentText)
-        ) {
-          break;
-        }
-
-        if (current.is('ul, ol')) {
-          current.find('li').each((_, li) => {
-            const text = $(li).text().replace(/\s+/g, ' ').trim();
-            if (text) targetArray.push(text);
-          });
-        } else if (current.is('p, div')) {
-          const text = current.text().replace(/\s+/g, ' ').trim();
-          if (text) {
-            text
-              .split(/(?:\s*;\s+|\s*\n+\s*|\.\s+(?=[A-Z]))/)
-              .map((part) => part.replace(/\s+/g, ' ').trim())
-              .filter((part) => part.length > 20)
-              .forEach((part) => targetArray.push(part));
-          }
-        }
-
-        current = current.next();
+    const parsed = parseFacultyProfileHtml(capture.html, url, schoolName);
+    capture.parser = { sectionCounts: parsed.sectionCounts, diagnostics: parsed.diagnostics };
+    assertFacultyProfileCoverage(parsed);
+    for (const diagnostic of parsed.diagnostics) {
+      if (diagnostic.reason !== 'external_reference' && diagnostic.reason !== 'unrecognized_heading') {
+        console.warn(`[WARN] Faculty profile ${url}: ${JSON.stringify(diagnostic)}`);
       }
-    };
-
-    extractList('Education', education);
-    extractList('Courses Offered', courses);
-    extractList('Teaching Interest', teachingInterests);
-    extractList('Research Interest', researchInterests);
-    extractSectionEntries(
-      ['Recent Publications', 'Publications', 'Published Research', 'Selected Publications'],
-      publishedResearch
-    );
-
-    // 5. Construct Narrative Bio
-    // Clone content block and remove everything we've already extracted or don't want
-    const bioContainer = contentBlock.clone();
-    
-    // Remove Title/Photo header (h3)
-    bioContainer.find('h3').remove();
-    
-    // Remove Contact Info
-    bioContainer.find('h4').filter((i, el) => $(el).text().includes('Contact Information')).next('ul').remove();
-    bioContainer.find('h4').filter((i, el) => $(el).text().includes('Contact Information')).remove();
-    
-    // Remove "Year Joined"
-    bioContainer.find('h4').filter((i, el) => $(el).text().includes('Year Joined')).remove();
-
-    // Remove structured sections already represented by typed fields. Stop
-    // before the collapsible narrative bio so useful biography text remains.
-    [
-      'Education',
-      'Courses Offered',
-      'Teaching Interest',
-      'Research Interest',
-      'Recent Publications',
-      'Selected Publications',
-      'Published Research',
-      'Publications',
-    ].forEach((headerText) => {
-      bioContainer
-        .find('h4')
-        .filter((_, el) => $(el).text().toLowerCase().includes(headerText.toLowerCase()))
-        .each((_, element) => {
-          const header = $(element);
-          let current = header.next();
-          while (
-            current.length > 0 &&
-            !current.is('h4, h3, .collapsableContent, .disclaimer')
-          ) {
-            const next = current.next();
-            current.remove();
-            current = next;
-          }
-          header.remove();
-        });
-    });
-
-    // Also remove the "More about Name" toggle header
-    bioContainer.find('.collapsableTitle').remove();
-
-    // Remove scripts, styles, disclaimer
-    bioContainer.find('script').remove();
-    bioContainer.find('style').remove();
-    bioContainer.find('.disclaimer').remove(); 
-
-    // Get remaining text (Narrative Bio)
-    let bioKeyPoints = bioContainer.text().trim();
-    bioKeyPoints = bioKeyPoints.replace(/\n\s*\n/g, '\n\n').trim();
-
-    // 5. Download Photo (Local path logic)
-    let imagePath = '';
-    if (photoUrl) {
-        const slug = url.split('/').filter(Boolean).pop() || name.replace(/\s+/g, '-').toLowerCase();
-        const ext = path.extname(photoUrl).split('?')[0] || '.jpg';
-        const filename = `${slug}${ext}`;
-        // We call the helper function
-        const savedPath = await downloadImage(photoUrl, filename);
-        if (savedPath) imagePath = savedPath;
     }
-
-    return {
-      name,
-      title,
-      email,
-      phone,
-      office,
-      bio: bioKeyPoints,
-      education: dedupeList(education),
-      courses: dedupeList(courses),
-      teachingInterests: dedupeList(teachingInterests),
-      researchInterests: dedupeList(researchInterests),
-      publishedResearch: dedupeList(publishedResearch),
-      school: schoolName,
-      profileUrl: url,
-      imageUrl: photoUrl,
-      imagePath
-    };
+    const profile = parsed.profile;
+    if (!profile) return null;
+    if (profile.imageUrl) {
+      const slug = url.split('/').filter(Boolean).pop() || profile.name.replace(/\s+/g, '-').toLowerCase();
+      const ext = path.extname(profile.imageUrl).split('?')[0] || '.jpg';
+      profile.imagePath = await downloadImage(profile.imageUrl, `${slug}${ext}`) || '';
+    }
+    return profile;
 
   } catch (error) {
     console.error(`Error scraping ${url}:`, error);
@@ -327,75 +135,10 @@ async function scrapeLibrary(): Promise<FacultyProfile[]> {
   
   // Library page requires User-Agent and might be dynamic.
   // Using the selectors found by browser agent.
-  const $ = await fetchPage(url);
+  const $ = await fetchPage(url, 'library');
   if (!$) return [];
 
-  const profiles: FacultyProfile[] = [];
-  
-  // Selectors:
-  // Container: .et_pb_blurb_content
-  // Name: h4.et_pb_module_header
-  // Title: First line of .et_pb_blurb_description
-  // Email: link in description with 'contact-form'
-  
-  $('.et_pb_blurb_content').each((i, el) => {
-      try {
-          const name = $(el).find('h4.et_pb_module_header').text().trim();
-          if (!name) return;
-
-          // Filter out known non-staff UI elements found on the page
-          const invalidNames = ['New Books', 'New DVDs', 'Recreational Reading', 'Floor Guides', 'Study Rooms', 'Library Instruction', 'Suggest a Purchase', 'Course Reserves'];
-          if (invalidNames.includes(name) || name.includes('New Books') || name.includes('New DVDs')) return;
-
-          const description = $(el).find('.et_pb_blurb_description');
-          let title = '';
-          let email = '';
-          const phone = ''; 
-          const office = ''; 
-
-          if (description.length) {
-              const lines = description.text().split('\n').map(l => l.trim()).filter(l => l);
-              if (lines.length > 0) title = lines[0];
-
-              const emailLink = description.find('a[href*="contact-form"]');
-              if (emailLink.length) {
-                  const username = emailLink.text().trim();
-                  if (username && !username.includes(' ')) {
-                     email = `${username}@ramapo.edu`;
-                  }
-              }
-          }
-          
-          // Strict validation: Must have an email OR a title that looks like a title (not empty)
-          // And name shouldn't be generic if no email.
-          if (!email && !title) return;
-
-          let photoUrl = $(el).find('.et_pb_main_blurb_image img').attr('src') || '';
-           if (photoUrl && !photoUrl.startsWith('http')) {
-                photoUrl = `https://www.ramapo.edu${photoUrl}`;
-           }
-
-          profiles.push({
-              name,
-              title,
-              school: 'Library Faculty & Staff',
-              email,
-              phone,
-              office,
-              bio: '',
-              education: [],
-              courses: [],
-              teachingInterests: [],
-              researchInterests: [],
-              publishedResearch: [],
-              profileUrl: url,
-              imageUrl: photoUrl
-          });
-
-      } catch (err) {
-          console.error('Error parsing library profile:', err);
-      }
-  });
+  const profiles = parseLibraryStaffHtml($.html(), url);
 
   // Download images for library staff
   for (const profile of profiles) {
@@ -414,7 +157,7 @@ async function scrapeLibrary(): Promise<FacultyProfile[]> {
 
 async function scrapeSchool(schoolUrl: string, schoolName: string) {
   console.log(`Scraping school: ${schoolName} (${schoolUrl})`);
-  const $ = await fetchPage(schoolUrl);
+  const $ = await fetchPage(schoolUrl, 'school', schoolName);
   if (!$) return [];
 
   const profiles: FacultyProfile[] = [];
@@ -547,6 +290,19 @@ async function main() {
       allFaculty = [...allFaculty, ...libraryStaff];
   } catch (e) {
       console.warn('Failed to scrape Library:', e);
+  }
+
+  // Save original HTML before validating the parsed result: failed extraction must remain replayable.
+  const sourcePayload = { schemaVersion: 1, generatedAt: new Date().toISOString(), pages: sourceCaptures };
+  writeJsonFile(SOURCE_OUTPUT_PATH, sourcePayload);
+  writeRawProvenance('faculty-sources', {
+    sourceUrl: 'https://www.ramapo.edu/academics/faculty/',
+    recordCount: sourceCaptures.length, payload: sourcePayload,
+  });
+  const failedExtractions = sourceCaptures.filter(capture => capture.parser?.diagnostics.some(diagnostic =>
+    ['missing_profile_content', 'missing_name', 'unretained_content'].includes(diagnostic.reason)));
+  if (failedExtractions.length) {
+    throw new Error(`Faculty collection has incomplete profile extraction; captured HTML retained for replay: ${failedExtractions.map(capture => capture.requestedUrl).join(', ')}`);
   }
 
   const normalizedFaculty = validateFacultyProfiles(allFaculty);
