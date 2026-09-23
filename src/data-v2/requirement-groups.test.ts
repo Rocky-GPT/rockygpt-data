@@ -48,6 +48,10 @@ test('identical sections are one shared record with every program link and prove
   assert.deepEqual(shared.provenance[1].path, ['schools', 0, 'majors', 1, 'requirements', 0]);
   const links = artifact.edges.filter(e => e.type === 'requirement_group' && 'record_id' in e.target && e.target.record_id === shared.id);
   assert.deepEqual(links.map(e => e.source), [{ entity_id: programId(1) }, { entity_id: programId(2) }]);
+  assert.deepEqual(links.map(e => [e.order, e.path]), [
+    [0, ['schools', 0, 'majors', 0, 'requirements', 0]],
+    [0, ['schools', 0, 'majors', 1, 'requirements', 0]],
+  ]);
   assert.deepEqual(shared.course_list?.choose, { at_least: 1 });
   assert.ok(artifact.unresolved.some(i => i.record === 'Science:Unlinked BS' && i.reason.includes('no identity')));
   assert.deepEqual(compiled(), artifact);
