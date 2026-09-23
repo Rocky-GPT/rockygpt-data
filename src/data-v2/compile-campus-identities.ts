@@ -5,6 +5,7 @@ import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import { compileArchwayIdentities, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
+import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
 import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
 
@@ -130,10 +131,10 @@ export function catalogConvenersArtifact(raw: unknown): Record<string, unknown> 
 export interface CompiledIdentityArtifacts {
   registry: CampusIdentities; report: IdentityCoverageReport; eventOrganizers: EventOrganizersArtifact;
   courseIdentities: CourseIdentitiesArtifact; requirementGroups: RequirementGroupsArtifact;
-  campusBuildings: CampusBuildingsArtifact;
+  campusBuildings: CampusBuildingsArtifact; campusSchools: CampusSchoolsArtifact;
 }
-/** Inputs outside the release snapshot: Archway captures and the committed campus map. */
-export interface IdentityInputs extends ArchwayIdentityInputs { campusMap?: unknown }
+/** Inputs outside the release snapshot: Archway captures, the committed campus map and the reviewed schools. */
+export interface IdentityInputs extends ArchwayIdentityInputs { campusMap?: unknown; campusSchools?: ReviewedSchools }
 export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, inputs: IdentityInputs = {}): CompiledIdentityArtifacts {
   validateCampusIdentities(seed);
   const candidates = identityCandidates(snapshot);
@@ -234,8 +235,12 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   for (const candidate of candidates) if (!owners.has(`${candidate.collection}:${candidate.source}:${candidate.key}`)) {
     unresolved.push({ collection: candidate.collection, record: candidate.key, reason: 'No reviewed persistent identity selector covers this original record; existing search remains available.' });
   }
+  const recordRows = new Map(candidates.map(c => [`${c.collection}:${c.source}:${c.key}`, c.row]));
+  const schools = compileSchoolIdentities(entities, recordRows, snapshot.clubs || [], inputs.campusSchools);
+  entities.push(...schools.schools);
+  unresolved.push(...schools.unresolved);
   for (const name of entities.flatMap(entity => [entity.name, ...entity.aliases])) reserved.add(normalizeName(name));
-  const archway = compileArchwayIdentities(snapshot, inputs, reserved);
+  const archway = compileArchwayIdentities(snapshot, inputs, reserved, schools.ownedClubs);
   entities.push(...archway.entities);
   unresolved.push(...archway.unresolved);
   const campusBuildings = campusBuildingsArtifact(inputs.campusMap);
@@ -253,7 +258,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   }
   const courseIdentities = compileCourseIdentities(snapshot.artifacts.courses);
   const requirementGroups = compileRequirementGroups(snapshot.artifacts.programs, registry, courseIdentities);
-  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings };
+  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools) };
 }
 function listStrings(value: unknown): string[] { return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []; }
 

@@ -1,0 +1,80 @@
+{
+  "$comment": [
+    "Ramapo's schools as its current official schools page lists them. These are the",
+    "canonical school identities; each ID is persistent, so a future rename keeps it.",
+    "",
+    "Reviewed September 23, 2026: the current official school pages and names are",
+    "canonical, and the former names the catalog and Archway still publish are reviewed",
+    "legacy names. Each legacy name records the evidence that the school succeeded it.",
+    "The School of Social Science and Human Services was split: its web section now",
+    "redirects to the School of Social Sciences and Social Work, and its education",
+    "programs are listed by the School of Arts, Humanities, and Education. A catalog",
+    "program still filed under it therefore has no single current school.",
+    "",
+    "archway_groups are the exact Archway directory records (category Schools) that",
+    "publish a school's current or legacy name; each is reviewed, never matched by name."
+  ],
+  "source_url": "https://www.ramapo.edu/academics/schools/",
+  "captured_at": "2026-09-23T12:31:43Z",
+  "schools": [
+    {
+      "id": "c1db6e48-d202-4de5-99c5-77cb08cc4041",
+      "section": "asb",
+      "name": "Anisfield School of Business",
+      "abbreviation": "ASB",
+      "url": "https://www.ramapo.edu/asb/",
+      "legacy_names": [],
+      "archway_groups": ["Anisfield School of Business"]
+    },
+    {
+      "id": "71877b22-decf-48e7-9ea0-9dcab39032a8",
+      "section": "sssw",
+      "name": "School of Social Sciences and Social Work",
+      "abbreviation": "SSSW",
+      "url": "https://www.ramapo.edu/sssw/",
+      "legacy_names": [
+        {
+          "name": "School of Social Science and Human Services",
+          "evidence": "https://www.ramapo.edu/sshs/ redirects (301, server rule) to https://www.ramapo.edu/sssw/; observed 2026-09-23."
+        }
+      ],
+      "archway_groups": []
+    },
+    {
+      "id": "c5e91f2f-d073-4bfa-8f8b-819457982c99",
+      "section": "snh",
+      "name": "School of Science, Nursing, and Health",
+      "abbreviation": "SNH",
+      "url": "https://www.ramapo.edu/snh/",
+      "legacy_names": [
+        {
+          "name": "School of Theoretical and Applied Science",
+          "evidence": "https://www.ramapo.edu/tas/ redirects (301, server rule) to https://www.ramapo.edu/snh/; observed 2026-09-23."
+        }
+      ],
+      "archway_groups": []
+    },
+    {
+      "id": "a0af6d36-ac17-4d2f-9a95-ccb68cd98772",
+      "section": "ahe",
+      "name": "School of Arts, Humanities, and Education",
+      "abbreviation": "AHE",
+      "url": "https://www.ramapo.edu/ahe/",
+      "legacy_names": [
+        {
+          "name": "School of Contemporary Arts",
+          "evidence": "https://www.ramapo.edu/ca/ redirects (301, server rule) to https://www.ramapo.edu/ahe/; observed 2026-09-23."
+        },
+        {
+          "name": "School of Humanities and Global Studies",
+          "evidence": "https://www.ramapo.edu/hgs/ redirects (301, server rule) to https://www.ramapo.edu/ahe/; observed 2026-09-23."
+        },
+        {
+          "name": "School of Social Science and Human Services",
+          "evidence": "https://www.ramapo.edu/ahe/ lists Elementary, Special and Teacher Education, which the catalog files under this former school; observed 2026-09-23."
+        }
+      ],
+      "archway_groups": ["School of Contemporary Arts", "School of Humanities and Global Studies"]
+    }
+  ]
+}

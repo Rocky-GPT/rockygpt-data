@@ -42,13 +42,13 @@ test('PostgreSQL staged publishing is repeatable, refreshes links and refuses ac
     const first = await client.query('SELECT artifact_key,content_hash FROM rockygpt_v2.release_artifacts ORDER BY artifact_key');
     await publish();
     assert.deepEqual((await client.query('SELECT artifact_key,content_hash FROM rockygpt_v2.release_artifacts ORDER BY artifact_key')).rows, first.rows);
-    assert.equal(first.rows.length, 7);
+    assert.equal(first.rows.length, 8);
     await client.query("INSERT INTO rockygpt_v2.campus_hours VALUES($1,$2,'Reviewed Office:Tuesday:new-exception','Reviewed Office',NULL,'Tuesday')", [dataset, source]);
     await publish();
     const refreshed = await client.query("SELECT payload FROM rockygpt_v2.release_artifacts WHERE artifact_key='campus-identities'");
     assert.equal(refreshed.rows[0].payload.entities[0].id, seed.entities[0].id);
     assert.deepEqual(refreshed.rows[0].payload.entities[0].links[0].source_record_keys, ['Reviewed Office:Monday', 'Reviewed Office:Tuesday:new-exception']);
-    assert.equal(Number((await client.query('SELECT count(*) AS n FROM rockygpt_v2.release_artifacts')).rows[0].n), 7);
+    assert.equal(Number((await client.query('SELECT count(*) AS n FROM rockygpt_v2.release_artifacts')).rows[0].n), 8);
     const clubSource = 'e176c025-897a-4b96-a2f8-d93c095123e1';
     const eventSource = 'e176c025-897a-4b96-a2f8-d93c095123e2';
     await client.query("INSERT INTO rockygpt_v2.sources VALUES($1,'archway-clubs'),($2,'archway-events')", [clubSource, eventSource]);
@@ -77,7 +77,7 @@ test('PostgreSQL staged publishing is repeatable, refreshes links and refuses ac
     const repeated = await client.query('SELECT artifact_key,content_hash FROM rockygpt_v2.release_artifacts ORDER BY artifact_key');
     await publish();
     assert.deepEqual((await client.query('SELECT artifact_key,content_hash FROM rockygpt_v2.release_artifacts ORDER BY artifact_key')).rows, repeated.rows);
-    assert.equal(repeated.rows.length, 8); // Seven identity artifacts plus original clubs.
+    assert.equal(repeated.rows.length, 9); // Eight identity artifacts plus original clubs.
     await client.query("UPDATE rockygpt_v2.dataset_versions SET status='active' WHERE id=$1", [dataset]);
     const before = await client.query('SELECT artifact_key,content_hash FROM rockygpt_v2.release_artifacts ORDER BY artifact_key');
     await assert.rejects(publish, /only be installed in a staging or validating dataset/);
