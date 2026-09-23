@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { publishedFoodSignal } from './event-food';
-import { applyDetailSignalsToEvents, extractEventDetailSignalFromHtml, rebuildEventSignals, rebuildEventsFromRaw } from './archway-events';
+import { applyDetailSignalsToEvents, extractEventDetailSignalFromHtml, extractEventDetailSignalFromRawPage, rebuildEventSignals, rebuildEventsFromRaw } from './archway-events';
 import { type RawDatasetV1, type RawPageV1 } from './raw-types';
 
 test('food mentions, free admission, and serving food do not establish free food', () => {
@@ -17,6 +17,35 @@ test('HTML extraction requires an explicit food offer, independently of the RSVP
   const html = '<title>Treat Yo Self-Care</title><meta name="description" content="Discover self-care"><body>Price FREE</body>';
   assert.equal(extractEventDetailSignalFromHtml(html).offersFreeFood, undefined);
   assert.equal(extractEventDetailSignalFromHtml('<meta name="description" content="Complimentary lunch"><body>Serving food? Yes</body>').offersFreeFood, true);
+  assert.equal(extractEventDetailSignalFromHtml('<title>Admission FREE</title><meta name="description" content="Lunch and discussion">').offersFreeFood, undefined);
+});
+
+test('captured admission labels cannot combine with repeated food-event headings', () => {
+  for (const title of ['Pizza in Hut', 'Brunch Grab & Go', 'Lunch & Learn: Scholarships!', 'Cookie Decorating & Cocoa']) {
+    const page: RawPageV1 = {
+      url: 'https://archway.ramapo.edu/rsvp_boot?id=1', sourceType: 'detail',
+      fetchedAt: '2026-09-23T00:00:00Z', statusCode: 200, title: `${title} - Campus Club`,
+      links: [], externalLinks: [], lists: [], contacts: [], documents: [],
+      sections: [
+        { heading: title, text: 'Loading... Sep 29 FREE' },
+        { heading: title, text: 'by Campus Club Tue, Sep 29, 2026 5:30 PM – 7 PM' },
+        { heading: 'Registration', text: 'Option RSVP | Price FREE' },
+      ],
+      tables: [{ headers: ['Options', 'Price'], rows: [['Option RSVP', 'FREE']] }],
+    };
+    assert.equal(extractEventDetailSignalFromRawPage(page).offersFreeFood, undefined, title);
+    const dataset: RawDatasetV1 = {
+      version: '1.0', dataset: 'events-detail', collectedAt: page.fetchedAt, seedUrls: [],
+      stats: { pagesFetched: 1, pagesFailed: 0, externalLinksSeen: 0 }, pages: [page],
+    };
+    const rebuilt = rebuildEventsFromRaw([{ title, date: 'Sep 29, 2026', url: page.url }], dataset);
+    assert.equal(rebuilt[0].offersFreeFood, undefined, title);
+    assert.equal(rebuilt[0].foodCategory, undefined, title);
+
+    page.sections.push({ heading: 'Description', text: 'Join us for free pizza.' });
+    assert.equal(extractEventDetailSignalFromRawPage(page).offersFreeFood, true, title);
+    assert.equal(rebuildEventSignals(dataset).get(page.url)?.offersFreeFood, true, title);
+  }
 });
 
 test('food flags stay on their own occurrence, including an explicit no-food occurrence', () => {

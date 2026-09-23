@@ -1,4 +1,5 @@
 import type { CampusIdentities } from './campus-identities';
+import { legacyProgramRecordKey, programRecordKey } from './program-records';
 import type { CourseIdentitiesArtifact } from './course-identities';
 import { uuid5 } from './course-identities';
 import type { IdentityCoverageIssue } from './compile-campus-identities';
@@ -76,6 +77,11 @@ export function chooseFor(condition: string | null, count: number | null, credit
 
 export function compileRequirementGroups(programs: unknown, registry: CampusIdentities, courses: CourseIdentitiesArtifact): RequirementGroupsArtifact {
   const courseIds = new Map(courses.courses.map(course => [course.source_record_key, course.id]));
+  const legacyKeyCounts = new Map<string, number>();
+  for (const school of rows((programs as Row)?.schools)) for (const major of rows(school.majors)) {
+    const key = legacyProgramRecordKey(major, school.school);
+    legacyKeyCounts.set(key, (legacyKeyCounts.get(key) || 0) + 1);
+  }
   const programIds = new Map<string, string>();
   for (const entity of registry.entities) if (entity.kind === 'program') {
     for (const link of entity.links) if (link.collection === 'programs') for (const key of link.source_record_keys) programIds.set(key, entity.id);
@@ -91,8 +97,9 @@ export function compileRequirementGroups(programs: unknown, registry: CampusIden
 
   rows((programs as Row)?.schools).forEach((school, schoolIndex) => rows(school.majors).forEach((major, majorIndex) => {
     const name = text(major.name)?.trim() ?? '';
-    const key = `${text(school.school)?.trim() ?? ''}:${name.replace(/\s+/g, ' ')}`;
-    const programId = programIds.get(key);
+    const key = programRecordKey(major, school.school);
+    const legacyKey = legacyProgramRecordKey(major, school.school);
+    const programId = programIds.get(key) ?? (legacyKeyCounts.get(legacyKey) === 1 ? programIds.get(legacyKey) : undefined);
     const sections = rows(major.requirements);
     if (!programId && sections.length) report({ entity: name, collection: 'programs', record: key, reason: 'The program has no identity, so its requirement groups are published without a program link.' });
     sections.forEach((section, sectionIndex) => {

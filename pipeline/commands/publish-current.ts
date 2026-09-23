@@ -35,6 +35,7 @@ import {
   type ArchivedRawArtifact,
 } from '../raw-artifacts';
 import { applyDatabaseSchema } from '../database/migrations';
+import { programRecordKey } from '../../src/data-v2/program-records';
 
 type JsonRecord = Record<string, unknown>;
 
@@ -354,7 +355,7 @@ async function insertStructured(
     for (const program of school.majors || []) {
       const name = cleanText(program.name);
       if (!name) continue;
-      const recordKey = `${school.school}:${name}`;
+      const recordKey = programRecordKey(program, school.school);
       await client.query(
         `INSERT INTO rockygpt_v2.programs
          (dataset_version_id, source_id, source_record_key, name, degree, program_kind, school, description,

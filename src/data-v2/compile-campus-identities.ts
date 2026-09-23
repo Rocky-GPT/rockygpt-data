@@ -11,6 +11,7 @@ import type { ReviewedBuilding } from './campus-buildings';
 import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileSubjectIdentities, courseSubjectsArtifact, type CourseSubjectsArtifact, type CourseSubjectsInput } from './course-subjects';
 import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
+import { legacyProgramRecordKey, programRecordKey } from './program-records';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -37,7 +38,7 @@ export function facultyRecordKey(row: Row): string {
 }
 const list = (value: unknown): Row[] => Array.isArray(value) ? value.filter(v => v && typeof v === 'object') as Row[] : [];
 export function programArtifactRows(value: unknown): Row[] {
-  return list((value as Row)?.schools).flatMap(school => list(school.majors).map(p => ({ ...p, school: school.school, source_record_key: `${school.school}:${string(p.name).replace(/\s+/g, ' ')}` })));
+  return list((value as Row)?.schools).flatMap(school => list(school.majors).map(p => ({ ...p, school: school.school, source_record_key: programRecordKey(p, school.school) })));
 }
 function slug(value: unknown): string { return string(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
 
@@ -74,9 +75,9 @@ export function identityCandidates(snapshot: IdentitySnapshot): Candidate[] {
   }
   const programs = programArtifactRows(snapshot.artifacts.programs);
   for (const candidate of result.filter(r => r.collection === 'programs')) {
-    const artifacts = programs.filter(p => p.source_record_key === candidate.key);
-    // The source key currently collides for two distinct Nursing MSN catalog
-    // records. It cannot identify either program without changing originals.
+    const artifacts = programs.filter(p => p.source_record_key === candidate.key || legacyProgramRecordKey(p, p.school) === candidate.key);
+    // Preserve historical display keys only when unique. New publication keys
+    // carry the catalog code and distinguish same-name degree paths.
     if (artifacts.length === 1) candidate.row = { ...candidate.row, ...artifacts[0] };
   }
   return result;

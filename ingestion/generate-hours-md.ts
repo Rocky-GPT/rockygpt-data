@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { pathToFileURL } from 'node:url';
 import { buildFrontmatter } from './frontmatter';
 import { getGeneratedTimestamp, sortByName } from './pipeline-utils';
 import { type LocationHours, validateCampusHours } from './schema';
@@ -16,6 +17,7 @@ const DATA_DIR = path.join(process.cwd(), 'data', 'normalized');
 const OUTPUT_DIR = path.join(process.cwd(), 'data', 'context', 'campus');
 const JSON_INPUT_PATH = path.join(DATA_DIR, 'hours.json');
 const MARKDOWN_OUTPUT_PATH = path.join(OUTPUT_DIR, 'hours.md');
+const OMISSIONS_PATH = path.join(DATA_DIR, 'hours-omissions.json');
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 function normalizeText(value?: string): string | undefined {
@@ -48,6 +50,26 @@ function toContextHours(locations: LocationHours[]): ContextLocationHours[] {
       .filter((location): location is ContextLocationHours => location !== null),
     (location) => location.name
   );
+}
+
+interface WithheldHours {
+  record: Pick<LocationHours, 'name' | 'sourceUrl' | 'collectedAt'>;
+  reason: string;
+}
+
+/** Unverified schedules must not leak back into retrieval through markdown. */
+export function renderWithheldHours(omissions: WithheldHours[]): string {
+  return omissions.map(({ record, reason }) => {
+    const explanation = reason === 'conflicting-source-validity'
+      ? 'The official source contains conflicting applicability dates.'
+      : reason === 'unbounded-term'
+        ? 'The official source gives a semester label without explicit start and end dates.'
+        : 'The captured schedule could not be verified as applicable to the current date.';
+    return `## ${record.name}\n\n`
+      + (record.sourceUrl ? `- URL: ${record.sourceUrl}\n` : '')
+      + (record.collectedAt ? `- Collected At: ${record.collectedAt}\n` : '')
+      + `\nCurrent hours are unverified. ${explanation} Consult the official source for clarification; this does not establish that the facility is closed.\n\n---\n\n`;
+  }).join('');
 }
 
 function generateMarkdown() {
@@ -83,8 +105,8 @@ function generateMarkdown() {
 
   contextLocations.forEach((location) => {
     markdown += `## ${location.name}\n\n`;
-    if (location.sourceUrl) markdown += `Source: ${location.sourceUrl}\n\n`;
-    if (location.collectedAt) markdown += `Source captured (UTC): ${location.collectedAt}\n\n`;
+    if (location.sourceUrl) markdown += `- URL: ${location.sourceUrl}\n\n`;
+    if (location.collectedAt) markdown += `- Collected At: ${location.collectedAt}\n\n`;
     markdown += '| Day | Hours |\n';
     markdown += '|-----|-------|\n';
     DAYS.forEach((day) => {
@@ -96,6 +118,14 @@ function generateMarkdown() {
     markdown += '\n---\n\n';
   });
 
+  if (fs.existsSync(OMISSIONS_PATH)) {
+    const manifest = JSON.parse(fs.readFileSync(OMISSIONS_PATH, 'utf8'));
+    if (manifest.version !== 1 || !Array.isArray(manifest.omitted)) {
+      throw new Error('Invalid campus-hours omissions manifest.');
+    }
+    markdown += renderWithheldHours(manifest.omitted);
+  }
+
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
@@ -103,4 +133,4 @@ function generateMarkdown() {
   console.log(`Successfully generated markdown at ${MARKDOWN_OUTPUT_PATH}`);
 }
 
-generateMarkdown();
+if (process.argv[1] && import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href) generateMarkdown();
