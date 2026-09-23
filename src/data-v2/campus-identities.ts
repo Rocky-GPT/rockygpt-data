@@ -17,7 +17,7 @@ export interface CampusIdentityLink {
   selector?: { field: 'faculty_identity' | 'contact_identity' | 'name' | 'catalog_code' | 'menu_venue'; values: string[]; evidence: string };
 }
 export type CampusIdentityRelationship =
-  | { type: 'convener' | 'organized_by'; target_entity_id: string; evidence: IdentityEvidence[] }
+  | { type: 'convener' | 'listed_faculty' | 'organized_by'; target_entity_id: string; evidence: IdentityEvidence[] }
   | { type: 'profile_course'; target_record: IdentityRecordReference; evidence: IdentityEvidence[] };
 export interface CampusIdentity {
   id: string;
@@ -106,9 +106,9 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
       array(entity.relationships, 1000, 'relationships');
       for (const entry of entity.relationships) {
         const relation = object(entry, ['type', 'evidence'], 'Relationship', ['target_entity_id', 'target_record']);
-        if (relation.type === 'convener' || relation.type === 'organized_by') {
+        if (relation.type === 'convener' || relation.type === 'listed_faculty' || relation.type === 'organized_by') {
           text(relation.target_entity_id, 'Target identity');
-          if (!UUID.test(relation.target_entity_id) || relation.target_record !== undefined) throw new Error('Invalid convener target.');
+          if (!UUID.test(relation.target_entity_id) || relation.target_record !== undefined) throw new Error('Invalid identity target.');
         } else if (relation.type === 'profile_course') {
           reference(relation.target_record); if (relation.target_entity_id !== undefined) throw new Error('Invalid course target.');
         } else throw new Error('Unsupported relationship type.');

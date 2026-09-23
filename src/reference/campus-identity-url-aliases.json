@@ -306,6 +306,468 @@
       "to": "https://www.ramapo.edu/snh/faculty/yan-xu",
       "evidence": "Official Ramapo HTTP redirect completed with status 200 at the unique current faculty profile URL.",
       "observed_at": "2026-09-21T20:24:50.714Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/ann-lepore",
+      "to": "https://www.ramapo.edu/ahe/faculty/ann-lepore",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:36.171Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/austin-blake-conlee",
+      "to": "https://www.ramapo.edu/ahe/faculty/austin-blake-conlee",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:37.114Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/bonnie-blake",
+      "to": "https://www.ramapo.edu/ahe/faculty/bonnie-blake",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:38.093Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/brian-mcsherry",
+      "to": "https://www.ramapo.edu/ahe/faculty/brian-mcsherry",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:39.034Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/daniel-fishkin",
+      "to": "https://www.ramapo.edu/ahe/faculty/daniel-fishkin",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:39.973Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/jackie-skrzynski",
+      "to": "https://www.ramapo.edu/ahe/faculty/jackie-skrzynski",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:40.915Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/john-peffer",
+      "to": "https://www.ramapo.edu/ahe/faculty/john-peffer",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:41.884Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/kelly-dolak",
+      "to": "https://www.ramapo.edu/ahe/faculty/kelly-dolak",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:42.846Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/lawrence-mascia",
+      "to": "https://www.ramapo.edu/ahe/faculty/lawrence-mascia",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:43.782Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/lisa-lutter",
+      "to": "https://www.ramapo.edu/ahe/faculty/lisa-lutter",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:44.723Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/mack-brandon",
+      "to": "https://www.ramapo.edu/ahe/faculty/mack-brandon",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:45.683Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/marc-gidal",
+      "to": "https://www.ramapo.edu/ahe/faculty/marc-gidal",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:46.791Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/rebecca-leung",
+      "to": "https://www.ramapo.edu/ahe/faculty/rebecca-leung",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:47.739Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/renata-gangemi",
+      "to": "https://www.ramapo.edu/ahe/faculty/renata-gangemi",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:48.766Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/sarah-stackhouse",
+      "to": "https://www.ramapo.edu/ahe/faculty/sarah-stackhouse",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:49.746Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/ca/faculty/terra-d-vandergaw",
+      "to": "https://www.ramapo.edu/ahe/faculty/terra-d-vandergaw",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:50.691Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/cathy-moran-hajo",
+      "to": "https://www.ramapo.edu/ahe/faculty/cathy-moran-hajo",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:53.045Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/edward-shannon",
+      "to": "https://www.ramapo.edu/ahe/faculty/edward-shannon",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:53.983Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/eric-daffron",
+      "to": "https://www.ramapo.edu/ahe/faculty/eric-daffron",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:54.968Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/indya-jackson",
+      "to": "https://www.ramapo.edu/ahe/faculty/indya-jackson",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:55.926Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/john-gronbeck-tedesco",
+      "to": "https://www.ramapo.edu/ahe/faculty/john-gronbeck-tedesco",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:56.936Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/lisa-williams",
+      "to": "https://www.ramapo.edu/ahe/faculty/lisa-williams",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:57.920Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/monika-giacoppe",
+      "to": "https://www.ramapo.edu/ahe/faculty/monika-giacoppe",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:58.859Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/roark-atkinson",
+      "to": "https://www.ramapo.edu/ahe/faculty/roark-atkinson",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:51:59.810Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/sam-ali-mustafa",
+      "to": "https://www.ramapo.edu/ahe/faculty/sam-ali-mustafa",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:00.779Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/sara-koenig",
+      "to": "https://www.ramapo.edu/ahe/faculty/sara-koenig",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:01.754Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/stacie-taranto",
+      "to": "https://www.ramapo.edu/ahe/faculty/stacie-taranto",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:02.682Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/yvette-kisor",
+      "to": "https://www.ramapo.edu/ahe/faculty/yvette-kisor",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:03.677Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/alexander-urbiel",
+      "to": "https://www.ramapo.edu/sssw/faculty/alexander-urbiel",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:04.676Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/atieh-babakhani",
+      "to": "https://www.ramapo.edu/sssw/faculty/atieh-babakhani",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:05.675Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/behzad-yaghmaian",
+      "to": "https://www.ramapo.edu/sssw/faculty/behzad-yaghmaian",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:06.610Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/colleen-daly-martinez",
+      "to": "https://www.ramapo.edu/sssw/faculty/colleen-daly-martinez",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:07.843Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/cort-engelken",
+      "to": "https://www.ramapo.edu/sssw/faculty/cort-engelken",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:08.819Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/dolly-sacristan",
+      "to": "https://www.ramapo.edu/sssw/faculty/dolly-sacristan",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:09.778Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/erin-augis",
+      "to": "https://www.ramapo.edu/sssw/faculty/erin-augis",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:10.764Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/eva-m-ogens",
+      "to": "https://www.ramapo.edu/sssw/faculty/eva-m-ogens",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:11.711Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/henri-lustiger-thaler",
+      "to": "https://www.ramapo.edu/sssw/faculty/henri-lustiger-thaler",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:12.662Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/james-morley",
+      "to": "https://www.ramapo.edu/sssw/faculty/james-morley",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:13.619Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/john-mctighe",
+      "to": "https://www.ramapo.edu/sssw/faculty/john-mctighe",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:14.552Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/joseph-f-cataliotti",
+      "to": "https://www.ramapo.edu/sssw/faculty/joseph-f-cataliotti",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:15.501Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/lysandra-perez-strumolo",
+      "to": "https://www.ramapo.edu/sssw/faculty/lysandra-perez-strumolo",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:16.441Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/martha-ecker",
+      "to": "https://www.ramapo.edu/sssw/faculty/martha-ecker",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:17.369Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/maya-poran",
+      "to": "https://www.ramapo.edu/sssw/faculty/maya-poran",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:18.330Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/naseem-choudhury",
+      "to": "https://www.ramapo.edu/sssw/faculty/naseem-choudhury",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:19.292Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/paul-reck",
+      "to": "https://www.ramapo.edu/sssw/faculty/paul-reck",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:20.230Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/peter-d-heinze",
+      "to": "https://www.ramapo.edu/sssw/faculty/peter-d-heinze",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:21.213Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/sandra-gonsalves-domond",
+      "to": "https://www.ramapo.edu/sssw/faculty/sandra-gonsalves-domond",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:22.174Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/shaziela-ishak",
+      "to": "https://www.ramapo.edu/sssw/faculty/shaziela-ishak",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:23.131Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/tilahun-sineshaw",
+      "to": "https://www.ramapo.edu/sssw/faculty/tilahun-sineshaw",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:24.078Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/ali-al-juboori",
+      "to": "https://www.ramapo.edu/snh/faculty/ali-al-juboori",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:25.046Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/amruth-kumar",
+      "to": "https://www.ramapo.edu/snh/faculty/amruth-kumar",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:26.026Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/anne-marie-flatekval",
+      "to": "https://www.ramapo.edu/snh/faculty/anne-marie-flatekval",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:27.963Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/ashley-stuart",
+      "to": "https://www.ramapo.edu/snh/faculty/ashley-stuart",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:29.101Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/caroline-brisson",
+      "to": "https://www.ramapo.edu/snh/faculty/caroline-brisson",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:30.067Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/carrie-miller",
+      "to": "https://www.ramapo.edu/snh/faculty/carrie-miller",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:31.030Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/catalin-martin",
+      "to": "https://www.ramapo.edu/snh/faculty/catalin-martin",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:32.024Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/donna-flynn",
+      "to": "https://www.ramapo.edu/snh/faculty/donna-flynn",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:33.007Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/donovan-mcferon",
+      "to": "https://www.ramapo.edu/snh/faculty/donovan-mcferon",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:33.940Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/emer-mcguire-pool",
+      "to": "https://www.ramapo.edu/snh/faculty/emer-mcguire-pool",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:35.876Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/eric-m-wiener",
+      "to": "https://www.ramapo.edu/snh/faculty/eric-m-wiener",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:36.929Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/james-gillespie",
+      "to": "https://www.ramapo.edu/snh/faculty/james-gillespie",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:37.926Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/jay-carreon",
+      "to": "https://www.ramapo.edu/snh/faculty/jay-carreon",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:38.920Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/joost-monen",
+      "to": "https://www.ramapo.edu/snh/faculty/joost-monen",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:39.863Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/kenneth-w-mcmurdy",
+      "to": "https://www.ramapo.edu/snh/faculty/kenneth-w-mcmurdy",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:40.851Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/kokila-kota",
+      "to": "https://www.ramapo.edu/snh/faculty/kokila-kota",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:41.836Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/lawrence-dantonio",
+      "to": "https://www.ramapo.edu/snh/faculty/lawrence-dantonio",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:42.772Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/loraine-tan",
+      "to": "https://www.ramapo.edu/snh/faculty/loraine-tan",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:43.798Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/matthew-jobrack",
+      "to": "https://www.ramapo.edu/snh/faculty/matthew-jobrack",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:44.721Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/mukhtar",
+      "to": "https://www.ramapo.edu/snh/faculty/mukhtar",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:45.767Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/osei-tweneboah",
+      "to": "https://www.ramapo.edu/snh/faculty/osei-tweneboah",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:46.707Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/patrick-mattis",
+      "to": "https://www.ramapo.edu/snh/faculty/patrick-mattis",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:47.633Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/sandra-suarez",
+      "to": "https://www.ramapo.edu/snh/faculty/sandra-suarez",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:48.572Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/sarah-bolton",
+      "to": "https://www.ramapo.edu/snh/faculty/sarah-bolton",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:49.547Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/sourav-dutta",
+      "to": "https://www.ramapo.edu/snh/faculty/sourav-dutta",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:50.507Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/stefan-becker",
+      "to": "https://www.ramapo.edu/snh/faculty/stefan-becker",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:51.465Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/suma-somasekharan",
+      "to": "https://www.ramapo.edu/snh/faculty/suma-somasekharan",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:52.434Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/victor-j-miller",
+      "to": "https://www.ramapo.edu/snh/faculty/victor-j-miller",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-23T01:52:53.388Z"
     }
   ]
 }

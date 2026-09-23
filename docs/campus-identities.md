@@ -14,7 +14,7 @@ Faculty artifact reference keys are canonical profile URL plus `#email=<lowercas
 
 Legacy normalized program data can fill `convener` with the first faculty member. That field alone does not approve a relationship. The compiler reads only the catalog API's explicit `customFields.rJQmj` Convener field; `xiQxl` is Program Faculty and cannot substitute. The field distinction was checked against the catalog's rendered Faculty/Convener sections, including the [official catalog PDF](https://coursedog-pdfs-public-prod.s3.us-east-2.amazonaws.com/ramapo_banner_ethos/catalog/4b944d6b-6d9c-4953-b3c8-7a3f81c9a33b-ramapo_banner_ethos-catalog-1770843535853.pdf).
 
-The compact `catalog-conveners` artifact retains those original HTML fields, catalog codes/URLs, raw capture URL and genuine `scrapedAt` timestamp. Export, compilation and publication dates are not substituted for source collection or verification. The linked person is resolved by exact profile URL or a reviewed official HTTP redirect. The redirect evidence is in `src/reference/campus-identity-url-aliases.json`; its observation time establishes only that URL redirect, not freshness of the faculty/program facts.
+The compact `catalog-conveners` artifact retains the original HTML Convener (`rJQmj`) and Program Faculty (`xiQxl`) fields, catalog codes/URLs, raw capture URL and genuine `scrapedAt` timestamp. No other custom field is copied. Export, compilation and publication dates are not substituted for source collection or verification. The linked person is resolved by exact profile URL or a reviewed official HTTP redirect. The redirect evidence is in `src/reference/campus-identity-url-aliases.json`; its observation time establishes only that URL redirect, not freshness of the faculty/program facts.
 
 The reviewed September 21 snapshot has 402 usable identities: 231 people, 13 offices, 10 facilities, four dining venues and 144 programs. It connects 245 contacts, 226 faculty profiles, 77 campus-hours rows, 70 dining-hours rows, 887 menu items and 144 program rows. There are 111 explicit convener relationships and 53 explicit profile-course relationships.
 
@@ -25,6 +25,19 @@ Unresolved evidence remains visible in the coverage artifact:
 - 16 convener references use nine old profile URLs that redirect to missing pages; name similarity is insufficient to connect them.
 - 626 profile-listed course entries have no explicit catalog code. They remain undated lists; no current-semester claims follow.
 - Only CSI has a confidently supported directory contact plus campus schedule. Birch Tree Inn has its own contact, dining schedule and collector-declared menu feed. Other offices/facilities/venues retain available sections; department or building proximity does not transfer contact details or hours.
+
+## Program faculty evidence
+
+A `listed_faculty` relationship means the program's catalog Program Faculty field (`customFields.xiQxl`) links to that person's profile. It is not a convener, an appointment or a current teaching assignment. The published `faculty` array in `programs` is never evidence. It mixes the Convener and Program Faculty fields and adds name matches. For 22 programs it is a scraper heuristic: faculty whose text overlaps the program name, or else the school's first ten faculty. Profile links resolve exactly as convener links do: by exact profile URL, or by a reviewed official redirect. Two URLs for one person produce one listing.
+
+Redirect aliases added for program faculty were checked hop by hop on September 23, 2026 (UTC). Every hop that changed the URL was issued without an `X-Redirect-By: WordPress` header, like the server rules for the `/ca/` → `/ahe/` school move. A hop marked `X-Redirect-By: WordPress` is accepted only when it adds or removes a trailing slash. Any other WordPress redirect is its guess from a similar slug, which is name matching. Two such redirects were rejected (for example `fariba-nosrati/)` → `fariba-nosrati/`). The same check found that the earlier alias for `ca/faculty/yolanda-del-amo-ozaeta` ends in a WordPress guess (`yolanda-del-amo-ozaeta` → `yolanda-del-amo`). It is kept as reviewed and needs a second review.
+
+On the September 22 snapshot, 585 `listed_faculty` relationships cover 107 programs. 77 new redirect aliases resolve 275 listings. 98 listings, over 35 distinct URLs, stay unresolved:
+- 30 URLs return 404 or redirect to a missing page.
+- 3 profiles belong to people without a person identity.
+- 2 redirects are WordPress guesses.
+
+32 programs publish no Program Faculty field. Unresolved listings are reported in the coverage artifact.
 
 The cited catalog's Computer Science convener assertion differs from the [current public major page](https://www.ramapo.edu/majors-minors/majors/computer-science/). The registry relationship means the captured catalog explicitly names that person, not that the catalog outranks every other source or proves a current appointment. The public page is not silently imported into this release.
 
