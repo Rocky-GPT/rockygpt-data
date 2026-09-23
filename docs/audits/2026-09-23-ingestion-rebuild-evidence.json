@@ -1,0 +1,231 @@
+{
+  "dataset": "dev-profiles-ingestion-20260923-r2",
+  "counts": {
+    "nodes": 3758,
+    "nodes_by_kind": {
+      "building": 15,
+      "club": 187,
+      "course": 2693,
+      "event": 316,
+      "facility": 10,
+      "office": 13,
+      "organization": 59,
+      "person": 231,
+      "program": 134,
+      "school": 4,
+      "subject": 92,
+      "venue": 4
+    },
+    "edges": 4320,
+    "relationships_by_type": {
+      "convener": 122,
+      "includes_course": 2693,
+      "listed_faculty": 654,
+      "located_at": 9,
+      "office_at": 201,
+      "organized_by": 272,
+      "part_of": 320,
+      "profile_course": 49
+    },
+    "published_relationships": 4320,
+    "published_relationships_by_type": {
+      "convener": 122,
+      "includes_course": 2693,
+      "listed_faculty": 654,
+      "located_at": 9,
+      "office_at": 201,
+      "organized_by": 272,
+      "part_of": 320,
+      "profile_course": 49
+    },
+    "relationship_evidence_references": 4320,
+    "registry_entities": 1065,
+    "source_binding_groups": 3988,
+    "unresolved_relationships": 0,
+    "diagnostics": 917,
+    "contextual_records": 365,
+    "contextual_records_by_type": {
+      "requirement_group": 365
+    },
+    "record_edges": 4395,
+    "record_edges_by_type": {
+      "requirement_group": 412,
+      "requirement_option": 3983
+    },
+    "published_coverage_issues": 917
+  },
+  "dangling_edges": 0,
+  "ui": {
+    "history_identity": "5325b304-3072-4b01-b504-06c38d930498",
+    "search_and_navigation": "passed",
+    "evidence_dialog_open_close_reopen_escape": "passed after 619ca3a",
+    "bookstore_unknown_hours_and_citation": "passed",
+    "sharp_unknown_hours_and_specific_athletics_citation": "passed"
+  },
+  "test_results": {
+    "data_pass": 231,
+    "data_skipped": 5,
+    "brain_pass": 768,
+    "brain_skipped": 41,
+    "dev_graph_pass": 12
+  },
+  "activation": {
+    "activated_at": "2026-09-23T20:36:38.350912+00:00",
+    "environment": "development",
+    "revision": "2af97f745e90ec360fd614fc7ec92c590b57181c",
+    "configurationHash": "a60fe7563a0cf4c26656417784a091e01522a403d58ba0cf48fb703ee1b0ce0c",
+    "release": "campus-subjects-development-2026-09-23",
+    "dataset_version": "dev-profiles-ingestion-20260923-r2",
+    "identities": {
+      "status": "available",
+      "schema_version": 1,
+      "entity_count": 1065,
+      "artifact_hash": "00de9d4548cee04550431b5b66446213d8d38ac205543a3dece39030807b006f"
+    }
+  },
+  "code_revisions": {
+    "data": "2d490ec",
+    "brain": "2af97f745e90ec360fd614fc7ec92c590b57181c",
+    "dev_ui": "619ca3a4dadce5bcefdfc655f75d14384600938b"
+  },
+  "publication": {
+    "passed": true,
+    "errors": [],
+    "warnings": [],
+    "checkedAt": "2026-09-23T20:36:08.396Z",
+    "verifiedCounts": {
+      "clubs": 255,
+      "programs": 140,
+      "menu_items": 874,
+      "campus_hours": 91,
+      "dining_hours": 70,
+      "campus_events": 316,
+      "shuttle_trips": 51,
+      "academic_dates": 106,
+      "critical_facts": 14,
+      "campus_contacts": 245,
+      "document_chunks": 3672,
+      "release_artifacts": 24
+    },
+    "rawArtifactsStored": 0,
+    "releaseArtifactCount": 24
+  },
+  "continuity": {
+    "lost": [
+      {
+        "id": "9bb9e5ad-75e6-4753-bf00-059bb12b98db",
+        "kind": "program",
+        "name": "Undecided BA"
+      },
+      {
+        "id": "dde7ad92-1617-427f-8c06-fdd0798ca02d",
+        "kind": "program",
+        "name": "MA-BA-Matric Undeclared"
+      },
+      {
+        "id": "5fe11dbb-7c37-43ad-a41c-9d73dee21f30",
+        "kind": "program",
+        "name": "MA-BS-Matric Undeclared"
+      },
+      {
+        "id": "79f3823d-5703-47d6-ae46-306acb5fe74c",
+        "kind": "program",
+        "name": "CA-BA-Matric Undeclared"
+      },
+      {
+        "id": "d3cd5066-3cb2-4ad2-970b-eea12f6d5630",
+        "kind": "program",
+        "name": "SS-BA-Matric Undeclared"
+      },
+      {
+        "id": "5d9431b6-e621-4544-b776-08afe4eac387",
+        "kind": "program",
+        "name": "Elementary Education BS (TA to Teacher)"
+      },
+      {
+        "id": "789dbae7-aeff-4dfa-9676-b5805a92d8da",
+        "kind": "program",
+        "name": "Prov-MASE"
+      },
+      {
+        "id": "40fda872-f18c-48b8-9d3a-127cb2403aaf",
+        "kind": "program",
+        "name": "SS-BS-Matric Undelcared"
+      },
+      {
+        "id": "8e6af879-7ab6-408c-8b88-2ed2ab32c559",
+        "kind": "program",
+        "name": "TS-BA-Matric Undeclared"
+      },
+      {
+        "id": "adad7f7e-2c1a-4bfb-8183-850149bf4e61",
+        "kind": "program",
+        "name": "TS-BS-Matric Undeclared"
+      },
+      {
+        "id": "cfa9a2c9-817b-5e54-8b99-8cb7dc80a2ec",
+        "kind": "organization",
+        "name": "Multicultural Center"
+      },
+      {
+        "id": "dcc14353-1e90-5dea-b8d0-4b50372dcfe1",
+        "kind": "event",
+        "name": "Becker Education (2026-10-26)"
+      }
+    ],
+    "baseline": "active_release",
+    "failures": [],
+    "kind_changes": [],
+    "lost_by_kind": {
+      "event": 1,
+      "program": 10,
+      "organization": 1
+    },
+    "added_entities": 40,
+    "lost_truncated": false,
+    "expected_losses": {
+      "retired_in_seed": 6,
+      "past_event_occurrences": 29,
+      "inactive_catalog_subjects": 14
+    },
+    "previous_entities": 1086,
+    "candidate_entities": 1065,
+    "lost_relationships_by_type": {
+      "part_of": 12,
+      "convener": 1,
+      "listed_faculty": 8,
+      "profile_course": 4
+    },
+    "expected_relationship_losses_by_type": {
+      "convener": 27,
+      "includes_course": 660
+    },
+    "convener_replacement_evidence_summary": {
+      "accepted": 27,
+      "rejected": 1,
+      "evidence_file": "/Users/danielrajakumar/code/RockyGPT/.local-logs/profile-feature/ingestion-rebuild-20260923/rockygpt-ingestion-published-quality.json"
+    },
+    "inactive_catalog_evidence_summary": {
+      "inactive_previous_course_keys": 710,
+      "expected_removed_course_relationships": 660,
+      "expected_removed_subjects": 14,
+      "evidence_file": "/Users/danielrajakumar/code/RockyGPT/.local-logs/profile-feature/ingestion-rebuild-20260923/rockygpt-ingestion-published-quality.json"
+    }
+  },
+  "source_review": {
+    "unknown_hours_places": 9,
+    "unresolved_old_program_selectors": 11,
+    "previous_active_program_identities_missing": 10,
+    "current_program_records_without_canonical_identity": 6,
+    "private_event_detail_redirects": 66,
+    "manual_facts_completely_reverified": false
+  },
+  "deployment_scope": {
+    "local_active": true,
+    "production_deployed": false,
+    "remote_raw_archive_uploaded": false,
+    "previous_database_retained": "rockygpt_profiles_dev_subjects_20260923",
+    "evidence_directory": "/Users/danielrajakumar/code/RockyGPT/.local-logs/profile-feature/ingestion-rebuild-20260923"
+  },
+  "validated_exported_edges": 8715
+}
