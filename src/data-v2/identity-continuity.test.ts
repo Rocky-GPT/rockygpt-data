@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import type { CampusIdentities, CampusIdentity } from './campus-identities';
+import type { CampusIdentities, CampusIdentity, CampusIdentityRelationship } from './campus-identities';
 import { allowedLoss, compareIdentityRegistries } from './identity-continuity';
+import { subjectIdentityId } from './course-subjects';
 
 const uuid = (n: number): string => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 function entity(n: number, kind: CampusIdentity['kind'], relationships?: CampusIdentity['relationships']): CampusIdentity {
@@ -90,4 +91,69 @@ test('the reported loss list is bounded', () => {
   assert.equal(report.lost.length, 100);
   assert.equal(report.lost_truncated, true);
   assert.equal(report.lost_by_kind.event, 150);
+});
+
+const subject = (code: string, courseNumbers = [101, 102, 103]): CampusIdentity => ({
+  id: subjectIdentityId(code), kind: 'subject', name: code, aliases: [],
+  links: [{ collection: 'subjects', source_key: 'course-subjects', source_record_keys: [code] }],
+  relationships: courseNumbers.map(number => ({ type: 'includes_course',
+    target_record: { collection: 'courses', source_key: 'academic-programs', source_record_key: `${code} ${number}` },
+    evidence: [{ collection: 'courses', source_key: 'academic-programs', source_record_key: `${code} ${number}`, field: 'code' }],
+  })),
+});
+const inactiveCapture = (codes: string[]) => ({ scrapedAt: '2026-09-23T19:44:12.134Z', courses: codes.map(code => ({ code, status: 'Inactive' })) });
+
+test('explicit unique inactive courses explain only absent subject-course relationships and retain source proof', () => {
+  const original = subject('TEST');
+  const current = { ...original, relationships: [] };
+  const catalog = inactiveCapture(['TEST101', 'TEST102', 'TEST103']);
+  const report = compareIdentityRegistries(registry([original]), registry([current]), registry([]), new Set(), { catalog, candidateCourses: {} });
+  assert.deepEqual(report.failures, []);
+  assert.deepEqual(report.lost_relationships_by_type, {});
+  assert.deepEqual(report.expected_relationship_losses_by_type, { includes_course: 3 });
+  assert.deepEqual(report.inactive_catalog_evidence?.courses.map(course => [course.course_key, course.raw_pointer, course.status]), [
+    ['TEST 101', '/courses/0', 'Inactive'], ['TEST 102', '/courses/1', 'Inactive'], ['TEST 103', '/courses/2', 'Inactive'],
+  ]);
+  assert.equal(report.inactive_catalog_evidence?.collected_at, catalog.scrapedAt);
+});
+
+test('active, absent, duplicate, undated and still-published courses remain blocking losses', () => {
+  const original = subject('TEST');
+  const prior = registry([original]); const current = registry([{ ...original, relationships: [] }]);
+  const catalog = inactiveCapture(['TEST101', 'TEST102', 'TEST103']);
+  const cases = [
+    { catalog: { ...catalog, courses: [] }, candidateCourses: {} },
+    { catalog: { ...catalog, courses: catalog.courses.map(row => ({ ...row, status: 'Active' })) }, candidateCourses: {} },
+    { catalog: { ...catalog, courses: catalog.courses.flatMap(row => [row, row]) }, candidateCourses: {} },
+    { catalog: { ...catalog, courses: catalog.courses.flatMap(row => [row, { ...row, status: 'Active' }]) }, candidateCourses: {} },
+    { catalog: { ...catalog, scrapedAt: 'not dated' }, candidateCourses: {} },
+    { catalog },
+    { catalog, candidateCourses: { 'TEST 101': {}, 'TEST 102': {}, 'TEST 103': {} } },
+  ];
+  for (const evidence of cases) {
+    const report = compareIdentityRegistries(prior, current, registry([]), new Set(), evidence);
+    assert.deepEqual(report.failures, ['3 of 3 includes_course relationships disappeared (at most 2 allowed)']);
+    assert.deepEqual(report.expected_relationship_losses_by_type, {});
+  }
+});
+
+test('a derived subject is expected missing only when all its prior courses are explicitly inactive and no current courses remain', () => {
+  const subjects = ['AAA', 'BBB', 'CCC'].map(code => subject(code, [101]));
+  const prior = registry(subjects); const current = registry([]);
+  const catalog = inactiveCapture(['AAA101', 'BBB101', 'CCC101']);
+  const report = compareIdentityRegistries(prior, current, current, new Set(), { catalog, candidateCourses: {} });
+  assert.deepEqual(report.failures, []);
+  assert.equal(report.expected_losses.inactive_catalog_subjects, 3);
+  assert.equal(report.inactive_catalog_evidence?.subjects.length, 3);
+  for (const evidence of [
+    { catalog: { ...catalog, courses: [] }, candidateCourses: {} },
+    { catalog: { ...catalog, courses: [...catalog.courses, ...['AAA', 'BBB', 'CCC'].map(code => ({ code: `${code}999`, status: 'Active' }))] }, candidateCourses: {} },
+    { catalog, candidateCourses: { 'AAA 999': {}, 'BBB 999': {}, 'CCC 999': {} } },
+  ]) {
+    const rejected = compareIdentityRegistries(prior, current, current, new Set(), evidence);
+    assert.equal(rejected.expected_losses.inactive_catalog_subjects, 0);
+    assert.deepEqual(rejected.failures, ['3 of 3 subject identities disappeared (at most 2 allowed)']);
+  }
+  const mixed = registry(subjects.map(s => ({ ...s, relationships: [...s.relationships!, { ...s.relationships![0], target_record: { collection: 'courses', source_key: 'academic-programs', source_record_key: `${s.name} 999` } } as CampusIdentityRelationship] })));
+  assert.equal(compareIdentityRegistries(mixed, current, current, new Set(), { catalog, candidateCourses: {} }).expected_losses.inactive_catalog_subjects, 0);
 });

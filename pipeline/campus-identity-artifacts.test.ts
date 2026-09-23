@@ -1,8 +1,34 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { Pool } from 'pg';
-import { insertCampusIdentityArtifacts } from './campus-identity-artifacts';
+import { Pool, type PoolClient } from 'pg';
+import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from './campus-identity-artifacts';
 import type { CampusIdentities } from '../src/data-v2/campus-identities';
+import { subjectIdentityId } from '../src/data-v2/course-subjects';
+
+test('continuity uses actual candidate courses when accepting source-inactive exclusions', async () => {
+  const seed: CampusIdentities = { schema_version: 1, entities: [] };
+  const original: CampusIdentities['entities'][number] = { id: subjectIdentityId('TEST'), kind: 'subject', name: 'TEST', aliases: [],
+    links: [{ collection: 'subjects', source_key: 'course-subjects', source_record_keys: ['TEST'] }],
+    relationships: [101, 102, 103].map(number => ({ type: 'includes_course',
+      target_record: { collection: 'courses', source_key: 'academic-programs', source_record_key: `TEST ${number}` },
+      evidence: [{ collection: 'courses', source_key: 'academic-programs', source_record_key: `TEST ${number}`, field: 'code' }],
+    })),
+  };
+  const prior = { schema_version: 1, entities: [original] };
+  const candidate = { schema_version: 1, entities: [{ ...original, relationships: [] }] };
+  const catalog = { scrapedAt: '2026-09-23T19:44:12.134Z', courses: [101, 102, 103].map(number => ({ code: `TEST${number}`, status: 'Inactive' })) };
+  const client = (courses: unknown) => ({ query: async (sql: string) => {
+    if (sql.includes("WHERE v.status='active'")) return { rows: [{ id: 'prior', payload: prior }] };
+    if (sql.includes("artifact_key='campus-identities'")) return { rows: [{ payload: candidate }] };
+    if (sql.includes("artifact_key='courses'")) return { rows: courses === undefined ? [] : [{ payload: courses }] };
+    if (sql.includes("artifact_key='catalog-conveners'")) return { rows: [] };
+    throw new Error(`Unexpected query: ${sql}`);
+  } }) as unknown as Pick<PoolClient, 'query'>;
+  const report = await verifyIdentityContinuity(client({}), 'candidate', seed, { catalog });
+  assert.equal(report.expected_relationship_losses_by_type.includes_course, 3);
+  await assert.rejects(verifyIdentityContinuity(client(undefined), 'candidate', seed, { catalog }), /3 of 3 includes_course/);
+  await assert.rejects(verifyIdentityContinuity(client({ 'TEST 101': {}, 'TEST 102': {}, 'TEST 103': {} }), 'candidate', seed, { catalog }), /3 of 3 includes_course/);
+});
 
 const connection = process.env.IDENTITY_TEST_DATABASE_URL;
 test('PostgreSQL staged publishing is repeatable, refreshes links and refuses active mutation', { skip: !connection }, async () => {

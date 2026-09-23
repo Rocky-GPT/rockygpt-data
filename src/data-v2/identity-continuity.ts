@@ -1,4 +1,7 @@
 import type { CampusIdentities, CampusIdentityRelationship } from './campus-identities';
+import { createHash } from 'node:crypto';
+import { courseSubjectCode, subjectIdentityId } from './course-subjects';
+import type { ConvenerReplacementReview } from './convener-continuity';
 
 /**
  * @module data-v2/identity-continuity
@@ -10,7 +13,14 @@ import type { CampusIdentities, CampusIdentityRelationship } from './campus-iden
  *
  * Expected churn does not count as a loss: event occurrences whose linked rows
  * have all started, and identities deliberately removed from the reviewed Git
- * seed. A changed kind for the same ID fails, except a club becoming an
+ * seed. The quality-checked current catalog may also explicitly mark a missing
+ * course Inactive: only a unique exact course row explains its subject link's
+ * removal. A derived subject can disappear when every prior course has that
+ * proof and neither raw nor published current courses remain under its code.
+ * This describes catalog inclusion, not institutional subject retirement.
+ * A convener replacement needs both captured Convener fields and uniquely
+ * verified old/new faculty targets; missing source evidence remains a loss.
+ * A changed kind for the same ID fails, except a club becoming an
  * organization or back (Archway recategorized the same group). Otherwise a kind or
  * relationship type fails only when it loses more than 10% of its previous
  * members (at least 2), so one departure does not stop a daily refresh while a
@@ -25,6 +35,15 @@ export const LOSS_MINIMUM = 2;
 const REPORTED_LOSSES = 100;
 
 export interface IdentityLoss { id: string; kind: string; name: string }
+export interface IdentityContinuityEvidence {
+  /** The complete catalog capture already accepted by source quality/provenance gates. */
+  catalog?: unknown;
+  /** The actual candidate release's courses artifact, never inferred from the raw capture. */
+  candidateCourses?: unknown;
+  /** Proofs produced by reviewConvenerReplacements from both release artifacts. */
+  convenerReplacements?: ConvenerReplacementReview;
+}
+interface InactiveCourseEvidence { course_key: string; raw_pointer: string; status: 'Inactive' }
 export interface IdentityContinuityReport {
   baseline: 'active_release' | 'none';
   /** Why an existing active registry could not serve as the baseline. */
@@ -32,7 +51,14 @@ export interface IdentityContinuityReport {
   previous_entities: number;
   candidate_entities: number;
   added_entities: number;
-  expected_losses: { past_event_occurrences: number; retired_in_seed: number };
+  expected_losses: { past_event_occurrences: number; retired_in_seed: number; inactive_catalog_subjects: number };
+  expected_relationship_losses_by_type: Record<string, number>;
+  convener_replacement_evidence?: ConvenerReplacementReview;
+  /** Catalog inclusion changed; this does not assert institutional subject retirement. */
+  inactive_catalog_evidence?: {
+    collected_at: string; content_hash: string; courses: InactiveCourseEvidence[];
+    subjects: { id: string; code: string; previous_course_keys: string[] }[];
+  };
   lost_by_kind: Record<string, number>;
   lost: IdentityLoss[];
   lost_truncated: boolean;
@@ -58,13 +84,15 @@ export function compareIdentityRegistries(
   candidate: CampusIdentities,
   seed: CampusIdentities,
   pastEventIds: ReadonlySet<string> = new Set(),
+  evidence: IdentityContinuityEvidence = {},
 ): IdentityContinuityReport {
   const report: IdentityContinuityReport = {
     baseline: previous ? 'active_release' : 'none',
     previous_entities: previous?.entities.length ?? 0,
     candidate_entities: candidate.entities.length,
     added_entities: 0,
-    expected_losses: { past_event_occurrences: 0, retired_in_seed: 0 },
+    expected_losses: { past_event_occurrences: 0, retired_in_seed: 0, inactive_catalog_subjects: 0 },
+    expected_relationship_losses_by_type: {},
     lost_by_kind: {},
     lost: [],
     lost_truncated: false,
@@ -73,6 +101,51 @@ export function compareIdentityRegistries(
     failures: [],
   };
   if (!previous) return report;
+  const convenerReplacements = new Set(evidence.convenerReplacements?.replacements.map(proof => proof.relationship_key));
+  if (evidence.convenerReplacements) report.convener_replacement_evidence = evidence.convenerReplacements;
+  const catalog = evidence.catalog as { scrapedAt?: unknown; courses?: unknown } | undefined;
+  const candidateCourses = evidence.candidateCourses;
+  const validCatalog = catalog && typeof catalog.scrapedAt === 'string' && Number.isFinite(Date.parse(catalog.scrapedAt))
+    && Array.isArray(catalog.courses) && candidateCourses && typeof candidateCourses === 'object' && !Array.isArray(candidateCourses);
+  const inactive = new Map<string, InactiveCourseEvidence>();
+  const currentRawSubjects = new Set<string>();
+  const candidateCourseKeys = new Set(Object.keys(candidateCourses && typeof candidateCourses === 'object' ? candidateCourses : {}));
+  if (validCatalog) {
+    const byCode = new Map<string, { index: number; status: unknown }[]>();
+    for (const [index, value] of (catalog.courses as unknown[]).entries()) {
+      if (!value || typeof value !== 'object' || typeof (value as { code?: unknown }).code !== 'string') continue;
+      const row = value as { code: string; status?: unknown };
+      const code = row.code.replace(/\s+/g, '').replace(/([A-Z]+)(\d)/, '$1 $2').trim();
+      byCode.set(code, [...(byCode.get(code) || []), { index, status: row.status }]);
+      if (row.status !== 'Inactive') {
+        const subject = courseSubjectCode(code); if (subject) currentRawSubjects.add(subject);
+      }
+    }
+    for (const [code, rows] of byCode) if (rows.length === 1 && rows[0].status === 'Inactive' && !candidateCourseKeys.has(code)) {
+      inactive.set(code, { course_key: code, raw_pointer: `/courses/${rows[0].index}`, status: 'Inactive' });
+    }
+    report.inactive_catalog_evidence = { collected_at: catalog.scrapedAt as string,
+      content_hash: createHash('sha256').update(JSON.stringify(catalog)).digest('hex'), courses: [], subjects: [] };
+  }
+  const usedInactive = new Map<string, InactiveCourseEvidence>();
+  const inactiveTarget = (relation: CampusIdentityRelationship): string | undefined => {
+    if (relation.type !== 'includes_course' || !('target_record' in relation)) return undefined;
+    const target = relation.target_record;
+    return target.collection === 'courses' && target.source_key === 'academic-programs' && inactive.has(target.source_record_key)
+      ? target.source_record_key : undefined;
+  };
+  const acceptInactiveSubject = (entity: CampusIdentities['entities'][number]): boolean => {
+    if (!report.inactive_catalog_evidence || entity.kind !== 'subject') return false;
+    const codes = entity.links.filter(link => link.collection === 'subjects' && link.source_key === 'course-subjects').flatMap(link => link.source_record_keys);
+    if (codes.length !== 1 || entity.id !== subjectIdentityId(codes[0]) || currentRawSubjects.has(codes[0])
+      || [...candidateCourseKeys].some(key => courseSubjectCode(key) === codes[0])) return false;
+    const relations = (entity.relationships || []).filter(relation => relation.type === 'includes_course');
+    const keys = relations.map(inactiveTarget);
+    if (!keys.length || keys.some(key => !key || courseSubjectCode(key) !== codes[0])) return false;
+    for (const key of keys as string[]) usedInactive.set(key, inactive.get(key)!);
+    report.inactive_catalog_evidence.subjects.push({ id: entity.id, code: codes[0], previous_course_keys: keys as string[] });
+    return true;
+  };
   const current = new Map(candidate.entities.map(entity => [entity.id, entity]));
   const previousIds = new Set(previous.entities.map(entity => entity.id));
   const seedIds = new Set(seed.entities.map(entity => entity.id));
@@ -89,6 +162,8 @@ export function compareIdentityRegistries(
       report.expected_losses.past_event_occurrences += 1;
     } else if (seedKinds.has(entity.kind) && !seedIds.has(entity.id)) {
       report.expected_losses.retired_in_seed += 1;
+    } else if (acceptInactiveSubject(entity)) {
+      report.expected_losses.inactive_catalog_subjects += 1;
     } else {
       lost.push({ id: entity.id, kind: entity.kind, name: entity.name });
       report.lost_by_kind[entity.kind] = (report.lost_by_kind[entity.kind] || 0) + 1;
@@ -107,10 +182,21 @@ export function compareIdentityRegistries(
       if ('target_entity_id' in relation && !current.has(relation.target_entity_id)) continue;
       comparable[relation.type] = (comparable[relation.type] || 0) + 1;
       if (!candidateRelationships.has(relationshipKey(entity.id, relation))) {
+        if (relation.type === 'convener' && convenerReplacements.has(relationshipKey(entity.id, relation))) {
+          report.expected_relationship_losses_by_type.convener = (report.expected_relationship_losses_by_type.convener || 0) + 1;
+          continue;
+        }
+        const inactiveCode = entity.kind === 'subject' ? inactiveTarget(relation) : undefined;
+        if (inactiveCode) {
+          usedInactive.set(inactiveCode, inactive.get(inactiveCode)!);
+          report.expected_relationship_losses_by_type.includes_course = (report.expected_relationship_losses_by_type.includes_course || 0) + 1;
+          continue;
+        }
         report.lost_relationships_by_type[relation.type] = (report.lost_relationships_by_type[relation.type] || 0) + 1;
       }
     }
   }
+  if (report.inactive_catalog_evidence) report.inactive_catalog_evidence.courses = [...usedInactive.values()].sort((a, b) => a.course_key.localeCompare(b.course_key));
 
   for (const change of report.kind_changes) {
     if (family(change.from) !== family(change.to)) {

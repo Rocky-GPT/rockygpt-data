@@ -38,7 +38,8 @@ test('offline normalization replays complete captures and replaces both projecti
     assert.deepEqual(f.read('public/data/events.json'),f.read('data/normalized/events.json'));
     assert.equal(f.read('public/data/clubs.json')[0].clubId,'123');
     assert.equal(f.read('data/normalized/menu-week.json').dates[0].date,'2026-09-23');
-    assert.equal(f.read('data/normalized/hours.json').length,1);
+    assert.equal(f.read('data/normalized/hours.json').length,2);
+    assert.equal(f.read('data/normalized/hours.json')[1].hours.Monday,'Hours unavailable');
     assert.equal(f.read('data/normalized/hours-omissions.json').omitted[0].reason,'unbounded-term');
     assert.equal(f.read('public/data/programs.json').generatedAt,captured);
     assert.equal(f.read('public/data/courses.json')['COMP 101'].name,'New captured course');

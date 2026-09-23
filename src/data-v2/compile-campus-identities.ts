@@ -168,7 +168,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
         continue;
       }
       if (!found.length) {
-        unresolved.push({ entity: entity.name, collection: link.collection, reason: 'No current source row satisfies the reviewed selector; prior identity is retained in the registry.' });
+        unresolved.push({ entity: entity.name, collection: link.collection, reason: 'No current source row satisfies the reviewed selector. The seed is retained, but an identity is published only if another verified record link resolves.' });
         continue;
       }
       if (!link.selector) for (const key of link.source_record_keys) if (!found.some(c => c.key === key)) {
