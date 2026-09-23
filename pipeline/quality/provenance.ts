@@ -45,7 +45,7 @@ export const SOURCE_RAW_DATASETS: Record<string, string[]> = {
   housing: ['housing'],
   health: ['health'],
   counseling: ['counseling'],
-  faculty: ['faculty'],
+  faculty: ['faculty', 'faculty-sources'],
 };
 
 export const RAW_DATASET_FILES: Record<string, string> = {
@@ -68,6 +68,7 @@ export const RAW_DATASET_FILES: Record<string, string> = {
   health: 'health.raw.json',
   counseling: 'counseling.raw.json',
   faculty: 'faculty.raw.json',
+  'faculty-sources': 'faculty-sources.raw.json',
 };
 
 export type SourceProvenanceStatus = 'fresh' | 'stale' | 'unknown' | 'static';

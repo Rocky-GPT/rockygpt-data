@@ -1,0 +1,398 @@
+{
+  "reviewed_at": "2026-09-23",
+  "source_capture": "faculty-sources.raw.json",
+  "scope": "Source-grounded correction of existing entity links, not an assertion of email ownership",
+  "entities": [
+    {
+      "entity_id": "b74c8261-b1e6-47d7-a5d8-58ed2555d23a",
+      "name": "Leigh Cregan Keller",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "lkeller1@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Leigh%20Cregan%20Keller"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:leigh-cregan-keller:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "6bcbf51f-6174-49ed-8f7f-9b0ade23be84",
+      "name": "Linda Reppert",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "lreppert@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Linda%20Reppert"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:linda-reppert:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "34815fd5-6e94-4e24-afdc-f157e0761c10",
+      "name": "Tibor Csokasi",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "tcsokasi@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Tibor%20Csokasi"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:tibor-csokasi:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "a85989b8-9702-4c6b-9871-5499932b90e0",
+      "name": "Katie Cohen",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "kcohen1@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Katie%20Cohen"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:katie-cohen:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "9c4930b2-f57a-4dc1-8093-51c0e26f85c7",
+      "name": "Christina Connor",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "cconnor@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Christina%20Connor"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:christina-connor:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "59b9f8c5-c7ca-4a81-86ca-2171ff7015e6",
+      "name": "Shirley Knight",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "sknight@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Shirley%20Knight"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:shirley-knight:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "71bf5936-d9ee-476d-8923-f79f162d8535",
+      "name": "Susan Kurzmann",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "skurzman@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Susan%20Kurzmann"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:susan-kurzmann:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "e43e9da8-b8f5-4928-a446-6690de74cab3",
+      "name": "Victoria Sciancalepore",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "vscianca@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Victoria%20Sciancalepore"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:victoria-sciancalepore:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "71cdf580-a699-4076-9972-d5208bb00c92",
+      "name": "Marcia M. Sexton",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "msexton@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Marcia%20M.%20Sexton"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:marcia-m-sexton:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "205abe5d-f13c-41d9-878d-37bf6dfa137a",
+      "name": "Elizabeth Siecke",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "esiecke@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Elizabeth%20Siecke"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:elizabeth-siecke:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "a1f91a94-bc40-4686-8039-f84cfa0fb20d",
+      "name": "Madel Tisi",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "mtisi@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Madel%20Tisi"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:madel-tisi:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "ae910b9b-3957-45c4-8a0b-1f0a63d25c2f",
+      "name": "Samantha Wittenberg",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "switten1@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Samantha%20Wittenberg"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:samantha-wittenberg:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "0b2a7a21-e7e0-4ad9-90e9-a326c8efd587",
+      "name": "Robert JP Graham",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "rgraham6@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Robert%20JP%20Graham"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:robert-jp-graham:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "e022694e-1042-4e24-b8b6-a9f9e53d4d83",
+      "name": "Stephanie Jones",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "sjones@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Stephanie%20Jones"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:stephanie-jones:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "86829900-ecea-4af0-9469-0933826f8ddb",
+      "name": "Lili Pasaporte",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "lpasapor@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Lili%20Pasaporte"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:lili-pasaporte:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "d37a4c60-eab3-46f8-99a3-ee7e9f7ae5b7",
+      "name": "Anita Cappello",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "acappell@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Anita%20Cappello"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:anita-cappello:library-faculty-staff"
+          ]
+        }
+      ]
+    },
+    {
+      "entity_id": "0652654c-9785-4b68-bbf2-13deb6113eba",
+      "name": "Vito Savino",
+      "source_url": "https://www.ramapo.edu/library/staff/",
+      "previous_inferred_email": "vsavino@ramapo.edu",
+      "basis": "Exact named staff card in the captured shared library listing; old email was derived from a contact-form username without source support. The persistent person ID is unchanged.",
+      "links": [
+        {
+          "collection": "faculty",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Vito%20Savino"
+          ]
+        },
+        {
+          "collection": "contacts",
+          "source_key": "faculty",
+          "source_record_keys": [
+            "faculty:vito-savino:library-faculty-staff"
+          ]
+        }
+      ]
+    }
+  ]
+}

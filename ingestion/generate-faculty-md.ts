@@ -12,7 +12,9 @@ interface ContextFacultyProfile {
   email?: string;
   phone?: string;
   courses: string[];
-  focusAreas: string[];
+  education: string[];
+  teachingInterests: string[];
+  researchInterests: string[];
   publishedResearch: string[];
   bio?: string;
   profileUrl?: string;
@@ -22,7 +24,6 @@ const DATA_DIR = path.join(process.cwd(), 'data', 'normalized');
 const OUTPUT_DIR = path.join(process.cwd(), 'data', 'context', 'academic');
 const JSON_INPUT_PATH = path.join(DATA_DIR, 'faculty.json');
 const MARKDOWN_OUTPUT_PATH = path.join(OUTPUT_DIR, 'faculty.md');
-const MAX_BIO_LENGTH = 500;
 
 function normalizeText(value?: string): string | undefined {
   if (!value) return undefined;
@@ -30,12 +31,7 @@ function normalizeText(value?: string): string | undefined {
   return trimmed || undefined;
 }
 
-function truncate(value: string, maxLength: number): string {
-  if (value.length <= maxLength) return value;
-  return `${value.slice(0, maxLength - 3).trimEnd()}...`;
-}
-
-function normalizeList(values: string[] | undefined, maxLength = 8): string[] {
+function normalizeList(values: string[] | undefined): string[] {
   if (!Array.isArray(values)) return [];
   const deduped = Array.from(
     new Set(
@@ -44,7 +40,7 @@ function normalizeList(values: string[] | undefined, maxLength = 8): string[] {
         .filter((value): value is string => Boolean(value))
     )
   );
-  return deduped.slice(0, maxLength);
+  return deduped;
 }
 
 function toContextProfiles(profiles: FacultyProfile[]): ContextFacultyProfile[] {
@@ -56,12 +52,11 @@ function toContextProfiles(profiles: FacultyProfile[]): ContextFacultyProfile[] 
         const school = normalizeText(profile.school);
         if (!name || !title || !school) return null;
 
-        const courses = normalizeList(profile.courses, 10);
-        const focusAreas = normalizeList(
-          [...(profile.teachingInterests || []), ...(profile.researchInterests || [])],
-          10
-        );
-        const publishedResearch = normalizeList(profile.publishedResearch, 5);
+        const courses = normalizeList(profile.courses);
+        const education = normalizeList(profile.education);
+        const teachingInterests = normalizeList(profile.teachingInterests);
+        const researchInterests = normalizeList(profile.researchInterests);
+        const publishedResearch = normalizeList(profile.publishedResearch);
         const bio = normalizeText(profile.bio);
 
         return {
@@ -72,9 +67,11 @@ function toContextProfiles(profiles: FacultyProfile[]): ContextFacultyProfile[] 
           email: normalizeText(profile.email),
           phone: normalizeText(profile.phone),
           courses,
-          focusAreas,
+          education,
+          teachingInterests,
+          researchInterests,
           publishedResearch,
-          bio: bio ? truncate(bio, MAX_BIO_LENGTH) : undefined,
+          bio,
           profileUrl: normalizeText(profile.profileUrl),
         };
       })
@@ -99,10 +96,19 @@ function generateMarkdown() {
     process.exit(1);
   }
 
-  const contextProfiles = toContextProfiles(profiles);
-  console.log(`Loaded ${profiles.length} profiles from JSON.`);
-  console.log(`Selected ${contextProfiles.length} profiles for context markdown.`);
+  const sourceCapture = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'data/raw/faculty-sources.raw.json'), 'utf8')) as {
+    pages: Array<{ requestedUrl: string; url: string; fetchedAt: string }>;
+  };
+  const collectedAt = Object.fromEntries(sourceCapture.pages.flatMap(page =>
+    [[page.requestedUrl, page.fetchedAt], [page.url, page.fetchedAt]]));
+  const markdown = renderFacultyMarkdown(profiles, collectedAt);
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  fs.writeFileSync(MARKDOWN_OUTPUT_PATH, markdown, 'utf-8');
+  console.log(`Generated complete faculty context for ${profiles.length} profiles at ${MARKDOWN_OUTPUT_PATH}`);
+}
 
+export function renderFacultyMarkdown(profiles: FacultyProfile[], collectedAt: Record<string, string> = {}): string {
+  const contextProfiles = toContextProfiles(profiles);
   const frontmatter = buildFrontmatter({
     source_url: "https://www.ramapo.edu/faculty/",
     title: "Faculty Directory",
@@ -112,33 +118,33 @@ function generateMarkdown() {
 
   let markdown = frontmatter + '# Ramapo College Faculty Directory\n\n';
   markdown += `*Generated (UTC): ${getGeneratedTimestamp()}*\n\n`;
-  markdown += '*This context file contains only fields needed for Q&A retrieval.*\n\n';
+  markdown += '*Source-backed faculty profile content. Profile course lists are undated and do not establish current teaching assignments.*\n\n';
   markdown += '---\n\n';
 
   contextProfiles.forEach((profile) => {
     markdown += `## ${profile.name}\n\n`;
+    if (profile.profileUrl) {
+      markdown += `- URL: ${profile.profileUrl}\n`;
+      if (collectedAt[profile.profileUrl]) markdown += `- Collected At: ${collectedAt[profile.profileUrl]}\n`;
+      markdown += '\n';
+    }
     markdown += `- **Title:** ${profile.title}\n`;
     markdown += `- **School:** ${profile.school}\n`;
     if (profile.office) markdown += `- **Office:** ${profile.office}\n`;
     if (profile.email) markdown += `- **Email:** ${profile.email}\n`;
     if (profile.phone) markdown += `- **Phone:** ${profile.phone}\n`;
     if (profile.courses.length > 0) markdown += `- **Courses:** ${profile.courses.join('; ')}\n`;
-    if (profile.focusAreas.length > 0) {
-      markdown += `- **Focus Areas:** ${profile.focusAreas.join('; ')}\n`;
-    }
+    if (profile.education.length) markdown += `- **Education:** ${profile.education.join('; ')}\n`;
+    if (profile.teachingInterests.length) markdown += `- **Teaching Interests:** ${profile.teachingInterests.join('; ')}\n`;
+    if (profile.researchInterests.length) markdown += `- **Research Interests:** ${profile.researchInterests.join('; ')}\n`;
     if (profile.publishedResearch.length > 0) {
       markdown += `- **Published Research:** ${profile.publishedResearch.join('; ')}\n`;
     }
     if (profile.bio) markdown += `- **Bio:** ${profile.bio}\n`;
-    if (profile.profileUrl) markdown += `- **Profile:** ${profile.profileUrl}\n`;
     markdown += '\n---\n\n';
   });
 
-  if (!fs.existsSync(OUTPUT_DIR)) {
-    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-  }
-  fs.writeFileSync(MARKDOWN_OUTPUT_PATH, markdown, 'utf-8');
-  console.log(`Successfully generated markdown at ${MARKDOWN_OUTPUT_PATH}`);
+  return markdown;
 }
 
-generateMarkdown();
+if (process.argv[1]?.endsWith('generate-faculty-md.ts')) generateMarkdown();

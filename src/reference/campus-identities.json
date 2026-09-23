@@ -7220,26 +7220,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:lkeller1@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Leigh%20Cregan%20Keller"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:lkeller1@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:leigh-cregan-keller:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7252,26 +7242,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:lreppert@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Linda%20Reppert"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:lreppert@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:linda-reppert:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7284,26 +7264,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:tcsokasi@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Tibor%20Csokasi"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:tcsokasi@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:tibor-csokasi:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7316,26 +7286,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:kcohen1@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Katie%20Cohen"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:kcohen1@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:katie-cohen:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7348,26 +7308,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:cconnor@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Christina%20Connor"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:cconnor@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:christina-connor:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7380,26 +7330,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:sknight@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Shirley%20Knight"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:sknight@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:shirley-knight:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7412,26 +7352,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:skurzman@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Susan%20Kurzmann"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:skurzman@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:susan-kurzmann:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7444,26 +7374,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:vscianca@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Victoria%20Sciancalepore"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:vscianca@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:victoria-sciancalepore:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7476,26 +7396,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:msexton@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Marcia%20M.%20Sexton"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:msexton@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:marcia-m-sexton:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7508,26 +7418,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:esiecke@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Elizabeth%20Siecke"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:esiecke@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:elizabeth-siecke:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7540,26 +7440,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:mtisi@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Madel%20Tisi"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:mtisi@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:madel-tisi:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7572,26 +7462,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:switten1@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Samantha%20Wittenberg"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:switten1@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:samantha-wittenberg:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7604,26 +7484,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:rgraham6@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Robert%20JP%20Graham"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:rgraham6@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:robert-jp-graham:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7636,26 +7506,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:sjones@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Stephanie%20Jones"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:sjones@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:stephanie-jones:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7668,26 +7528,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:lpasapor@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Lili%20Pasaporte"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:lpasapor@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:lili-pasaporte:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7700,26 +7550,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:acappell@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Anita%20Cappello"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:acappell@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:anita-cappello:library-faculty-staff"
+          ]
         }
       ]
     },
@@ -7732,26 +7572,16 @@
         {
           "collection": "faculty",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:vsavino@ramapo.edu"
-            ],
-            "evidence": "Original faculty profile URL and unique institutional email identify this person. Shared directory-page URLs are excluded."
-          }
+          "source_record_keys": [
+            "https://www.ramapo.edu/library/staff#name=Vito%20Savino"
+          ]
         },
         {
           "collection": "contacts",
           "source_key": "faculty",
-          "source_record_keys": [],
-          "selector": {
-            "field": "faculty_identity",
-            "values": [
-              "email:vsavino@ramapo.edu"
-            ],
-            "evidence": "Contact derives from this exact faculty profile in buildStructuredDirectoryContacts; field disagreements stay in the originals."
-          }
+          "source_record_keys": [
+            "faculty:vito-savino:library-faculty-staff"
+          ]
         }
       ]
     },

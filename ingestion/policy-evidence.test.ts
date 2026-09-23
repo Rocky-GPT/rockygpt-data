@@ -19,6 +19,8 @@ test('policy qualifiers, timelines, source identity and original collection time
       <h2>Other</h2><p>A separate section must retain its own heading.</p></main>`,
   });
   const dir = fs.mkdtempSync(path.join(os.tmpdir(),'rocky-evidence-'));
+  page.contacts = Array.from({ length: 9 }, (_, i) => ({ email: `office${i}@example.edu` }));
+  page.documents = Array.from({ length: 16 }, (_, i) => ({ label: `Form ${i}`, url: `https://example.edu/form${i}.pdf` }));
   try {
     const inputFilePath = path.join(dir,'input.json');
     const outputFilePath = path.join(dir,'output.md');
@@ -31,6 +33,8 @@ test('policy qualifiers, timelines, source identity and original collection time
     assert.match(text,/Condition 8/);
     assert.match(text,/Final condition after the old truncation boundary/);
     assert.match(text,/September 7, 2026 \| Fall residents/);
+    for (const contact of page.contacts) assert.ok(text.includes(contact.email!));
+    for (const document of page.documents) assert.ok(text.includes(document.url));
     const policyChunks = chunks.filter(c => c.canonicalUrl === page.url);
     assert.ok(policyChunks.length > 3);
     assert.ok(policyChunks.every(c=>c.collectedAt === collectedAt && c.content.length <= 1250));
