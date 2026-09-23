@@ -34,3 +34,22 @@ test('HTML crawl skips verified calendar export routes without guessing at ordin
     assert.equal(isClubCalendarExportUrl(url), false, url);
   }
 });
+
+test('offline rebuild retains complete mission, benefits and membership text from source cards', () => {
+  const mission = ('Mission: ' + 'Long but relevant published narrative. '.repeat(300)).trim();
+  const seeds = [{ name: 'Community Club', category: 'Student Organization',
+    websiteUrl: 'https://archway.ramapo.edu/community/', mission,
+    memberBenefits: 'Service projects and mentoring.', membershipInfo: 'Lifetime membership',
+    externalWebsiteUrl: 'https://community.example/', groupmeGroups: [{ name: 'Members', url: 'https://groupme.com/join_group/123/abcdefgh' }],
+    signupPrompt: 'Select the group and click Join.', rawCardText: 'Raw navigation and controls' }];
+  const details: RawDatasetV1 = { version: '1.0', dataset: 'clubs-detail', collectedAt: '2026-09-23T00:00:00Z',
+    seedUrls: [], stats: { pagesFetched: 0, pagesFailed: 0, externalLinksSeen: 0 }, pages: [] };
+  const [club] = rebuildClubsFromRaw(seeds, details);
+  assert.equal(club.mission, mission);
+  assert.equal(club.memberBenefits, seeds[0].memberBenefits);
+  assert.equal(club.membershipInfo, seeds[0].membershipInfo);
+  assert.equal(club.externalWebsiteUrl, seeds[0].externalWebsiteUrl);
+  assert.deepEqual(club.groupmeGroups, seeds[0].groupmeGroups);
+  assert.equal('signupPrompt' in club, false);
+  assert.equal('rawCardText' in club, false);
+});

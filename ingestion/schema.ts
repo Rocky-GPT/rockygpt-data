@@ -98,6 +98,9 @@ function asOptionalFoodCategory(value: unknown): 'food' | 'snacks' | undefined {
 }
 
 export interface ArchwayClub {
+  mission?: string;
+  memberBenefits?: string;
+  membershipInfo?: string;
   clubId?: string;
   name: string;
   category: string;
@@ -398,6 +401,9 @@ export function validateArchwayClubs(input: unknown): ArchwayClub[] {
       normalized.bucket = bucketRaw as ArchwayClub['bucket'];
     }
 
+    const mission = asOptionalString(club.mission);
+    const memberBenefits = asOptionalString(club.memberBenefits);
+    const membershipInfo = asOptionalString(club.membershipInfo);
     const logoUrl = asOptionalString(club.logoUrl);
     const clubId = asOptionalString(club.clubId);
     const websiteUrl = asOptionalString(club.websiteUrl);
@@ -427,6 +433,9 @@ export function validateArchwayClubs(input: unknown): ArchwayClub[] {
         return { name, url };
       })
       .filter((group): group is { name: string; url: string } => group !== null);
+    if (mission) normalized.mission = mission;
+    if (memberBenefits) normalized.memberBenefits = memberBenefits;
+    if (membershipInfo) normalized.membershipInfo = membershipInfo;
     if (logoUrl) normalized.logoUrl = logoUrl;
     if (clubId && /^\d+$/.test(clubId)) normalized.clubId = clubId;
     if (websiteUrl) normalized.websiteUrl = websiteUrl;

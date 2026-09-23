@@ -1054,6 +1054,14 @@ export function toNormalizedClub(club: ClubSeedRecord, signal?: ClubSignal): Arc
 
   return {
     name: club.name,
+    mission: club.mission,
+    memberBenefits: club.memberBenefits,
+    membershipInfo: club.membershipInfo,
+    externalWebsiteUrl: club.externalWebsiteUrl,
+    facebookUrl: club.facebookUrl,
+    twitterUrl: club.twitterUrl,
+    linkedinUrl: club.linkedinUrl,
+    groupmeGroups: club.groupmeGroups,
     clubId: club.clubId,
     category: club.category || 'Other',
     bucket,

@@ -10,6 +10,9 @@ interface ContextClub {
   websiteUrl?: string;
   email?: string;
   instagramUrl?: string;
+  mission?: string;
+  memberBenefits?: string;
+  membershipInfo?: string;
 }
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'normalized');
@@ -35,6 +38,9 @@ function toContextClubs(clubs: ArchwayClub[]): ContextClub[] {
           websiteUrl: normalizeText(club.websiteUrl),
           email: normalizeText(club.email),
           instagramUrl: normalizeText(club.instagramUrl),
+          mission: normalizeText(club.mission),
+          memberBenefits: normalizeText(club.memberBenefits),
+          membershipInfo: normalizeText(club.membershipInfo),
         };
       })
       .filter((club): club is ContextClub => club !== null),
@@ -77,6 +83,9 @@ function generateMarkdown() {
   contextClubs.forEach((club) => {
     markdown += `## ${club.name}\n`;
     markdown += `- **Category:** ${club.category}\n`;
+    if (club.mission) markdown += `- **Mission:** ${club.mission}\n`;
+    if (club.memberBenefits) markdown += `- **Member benefits:** ${club.memberBenefits}\n`;
+    if (club.membershipInfo) markdown += `- **Archway membership:** ${club.membershipInfo}\n`;
     if (club.websiteUrl) markdown += `- **Link:** [Archway Page](${club.websiteUrl})\n`;
     if (club.email) markdown += `- **Email:** ${club.email}\n`;
     if (club.instagramUrl) markdown += `- **Instagram:** [Link](${club.instagramUrl})\n`;
