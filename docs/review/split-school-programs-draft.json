@@ -1,0 +1,385 @@
+{
+  "status": "DRAFT for human review; not published and not read by any compiler",
+  "drafted_at": "2026-09-23T14:29:25Z",
+  "question": "Which current school offers each program the catalog still files under the split School of Social Science and Human Services?",
+  "method": "Each program is matched to the current school page's own Academic Programs list, or to the Teacher Education site that the AHE page links. A person must confirm each match before it is published.",
+  "programs": [
+    {
+      "program": "Educational Leadership MA",
+      "catalog_code": "MG-MA-EDLD",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": null,
+      "status": "unplaced",
+      "evidence": null,
+      "note": "No current school page lists Educational Leadership, and its program page names no school."
+    },
+    {
+      "program": "Elementary Education BS",
+      "catalog_code": "SS-BS-ELED",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Arts, Humanities, and Education",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/ahe/",
+        "listed_as": "Elementary Education (Teacher Certification Program)",
+        "observed_at": "2026-09-23T14:29:24Z",
+        "page_sha256": "2b0b5e56b784215985c10a73967beb91ec187a6fcf0884c673a647b7d619ff4d"
+      },
+      "note": "The Teacher Education site (/te/), linked from AHE, also lists the Bachelor of Science in Elementary Education."
+    },
+    {
+      "program": "Elementary Education BS (TA to Teacher)",
+      "catalog_code": "SS-BS-EETA",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Arts, Humanities, and Education",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/te/",
+        "listed_as": "TA to Teacher",
+        "observed_at": "2026-09-23T14:29:25Z",
+        "page_sha256": "2832d3e454d1524365cfb1f1dbcb862d049c206e8b9796fd108543e164045476"
+      },
+      "note": "Listed under the Teacher Education and Certification Program (/te/), which AHE links as its Teacher Education Programs."
+    },
+    {
+      "program": "Law and Society BA",
+      "catalog_code": "SS-BA-LAWS",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Law and Society Bachelor of Arts",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Neuroscience BS",
+      "catalog_code": "SS-BS-NUR5",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Neuroscience M m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Prov-MASE",
+      "catalog_code": "SS-BS-PEDS",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Arts, Humanities, and Education",
+      "status": "tentative",
+      "evidence": {
+        "page": "https://www.ramapo.edu/ahe/",
+        "listed_as": "Special Education (MASE)",
+        "observed_at": "2026-09-23T14:29:24Z",
+        "page_sha256": "2b0b5e56b784215985c10a73967beb91ec187a6fcf0884c673a647b7d619ff4d"
+      },
+      "note": "TENTATIVE: the catalog record has no page; its name suggests the MASE pathway, which AHE lists. Confirm before placing."
+    },
+    {
+      "program": "Psychology BA",
+      "catalog_code": "SS-BA-PSYC",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Psychology Bachelor of Arts",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": "The psychology major page also links to /sssw/."
+    },
+    {
+      "program": "Social Science BA",
+      "catalog_code": "SS-BA-SOSC",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Social Science Bachelor of Arts",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Social Work BSW",
+      "catalog_code": "SS-BSW-SWRK",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Social Work Bachelor of Social Work",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Social Work MSW",
+      "catalog_code": "MG-MSW-SWRK",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Social Work (MSW)",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Sociology BA",
+      "catalog_code": "SS-BA-SOCI",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Sociology Bachelor of Arts",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Special Education MA",
+      "catalog_code": "MG-MA-MASE",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Arts, Humanities, and Education",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/ahe/",
+        "listed_as": "Special Education (MASE)",
+        "observed_at": "2026-09-23T14:29:24Z",
+        "page_sha256": "2b0b5e56b784215985c10a73967beb91ec187a6fcf0884c673a647b7d619ff4d"
+      },
+      "note": null
+    },
+    {
+      "program": "Sustainability BA",
+      "catalog_code": "SS-BA-SUST",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Sustainability Bachelor of Arts",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Special Education 4+1",
+      "catalog_code": "SS-BA-PEDS",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Arts, Humanities, and Education",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/ahe/",
+        "listed_as": "Special Education (4+1 BS/MA)",
+        "observed_at": "2026-09-23T14:29:24Z",
+        "page_sha256": "2b0b5e56b784215985c10a73967beb91ec187a6fcf0884c673a647b7d619ff4d"
+      },
+      "note": null
+    },
+    {
+      "program": "SS-BA-Matric Undeclared",
+      "catalog_code": "SS-BA-UNDC",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": null,
+      "status": "unplaced",
+      "evidence": null,
+      "note": "An undeclared matriculation record, not a program a school lists."
+    },
+    {
+      "program": "Climate Change, Policy and Action Minor",
+      "catalog_code": "SS-MN-CLIM",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Climate Change, Policy and Action m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Contemplative Studies Minor",
+      "catalog_code": "SS-MN-CNST",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Arts, Humanities, and Education",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/ahe/",
+        "listed_as": "Contemplative Studies m",
+        "observed_at": "2026-09-23T14:29:24Z",
+        "page_sha256": "2b0b5e56b784215985c10a73967beb91ec187a6fcf0884c673a647b7d619ff4d"
+      },
+      "note": null
+    },
+    {
+      "program": "Crime and Justice Studies Minor",
+      "catalog_code": "SS-MN-CJS",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Crime and Justice Studies m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Environmental Studies Minor",
+      "catalog_code": "SO-MN-ENST",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Environmental Studies m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": "SNH lists Environmental Science, a different program."
+    },
+    {
+      "program": "Food Studies Minor",
+      "catalog_code": "SS-MN-FDST",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Food Studies m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Gerontology Minor",
+      "catalog_code": "SS-MN-GER",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Gerontology m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": "SNH's Adult Gerontology track is a nursing MSN, a different program."
+    },
+    {
+      "program": "Neuroscience Minor",
+      "catalog_code": "SS-MN-NUR5",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Neuroscience M m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Psychology Minor",
+      "catalog_code": "SS-MN-PSYC",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Psychology Bachelor of Arts M m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Sociology Minor",
+      "catalog_code": "SS-MN-SOCI",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Sociology Bachelor of Arts M m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Substance Use Disorder Minor",
+      "catalog_code": "SS-MN-SUD",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Substance Use Disorders m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Sustainability Minor",
+      "catalog_code": "SS-MN-SUST",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Sustainability Bachelor of Arts M m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "Women's Gender & Sexuality Studies Minor",
+      "catalog_code": "SS-MN-WGSS",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": "School of Social Sciences and Social Work",
+      "status": "proposed",
+      "evidence": {
+        "page": "https://www.ramapo.edu/sssw/",
+        "listed_as": "Women's, Gender and Sexuality Studies m",
+        "observed_at": "2026-09-23T14:29:23Z",
+        "page_sha256": "ad8cffd23712c6b550e76ca1056c1da6b2ea69aa55865c76c65743baafb5ee51"
+      },
+      "note": null
+    },
+    {
+      "program": "SS-BS-Matric Undelcared",
+      "catalog_code": "SS-BS-UNDC",
+      "catalog_school": "School of Social Science and Human Services",
+      "proposed_school": null,
+      "status": "unplaced",
+      "evidence": null,
+      "note": "An undeclared matriculation record, not a program a school lists."
+    }
+  ]
+}
