@@ -1,5 +1,7 @@
 # Campus identities and release compilation
 
+Counts in this document describe the snapshot each section names, as examples of the rules. The current numbers for the latest release (entities, relationships, linked records, aliases and coverage issues) are generated from the Brain's graph export into [campus-graph.md](campus-graph.md); regenerate it with `npm run docs:graph -- EXPORT_JSON` after each release.
+
 The Git registry holds persistent UUIDs and reviewed selectors, not duplicated profiles. A release contains exact links to the original contact, schedule, faculty, program and menu records in that release. Names and aliases locate an identity; relationship evidence distinguishes a program's convener and an undated profile-listed course from the identity itself. Menu items are offerings at a venue, not identities of the venue.
 
 `pipeline/commands/publish-current.ts` inserts original rows and artifacts before calling `insertCampusIdentityArtifacts` inside the candidate transaction. The installer refuses active/retired datasets. It writes eight release artifacts: `campus-identities`, `campus-identity-coverage`, `catalog-conveners`, `event-organizers`, `catalog-course-identities`, `program-requirement-groups`, `campus-buildings` and `campus-schools`. Repeating compilation/upsert against the same staging dataset is idempotent. Activation remains the established atomic release pointer swap.
