@@ -20,6 +20,8 @@ export async function insertCampusIdentityArtifacts(client: Pick<PoolClient, 'qu
     'campus-identity-coverage': result.report,
     'catalog-conveners': catalogConvenersArtifact(rawPrograms),
     'event-organizers': result.eventOrganizers,
+    'catalog-course-identities': result.courseIdentities,
+    'program-requirement-groups': result.requirementGroups,
   })) {
     const content = JSON.stringify(payload);
     await client.query(`INSERT INTO rockygpt_v2.release_artifacts (dataset_version_id,artifact_key,payload,content_hash)
@@ -27,7 +29,7 @@ export async function insertCampusIdentityArtifacts(client: Pick<PoolClient, 'qu
       DO UPDATE SET payload=EXCLUDED.payload,content_hash=EXCLUDED.content_hash`,
     [datasetId, key, content, crypto.createHash('sha256').update(content).digest('hex')]);
   }
-  return { count: 4, coverage: result.report };
+  return { count: 6, coverage: result.report };
 }
 
 /** Compare the committed candidate's registry with the active release's before

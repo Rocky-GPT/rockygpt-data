@@ -16,4 +16,6 @@ fs.writeFileSync(path.join(outputPath, 'campus-identities.json'), JSON.stringify
 fs.writeFileSync(path.join(outputPath, 'campus-identity-coverage.json'), JSON.stringify(result.report, null, 2) + '\n');
 fs.writeFileSync(path.join(outputPath, 'catalog-conveners.json'), JSON.stringify(catalogConvenersArtifact(rawPrograms), null, 2) + '\n');
 fs.writeFileSync(path.join(outputPath, 'event-organizers.json'), JSON.stringify(result.eventOrganizers, null, 2) + '\n');
+fs.writeFileSync(path.join(outputPath, 'catalog-course-identities.json'), JSON.stringify(result.courseIdentities, null, 2) + '\n');
+fs.writeFileSync(path.join(outputPath, 'program-requirement-groups.json'), JSON.stringify(result.requirementGroups, null, 2) + '\n');
 console.log(JSON.stringify({ ...result.report, unresolved: result.report.unresolved.length }, null, 2));

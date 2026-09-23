@@ -4,6 +4,8 @@ import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import { compileArchwayIdentities, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
+import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
+import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -119,7 +121,11 @@ export function catalogConvenersArtifact(raw: unknown): Record<string, unknown> 
  * export. Selectors remain in Git; consumers receive concrete record references.
  * A lost selector is reported, not replaced by a similarity/phone-number guess.
  */
-export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, archwayInputs: ArchwayIdentityInputs = {}): { registry: CampusIdentities; report: IdentityCoverageReport; eventOrganizers: EventOrganizersArtifact } {
+export interface CompiledIdentityArtifacts {
+  registry: CampusIdentities; report: IdentityCoverageReport; eventOrganizers: EventOrganizersArtifact;
+  courseIdentities: CourseIdentitiesArtifact; requirementGroups: RequirementGroupsArtifact;
+}
+export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, archwayInputs: ArchwayIdentityInputs = {}): CompiledIdentityArtifacts {
   validateCampusIdentities(seed);
   const candidates = identityCandidates(snapshot);
   const unresolved: IdentityCoverageIssue[] = [];
@@ -214,7 +220,9 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     for (const link of entity.links) report.linked_records[link.collection] = (report.linked_records[link.collection] || 0) + link.source_record_keys.length;
     for (const relation of entity.relationships || []) report.relationships[relation.type] = (report.relationships[relation.type] || 0) + 1;
   }
-  return { registry, report, eventOrganizers: archway.organizers };
+  const courseIdentities = compileCourseIdentities(snapshot.artifacts.courses);
+  const requirementGroups = compileRequirementGroups(snapshot.artifacts.programs, registry, courseIdentities);
+  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups };
 }
 function listStrings(value: unknown): string[] { return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []; }
 
