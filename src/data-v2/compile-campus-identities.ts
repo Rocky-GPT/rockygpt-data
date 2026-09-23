@@ -87,10 +87,13 @@ function matches(candidate: Candidate, link: CampusIdentityLink): boolean {
  * The reviewed field mapping is documented in docs/campus-identities.md. Never
  * scan other custom fields or accept the old first-faculty fallback as evidence.
  */
-export function explicitCatalogConveners(raw: unknown): Map<string, { profileUrl: string; name: string }[]> {
+const CATALOG_PERSON_FIELDS = ['rJQmj', 'xiQxl'] as const;
+export const explicitCatalogConveners = (raw: unknown) => explicitCatalogProfileLinks(raw, 'rJQmj');
+export const explicitCatalogProgramFaculty = (raw: unknown) => explicitCatalogProfileLinks(raw, 'xiQxl');
+function explicitCatalogProfileLinks(raw: unknown, field: typeof CATALOG_PERSON_FIELDS[number]): Map<string, { profileUrl: string; name: string }[]> {
   const result = new Map<string, { profileUrl: string; name: string }[]>();
   for (const program of list((raw as Row)?.programs)) {
-    const value = (program.customFields as Row)?.rJQmj;
+    const value = (program.customFields as Row)?.[field];
     if (typeof value !== 'string') continue;
     const $ = load(value); const found: { profileUrl: string; name: string }[] = [];
     $('a[href]').each((_, element) => {
@@ -112,8 +115,10 @@ export function catalogConvenersArtifact(raw: unknown): Record<string, unknown> 
     collected_at: string(capture?.scrapedAt) || null,
     source_url: 'https://app.coursedog.com/api/v1/cm/ramapo_banner_ethos/programs/search/%24filters',
     programs: list(capture?.programs).flatMap(program => {
-      const value = (program.customFields as Row)?.rJQmj;
-      return typeof value === 'string' ? [{ catalogCode: string(program.code), catalogUrl: `https://catalog.ramapo.edu/programs/${program.code}`, customFields: { rJQmj: value } }] : [];
+      // Only the reviewed person fields, verbatim; other custom fields are not evidence.
+      const fields = program.customFields as Row | undefined;
+      const customFields = Object.fromEntries(CATALOG_PERSON_FIELDS.flatMap(field => typeof fields?.[field] === 'string' ? [[field, fields[field]]] : []));
+      return Object.keys(customFields).length ? [{ catalogCode: string(program.code), catalogUrl: `https://catalog.ramapo.edu/programs/${program.code}`, customFields }] : [];
     }),
   };
 }
@@ -188,20 +193,37 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     }
   }
   const conveners = explicitCatalogConveners(rawPrograms);
+  const programFaculty = explicitCatalogProgramFaculty(rawPrograms);
+  const reviewedUrl = (url: string) => profileUrlAliases.aliases.find(alias => alias.from === url)?.to || url;
   const programCandidates = candidates.filter(c => c.collection === 'programs');
   for (const entity of entities.filter(e => e.kind === 'program')) {
     for (const key of entity.links.filter(l => l.collection === 'programs').flatMap(l => l.source_record_keys)) {
       const candidate = programCandidates.find(p => p.key === key); if (!candidate) continue;
       const code = string(candidate.row.catalogCode); const explicit = conveners.get(code) || [];
+      const sourceUrl = string(candidate.row.catalogUrl) || `https://catalog.ramapo.edu/programs/${code}`;
       if (!explicit.length) unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: 'No explicit catalog Convener-field profile link; normalized convener may be a legacy first-faculty fallback and is not approved.' });
       for (const convener of explicit) {
-        const reviewedUrl = profileUrlAliases.aliases.find(alias => alias.from === convener.profileUrl)?.to || convener.profileUrl;
-        const ids = personByUrl.get(reviewedUrl);
+        const ids = personByUrl.get(reviewedUrl(convener.profileUrl));
         if (ids?.size !== 1) {
           unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: `Explicit convener profile URL ${convener.profileUrl} resolves to ${ids?.size || 0} person identities.` }); continue;
         }
         entity.relationships ||= [];
-        entity.relationships.push({ type: 'convener', target_entity_id: [...ids][0], evidence: [{ collection: 'programs', source_key: 'academic-programs', source_record_key: key, field: 'customFields.rJQmj', source_url: string(candidate.row.catalogUrl) || `https://catalog.ramapo.edu/programs/${code}` }] });
+        entity.relationships.push({ type: 'convener', target_entity_id: [...ids][0], evidence: [{ collection: 'programs', source_key: 'academic-programs', source_record_key: key, field: 'customFields.rJQmj', source_url: sourceUrl }] });
+      }
+      // The published faculty array mixes these fields with name matches and a scraper
+      // fallback; only the explicit Program Faculty field is evidence of a listing.
+      const listed = programFaculty.get(code) || [];
+      if (!listed.length) unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: 'No explicit catalog Program Faculty-field profile link.' });
+      for (const person of listed) {
+        const ids = personByUrl.get(reviewedUrl(person.profileUrl));
+        if (ids?.size !== 1) {
+          unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: `Explicit Program Faculty profile URL ${person.profileUrl} resolves to ${ids?.size || 0} person identities.` }); continue;
+        }
+        const target = [...ids][0];
+        entity.relationships ||= [];
+        // An old and a current URL for one person are one listing.
+        if (entity.relationships.some(r => r.type === 'listed_faculty' && r.target_entity_id === target)) continue;
+        entity.relationships.push({ type: 'listed_faculty', target_entity_id: target, evidence: [{ collection: 'programs', source_key: 'academic-programs', source_record_key: key, field: 'customFields.xiQxl', source_url: sourceUrl }] });
       }
     }
   }

@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import type { CampusIdentities } from './campus-identities';
-import { catalogConvenersArtifact, compileCampusIdentities, explicitCatalogConveners, facultyRecordKey, type IdentitySnapshot } from './compile-campus-identities';
+import { catalogConvenersArtifact, compileCampusIdentities, explicitCatalogConveners, explicitCatalogProgramFaculty, facultyRecordKey, type IdentitySnapshot } from './compile-campus-identities';
 
 const personId = '97d9efbf-6c8e-4549-8ec6-98c61e49e375';
 const venueId = 'c3c6968f-407d-43f3-bab5-e06c37945991';
@@ -40,7 +41,9 @@ test('compiled source links and evidence retain originals and preserve field con
   assert.equal(result.registry.entities[0].relationships?.[0].type, 'profile_course');
   assert.equal('selector' in result.registry.entities[0].links[0], false);
   assert.ok(result.report.unresolved.some(r => r.reason.includes('no explicit catalog code')));
-  assert.deepEqual(catalogConvenersArtifact(raw), { collected_at: raw.scrapedAt, source_url: 'https://app.coursedog.com/api/v1/cm/ramapo_banner_ethos/programs/search/%24filters', programs: [{ catalogCode: 'TS-BS-CMPS', catalogUrl: 'https://catalog.ramapo.edu/programs/TS-BS-CMPS', customFields: { rJQmj: raw.programs[0].customFields.rJQmj } }] });
+  // Both reviewed person fields are kept verbatim so every relationship can be rechecked.
+  assert.deepEqual(catalogConvenersArtifact(raw), { collected_at: raw.scrapedAt, source_url: 'https://app.coursedog.com/api/v1/cm/ramapo_banner_ethos/programs/search/%24filters', programs: [{ catalogCode: 'TS-BS-CMPS', catalogUrl: 'https://catalog.ramapo.edu/programs/TS-BS-CMPS', customFields: { rJQmj: raw.programs[0].customFields.rJQmj, xiQxl: raw.programs[0].customFields.xiQxl } }] });
+  assert.deepEqual(catalogConvenersArtifact({ programs: [{ code: 'X', customFields: { other: '<p>x</p>' } }] }).programs, []);
 });
 
 test('refresh resolves renamed contacts/profiles and newly ingested meals/exceptions without changing identity', () => {
@@ -89,6 +92,34 @@ test('convener is only established by the reviewed explicit field, never first f
   const result = compileCampusIdentities(seed, snapshot(), { programs: [] });
   assert.equal(result.report.relationships.convener, undefined);
   assert.ok(result.report.unresolved.some(r => r.reason.includes('first-faculty fallback')));
+});
+
+test('listed faculty come only from the explicit Program Faculty field, through reviewed redirects', () => {
+  const [redirect] = profileUrlAliases.aliases;
+  const input = snapshot();
+  (input.artifacts.faculty as typeof faculty[])[0].profileUrl = `${redirect.to}/`;
+  const listing = { programs: [{ code: 'TS-BS-CMPS', customFields: { xiQxl: [
+    `<p><a href="${redirect.from}">Old profile URL</a></p>`, `<p><a href="${redirect.to}/">Current profile URL</a></p>`,
+    '<p><a href="https://www.ramapo.edu/tas/faculty/nobody">Nobody</a></p>', '<p><a href="https://www.ramapo.edu/majors/">Not a profile</a></p>',
+  ].join('') } }] };
+  const result = compileCampusIdentities(seed, input, listing);
+  // Two URLs for one person are one listing, and a listing never makes a convener.
+  assert.deepEqual(result.registry.entities.find(e => e.id === programId)?.relationships, [{ type: 'listed_faculty', target_entity_id: personId, evidence: [
+    { collection: 'programs', source_key: 'academic-programs', source_record_key: 'School:Computer Science BS', field: 'customFields.xiQxl', source_url: 'https://catalog.ramapo.edu/programs/TS-BS-CMPS' },
+  ] }]);
+  assert.equal(result.report.relationships.convener, undefined);
+  assert.ok(result.report.unresolved.some(r => r.reason === 'Explicit Program Faculty profile URL https://www.ramapo.edu/tas/faculty/nobody resolves to 0 person identities.'));
+});
+
+test('a convener field or the published faculty array never creates a listing', () => {
+  const input = snapshot();
+  const program = (input.artifacts.programs as { schools: { majors: Record<string, unknown>[] }[] }).schools[0].majors[0];
+  program.faculty = [{ name: faculty.name, email: faculty.email, profileUrl: faculty.profileUrl }];
+  const result = compileCampusIdentities(seed, input, raw);
+  assert.equal(result.report.relationships.convener, 1);
+  assert.equal(result.report.relationships.listed_faculty, undefined);
+  assert.ok(result.report.unresolved.some(r => r.reason === 'No explicit catalog Program Faculty-field profile link.'));
+  assert.equal(explicitCatalogProgramFaculty({ programs: [{ code: 'P', customFields: { rJQmj: raw.programs[0].customFields.rJQmj } }] }).size, 0);
 });
 
 test('distinct catalog programs with colliding original record keys remain unresolved', () => {

@@ -73,3 +73,13 @@ test('malformed mappings fail before publication instead of guessing identity', 
     assert.throws(() => validateCampusIdentities(registry));
   }
 });
+
+test('a listed_faculty relationship targets an identity, never a record', () => {
+  const registry = structuredClone(seed);
+  const [first] = registry.entities;
+  const evidence = [{ collection: 'programs' as const, source_key: 'academic-programs', source_record_key: 'School:Program', field: 'customFields.xiQxl' }];
+  first.relationships = [{ type: 'listed_faculty', target_entity_id: first.id, evidence }];
+  validateCampusIdentities(registry);
+  (first.relationships[0] as Record<string, unknown>).target_record = { collection: 'faculty', source_key: 'faculty', source_record_key: 'x' };
+  assert.throws(() => validateCampusIdentities(registry), /Invalid identity target/);
+});
