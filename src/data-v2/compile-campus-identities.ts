@@ -6,7 +6,7 @@ import { compileArchwayIdentities, normalizeName, type ArchwayIdentityInputs, ty
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
-import { applyPublishedAliases, applyReviewedAliases, type ReviewedAlias } from './identity-aliases';
+import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, type AliasLedger, type AliasRecord, type ReviewedAlias } from './identity-aliases';
 import type { ReviewedBuilding } from './campus-buildings';
 import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
@@ -23,6 +23,8 @@ export interface IdentityCoverageReport {
   relationships: Record<string, number>; unresolved: IdentityCoverageIssue[];
   /** Aliases a person approved, kept apart from source-derived evidence. */
   human_reviewed_aliases?: { entity_id: string; entity: string; alias: string; basis: 'human_reviewed'; reviewed_at: string }[];
+  /** Every alias in the registry, with the rule and evidence that put it there. */
+  alias_sources: AliasRecord[];
 }
 interface Candidate { collection: IdentityCollection; source: string; key: string; row: Row; anchors: string[] }
 export const canonicalProfileUrl = (value: unknown): string => typeof value === 'string' ? value.trim().replace(/\/+$/, '') : '';
@@ -152,9 +154,11 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   // contact record publishes (the Library's is "Potter Library"). An Archway group
   // with one of these names needs a reviewed link rather than a second identity.
   const reserved = new Set<string>();
+  const ledger: AliasLedger = new Map();
   for (const entity of seed.entities) {
     const links: CampusIdentityLink[] = [];
     const displayNames = new Set(entity.aliases);
+    for (const alias of entity.aliases) noteAlias(ledger, entity.id, alias, { basis: 'identity_map' });
     for (const link of entity.links) {
       const found = candidates.filter(candidate => matches(candidate, link));
       if (link.selector && ['faculty_identity', 'contact_identity'].includes(link.selector.field) && new Set(found.map(row => row.key)).size > 1) {
@@ -172,7 +176,10 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
         const key = `${row.collection}:${row.source}:${row.key}`;
         if (owners.has(key) && owners.get(key) !== entity.id) throw new Error(`Conflicting identity ownership of ${key}.`);
         owners.set(key, entity.id);
-        if (row.collection !== 'menu' && string(row.row.name) !== entity.name && string(row.row.name)) displayNames.add(string(row.row.name));
+        if (row.collection !== 'menu' && string(row.row.name) !== entity.name && string(row.row.name)) {
+          displayNames.add(string(row.row.name));
+          noteAlias(ledger, entity.id, string(row.row.name), { basis: 'record_name', evidence: { collection: row.collection, source_key: row.source, source_record_key: row.key, field: 'name' } });
+        }
         if (row.collection === 'contacts' && ['office', 'facility', 'venue'].includes(entity.kind) && string(row.row.department)) reserved.add(normalizeName(string(row.row.department)));
       }
       links.push({ collection: link.collection, source_key: link.source_key, source_record_keys: [...new Set(found.map(r => r.key))].sort() });
@@ -243,11 +250,11 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     unresolved.push({ collection: candidate.collection, record: candidate.key, reason: 'No reviewed persistent identity selector covers this original record; existing search remains available.' });
   }
   const recordRows = new Map(candidates.map(c => [`${c.collection}:${c.source}:${c.key}`, c.row]));
-  const schools = compileSchoolIdentities(entities, recordRows, snapshot.clubs || [], inputs.campusSchools);
+  const schools = compileSchoolIdentities(entities, recordRows, snapshot.clubs || [], inputs.campusSchools, ledger);
   entities.push(...schools.schools);
   unresolved.push(...schools.unresolved);
   for (const name of entities.flatMap(entity => [entity.name, ...entity.aliases])) reserved.add(normalizeName(name));
-  const archway = compileArchwayIdentities(snapshot, inputs, reserved, schools.ownedClubs);
+  const archway = compileArchwayIdentities(snapshot, inputs, reserved, schools.ownedClubs, ledger);
   entities.push(...archway.entities);
   unresolved.push(...archway.unresolved);
   const campusBuildings = campusBuildingsArtifact(inputs.campusMap, inputs.identityReviews?.buildings);
@@ -255,12 +262,12 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const places = compileBuildingIdentities(campusBuildings, entities, contactRows);
   entities.push(...places.buildings);
   unresolved.push(...places.unresolved);
-  applyPublishedAliases(entities, recordRows);
-  const reviewedAliases = applyReviewedAliases(entities, inputs.identityReviews?.aliases ?? []);
+  applyPublishedAliases(entities, recordRows, ledger);
+  const reviewedAliases = applyReviewedAliases(entities, inputs.identityReviews?.aliases ?? [], ledger);
   unresolved.push(...reviewedAliases.unresolved);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
-  const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved };
+  const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved, alias_sources: aliasRecords(entities, ledger) };
   if (reviewedAliases.applied.length) report.human_reviewed_aliases = reviewedAliases.applied;
   for (const entity of entities) {
     report.identities_by_kind[entity.kind] = (report.identities_by_kind[entity.kind] || 0) + 1;

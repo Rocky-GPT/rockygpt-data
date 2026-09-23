@@ -143,6 +143,27 @@ test('the committed campus map adds room-prefix buildings and office locations t
   assert.deepEqual(without.campusBuildings.buildings, []);
 });
 
+test('the coverage report traces every alias to the rule and evidence that put it there', () => {
+  const reviewed = structuredClone(seed);
+  reviewed.entities[2].aliases = ['CS'];
+  const input = snapshot();
+  input.campus_contacts[0].name = 'Dr. Test Professor';
+  const campusMap = { source: 'https://api.concept3d.com/locations?map=2292', generatedAt: '2026-08-27T16:58:11.587Z', buildings: [
+    { name: 'Student Center (SC)', category: 'Buildings', mapUrl: 'https://map.ramapo.edu/?id=2292#!m/1133351?sbc/', roomPrefixes: ['SC'] },
+  ] };
+  const identityReviews = { aliases: [{ entity_id: venueId, entity: 'Birch Tree Inn', alias: 'Birch', reviewed_at: '2026-09-23', note: 'Approved.' }] };
+  const { registry, report } = compileCampusIdentities(reviewed, input, raw, { campusMap, identityReviews });
+  assert.equal(report.alias_sources.length, registry.entities.reduce((total, entity) => total + entity.aliases.length, 0));
+  assert.deepEqual(report.alias_sources.map(r => [r.kind, r.entity, r.alias, r.sources]), [
+    ['person', 'Test Professor', 'Dr. Test Professor', [{ basis: 'record_name', evidence: { collection: 'contacts', source_key: 'faculty', source_record_key: 'faculty:test-professor:school', field: 'name' } }]],
+    ['venue', 'Birch Tree Inn', 'Birch', [{ basis: 'human_reviewed', reviewed_at: '2026-09-23', note: 'Approved.' }]],
+    ['program', 'Computer Science BS', 'CS', [{ basis: 'identity_map' }]],
+    ['program', 'Computer Science BS', 'Computer Science', [{ basis: 'program_family' }]],
+    ['building', 'Student Center (SC)', 'SC', [{ basis: 'abbreviation' }]],
+    ['building', 'Student Center (SC)', 'Student Center', [{ basis: 'abbreviation' }]],
+  ]);
+});
+
 test('distinct catalog programs with colliding original record keys remain unresolved', () => {
   const input = snapshot();
   (input.artifacts.programs as { schools: { majors: Record<string, unknown>[] }[] }).schools[0].majors.push({ name: 'Computer Science BS', catalogCode: 'OTHER' });

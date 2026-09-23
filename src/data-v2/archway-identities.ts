@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import type { CampusIdentity } from './campus-identities';
 import type { IdentityCoverageIssue, IdentitySnapshot } from './compile-campus-identities';
+import { noteAlias, type AliasLedger } from './identity-aliases';
 import reviewedCaptures from '../reference/archway-event-identity-captures.json';
 
 type Row = Record<string, unknown>;
@@ -131,7 +132,7 @@ export function eventOrganizersArtifact(snapshot: IdentitySnapshot, inputs: Arch
  * departments their own contact records publish. A non-club group with one of
  * those names is most likely the same office, so it needs a reviewed link
  * instead of a second identity that would make that name ambiguous. */
-export function compileArchwayIdentities(snapshot: IdentitySnapshot, inputs: ArchwayIdentityInputs = {}, reserved: ReadonlySet<string> = new Set(), owned: ReadonlySet<string> = new Set()): { entities: CampusIdentity[]; unresolved: IdentityCoverageIssue[]; organizers: EventOrganizersArtifact } {
+export function compileArchwayIdentities(snapshot: IdentitySnapshot, inputs: ArchwayIdentityInputs = {}, reserved: ReadonlySet<string> = new Set(), owned: ReadonlySet<string> = new Set(), ledger: AliasLedger = new Map()): { entities: CampusIdentity[]; unresolved: IdentityCoverageIssue[]; organizers: EventOrganizersArtifact } {
   const entities: CampusIdentity[] = []; const unresolved: IdentityCoverageIssue[] = [];
   const sources = clubSources(snapshot, inputs);
   const sourcesByUrl = uniqueBy(sources, r => canonicalClubUrl(r.websiteUrl));
@@ -166,6 +167,7 @@ export function compileArchwayIdentities(snapshot: IdentitySnapshot, inputs: Arc
     if (!eventId || byEventId.get(eventId)?.length !== 1 || !UUID.test(text(row.id))) { issue('Missing or nonunique explicit Archway event occurrence ID; title similarity and date alone cannot establish a stable identity.'); continue; }
     const title = text(row.title);
     const entity: CampusIdentity = { id: archwayIdentityId('event', eventId), kind: 'event', name: `${title.slice(0, 215)} (${date || 'date not published'})`, aliases: title.length <= 240 ? [title] : [], links: [{ collection: 'events', source_key: text(row.source_key), source_record_keys: [text(row.source_record_key)], source_record_ids: [text(row.id)] }] };
+    for (const alias of entity.aliases) noteAlias(ledger, entity.id, alias, { basis: 'event_title', evidence: { collection: 'events', source_key: text(row.source_key), source_record_key: text(row.source_record_key), source_record_id: text(row.id), field: 'title' } });
     if (!date) issue('Event occurrence identity is explicit but its date is not published; the profile must keep the date unknown.');
     const assertions = organizers.events.filter(e => e.source_record_id === row.id);
     const groupIds = new Set(assertions.map(e => e.organizer_group_id));

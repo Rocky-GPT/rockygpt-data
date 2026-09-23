@@ -89,6 +89,24 @@ On the September 22 snapshot this adds 152 aliases: 131 program families, 9 depa
   - An entry whose identity is absent or renamed is reported, not applied.
 - **Retired status:** a person whose own contact record publishes status `retired` gets `status: {state: "retired", evidence}`, citing that record's `status` field. 21 people are retired; absence of a status publishes nothing about a person.
 
+### Why each alias exists
+
+The coverage report's `alias_sources` lists every alias in the registry with the rule that put it there. Each alias carries one or more sources, and a source names its `basis`:
+
+| Basis | Where the alias comes from | Evidence recorded |
+| --- | --- | --- |
+| `identity_map` | The reviewed identity map (`src/reference/campus-identities.json`) | none |
+| `record_name` | The name a linked source record publishes | that record's `name` field |
+| `department` | The department on the identity's own directory entry | that entry's `department` field |
+| `abbreviation` | The abbreviation in parentheses in the identity's own name, or the name without it | none |
+| `program_family` | The program name without its degree designation | none |
+| `school_abbreviation` | The reviewed school entry | the school's official page |
+| `school_former_name` | A former name the school replaced | the recorded evidence, such as a redirect |
+| `event_title` | The event's published title, without its date | the event record's `title` field |
+| `human_reviewed` | A person's approval in `campus-identity-reviews.json` | the review date and note |
+
+An alias no rule recorded fails the compile, so the list always covers the whole registry. On the September 23 release it lists all 625 aliases. The development UI's Aliases page (`/data/aliases`) reads it through the Brain.
+
 ## Hours correctness
 
 Dining formatters preserve meal labels, split periods and midnight endpoints. Missing/malformed times or an empty active seasonal exception mean `Hours unavailable`; they do not mean `Closed` or permit fallback to the regular schedule. Only explicit closure labels establish closure. Student UI and file-mode APIs use the same formatter. Publication carries these semantics into new structured schedule rows. Previously published rows remain unchanged; consumers with the original dining artifact can resolve the source periods and uncertainty without rewriting those records.

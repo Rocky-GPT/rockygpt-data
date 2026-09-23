@@ -2,6 +2,7 @@ import type { CampusIdentity, CampusIdentityLink } from './campus-identities';
 import type { IdentityCoverageIssue } from './compile-campus-identities';
 import { normalizeName } from './archway-identities';
 import { SOURCES } from './source-seeds';
+import { noteAlias, type AliasLedger } from './identity-aliases';
 
 /**
  * @module data-v2/campus-schools
@@ -54,7 +55,7 @@ export function campusSchoolsArtifact(reference?: ReviewedSchools): CampusSchool
  * school). `rows` maps `${collection}:${source_key}:${source_record_key}` to the
  * original record in this release; `clubs` are this release's Archway rows.
  */
-export function compileSchoolIdentities(entities: CampusIdentity[], rows: Map<string, Row>, clubs: Row[], reference?: ReviewedSchools): { schools: CampusIdentity[]; unresolved: IdentityCoverageIssue[]; ownedClubs: Set<string> } {
+export function compileSchoolIdentities(entities: CampusIdentity[], rows: Map<string, Row>, clubs: Row[], reference?: ReviewedSchools, ledger: AliasLedger = new Map()): { schools: CampusIdentity[]; unresolved: IdentityCoverageIssue[]; ownedClubs: Set<string> } {
   const unresolved: IdentityCoverageIssue[] = [];
   const ownedClubs = new Set<string>();
   if (!reference) return { schools: [], unresolved, ownedClubs };
@@ -76,6 +77,8 @@ export function compileSchoolIdentities(entities: CampusIdentity[], rows: Map<st
     // A shared name is kept for an ambiguous lookup, never merged by name.
     if (other) unresolved.push({ entity: school.name, collection: 'schools', record: school.section, reason: `Shares its name with the ${other}; a name lookup asks which one is meant.` });
     const aliases = [...new Set([school.abbreviation, ...school.legacy_names.map(legacy => legacy.name)])];
+    noteAlias(ledger, school.id, school.abbreviation, { basis: 'school_abbreviation', source_url: school.url });
+    for (const legacy of school.legacy_names) noteAlias(ledger, school.id, legacy.name, { basis: 'school_former_name', note: legacy.evidence });
     return { id: school.id, kind: 'school', name: school.name, aliases, links };
   });
   const successors = new Map<string, string[]>();

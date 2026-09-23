@@ -3,6 +3,7 @@ import test from 'node:test';
 import type { CampusIdentity } from './campus-identities';
 import schoolsReference from '../reference/campus-schools.json';
 import { campusSchoolsArtifact, compileSchoolIdentities } from './campus-schools';
+import { aliasRecords, type AliasLedger } from './identity-aliases';
 
 const reference = {
   source_url: 'https://www.ramapo.edu/academics/schools/', captured_at: '2026-09-23T12:31:43Z',
@@ -47,9 +48,14 @@ test('programs follow reviewed legacy names with one successor; people follow th
     ['faculty:faculty:librarian', { school: 'Library Faculty & Staff' }],
   ]);
   const clubs = [{ source_key: 'archway-clubs', source_record_key: 'School of Contemporary Arts', id: '31877c21-cbb6-417d-9f9f-f6a7852d3121' }];
-  const { schools, unresolved, ownedClubs } = compileSchoolIdentities(entities, rows, clubs, reference);
+  const ledger: AliasLedger = new Map();
+  const { schools, unresolved, ownedClubs } = compileSchoolIdentities(entities, rows, clubs, reference, ledger);
   const [snh, sssw, ahe] = schools;
   assert.deepEqual(snh.aliases, ['SNH', 'School of Theoretical and Applied Science']);
+  assert.deepEqual(aliasRecords([snh], ledger).map(record => [record.alias, record.sources]), [
+    ['SNH', [{ basis: 'school_abbreviation', source_url: 'https://www.ramapo.edu/snh/' }]],
+    ['School of Theoretical and Applied Science', [{ basis: 'school_former_name', note: '/tas/ redirects to /snh/' }]],
+  ]);
   // A split former school is a legacy name of both successors, so its lookup asks.
   assert.ok(sssw.aliases.includes('School of Social Science and Human Services') && ahe.aliases.includes('School of Social Science and Human Services'));
   assert.deepEqual(ahe.links[1], { collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['School of Contemporary Arts'], source_record_ids: ['31877c21-cbb6-417d-9f9f-f6a7852d3121'] });
