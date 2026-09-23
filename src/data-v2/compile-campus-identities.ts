@@ -6,6 +6,7 @@ import { compileArchwayIdentities, normalizeName, type ArchwayIdentityInputs, ty
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
+import { applyPublishedAliases } from './identity-aliases';
 import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
 
@@ -248,6 +249,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const places = compileBuildingIdentities(campusBuildings, entities, contactRows);
   entities.push(...places.buildings);
   unresolved.push(...places.unresolved);
+  applyPublishedAliases(entities, recordRows);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved };

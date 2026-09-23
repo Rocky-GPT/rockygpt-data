@@ -26,6 +26,8 @@ export interface CampusIdentity {
   aliases: string[];
   links: CampusIdentityLink[];
   relationships?: CampusIdentityRelationship[];
+  /** A status the identity's own records publish; absent means none is published. */
+  status?: { state: 'retired'; evidence: IdentityEvidence[] };
 }
 export interface CampusIdentities { schema_version: 1; entities: CampusIdentity[] }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -61,7 +63,7 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
   array(registry.entities, 5000, 'entities');
   const ids = new Set<string>(); const records = new Map<string, Set<string> | null>(); const rowIds = new Set<string>();
   for (const entry of registry.entities) {
-    const entity = object(entry, ['id', 'kind', 'name', 'aliases', 'links'], 'Identity', ['relationships']);
+    const entity = object(entry, ['id', 'kind', 'name', 'aliases', 'links'], 'Identity', ['relationships', 'status']);
     text(entity.id, 'Identity id');
     if (!UUID.test(entity.id) || ids.has(entity.id)) throw new Error('Identity IDs must be unique, persistent lowercase UUIDs.');
     ids.add(entity.id);
@@ -101,6 +103,12 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
         array(selector.values, 32, 'Selector values'); if (!selector.values.length) throw new Error('Selector requires evidence-backed values.');
         for (const val of selector.values) text(val, 'Selector value'); text(selector.evidence, 'Selector evidence', 2000);
       }
+    }
+    if (entity.status !== undefined) {
+      const status = object(entity.status, ['state', 'evidence'], 'Identity status');
+      if (status.state !== 'retired') throw new Error('Unsupported identity status.');
+      array(status.evidence, 32, 'Status evidence'); if (!status.evidence.length) throw new Error('A status needs evidence.');
+      for (const ref of status.evidence) reference(ref, true);
     }
     if (entity.relationships !== undefined) {
       array(entity.relationships, 1000, 'relationships');
