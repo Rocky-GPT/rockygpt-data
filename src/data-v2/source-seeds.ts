@@ -29,4 +29,6 @@ export const SOURCES: SourceSeed[] = [
   { key: 'health', title: 'Health Services', url: 'https://www.ramapo.edu/health/', trustTier: 'official_primary', freshnessHours: 168, domain: 'health' },
   { key: 'counseling', title: 'Counseling Services', url: 'https://www.ramapo.edu/counseling/', trustTier: 'official_primary', freshnessHours: 168, domain: 'counseling' },
   { key: 'faculty', title: 'Faculty Profiles', url: 'https://www.ramapo.edu/academics/faculty/', trustTier: 'official_secondary', freshnessHours: 720, domain: 'directory' },
+  // Repository-static: the committed map file and its reviewed room-prefix table.
+  { key: 'campus-map', title: 'Ramapo Campus Map', url: 'https://map.ramapo.edu/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'map' },
 ];

@@ -4,6 +4,7 @@ import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import { compileArchwayIdentities, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
+import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
 import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
 
@@ -129,8 +130,11 @@ export function catalogConvenersArtifact(raw: unknown): Record<string, unknown> 
 export interface CompiledIdentityArtifacts {
   registry: CampusIdentities; report: IdentityCoverageReport; eventOrganizers: EventOrganizersArtifact;
   courseIdentities: CourseIdentitiesArtifact; requirementGroups: RequirementGroupsArtifact;
+  campusBuildings: CampusBuildingsArtifact;
 }
-export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, archwayInputs: ArchwayIdentityInputs = {}): CompiledIdentityArtifacts {
+/** Inputs outside the release snapshot: Archway captures and the committed campus map. */
+export interface IdentityInputs extends ArchwayIdentityInputs { campusMap?: unknown }
+export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, inputs: IdentityInputs = {}): CompiledIdentityArtifacts {
   validateCampusIdentities(seed);
   const candidates = identityCandidates(snapshot);
   const unresolved: IdentityCoverageIssue[] = [];
@@ -231,9 +235,14 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     unresolved.push({ collection: candidate.collection, record: candidate.key, reason: 'No reviewed persistent identity selector covers this original record; existing search remains available.' });
   }
   for (const name of entities.flatMap(entity => [entity.name, ...entity.aliases])) reserved.add(normalizeName(name));
-  const archway = compileArchwayIdentities(snapshot, archwayInputs, reserved);
+  const archway = compileArchwayIdentities(snapshot, inputs, reserved);
   entities.push(...archway.entities);
   unresolved.push(...archway.unresolved);
+  const campusBuildings = campusBuildingsArtifact(inputs.campusMap);
+  const contactRows = new Map(candidates.filter(c => c.collection === 'contacts').map(c => [`${c.source}:${c.key}`, c.row]));
+  const places = compileBuildingIdentities(campusBuildings, entities, contactRows);
+  entities.push(...places.buildings);
+  unresolved.push(...places.unresolved);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved };
@@ -244,7 +253,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   }
   const courseIdentities = compileCourseIdentities(snapshot.artifacts.courses);
   const requirementGroups = compileRequirementGroups(snapshot.artifacts.programs, registry, courseIdentities);
-  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups };
+  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings };
 }
 function listStrings(value: unknown): string[] { return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []; }
 
