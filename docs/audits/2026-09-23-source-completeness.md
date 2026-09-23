@@ -51,6 +51,7 @@ Code entry points: `ingestion/faculty-profile-parser.ts`, `ingestion/replay-facu
 - Library staff Victoria Sciancalepore's published contact-form link returned HTTP 404; the other 16 forms returned HTTP 200. This is an upstream broken link. It is retained as source evidence; no replacement or email address was invented.
 - Some profiles link to external bibliographies/CVs rather than embedding the publications. Their links are preserved, but linked document contents have not been certified as captured. Similarly, this pass preserves source PDF/form links without claiming to have parsed every linked document.
 - Source dates and applicability still matter. An undated profile course list does not establish current teaching assignments. Explicit old or unbounded campus schedules remain unavailable as current hours. Capturing a page today does not make its statements current.
+- Eight club/organization rows still have no approved canonical entity binding: seven overlap campus offices/schools and require reviewed identity links; Visual Arts Society lacks a unique explicit Archway group ID/website. Their source records remain available. These pre-existing ambiguity safeguards were preserved rather than replaced with name guesses.
 - A bounded crawl is not an exhaustive inventory of every campus webpage. This report describes the published faculty corpus, existing source captures and the configured general campus crawl. Static map/school/subject reference data were preserved, not independently recertified by this correction.
 
 ## Release and verification
@@ -69,4 +70,10 @@ The corrected local release is active:
 
 The graph's 1,062 coverage diagnostics are not 1,062 confirmed bugs. For example, newly recovered undated course titles without explicit course codes are retained as profile facts but deliberately not linked to guessed catalog courses.
 
-NEEDS REBUILD: none for this local release. Production activation was not performed. The original active local database and runtime metadata remain available for rollback; published local artifacts are archived and hashed. Full served-data verification results accompany this report in the local evidence directory.
+Full served-data verification results accompany this report in the local evidence directory:
+
+- `live-faculty-verification.json`: 226/226 profiles passed, including all 324 checked source-link occurrences, 452 property evidence records bound to their expected canonical person, and all 17 corrected library contacts.
+- `live-nonfaculty-verification.json`: 316/316 events and all 247 currently bound club entities passed canonical API checks. All 874 menu occurrences retained source ingredients and 16,606 nutrient field values; a live Birch Tree Inn menu group also passed API checks. All 1,453 cited club-context chunks and 22 cited hours-policy chunks retained original source URLs, capture dates and qualifiers. The eight club binding limitations above remain explicit.
+- `ui-verification.json`: the running Campus Graph displays Ali's recovered profile fields, all 25 research entries and their source evidence.
+
+NEEDS REBUILD: none for this local release. Production activation was not performed. The original active local database and runtime metadata remain available for rollback; published local artifacts are archived and hashed.
