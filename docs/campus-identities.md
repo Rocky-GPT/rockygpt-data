@@ -75,6 +75,18 @@ Each school's aliases are its abbreviation and its legacy names. The Archway dir
 
 On the September 22 snapshot there are 4 schools and 301 `part_of` relationships: 113 programs and 188 people. The School of Social Sciences and Social Work has people but no placed programs, because its catalog programs are filed under the split former school. The ASB school shares its name with the directory office "Anisfield School of Business"; both are kept, so a name lookup asks which is meant.
 
+## Published aliases and status
+
+After compilation, each identity gains the aliases its own name and linked records publish. No rule matches one entity's name against another's. An alias several identities share stays on each of them, and a lookup by it asks which one is meant.
+
+- **Department:** an office, facility or venue's own directory entry publishes a department. Examples are "Potter Library" for the Library, "Public Safety" for both Public Safety entries, and "Office of the Registrar". The contact lookup has always treated this as an alternative name. A person's department never names the person.
+- **Abbreviation:** a name ending in an uppercase abbreviation in parentheses gives both the abbreviation and the name without it: "SC" and "Student Center" from "Student Center (SC)"; "EDIC"; "XAE".
+- **Program family:** a catalog program name ending in a degree designation gives the name without it. The designations are BA, BS, BSN, BSW, MA, MS, MSN, MBA, MFA, MPP, MSW, DNP, Minor, 4+1 and -Graduate Certificate. Every program sharing that name gets the alias, so "Computer Science" names the BS, MS, Minor and 4+1, and a lookup asks which. A remainder ending mid-phrase gives none ("Nursing RN to BSN").
+
+On the September 22 snapshot this adds 152 aliases: 131 program families, 9 departments and 12 abbreviation aliases.
+- **Evidence-free short names:** colloquial names without published evidence are not added. "Birch" is one: no Ramapo source calls the Birch Tree Inn that, and the map lists Birch Mansion as a separate building. Such a name needs a reviewed alias entry.
+- **Retired status:** a person whose own contact record publishes status `retired` gets `status: {state: "retired", evidence}`, citing that record's `status` field. 21 people are retired; absence of a status publishes nothing about a person.
+
 ## Hours correctness
 
 Dining formatters preserve meal labels, split periods and midnight endpoints. Missing/malformed times or an empty active seasonal exception mean `Hours unavailable`; they do not mean `Closed` or permit fallback to the regular schedule. Only explicit closure labels establish closure. Student UI and file-mode APIs use the same formatter. Publication carries these semantics into new structured schedule rows. Previously published rows remain unchanged; consumers with the original dining artifact can resolve the source periods and uncertainty without rewriting those records.
