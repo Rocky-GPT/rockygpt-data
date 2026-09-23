@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { assertFacultyProfileCoverage, parseFacultyProfileHtml, parseLibraryStaffHtml } from '../../ingestion/faculty-profile-parser';
 import { validateFacultyProfiles } from '../../ingestion/schema';
+import { load } from 'cheerio';
 
 type Row = Record<string, unknown>;
 const row = (value: unknown): value is Row => Boolean(value && typeof value === 'object' && !Array.isArray(value));
@@ -69,6 +70,21 @@ export function facultyCoverageErrors(normalized: unknown, capture: unknown): st
     if (expectedBio && !matches.some(p => text(p.bio).includes(expectedBio))) {
       errors.push(`Faculty source biography content lost: ${url}`);
     }
+    // Compare original source anchors independently of parser and validator.
+    // Re-validating the parser's output alone can conceal a shared data loss.
+    const $ = load(page.html as string);
+    const content = $('#content-block .col-lg-12').first();
+    content.find('script, style, nav, footer, .disclaimer, [role="navigation"]').remove();
+    const published = matches.flatMap(profile => Object.values(profile).flat()).join('\n');
+    const checked = new Set<string>();
+    content.find('a[href]').each((_, anchor) => {
+      try {
+        const target = new URL($(anchor).attr('href') || '', text(page.url) || url);
+        if (!['http:', 'https:'].includes(target.protocol) || checked.has(target.href)) return;
+        checked.add(target.href);
+        if (!published.includes(target.href)) errors.push(`Faculty source link lost: ${url} — ${target.href}`);
+      } catch { /* Invalid source URLs are not invented or repaired. */ }
+    });
   }
   return errors;
 }

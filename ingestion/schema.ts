@@ -1,6 +1,7 @@
 import { isMenuArtifact, menuCalories } from '../src/data-v2/menu-normalization';
 import { publishedMenuNutrients, type MenuNutrients } from '../src/data-v2/menu-nutrition';
 import type { CalendarFamily, CalendarKind } from '../src/data-v2/calendar-concepts';
+import { load } from 'cheerio';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -576,7 +577,26 @@ function asStringArray(value: unknown): string[] {
 }
 
 function sanitizeProfileText(value: string): string {
-  return value
+  // Citation authors sometimes enclose a URL in angle brackets. It is source
+  // text, not an HTML element; protect it before removing actual markup.
+  let text = value.replace(/<(https?:\/\/[^<>]+)>/gi, '$1');
+  // Some gallery fallbacks arrive as embedded HTML text. Keep the referenced
+  // web destinations when stripping that markup, including image-only links.
+  if (/<a\b[^>]*\bhref\s*=/i.test(text)) {
+    const $ = load(text, {}, false);
+    $('a[href]').each((_, anchor) => {
+      const href = $(anchor).attr('href');
+      if (!href) return;
+      try {
+        const url = new URL(href);
+        if (['http:', 'https:'].includes(url.protocol) && !$(anchor).text().includes(url.href)) {
+          $(anchor).append(` (${url.href})`);
+        }
+      } catch { /* Relative destinations have no source base in this validator. */ }
+    });
+    text = $.html();
+  }
+  return text
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(?:p|li|div|ul|ol|h[1-6])>/gi, '\n')
     .replace(/<[^>]+>/g, ' ')
