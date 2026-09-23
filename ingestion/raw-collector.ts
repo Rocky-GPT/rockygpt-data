@@ -667,8 +667,8 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
       const rawDir = path.dirname(options.outputPath);
       writeJsonFile(path.join(rawDir, `${options.dataset}-sources.raw.json`), payload);
       const oldestFetch = sourcePages.map(page => page.fetchedAt).sort()[0];
-      writeRawProvenance(`${options.dataset}-sources`, { sourceUrl: normalizedSeedUrls[0],
-        recordCount: sourcePages.length, payload, fetchedAt: oldestFetch || payload.generatedAt }, rawDir);
+      if (oldestFetch) writeRawProvenance(`${options.dataset}-sources`, { sourceUrl: normalizedSeedUrls[0],
+        recordCount: sourcePages.length, payload, fetchedAt: oldestFetch }, rawDir);
     }
   }
 }
