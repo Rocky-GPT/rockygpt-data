@@ -1,11 +1,14 @@
 import type { SourceReference } from './types';
 import type { CalendarFamily, CalendarKind } from './calendar-concepts';
+import type { MenuNutrients } from './menu-nutrition';
 
 export interface MenuItemRecord {
   date?: string;
   meal: string;
   station: string;
   name: string;
+  ingredients?: string;
+  nutrients?: MenuNutrients;
   calories?: number;
   portionSize?: string;
   vegan: boolean | null;
