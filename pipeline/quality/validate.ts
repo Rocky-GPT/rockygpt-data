@@ -23,6 +23,7 @@ import {
 import { hoursValidityErrors } from '../../src/data-v2/validity';
 import { hoursCoverageErrors, hoursSourceErrors } from './hours-coverage';
 import { normalizeMenuWeek } from '../../ingestion/menu-data';
+import { facultyCoverageErrors } from './faculty-coverage';
 
 export interface QualitySummaryV2 {
   passed: boolean;
@@ -302,6 +303,13 @@ export function validateCurrentDatasetV2(
     normalizeMenuWeek(readJson('data/normalized/menu-week.json', cwd));
   } catch (error) {
     errors.push(`Dated menu captures are required: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+  try {
+    errors.push(...facultyCoverageErrors(readJson('data/normalized/faculty.json', cwd),
+      readJson('data/raw/faculty-sources.raw.json', cwd)));
+  } catch (error) {
+    errors.push(`Faculty source coverage is required: ${error instanceof Error ? error.message : String(error)}`);
   }
 
   try {

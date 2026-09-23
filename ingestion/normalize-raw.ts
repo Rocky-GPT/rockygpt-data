@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { validateAcademicCalendar, validateDiningHoursState, validateFacultyProfiles,
+import { validateAcademicCalendar, validateDiningHoursState,
   validateArchwayEvents, validateCampusHours } from './schema';
 import { writeJsonFile } from './pipeline-utils';
 import { validateProgramsData } from './programs-data';
@@ -12,6 +12,7 @@ import { campusHoursPublication } from './campus-hours';
 import { rebuildEventsFromRaw, readEventSignalMapFromRawFile } from './archway-events';
 import { rebuildClubsFromRaw } from './archway-clubs';
 import { normalizeCatalogCapture, parseBooleanEnv } from './scrape-catalog-api';
+import { replayFacultySources, type FacultySourceCapture } from './replay-faculty';
 
 export interface NormalizationOptions {
   now?: Date;
@@ -43,7 +44,7 @@ export function normalizeRaw(cwd = process.cwd(), options: NormalizationOptions 
   stage('clubs', rebuildClubsFromRaw(read('clubs.raw.json'), clubDetails), true);
   stage('clubs-detail', clubDetails);
   stage('calendar', calendarWithConcepts(mergeCalendarSemesters(validateAcademicCalendar(read('calendar.raw.json')))), true);
-  const faculty = validateFacultyProfiles(read('faculty.raw.json'));
+  const faculty = replayFacultySources(read('faculty.raw.json'), read('faculty-sources.raw.json') as FacultySourceCapture);
   stage('faculty', faculty);
   const hours = validateCampusHours(read('hours.raw.json'));
   if (hours.some(record => !record.sourceUrl || !record.collectedAt || !Number.isFinite(Date.parse(record.collectedAt)))) {

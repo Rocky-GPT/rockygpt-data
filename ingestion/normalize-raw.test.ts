@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { normalizeRaw } from './normalize-raw';
+import { createHash } from 'node:crypto';
 
 const captured='2026-09-23T12:00:00Z';
 const eventUrl='https://archway.ramapo.edu/rsvp_boot?id=1';
@@ -22,6 +23,8 @@ function fixture() {
   put('clubs',[{name:'Club',category:'Student Organization',clubId:'123'}]);put('clubs-detail',dataset('clubs-detail'));
   put('calendar',[{name:'Fall 2026',events:[{title:'Classes begin',date:'August 26, 2026'}]}]);
   put('faculty',[{name:'Professor',title:'Professor',school:'School',profileUrl:'https://example.edu/faculty/professor'}]);
+  const html='<div class="callout-no-image"><h1>Professor</h1></div><div id="content-block"><div class="col-lg-12"><h3>Professor</h3><p><strong>Recent Publications</strong></p><ul><li>Complete captured research citation.</li></ul></div></div>';
+  put('faculty-sources',{schemaVersion:1,pages:[{requestedUrl:'https://example.edu/faculty/professor',url:'https://example.edu/faculty/professor',role:'profile',school:'School',fetchedAt:captured,status:200,html,contentHash:createHash('sha256').update(html).digest('hex')}]});
   put('hours',[{name:'Library',hours:{Monday:'9am-5pm'},sourceUrl:'https://example.edu/library',collectedAt:captured},{name:'Gym',hours:{Monday:'9am-5pm'},notes:'Fall 2026',sourceUrl:'https://example.edu/gym',collectedAt:captured}]);
   for(const name of ['transportation','directory','housing','health','counseling','safety']) put(name,dataset(name));
   put('catalog-programs-api',{scrapedAt:captured,programs:Array.from({length:50},(_,i)=>({id:String(i),code:`TS-BS-P${i}`,name:`Program ${i}`,status:'Active',college:'Science, Nursing and Health'})),courses:[{code:'COMP101',name:'New captured course',status:'Active'}]});
@@ -34,6 +37,7 @@ test('offline normalization replays complete captures and replaces both projecti
     const sentinel=path.join(f.cwd,'data/raw/events.provenance.json');fs.writeFileSync(sentinel,'{"captured":"original"}');
     normalizeRaw(f.cwd,{now:new Date(captured)});
     assert.equal(f.read('data/normalized/events.json')[0].offersFreeFood,true);
+    assert.deepEqual(f.read('data/normalized/faculty.json')[0].publishedResearch,['Complete captured research citation.']);
     assert.match(f.read('data/normalized/events.json')[0].description,/Complimentary lunch/);
     assert.deepEqual(f.read('public/data/events.json'),f.read('data/normalized/events.json'));
     assert.equal(f.read('public/data/clubs.json')[0].clubId,'123');

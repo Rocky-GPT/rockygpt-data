@@ -27,8 +27,8 @@ export interface ContextSection {
 // silently discard policy conditions when producing the source document.
 const DEFAULT_MAX_PAGES = Infinity;
 const DEFAULT_MAX_SECTIONS_PER_PAGE = Infinity;
-const DEFAULT_MAX_CONTACTS_PER_PAGE = 6;
-const DEFAULT_MAX_DOCUMENTS_PER_PAGE = 8;
+const DEFAULT_MAX_CONTACTS_PER_PAGE = Infinity;
+const DEFAULT_MAX_DOCUMENTS_PER_PAGE = Infinity;
 const SECTION_MIN_LENGTH = 24;
 // A contact repeated across most of a dataset is site template furniture, not a
 // fact about any one page. Repeating it per page dilutes each chunk's relevance
