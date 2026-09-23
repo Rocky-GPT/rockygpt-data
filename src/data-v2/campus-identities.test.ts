@@ -83,3 +83,17 @@ test('a listed_faculty relationship targets an identity, never a record', () => 
   (first.relationships[0] as Record<string, unknown>).target_record = { collection: 'faculty', source_key: 'faculty', source_record_key: 'x' };
   assert.throws(() => validateCampusIdentities(registry), /Invalid identity target/);
 });
+
+test('buildings link to the campus map, and room relationships target identities', () => {
+  const registry = structuredClone(seed);
+  const [office] = registry.entities;
+  const building = { id: 'f1a5e1f0-4b0e-5b8a-9d4c-3a2e1f0b9c8d', kind: 'building' as const, name: 'Academic Building D', aliases: [],
+    links: [{ collection: 'buildings' as const, source_key: 'campus-map', source_record_keys: ['1133371'] }] };
+  registry.entities.push(building);
+  const evidence = [{ collection: 'contacts' as const, source_key: 'campus-directory', source_record_key: office.links[0].source_record_keys[0], field: 'office' }];
+  office.relationships = [{ type: 'located_at', target_entity_id: building.id, evidence }];
+  validateCampusIdentities(registry);
+  office.relationships = [{ type: 'office_at', target_entity_id: 'f1a5e1f0-4b0e-5b8a-9d4c-3a2e1f0b9c8e', evidence }];
+  assert.throws(() => validateCampusIdentities(registry), /Broken relationship identity target/);
+});
+

@@ -2,7 +2,7 @@
 
 The Git registry holds persistent UUIDs and reviewed selectors, not duplicated profiles. A release contains exact links to the original contact, schedule, faculty, program and menu records in that release. Names and aliases locate an identity; relationship evidence distinguishes a program's convener and an undated profile-listed course from the identity itself. Menu items are offerings at a venue, not identities of the venue.
 
-`pipeline/commands/publish-current.ts` inserts original rows and artifacts before calling `insertCampusIdentityArtifacts` inside the candidate transaction. The installer refuses active/retired datasets. It writes six release artifacts: `campus-identities`, `campus-identity-coverage`, `catalog-conveners`, `event-organizers`, `catalog-course-identities` and `program-requirement-groups`. Repeating compilation/upsert against the same staging dataset is idempotent. Activation remains the established atomic release pointer swap.
+`pipeline/commands/publish-current.ts` inserts original rows and artifacts before calling `insertCampusIdentityArtifacts` inside the candidate transaction. The installer refuses active/retired datasets. It writes seven release artifacts: `campus-identities`, `campus-identity-coverage`, `catalog-conveners`, `event-organizers`, `catalog-course-identities`, `program-requirement-groups` and `campus-buildings`. Repeating compilation/upsert against the same staging dataset is idempotent. Activation remains the established atomic release pointer swap.
 
 Selectors are compiled against candidate rows each time: new menu dates/meals and seasonal exceptions join automatically; a person renamed in the faculty source retains their UUID via a unique institutional email or verified unique profile URL. Candidate record keys remain original. Contradictory identity anchors fail closed, including an old email reassigned to a different profile. Shared directory-page URLs are never unique person anchors. Source fields and differing phone/office values are not overwritten. Alias additions capture newly encountered display names without changing UUIDs.
 
@@ -40,6 +40,16 @@ On the September 22 snapshot, 585 `listed_faculty` relationships cover 107 progr
 32 programs publish no Program Faculty field. Unresolved listings are reported in the coverage artifact.
 
 The cited catalog's Computer Science convener assertion differs from the [current public major page](https://www.ramapo.edu/majors-minors/majors/computer-science/). The registry relationship means the captured catalog explicitly names that person, not that the catalog outranks every other source or proves a current appointment. The public page is not silently imported into this release.
+
+## Buildings
+
+`campus-buildings` publishes the buildings that published room numbers can place people and offices in. The source is the committed campus map, `data/map/campus-map-data.json`, collected from Ramapo's Concept3D map on August 27, 2026. It is a new repository-static source, `campus-map` ("Ramapo Campus Map"), like the checked-in shuttle timetable: its truth is versioned by the Git revision, and the artifact keeps the map's own collection time and URL.
+
+A map entry becomes a `building` identity only when it has room prefixes and a Concept3D location ID of its own. The ID is a UUIDv5 over that location ID in a fixed namespace, so a rename keeps it. The room-prefix table in the map file (`roomPrefixes`: `A`, `ASB`, `B`, `BC`, `BR`, `C`, `SC`, `D`, `E`, `G`, `AC`, `H`, `LIB`/`LIBRARY`, `CPA`) is the reviewed room-prefix mapping, approved on September 22, 2026. Map entries that share one Concept3D location, such as the College Park Apartments or the Laurel Hall buildings, get no building identity. Neither do buildings without room prefixes, such as residence halls and fields. Map aliases are not identity aliases yet.
+
+A person's `office_at` and an office, facility or venue's `located_at` relationship come only from the identity's own linked contact rooms. The whole published room value must be one or more `PREFIX-NUMBER` rooms separated by `/` (`D-224`, `G-203B / ASB-431D`), and every prefix must belong to one building. Building names and free text never place anyone ("Learning Commons 204A", "The Lodge"), and neither does the map's own office list, whose room verifier is unreliable. A location is not a claim about a school, a host or an owner.
+
+On the September 22 snapshot there are 14 buildings, 201 `office_at` relationships for 200 people and 9 `located_at` relationships for offices. Three rooms stay unresolved: "Learning Commons 204A", "The Lodge" and "SS-106". The Berrie Center building shares its name with the Archway organization "Berrie Center". Both identities are kept, so a name lookup asks which one is meant; they are never merged by name.
 
 ## Hours correctness
 

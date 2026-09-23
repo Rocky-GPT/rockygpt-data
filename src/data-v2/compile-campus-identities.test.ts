@@ -122,6 +122,27 @@ test('a convener field or the published faculty array never creates a listing', 
   assert.equal(explicitCatalogProgramFaculty({ programs: [{ code: 'P', customFields: { rJQmj: raw.programs[0].customFields.rJQmj } }] }).size, 0);
 });
 
+test('the committed campus map adds room-prefix buildings and office locations to the registry', () => {
+  const input = snapshot();
+  input.campus_contacts[0].office = 'ASB-409';
+  const campusMap = { source: 'https://api.concept3d.com/locations?map=2292', generatedAt: '2026-08-27T16:58:11.587Z', buildings: [
+    { name: 'Anisfield School of Business (ASB)', category: 'Academic Buildings', mapUrl: 'https://map.ramapo.edu/?id=2292#!m/1133424?sbc/', aliases: ['asb'], roomPrefixes: ['ASB'] },
+  ] };
+  const result = compileCampusIdentities(seed, input, raw, { campusMap });
+  const building = result.registry.entities.find(e => e.kind === 'building');
+  assert.equal(building?.name, 'Anisfield School of Business (ASB)');
+  assert.deepEqual(result.registry.entities.find(e => e.id === personId)?.relationships?.filter(r => r.type === 'office_at'), [
+    { type: 'office_at', target_entity_id: building?.id, evidence: [{ collection: 'contacts', source_key: 'faculty', source_record_key: 'faculty:test-professor:school', field: 'office' }] },
+  ]);
+  assert.equal(result.report.identities_by_kind.building, 1);
+  assert.equal(result.report.relationships.office_at, 1);
+  assert.equal(result.campusBuildings.buildings[0].concept3d_id, '1133424');
+  // Without the map there are no buildings, and nothing else changes.
+  const without = compileCampusIdentities(seed, snapshot(), raw);
+  assert.equal(without.registry.entities.some(e => e.kind === 'building'), false);
+  assert.deepEqual(without.campusBuildings.buildings, []);
+});
+
 test('distinct catalog programs with colliding original record keys remain unresolved', () => {
   const input = snapshot();
   (input.artifacts.programs as { schools: { majors: Record<string, unknown>[] }[] }).schools[0].majors.push({ name: 'Computer Science BS', catalogCode: 'OTHER' });
