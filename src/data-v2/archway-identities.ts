@@ -131,13 +131,15 @@ export function eventOrganizersArtifact(snapshot: IdentitySnapshot, inputs: Arch
  * departments their own contact records publish. A non-club group with one of
  * those names is most likely the same office, so it needs a reviewed link
  * instead of a second identity that would make that name ambiguous. */
-export function compileArchwayIdentities(snapshot: IdentitySnapshot, inputs: ArchwayIdentityInputs = {}, reserved: ReadonlySet<string> = new Set()): { entities: CampusIdentity[]; unresolved: IdentityCoverageIssue[]; organizers: EventOrganizersArtifact } {
+export function compileArchwayIdentities(snapshot: IdentitySnapshot, inputs: ArchwayIdentityInputs = {}, reserved: ReadonlySet<string> = new Set(), owned: ReadonlySet<string> = new Set()): { entities: CampusIdentity[]; unresolved: IdentityCoverageIssue[]; organizers: EventOrganizersArtifact } {
   const entities: CampusIdentity[] = []; const unresolved: IdentityCoverageIssue[] = [];
   const sources = clubSources(snapshot, inputs);
   const sourcesByUrl = uniqueBy(sources, r => canonicalClubUrl(r.websiteUrl));
   const publishedByUrl = uniqueBy(snapshot.clubs || [], r => canonicalClubUrl(r.website_url));
   const approved: { row: Row; groupId: string; kind: 'club' | 'organization' }[] = [];
   for (const row of snapshot.clubs || []) {
+    // A group a reviewed identity links explicitly (a school's Archway page) is not a second identity.
+    if (owned.has(text(row.source_record_key))) continue;
     const issue = (reason: string) => unresolved.push({ entity: text(row.name), collection: 'clubs', record: text(row.source_record_key), reason });
     // Student groups are clubs; departments, residence halls, teams, schools and
     // seminars are other campus organizations. The published category decides.

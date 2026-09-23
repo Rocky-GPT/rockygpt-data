@@ -2,7 +2,7 @@
 
 The Git registry holds persistent UUIDs and reviewed selectors, not duplicated profiles. A release contains exact links to the original contact, schedule, faculty, program and menu records in that release. Names and aliases locate an identity; relationship evidence distinguishes a program's convener and an undated profile-listed course from the identity itself. Menu items are offerings at a venue, not identities of the venue.
 
-`pipeline/commands/publish-current.ts` inserts original rows and artifacts before calling `insertCampusIdentityArtifacts` inside the candidate transaction. The installer refuses active/retired datasets. It writes seven release artifacts: `campus-identities`, `campus-identity-coverage`, `catalog-conveners`, `event-organizers`, `catalog-course-identities`, `program-requirement-groups` and `campus-buildings`. Repeating compilation/upsert against the same staging dataset is idempotent. Activation remains the established atomic release pointer swap.
+`pipeline/commands/publish-current.ts` inserts original rows and artifacts before calling `insertCampusIdentityArtifacts` inside the candidate transaction. The installer refuses active/retired datasets. It writes eight release artifacts: `campus-identities`, `campus-identity-coverage`, `catalog-conveners`, `event-organizers`, `catalog-course-identities`, `program-requirement-groups`, `campus-buildings` and `campus-schools`. Repeating compilation/upsert against the same staging dataset is idempotent. Activation remains the established atomic release pointer swap.
 
 Selectors are compiled against candidate rows each time: new menu dates/meals and seasonal exceptions join automatically; a person renamed in the faculty source retains their UUID via a unique institutional email or verified unique profile URL. Candidate record keys remain original. Contradictory identity anchors fail closed, including an old email reassigned to a different profile. Shared directory-page URLs are never unique person anchors. Source fields and differing phone/office values are not overwritten. Alias additions capture newly encountered display names without changing UUIDs.
 
@@ -50,6 +50,30 @@ A map entry becomes a `building` identity only when it has room prefixes and a C
 A person's `office_at` and an office, facility or venue's `located_at` relationship come only from the identity's own linked contact rooms. The whole published room value must be one or more `PREFIX-NUMBER` rooms separated by `/` (`D-224`, `G-203B / ASB-431D`), and every prefix must belong to one building. Building names and free text never place anyone ("Learning Commons 204A", "The Lodge"), and neither does the map's own office list, whose room verifier is unreliable. A location is not a claim about a school, a host or an owner.
 
 On the September 22 snapshot there are 14 buildings, 201 `office_at` relationships for 200 people and 9 `located_at` relationships for offices. Three rooms stay unresolved: "Learning Commons 204A", "The Lodge" and "SS-106". The Berrie Center building shares its name with the Archway organization "Berrie Center". Both identities are kept, so a name lookup asks which one is meant; they are never merged by name.
+
+## Schools
+
+School identities are Ramapo's current schools, as its official schools page (https://www.ramapo.edu/academics/schools/) lists them:
+- Anisfield School of Business (ASB)
+- School of Social Sciences and Social Work (SSSW)
+- School of Science, Nursing, and Health (SNH)
+- School of Arts, Humanities, and Education (AHE)
+
+`src/reference/campus-schools.json` is the reviewed list, approved on September 23, 2026. Each school has a persistent ID, its official page and the abbreviation that page publishes. The same file records the former names the catalog and Archway still publish, as reviewed legacy names with evidence:
+- School of Theoretical and Applied Science → SNH (`/tas/` redirects to `/snh/`).
+- School of Contemporary Arts → AHE (`/ca/` → `/ahe/`).
+- School of Humanities and Global Studies → AHE (`/hgs/` → `/ahe/`).
+- School of Social Science and Human Services was split. `/sshs/` redirects to `/sssw/`, and the AHE page lists the education programs the catalog still files under it. It is a legacy name of both SSSW and AHE, so a lookup by that name asks which is meant.
+
+The capture is a new repository-static source, `ramapo-schools` ("Ramapo Schools"), published the same way as the campus map.
+
+Each school's aliases are its abbreviation and its legacy names. The Archway directory groups that publish a former school name ("School of Contemporary Arts", "School of Humanities and Global Studies") and the Anisfield group are linked to their current school by exact record key, as reviewed in the file. They are no longer separate organization identities.
+
+`part_of` places people and programs in schools:
+- **Programs:** through the catalog's school name, only when it names exactly one current school. Programs under the split School of Social Science and Human Services, and the three "Interdisciplinary" programs, are not placed.
+- **People:** through the current school name their own faculty profile publishes. The directory's "(Adjunct)" marker is kept as a status; a profile marked "(Retired)" is not placed in a school. "Library Faculty & Staff" is not a school.
+
+On the September 22 snapshot there are 4 schools and 301 `part_of` relationships: 113 programs and 188 people. The School of Social Sciences and Social Work has people but no placed programs, because its catalog programs are filed under the split former school. The ASB school shares its name with the directory office "Anisfield School of Business"; both are kept, so a name lookup asks which is meant.
 
 ## Hours correctness
 

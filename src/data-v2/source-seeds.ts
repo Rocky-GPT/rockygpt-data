@@ -31,4 +31,6 @@ export const SOURCES: SourceSeed[] = [
   { key: 'faculty', title: 'Faculty Profiles', url: 'https://www.ramapo.edu/academics/faculty/', trustTier: 'official_secondary', freshnessHours: 720, domain: 'directory' },
   // Repository-static: the committed map file and its reviewed room-prefix table.
   { key: 'campus-map', title: 'Ramapo Campus Map', url: 'https://map.ramapo.edu/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'map' },
+  // Repository-static: the reviewed capture of the official schools page.
+  { key: 'ramapo-schools', title: 'Ramapo Schools', url: 'https://www.ramapo.edu/academics/schools/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'schools' },
 ];

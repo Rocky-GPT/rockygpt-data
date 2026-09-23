@@ -629,7 +629,7 @@ async function verifyStagingDataset(
     clubs: 100,
     programs: 50,
     document_chunks: 100,
-    release_artifacts: Object.keys(RELEASE_ARTIFACT_FILES).length + 7,
+    release_artifacts: Object.keys(RELEASE_ARTIFACT_FILES).length + 8,
   };
   for (const [key, minimum] of Object.entries(minimums)) {
     if ((counts[key] || 0) < minimum) {
@@ -894,6 +894,7 @@ async function main(): Promise<void> {
       clubs: readJson('data/raw/clubs.raw.json'),
       eventDetails: readJson('data/raw/events-detail.raw.json'),
       campusMap: readJson('data/map/campus-map-data.json'),
+      campusSchools: readJson('src/reference/campus-schools.json'),
     });
     const releaseArtifactCount = sourceArtifactCount + identityArtifacts.count;
     if (criticalCount !== Object.keys(CRITICAL_FACT_VALUES_V2).length) throw new Error('Critical fact verification failed.');
