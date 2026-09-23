@@ -69,8 +69,28 @@ test('structured contacts preserve static records and merge duplicate faculty pr
   assert.match(schoolOne?.searchable ?? '', /Duplicate profile biography/);
   assert.equal(new Set(contacts.map((contact) => contact.sourceRecordKey)).size, contacts.length);
   assert.deepEqual(schoolOne?.aliases, []);
+  assert.equal(schoolOne?.prefers_email, null, 'No source preference is unknown, not false');
   const office = contacts.find((contact) => contact.name === 'Registrar');
   assert.deepEqual(office?.aliases, ['Office of the Registrar']);
+});
+
+test('structured contacts preserve explicit email preference evidence and unknown preferences', () => {
+  const input = [
+    { name: 'Email Preference', school: 'School One', phone: '(201) 684-7293 (use email instead)' },
+    { name: 'No Preference', school: 'School One', phone: '(201) 684-7392' },
+    { name: 'No Phone', school: 'School One', email: 'email-only@example.edu' },
+  ];
+  const contacts = buildStructuredDirectoryContacts(input);
+  const explicit = contacts.find(contact => contact.name === 'Email Preference');
+  assert.equal(explicit?.prefers_email, true);
+  assert.equal(explicit?.preferred_contact, 'email');
+  assert.equal(explicit?.contact_note, 'use email instead');
+  assert.equal(explicit?.raw_phone, input[0].phone);
+  for (const name of ['No Preference', 'No Phone']) {
+    const contact = contacts.find(row => row.name === name);
+    assert.equal(contact?.prefers_email, null);
+    assert.equal(contact?.preferred_contact, undefined);
+  }
 });
 
 test('file repository entity listing uses the full shared contact population', async (t) => {
