@@ -1,0 +1,28 @@
+{
+  "$comment": [
+    "Human-reviewed identity decisions that no published source establishes.",
+    "",
+    "Each alias here is a name campus language uses, approved by a person, and is",
+    "recorded as human-reviewed rather than source-derived evidence. Each building",
+    "here is a campus map location approved as its own building identity even",
+    "though no room prefix places anyone in it. Entries name persistent IDs or",
+    "Concept3D locations, never names to match."
+  ],
+  "aliases": [
+    {
+      "entity_id": "c98a4db7-9948-4e2c-98b5-4fe3f73ae488",
+      "entity": "Birch Tree Inn",
+      "alias": "Birch",
+      "reviewed_at": "2026-09-23",
+      "note": "Approved: campus language uses \"Birch\" for the Birch Tree Inn dining room. No Ramapo source publishes it. Birch Mansion keeps its own name and identity."
+    }
+  ],
+  "buildings": [
+    {
+      "concept3d_id": "1133345",
+      "name": "Birch Mansion",
+      "reviewed_at": "2026-09-23",
+      "note": "Approved as its own building identity, so \"Birch Mansion\" resolves to it and not to the Birch Tree Inn."
+    }
+  ]
+}

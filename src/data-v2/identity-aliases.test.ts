@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { CampusIdentity } from './campus-identities';
 import { validateCampusIdentities } from './campus-identities';
-import { applyPublishedAliases, programFamily } from './identity-aliases';
+import { applyPublishedAliases, applyReviewedAliases, programFamily } from './identity-aliases';
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 const contact = (key: string, source = 'campus-directory') => [{ collection: 'contacts' as const, source_key: source, source_record_keys: [key] }];
@@ -47,4 +47,15 @@ test('aliases come only from the identity own name and records, and shared alias
   const invalid = structuredClone(entities);
   (invalid[6].status as unknown as { state: string }).state = 'emeritus';
   assert.throws(() => validateCampusIdentities({ schema_version: 1, entities: invalid }), /Unsupported identity status/);
+});
+
+test('a human-reviewed alias is applied by persistent ID and recorded as human-reviewed', () => {
+  const venue: CampusIdentity = { id: id(8), kind: 'venue', name: 'Birch Tree Inn', aliases: [], links: contact('office:birch-tree-inn') };
+  const review = { entity_id: id(8), entity: 'Birch Tree Inn', alias: 'Birch', reviewed_at: '2026-09-23', note: 'Approved.' };
+  const { applied, unresolved } = applyReviewedAliases([venue], [review, { ...review, entity_id: id(9) }]);
+  assert.deepEqual(venue.aliases, ['Birch']);
+  assert.deepEqual(applied, [{ entity_id: id(8), entity: 'Birch Tree Inn', alias: 'Birch', basis: 'human_reviewed', reviewed_at: '2026-09-23' }]);
+  assert.equal(unresolved.length, 1);
+  // A renamed identity is not silently given the reviewed alias.
+  assert.equal(applyReviewedAliases([{ ...venue, aliases: [], name: 'Renamed' }], [review]).applied.length, 0);
 });

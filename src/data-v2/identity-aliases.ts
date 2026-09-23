@@ -29,6 +29,22 @@ const MAX_ALIASES = 32;
 
 const text = (value: unknown): string => typeof value === 'string' ? value.trim() : '';
 
+/** A name campus language uses that a person approved; not source-derived evidence. */
+export interface ReviewedAlias { entity_id: string; entity: string; alias: string; reviewed_at: string; note: string }
+
+/** Apply human-reviewed aliases by persistent ID; report any whose identity is absent. */
+export function applyReviewedAliases(entities: CampusIdentity[], reviewed: ReviewedAlias[]): { applied: { entity_id: string; entity: string; alias: string; basis: 'human_reviewed'; reviewed_at: string }[]; unresolved: { entity: string; collection: string; reason: string }[] } {
+  const byId = new Map(entities.map(entity => [entity.id, entity]));
+  const applied = []; const unresolved = [];
+  for (const review of reviewed) {
+    const entity = byId.get(review.entity_id);
+    if (!entity || entity.name !== review.entity) { unresolved.push({ entity: review.entity, collection: 'aliases', reason: `The reviewed alias "${review.alias}" names an identity that is not in this release under that name; it is not applied.` }); continue; }
+    if (!entity.aliases.includes(review.alias) && entity.aliases.length < MAX_ALIASES) entity.aliases = [...entity.aliases, review.alias];
+    applied.push({ entity_id: entity.id, entity: entity.name, alias: review.alias, basis: 'human_reviewed' as const, reviewed_at: review.reviewed_at });
+  }
+  return { applied, unresolved };
+}
+
 /** The program name without its degree designation, or null. */
 export function programFamily(name: string): string | null {
   const designation = DESIGNATIONS.find(suffix => name.endsWith(suffix));

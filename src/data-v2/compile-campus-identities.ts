@@ -6,7 +6,8 @@ import { compileArchwayIdentities, normalizeName, type ArchwayIdentityInputs, ty
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
-import { applyPublishedAliases } from './identity-aliases';
+import { applyPublishedAliases, applyReviewedAliases, type ReviewedAlias } from './identity-aliases';
+import type { ReviewedBuilding } from './campus-buildings';
 import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
 
@@ -20,6 +21,8 @@ export interface IdentityCoverageIssue { entity?: string; collection: string; re
 export interface IdentityCoverageReport {
   identity_count: number; identities_by_kind: Record<string, number>; linked_records: Record<string, number>;
   relationships: Record<string, number>; unresolved: IdentityCoverageIssue[];
+  /** Aliases a person approved, kept apart from source-derived evidence. */
+  human_reviewed_aliases?: { entity_id: string; entity: string; alias: string; basis: 'human_reviewed'; reviewed_at: string }[];
 }
 interface Candidate { collection: IdentityCollection; source: string; key: string; row: Row; anchors: string[] }
 export const canonicalProfileUrl = (value: unknown): string => typeof value === 'string' ? value.trim().replace(/\/+$/, '') : '';
@@ -135,7 +138,10 @@ export interface CompiledIdentityArtifacts {
   campusBuildings: CampusBuildingsArtifact; campusSchools: CampusSchoolsArtifact;
 }
 /** Inputs outside the release snapshot: Archway captures, the committed campus map and the reviewed schools. */
-export interface IdentityInputs extends ArchwayIdentityInputs { campusMap?: unknown; campusSchools?: ReviewedSchools }
+export interface IdentityInputs extends ArchwayIdentityInputs {
+  campusMap?: unknown; campusSchools?: ReviewedSchools;
+  identityReviews?: { aliases?: ReviewedAlias[]; buildings?: ReviewedBuilding[] };
+}
 export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, inputs: IdentityInputs = {}): CompiledIdentityArtifacts {
   validateCampusIdentities(seed);
   const candidates = identityCandidates(snapshot);
@@ -244,15 +250,18 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const archway = compileArchwayIdentities(snapshot, inputs, reserved, schools.ownedClubs);
   entities.push(...archway.entities);
   unresolved.push(...archway.unresolved);
-  const campusBuildings = campusBuildingsArtifact(inputs.campusMap);
+  const campusBuildings = campusBuildingsArtifact(inputs.campusMap, inputs.identityReviews?.buildings);
   const contactRows = new Map(candidates.filter(c => c.collection === 'contacts').map(c => [`${c.source}:${c.key}`, c.row]));
   const places = compileBuildingIdentities(campusBuildings, entities, contactRows);
   entities.push(...places.buildings);
   unresolved.push(...places.unresolved);
   applyPublishedAliases(entities, recordRows);
+  const reviewedAliases = applyReviewedAliases(entities, inputs.identityReviews?.aliases ?? []);
+  unresolved.push(...reviewedAliases.unresolved);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved };
+  if (reviewedAliases.applied.length) report.human_reviewed_aliases = reviewedAliases.applied;
   for (const entity of entities) {
     report.identities_by_kind[entity.kind] = (report.identities_by_kind[entity.kind] || 0) + 1;
     for (const link of entity.links) report.linked_records[link.collection] = (report.linked_records[link.collection] || 0) + link.source_record_keys.length;
