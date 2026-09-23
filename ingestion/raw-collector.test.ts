@@ -58,6 +58,20 @@ test('sidebar noise headings do not swallow the following main-column service ac
   assert.ok(result.contacts.some(contact => contact.phone === '2015550101'));
 });
 
+test('FAQ disclosure labels remain attached to their answers', () => {
+  const result = buildRawPageFromHtml({url:'https://example.edu/health/',sourceType:'seed',allowedHost:'example.edu',
+    html:`<main><h1>Health Services</h1><h2>Services FAQ</h2>
+      <div class="collapsableTitle">Are students required to have health insurance?</div>
+      <div class="collapsableContent"><p>Yes. The College requires that all students have health insurance.</p></div>
+      <details><summary>Will the provider bill my insurance?</summary><p>Medical services are billed to your insurance company.</p></details>
+      <div role="heading" aria-level="3">Where can I book?</div><p><a href="/booking">Book an appointment</a></p></main>`});
+  assert.deepEqual(result.sections.map(section => section.heading), ['Are students required to have health insurance?',
+    'Will the provider bill my insurance?', 'Where can I book?']);
+  assert.match(result.sections[0].text, /^Yes\. The College requires/);
+  assert.match(result.sections[1].text, /^Medical services are billed/);
+  assert.match(result.sections[2].text, /Book an appointment \(https:\/\/example.edu\/booking\)/);
+});
+
 test('collection regression measures successful pages, not old failed document requests', () => {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'rocky-raw-regression-'));
   try {

@@ -12,6 +12,7 @@ const DEFAULT_ATTEMPTS = 2;
 const DEFAULT_DETAIL_CONCURRENCY = 8;
 const DEFAULT_USER_AGENT =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+const SECTION_HEADINGS = 'h1, h2, h3, h4, h5, h6, summary, [role="heading"], .collapsableTitle';
 
 const DOCUMENT_EXTENSIONS = new Set([
   '.pdf',
@@ -152,7 +153,7 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
   };
   // Walk in document order, including tables and nested content wrappers.
   // Never clip a policy at a paragraph/character count: later chunks bound reads.
-  $('#content-block, h1, h2, h3, h4, h5, h6, p, li, table, a[href]').each((_, element) => {
+  $(`#content-block, ${SECTION_HEADINGS}, p, li, table, a[href]`).each((_, element) => {
     const node = $(element);
     if (node.is('#content-block')) {
       // Ramapo's main column follows a sidebar with headings such as "Related
@@ -161,7 +162,7 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
       heading = initialHeading || 'Overview';
       return;
     }
-    if (node.is('h1, h2, h3, h4, h5, h6')) {
+    if (node.is(SECTION_HEADINGS)) {
       flush();
       heading = textWithLinks($, element, baseUrl) || heading;
       return;
@@ -169,7 +170,7 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
     if (node.parents('li, table').length) return;
     // An anchor already represented in a text block must not become a duplicate
     // section entry. Standalone buttons/links still need their own retained text.
-    if (node.is('a') && node.parents('p, h1, h2, h3, h4, h5, h6').length) return;
+    if (node.is('a') && node.parents(`p, ${SECTION_HEADINGS}`).length) return;
     const text = node.is('table')
       ? node.find('tr').toArray().map((row) => $(row).find('th, td').toArray()
         .map((cell) => textWithLinks($, cell, baseUrl)).join(' | ')).join('; ')
