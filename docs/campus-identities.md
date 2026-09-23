@@ -74,3 +74,17 @@ node --import tsx pipeline/commands/compile-identities.ts \
 ```
 
 The normal publisher performs this same compilation after the candidate's original rows and artifacts exist, installs all four artifacts only in `staging` or `validating`, and refreshes links for newly ingested records. The opt-in PostgreSQL publishing test verifies repeat publication, newly added clubs/events, colliding event keys, rescheduling and regenerated row UUIDs, and rejection of active-release mutation.
+
+## Catalog course identities and requirement groups
+
+The identity compiler also writes two artifacts that every release installs alongside the other four.
+
+`catalog-course-identities` publishes one canonical ID per `courses` catalog key. This repository now owns course IDs; the Brain reads them instead of deriving its own. The derivation is the Brain's original one, reproduced byte for byte: a UUIDv5 in the RFC 4122 URL namespace over Python's `json.dumps(["rockygpt", "course", "academic-programs", code])`. On the September 22 snapshot all 3,344 course IDs are unchanged. Do not change the derivation; golden values in `course-identities.test.ts` pin it.
+
+`program-requirement-groups` models program requirements as contextual records built from the release's own `programs` artifact:
+
+- One `requirement_group` record per distinct published section. Identical sections are one shared record: the 576 General Education sections are 9 groups, and 1,007 sections are 389 groups in total. Group IDs are UUIDv5 values over the section's published content, so an unchanged section keeps its ID.
+- Each record keeps the published rule tree (condition, count, credits, items with their and/or logic, nested sub-rules), the course list and `selectCount`, and any note, such as waivers and placement conditions, verbatim. Each path it came from is listed with the program and catalog code.
+- `choose` is derived only for unambiguous forms: `all`, `at_least N` of a node's items or sub-rules, or `minimum_credits N`. Combinations such as "any of" with a count, or "all of" with a count, keep their published fields with `choose: null` and are reported, not guessed.
+- Edges: a program `requirement_group` edge (with section order) and a group `requirement_option` edge to each catalog course, carrying the option's exact position and its item's logic. An option is never an unconditional requirement.
+- Course codes resolve only by exact match to a catalog key. Other codes stay as published, unlinked and reported; on September 22 there were two, both opaque catalog IDs rather than course codes.

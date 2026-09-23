@@ -629,7 +629,7 @@ async function verifyStagingDataset(
     clubs: 100,
     programs: 50,
     document_chunks: 100,
-    release_artifacts: Object.keys(RELEASE_ARTIFACT_FILES).length + 4,
+    release_artifacts: Object.keys(RELEASE_ARTIFACT_FILES).length + 6,
   };
   for (const [key, minimum] of Object.entries(minimums)) {
     if ((counts[key] || 0) < minimum) {
