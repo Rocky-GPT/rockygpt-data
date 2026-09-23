@@ -5,6 +5,7 @@ import { buildFrontmatter } from './frontmatter';
 import { getGeneratedTimestamp, sortByName } from './pipeline-utils';
 import { type LocationHours, validateCampusHours } from './schema';
 import { hoursUncertaintyReason } from './unverified-hours';
+import { renderHoursSourceContext } from './hours-source-context';
 
 interface ContextLocationHours {
   name: string;
@@ -127,6 +128,10 @@ function generateMarkdown() {
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
+  const captures = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'data', 'raw', 'hours-sources.raw.json'), 'utf8'));
+  if (captures.version !== 1 || !Array.isArray(captures.captures)) throw new Error('Invalid hours source capture');
+  const sourceContext = renderHoursSourceContext(captures.captures);
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'hours-source-context.md'), sourceContext, 'utf8');
   fs.writeFileSync(MARKDOWN_OUTPUT_PATH, markdown, 'utf-8');
   console.log(`Successfully generated markdown at ${MARKDOWN_OUTPUT_PATH}`);
 }
