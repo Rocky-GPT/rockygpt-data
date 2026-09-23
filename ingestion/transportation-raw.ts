@@ -23,6 +23,7 @@ async function run() {
   console.log('Collecting transportation raw dataset...');
   const dataset = await collectRawDataset({
     dataset: 'transportation',
+    retainSourceHtml: true,
     seedUrls: SEED_URLS,
     outputPath: OUTPUT_PATH,
     allowedHost: 'www.ramapo.edu',

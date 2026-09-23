@@ -23,6 +23,7 @@ async function run() {
   console.log('Collecting safety raw dataset...');
   const dataset = await collectRawDataset({
     dataset: 'safety',
+    retainSourceHtml: true,
     seedUrls: SEED_URLS,
     outputPath: OUTPUT_PATH,
     allowedHost: 'www.ramapo.edu',

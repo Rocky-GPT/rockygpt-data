@@ -12,6 +12,7 @@ async function run() {
   console.log('Collecting housing raw dataset...');
   const dataset = await collectRawDataset({
     dataset: 'housing',
+    retainSourceHtml: true,
     seedUrls: SEED_URLS,
     outputPath: OUTPUT_PATH,
     allowedHost: 'www.ramapo.edu',

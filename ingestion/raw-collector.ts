@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { load } from 'cheerio';
 import type { AnyNode } from 'domhandler';
 import pLimit from 'p-limit';
@@ -42,6 +43,8 @@ export interface RawCollectorOptions {
   minimumSeedSuccessRate?: number;
   minimumDetailSuccessRate?: number;
   minimumPreviousPageRatio?: number;
+  /** Opt-in source retention for bounded policy/service crawls, never detail feeds by default. */
+  retainSourceHtml?: boolean;
 }
 
 interface BuildRawPageFromHtmlOptions {
@@ -57,6 +60,14 @@ interface FetchHtmlResult {
   url: string;
   statusCode: number | null;
   html: string;
+  contentType: string;
+}
+
+export interface RawSourceCaptureV1 {
+  schemaVersion: 1;
+  dataset: string;
+  generatedAt: string;
+  pages: Array<FetchHtmlResult & { requestedUrl: string; sourceType: 'seed' | 'detail'; fetchedAt: string; contentHash: string }>;
 }
 
 const CHALLENGE_PAGE_PATTERNS = [
@@ -334,7 +345,7 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
     url: normalizeUrl(options.url),
     sourceType: options.sourceType,
     fetchedAt: options.fetchedAt || new Date().toISOString(),
-    statusCode: options.statusCode ?? 200,
+    statusCode: options.statusCode === undefined ? 200 : options.statusCode,
     title,
     links: asSortedArray(links),
     externalLinks: asSortedArray(externalLinks),
@@ -346,11 +357,11 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
   };
 }
 
-function buildEmptyPage(url: string, sourceType: 'seed' | 'detail', statusCode: number | null): RawPageV1 {
+function buildEmptyPage(url: string, sourceType: 'seed' | 'detail', statusCode: number | null, fetchedAt?: string): RawPageV1 {
   return {
     url: normalizeUrl(url),
     sourceType,
-    fetchedAt: new Date().toISOString(),
+    fetchedAt: fetchedAt || new Date().toISOString(),
     statusCode,
     title: null,
     links: [],
@@ -361,6 +372,24 @@ function buildEmptyPage(url: string, sourceType: 'seed' | 'detail', statusCode: 
     contacts: [],
     documents: [],
   };
+}
+
+/** Reparse retained sources without network access, writes or newer collection times. */
+export function replayRawSourceCapture(capture: RawSourceCaptureV1): RawDatasetV1 {
+  if (capture.schemaVersion !== 1) throw new Error('Unsupported raw source capture schema version');
+  const pages = capture.pages.map(source => {
+    if (createHash('sha256').update(source.html).digest('hex') !== source.contentHash) {
+      throw new Error(`Source capture content hash mismatch: ${source.requestedUrl}`);
+    }
+    return source.html ? buildRawPageFromHtml({url:source.url,html:source.html,sourceType:source.sourceType,
+      fetchedAt:source.fetchedAt,statusCode:source.statusCode,allowedHost:urlHost(source.url)})
+      : buildEmptyPage(source.url,source.sourceType,source.statusCode,source.fetchedAt);
+  });
+  const pagesFetched = pages.filter(successfulPage).length;
+  return {version:'1.0',dataset:capture.dataset,collectedAt:capture.generatedAt,
+    seedUrls:normalizeSeedUrls(capture.pages.filter(source => source.sourceType === 'seed').map(source => source.requestedUrl)),
+    stats:{pagesFetched,pagesFailed:pages.length-pagesFetched,
+      externalLinksSeen:new Set(pages.flatMap(page => page.externalLinks)).size},pages};
 }
 
 async function fetchHtmlWithRetry(
@@ -387,9 +416,10 @@ async function fetchHtmlWithRetry(
       url: response.url || url,
       statusCode: response.status,
       html: response.text(),
+      contentType: response.headers.get('content-type') || '',
     };
   } catch {
-    return { url, statusCode: null, html: '' };
+    return { url, statusCode: null, html: '', contentType: '' };
   }
 }
 
@@ -513,99 +543,128 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
   const pages: RawPageV1[] = [];
   const seenUrls = new Set<string>(normalizedSeedUrls);
   const detailCandidates: string[] = [];
-
-  for (const seedUrl of normalizedSeedUrls) {
-    const fetched = await fetchHtmlWithRetry(seedUrl, timeoutMs, attempts);
-    const seedPage = fetched.html
-      ? buildRawPageFromHtml({
-          url: fetched.url,
-          html: fetched.html,
-          sourceType: 'seed',
-          statusCode: fetched.statusCode,
-          allowedHost: urlHost(fetched.url),
-        })
-      : buildEmptyPage(fetched.url, 'seed', fetched.statusCode);
-
-    pages.push(seedPage);
-    seenUrls.add(seedPage.url);
-
-    seedPage.links.forEach((link) => {
-      if (seenUrls.has(link)) return;
-      if (!allowedHosts.has(urlHost(link))) return;
-      // Documents remain in the page's documents list. The HTML collector
-      // cannot parse them; requesting them as HTML creates spurious failed
-      // pages and can crowd real detail pages out of the bounded crawl.
-      if (isLikelyDocument(link)) return;
-      if (options.detailUrlFilter) {
-        try {
-          if (!options.detailUrlFilter(new URL(link))) {
-            return;
-          }
-        } catch {
-          return;
-        }
-      }
-      detailCandidates.push(link);
-      seenUrls.add(link);
-    });
+  const sourcePages: RawSourceCaptureV1['pages'] = [];
+  async function fetchSource(url: string, sourceType: 'seed' | 'detail'): Promise<FetchHtmlResult & { fetchedAt: string }> {
+    const fetched = await fetchHtmlWithRetry(url, timeoutMs, attempts);
+    const fetchedAt = new Date().toISOString();
+    if (options.retainSourceHtml) sourcePages.push({ ...fetched, requestedUrl: url, sourceType,
+      fetchedAt, contentHash: createHash('sha256').update(fetched.html).digest('hex') });
+    return { ...fetched, fetchedAt };
   }
 
-  const uniqueDetails = Array.from(new Set(detailCandidates)).slice(0, maxDetailPages);
-  const detailFetchLimit = pLimit(detailConcurrency);
+  try {
+    for (const seedUrl of normalizedSeedUrls) {
+      const fetched = await fetchSource(seedUrl, 'seed');
+      const seedPage = fetched.html
+        ? buildRawPageFromHtml({
+            url: fetched.url,
+            html: fetched.html,
+            sourceType: 'seed',
+            fetchedAt: fetched.fetchedAt,
+            statusCode: fetched.statusCode,
+            allowedHost: urlHost(fetched.url),
+          })
+        : buildEmptyPage(fetched.url, 'seed', fetched.statusCode, fetched.fetchedAt);
 
-  const detailPages = await Promise.all(
-    uniqueDetails.map((detailUrl) =>
-      detailFetchLimit(async () => {
-        const fetched = await fetchHtmlWithRetry(detailUrl, timeoutMs, attempts);
-        if (!fetched.html) {
-          return buildEmptyPage(fetched.url, 'detail', fetched.statusCode);
+      pages.push(seedPage);
+      seenUrls.add(seedPage.url);
+
+      seedPage.links.forEach((link) => {
+        if (seenUrls.has(link)) return;
+        if (!allowedHosts.has(urlHost(link))) return;
+        // Documents remain in the page's documents list. The HTML collector
+        // cannot parse them; requesting them as HTML creates spurious failed
+        // pages and can crowd real detail pages out of the bounded crawl.
+        if (isLikelyDocument(link)) return;
+        if (options.detailUrlFilter) {
+          try {
+            if (!options.detailUrlFilter(new URL(link))) {
+              return;
+            }
+          } catch {
+            return;
+          }
         }
-        return buildRawPageFromHtml({
-          url: fetched.url,
-          html: fetched.html,
-          sourceType: 'detail',
-          statusCode: fetched.statusCode,
-          allowedHost: urlHost(fetched.url),
-        });
-      })
-    )
-  );
+        detailCandidates.push(link);
+        seenUrls.add(link);
+      });
+    }
 
-  pages.push(...detailPages);
+    const uniqueDetails = Array.from(new Set(detailCandidates)).slice(0, maxDetailPages);
+    const detailFetchLimit = pLimit(detailConcurrency);
 
-  const externalLinksSeen = new Set<string>();
-  pages.forEach((page) => {
-    page.externalLinks.forEach((link) => externalLinksSeen.add(link));
-  });
+    const detailResults = await Promise.allSettled(
+      uniqueDetails.map((detailUrl) =>
+        detailFetchLimit(async () => {
+          const fetched = await fetchSource(detailUrl, 'detail');
+          if (!fetched.html) {
+            return buildEmptyPage(fetched.url, 'detail', fetched.statusCode, fetched.fetchedAt);
+          }
+          return buildRawPageFromHtml({
+            url: fetched.url,
+            html: fetched.html,
+            sourceType: 'detail',
+            fetchedAt: fetched.fetchedAt,
+            statusCode: fetched.statusCode,
+            allowedHost: urlHost(fetched.url),
+          });
+        })
+      )
+    );
 
-  const pagesFetched = pages.filter(
-    (page) => page.statusCode !== null && page.statusCode >= 200 && page.statusCode < 400
-  ).length;
+    // Await every in-flight request before persisting captures in finally.
+    const failedDetail = detailResults.find(result => result.status === 'rejected');
+    if (failedDetail?.status === 'rejected') throw failedDetail.reason;
+    const detailPages = detailResults.flatMap(result => result.status === 'fulfilled' ? [result.value] : []);
 
-  const dataset: RawDatasetV1 = {
-    version: '1.0',
-    dataset: options.dataset,
-    collectedAt: new Date().toISOString(),
-    seedUrls: normalizedSeedUrls,
-    stats: {
-      pagesFetched,
-      pagesFailed: pages.length - pagesFetched,
-      externalLinksSeen: externalLinksSeen.size,
-    },
-    pages,
-  };
+    pages.push(...detailPages);
 
-  assertRawCollectionCandidate(dataset, options);
-  writeJsonFile(options.outputPath, dataset);
-  // PROB-002: record source-native provenance so the publish gate can verify
-  // this source was actually collected (covers the six core static sources
-  // that share this collector: safety, transportation, directory, housing,
-  // health, counseling).
-  writeRawProvenance(options.dataset, {
-    sourceUrl: normalizedSeedUrls[0],
-    recordCount: pages.length,
-    payload: dataset,
-    fetchedAt: dataset.collectedAt,
-  }, path.dirname(options.outputPath));
-  return dataset;
+    const externalLinksSeen = new Set<string>();
+    pages.forEach((page) => {
+      page.externalLinks.forEach((link) => externalLinksSeen.add(link));
+    });
+
+    const pagesFetched = pages.filter(
+      (page) => page.statusCode !== null && page.statusCode >= 200 && page.statusCode < 400
+    ).length;
+
+    const dataset: RawDatasetV1 = {
+      version: '1.0',
+      dataset: options.dataset,
+      collectedAt: new Date().toISOString(),
+      seedUrls: normalizedSeedUrls,
+      stats: {
+        pagesFetched,
+        pagesFailed: pages.length - pagesFetched,
+        externalLinksSeen: externalLinksSeen.size,
+      },
+      pages,
+    };
+
+    assertRawCollectionCandidate(dataset, options);
+    writeJsonFile(options.outputPath, dataset);
+    // PROB-002: record source-native provenance so the publish gate can verify
+    // this source was actually collected (covers the six core static sources
+    // that share this collector: safety, transportation, directory, housing,
+    // health, counseling).
+    writeRawProvenance(options.dataset, {
+      sourceUrl: normalizedSeedUrls[0],
+      recordCount: pages.length,
+      payload: dataset,
+      fetchedAt: dataset.collectedAt,
+    }, path.dirname(options.outputPath));
+    return dataset;
+  } finally {
+    // Keep the original pages even if parsing or a coverage gate fails. The
+    // parsed JSON alone cannot reveal content that the parser silently omitted.
+    if (options.retainSourceHtml) {
+      const payload: RawSourceCaptureV1 = { schemaVersion: 1, dataset: options.dataset,
+        generatedAt: new Date().toISOString(), pages: sourcePages };
+      const rawDir = path.dirname(options.outputPath);
+      writeJsonFile(path.join(rawDir, `${options.dataset}-sources.raw.json`), payload);
+      const oldestFetch = sourcePages.map(page => page.fetchedAt).sort()[0];
+      writeRawProvenance(`${options.dataset}-sources`, { sourceUrl: normalizedSeedUrls[0],
+        recordCount: sourcePages.length, payload, fetchedAt: oldestFetch || payload.generatedAt }, rawDir);
+    }
+  }
 }

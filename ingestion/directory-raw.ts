@@ -23,6 +23,7 @@ async function run() {
   console.log('Collecting directory raw dataset...');
   const dataset = await collectRawDataset({
     dataset: 'directory',
+    retainSourceHtml: true,
     seedUrls: SEED_URLS,
     outputPath: OUTPUT_PATH,
     allowedHost: 'www.ramapo.edu',
