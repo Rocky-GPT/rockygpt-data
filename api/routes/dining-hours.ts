@@ -27,6 +27,7 @@ interface DiningTime {
 
 interface DiningHoursRange {
   allDay: boolean;
+  closed?: boolean;
   startTime?: DiningTime;
   finishTime?: DiningTime;
   label?: string;
@@ -136,7 +137,7 @@ export function resolveGeneralHours(fragment: DiningFragment): GeneralLocation {
     const days = group.days.map((d) => d.value).join(', ');
     const hours = group.hours.map(range => ({
       label: range.label,
-      time: formatDiningRange({ ...range, label: undefined }),
+      time: formatDiningRange({ ...range }, false),
     }));
     return { days, hours: hours.length ? hours : [{ time: DINING_HOURS_UNKNOWN }] };
   });

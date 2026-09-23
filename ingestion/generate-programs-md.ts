@@ -3,6 +3,7 @@ import path from 'node:path';
 import { buildFrontmatter } from './frontmatter';
 import { getGeneratedTimestamp } from './pipeline-utils';
 import { publicPath } from '../src/paths';
+import type { ReqRule } from './scrape-catalog-api';
 
 const PUBLIC_DATA_DIR = publicPath('data');
 const OUTPUT_FILE = path.join(process.cwd(), 'data', 'context', 'academic', 'programs.md');
@@ -19,6 +20,8 @@ interface ProgramRequirement {
   section?: string;
   note?: string;
   courses?: Array<{ code?: string; name?: string }>;
+  selectCount?: number;
+  rule?: ReqRule;
 }
 
 interface ProgramDetail {
@@ -80,7 +83,26 @@ export function formatCourseCredits(value: unknown): string {
   return `${credits} ${credits === 1 ? 'credit' : 'credits'}`;
 }
 
-function renderProgram(program: ProgramDetail): string {
+/** Preserve the published tree and restrictions without turning options into requirements. */
+function renderRule(rule: ReqRule, depth = 0): string {
+  const indent = '  '.repeat(depth);
+  let text = rule.name ? `${indent}- ${clean(rule.name)}\n` : '';
+  const metadata = [rule.condition ? `condition: ${rule.condition}` : '',
+    rule.count !== undefined ? `count: ${rule.count}` : '',
+    rule.credits !== undefined ? `credits: ${rule.credits}` : ''].filter(Boolean);
+  if (metadata.length) text += `${indent}- Published rule (${metadata.join('; ')})\n`;
+  if (rule.note) text += `${indent}- Restriction: ${clean(rule.note)}\n`;
+  if (rule.text) text += `${indent}- ${clean(rule.text)}\n`;
+  if (rule.constraints) text += `${indent}- Additional published constraints: ${JSON.stringify(rule.constraints)}\n`;
+  for (const item of rule.items || []) {
+    const courses = item.codes.map(course => `${course.code}${course.name ? ` — ${course.name}` : ''}`);
+    text += `${indent}- Course option${courses.length === 1 ? '' : 's'} (published logic: ${item.logic || 'unspecified'}): ${courses.join(` ${item.logic || ';'} `)}\n`;
+  }
+  for (const sub of rule.subRules || []) text += renderRule(sub, depth + 1);
+  return text;
+}
+
+export function renderProgram(program: ProgramDetail): string {
   const name = clean(program.name);
   if (!name) return '';
 
@@ -103,12 +125,13 @@ function renderProgram(program: ProgramDetail): string {
         return code ? `${code}${courseName ? ` — ${courseName}` : ''}` : '';
       })
       .filter(Boolean);
-    if (!section && !courses.length && !requirement.note) continue;
+    if (!section && !courses.length && !requirement.note && !requirement.rule) continue;
     md += `#### ${section || 'Program requirement'}\n\n`;
-    for (const course of courses.slice(0, 20)) md += `- ${course}\n`;
-    if (courses.length > 20) md += `- …and ${courses.length - 20} additional approved courses\n`;
+    if (requirement.selectCount !== undefined) md += `Published selection count: ${requirement.selectCount}\n\n`;
+    for (const course of courses) md += `- ${course}\n`;
     if (courses.length) md += '\n';
-    if (requirement.note) md += `${excerpt(requirement.note, 320)}\n\n`;
+    if (requirement.rule) md += `${renderRule(requirement.rule)}\n`;
+    if (requirement.note) md += `${clean(requirement.note)}\n\n`;
   }
 
   const faculty = (program.faculty || [])

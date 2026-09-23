@@ -8,6 +8,8 @@ interface ContextLocationHours {
   name: string;
   hours: Record<string, string>;
   notes?: string;
+  sourceUrl?: string;
+  collectedAt?: string;
 }
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'normalized');
@@ -39,6 +41,8 @@ function toContextHours(locations: LocationHours[]): ContextLocationHours[] {
           name,
           hours,
           notes: normalizeText(location.notes),
+          sourceUrl: location.sourceUrl,
+          collectedAt: location.collectedAt,
         };
       })
       .filter((location): location is ContextLocationHours => location !== null),
@@ -79,6 +83,8 @@ function generateMarkdown() {
 
   contextLocations.forEach((location) => {
     markdown += `## ${location.name}\n\n`;
+    if (location.sourceUrl) markdown += `Source: ${location.sourceUrl}\n\n`;
+    if (location.collectedAt) markdown += `Source captured (UTC): ${location.collectedAt}\n\n`;
     markdown += '| Day | Hours |\n';
     markdown += '|-----|-------|\n';
     DAYS.forEach((day) => {

@@ -51,7 +51,8 @@ function safeRawFileName(file: string): string {
 export function restoreBundleToRawDirectory(
   bundle: RawArtifactBundleEnvelope,
   artifact: Pick<ActiveSourceArtifact, 'sourceKey' | 'collectedAt'>,
-  rawDir = path.join(process.cwd(), 'data', 'raw')
+  rawDir = path.join(process.cwd(), 'data', 'raw'),
+  options: { allowIncomplete?: boolean } = {}
 ): number {
   if (bundle.sourceKey !== artifact.sourceKey) {
     throw new Error(
@@ -59,24 +60,46 @@ export function restoreBundleToRawDirectory(
     );
   }
 
-  fs.mkdirSync(rawDir, { recursive: true });
-  for (const entry of bundle.entries) {
-    const fileName = safeRawFileName(entry.file);
-    writeJsonFile(path.join(rawDir, fileName), entry.content);
+  // Validate the archive itself before writing. Local files are not evidence
+  // that the pinned archive contains all inputs required by this collector.
+  const entryFiles = bundle.entries.map((entry) => safeRawFileName(entry.file));
+  if (new Set(entryFiles).size !== entryFiles.length) {
+    throw new Error(`Raw artifact for ${artifact.sourceKey} contains duplicate filenames.`);
   }
-
-  const source = SOURCES.find((candidate) => candidate.key === artifact.sourceKey);
-  for (const dataset of SOURCE_RAW_DATASETS[artifact.sourceKey] || []) {
+  const required = (SOURCE_RAW_DATASETS[artifact.sourceKey] || []).map((dataset) => {
     const rawFile = RAW_DATASET_FILES[dataset];
     if (!rawFile) {
       throw new Error(`No raw file mapping exists for restored dataset ${dataset}.`);
     }
-    const rawPath = path.join(rawDir, rawFile);
-    if (!fs.existsSync(rawPath)) {
-      throw new Error(
-        `Restored artifact for ${artifact.sourceKey} is missing required file ${rawFile}.`
-      );
+    return { dataset, rawFile };
+  });
+  const missing = required.filter(({ rawFile }) => !entryFiles.includes(rawFile));
+  if (missing.length) {
+    const detail = `Raw artifact for ${artifact.sourceKey} is missing required file(s): ${missing.map(({ rawFile }) => rawFile).join(', ')}.`;
+    if (!options.allowIncomplete) {
+      throw new Error(detail);
     }
+    // Refresh can upgrade legacy captures, but must recollect the entire
+    // source. Remove stale inputs and sidecars so its provenance is unknown.
+    for (const { dataset, rawFile } of required) {
+      fs.rmSync(path.join(rawDir, rawFile), { force: true });
+      fs.rmSync(path.join(rawDir, `${dataset}.provenance.json`), { force: true });
+    }
+    console.warn(`${detail} Source requires a fresh collection.`);
+    return 0;
+  }
+  if (!Number.isFinite(Date.parse(artifact.collectedAt))) {
+    throw new Error(`Raw artifact for ${artifact.sourceKey} has an invalid collection time.`);
+  }
+
+  fs.mkdirSync(rawDir, { recursive: true });
+  for (const entry of bundle.entries) {
+    writeJsonFile(path.join(rawDir, entry.file), entry.content);
+  }
+
+  const source = SOURCES.find((candidate) => candidate.key === artifact.sourceKey);
+  for (const { dataset, rawFile } of required) {
+    const rawPath = path.join(rawDir, rawFile);
     const payload = JSON.parse(fs.readFileSync(rawPath, 'utf8')) as unknown;
     writeRawFileProvenance(dataset, rawPath, {
       sourceUrl: source?.url,

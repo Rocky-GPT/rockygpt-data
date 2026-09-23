@@ -9,7 +9,7 @@ export const SOURCE_RAW_ARTIFACT_FILES: Record<string, string[]> = {
   'public-safety': ['safety.raw.json'],
   'academic-calendar': ['calendar.raw.json'],
   dining: ['menu.raw.json', 'menu-week.raw.json', 'dining-hours.raw.json'],
-  'campus-hours': ['hours.raw.json'],
+  'campus-hours': ['hours.raw.json', 'hours-sources.raw.json'],
   'archway-events': [
     'events.raw.json',
     'events-detail.raw.json',

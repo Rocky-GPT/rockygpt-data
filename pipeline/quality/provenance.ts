@@ -34,7 +34,7 @@ export const SOURCE_RAW_DATASETS: Record<string, string[]> = {
   'public-safety': ['safety'],
   'academic-calendar': ['calendar'],
   dining: ['menu', 'menu-week', 'dining-hours'],
-  'campus-hours': ['hours'],
+  'campus-hours': ['hours', 'hours-sources'],
   'archway-events': ['events', 'events-detail', 'events-signals'],
   'archway-clubs': ['clubs', 'clubs-detail'],
   // Programs, requirements, and courses are collected together from the
@@ -55,6 +55,7 @@ export const RAW_DATASET_FILES: Record<string, string> = {
   'menu-week': 'menu-week.raw.json',
   'dining-hours': 'dining-hours.raw.json',
   hours: 'hours.raw.json',
+  'hours-sources': 'hours-sources.raw.json',
   events: 'events.raw.json',
   'events-detail': 'events-detail.raw.json',
   'events-signals': 'events-signals.raw.json',

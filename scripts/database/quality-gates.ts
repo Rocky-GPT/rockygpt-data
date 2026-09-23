@@ -44,7 +44,6 @@ interface MarkdownGate {
 interface RawGate {
   name: string;
   filePath: string;
-  maxAgeHours: number;
   minPages: number;
   seedUrls: string[];
   minSeedSuccessRate: number;
@@ -142,7 +141,7 @@ function runMarkdownGate(gate: MarkdownGate, errors: string[]): void {
   }
 }
 
-function runRawGate(gate: RawGate, errors: string[]): void {
+export function runRawGate(gate: RawGate, errors: string[]): void {
   if (!fs.existsSync(gate.filePath)) {
     errors.push(`${gate.name}: missing file ${gate.filePath}`);
     return;
@@ -173,12 +172,9 @@ function runRawGate(gate: RawGate, errors: string[]): void {
     }
   }
 
-  const ageHours = getAgeHours(gate.filePath);
-  if (ageHours > gate.maxAgeHours) {
-    errors.push(
-      `${gate.name}: data is stale (${ageHours.toFixed(1)}h old, max ${gate.maxAgeHours}h)`
-    );
-  }
+  // Collection age is checked by runProvenanceGate using the shared source
+  // SLA and hashed capture sidecars. Copying/restoring a file can change its
+  // mtime without either collecting or aging the source.
 
   const allowedHosts = new Set([
     ...(gate.allowedHosts ?? []),
@@ -280,7 +276,6 @@ export function buildRawGates(cwd: string): RawGate[] {
     {
       name: 'transportation.raw.json',
       filePath: path.join(cwd, 'data', 'raw', 'transportation.raw.json'),
-      maxAgeHours: 168,
       minPages: 4,
       seedUrls: [
         'https://www.ramapo.edu/csi/commuter-affairs/',
@@ -295,7 +290,6 @@ export function buildRawGates(cwd: string): RawGate[] {
     {
       name: 'directory.raw.json',
       filePath: path.join(cwd, 'data', 'raw', 'directory.raw.json'),
-      maxAgeHours: 168,
       minPages: 2,
       seedUrls: ['https://www.ramapo.edu/campus-directory/', 'https://www.ramapo.edu/about/phone/'],
       minSeedSuccessRate: 0.75,
@@ -306,7 +300,6 @@ export function buildRawGates(cwd: string): RawGate[] {
     {
       name: 'housing.raw.json',
       filePath: path.join(cwd, 'data', 'raw', 'housing.raw.json'),
-      maxAgeHours: 168,
       minPages: 1,
       seedUrls: ['https://www.ramapo.edu/reslife/'],
       minSeedSuccessRate: 0.75,
@@ -317,7 +310,6 @@ export function buildRawGates(cwd: string): RawGate[] {
     {
       name: 'health.raw.json',
       filePath: path.join(cwd, 'data', 'raw', 'health.raw.json'),
-      maxAgeHours: 168,
       minPages: 2,
       seedUrls: [
         'https://www.ramapo.edu/health/',
@@ -333,7 +325,6 @@ export function buildRawGates(cwd: string): RawGate[] {
     {
       name: 'counseling.raw.json',
       filePath: path.join(cwd, 'data', 'raw', 'counseling.raw.json'),
-      maxAgeHours: 168,
       minPages: 1,
       seedUrls: ['https://www.ramapo.edu/counseling/'],
       minSeedSuccessRate: 0.75,
@@ -344,7 +335,6 @@ export function buildRawGates(cwd: string): RawGate[] {
     {
       name: 'safety.raw.json',
       filePath: path.join(cwd, 'data', 'raw', 'safety.raw.json'),
-      maxAgeHours: 168,
       minPages: 1,
       seedUrls: ['https://www.ramapo.edu/publicsafety/'],
       minSeedSuccessRate: 0.75,
@@ -355,7 +345,6 @@ export function buildRawGates(cwd: string): RawGate[] {
     {
       name: 'events-detail.raw.json',
       filePath: path.join(cwd, 'data', 'raw', 'events-detail.raw.json'),
-      maxAgeHours: 168,
       minPages: 10,
       seedUrls: ['https://archway.ramapo.edu/events'],
       minSeedSuccessRate: 0,
@@ -366,7 +355,6 @@ export function buildRawGates(cwd: string): RawGate[] {
     {
       name: 'clubs-detail.raw.json',
       filePath: path.join(cwd, 'data', 'raw', 'clubs-detail.raw.json'),
-      maxAgeHours: 168,
       minPages: 10,
       seedUrls: ['https://archway.ramapo.edu/club_signup?view=all&'],
       minSeedSuccessRate: 0,

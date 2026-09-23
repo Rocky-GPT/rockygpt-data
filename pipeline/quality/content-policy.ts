@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { canonicalArchwayEventUrl } from '../../src/archway-event-url';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -89,6 +90,8 @@ function facultyRoleIdentity(value: unknown): string {
 function canonicalUrl(value: unknown): string {
   const raw = text(value);
   if (!raw) return '';
+  const eventUrl = canonicalArchwayEventUrl(raw);
+  if (eventUrl) return eventUrl;
   try {
     const parsed = new URL(raw);
     parsed.hash = '';

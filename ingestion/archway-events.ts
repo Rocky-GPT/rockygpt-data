@@ -17,7 +17,9 @@ import {
 import { type RawDatasetV1, type RawPageV1, validateRawDatasetV1 } from './raw-types';
 import { validateArchwayEvents, type ArchwayEvent } from './schema';
 import { sanitizeEventDescription } from './event-description';
+import { publishedFoodSignal } from './event-food';
 import { publicPath } from '../src/paths';
+import { canonicalArchwayEventUrl } from '../src/archway-event-url';
 
 const ARCHWAY_URL = 'https://archway.ramapo.edu/events';
 const ARCHWAY_PUBLIC_EVENTS_URL = 'https://archway.ramapo.edu/home/events/';
@@ -209,17 +211,11 @@ function parseDetailLimit(rawValue: string | undefined, fallback: number): numbe
 }
 
 export function normalizeEventUrlForLookup(rawUrl: string): string {
+  const eventUrl = canonicalArchwayEventUrl(rawUrl);
+  if (eventUrl) return eventUrl;
   try {
     const parsed = new URL(rawUrl);
     parsed.hash = '';
-    if (
-      parsed.host.toLowerCase() === 'archway.ramapo.edu' &&
-      parsed.pathname.replace(/\/+$/, '').toLowerCase() === '/rsvp_boot'
-    ) {
-      const eventId = parsed.searchParams.get('id');
-      parsed.search = '';
-      if (eventId) parsed.searchParams.set('id', eventId);
-    }
     return parsed.toString();
   } catch {
     return rawUrl;
@@ -269,40 +265,6 @@ function extractEmbeddedEventDescriptions(rawHtml: string): string[] {
   }
 
   return Array.from(descriptions);
-}
-
-function classifyFoodCategory(text: string): 'food' | 'snacks' | null {
-  const normalized = text.toLowerCase();
-  if (!normalized) return null;
-
-  if (
-    /(?:do you plan on serving food\??|serving food\??)\s*[:\-]?\s*(true|yes)/i.test(normalized)
-  ) {
-    return 'food';
-  }
-
-  // Ignore non-serving contexts.
-  if (/\b(food insecurity|food drive|food pantry|not serving food|no food)\b/i.test(normalized)) {
-    return null;
-  }
-
-  if (/\bfree\s+food\b/i.test(normalized)) {
-    return 'food';
-  }
-
-  if (/\bfood\s+(?:will be|is|are)?\s*(?:provided|served|available)\b/i.test(normalized)) {
-    return 'food';
-  }
-
-  if (/\b(cookies?|snacks?|treats?|donuts?|bagels?|cupcakes?|brownies?|boba|refreshments?)\b/i.test(normalized)) {
-    return 'snacks';
-  }
-
-  if (/\b(pizza|\bza\b|ice\s*cream|breakfast|brunch|lunch|dinner|meal|catering)\b/i.test(normalized)) {
-    return 'food';
-  }
-
-  return null;
 }
 
 function isTruthyEnv(value: string | undefined): boolean {
@@ -362,7 +324,7 @@ function isObjectRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function readEventSignalMapFromRawFile(signalFilePath: string): Map<string, EventDetailSignal> {
+export function readEventSignalMapFromRawFile(signalFilePath: string): Map<string, EventDetailSignal> {
   if (!fs.existsSync(signalFilePath)) {
     return new Map<string, EventDetailSignal>();
   }
@@ -423,32 +385,15 @@ function collectRawPageDescription(page: RawPageV1): string | undefined {
   return [...candidates].sort((a, b) => b.length - a.length)[0];
 }
 
-function extractEventDetailSignalFromRawPage(page: RawPageV1): EventDetailSignal {
+export function extractEventDetailSignalFromRawPage(page: RawPageV1): EventDetailSignal {
   const text = collectRawPageSignalText(page);
   if (!text) {
     return {};
   }
 
-  const servingFoodPattern =
-    /(?:do you plan on serving food\??|serving food\??)\s*[:\-]?\s*(true|false|yes|no)/i;
-  const servingMatch = text.match(servingFoodPattern);
-  const isServingFood = servingMatch ? /^(true|yes)$/i.test(servingMatch[1]) : undefined;
-
-  let offersFreeFood = isServingFood !== undefined ? isServingFood : undefined;
-  let foodCategory: 'food' | 'snacks' | undefined = isServingFood ? 'food' : undefined;
-
-  const detectedCategory = classifyFoodCategory(text);
-  if (detectedCategory) {
-    offersFreeFood = true;
-    if (isServingFood !== true) {
-      foodCategory = detectedCategory;
-    }
-  }
-
   const description = collectRawPageDescription(page);
   return {
-    offersFreeFood,
-    foodCategory,
+    ...publishedFoodSignal(text),
     description,
   };
 }
@@ -471,7 +416,7 @@ function buildSignalMapFromDetailRawDataset(dataset: RawDatasetV1): Map<string, 
   return signalByUrl;
 }
 
-function applyDetailSignalsToEvents(
+export function applyDetailSignalsToEvents(
   events: ArchwayEvent[],
   signalByUrl: Map<string, EventDetailSignal>
 ): ArchwayEvent[] {
@@ -489,6 +434,46 @@ function applyDetailSignalsToEvents(
       foodCategory: details.foodCategory || event.foodCategory,
     };
   });
+}
+
+/** Re-evaluate old derived flags against this occurrence's captured source text. */
+export function rebuildEventSignals(
+  dataset: RawDatasetV1,
+  cachedSignals: Map<string, EventDetailSignal> = new Map()
+): Map<string, EventDetailSignal> {
+  const signals = new Map<string, EventDetailSignal>();
+  for (const page of dataset.pages) {
+    if (page.sourceType !== 'detail' || page.statusCode === null || page.statusCode < 200 || page.statusCode >= 300) continue;
+    const url = normalizeEventUrlForLookup(page.url);
+    const description = sanitizeEventDescription(cachedSignals.get(url)?.description)
+      ?? sanitizeEventDescription(collectRawPageDescription(page));
+    signals.set(url, {
+      ...publishedFoodSignal(`${collectRawPageSignalText(page)}\n${description ?? ''}`),
+      ...(description ? { description } : {}),
+    });
+  }
+  return signals;
+}
+
+/** Deterministic rebuild without writing captures, normalized files, or provenance. */
+export function rebuildEventsFromRaw(
+  rawEvents: ArchwayEvent[],
+  details: RawDatasetV1,
+  cachedSignals: Map<string, EventDetailSignal> = new Map()
+): ArchwayEvent[] {
+  return normalizeEventsWithSignals(rawEvents, rebuildEventSignals(details, cachedSignals));
+}
+
+function normalizeEventsWithSignals(rawEvents: ArchwayEvent[], signals: Map<string, EventDetailSignal>): ArchwayEvent[] {
+  const listing = rawEvents.map(event => {
+    // These fields were historically derived by this collector, including in
+    // some old caches. Only the current occurrence's evidence may restore them.
+    const clean = { ...event };
+    delete clean.offersFreeFood;
+    delete clean.foodCategory;
+    return clean;
+  });
+  return validateArchwayEvents(applyDetailSignalsToEvents(listing, signals));
 }
 
 function buildSignalMapFromEvents(events: ArchwayEvent[]): Map<string, EventDetailSignal> {
@@ -523,9 +508,7 @@ function writeNormalizedEventArtifacts(
   signalByUrl: Map<string, EventDetailSignal>,
   sourceLabel: string
 ): void {
-  const eventsWithDetailSignals = applyDetailSignalsToEvents(rawEvents, signalByUrl);
-  const eventsWithRecurringFoodSignals = propagateRecurringFoodSignals(eventsWithDetailSignals);
-  const normalizedEvents = validateArchwayEvents(eventsWithRecurringFoodSignals);
+  const normalizedEvents = normalizeEventsWithSignals(rawEvents, signalByUrl);
   assertEventDescriptionCoverage(normalizedEvents);
 
   writeJsonFile(PUBLIC_JSON_PATH, normalizedEvents);
@@ -598,6 +581,10 @@ function tryBuildFromRawCache(): boolean {
     );
   }
 
+  // Older signal caches used keyword guesses and copied flags between dates.
+  // Preserve their captured descriptions, but never reuse those derived flags.
+  signalByUrl = rebuildEventSignals(cachedDetails, signalByUrl);
+
   if (signalByUrl.size === 0) {
     console.log('No detail raw/signal raw file found; rebuilding normalized events from list raw only.');
   } else if (!hasSignalRaw) {
@@ -609,63 +596,7 @@ function tryBuildFromRawCache(): boolean {
   return true;
 }
 
-function normalizeSeriesValue(value: string | undefined): string {
-  return (value ?? '')
-    .toLowerCase()
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function buildRecurringSeriesKey(event: Pick<ArchwayEvent, 'title' | 'organizer'>): string {
-  const title = normalizeSeriesValue(event.title);
-  const organizer = normalizeSeriesValue(event.organizer);
-  return `${title}::${organizer}`;
-}
-
-function propagateRecurringFoodSignals(events: ArchwayEvent[]): ArchwayEvent[] {
-  const seriesCounts = new Map<string, number>();
-  const seriesFoodSignal = new Map<string, 'food' | 'snacks'>();
-
-  for (const event of events) {
-    const key = buildRecurringSeriesKey(event);
-    if (key === '::') {
-      continue;
-    }
-
-    seriesCounts.set(key, (seriesCounts.get(key) ?? 0) + 1);
-
-    const category = event.foodCategory || (event.offersFreeFood ? 'food' : undefined);
-    if (!category) {
-      continue;
-    }
-
-    const existing = seriesFoodSignal.get(key);
-    if (!existing || (existing === 'snacks' && category === 'food')) {
-      seriesFoodSignal.set(key, category);
-    }
-  }
-
-  return events.map((event) => {
-    if (event.foodCategory || event.offersFreeFood) {
-      return event;
-    }
-
-    const key = buildRecurringSeriesKey(event);
-    const count = seriesCounts.get(key) ?? 0;
-    const propagatedCategory = seriesFoodSignal.get(key);
-    if (!propagatedCategory || count < 2) {
-      return event;
-    }
-
-    return {
-      ...event,
-      offersFreeFood: true,
-      foodCategory: propagatedCategory,
-    };
-  });
-}
-
-function extractEventDetailSignalFromHtml(html: string): EventDetailSignal {
+export function extractEventDetailSignalFromHtml(html: string): EventDetailSignal {
   if (!html) return {};
 
   const $ = load(html);
@@ -684,24 +615,12 @@ function extractEventDetailSignalFromHtml(html: string): EventDetailSignal {
   const servingFoodPattern =
     /(?:do you plan on serving food\??|serving food\??)\s*[:\-]?\s*(true|false|yes|no)/i;
   const servingMatch = text.match(servingFoodPattern);
-  const isServingFood = servingMatch ? /^(true|yes)$/i.test(servingMatch[1]) : undefined;
-  let offersFreeFood = isServingFood !== undefined ? isServingFood : undefined;
-  let foodCategory: 'food' | 'snacks' | undefined = isServingFood ? 'food' : undefined;
-
   const candidateDescriptionText = [detailTitle, detailDescription, ...embeddedDescriptions]
     .filter(Boolean)
     .join(' ');
-  const descriptionCategory = classifyFoodCategory(candidateDescriptionText);
-  if (descriptionCategory) {
-    offersFreeFood = true;
-    if (isServingFood !== true) {
-      foodCategory = descriptionCategory;
-    }
-  }
 
   return {
-    offersFreeFood,
-    foodCategory,
+    ...publishedFoodSignal(`${candidateDescriptionText}\n${servingMatch?.[0] ?? ''}`),
     description: sanitizeEventDescription(embeddedDescription || detailDescription),
   };
 }

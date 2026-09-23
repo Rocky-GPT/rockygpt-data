@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { buildFrontmatter } from './frontmatter';
 import { getGeneratedTimestamp, sortByName } from './pipeline-utils';
+import { campusLocalDate, DINING_HOURS_UNKNOWN, formatDiningRange } from '../src/data-v2/dining-seasons';
 import {
   type DiningHoursGroup,
   type DiningHoursPreloadedState,
@@ -39,30 +40,11 @@ function formatIsoDateOnly(value: string): string {
   if (Number.isNaN(parsed.getTime())) {
     return value;
   }
-  return parsed.toISOString().slice(0, 10);
+  return campusLocalDate(parsed);
 }
 
-function formatTime(time: { hour: string; minute: string; period: string }): string {
-  return `${time.hour}:${time.minute} ${time.period}`;
-}
-
-function formatHoursList(hoursList: DiningHoursGroup['hours']): string {
-  const segments = hoursList
-    .map((hours) => {
-      if (hours.allDay) return 'Open 24 Hours';
-      const start = hours.startTime ? formatTime(hours.startTime) : undefined;
-      const end = hours.finishTime ? formatTime(hours.finishTime) : undefined;
-      const timeRange = start && end ? `${start} - ${end}` : undefined;
-      const label = normalizeText(hours.label);
-
-      if (label && timeRange) return `${label}: ${timeRange}`;
-      if (label) return label;
-      if (timeRange) return timeRange;
-      return undefined;
-    })
-    .filter((segment): segment is string => Boolean(segment));
-
-  return segments.length > 0 ? segments.join('; ') : 'Closed';
+export function formatHoursList(hoursList: DiningHoursGroup['hours']): string {
+  return hoursList.map((hours) => formatDiningRange({ ...hours })).join('; ') || DINING_HOURS_UNKNOWN;
 }
 
 function mapHoursGroups(groups: DiningHoursGroup[]): ContextHoursGroup[] {
@@ -82,7 +64,7 @@ function mapHoursGroups(groups: DiningHoursGroup[]): ContextHoursGroup[] {
     .sort((a, b) => a.days.localeCompare(b.days));
 }
 
-function toContextDiningHours(
+export function toContextDiningHours(
   rawState: DiningHoursPreloadedState,
   referenceTime: Date
 ): ContextDiningLocation[] {
@@ -192,4 +174,4 @@ function generateMarkdown() {
   console.log(`Successfully generated markdown at ${MARKDOWN_OUTPUT_PATH}`);
 }
 
-generateMarkdown();
+if (process.argv[1]?.endsWith('generate-dining-hours-md.ts')) generateMarkdown();
