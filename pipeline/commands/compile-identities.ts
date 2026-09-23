@@ -5,13 +5,14 @@ import path from 'node:path';
 import { catalogConvenersArtifact, compileCampusIdentities, type IdentityInputs, type IdentitySnapshot } from '../../src/data-v2/compile-campus-identities';
 import type { CampusIdentities } from '../../src/data-v2/campus-identities';
 import type { ReviewedSchools } from '../../src/data-v2/campus-schools';
+import { courseSubjectsInput } from '../../src/data-v2/course-subjects';
 
-const [snapshotPath, outputPath, rawProgramsPath, rawClubsPath, rawEventDetailsPath, campusMapPath = 'data/map/campus-map-data.json', schoolsPath = 'src/reference/campus-schools.json', reviewsPath = 'src/reference/campus-identity-reviews.json'] = process.argv.slice(2);
-if (!snapshotPath || !outputPath) throw new Error('Usage: tsx pipeline/commands/compile-identities.ts SNAPSHOT_JSON OUTPUT_DIR [CATALOG_RAW_JSON] [CLUBS_RAW_JSON] [EVENT_DETAILS_RAW_JSON] [CAMPUS_MAP_JSON] [SCHOOLS_JSON] [REVIEWS_JSON]');
+const [snapshotPath, outputPath, rawProgramsPath, rawClubsPath, rawEventDetailsPath, campusMapPath = 'data/map/campus-map-data.json', schoolsPath = 'src/reference/campus-schools.json', reviewsPath = 'src/reference/campus-identity-reviews.json', subjectsPath = 'src/reference/course-subjects.json'] = process.argv.slice(2);
+if (!snapshotPath || !outputPath) throw new Error('Usage: tsx pipeline/commands/compile-identities.ts SNAPSHOT_JSON OUTPUT_DIR [CATALOG_RAW_JSON] [CLUBS_RAW_JSON] [EVENT_DETAILS_RAW_JSON] [CAMPUS_MAP_JSON] [SCHOOLS_JSON] [REVIEWS_JSON] [SUBJECTS_JSON (its capture record beside it, *.source.json)]');
 const read = (file: string): unknown => JSON.parse(fs.readFileSync(file, 'utf8'));
 const seed = read('src/reference/campus-identities.json') as CampusIdentities;
 const rawPrograms = rawProgramsPath ? read(rawProgramsPath) : undefined;
-const result = compileCampusIdentities(seed, read(snapshotPath) as IdentitySnapshot, rawPrograms, { clubs: rawClubsPath ? read(rawClubsPath) : undefined, eventDetails: rawEventDetailsPath ? read(rawEventDetailsPath) : undefined, campusMap: read(campusMapPath), campusSchools: read(schoolsPath) as ReviewedSchools, identityReviews: read(reviewsPath) as IdentityInputs['identityReviews'] });
+const result = compileCampusIdentities(seed, read(snapshotPath) as IdentitySnapshot, rawPrograms, { clubs: rawClubsPath ? read(rawClubsPath) : undefined, eventDetails: rawEventDetailsPath ? read(rawEventDetailsPath) : undefined, campusMap: read(campusMapPath), campusSchools: read(schoolsPath) as ReviewedSchools, identityReviews: read(reviewsPath) as IdentityInputs['identityReviews'], courseSubjects: courseSubjectsInput(read(subjectsPath.replace(/\.json$/, '.source.json')), read(subjectsPath)) });
 fs.mkdirSync(outputPath, { recursive: true });
 fs.writeFileSync(path.join(outputPath, 'campus-identities.json'), JSON.stringify(result.registry, null, 2) + '\n');
 fs.writeFileSync(path.join(outputPath, 'campus-identity-coverage.json'), JSON.stringify(result.report, null, 2) + '\n');
@@ -21,4 +22,5 @@ fs.writeFileSync(path.join(outputPath, 'catalog-course-identities.json'), JSON.s
 fs.writeFileSync(path.join(outputPath, 'program-requirement-groups.json'), JSON.stringify(result.requirementGroups, null, 2) + '\n');
 fs.writeFileSync(path.join(outputPath, 'campus-buildings.json'), JSON.stringify(result.campusBuildings, null, 2) + '\n');
 fs.writeFileSync(path.join(outputPath, 'campus-schools.json'), JSON.stringify(result.campusSchools, null, 2) + '\n');
+fs.writeFileSync(path.join(outputPath, 'course-subjects.json'), JSON.stringify(result.courseSubjects, null, 2) + '\n');
 console.log(JSON.stringify({ ...result.report, unresolved: result.report.unresolved.length }, null, 2));

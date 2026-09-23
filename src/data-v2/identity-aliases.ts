@@ -43,6 +43,7 @@ export type AliasBasis =
   | 'department' // Its own directory entry publishes it as the department.
   | 'abbreviation' // The parenthesized abbreviation in its own name, or the name without it.
   | 'program_family' // Its program name without the degree designation.
+  | 'subject_code' // A course subject's catalog code, the only name it answers to in lookup.
   | 'human_reviewed'; // A person approved it; no source publishes it.
 export interface AliasSource {
   basis: AliasBasis;
@@ -107,7 +108,9 @@ export function applyPublishedAliases(entities: CampusIdentity[], rows: Map<stri
   for (const entity of entities) {
     const found: [string, AliasSource][] = [];
     const abbreviated = ABBREVIATED.exec(entity.name);
-    if (abbreviated && entity.kind !== 'person') found.push([abbreviated[2], { basis: 'abbreviation' }], [abbreviated[1], { basis: 'abbreviation' }]);
+    // A subject answers to its code only (reviewed September 23, 2026): its catalog
+    // name, "Computer Science" in "Computer Science (CMPS)", keeps finding programs.
+    if (abbreviated && entity.kind !== 'person' && entity.kind !== 'subject') found.push([abbreviated[2], { basis: 'abbreviation' }], [abbreviated[1], { basis: 'abbreviation' }]);
     if (entity.kind === 'program') {
       const family = programFamily(entity.name);
       if (family) found.push([family, { basis: 'program_family' }]);

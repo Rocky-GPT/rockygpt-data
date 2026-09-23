@@ -4,7 +4,7 @@ Counts in this document describe the snapshot each section names, as examples of
 
 The Git registry holds persistent UUIDs and reviewed selectors, not duplicated profiles. A release contains exact links to the original contact, schedule, faculty, program and menu records in that release. Names and aliases locate an identity; relationship evidence distinguishes a program's convener and an undated profile-listed course from the identity itself. Menu items are offerings at a venue, not identities of the venue.
 
-`pipeline/commands/publish-current.ts` inserts original rows and artifacts before calling `insertCampusIdentityArtifacts` inside the candidate transaction. The installer refuses active/retired datasets. It writes eight release artifacts: `campus-identities`, `campus-identity-coverage`, `catalog-conveners`, `event-organizers`, `catalog-course-identities`, `program-requirement-groups`, `campus-buildings` and `campus-schools`. Repeating compilation/upsert against the same staging dataset is idempotent. Activation remains the established atomic release pointer swap.
+`pipeline/commands/publish-current.ts` inserts original rows and artifacts before calling `insertCampusIdentityArtifacts` inside the candidate transaction. The installer refuses active/retired datasets. It writes nine release artifacts: `campus-identities`, `campus-identity-coverage`, `catalog-conveners`, `event-organizers`, `catalog-course-identities`, `program-requirement-groups`, `campus-buildings`, `campus-schools` and `course-subjects`. Repeating compilation/upsert against the same staging dataset is idempotent. Activation remains the established atomic release pointer swap.
 
 Selectors are compiled against candidate rows each time: new menu dates/meals and seasonal exceptions join automatically; a person renamed in the faculty source retains their UUID via a unique institutional email or verified unique profile URL. Candidate record keys remain original. Contradictory identity anchors fail closed, including an old email reassigned to a different profile. Shared directory-page URLs are never unique person anchors. Source fields and differing phone/office values are not overwritten. Alias additions capture newly encountered display names without changing UUIDs.
 
@@ -76,6 +76,19 @@ Each school's aliases are its abbreviation and its legacy names. The Archway dir
 - **People:** through the current school name their own faculty profile publishes. The directory's "(Adjunct)" marker is kept as a status; a profile marked "(Retired)" is not placed in a school. "Library Faculty & Staff" is not a school.
 
 On the September 22 snapshot there are 4 schools and 301 `part_of` relationships: 113 programs and 188 people. The School of Social Sciences and Social Work has people but no placed programs, because its catalog programs are filed under the split former school. The ASB school shares its name with the directory office "Anisfield School of Business"; both are kept, so a name lookup asks which is meant.
+
+## Course subjects
+
+A course subject is the code in front of a catalog course: CMPS in CMPS 147. Every course code starts with exactly one, so a subject becomes an identity when the release's catalog has a course under it. Its ID derives from the code, so a renamed department keeps it.
+
+- **Names.** `src/reference/course-subjects.json` is the catalog's department list, captured from the catalog's departments API on the date in `course-subjects.source.json`. A department with the same code names the subject in the catalog's own display form, "Computer Science (CMPS)". A code no department names keeps its code as its name ("LITR"). No name is guessed from course titles.
+- **Courses.** Each course is linked by an `includes_course` relationship whose evidence is the course's own published `code` field.
+- **Lookup (reviewed September 23, 2026).** A subject answers to its code only: "CMPS" finds Computer Science (CMPS). Its catalog name and the curated short forms ("Computer Science", "CS", "Psych") keep finding programs, or nothing, in lookup. They mean courses only in course search, so the `course-subjects` artifact publishes them as `search_terms`, not identity aliases. The abbreviation rule below skips subjects for the same reason.
+- **Coverage.** Two cases are reported:
+  - a subject code no department names (39 codes, 478 courses, led by LITR, THEA and LIBS);
+  - a department code no course carries (16, such as CYBR and DSCI).
+
+The `course-subjects` release artifact lists each subject with its code, catalog name, display name, search terms and course count. It is the ninth artifact the installer writes, and its static source is `course-subjects`.
 
 ## Published aliases and status
 

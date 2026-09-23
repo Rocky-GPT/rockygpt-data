@@ -11,6 +11,7 @@ import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
 import { parseEventStart } from '../../src/data-v2/event-time';
 import { normalizeOpeningHours } from '../../src/data-v2/opening-hours';
 import { calendarConcept } from '../../src/data-v2/calendar-concepts';
+import { courseSubjectsInput } from '../../src/data-v2/course-subjects';
 import { validateCampusIdentities, type CampusIdentities } from '../../src/data-v2/campus-identities';
 import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
@@ -629,7 +630,7 @@ async function verifyStagingDataset(
     clubs: 100,
     programs: 50,
     document_chunks: 100,
-    release_artifacts: Object.keys(RELEASE_ARTIFACT_FILES).length + 8,
+    release_artifacts: Object.keys(RELEASE_ARTIFACT_FILES).length + 9,
   };
   for (const [key, minimum] of Object.entries(minimums)) {
     if ((counts[key] || 0) < minimum) {
@@ -896,6 +897,7 @@ async function main(): Promise<void> {
       campusMap: readJson('data/map/campus-map-data.json'),
       campusSchools: readJson('src/reference/campus-schools.json'),
       identityReviews: readJson('src/reference/campus-identity-reviews.json'),
+      courseSubjects: courseSubjectsInput(readJson('src/reference/course-subjects.source.json'), readJson('src/reference/course-subjects.json')),
     });
     const releaseArtifactCount = sourceArtifactCount + identityArtifacts.count;
     if (criticalCount !== Object.keys(CRITICAL_FACT_VALUES_V2).length) throw new Error('Critical fact verification failed.');

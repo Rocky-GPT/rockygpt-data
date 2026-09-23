@@ -13,6 +13,7 @@
  * abbreviation two subjects both claim cannot be derived from either name.
  */
 
+import { createHash } from 'crypto';
 import path from 'path';
 import { fetchWithPolicy } from './http-client';
 import { writeJsonFile, writeRawProvenance } from './pipeline-utils';
@@ -27,6 +28,8 @@ const HEADERS = {
 };
 const RAW_OUT = path.join(process.cwd(), 'data', 'raw', 'course-subjects.raw.json');
 const OUT = path.join(process.cwd(), 'src', 'reference', 'course-subjects.json');
+// The committed capture record the identity compiler reads with OUT.
+const SOURCE_OUT = path.join(process.cwd(), 'src', 'reference', 'course-subjects.source.json');
 
 interface Department {
   name?: unknown;
@@ -95,14 +98,26 @@ async function main(): Promise<void> {
   );
   if (!response.ok) throw new Error(`Departments returned HTTP ${response.status}.`);
   const raw = response.json() as Record<string, Department>;
+  const fetchedAt = new Date().toISOString();
   writeJsonFile(RAW_OUT, raw);
-  writeRawProvenance('course-subjects', { sourceUrl: URL, payload: raw });
+  writeRawProvenance('course-subjects', { sourceUrl: URL, payload: raw, fetchedAt });
 
   const subjects = subjectsFrom(raw, curatedAliases as Record<string, string[]>);
   if (subjects.length < 50) {
     throw new Error(`Only ${subjects.length} subjects resolved; refusing to publish a short set.`);
   }
   writeJsonFile(OUT, subjects);
+  writeJsonFile(SOURCE_OUT, {
+    $comment: [
+      "Where src/reference/course-subjects.json was captured: the catalog's departments",
+      'API, whose department records name the subject codes they own. Written by',
+      'npm run fetch:course-subjects together with that file; the short forms in each',
+      'entry come from the curated src/reference/course-subject-aliases.json.',
+    ],
+    source_url: URL,
+    captured_at: fetchedAt,
+    content_hash: createHash('sha256').update(JSON.stringify(raw)).digest('hex'),
+  });
   const named = subjects.filter((subject) => subject.name).length;
   console.log(`Wrote ${subjects.length} course subjects (${named} named) to ${OUT}`);
 }
