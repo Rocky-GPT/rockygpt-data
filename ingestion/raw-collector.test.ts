@@ -15,6 +15,49 @@ test('structured lists and tables retain rows beyond the old truncation boundari
   assert.ok(result.tables[0].rows.some(row=>row.includes('Date 64')));
 });
 
+test('service action links retain labels and exact destinations inside scoped source content', () => {
+  const result = buildRawPageFromHtml({url:'https://example.edu/health/',sourceType:'seed',allowedHost:'example.edu',
+    html:`<title>Health Services</title><div><a href="/unrelated">Other site links</a></div>
+      <main><h1>Health Services</h1><nav><a href="/navigation">Menu link</a></nav>
+      <h2>Appointments</h2><p>Use the <a href="https://portal.example.edu/book?service=health#new">appointment portal</a> to book.</p>
+      <h2>Reporting</h2><a href="/report#student">Reporting Portal</a>
+      <h3>Forms</h3><ul><li><a href="/forms/consent.pdf">Consent form</a></li></ul>
+      <table><tr><th>Action</th></tr><tr><td><a href="/vaccine">Vaccine booking</a></td></tr></table>
+      <p><a href="tel:2015550101">Call us</a> <a href="mailto:health@example.edu">Email us</a></p>
+      <a href="/access" aria-label="Accessible services"><img src="icon.png"></a>
+      </main><footer><a href="/footer">Footer link</a></footer>`});
+  assert.ok(result.sections.some(section => section.heading === 'Appointments'
+    && section.text === 'Use the appointment portal (https://portal.example.edu/book?service=health#new) to book.'));
+  assert.ok(result.sections.some(section => section.heading === 'Reporting'
+    && section.text === 'Reporting Portal (https://example.edu/report#student)'));
+  assert.deepEqual(result.lists, [['Consent form (https://example.edu/forms/consent.pdf)']]);
+  assert.ok(result.tables[0].rows.some(row => row.includes('Vaccine booking (https://example.edu/vaccine)')));
+  assert.ok(result.sections.some(section => section.text.includes('Accessible services (https://example.edu/access)')));
+  assert.deepEqual(result.documents, [{label:'Consent form',url:'https://example.edu/forms/consent.pdf'}]);
+  assert.ok(result.contacts.some(contact => contact.email === 'health@example.edu'));
+  assert.ok(result.contacts.some(contact => contact.phone === '2015550101'));
+  assert.doesNotMatch(JSON.stringify(result), /unrelated|navigation|Footer link/);
+  // Discovery URLs stay fragment-free so section anchors do not trigger duplicate fetches.
+  assert.ok(result.links.includes('https://example.edu/report'));
+  assert.ok(!result.links.some(link => link.includes('#')));
+});
+
+test('sidebar noise headings do not swallow the following main-column service action', () => {
+  const result = buildRawPageFromHtml({url:'https://example.edu/health/',sourceType:'seed',allowedHost:'example.edu',
+    html:`<h1></h1><h1>Health Services</h1><main><div id="left-nav">
+      <ul id="left-nav-ul"><li><a href="/detail">Sidebar navigation</a></li></ul>
+      <h3>Office</h3><p><a href="tel:2015550101">201-555-0101</a></p>
+      <h3>Related Resources</h3><p><a href="/related">Related resource</a></p></div>
+      <div id="content-block"><p>Published service partnership and eligibility.</p>
+      <a href="https://provider.example/clinic">View clinical services</a></div></main>`});
+  assert.ok(result.sections.some(section => section.heading === 'Health Services'
+    && section.text.includes('View clinical services (https://provider.example/clinic)')));
+  assert.ok(result.sections.find(section => section.heading === 'Related Resources')?.text.includes('Related resource'));
+  assert.ok(!result.sections.some(section => section.text.includes('Sidebar navigation')));
+  assert.ok(result.links.includes('https://example.edu/detail'));
+  assert.ok(result.contacts.some(contact => contact.phone === '2015550101'));
+});
+
 test('collection regression measures successful pages, not old failed document requests', () => {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'rocky-raw-regression-'));
   try {

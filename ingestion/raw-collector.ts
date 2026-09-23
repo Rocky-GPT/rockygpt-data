@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { load } from 'cheerio';
+import type { AnyNode } from 'domhandler';
 import pLimit from 'p-limit';
 import { fetchWithPolicy } from './http-client';
 import { writeJsonFile, writeRawProvenance } from './pipeline-utils';
@@ -82,7 +83,7 @@ function normalizeUrl(raw: string): string {
   return parsed.toString();
 }
 
-function resolveHttpUrl(rawHref: string, baseUrl: string): string | null {
+function resolveHttpUrl(rawHref: string, baseUrl: string, preserveFragment = false): string | null {
   if (!rawHref) return null;
   const lowered = rawHref.toLowerCase();
   if (lowered.startsWith('mailto:') || lowered.startsWith('tel:') || lowered.startsWith('javascript:')) {
@@ -94,7 +95,7 @@ function resolveHttpUrl(rawHref: string, baseUrl: string): string | null {
     if (resolved.protocol !== 'http:' && resolved.protocol !== 'https:') {
       return null;
     }
-    return normalizeUrl(resolved.toString());
+    return preserveFragment ? resolved.toString() : normalizeUrl(resolved.toString());
   } catch {
     return null;
   }
@@ -127,9 +128,23 @@ function isLikelyDocument(url: string): boolean {
   return DOCUMENT_EXTENSIONS.has(extensionFromUrl(url));
 }
 
-function extractSections($: ReturnType<typeof load>): RawPageV1['sections'] {
+/** Keep a source label next to its destination, including section anchors. */
+function textWithLinks($: ReturnType<typeof load>, element: AnyNode, baseUrl: string): string {
+  const copy = $(element).clone();
+  copy.find('a[href]').addBack('a[href]').each((_, anchor) => {
+    const link = $(anchor);
+    const resolved = resolveHttpUrl(link.attr('href') || '', baseUrl, true);
+    if (!resolved) return;
+    const label = cleanText(link.text()) || cleanText(link.attr('aria-label') || link.attr('title')
+      || link.find('img[alt]').first().attr('alt') || '');
+    link.text(label && label !== resolved ? `${label} (${resolved})` : resolved);
+  });
+  return cleanText(copy.text());
+}
+
+function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHeading: string): RawPageV1['sections'] {
   const sections: RawPageV1['sections'] = [];
-  let heading = cleanText($('h1').first().text()) || 'Overview';
+  let heading = cleanText($('h1').first().text()) || initialHeading || 'Overview';
   let parts: string[] = [];
   const flush = () => {
     if (parts.length) sections.push({ heading, text: parts.join(' ') });
@@ -137,38 +152,48 @@ function extractSections($: ReturnType<typeof load>): RawPageV1['sections'] {
   };
   // Walk in document order, including tables and nested content wrappers.
   // Never clip a policy at a paragraph/character count: later chunks bound reads.
-  $('h1, h2, h3, h4, p, li, table').each((_, element) => {
+  $('#content-block, h1, h2, h3, h4, h5, h6, p, li, table, a[href]').each((_, element) => {
     const node = $(element);
-    if (node.is('h1, h2, h3, h4')) {
+    if (node.is('#content-block')) {
+      // Ramapo's main column follows a sidebar with headings such as "Related
+      // Resources". Those headings do not describe the subsequent page body.
       flush();
-      heading = cleanText(node.text()) || heading;
+      heading = initialHeading || 'Overview';
+      return;
+    }
+    if (node.is('h1, h2, h3, h4, h5, h6')) {
+      flush();
+      heading = textWithLinks($, element, baseUrl) || heading;
       return;
     }
     if (node.parents('li, table').length) return;
+    // An anchor already represented in a text block must not become a duplicate
+    // section entry. Standalone buttons/links still need their own retained text.
+    if (node.is('a') && node.parents('p, h1, h2, h3, h4, h5, h6').length) return;
     const text = node.is('table')
       ? node.find('tr').toArray().map((row) => $(row).find('th, td').toArray()
-        .map((cell) => cleanText($(cell).text())).join(' | ')).join('; ')
-      : cleanText(node.text());
+        .map((cell) => textWithLinks($, cell, baseUrl)).join(' | ')).join('; ')
+      : textWithLinks($, element, baseUrl);
     if (text && !parts.includes(text)) parts.push(text);
   });
   flush();
   if (!sections.length) {
-    const text = cleanText(
-      $('main, article, #content-block, [role="main"]').first().text() || $('body').text()
-    );
+    const region = $('main, article, #content-block, [role="main"]').first();
+    const element = region[0] || $('body')[0];
+    const text = element ? textWithLinks($, element, baseUrl) : '';
     if (text) sections.push({ heading, text });
   }
   return sections;
 }
 
-function extractLists($: ReturnType<typeof load>): RawPageV1['lists'] {
+function extractLists($: ReturnType<typeof load>, baseUrl: string): RawPageV1['lists'] {
   const lists: string[][] = [];
 
   $('ul, ol').each((_, element) => {
     const items = $(element)
       .find('li')
       .toArray()
-      .map((item) => cleanText($(item).text()))
+      .map((item) => textWithLinks($, item, baseUrl))
       .filter(Boolean);
 
     if (items.length > 0) {
@@ -179,7 +204,7 @@ function extractLists($: ReturnType<typeof load>): RawPageV1['lists'] {
   return lists;
 }
 
-function extractTables($: ReturnType<typeof load>): RawPageV1['tables'] {
+function extractTables($: ReturnType<typeof load>, baseUrl: string): RawPageV1['tables'] {
   const tables: RawPageV1['tables'] = [];
 
   $('table').each((_, tableElement) => {
@@ -188,7 +213,7 @@ function extractTables($: ReturnType<typeof load>): RawPageV1['tables'] {
     let headers = table
       .find('thead th')
       .toArray()
-      .map((cell) => cleanText($(cell).text()))
+      .map((cell) => textWithLinks($, cell, baseUrl))
       .filter(Boolean);
 
     const rows = table
@@ -198,7 +223,7 @@ function extractTables($: ReturnType<typeof load>): RawPageV1['tables'] {
         $(row)
           .find('th, td')
           .toArray()
-          .map((cell) => cleanText($(cell).text()))
+          .map((cell) => textWithLinks($, cell, baseUrl))
       )
       .filter((row) => row.some(Boolean));
 
@@ -274,9 +299,15 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
     throw new Error(`${options.url}: received a bot challenge or human-verification page.`);
   }
 
-  const $ = load(options.html);
-  $('script, style, noscript, template, svg, nav, footer, [role="navigation"]').remove();
-  $('header').not('main header, article header, [role="main"] header').remove();
+  const document = load(options.html);
+  document('script, style, noscript, template, svg, nav, footer, [role="navigation"]').remove();
+  document('header').not('main header, article header, [role="main"] header').remove();
+  const initialHeading = document('h1').toArray().map(element => cleanText(document(element).text())).find(Boolean) || '';
+  const title = cleanText(document('title').first().text()) || initialHeading || null;
+  // Site-wide links outside the declared content region are not page evidence.
+  // Retain the document fallback for pages that do not declare such a region.
+  const region = document('main, #content-block, article, [role="main"]').first();
+  const $ = region.length ? load(region.html() || '') : document;
   const links = new Set<string>();
   const externalLinks = new Set<string>();
 
@@ -294,7 +325,9 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
     }
   });
 
-  const title = cleanText($('title').first().text()) || cleanText($('h1').first().text()) || null;
+  // The site's WordPress sidebar menu is not marked up as <nav>. Its links are
+  // useful crawl discovery above, but should not be asserted as page prose.
+  $('#left-nav-ul, ul.subnav, #breadcrumbs').remove();
 
   return {
     url: normalizeUrl(options.url),
@@ -304,9 +337,9 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
     title,
     links: asSortedArray(links),
     externalLinks: asSortedArray(externalLinks),
-    sections: extractSections($),
-    lists: extractLists($),
-    tables: extractTables($),
+    sections: extractSections($, options.url, initialHeading),
+    lists: extractLists($, options.url),
+    tables: extractTables($, options.url),
     contacts: extractContacts($),
     documents: extractDocuments($, options.url),
   };
