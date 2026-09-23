@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { buildFrontmatter } from './frontmatter';
+import { renderClubDetailContext } from './club-detail-context';
 import { getGeneratedTimestamp, sortByName } from './pipeline-utils';
 import { type ArchwayClub, validateArchwayClubs } from './schema';
 
@@ -95,6 +96,10 @@ function generateMarkdown() {
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
+  const details = renderClubDetailContext(clubs, JSON.parse(fs.readFileSync(
+    path.join(process.cwd(), 'data', 'raw', 'clubs-detail.raw.json'), 'utf8')));
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'clubs-detail.md'), details.markdown, 'utf8');
+  console.log(`Club detail source coverage: ${JSON.stringify(details.stats)}`);
   fs.writeFileSync(MARKDOWN_OUTPUT_PATH, markdown, 'utf-8');
   console.log(`Successfully generated markdown at ${MARKDOWN_OUTPUT_PATH}`);
 }

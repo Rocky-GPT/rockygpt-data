@@ -63,7 +63,7 @@ const SCRAPE_SOURCES: ScrapeSourceDefinition[] = [
     capturedData: [
       'Meal periods and stations',
       'Item names and descriptions',
-      'Calories, allergens, and dietary flags',
+      'Ingredients, source nutrient values and units, allergens, and dietary flags',
     ],
     method:
       'The shared HTTP collector calls the Sodexo menu API once per Eastern-calendar day with retries, timeouts, response-size limits, and JSON content-type checks. It writes today’s raw payload plus a seven-day snapshot, validates each menu section, and generates JSON and retrieval context.',
@@ -73,7 +73,7 @@ const SCRAPE_SOURCES: ScrapeSourceDefinition[] = [
     sourceUrls: [
       {
         label: 'Sodexo menu API',
-        url: 'https://api-prd.sodexomyway.net/v0.2/data/menu/97508001/15858',
+        url: 'https://api-prd.sodexomyway.net/v0.2/data/menu/97508001/1411019',
       },
       { label: 'Ramapo Dining', url: 'https://ramapo.sodexomyway.com/' },
     ],
@@ -171,12 +171,12 @@ const SCRAPE_SOURCES: ScrapeSourceDefinition[] = [
     title: 'Campus and facility hours',
     category: 'Campus services',
     sourceKey: 'campus-hours',
-    mode: 'Hybrid',
+    mode: 'HTML crawl',
     summary:
       'Hours for campus offices, library spaces, recreation facilities, CSI, and the bookstore.',
-    capturedData: ['Weekly schedules', 'Closures', 'Seasonal and operational notes'],
+    capturedData: ['Weekly schedules', 'Closures', 'Seasonal and operational notes', 'Source service policies, FAQs, and contact information'],
     method:
-      'Playwright loads the Ramapo Athletics hours page and parses visible text into facility schedules. The collector then combines those scraped athletics hours with manually structured schedules for several other campus locations.',
+      'The shared HTTP collector archives the athletics, library, and general campus-hours HTML. Their published sections supply schedules, applicability dates, and service notices. Normalization retains unknown hours when source dates or seasonal applicability are unresolved; source context preserves non-schedule policies and contacts.',
     automation:
       'Checked daily by the publication workflow against a 180-day SLA; the direct semester refresh command also runs it.',
     commands: ['npm run fetch:hours', 'npm run refresh:semesterly'],
@@ -189,6 +189,7 @@ const SCRAPE_SOURCES: ScrapeSourceDefinition[] = [
         label: 'Campus hours reference',
         url: 'https://www.ramapo.edu/about/campus-hours/',
       },
+      { label: 'Library hours', url: 'https://www.ramapo.edu/library/library-hours/' },
     ],
     artifacts: [
       {
@@ -198,9 +199,11 @@ const SCRAPE_SOURCES: ScrapeSourceDefinition[] = [
         recordLabel: 'locations',
         role: 'primary',
       },
+      { label: 'Captured source HTML', file: 'data/raw/hours-sources.raw.json',
+        provenanceDataset: 'hours-sources', recordLabel: 'captures', role: 'supplemental' },
     ],
     caveat:
-      'Only athletics facility hours are live-scraped by this collector. Administrative, library, CSI, J. Lee’s, Game Lab, and bookstore schedules are currently hard-coded in the script.',
+      'A recent capture does not make old or ambiguous schedules current. Conflicting dates, unbounded terms, and unresolved seasons are withheld as unknown; source notices and dated policies retain their original qualifiers.',
   },
   {
     id: 'clubs',
@@ -214,6 +217,7 @@ const SCRAPE_SOURCES: ScrapeSourceDefinition[] = [
       'Organization name, category, bucket, and logo',
       'Archway and external websites',
       'Email, social profiles, and GroupMe join links',
+      'Published missions, member benefits, membership descriptions, and scoped page text',
     ],
     method:
       'The primary collector uses logged-out fetch requests and Cheerio to parse the Archway organization list, then crawls public pages within each club scope concurrently. Optional Playwright scripts collect authenticated About-page contacts and GroupMe directory links; persisted GroupMe data is sanitized to public names and join URLs.',
@@ -222,7 +226,7 @@ const SCRAPE_SOURCES: ScrapeSourceDefinition[] = [
     commands: [
       'npm run fetch:clubs',
       'npm run fetch:groupme-directory',
-      'python3 core/scripts/fetch/archway-clubs-about.py',
+      'python3 ingestion/archway-clubs-about.py',
     ],
     sourceUrls: [
       {
@@ -278,7 +282,7 @@ const SCRAPE_SOURCES: ScrapeSourceDefinition[] = [
       'The academic calendar is checked daily against a seven-day SLA. The Residence Life supplement is not part of the scheduled publication refresh.',
     commands: [
       'npm run fetch:calendar',
-      'npx tsx core/scripts/fetch/reslife-calendar.ts',
+      'npx tsx ingestion/reslife-calendar.ts',
       'npm run refresh:semesterly',
     ],
     sourceUrls: [
