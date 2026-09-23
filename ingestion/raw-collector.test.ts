@@ -109,7 +109,7 @@ test('opt-in source capture retains original HTML and its hash even when collect
       allowedHost:'example.edu',outputPath:path.join(dir,'health.raw.json'),attempts:1,maxDetailPages:0,
       minimumSuccessfulPages:2,retainSourceHtml:true}), /expected at least 2/);
     assert.ok(!fs.existsSync(path.join(dir,'health.raw.json')));
-    const capture = JSON.parse(fs.readFileSync(path.join(dir,'health-sources.raw.json'),'utf8'));
+    let capture = JSON.parse(fs.readFileSync(path.join(dir,'health-sources.raw.json'),'utf8'));
     assert.equal(capture.schemaVersion,1);
     assert.equal(capture.pages.length,1);
     assert.equal(capture.pages[0].html,html);
@@ -117,9 +117,17 @@ test('opt-in source capture retains original HTML and its hash even when collect
     assert.equal(capture.pages[0].requestedUrl,'https://example.edu/health');
     assert.equal(capture.pages[0].statusCode,200);
     assert.equal(capture.pages[0].sourceType,'seed');
+    assert.equal(capture.collectionSucceeded,false);
+    assert.throws(() => replayRawSourceCapture(capture), /incomplete or failed/);
     assert.ok(fs.existsSync(path.join(dir,'health-sources.provenance.json')));
+    const collected = await collectRawDataset({dataset:'health',seedUrls:['https://example.edu/health'],
+      allowedHost:'example.edu',outputPath:path.join(dir,'health.raw.json'),attempts:1,maxDetailPages:0,
+      minimumSuccessfulPages:1,retainSourceHtml:true});
+    capture = JSON.parse(fs.readFileSync(path.join(dir,'health-sources.raw.json'),'utf8'));
+    assert.equal(capture.collectionSucceeded,true);
     const replayed = replayRawSourceCapture(capture);
     assert.equal(replayed.pages[0].fetchedAt,capture.pages[0].fetchedAt);
+    assert.equal(replayed.pages[0].fetchedAt,collected.pages[0].fetchedAt);
     assert.equal(replayed.collectedAt,capture.generatedAt);
     assert.ok(replayed.pages[0].sections[0].text.includes('Appointment portal (https://example.edu/book)'));
     capture.pages[0].html += 'changed';
