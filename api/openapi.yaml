@@ -70,6 +70,8 @@ paths:
         '503': { $ref: '#/components/responses/Unavailable' }
   /v1/directory:
     get:
+      deprecated: true
+      description: Legacy source-oriented compatibility endpoint. Student clients should use the Brain directory identity index and /v1/entities/{entity_id}/facts for canonical, source-supported contact values.
       operationId: getDirectory
       responses:
         '200':
