@@ -53,7 +53,7 @@ test('identical sections are one shared record with every program link and prove
     [0, ['schools', 0, 'majors', 1, 'requirements', 0]],
   ]);
   assert.deepEqual(shared.course_list?.choose, { at_least: 1 });
-  assert.ok(artifact.unresolved.some(i => i.record === 'Science:Unlinked BS' && i.reason.includes('no identity')));
+  assert.ok(artifact.unresolved.some(i => i.record === 'catalog:TS-BS-NONE' && i.reason.includes('no identity')));
   assert.deepEqual(compiled(), artifact);
 });
 

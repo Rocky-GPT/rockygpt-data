@@ -368,7 +368,10 @@ function collectRawPageSignalText(page: RawPageV1): string {
     .filter((value) => Boolean(value));
   const sectionText = page.sections.flatMap((section) => [section.heading, section.text]);
 
-  return normalizeText([page.title ?? '', ...sectionText, ...tableText].join(' ')) || '';
+  // A ticket-price field ending in FREE beside a repeated heading such as
+  // "Pizza in Hut" must never become the source assertion "FREE Pizza".
+  return [page.title ?? '', ...sectionText, ...tableText]
+    .map((value) => normalizeText(value)).filter(Boolean).join('\n');
 }
 
 function collectRawPageDescription(page: RawPageV1): string | undefined {
@@ -617,7 +620,7 @@ export function extractEventDetailSignalFromHtml(html: string): EventDetailSigna
   const servingMatch = text.match(servingFoodPattern);
   const candidateDescriptionText = [detailTitle, detailDescription, ...embeddedDescriptions]
     .filter(Boolean)
-    .join(' ');
+    .join('\n');
 
   return {
     ...publishedFoodSignal(`${candidateDescriptionText}\n${servingMatch?.[0] ?? ''}`),

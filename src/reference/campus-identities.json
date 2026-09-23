@@ -8430,9 +8430,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-MN-MUSI"
+              "CA-MN-MUSI",
+              "AH-MN-MUSI"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-MN-MUSI -> AH-MN-MUSI; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -8452,9 +8453,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-MN-THEA"
+              "CA-MN-THEA",
+              "AH-MN-THEA"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-MN-THEA -> AH-MN-THEA; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -8474,9 +8476,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-MN-ARTS"
+              "CA-MN-ARTS",
+              "AH-MN-ARTS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-MN-ARTS -> AH-MN-ARTS; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -8562,9 +8565,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "BG-MS-MSAC"
+              "BG-MS-MSAC",
+              "SB-MS-MSAC"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration BG-MS-MSAC -> SB-MS-MSAC; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -8606,9 +8610,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "BG-MBA-MBAD"
+              "BG-MBA-MBAD",
+              "SB-MBA-MBAD"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration BG-MBA-MBAD -> SB-MBA-MBAD; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -8826,9 +8831,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SB-MN-BANA"
+              "SB-MN-BANA",
+              "SB-MN-BAAI"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SB-MN-BANA -> SB-MN-BAAI; see program-identity-migration-20260923.json (same_program_group)."
           }
         }
       ]
@@ -8870,9 +8876,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-MN-AH"
+              "CA-MN-AH",
+              "AH-MN-AH"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-MN-AH -> AH-MN-AH; see program-identity-migration-20260923.json (same_program_group)."
           }
         }
       ]
@@ -9002,9 +9009,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "BG-GCR-BUFN"
+              "BG-GCR-BUFN",
+              "SB-GCR-BUFN"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration BG-GCR-BUFN -> SB-GCR-BUFN; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -9112,31 +9120,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-BA-COMM"
+              "CA-BA-COMM",
+              "AH-BA-COMM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
-          }
-        }
-      ]
-    },
-    {
-      "id": "32b56a8d-7646-474e-8f1f-718d8fe5832c",
-      "kind": "program",
-      "name": "Contemporary Arts BA",
-      "aliases": [
-        "CA-BA-CNTP"
-      ],
-      "links": [
-        {
-          "collection": "programs",
-          "source_key": "academic-programs",
-          "source_record_keys": [],
-          "selector": {
-            "field": "catalog_code",
-            "values": [
-              "CA-BA-CNTP"
-            ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-BA-COMM -> AH-BA-COMM; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9156,9 +9143,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-MN-DFL"
+              "CA-MN-DFL",
+              "AH-MN-DFL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-MN-DFL -> AH-MN-DFL; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9178,9 +9166,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-MN-GCOM"
+              "CA-MN-GCOM",
+              "AH-MN-GCOM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-MN-GCOM -> AH-MN-GCOM; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9200,9 +9189,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CG-MFA-CRMT"
+              "CG-MFA-CRMT",
+              "AH-MFA-CRMT"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CG-MFA-CRMT -> AH-MFA-CRMT; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9222,9 +9212,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-BA-FILM"
+              "CA-BA-FILM",
+              "AH-BA-FILM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-BA-FILM -> AH-BA-FILM; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9244,9 +9235,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-BA-MUSI"
+              "CA-BA-MUSI",
+              "AH-BA-MUSI"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-BA-MUSI -> AH-BA-MUSI; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9266,31 +9258,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-BA-THFL"
+              "CA-BA-THFL",
+              "AH-BA-THFL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
-          }
-        }
-      ]
-    },
-    {
-      "id": "80f32ffc-a882-4107-bf38-b1cdde6ff7aa",
-      "kind": "program",
-      "name": "Theater BA",
-      "aliases": [
-        "CA-BA-THEA"
-      ],
-      "links": [
-        {
-          "collection": "programs",
-          "source_key": "academic-programs",
-          "source_record_keys": [],
-          "selector": {
-            "field": "catalog_code",
-            "values": [
-              "CA-BA-THEA"
-            ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-BA-THFL -> AH-BA-THFL; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9310,9 +9281,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-BA-ARTS"
+              "CA-BA-ARTS",
+              "AH-BA-ARTS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-BA-ARTS -> AH-BA-ARTS; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9332,9 +9304,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "CA-BA-VSCD"
+              "CA-BA-VSCD",
+              "AH-BA-VSCD"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration CA-BA-VSCD -> AH-BA-VSCD; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9362,28 +9335,6 @@
       ]
     },
     {
-      "id": "3ddee88e-8c14-40ce-906a-1ca9fd11ec4e",
-      "kind": "program",
-      "name": "Creative Music Technology 4+1",
-      "aliases": [
-        "CA-BA-PMFA"
-      ],
-      "links": [
-        {
-          "collection": "programs",
-          "source_key": "academic-programs",
-          "source_record_keys": [],
-          "selector": {
-            "field": "catalog_code",
-            "values": [
-              "CA-BA-PMFA"
-            ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
-          }
-        }
-      ]
-    },
-    {
       "id": "7787592c-4440-4b84-9667-b5dca680bb5b",
       "kind": "program",
       "name": "Africana Studies BA",
@@ -9398,9 +9349,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-BA-AFST"
+              "HG-BA-AFST",
+              "AH-BA-AFST"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-BA-AFST -> AH-BA-AFST; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9420,9 +9372,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-BA-AMER"
+              "HG-BA-AMER",
+              "AH-BA-AMER"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-BA-AMER -> AH-BA-AMER; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9442,9 +9395,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-BA-ENLS"
+              "HG-BA-ENLS",
+              "AH-BA-ENLS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-BA-ENLS -> AH-BA-ENLS; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -9464,31 +9418,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-BA-HIST"
+              "HG-BA-HIST",
+              "AH-BA-HIST"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
-          }
-        }
-      ]
-    },
-    {
-      "id": "891aff7c-3bf7-4a26-a21b-e6d80f047c30",
-      "kind": "program",
-      "name": "Humanities & Global Studies BA",
-      "aliases": [
-        "HG-BA-HUGS"
-      ],
-      "links": [
-        {
-          "collection": "programs",
-          "source_key": "academic-programs",
-          "source_record_keys": [],
-          "selector": {
-            "field": "catalog_code",
-            "values": [
-              "HG-BA-HUGS"
-            ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-BA-HIST -> AH-BA-HIST; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9508,9 +9441,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-BA-INTL"
+              "HG-BA-INTL",
+              "SO-BA-INTL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-BA-INTL -> SO-BA-INTL; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9530,9 +9464,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-BA-PHIL"
+              "HG-BA-PHIL",
+              "AH-BA-PHIL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-BA-PHIL -> AH-BA-PHIL; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9552,31 +9487,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-BA-POLI"
+              "HG-BA-POLI",
+              "SO-BA-POLI"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
-          }
-        }
-      ]
-    },
-    {
-      "id": "8ec44c88-2191-4a65-a584-e16d49060125",
-      "kind": "program",
-      "name": "Educational Leadership MA",
-      "aliases": [
-        "MG-MA-EDLD"
-      ],
-      "links": [
-        {
-          "collection": "programs",
-          "source_key": "academic-programs",
-          "source_record_keys": [],
-          "selector": {
-            "field": "catalog_code",
-            "values": [
-              "MG-MA-EDLD"
-            ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-BA-POLI -> SO-BA-POLI; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9596,9 +9510,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "GH-MPP-PBPL"
+              "GH-MPP-PBPL",
+              "SO-MPP-PBPL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration GH-MPP-PBPL -> SO-MPP-PBPL; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9618,9 +9533,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-BA-SPAN"
+              "HG-BA-SPAN",
+              "AH-BA-SPAN"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-BA-SPAN -> AH-BA-SPAN; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -9640,9 +9556,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-BA-PPBP"
+              "HG-BA-PPBP",
+              "SO-BA-PPBP"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-BA-PPBP -> SO-BA-PPBP; see program-identity-migration-20260923.json (explicit_school_change)."
           }
         }
       ]
@@ -9662,9 +9579,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-AFST"
+              "HG-MN-AFST",
+              "AH-MN-AFST"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-AFST -> AH-MN-AFST; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9684,9 +9602,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-AMER"
+              "HG-MN-AMER",
+              "AH-MN-AMER"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-AMER -> AH-MN-AMER; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9706,9 +9625,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-ANT"
+              "HG-MN-ANT",
+              "SO-MN-ANTH"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-ANT -> SO-MN-ANTH; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9728,9 +9648,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-CIVL"
+              "HG-MN-CIVL",
+              "SO-MN-CIVL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-CIVL -> SO-MN-CIVL; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9772,9 +9693,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-WRT"
+              "HG-MN-WRT",
+              "AH-MN-WRT"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-WRT -> AH-MN-WRT; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9794,9 +9716,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-EAS"
+              "HG-MN-EAS",
+              "SO-MN-EAS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-EAS -> SO-MN-EAS; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9816,9 +9739,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-ENLS"
+              "HG-MN-ENLS",
+              "AH-MN-ENLS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-ENLS -> AH-MN-ENLS; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9838,9 +9762,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-FRE"
+              "HG-MN-FRE",
+              "AH-MN-FRE"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-FRE -> AH-MN-FRE; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9860,9 +9785,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-HIST"
+              "HG-MN-HIST",
+              "AH-MN-HIST"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-HIST -> AH-MN-HIST; see program-identity-migration-20260923.json (same_program_group)."
           }
         }
       ]
@@ -9882,9 +9808,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-HRGS"
+              "HG-MN-HRGS",
+              "SO-MN-HRGS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-HRGS -> SO-MN-HRGS; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9904,9 +9831,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-INTL"
+              "HG-MN-INTL",
+              "SO-MN-INTL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-INTL -> SO-MN-INTL; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9926,9 +9854,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-BA-PEDS"
+              "SS-BA-PEDS",
+              "AH-BA-PEDS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-BA-PEDS -> AH-BA-PEDS; see program-identity-migration-20260923.json (explicit_school_change)."
           }
         }
       ]
@@ -9948,9 +9877,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-ITL"
+              "HG-MN-ITL",
+              "AH-MN-ITL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-ITL -> AH-MN-ITL; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9970,9 +9900,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-JES"
+              "HG-MN-JES",
+              "AH-MN-JES"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-JES -> AH-MN-JES; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -9992,9 +9923,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-LAS"
+              "HG-MN-LAS",
+              "SO-MN-LAS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-LAS -> SO-MN-LAS; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10014,9 +9946,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-MES"
+              "HG-MN-MES",
+              "AH-MN-MES"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-MES -> AH-MN-MES; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10036,9 +9969,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-PHIL"
+              "HG-MN-PHIL",
+              "AH-MN-PHIL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-PHIL -> AH-MN-PHIL; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10058,9 +9992,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-POLI"
+              "HG-MN-POLI",
+              "SO-MN-POLI"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-POLI -> SO-MN-POLI; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10080,9 +10015,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-PUB"
+              "HG-MN-PUB",
+              "SO-MN-PUB"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-PUB -> SO-MN-PUB; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10102,9 +10038,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "HG-MN-SPAN"
+              "HG-MN-SPAN",
+              "AH-MN-SPAN"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration HG-MN-SPAN -> AH-MN-SPAN; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10124,9 +10061,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-BS-ELED"
+              "SS-BS-ELED",
+              "AH-BS-ELED"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-BS-ELED -> AH-BS-ELED; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10168,9 +10106,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-BA-LAWS"
+              "SS-BA-LAWS",
+              "SO-BA-LAWS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-BA-LAWS -> SO-BA-LAWS; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10190,9 +10129,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-BS-NUR5"
+              "SS-BS-NUR5",
+              "SO-BS-NEUR"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-BS-NUR5 -> SO-BS-NEUR; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -10234,9 +10174,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-BA-PSYC"
+              "SS-BA-PSYC",
+              "SO-BA-PSYC"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-BA-PSYC -> SO-BA-PSYC; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10256,9 +10197,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-BA-SOSC"
+              "SS-BA-SOSC",
+              "SO-BA-SOSC"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-BA-SOSC -> SO-BA-SOSC; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10278,9 +10220,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-BSW-SWRK"
+              "SS-BSW-SWRK",
+              "SO-BSW-SWRK"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-BSW-SWRK -> SO-BSW-SWRK; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10300,9 +10243,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "MG-MSW-SWRK"
+              "MG-MSW-SWRK",
+              "SO-MSW-SWRM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration MG-MSW-SWRK -> SO-MSW-SWRM; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -10322,9 +10266,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-BA-SOCI"
+              "SS-BA-SOCI",
+              "SO-BA-SOCI"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-BA-SOCI -> SO-BA-SOCI; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -10344,9 +10289,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "MG-MA-MASE"
+              "MG-MA-MASE",
+              "AH-MA-MASE"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration MG-MA-MASE -> AH-MA-MASE; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10366,9 +10312,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-BA-SUST"
+              "SS-BA-SUST",
+              "SO-BA-SUST"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-BA-SUST -> SO-BA-SUST; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10388,9 +10335,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-CLIM"
+              "SS-MN-CLIM",
+              "SO-MN-CLIM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-CLIM -> SO-MN-CLIM; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10410,9 +10358,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-CNST"
+              "SS-MN-CNST",
+              "AH-MN-CNST"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-CNST -> AH-MN-CNST; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10432,9 +10381,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-CJS"
+              "SS-MN-CJS",
+              "SO-MN-CJS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-CJS -> SO-MN-CJS; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10476,9 +10426,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-FDST"
+              "SS-MN-FDST",
+              "SN-MN-FDST"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-FDST -> SN-MN-FDST; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10498,9 +10449,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-GER"
+              "SS-MN-GER",
+              "SO-MN-GER"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-GER -> SO-MN-GER; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10520,9 +10472,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-NUR5"
+              "SS-MN-NUR5",
+              "SO-MN-NEUR"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-NUR5 -> SO-MN-NEUR; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10542,9 +10495,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-PSYC"
+              "SS-MN-PSYC",
+              "SO-MN-PSYC"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-PSYC -> SO-MN-PSYC; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10564,9 +10518,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-SOCI"
+              "SS-MN-SOCI",
+              "SO-MN-SOCI"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-SOCI -> SO-MN-SOCI; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10586,9 +10541,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-SUD"
+              "SS-MN-SUD",
+              "SO-MN-SUD"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-SUD -> SO-MN-SUD; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10608,9 +10564,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-SUST"
+              "SS-MN-SUST",
+              "SO-MN-SUST"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-SUST -> SO-MN-SUST; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10630,9 +10587,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SS-MN-WGSS"
+              "SS-MN-WGSS",
+              "SO-MN-WGSS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SS-MN-WGSS -> SO-MN-WGSS; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -10674,9 +10632,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SG-MS-APMT"
+              "SG-MS-APMT",
+              "SN-MS-APMT"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SG-MS-APMT -> SN-MS-APMT; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10696,9 +10655,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-BCHM"
+              "TS-BS-BCHM",
+              "SN-BS-BCHM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-BCHM -> SN-BS-BCHM; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10718,9 +10678,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-BIIN"
+              "TS-BS-BIIN",
+              "SN-BS-BIIN"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-BIIN -> SN-BS-BIIN; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10740,9 +10701,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-BIOL"
+              "TS-BS-BIOL",
+              "SN-BS-BIOL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-BIOL -> SN-BS-BIOL; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10762,9 +10724,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-CHEM"
+              "TS-BS-CHEM",
+              "SN-BS-CHEM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-CHEM -> SN-BS-CHEM; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10784,9 +10747,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-CLLS"
+              "TS-BS-CLLS",
+              "SN-BS-CLLS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-CLLS -> SN-BS-CLLS; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -10806,9 +10770,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-CMPS"
+              "TS-BS-CMPS",
+              "SN-BS-CMPS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-CMPS -> SN-BS-CMPS; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10828,9 +10793,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SG-MS-CMPS"
+              "SG-MS-CMPS",
+              "SN-MS-CMPM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SG-MS-CMPS -> SN-MS-CMPM; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -10850,31 +10816,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-CYBR"
+              "TS-BS-CYBR",
+              "SN-BS-CYBR"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
-          }
-        }
-      ]
-    },
-    {
-      "id": "13bb3962-ead2-47c6-9f31-61f2f069faa7",
-      "kind": "program",
-      "name": "Medical Imaging Sciences BS",
-      "aliases": [
-        "TS-BS-MDIS"
-      ],
-      "links": [
-        {
-          "collection": "programs",
-          "source_key": "academic-programs",
-          "source_record_keys": [],
-          "selector": {
-            "field": "catalog_code",
-            "values": [
-              "TS-BS-MDIS"
-            ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-CYBR -> SN-BS-CYBR; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10894,9 +10839,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-DSCI"
+              "TS-BS-DSCI",
+              "SN-BS-DSCI"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-DSCI -> SN-BS-DSCI; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10916,9 +10862,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SG-MS-DSCI"
+              "SG-MS-DSCI",
+              "SN-MS-DSCM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SG-MS-DSCI -> SN-MS-DSCM; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -10938,9 +10885,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-ENPH"
+              "TS-BS-ENPH",
+              "SN-BS-ENPH"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-ENPH -> SN-BS-ENPH; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10960,9 +10908,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-ENSC"
+              "TS-BS-ENSC",
+              "SN-BS-ENSC"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-ENSC -> SN-BS-ENSC; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -10982,9 +10931,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-HCAD"
+              "TS-BS-HCAD",
+              "SN-BS-HCAD"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-HCAD -> SN-BS-HCAD; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -11004,9 +10954,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-MATH"
+              "TS-BS-MATH",
+              "SN-BS-MATH"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-MATH -> SN-BS-MATH; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -11026,9 +10977,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-NASC"
+              "TS-BS-NASC",
+              "SN-BS-NASC"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-NASC -> SN-BS-NASC; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -11048,9 +11000,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BSN-NURA"
+              "TS-BSN-NURA",
+              "SN-BSN-NURA"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BSN-NURA -> SN-BSN-NURA; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -11070,9 +11023,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BSN-NURG"
+              "TS-BSN-NURG",
+              "SN-BSN-NURG"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BSN-NURG -> SN-BSN-NURG; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -11114,9 +11068,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SG-MSN-NURS"
+              "SG-MSN-NURS",
+              "SN-MSN-NURM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SG-MSN-NURS -> SN-MSN-NURM; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -11136,9 +11091,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SG-DNP-NUPR"
+              "SG-DNP-NUPR",
+              "SN-DNP-NUPR"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SG-DNP-NUPR -> SN-DNP-NUPR; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -11158,9 +11114,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-DSCI"
+              "TS-MN-DSCI",
+              "SN-MN-DSCI"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-DSCI -> SN-MN-DSCI; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11180,9 +11137,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SG-GCR-DTAN"
+              "SG-GCR-DTAN",
+              "SN-GCR-DTAN"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SG-GCR-DTAN -> SN-GCR-DTAN; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -11202,9 +11160,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BSN-NURS"
+              "TS-BSN-NURS",
+              "SN-BSN-NURS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BSN-NURS -> SN-BSN-NURS; see program-identity-migration-20260923.json (retained_requirement_ids, explicit_school_change)."
           }
         }
       ]
@@ -11224,9 +11183,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-PAPM"
+              "TS-BS-PAPM",
+              "SN-BS-PAPM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-PAPM -> SN-BS-PAPM; see program-identity-migration-20260923.json (explicit_school_change)."
           }
         }
       ]
@@ -11246,9 +11206,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-PMCS"
+              "TS-BS-PMCS",
+              "SN-BS-PMCS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-PMCS -> SN-BS-PMCS; see program-identity-migration-20260923.json (explicit_school_change)."
           }
         }
       ]
@@ -11268,9 +11229,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-BS-PDSC"
+              "TS-BS-PDSC",
+              "SN-BS-PDSC"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-BS-PDSC -> SN-BS-PDSC; see program-identity-migration-20260923.json (explicit_school_change)."
           }
         }
       ]
@@ -11312,9 +11274,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-BIIN"
+              "TS-MN-BIIN",
+              "SN-MN-BIIN"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-BIIN -> SN-MN-BIIN; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11334,9 +11297,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-BIOL"
+              "TS-MN-BIOL",
+              "SN-MN-BIOL"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-BIOL -> SN-MN-BIOL; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11356,9 +11320,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-CHEM"
+              "TS-MN-CHEM",
+              "SN-MN-CHEM"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-CHEM -> SN-MN-CHEM; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11378,9 +11343,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-CMPS"
+              "TS-MN-CMPS",
+              "SN-MN-CMPS"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-CMPS -> SN-MN-CMPS; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11400,9 +11366,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-ERTH"
+              "TS-MN-ERTH",
+              "SN-MN-ERTH"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-ERTH -> SN-MN-ERTH; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11422,9 +11389,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-ENPH"
+              "TS-MN-ENPH",
+              "SN-MN-ENPH"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-ENPH -> SN-MN-ENPH; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11444,9 +11412,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-ENSC"
+              "TS-MN-ENSC",
+              "SN-MN-ENSC"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-ENSC -> SN-MN-ENSC; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11466,9 +11435,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-MATH"
+              "TS-MN-MATH",
+              "SN-MN-MATH"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-MATH -> SN-MN-MATH; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11488,9 +11458,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-PLST"
+              "TS-MN-PLST",
+              "SN-MN-PLST"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-PLST -> SN-MN-PLST; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11510,9 +11481,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-PHLT"
+              "TS-MN-PHLT",
+              "SN-MN-PHLT"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-PHLT -> SN-MN-PHLT; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11532,9 +11504,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-SCSO"
+              "TS-MN-SCSO",
+              "SN-MN-SCSO"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-SCSO -> SN-MN-SCSO; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11554,9 +11527,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "TS-MN-STAT"
+              "TS-MN-STAT",
+              "SN-MN-STAT"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration TS-MN-STAT -> SN-MN-STAT; see program-identity-migration-20260923.json (same_program_group, retained_requirement_ids)."
           }
         }
       ]
@@ -11576,9 +11550,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SG-GCR-DTMD"
+              "SG-GCR-DTMD",
+              "SN-GCR-DTMD"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SG-GCR-DTMD -> SN-GCR-DTMD; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -11598,9 +11573,10 @@
           "selector": {
             "field": "catalog_code",
             "values": [
-              "SG-GCR-MALR"
+              "SG-GCR-MALR",
+              "SN-GCR-MALR"
             ],
-            "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+            "evidence": "Catalog program code identifies this academic program independently of its display name or school label. Source-backed 2026-09-23 code migration SG-GCR-MALR -> SN-GCR-MALR; see program-identity-migration-20260923.json (retained_requirement_ids)."
           }
         }
       ]
@@ -11623,6 +11599,106 @@
               "TS-BS-UNDC"
             ],
             "evidence": "Catalog program code identifies this academic program independently of its display name or school label."
+          }
+        }
+      ]
+    },
+    {
+      "id": "46387fba-746e-4b11-9b60-a6c04d28645c",
+      "kind": "program",
+      "name": "Applied Ethics Certificate",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "programs",
+          "source_key": "academic-programs",
+          "source_record_keys": [],
+          "selector": {
+            "field": "catalog_code",
+            "values": [
+              "AH-UCR-APET"
+            ],
+            "evidence": "Exact current catalog code AH-UCR-APET; source 2026-09-23T19:44:12.134Z /programs/42, record sha256 2e0c5753fe9a6cc9a6b47905c9402a24a03149548f6961df525757bd9f318742. New to the captured catalog, not a claim of institutional launch date. See program-identity-migration-20260923.json."
+          }
+        }
+      ]
+    },
+    {
+      "id": "03de41a9-4418-4bbc-b62d-142c3829838f",
+      "kind": "program",
+      "name": "Spanish for Health Care and Human Services Professionals Certificate",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "programs",
+          "source_key": "academic-programs",
+          "source_record_keys": [],
+          "selector": {
+            "field": "catalog_code",
+            "values": [
+              "AH-UCR-SPHC"
+            ],
+            "evidence": "Exact current catalog code AH-UCR-SPHC; source 2026-09-23T19:44:12.134Z /programs/43, record sha256 af96f5b16cf1ce2192e4e563aa1a4f9bee804996b42c8ba3eabf054df5e83260. New to the captured catalog, not a claim of institutional launch date. See program-identity-migration-20260923.json."
+          }
+        }
+      ]
+    },
+    {
+      "id": "05c101f1-5c0c-41af-bdd7-a519fb21548b",
+      "kind": "program",
+      "name": "Business Essentials Certificate",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "programs",
+          "source_key": "academic-programs",
+          "source_record_keys": [],
+          "selector": {
+            "field": "catalog_code",
+            "values": [
+              "SB-UCR-BECP"
+            ],
+            "evidence": "Exact current catalog code SB-UCR-BECP; source 2026-09-23T19:44:12.134Z /programs/68, record sha256 07310baecbdb12198ff956008c5f81ddd5354faec7282a5cee26ed044e54fab3. New to the captured catalog, not a claim of institutional launch date. See program-identity-migration-20260923.json."
+          }
+        }
+      ]
+    },
+    {
+      "id": "e21acabd-7594-4885-9aec-1573070cbf74",
+      "kind": "program",
+      "name": "Cybersecurity Minor",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "programs",
+          "source_key": "academic-programs",
+          "source_record_keys": [],
+          "selector": {
+            "field": "catalog_code",
+            "values": [
+              "SN-MN-CYBR"
+            ],
+            "evidence": "Exact current catalog code SN-MN-CYBR; source 2026-09-23T19:44:12.134Z /programs/104, record sha256 1e85fd513aabdc71d33475ed32b63bb33338a73faeace617ffd2c90256e941f0. New to the captured catalog, not a claim of institutional launch date. See program-identity-migration-20260923.json."
+          }
+        }
+      ]
+    },
+    {
+      "id": "204c63f8-1ced-4e3b-bd58-99026ebe5939",
+      "kind": "program",
+      "name": "Interdisciplinary Studies BA",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "programs",
+          "source_key": "academic-programs",
+          "source_record_keys": [],
+          "selector": {
+            "field": "catalog_code",
+            "values": [
+              "UH-BA-IDST"
+            ],
+            "evidence": "Exact current catalog code UH-BA-IDST; source 2026-09-23T19:44:12.134Z /programs/153, record sha256 954c40d5c154e0b2051a00590c9989815f684e995a77c63328387c81c1f2f0ba. New to the captured catalog, not a claim of institutional launch date. See program-identity-migration-20260923.json."
           }
         }
       ]

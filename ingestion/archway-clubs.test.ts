@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { rebuildClubsFromRaw, toNormalizedClub } from './archway-clubs';
+import { isClubCalendarExportUrl, rebuildClubsFromRaw, toNormalizedClub } from './archway-clubs';
 import { validateArchwayClubs } from './schema';
 import type { RawDatasetV1, RawPageV1 } from './raw-types';
 
@@ -19,4 +19,18 @@ test('offline club rebuild retains scoped successful detail contacts but ignores
   assert.equal(clubs[0].instagramUrl, 'https://instagram.com/sportsclub');
   page.statusCode = 404;
   assert.equal(rebuildClubsFromRaw(seeds, details)[0].email, undefined);
+});
+
+test('HTML crawl skips verified calendar export routes without guessing at ordinary or broken source links', () => {
+  for (const route of ['vcal.aspx', 'vcal']) {
+    for (const type of ['ical', 'outlook']) {
+      assert.equal(isClubCalendarExportUrl(`https://archway.ramapo.edu/CCEC/${route}?source=box&type=${type}&school=ramapo&uid=123`), true);
+    }
+  }
+  for (const url of ['https://archway.ramapo.edu/CCEC/events/?type=ical',
+    'https://archway.ramapo.edu/CCEC/vcal?type=unknown',
+    'https://archway.ramapo.edu/republicans/home/instagram.com/rcnjrepublicans',
+    'https://example.org/CCEC/vcal?type=ical', 'invalid']) {
+    assert.equal(isClubCalendarExportUrl(url), false, url);
+  }
 });

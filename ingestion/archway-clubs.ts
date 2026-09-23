@@ -689,6 +689,18 @@ function looksLikeLoginRedirect(rawUrl: string): boolean {
   }
 }
 
+/** CampusGroups' calendar downloads are not HTML detail pages. Keep the
+ * source link on its captured page, but do not spend the crawl budget on it. */
+export function isClubCalendarExportUrl(rawUrl: string): boolean {
+  try {
+    const url = new URL(rawUrl);
+    return url.host === ARCHWAY_HOST && /\/vcal(?:\.aspx)?\/?$/i.test(url.pathname) &&
+      ['ical', 'outlook'].includes(url.searchParams.get('type')?.toLowerCase() ?? '');
+  } catch {
+    return false;
+  }
+}
+
 async function fetchPublicPage(url: string, timeoutMs: number): Promise<FetchedPage> {
   try {
     const response = await fetchWithPolicy(
@@ -763,6 +775,7 @@ async function crawlClubScopePages(
   const pages: RawPageV1[] = [];
 
   scope.seedUrls.forEach((seedUrl) => {
+    if (isClubCalendarExportUrl(seedUrl)) return;
     const key = buildUrlKey(seedUrl);
     if (queued.has(key)) return;
     queued.add(key);
@@ -806,7 +819,7 @@ async function crawlClubScopePages(
     }
 
     builtPage.links.forEach((link) => {
-      if (!isUrlWithinClubScope(link, scope)) return;
+      if (!isUrlWithinClubScope(link, scope) || isClubCalendarExportUrl(link)) return;
 
       const key = buildUrlKey(link);
       if (visited.has(key) || queued.has(key)) return;
