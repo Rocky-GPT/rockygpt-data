@@ -1,5 +1,7 @@
 # Data ingestion audit — 23 September 2026
 
+> **Historical, pre-activation report.** Later on September 23, the corrected release was rebuilt, activated locally and checked in the running app. See the [rebuild and live-verification report](2026-09-23-ingestion-rebuild.md) for current FIXED / NOT FIXED / NEEDS REBUILD / NEEDS SOURCE REVIEW status. The observations below retain their original point-in-time status.
+
 **Code fixes are implemented and tested. The running app and active dataset have not been replaced.** The local candidate passes raw and publication quality checks, but cannot safely pass program identity continuity. “Fixed” below means fixed in source code and verified against regression fixtures and/or captured source data; it does not mean the active release is repaired.
 
 Active local dataset checked through `GET http://localhost:8000/readiness`: `dev-profiles-subjects-20260923`, activated at `2026-09-23 15:10:01.522178-04:00`; 1,086 registered identities. The development release remains `campus-subjects-development-2026-09-23`.
