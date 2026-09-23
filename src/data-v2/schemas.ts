@@ -95,7 +95,8 @@ export interface ContactRecord {
   phones?: PhoneEntry[];
   preferred_contact?: string;
   contact_note?: string;
-  prefers_email?: boolean;
+  /** Null means the source did not publish a recognized communication preference. */
+  prefers_email?: boolean | null;
   raw_phone?: string;
   phone_normalization_status?: PhoneNormalizationStatus;
   source: SourceReference;

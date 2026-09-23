@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS rockygpt_v2.campus_contacts (
   phone TEXT,
   email TEXT,
   office TEXT,
-  prefers_email BOOLEAN NOT NULL DEFAULT false,
+  prefers_email BOOLEAN,
   raw_phone TEXT,
   phones JSONB NOT NULL DEFAULT '[]'::jsonb,
   preferred_contact TEXT,

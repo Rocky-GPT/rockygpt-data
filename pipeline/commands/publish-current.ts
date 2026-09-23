@@ -383,7 +383,7 @@ async function insertStructured(
     const phones = JSON.stringify(contact.phones || []);
     const preferred_contact = contact.preferred_contact || null;
     const contact_note = contact.contact_note || null;
-    const prefers_email = contact.prefers_email || false;
+    const prefers_email = contact.prefers_email ?? null;
     const phone_normalization_status = contact.phone_normalization_status || 'none';
     await client.query(
       `INSERT INTO rockygpt_v2.campus_contacts
@@ -420,6 +420,7 @@ async function insertStructured(
             office,
             phones,
             preferred_contact,
+            prefers_email,
             contact_note,
             raw_phone,
             aliases: contact.aliases,

@@ -13,14 +13,11 @@ async function main() {
   const client = await pool.connect();
 
   try {
-    // 1. Apply migration 017
-    console.log('Applying migration 017_contact_phone_normalization.sql...');
-    const migrationSql = fs.readFileSync(
-      path.join(__dirname, '../src/data-v2/migrations/017_contact_phone_normalization.sql'),
-      'utf8'
-    );
-    await client.query(migrationSql);
-    console.log('Migration 017 applied successfully.');
+    // 1. Apply the structured phone and nullable preference schema before writing.
+    for (const migration of ['017_contact_phone_normalization.sql', '022_unknown_contact_preference.sql']) {
+      const migrationSql = fs.readFileSync(path.join(__dirname, '../src/data-v2/migrations', migration), 'utf8');
+      await client.query(migrationSql);
+    }
 
     // 2. Load contacts via buildStructuredDirectoryContacts
     const facultyRaw = JSON.parse(
@@ -48,7 +45,7 @@ async function main() {
           JSON.stringify(contact.phones || []),
           contact.preferred_contact || null,
           contact.contact_note || null,
-          contact.prefers_email || false,
+          contact.prefers_email ?? null,
           contact.raw_phone || null,
           contact.phone_normalization_status || 'none',
           contact.sourceRecordKey,

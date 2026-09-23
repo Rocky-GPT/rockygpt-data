@@ -38,8 +38,8 @@ export interface NormalizedContactPhoneResult {
   preferred_contact: string | null;
   /** Extracted note or advice from the source string, e.g. "best to use e-mail" */
   contact_note: string | null;
-  /** Explicit boolean flag for fast SQL/API queries */
-  prefers_email: boolean;
+  /** True only for an explicit email preference; null when no preference is stated. */
+  prefers_email: boolean | null;
   /** Operational/pipeline audit status */
   phone_normalization_status: PhoneNormalizationStatus;
 }
@@ -64,7 +64,7 @@ export function parseAndNormalizePhone(raw: string | undefined | null): Normaliz
       phones: [],
       preferred_contact: null,
       contact_note: null,
-      prefers_email: false,
+      prefers_email: null,
       phone_normalization_status: 'none',
     };
   }
@@ -77,7 +77,7 @@ export function parseAndNormalizePhone(raw: string | undefined | null): Normaliz
       phones: [],
       preferred_contact: null,
       contact_note: null,
-      prefers_email: false,
+      prefers_email: null,
       phone_normalization_status: 'none',
     };
   }
@@ -86,15 +86,19 @@ export function parseAndNormalizePhone(raw: string | undefined | null): Normaliz
   let text = rawTrimmed;
 
   // 1. Detect and extract email preferences / notes
-  let prefers_email = false;
+  let prefers_email: boolean | null = null;
   let preferred_contact: string | null = null;
   let contact_note: string | null = null;
 
   const emailNoteMatch = text.match(/\(([^)]*(?:email|e-mail)[^)]*)\)/i);
   if (emailNoteMatch) {
-    prefers_email = true;
-    preferred_contact = 'email';
     contact_note = emailNoteMatch[1].trim();
+    // Mentioning email is not itself a preference (for example "email unavailable").
+    // Keep the note verbatim; recognize only the explicit forms we support.
+    if (/^(?:best to use e-?mail|use e-?mail instead|e-?mail preferred|prefers? e-?mail)[.!]?$/i.test(contact_note)) {
+      prefers_email = true;
+      preferred_contact = 'email';
+    }
     // Remove the parenthetical note from the dialable string
     text = text.replace(emailNoteMatch[0], '').trim();
   }
