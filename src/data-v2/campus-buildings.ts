@@ -31,7 +31,11 @@ const ROOM = /^([A-Z]+)-(\d{1,4}[A-Z]?)$/;
 
 export interface CampusBuilding {
   concept3d_id: string; name: string; category: string | null; map_url: string; room_prefixes: string[];
+  /** Why it is a building identity: its reviewed room prefixes, or a human review. */
+  basis: 'room_prefixes' | 'human_reviewed';
 }
+/** A map location a person approved as its own building identity. */
+export interface ReviewedBuilding { concept3d_id: string; name: string; reviewed_at: string; note: string }
 export interface CampusBuildingsArtifact {
   schema_version: 1;
   /** The published source these records belong to, as the publisher seeds it. */
@@ -47,8 +51,8 @@ export const buildingIdentityId = (concept3dId: string): string => uuid5(BUILDIN
 const rows = (value: unknown): Row[] => Array.isArray(value) ? value.filter(v => v && typeof v === 'object') as Row[] : [];
 const text = (value: unknown): string => typeof value === 'string' ? value.trim() : '';
 
-/** Buildings with reviewed room prefixes and a Concept3D location no other map entry shares. */
-export function campusBuildingsArtifact(map: unknown): CampusBuildingsArtifact {
+/** Buildings with reviewed room prefixes, or approved by a human review, at a Concept3D location no other map entry shares. */
+export function campusBuildingsArtifact(map: unknown, reviewed: ReviewedBuilding[] = []): CampusBuildingsArtifact {
   const seed = SOURCES.find(source => source.key === CAMPUS_MAP_SOURCE_KEY);
   if (!seed) throw new Error('The campus-map source seed is missing.');
   const entries = rows((map as Row)?.buildings).map(row => ({
@@ -61,13 +65,19 @@ export function campusBuildingsArtifact(map: unknown): CampusBuildingsArtifact {
   for (const entry of entries) for (const prefix of entry.prefixes) owners.set(prefix, (owners.get(prefix) || 0) + 1);
   const buildings: CampusBuilding[] = [];
   const unresolved: { name: string; reason: string }[] = [];
+  const approved = new Map(reviewed.map(building => [building.concept3d_id, building]));
   for (const { row, id, prefixes } of entries) {
-    if (!prefixes.length) continue;
+    const review = id ? approved.get(id) : undefined;
+    if (!prefixes.length && !review) continue;
     const name = text(row.name);
+    if (review && review.name !== name) { unresolved.push({ name, reason: `The reviewed building "${review.name}" is named "${name}" on the map; it is not published until the review matches.` }); continue; }
     if (!id) unresolved.push({ name, reason: 'The map entry has no Concept3D location ID, so it has no persistent building identity.' });
     else if (shared.get(id) !== 1) unresolved.push({ name, reason: `Concept3D location ${id} is shared by several map entries; no single building identity.` });
     else if (prefixes.some(prefix => owners.get(prefix) !== 1 || !/^[A-Z]+$/.test(prefix))) unresolved.push({ name, reason: 'A room prefix is claimed by another building or is not an uppercase code.' });
-    else buildings.push({ concept3d_id: id, name, category: text(row.category) || null, map_url: text(row.mapUrl), room_prefixes: prefixes });
+    else buildings.push({ concept3d_id: id, name, category: text(row.category) || null, map_url: text(row.mapUrl), room_prefixes: prefixes, basis: prefixes.length ? 'room_prefixes' : 'human_reviewed' });
+  }
+  for (const building of reviewed) {
+    if (!entries.some(entry => entry.id === building.concept3d_id)) unresolved.push({ name: building.name, reason: `The reviewed Concept3D location ${building.concept3d_id} is not on the committed map.` });
   }
   return {
     schema_version: 1,

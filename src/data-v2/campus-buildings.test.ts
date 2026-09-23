@@ -69,3 +69,15 @@ test('people get office_at and offices get located_at from their own contact roo
   // A building named like another identity is kept for an ambiguous lookup, not merged.
   assert.ok(unresolved.some(u => u.entity === 'Academic Building D' && u.reason.includes('program "Academic Building D"')));
 });
+
+test('a human-reviewed map location is a building without room prefixes, only as reviewed', () => {
+  const reviewed = [{ concept3d_id: '1133500', name: 'Residence Hall', reviewed_at: '2026-09-23', note: 'Approved.' }];
+  const artifact = campusBuildingsArtifact(map, reviewed);
+  const hall = artifact.buildings.find(b => b.concept3d_id === '1133500');
+  assert.deepEqual([hall?.name, hall?.room_prefixes, hall?.basis], ['Residence Hall', [], 'human_reviewed']);
+  assert.equal(artifact.buildings.find(b => b.concept3d_id === '1133371')?.basis, 'room_prefixes');
+  const renamed = campusBuildingsArtifact(map, [{ ...reviewed[0], name: 'Another Name' }]);
+  assert.equal(renamed.buildings.some(b => b.concept3d_id === '1133500'), false);
+  assert.ok(renamed.unresolved.some(u => u.reason.includes('is not published until the review matches')));
+  assert.ok(campusBuildingsArtifact(map, [{ ...reviewed[0], concept3d_id: '999' }]).unresolved.some(u => u.reason.includes('not on the committed map')));
+});

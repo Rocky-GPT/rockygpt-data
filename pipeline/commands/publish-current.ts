@@ -895,6 +895,7 @@ async function main(): Promise<void> {
       eventDetails: readJson('data/raw/events-detail.raw.json'),
       campusMap: readJson('data/map/campus-map-data.json'),
       campusSchools: readJson('src/reference/campus-schools.json'),
+      identityReviews: readJson('src/reference/campus-identity-reviews.json'),
     });
     const releaseArtifactCount = sourceArtifactCount + identityArtifacts.count;
     if (criticalCount !== Object.keys(CRITICAL_FACT_VALUES_V2).length) throw new Error('Critical fact verification failed.');
