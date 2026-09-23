@@ -21,6 +21,9 @@ test('explicit source IDs assemble event→club with original records and actual
   const clubIdentity = result.registry.entities.find(e => e.kind === 'club')!;
   assert.equal(eventIdentity.name, 'Meeting (2026-09-21)');
   assert.deepEqual(eventIdentity.aliases, ['Meeting']);
+  assert.deepEqual(result.report.alias_sources, [{ entity_id: eventIdentity.id, entity: 'Meeting (2026-09-21)', kind: 'event', alias: 'Meeting', sources: [
+    { basis: 'event_title', evidence: { collection: 'events', source_key: 'archway-events', source_record_key: 'Sep 21:Meeting', source_record_id: event.id, field: 'title' } },
+  ] }]);
   assert.equal(eventIdentity.relationships?.[0].type, 'organized_by');
   assert.equal(eventIdentity.relationships?.[0].target_entity_id, clubIdentity.id);
   assert.deepEqual(eventIdentity.links[0].source_record_ids, [event.id]);
