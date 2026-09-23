@@ -6,7 +6,7 @@ import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3
 
 /** Every raw input that can influence one published source snapshot. */
 export const SOURCE_RAW_ARTIFACT_FILES: Record<string, string[]> = {
-  'public-safety': ['safety.raw.json'],
+  'public-safety': ['safety.raw.json', 'safety-sources.raw.json'],
   'academic-calendar': ['calendar.raw.json'],
   dining: ['menu.raw.json', 'menu-week.raw.json', 'dining-hours.raw.json'],
   'campus-hours': ['hours.raw.json', 'hours-sources.raw.json'],
@@ -17,11 +17,11 @@ export const SOURCE_RAW_ARTIFACT_FILES: Record<string, string[]> = {
   ],
   'archway-clubs': ['clubs.raw.json', 'clubs-detail.raw.json'],
   'academic-programs': ['catalog-programs-api.raw.json'],
-  'campus-directory': ['directory.raw.json'],
-  transportation: ['transportation.raw.json'],
-  housing: ['housing.raw.json'],
-  health: ['health.raw.json'],
-  counseling: ['counseling.raw.json'],
+  'campus-directory': ['directory.raw.json', 'directory-sources.raw.json'],
+  transportation: ['transportation.raw.json', 'transportation-sources.raw.json'],
+  housing: ['housing.raw.json', 'housing-sources.raw.json'],
+  health: ['health.raw.json', 'health-sources.raw.json'],
+  counseling: ['counseling.raw.json', 'counseling-sources.raw.json'],
   faculty: ['faculty.raw.json', 'faculty-sources.raw.json'],
 };
 

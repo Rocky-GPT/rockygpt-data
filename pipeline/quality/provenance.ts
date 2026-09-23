@@ -31,7 +31,7 @@ export interface RawProvenanceV1 {
  * shuttle timetable) whose truth is versioned by Git rather than a scrape.
  */
 export const SOURCE_RAW_DATASETS: Record<string, string[]> = {
-  'public-safety': ['safety'],
+  'public-safety': ['safety', 'safety-sources'],
   'academic-calendar': ['calendar'],
   dining: ['menu', 'menu-week', 'dining-hours'],
   'campus-hours': ['hours', 'hours-sources'],
@@ -40,11 +40,11 @@ export const SOURCE_RAW_DATASETS: Record<string, string[]> = {
   // Programs, requirements, and courses are collected together from the
   // official Coursedog API into one provenance-bound raw artifact.
   'academic-programs': ['catalog-programs'],
-  'campus-directory': ['directory'],
-  transportation: ['transportation'],
-  housing: ['housing'],
-  health: ['health'],
-  counseling: ['counseling'],
+  'campus-directory': ['directory', 'directory-sources'],
+  transportation: ['transportation', 'transportation-sources'],
+  housing: ['housing', 'housing-sources'],
+  health: ['health', 'health-sources'],
+  counseling: ['counseling', 'counseling-sources'],
   faculty: ['faculty', 'faculty-sources'],
 };
 
@@ -69,6 +69,12 @@ export const RAW_DATASET_FILES: Record<string, string> = {
   counseling: 'counseling.raw.json',
   faculty: 'faculty.raw.json',
   'faculty-sources': 'faculty-sources.raw.json',
+  'safety-sources': 'safety-sources.raw.json',
+  'directory-sources': 'directory-sources.raw.json',
+  'transportation-sources': 'transportation-sources.raw.json',
+  'housing-sources': 'housing-sources.raw.json',
+  'health-sources': 'health-sources.raw.json',
+  'counseling-sources': 'counseling-sources.raw.json',
 };
 
 export type SourceProvenanceStatus = 'fresh' | 'stale' | 'unknown' | 'static';

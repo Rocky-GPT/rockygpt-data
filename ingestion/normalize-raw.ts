@@ -13,6 +13,7 @@ import { rebuildEventsFromRaw, readEventSignalMapFromRawFile } from './archway-e
 import { rebuildClubsFromRaw } from './archway-clubs';
 import { normalizeCatalogCapture, parseBooleanEnv } from './scrape-catalog-api';
 import { replayFacultySources, type FacultySourceCapture } from './replay-faculty';
+import { replayRawSourceCapture, type RawSourceCaptureV1 } from './raw-collector';
 
 export interface NormalizationOptions {
   now?: Date;
@@ -56,7 +57,13 @@ export function normalizeRaw(cwd = process.cwd(), options: NormalizationOptions 
   stage('hours-omissions', { version: 1, collectedAt, omitted: publication.omitted });
 
   for (const name of ['transportation', 'directory', 'housing', 'health', 'counseling', 'safety']) {
-    const dataset = validateRawDatasetV1(read(`${name}.raw.json`));
+    const original = validateRawDatasetV1(read(`${name}.raw.json`));
+    const dataset = validateRawDatasetV1(replayRawSourceCapture(read(`${name}-sources.raw.json`) as RawSourceCaptureV1));
+    const pageIdentities = (pages: typeof dataset.pages) => pages.map(page =>
+      JSON.stringify([page.url, page.sourceType, page.statusCode, page.fetchedAt])).sort();
+    if (JSON.stringify(pageIdentities(original.pages)) !== JSON.stringify(pageIdentities(dataset.pages))) {
+      throw new Error(`${name} source capture does not match the collected pages and timestamps`);
+    }
     if (dataset.dataset !== name) throw new Error(`Expected ${name} raw dataset, found ${dataset.dataset}.`);
     stage(name, dataset);
   }
