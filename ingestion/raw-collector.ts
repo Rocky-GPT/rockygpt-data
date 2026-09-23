@@ -67,6 +67,7 @@ export interface RawSourceCaptureV1 {
   schemaVersion: 1;
   dataset: string;
   generatedAt: string;
+  collectionSucceeded: boolean;
   pages: Array<FetchHtmlResult & { requestedUrl: string; sourceType: 'seed' | 'detail'; fetchedAt: string; contentHash: string }>;
 }
 
@@ -377,6 +378,7 @@ function buildEmptyPage(url: string, sourceType: 'seed' | 'detail', statusCode: 
 /** Reparse retained sources without network access, writes or newer collection times. */
 export function replayRawSourceCapture(capture: RawSourceCaptureV1): RawDatasetV1 {
   if (capture.schemaVersion !== 1) throw new Error('Unsupported raw source capture schema version');
+  if (capture.collectionSucceeded !== true) throw new Error('Source capture belongs to an incomplete or failed collection');
   const pages = capture.pages.map(source => {
     if (createHash('sha256').update(source.html).digest('hex') !== source.contentHash) {
       throw new Error(`Source capture content hash mismatch: ${source.requestedUrl}`);
@@ -544,6 +546,7 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
   const seenUrls = new Set<string>(normalizedSeedUrls);
   const detailCandidates: string[] = [];
   const sourcePages: RawSourceCaptureV1['pages'] = [];
+  let collectionSucceeded = false;
   async function fetchSource(url: string, sourceType: 'seed' | 'detail'): Promise<FetchHtmlResult & { fetchedAt: string }> {
     const fetched = await fetchHtmlWithRetry(url, timeoutMs, attempts);
     const fetchedAt = new Date().toISOString();
@@ -653,13 +656,14 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
       payload: dataset,
       fetchedAt: dataset.collectedAt,
     }, path.dirname(options.outputPath));
+    collectionSucceeded = true;
     return dataset;
   } finally {
     // Keep the original pages even if parsing or a coverage gate fails. The
     // parsed JSON alone cannot reveal content that the parser silently omitted.
     if (options.retainSourceHtml) {
       const payload: RawSourceCaptureV1 = { schemaVersion: 1, dataset: options.dataset,
-        generatedAt: new Date().toISOString(), pages: sourcePages };
+        generatedAt: new Date().toISOString(), collectionSucceeded, pages: sourcePages };
       const rawDir = path.dirname(options.outputPath);
       writeJsonFile(path.join(rawDir, `${options.dataset}-sources.raw.json`), payload);
       const oldestFetch = sourcePages.map(page => page.fetchedAt).sort()[0];
