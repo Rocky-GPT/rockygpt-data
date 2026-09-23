@@ -108,7 +108,7 @@ export function compileRequirementGroups(programs: unknown, registry: CampusIden
       }
       group.program_sections += 1;
       group.provenance.push({ artifact_key: 'programs', path, program: name, catalog_code: text(major.catalogCode) });
-      if (programId) edges.push({ type: 'requirement_group', source: { entity_id: programId }, target: { record_id: id }, order: sectionIndex });
+      if (programId) edges.push({ type: 'requirement_group', source: { entity_id: programId }, target: { record_id: id }, order: sectionIndex, path });
     });
   }));
 
@@ -118,7 +118,7 @@ export function compileRequirementGroups(programs: unknown, registry: CampusIden
     semantics: {
       groups: 'One record per distinct published requirement section; identical sections are one shared record. The rule tree, counts and notes are kept as published.',
       choose: 'Derived only from unambiguous published forms: all, at_least N (of the node\'s items or sub-rules) or minimum_credits N. Null keeps the published condition, count and credits without interpretation.',
-      requirement_group: 'The program lists this group among its requirements, at the given section order.',
+      requirement_group: 'The program lists this group among its requirements, at the given section order; `path` is that program section in the programs artifact.',
       requirement_option: 'A catalog course that can satisfy part of the group at `path`, joined to its item\'s other courses by `logic`. It is not a required course on its own.',
     },
     groups: [...groups.values()].sort((a, b) => (a.id < b.id ? -1 : 1)),
