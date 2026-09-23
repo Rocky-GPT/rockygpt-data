@@ -88,7 +88,7 @@ export function describeGraph(graph: GraphExport): string {
     '',
     '## Entities',
     '',
-    `${number(graph.nodes.length)} entities; ${number(connected)} (${share(connected, graph.nodes.length)}) have at least one published relationship. Catalog courses are most of the graph and are linked only through faculty profiles; of the other ${number(identities.length)} entities, ${number(connectedIdentities)} (${share(connectedIdentities, identities.length)}) have one.`,
+    `${number(graph.nodes.length)} entities; ${number(connected)} (${share(connected, graph.nodes.length)}) have at least one published relationship. Catalog courses are most of the graph; of the other ${number(identities.length)} entities, ${number(connectedIdentities)} (${share(connectedIdentities, identities.length)}) have one.`,
     '',
     table(['Kind', 'Entities', 'With a relationship', 'Aliases', 'Retired'], [...entityRows, ['**Total**', graph.nodes.length, connected, aliasCount, graph.nodes.filter(node => node.status === 'retired').length]]),
     '',
