@@ -21,6 +21,8 @@ import {
   type SourceProvenanceState,
 } from './provenance';
 import { hoursValidityErrors } from '../../src/data-v2/validity';
+import { hoursCoverageErrors, hoursSourceErrors } from './hours-coverage';
+import { normalizeMenuWeek } from '../../ingestion/menu-data';
 
 export interface QualitySummaryV2 {
   passed: boolean;
@@ -71,7 +73,9 @@ const MAX_AGE_HOURS: Partial<Record<(typeof REQUIRED_FILES)[number], number>> = 
 
 const MIN_RECORD_COUNTS: Partial<Record<(typeof REQUIRED_FILES)[number], number>> = {
   'data/normalized/menu.json': 1,
-  'data/normalized/hours.json': 10,
+  // Coverage is checked against the captured records and omission manifest.
+  // A fabricated schedule must never be needed to meet a count threshold.
+  'data/normalized/hours.json': 1,
   'data/normalized/calendar.json': 3,
   'data/normalized/events.json': 1,
   'data/normalized/clubs.json': 100,
@@ -292,6 +296,22 @@ export function validateCurrentDatasetV2(
 
   for (const key of CRITICAL_FACT_KEYS) {
     if (!criticalFacts[key]?.trim()) errors.push(`Missing required critical fact: ${key}`);
+  }
+
+  try {
+    normalizeMenuWeek(readJson('data/normalized/menu-week.json', cwd));
+  } catch (error) {
+    errors.push(`Dated menu captures are required: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+  try {
+    errors.push(...hoursSourceErrors(readJson('data/raw/hours.raw.json', cwd),
+      readJson('data/raw/hours-sources.raw.json', cwd)));
+    errors.push(...hoursCoverageErrors(
+      readJson('data/raw/hours.raw.json', cwd), readJson('data/normalized/hours.json', cwd),
+      readJson('data/normalized/hours-omissions.json', cwd), now));
+  } catch (error) {
+    errors.push(`Campus hours source coverage is required: ${error instanceof Error ? error.message : String(error)}`);
   }
 
   // PROB-011: every publishable event needs a deterministic start timestamp.

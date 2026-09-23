@@ -441,15 +441,15 @@ const SCRAPE_SOURCES: ScrapeSourceDefinition[] = [
       'Schedules and document links exposed on official pages',
     ],
     method:
-      'The shared fetch/Cheerio crawler starts from commuter and transportation seed pages and follows only matching Ramapo transportation, shuttle, and commuter URLs, up to 120 detail pages.',
+      'The shared fetch/Cheerio crawler captures scoped Ramapo transportation pages, up to 120 detail pages. The official weekday, Saturday, Sunday, and train-loop table columns supply published shuttle trips and their capture timestamps.',
     automation: 'Checked daily against a seven-day SLA.',
     commands: ['npm run fetch:transportation:raw', 'npm run refresh:raw:core6'],
     sourceUrls: [
       {
         label: 'Transportation services',
-        url: 'https://www.ramapo.edu/about/transportation/',
+        url: 'https://www.ramapo.edu/about/transportation-services/',
       },
-      { label: 'Shuttle bus', url: 'https://www.ramapo.edu/about/shuttlebus/' },
+      { label: 'Weekday shuttle schedule', url: 'https://www.ramapo.edu/about/transportation-services/ramapo-roadrunner-express-shuttle/' },
       {
         label: 'Commuter affairs',
         url: 'https://www.ramapo.edu/csi/commuter-affairs/',
@@ -465,7 +465,7 @@ const SCRAPE_SOURCES: ScrapeSourceDefinition[] = [
       },
     ],
     caveat:
-      'The exact Roadrunner Express and Shortline times used by the shuttle modal are currently checked-in static TypeScript data, not generated from this scrape.',
+      'Shuttle times come from data/raw/transportation.raw.json through the normalized capture. Missing or unsupported timetable captures fail closed. Shortline arrays remain empty until a captured official timetable supports them.',
   },
   {
     id: 'housing',
@@ -614,14 +614,8 @@ export const STATIC_DATA_NOT_SCRAPED = [
   {
     title: 'Critical facts',
     detail:
-      'Emergency contacts, password reset URL, printing allowance, tuition, selected calendar dates, and shuttle endpoints are checked-in and human-verified.',
+      'Emergency contacts, password reset URL, printing allowance, tuition, and selected calendar dates are checked-in and human-verified. Shuttle endpoints are derived from captured official timetable rows.',
     file: 'core/pipeline/commands/check-quality.ts',
-  },
-  {
-    title: 'Shuttle timetable',
-    detail:
-      'Roadrunner Express, train-loop, and Shortline times used by the app are maintained as static TypeScript data.',
-    file: 'src/data/shuttleSchedule.ts',
   },
   {
     title: 'Curated directory contacts',

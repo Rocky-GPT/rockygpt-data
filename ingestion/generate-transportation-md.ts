@@ -82,11 +82,13 @@ function pageByUrlFragment(pages: RawPageV1[], fragment: string): RawPageV1 | nu
 
 function tableDepartureTimes(page: RawPageV1 | null): string[] {
   if (!page || page.tables.length === 0) return [];
-  const table = page.tables[0];
+  const table = page.tables.find(candidate => candidate.headers.some(header => /^leave ramapo$/i.test(normalizeText(header))));
+  if (!table) return [];
+  const departureColumn = table.headers.findIndex(header => /^leave ramapo$/i.test(normalizeText(header)));
   const departures: string[] = [];
 
   for (const row of table.rows) {
-    const first = normalizeText(row[0]);
+    const first = normalizeText(row[departureColumn]);
     if (!first || /leave ramapo|^campus$/i.test(first)) continue;
     const match = first.match(TIME_PATTERN);
     if (!match) continue;
@@ -118,6 +120,7 @@ function firstMatchingSentence(pages: RawPageV1[], pattern: RegExp): string | nu
 
 function firstCommuterEmail(pages: RawPageV1[]): string | null {
   for (const page of pages) {
+    if (!new URL(page.url).pathname.includes('/commuter-affairs/')) continue;
     for (const contact of page.contacts) {
       const email = normalizeText(contact.email) || normalizeText(contact.name);
       if (email.includes('@')) return email;
@@ -151,7 +154,12 @@ function titleWithoutSiteName(value: string | null): string {
     .replace(/\s+-\s+Ramapo College of New Jersey$/i, '');
 }
 
-const dataset = loadDataset(INPUT_FILE);
+function scheduleHeading(label: string, page: RawPageV1 | null): string {
+  const period = page?.title?.match(/\b(?:spring|summer|fall|winter)\s+20\d{2}\b/i)?.[0];
+  return `## ${label}${period ? ` (${period})` : ''}\n\n${page ? `Published source: ${page.url}\n\n` : ''}`;
+}
+
+export function generateTransportationMarkdown(dataset: RawDatasetV1, generatedAt = getGeneratedTimestamp()): string {
 const pages = successfulPages(dataset);
 
 const weekdayPage = pageByUrlFragment(pages, 'ramapo-roadrunner-express-shuttle');
@@ -166,15 +174,14 @@ const sundayDepartures = tableDepartureTimes(sundayPage);
 const expressDepartures = tableDepartureTimes(expressPage);
 
 const bradleyNote =
-  firstMatchingSentence(pages, /bradley center|residential areas/i) ??
-  'The shuttle stops at Bradley Center on campus and does not enter residential areas.';
+  firstMatchingSentence(pages, /bradley center|residential areas/i);
 const updatesNote =
-  firstMatchingSentence(pages, /@RCNJShuttle|changes to the shuttle schedule/i) ??
-  'Schedule changes are announced on Transportation Services and @RCNJShuttle.';
+  firstMatchingSentence(pages, /@RCNJShuttle|changes to the shuttle schedule/i);
 const commuterEmail = firstCommuterEmail(pages);
 
 let markdown = '# Ramapo Transportation Services\n\n';
-markdown += `*Generated (UTC): ${getGeneratedTimestamp()}*\n\n`;
+markdown += `*Generated (UTC): ${generatedAt}*\n\n`;
+markdown += `*Source capture (UTC): ${dataset.collectedAt}*\n\n`;
 markdown += 'Context focused on shuttle schedule questions and commuter transportation resources.\n\n';
 
 markdown += '## Quick Shuttle Answers\n\n';
@@ -184,37 +191,34 @@ const saturdayRange = timeRangeLine('Saturday', saturdayDepartures);
 if (saturdayRange) markdown += `${saturdayRange}\n`;
 const sundayRange = timeRangeLine('Sunday', sundayDepartures);
 if (sundayRange) markdown += `${sundayRange}\n`;
-markdown += '- For "next shuttle" questions, compare the current time against the departure list for the day.\n';
-markdown += `- ${bradleyNote}\n`;
-markdown += `- ${updatesNote}\n\n`;
+markdown += '- These are published timetable entries. Confirm the service period and any special schedule before selecting a departure.\n';
+if (bradleyNote) markdown += `- ${bradleyNote}\n`;
+if (updatesNote) markdown += `- ${updatesNote}\n`;
+markdown += '\n';
 
-markdown += '## Weekday Campus Departures (Spring 2026)\n\n';
+markdown += scheduleHeading('Weekday Campus Departures', weekdayPage);
 timeBullets('Weekday', weekdayDepartures).forEach((line) => {
   markdown += `${line}\n`;
 });
 markdown += '\n';
 
-markdown += '## Saturday Campus Departures (Spring 2026)\n\n';
+markdown += scheduleHeading('Saturday Campus Departures', saturdayPage);
 timeBullets('Saturday', saturdayDepartures).forEach((line) => {
   markdown += `${line}\n`;
 });
 markdown += '\n';
 
-markdown += '## Sunday Campus Departures (Spring 2026)\n\n';
+markdown += scheduleHeading('Sunday Campus Departures', sundayPage);
 timeBullets('Sunday', sundayDepartures).forEach((line) => {
   markdown += `${line}\n`;
 });
 markdown += '\n';
 
-markdown += '## Mid-Day Weekday Express Train Loop\n\n';
+markdown += scheduleHeading('Mid-Day Weekday Express Train Loop', expressPage);
 timeBullets('Mid-day weekday express', expressDepartures).forEach((line) => {
   markdown += `${line}\n`;
 });
 markdown += '\n';
-
-markdown += '## Common Shuttle Stops\n\n';
-markdown += '- Common stops include Ramsey Rt 17 Train, Interstate Plaza, Garden State Plaza, Barnes & Noble, and Ramsey Square.\n';
-markdown += '- Some runs also include CityMD Ramsey and Ramsey Farmers Market.\n\n';
 
 markdown += '## Official Transportation Sources\n\n';
 if (servicesPage) {
@@ -236,6 +240,12 @@ if (commuterEmail) {
   markdown += `- Commuter Affairs email: ${commuterEmail}\n`;
 }
 
-ensureOutputDir(OUTPUT_FILE);
-fs.writeFileSync(OUTPUT_FILE, markdown, 'utf-8');
-console.log(`Generated transportation context at ${OUTPUT_FILE}`);
+return markdown;
+}
+
+if (process.argv[1]?.endsWith('generate-transportation-md.ts')) {
+  const markdown = generateTransportationMarkdown(loadDataset(INPUT_FILE));
+  ensureOutputDir(OUTPUT_FILE);
+  fs.writeFileSync(OUTPUT_FILE, markdown, 'utf-8');
+  console.log(`Generated transportation context at ${OUTPUT_FILE}`);
+}

@@ -13,7 +13,8 @@ import {
   buildStructuredDirectoryContacts,
   type StructuredDirectoryContact,
 } from '../../directory/structured-contacts';
-import { shuttleSchedule, type ShuttleRoute } from '../../static/shuttleSchedule';
+import { parseTransportationSchedules } from '../../../ingestion/transportation-schedule';
+import { validateRawDatasetV1 } from '../../../ingestion/raw-types';
 import type {
   AcademicDateRecord,
   ClubRecord,
@@ -30,7 +31,7 @@ import type {
 import { V2_SOURCES } from '../sources';
 import { DATA_ROOT } from '../../paths';
 import { parseEventStart } from '../event-time';
-import { activeSeasonSchedule, DINING_HOURS_UNKNOWN, formatDiningRange } from '../dining-seasons';
+import { activeSeasonSchedule, campusLocalDate, DINING_HOURS_UNKNOWN, formatDiningRange } from '../dining-seasons';
 import { extractSectionUrl, stripIngestionMetadata } from '../document-text';
 import type { RockyRepositoryV2, SearchOptions } from './types';
 import {
@@ -275,14 +276,6 @@ const CRITICAL_FACTS: Record<string, { value: string; source: SourceReference }>
   },
   'calendar.spring2026.spring_break.end': { value: 'March 22, 2026', source: V2_SOURCES.calendar },
   'calendar.spring2026.finals.start': { value: 'May 6, 2026', source: V2_SOURCES.calendar },
-  'shuttle.ramsey_route17.express.first_departure': {
-    value: '7:00 AM',
-    source: V2_SOURCES.transportation,
-  },
-  'shuttle.ramsey_route17.express.last_dropoff': {
-    value: '5:40 PM',
-    source: V2_SOURCES.transportation,
-  },
 };
 
 function criticalFactTimestamp(rootDir: string, key: string): string {
@@ -326,6 +319,14 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
   }
 
   async getCriticalFact(key: string): Promise<CriticalFactRecord | null> {
+    if (key === 'shuttle.ramsey_route17.express.first_departure' || key === 'shuttle.ramsey_route17.express.last_dropoff') {
+      const route = this.shuttleTimetables().find(route => route.name === 'Ramsey Route 17');
+      if (!route) return null;
+      const value = key.endsWith('first_departure') ? route.trips[0]?.departure
+        : route.trips.at(-1)?.stops.find(stop => /^arrive ramsey rt 17 train$/i.test(stop.location))?.time;
+      return value ? { key, value, source: { ...V2_SOURCES.transportation, url: route.sourceUrl,
+        title: route.sourceTitle ?? V2_SOURCES.transportation.title, collectedAt: route.collectedAt }, verifiedAt: route.collectedAt } : null;
+    }
     const fact = CRITICAL_FACTS[key];
     if (!fact) return null;
     const verifiedAt = criticalFactTimestamp(this.rootDir, key);
@@ -417,7 +418,7 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
             typeof entry.value === 'string' ? [entry.value] : []
           );
           if (!days.includes(day)) continue;
-          const schedules = ((group.hours as JsonRecord[]) || []).map(formatDiningRange);
+          const schedules = ((group.hours as JsonRecord[]) || []).map((range) => formatDiningRange(range));
           records.push({
             name,
             day,
@@ -451,12 +452,12 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
 
   async findCampusHours(query: string, day: string, at?: Date): Promise<HoursRecord[]> {
     const locations = this.readJson<
-      Array<{ name: string; hours: Record<string, string>; notes?: string }>
+      Array<{ name: string; hours: Record<string, string>; notes?: string; sourceUrl?: string; collectedAt?: string }>
     >('data/normalized/hours.json');
     // A schedule whose note bounds it to a past term does not describe today.
     // Postgres enforces this through valid_from/valid_until; the file
     // repository has to read the same window out of the note itself.
-    const onDate = at ? at.toISOString().slice(0, 10) : null;
+    const onDate = at ? campusLocalDate(at) : null;
     return locations
       .filter((location) => {
         if (!onDate) return true;
@@ -471,7 +472,9 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
         name: location.name,
         day,
         schedule: location.hours[day] || 'Unknown',
-        source: V2_SOURCES.hours,
+        ...(location.notes ? { notes: location.notes } : {}),
+        source: { ...withCollectedAt(V2_SOURCES.hours, location.collectedAt),
+          ...(location.sourceUrl ? { url: location.sourceUrl } : {}) },
       }))
       .slice(0, 8);
   }
@@ -727,44 +730,21 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
     serviceDay?: ShuttleServiceDay
   ): Promise<ShuttleTripRecord[]> {
     const normalizedHint = normalize(routeHint || '');
-    const source = V2_SOURCES.transportation;
     const day = serviceDay ?? 'weekday';
-    if (normalizedHint.includes('ramsey') || normalizedHint.includes('route 17')) {
-      // The Ramsey Route 17 Express loop runs on weekdays only.
-      if (day !== 'weekday') return [];
-      return shuttleSchedule.trainLoop.map((trip) => ({
-        route: 'Ramsey Route 17 Express',
-        ...trip,
-        source,
-      }));
-    }
-    const timetables: Record<ShuttleServiceDay, { route: string; trips: ShuttleRoute[] }> = {
-      weekday: { route: 'Weekday Roadrunner Express', trips: shuttleSchedule.weekday },
-      saturday: { route: 'Saturday Roadrunner Express', trips: shuttleSchedule.saturday },
-      sunday: { route: 'Sunday Roadrunner Express', trips: shuttleSchedule.sunday },
-    };
-    const timetable = timetables[day];
-    return timetable.trips.map((trip) => ({ route: timetable.route, ...trip, source }));
+    const trainLoop = normalizedHint.includes('ramsey') || normalizedHint.includes('route 17');
+    return (await this.listShuttleTrips(day)).filter(trip => trainLoop
+      ? trip.route === 'Ramsey Route 17 Express' : trip.route !== 'Ramsey Route 17 Express');
+  }
+
+  private shuttleTimetables() {
+    return parseTransportationSchedules(validateRawDatasetV1(this.readJson('data/normalized/transportation.json')));
   }
 
   async listShuttleTrips(serviceDay: ShuttleServiceDay): Promise<ShuttleTripRecord[]> {
-    const source = V2_SOURCES.transportation;
-    const timetables: Record<ShuttleServiceDay, { route: string; trips: ShuttleRoute[] }> = {
-      weekday: { route: 'Weekday Roadrunner Express', trips: shuttleSchedule.weekday },
-      saturday: { route: 'Saturday Roadrunner Express', trips: shuttleSchedule.saturday },
-      sunday: { route: 'Sunday Roadrunner Express', trips: shuttleSchedule.sunday },
-    };
-    const timetable = timetables[serviceDay];
-    const trips = timetable.trips.map((trip) => ({ route: timetable.route, ...trip, source }));
-    if (serviceDay !== 'weekday') return trips;
-    return [
-      ...trips,
-      ...shuttleSchedule.trainLoop.map((trip) => ({
-        route: 'Ramsey Route 17 Express',
-        ...trip,
-        source,
-      })),
-    ];
+    return this.shuttleTimetables().filter(route => route.serviceDay === serviceDay).flatMap(route =>
+      route.trips.map(trip => ({ route: route.name === 'Ramsey Route 17' ? 'Ramsey Route 17 Express' : route.name,
+        ...trip, source: { ...V2_SOURCES.transportation, url: route.sourceUrl,
+          title: route.sourceTitle ?? V2_SOURCES.transportation.title, collectedAt: route.collectedAt } })));
   }
 
   async searchDocuments(query: string, options: SearchOptions): Promise<EvidenceItem[]> {

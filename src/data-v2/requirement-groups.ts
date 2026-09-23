@@ -27,6 +27,7 @@ export interface RequirementCourse { code: string; name: string | null; course_i
 export interface RequirementItem { logic: string | null; courses: RequirementCourse[] }
 export interface RequirementRule {
   condition: string | null; count: number | null; credits: number | null; choose: Choose | null;
+  name?: string; note?: string; text?: string; constraints?: Record<string, unknown>;
   items: RequirementItem[]; sub_rules: RequirementRule[];
 }
 export interface RequirementGroup {
@@ -63,13 +64,13 @@ function canonical(value: unknown): string {
 }
 
 /** Only unambiguous published forms get a derived choice; everything else stays verbatim. */
-export function chooseFor(condition: string | null, count: number | null, credits: number | null, hasItems: boolean, hasSubRules: boolean): Choose | null {
+export function chooseFor(condition: string | null, count: number | null, credits: number | null, hasItems: boolean, hasSubRules: boolean, childCount?: number): Choose | null {
   const children = hasItems !== hasSubRules;
   if (!children && condition !== 'minimumCredits') return null;
   if ((condition === 'completedAllOf' && hasItems) || (condition === 'allOf' && hasSubRules)) return count === null ? { all: true } : null;
   if ((condition === 'completedAnyOf' && hasItems) || (condition === 'anyOf' && hasSubRules)) return count === null ? { at_least: 1 } : null;
-  if (condition === 'completedAtLeastXOf' && count !== null && Number.isInteger(count) && count >= 1) return { at_least: count };
-  if (condition === 'minimumCredits' && count === null && credits !== null) return { minimum_credits: credits };
+  if (condition === 'completedAtLeastXOf' && count !== null && Number.isInteger(count) && count >= 1 && childCount !== undefined && count <= childCount) return { at_least: count };
+  if (condition === 'minimumCredits' && count === null && credits !== null && credits >= 0) return { minimum_credits: credits };
   return null;
 }
 
@@ -132,6 +133,7 @@ function sectionContent(section: Row): unknown {
   const courses = (value: unknown) => rows(value).map(course => ({ code: course.code ?? null, name: course.name ?? null }));
   const rule = (node: Row): unknown => ({
     condition: node.condition ?? null, count: node.count ?? null, credits: node.credits ?? null,
+    ...ruleDetails(node),
     items: rows(node.items).map(item => ({ logic: item.logic ?? null, codes: courses(item.codes) })),
     sub_rules: rows(node.subRules).map(rule),
   });
@@ -139,6 +141,15 @@ function sectionContent(section: Row): unknown {
     label: section.section ?? null, note: section.note ?? null,
     rule: section.rule && typeof section.rule === 'object' ? rule(section.rule as Row) : null,
     course_list: Array.isArray(section.courses) ? { select_count: section.selectCount ?? null, courses: courses(section.courses) } : null,
+  };
+}
+
+/** Keep source restrictions even when they cannot be translated to a choice. */
+function ruleDetails(node: Row): Pick<RequirementRule, 'name' | 'note' | 'text' | 'constraints'> {
+  return {
+    ...Object.fromEntries(['name', 'note', 'text'].flatMap(key => text(node[key]) ? [[key, node[key]]] : [])),
+    ...(node.constraints && typeof node.constraints === 'object' && !Array.isArray(node.constraints) && Object.keys(node.constraints).length
+      ? { constraints: node.constraints as Row } : {}),
   };
 }
 
@@ -152,8 +163,11 @@ function buildGroup(id: string, section: Row, courseIds: Map<string, string>, mi
   const rule = (node: Row, where: Path): RequirementRule => {
     const items = rows(node.items); const subRules = rows(node.subRules);
     const condition = text(node.condition); const count = number(node.count); const credits = number(node.credits);
+    const details = ruleDetails(node);
     return {
-      condition, count, credits, choose: chooseFor(condition, count, credits, items.length > 0, subRules.length > 0),
+      condition, count, credits,
+      choose: details.constraints ? null : chooseFor(condition, count, credits, items.length > 0, subRules.length > 0, items.length + subRules.length),
+      ...details,
       items: items.map((item, index) => ({ logic: text(item.logic), courses: refs(item.codes, [...where, 'items', index, 'codes']) })),
       sub_rules: subRules.map((sub, index) => rule(sub, [...where, 'sub_rules', index])),
     };

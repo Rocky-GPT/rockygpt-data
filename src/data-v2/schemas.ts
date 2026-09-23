@@ -25,6 +25,7 @@ export interface HoursRecord {
   name: string;
   day: string;
   schedule: string;
+  notes?: string;
   source: SourceReference;
 }
 

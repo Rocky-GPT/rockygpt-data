@@ -32,13 +32,14 @@ test('publication omits expired and unbounded-term schedules without inventing r
   assert.deepEqual(result.omitted.map((entry) => entry.reason), ['expired', 'unbounded-term']);
 });
 
-test('the campus-hours collector drops unavailable library schedules after their term', () => {
+test('the campus-hours collector never injects hardcoded schedules without source captures', () => {
   const locations = buildCampusHourLocations([], new Date('2026-08-22T12:00:00Z'));
   const names = new Set(locations.map((location) => location.name));
 
   assert.equal(names.has('Library (Main Building)'), false);
   assert.equal(names.has('Research Help Desk'), false);
-  assert.equal(names.has('Administrative Offices (Normal Hours)'), true);
+  assert.equal(names.has('Administrative Offices (Normal Hours)'), false);
+  assert.deepEqual(buildCampusHourLocations([ordinary], new Date('2026-08-22T12:00:00Z')), [ordinary]);
 });
 
 test('artifact compatibility refreshes stale hours once, then accepts filtered output', () => {

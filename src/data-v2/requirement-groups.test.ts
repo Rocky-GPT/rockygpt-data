@@ -68,7 +68,8 @@ test('nested all-of, any-of and choose-N survive, and options never become requi
     ['MATH 205', ['rule', 'sub_rules', 1, 'items', 0, 'courses', 0]],
     ['MATH 237', ['rule', 'sub_rules', 1, 'items', 0, 'courses', 1]],
   ]);
-  assert.deepEqual(group('Electives: Select Seven (7)').rule?.choose, { at_least: 7 });
+  // Seven of two bundled items is not a defensible derived interpretation.
+  assert.equal(group('Electives: Select Seven (7)').rule?.choose, null);
 });
 
 test('codes resolve only by exact catalog key; ambiguous forms and text stay as published', () => {
@@ -93,4 +94,27 @@ test('derived choices exist only for unambiguous published forms', () => {
   assert.equal(chooseFor('minimumCredits', 3, 12, true, false), null);
   assert.equal(chooseFor('freeformText', null, null, false, false), null);
   assert.equal(chooseFor('completedAtLeastXOf', 0, null, true, false), null);
+  assert.equal(chooseFor('completedAtLeastXOf', 6, null, true, false, 1), null);
+  assert.deepEqual(chooseFor('completedAtLeastXOf', 2, null, true, false, 3), { at_least: 2 });
+});
+
+test('rule names, notes, free text and unknown restrictions survive the graph artifact', () => {
+  const original = structuredClone(programs);
+  const rule = { condition: 'catalogBlock', name: 'Published rules', subRules: [
+    { condition: 'completedAtLeastXOf', count: 6, note: 'At least one 300-level course.', items: [{ logic: 'or', codes: [code('CMPS 147'), code('CMPS 148')] }] },
+    { condition: 'freeformText', name: 'Extra requirement', text: 'Consult an advisor.' },
+    { condition: 'completedAnyOf', constraints: { minCourses: 2 }, items: [{ logic: 'or', codes: [code('MATH 121')] }] },
+  ] };
+  const source = { schools: [{ school: 'Science', majors: [{ name: 'Computer Science BS', requirements: [{ section: 'Rules', rule }] }] }] };
+  const compiled = compileRequirementGroups(source, registry, courses).groups[0];
+  assert.equal(compiled.rule?.choose, null);
+  assert.equal(compiled.rule?.name, 'Published rules');
+  assert.equal(compiled.rule?.sub_rules[0].note, 'At least one 300-level course.');
+  assert.equal(compiled.rule?.sub_rules[0].choose, null);
+  assert.equal(compiled.rule?.sub_rules[1].text, 'Consult an advisor.');
+  assert.deepEqual(compiled.rule?.sub_rules[2].constraints, { minCourses: 2 });
+  assert.equal(compiled.rule?.sub_rules[2].choose, null);
+  source.schools[0].majors[0].requirements[0].rule.subRules[0].note = 'Different restriction';
+  assert.notEqual(compileRequirementGroups(source, registry, courses).groups[0].id, compiled.id);
+  assert.deepEqual(programs, original);
 });

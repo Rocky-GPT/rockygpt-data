@@ -405,8 +405,9 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
             )
             AND ($3::text = '' OR to_tsvector('english', h.name) @@ ${toQuery})
        )
-       SELECT h.name, h.day, h.schedule,
-              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+       SELECT h.name, h.day, h.schedule, to_jsonb(h)->>'notes' AS notes,
+              s.id::text AS source_id, s.title AS source_title,
+              COALESCE(to_jsonb(h)->>'source_url', s.canonical_url) AS source_url,
               h.collected_at::text
          FROM eligible_hours h JOIN rockygpt_v2.sources s ON s.id = h.source_id
         WHERE h.precedence_rank = 1
@@ -422,6 +423,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
       name: requiredString(row, 'name'),
       day: requiredString(row, 'day'),
       schedule: requiredString(row, 'schedule'),
+      ...(typeof row.notes === 'string' && row.notes ? { notes: row.notes } : {}),
       source: sourceFromRow(row),
     }));
   }
@@ -490,8 +492,9 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
               OR ($4::date IS NOT NULL AND $4::date BETWEEN h.valid_from AND h.valid_until)
             )
        )
-       SELECT h.name, h.day, h.schedule,
-              s.id::text AS source_id, s.title AS source_title, s.canonical_url AS source_url,
+       SELECT h.name, h.day, h.schedule, to_jsonb(h)->>'notes' AS notes,
+              s.id::text AS source_id, s.title AS source_title,
+              COALESCE(to_jsonb(h)->>'source_url', s.canonical_url) AS source_url,
               h.collected_at::text
          FROM eligible_hours h JOIN rockygpt_v2.sources s ON s.id = h.source_id
         WHERE h.precedence_rank = 1
@@ -502,6 +505,7 @@ export class PostgresRepositoryV2 implements RockyRepositoryV2 {
       name: requiredString(row, 'name'),
       day: requiredString(row, 'day'),
       schedule: requiredString(row, 'schedule'),
+      ...(typeof row.notes === 'string' && row.notes ? { notes: row.notes } : {}),
       source: sourceFromRow(row),
     }));
   }

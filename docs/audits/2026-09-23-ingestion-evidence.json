@@ -1,0 +1,313 @@
+{
+  "checkedAt": "2026-09-23T19:57:09.926Z",
+  "activeDataset": "dev-profiles-subjects-20260923",
+  "candidateActivated": false,
+  "quality": {
+    "passed": true,
+    "checkedAt": "2026-09-23T19:57:09.462Z",
+    "recordCounts": {
+      "data/normalized/menu.json": 4,
+      "data/normalized/hours.json": 4,
+      "data/normalized/calendar.json": 7,
+      "data/normalized/events.json": 316,
+      "data/normalized/clubs.json": 255,
+      "data/normalized/faculty.json": 226,
+      "public/data/courses.json": 2693,
+      "public/data/programs.json": 140,
+      "documents": 14
+    },
+    "errors": [],
+    "warnings": [],
+    "sources": [
+      {
+        "key": "public-safety",
+        "status": "fresh",
+        "ageHours": 0.20785638888888888,
+        "maxAgeHours": 168,
+        "datasets": [
+          "safety"
+        ],
+        "fetchedAt": "2026-09-23T19:44:41.179Z",
+        "recordCount": 32,
+        "contentHash": "3f367c106ea55f0e1ca1e9b542fc5d635e4bea50d37360719e9295fbcd2710a2",
+        "detail": "collected 0.2h ago (max 168h)"
+      },
+      {
+        "key": "password-reset",
+        "status": "static",
+        "ageHours": null,
+        "maxAgeHours": 720,
+        "datasets": [],
+        "detail": "repository-static source; provenance is the Git revision"
+      },
+      {
+        "key": "information-technology-services",
+        "status": "static",
+        "ageHours": null,
+        "maxAgeHours": 720,
+        "datasets": [],
+        "detail": "repository-static source; provenance is the Git revision"
+      },
+      {
+        "key": "tuition-costs",
+        "status": "static",
+        "ageHours": null,
+        "maxAgeHours": 720,
+        "datasets": [],
+        "detail": "repository-static source; provenance is the Git revision"
+      },
+      {
+        "key": "academic-calendar",
+        "status": "fresh",
+        "ageHours": 0.20885194444444444,
+        "maxAgeHours": 168,
+        "datasets": [
+          "calendar"
+        ],
+        "fetchedAt": "2026-09-23T19:44:37.595Z",
+        "recordCount": 7,
+        "contentHash": "7159175850ff4897db44376ba7156681a46fbeff8a9fbbeae2d1a2835f9e228f",
+        "detail": "collected 0.2h ago (max 168h)"
+      },
+      {
+        "key": "dining",
+        "status": "fresh",
+        "ageHours": 0.24147555555555555,
+        "maxAgeHours": 24,
+        "datasets": [
+          "menu",
+          "menu-week",
+          "dining-hours"
+        ],
+        "fetchedAt": "2026-09-23T19:42:40.150Z",
+        "recordCount": 7,
+        "contentHash": "ebec4228718f98d2ce40d64ff2ba8c29bbd06145110917c832f242240d023b02:adbc122fa4e2501ad2d2a75fb3091037122daac9aef1110d29abb6e0f6c2642d:d235b101cbb4a20b1913e010891424215d446e5e418e3ae8432ca51f57083611",
+        "detail": "collected 0.2h ago (max 24h)"
+      },
+      {
+        "key": "campus-hours",
+        "status": "fresh",
+        "ageHours": 0.24690666666666666,
+        "maxAgeHours": 4320,
+        "datasets": [
+          "hours",
+          "hours-sources"
+        ],
+        "fetchedAt": "2026-09-23T19:42:20.598Z",
+        "recordCount": 11,
+        "contentHash": "a986e4c253bed231be1cb51e05a15470847cdba3cfe7c2d7133d445b0e1a62ff:b619b21ecdaf0a4aeb372187f4154190eb6b54b1bc4a1b94d6df7f4f4bec56aa",
+        "detail": "collected 0.2h ago (max 4320h)"
+      },
+      {
+        "key": "archway-events",
+        "status": "fresh",
+        "ageHours": 0.12949805555555555,
+        "maxAgeHours": 24,
+        "datasets": [
+          "events",
+          "events-detail",
+          "events-signals"
+        ],
+        "fetchedAt": "2026-09-23T19:49:23.269Z",
+        "recordCount": 882,
+        "contentHash": "0e36e9e21ad383515d2644176329f6d410aece02c71beaf6d99293ee2b8e20e9:325b701f08530c97dda4090ab5cffd179289de4bcc52a87db2406cb6ec18174f:8f4183418b630b8562b40d917fa519254f410e2c8748177d1d67dd3df65ab762",
+        "detail": "collected 0.1h ago (max 24h)"
+      },
+      {
+        "key": "archway-clubs",
+        "status": "fresh",
+        "ageHours": 822.0576302777778,
+        "maxAgeHours": 4320,
+        "datasets": [
+          "clubs",
+          "clubs-detail"
+        ],
+        "fetchedAt": "2026-08-20T13:53:41.993Z",
+        "recordCount": 2070,
+        "contentHash": "0cac5a66f71bb4db1d8dc7c75dac419036e22c77138dd7af90dbe368edf55c9d:09dddbf45a0b5b2f705b6a5158c4214c7c5f9d54cc876e31c524ad0135e9d8ea",
+        "detail": "collected 822.1h ago (max 4320h)"
+      },
+      {
+        "key": "academic-programs",
+        "status": "fresh",
+        "ageHours": 0.21592444444444445,
+        "maxAgeHours": 4320,
+        "datasets": [
+          "catalog-programs"
+        ],
+        "fetchedAt": "2026-09-23T19:44:12.134Z",
+        "recordCount": 3560,
+        "contentHash": "7b8a1f02225251ba3336d710e1cd138bce3edc20477c66b1e399328ef5b87798",
+        "detail": "collected 0.2h ago (max 4320h)"
+      },
+      {
+        "key": "campus-directory",
+        "status": "fresh",
+        "ageHours": 0.2087438888888889,
+        "maxAgeHours": 168,
+        "datasets": [
+          "directory"
+        ],
+        "fetchedAt": "2026-09-23T19:44:37.984Z",
+        "recordCount": 22,
+        "contentHash": "ec5ea2fc31f3b9484ba28e97ea7dd8594ff03dabf0084ad3a2869bc8cbac161d",
+        "detail": "collected 0.2h ago (max 168h)"
+      },
+      {
+        "key": "transportation",
+        "status": "fresh",
+        "ageHours": 0.2414147222222222,
+        "maxAgeHours": 168,
+        "datasets": [
+          "transportation"
+        ],
+        "fetchedAt": "2026-09-23T19:42:40.369Z",
+        "recordCount": 13,
+        "contentHash": "8002711237237b6415646d9ac358ea42430bc5a59dd6e8f7f4ca5d1baa66d7ac",
+        "detail": "collected 0.2h ago (max 168h)"
+      },
+      {
+        "key": "housing",
+        "status": "fresh",
+        "ageHours": 0.20801416666666667,
+        "maxAgeHours": 168,
+        "datasets": [
+          "housing"
+        ],
+        "fetchedAt": "2026-09-23T19:44:40.611Z",
+        "recordCount": 20,
+        "contentHash": "47a06c6319e6fbfcd145bcedcedcd22467aee9d2717a98dd4be670c0df69d24b",
+        "detail": "collected 0.2h ago (max 168h)"
+      },
+      {
+        "key": "health",
+        "status": "fresh",
+        "ageHours": 0.2088,
+        "maxAgeHours": 168,
+        "datasets": [
+          "health"
+        ],
+        "fetchedAt": "2026-09-23T19:44:37.782Z",
+        "recordCount": 3,
+        "contentHash": "f879fdd5b0e88871685613d2d3efb3a2adcee47fe09d35a4dc42778d3b2004c7",
+        "detail": "collected 0.2h ago (max 168h)"
+      },
+      {
+        "key": "counseling",
+        "status": "fresh",
+        "ageHours": 0.2081575,
+        "maxAgeHours": 168,
+        "datasets": [
+          "counseling"
+        ],
+        "fetchedAt": "2026-09-23T19:44:40.095Z",
+        "recordCount": 16,
+        "contentHash": "9daa30c9146e8a05a5d30077c57df871a2fa457e62a28cafa96e1e045670f726",
+        "detail": "collected 0.2h ago (max 168h)"
+      },
+      {
+        "key": "faculty",
+        "status": "fresh",
+        "ageHours": 0.13792722222222223,
+        "maxAgeHours": 720,
+        "datasets": [
+          "faculty"
+        ],
+        "fetchedAt": "2026-09-23T19:48:52.924Z",
+        "recordCount": 226,
+        "contentHash": "ab306d0677d69d3ccf5733772594e75f04eeb9862e25ab1fe3c50ed4b74ba0d2",
+        "detail": "collected 0.1h ago (max 720h)"
+      },
+      {
+        "key": "campus-map",
+        "status": "static",
+        "ageHours": null,
+        "maxAgeHours": 4320,
+        "datasets": [],
+        "detail": "repository-static source; provenance is the Git revision"
+      },
+      {
+        "key": "ramapo-schools",
+        "status": "static",
+        "ageHours": null,
+        "maxAgeHours": 4320,
+        "datasets": [],
+        "detail": "repository-static source; provenance is the Git revision"
+      },
+      {
+        "key": "course-subjects",
+        "status": "static",
+        "ageHours": null,
+        "maxAgeHours": 4320,
+        "datasets": [],
+        "detail": "repository-static source; provenance is the Git revision"
+      }
+    ]
+  },
+  "programIdentityContinuity": {
+    "previous": 144,
+    "candidate": 21,
+    "lost": 123,
+    "failures": [
+      "123 of 144 program identities disappeared (at most 14 allowed)"
+    ],
+    "unmatchedSelectors": 125
+  },
+  "events": {
+    "count": 316,
+    "withDescription": 250,
+    "detailFailures": 66,
+    "detailSuccesses": 250,
+    "coverageErrors": []
+  },
+  "hoursOmissions": [
+    {
+      "name": "Bradley Center (Student & Recreation Lounge)",
+      "reason": "unbounded-term"
+    },
+    {
+      "name": "Sharp Fitness Center (Weight Room)",
+      "reason": "unbounded-term"
+    },
+    {
+      "name": "Auxiliary Gym",
+      "reason": "unbounded-term"
+    },
+    {
+      "name": "Rock Climbing Wall",
+      "reason": "unbounded-term"
+    },
+    {
+      "name": "Research Help Desk",
+      "reason": "conflicting-source-validity"
+    }
+  ],
+  "shuttleRoutes": [
+    {
+      "name": "Ramsey Route 17",
+      "serviceDay": "weekday",
+      "trips": 18,
+      "stopVisits": 35
+    },
+    {
+      "name": "Weekday Roadrunner Express",
+      "serviceDay": "weekday",
+      "trips": 12,
+      "stopVisits": 43
+    },
+    {
+      "name": "Saturday Roadrunner Express",
+      "serviceDay": "saturday",
+      "trips": 12,
+      "stopVisits": 53
+    },
+    {
+      "name": "Sunday Roadrunner Express",
+      "serviceDay": "sunday",
+      "trips": 9,
+      "stopVisits": 36
+    }
+  ],
+  "clubsCapture": "2026-08-20T13:53:41.993Z",
+  "clubsCount": 255
+}

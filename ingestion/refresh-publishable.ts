@@ -149,7 +149,7 @@ function assertRefreshCoverage(): void {
 
 export async function main(): Promise<void> {
   assertRefreshCoverage();
-  const restored = await restoreActiveRelease({ requireRawArtifacts: true });
+  const restored = await restoreActiveRelease({ requireRawArtifacts: true, allowIncompleteRawArtifacts: true });
   console.log(
     `Bootstrapped ${restored.version}: ${restored.artifactFilesWritten} release artifact file(s), ` +
       `${restored.documentsRestored} context document(s), and ${restored.rawFilesRestored} raw file(s) ` +
@@ -187,22 +187,10 @@ export async function main(): Promise<void> {
     );
   }
 
-  // Normalize the raw-only sources. Collector-managed artifacts are preserved
-  // because their transforms combine multiple raw inputs (for example event
-  // detail signals and club detail pages) rather than merely validating the
-  // primary raw JSON file.
+  // Rebuild every projection from its complete source capture, including
+  // event/club detail pages; never relabel old normalized content as fresh.
   runNpmScript('quality:raw', false);
-  const previousExclude = process.env.NORMALIZE_RAW_EXCLUDE_COLLECTOR_MANAGED;
-  process.env.NORMALIZE_RAW_EXCLUDE_COLLECTOR_MANAGED = '1';
-  try {
-    runNpmScript('normalize:raw', false);
-  } finally {
-    if (previousExclude === undefined) {
-      delete process.env.NORMALIZE_RAW_EXCLUDE_COLLECTOR_MANAGED;
-    } else {
-      process.env.NORMALIZE_RAW_EXCLUDE_COLLECTOR_MANAGED = previousExclude;
-    }
-  }
+  runNpmScript('normalize:raw', false);
   runNpmScript('generate:context', false);
 }
 

@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import path from 'node:path';
 import { load } from 'cheerio';
 import { chromium } from 'playwright';
@@ -58,7 +57,24 @@ function parseEvents(
   return events;
 }
 
-function parseCalendarHtml(currentHtml: string, futureHtml: string): Semester[] {
+export function mergeCalendarSemesters(semesters: Semester[]): Semester[] {
+  const merged = new Map<string, Semester>();
+  for (const semester of semesters) {
+    const key = cleanText(semester.name).toLowerCase();
+    const existing = merged.get(key) ?? { name: semester.name, events: [] };
+    for (const event of semester.events) {
+      const prior = existing.events.find(item => item.date === event.date && item.title === event.title);
+      if (prior && prior.description !== event.description) {
+        throw new Error(`Academic calendar sources disagree for ${semester.name}: ${event.date} ${event.title}`);
+      }
+      if (!prior) existing.events.push({ ...event });
+    }
+    merged.set(key, existing);
+  }
+  return validateAcademicCalendar([...merged.values()]);
+}
+
+export function parseCalendarHtml(currentHtml: string, futureHtml: string): Semester[] {
   const semesters: Semester[] = [];
   const current$ = load(currentHtml);
   const currentEvents = parseEvents(current$, '.ramapo-tribe-event-body');
@@ -81,7 +97,7 @@ function parseCalendarHtml(currentHtml: string, futureHtml: string): Semester[] 
     if (events.length > 0) semesters.push({ name, events });
   });
 
-  return validateAcademicCalendar(semesters);
+  return mergeCalendarSemesters(semesters);
 }
 
 async function collectCalendarWithHttp(): Promise<Semester[]> {
@@ -110,87 +126,11 @@ async function collectCalendarWithBrowser(): Promise<Semester[]> {
   try {
     const page = await browser.newPage();
     await page.goto(CURRENT_CALENDAR_URL, { waitUntil: 'networkidle', timeout: 30_000 });
-    const currentName =
-      (await page
-        .locator('h1, h2, h3')
-        .allTextContents())
-        .map(cleanText)
-        .find((heading) => /\b(?:spring|summer|fall|winter)\s+20\d{2}\b/i.test(heading)) ||
-      'Current Academic Calendar';
-    const currentEvents = await page.locator('.ramapo-tribe-event-body').evaluateAll((nodes) =>
-      nodes.flatMap((node) => {
-        const month = node.querySelector('.month')?.textContent?.trim();
-        const day = node.querySelector('.date')?.textContent?.trim();
-        const title = node
-          .querySelector('.ramapo-tribe-event-title a')
-          ?.textContent?.trim();
-        const description = node
-          .querySelector('.ramapo-tribe-event-time')
-          ?.textContent?.trim();
-        return title
-          ? [{ date: month && day ? `${month} ${day}` : 'Unknown', title, description: description || '' }]
-          : [];
-      })
-    );
-
+    const currentHtml = await page.content();
     await page.goto(FUTURE_CALENDAR_URL, { waitUntil: 'networkidle', timeout: 30_000 });
-    const futureSemesters = await page.locator('.collapsableContent').evaluateAll((sections) =>
-      sections.flatMap((section) => {
-        const name =
-          section.querySelector('.collapsableTitle')?.textContent?.trim() ||
-          'Unknown Semester';
-        const events = Array.from(section.querySelectorAll('.ramapo-tribe-event-body')).flatMap(
-          (node) => {
-            const month = node.querySelector('.month')?.textContent?.trim();
-            const day = node.querySelector('.date')?.textContent?.trim();
-            const title = node
-              .querySelector('.ramapo-tribe-event-title a')
-              ?.textContent?.trim();
-            const description = node
-              .querySelector('.ramapo-tribe-event-time')
-              ?.textContent?.trim();
-            return title
-              ? [{
-                  date: month && day ? `${month} ${day}` : 'Unknown',
-                  title,
-                  description: description || '',
-                }]
-              : [];
-          }
-        );
-        return events.length > 0 ? [{ name, events }] : [];
-      })
-    );
-
-    return validateAcademicCalendar([
-      ...(currentEvents.length > 0 ? [{ name: currentName, events: currentEvents }] : []),
-      ...futureSemesters,
-    ]);
+    return parseCalendarHtml(currentHtml, await page.content());
   } finally {
     await browser.close();
-  }
-}
-
-function addResidenceLifeDates(semesters: Semester[]): Semester[] {
-  const reslifePath = path.join(process.cwd(), 'data', 'normalized', 'reslife.json');
-  if (!fs.existsSync(reslifePath)) return semesters;
-  try {
-    const reslife = validateAcademicCalendar(
-      JSON.parse(fs.readFileSync(reslifePath, 'utf8')) as unknown
-    );
-    console.log(`Injecting ${reslife.length} Residence Life semesters into global calendar.`);
-    return [
-      ...semesters,
-      ...reslife.map((semester) => ({
-        ...semester,
-        name: `Housing: ${semester.name}`,
-      })),
-    ];
-  } catch (error) {
-    console.warn(
-      `Residence Life dates were not added: ${error instanceof Error ? error.message : String(error)}`
-    );
-    return semesters;
   }
 }
 
@@ -228,13 +168,13 @@ async function fetchAcademicCalendar(): Promise<void> {
     return;
   }
 
-  const normalizedSemesters = calendarWithConcepts(addResidenceLifeDates(semesters));
+  const normalizedSemesters = calendarWithConcepts(semesters);
   writeJsonFile(JSON_OUTPUT_PATH, normalizedSemesters);
   writeJsonFile(PUBLIC_JSON_OUTPUT_PATH, normalizedSemesters);
   runGeneratorScript(MARKDOWN_GENERATOR_PATH);
 }
 
-void fetchAcademicCalendar().catch((error: unknown) => {
+if (process.argv[1]?.endsWith('academic-calendar.ts')) void fetchAcademicCalendar().catch((error: unknown) => {
   console.error(
     `Academic calendar collection failed: ${error instanceof Error ? error.message : String(error)}`
   );

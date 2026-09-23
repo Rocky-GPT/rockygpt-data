@@ -6,8 +6,9 @@ import { execFileSync } from 'child_process';
 import 'dotenv/config';
 import { Pool, type PoolClient } from 'pg';
 import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
-import { shuttleSchedule, type ShuttleRoute } from '../../src/static/shuttleSchedule';
-import type { ShuttleServiceDay } from '../../src/data-v2/schemas';
+import { parseTransportationSchedules } from '../../ingestion/transportation-schedule';
+import { validateRawDatasetV1 } from '../../ingestion/raw-types';
+import { normalizeMenuWeek } from '../../ingestion/menu-data';
 import { parseEventStart } from '../../src/data-v2/event-time';
 import { normalizeOpeningHours } from '../../src/data-v2/opening-hours';
 import { calendarConcept } from '../../src/data-v2/calendar-concepts';
@@ -183,13 +184,9 @@ async function insertStructured(
   collectedAtFor: (sourceKey: string) => string
 ): Promise<Record<string, number>> {
   const counts: Record<string, number> = {};
-  const menuWeek = fs.existsSync(path.join(process.cwd(), 'data/normalized/menu-week.json'))
-    ? readJson<{ dates?: Array<{ date: string; sections?: Array<{ name: string; groups?: Array<{ name: string; items?: JsonRecord[] }> }> }> }>('data/normalized/menu-week.json')
-    : { dates: [] };
-
-  const datesToPublish = (menuWeek.dates && menuWeek.dates.length > 0)
-    ? menuWeek.dates
-    : [{ date: new Date().toISOString().slice(0, 10), sections: readJson<Array<{ name: string; groups?: Array<{ name: string; items?: JsonRecord[] }> }>>('data/normalized/menu.json') }];
+  // Menu dates must come from the captured API requests. An undated snapshot
+  // cannot be assigned today's date simply because publication runs today.
+  const datesToPublish = normalizeMenuWeek(readJson('data/normalized/menu-week.json')).dates;
 
   for (const dateEntry of datesToPublish) {
     const dateStr = dateEntry.date;
@@ -202,7 +199,7 @@ async function insertStructured(
           const allergens = Array.isArray(item.allergens)
             ? item.allergens.flatMap((entry) => cleanText((entry as JsonRecord)?.name) || [])
             : [];
-          const labels = dietaryLabels(item);
+          const labels = dietaryLabels(item as unknown as JsonRecord);
           await client.query(
             `INSERT INTO rockygpt_v2.menu_items
              (dataset_version_id, source_id, source_record_key, meal, station, name, calories,
@@ -225,22 +222,25 @@ async function insertStructured(
   // repository reads as "applies on every date" — that is how last semester's
   // library hours answered an August question.
   const campusHours = readJson<
-    Array<{ name: string; hours: Record<string, string>; notes?: string }>
+    Array<{ name: string; hours: Record<string, string>; notes?: string;
+      collectedAt?: string; sourceUrl?: string; validFrom?: string; validUntil?: string }>
   >('data/normalized/hours.json');
   for (const location of campusHours) {
     const { window } = readValidityFromNotes(location.notes);
+    const validFrom = location.validFrom || window?.validFrom || null;
+    const validUntil = location.validUntil || window?.validUntil || null;
     for (const [day, schedule] of Object.entries(location.hours || {})) {
       const recordKey = `${location.name}:${day}`;
       const hours = normalizeOpeningHours(schedule);
       await client.query(
         `INSERT INTO rockygpt_v2.campus_hours
          (dataset_version_id, source_id, source_record_key, name, day, schedule, collected_at,
-          valid_from, valid_until, content_hash, hours)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb)`,
-        [datasetId, sources.get('campus-hours'), recordKey, location.name, day, schedule, collectedAtFor('campus-hours'),
-          window?.validFrom || null, window?.validUntil || null,
-          sha256(`${recordKey}:${schedule}:${window?.validFrom ?? ''}:${window?.validUntil ?? ''}`),
-          hours === null ? null : JSON.stringify(hours)]
+          valid_from, valid_until, content_hash, hours, notes, source_url)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12,$13)`,
+        [datasetId, sources.get('campus-hours'), recordKey, location.name, day, schedule, location.collectedAt || collectedAtFor('campus-hours'),
+          validFrom, validUntil,
+          sha256(JSON.stringify({ recordKey, schedule, validFrom, validUntil, notes: location.notes, sourceUrl: location.sourceUrl })),
+          hours === null ? null : JSON.stringify(hours), location.notes || null, location.sourceUrl || null]
       );
       counts.campus_hours = (counts.campus_hours || 0) + 1;
     }
@@ -440,18 +440,13 @@ async function insertStructured(
   // Every published timetable declares its service day; the Ramsey Route 17
   // loop is a weekday-only service. Sunday must publish so weekend questions
   // stop answering from the weekday timetable (PROB-008).
-  const routes: Array<[string, ShuttleRoute[], ShuttleServiceDay]> = [
-    ['Ramsey Route 17', shuttleSchedule.trainLoop, 'weekday'],
-    ['Weekday Roadrunner Express', shuttleSchedule.weekday, 'weekday'],
-    ['Saturday Roadrunner Express', shuttleSchedule.saturday, 'saturday'],
-    ['Sunday Roadrunner Express', shuttleSchedule.sunday, 'sunday'],
-  ];
-  for (const [name, trips, serviceDay] of routes) {
+  const routes = parseTransportationSchedules(validateRawDatasetV1(readJson('data/raw/transportation.raw.json')));
+  for (const { name, trips, serviceDay, collectedAt } of routes) {
     const route = await client.query<{ id: string }>(
       `INSERT INTO rockygpt_v2.shuttle_routes
        (dataset_version_id, source_id, source_record_key, name, service_day, collected_at, content_hash)
        VALUES ($1,$2,$3,$3,$4,$5,$6) RETURNING id::text`,
-      [datasetId, sources.get('transportation'), name, serviceDay, collectedAtFor('transportation'), sha256(name)]
+      [datasetId, sources.get('transportation'), name, serviceDay, collectedAt, sha256(JSON.stringify({ name, serviceDay, trips }))]
     );
     for (const [index, trip] of trips.entries()) {
       const recordKey = `${name}:${index}:${trip.departure}`;
@@ -461,7 +456,7 @@ async function insertStructured(
           stops, collected_at, content_hash)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10)`,
         [datasetId, sources.get('transportation'), route.rows[0].id, recordKey, index, trip.departure,
-          trip.arrival, JSON.stringify(trip.stops), collectedAtFor('transportation'), sha256(recordKey)]
+          trip.arrival, JSON.stringify(trip.stops), collectedAt, sha256(JSON.stringify({ recordKey, trip }))]
       );
       counts.shuttle_trips = (counts.shuttle_trips || 0) + 1;
     }
@@ -543,6 +538,7 @@ const RELEASE_ARTIFACT_FILES: Record<string, string> = {
   courses: 'public/data/courses.json',
   events: 'public/data/events.json',
   hours: 'public/data/hours.json',
+  'hours-omissions': 'data/normalized/hours-omissions.json',
   programs: 'public/data/programs.json',
   menu: 'data/normalized/menu.json',
   'menu-week': 'data/normalized/menu-week.json',

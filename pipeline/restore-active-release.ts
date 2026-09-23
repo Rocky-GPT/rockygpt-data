@@ -43,6 +43,8 @@ interface LoadedActiveRelease {
 export interface RestoreActiveReleaseOptions {
   rootDir?: string;
   requireRawArtifacts?: boolean;
+  /** Only refresh workflows can discard incomplete legacy captures and recollect. */
+  allowIncompleteRawArtifacts?: boolean;
   databaseUrl?: string;
   env?: NodeJS.ProcessEnv;
   downloadBundle?: (
@@ -63,6 +65,7 @@ export interface RestoreActiveReleaseSummary {
   rawRestoreEnabled: boolean;
   rawSourcesRestored: number;
   rawFilesRestored: number;
+  rawSourcesRequiringRefresh: string[];
 }
 
 /**
@@ -76,6 +79,7 @@ export const RELEASE_ARTIFACT_TARGETS: Readonly<Record<string, readonly string[]
   courses: ['public/data/courses.json'],
   events: ['public/data/events.json', 'data/normalized/events.json'],
   hours: ['public/data/hours.json', 'data/normalized/hours.json'],
+  'hours-omissions': ['data/normalized/hours-omissions.json'],
   programs: ['public/data/programs.json', 'data/normalized/programs.json'],
   menu: ['data/normalized/menu.json'],
   'menu-week': ['data/normalized/menu-week.json'],
@@ -150,7 +154,9 @@ function validatedArtifactMap(
   artifacts: ReadonlyArray<ActiveReleaseArtifact>
 ): Map<string, unknown> {
   const byKey = new Map(artifacts.map((artifact) => [artifact.key, artifact.payload]));
-  const missing = Object.keys(RELEASE_ARTIFACT_TARGETS).filter((key) => !byKey.has(key));
+  // Legacy releases predate the omission manifest. Restore them so the
+  // compatibility/provenance checks can request a fresh hours collection.
+  const missing = Object.keys(RELEASE_ARTIFACT_TARGETS).filter((key) => key !== 'hours-omissions' && !byKey.has(key));
   if (missing.length) {
     throw new Error(
       `Active release is missing required release artifact(s): ${missing.join(', ')}.`
@@ -189,6 +195,12 @@ export function restoreActiveReleaseFiles(input: {
   let artifactFilesWritten = 0;
 
   for (const [key, relativePaths] of Object.entries(RELEASE_ARTIFACT_TARGETS)) {
+    if (!artifacts.has(key)) {
+      // Optional artifacts absent from this release must not retain another
+      // release's local projection.
+      for (const relativePath of relativePaths) fs.rmSync(path.join(rootDir, relativePath), { force: true });
+      continue;
+    }
     const payload = artifacts.get(key);
     for (const relativePath of relativePaths) {
       writeJsonFile(path.join(rootDir, relativePath), payload);
@@ -216,7 +228,7 @@ export function restoreActiveReleaseFiles(input: {
   });
 
   return {
-    artifactsRestored: Object.keys(RELEASE_ARTIFACT_TARGETS).length,
+    artifactsRestored: Object.keys(RELEASE_ARTIFACT_TARGETS).filter((key) => artifacts.has(key)).length,
     artifactFilesWritten,
     documentsRestored: documents.length,
   };
@@ -386,13 +398,17 @@ export async function restoreActiveRelease(
     });
 
     let rawFilesRestored = 0;
+    const rawSourcesRequiringRefresh: string[] = [];
     const rawDir = path.join(rootDir, 'data', 'raw');
     for (const downloaded of downloadedRaw) {
-      rawFilesRestored += restoreBundleToRawDirectory(
+      const filesRestored = restoreBundleToRawDirectory(
         downloaded.bundle,
         downloaded.artifact,
-        rawDir
+        rawDir,
+        { allowIncomplete: options.allowIncompleteRawArtifacts }
       );
+      rawFilesRestored += filesRestored;
+      if (filesRestored === 0) rawSourcesRequiringRefresh.push(downloaded.artifact.sourceKey);
     }
 
     return {
@@ -401,8 +417,9 @@ export async function restoreActiveRelease(
       version: loaded.release.version,
       ...restored,
       rawRestoreEnabled,
-      rawSourcesRestored: downloadedRaw.length,
+      rawSourcesRestored: downloadedRaw.length - rawSourcesRequiringRefresh.length,
       rawFilesRestored,
+      rawSourcesRequiringRefresh,
     };
   } finally {
     await pool.end();

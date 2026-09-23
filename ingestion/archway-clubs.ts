@@ -1016,7 +1016,7 @@ function extractClubSignalsFromDetailPages(clubs: ClubSeedRecord[], pages: RawPa
   return signals;
 }
 
-function toNormalizedClub(club: ClubSeedRecord, signal?: ClubSignal): ArchwayClub {
+export function toNormalizedClub(club: ClubSeedRecord, signal?: ClubSignal): ArchwayClub {
   const groupmeUrls = Array.from(
     new Set([...(club.groupmeUrls || []), ...(signal?.groupmeUrls || [])])
   );
@@ -1041,6 +1041,7 @@ function toNormalizedClub(club: ClubSeedRecord, signal?: ClubSignal): ArchwayClu
 
   return {
     name: club.name,
+    clubId: club.clubId,
     category: club.category || 'Other',
     bucket,
     logoUrl: club.logoUrl,
@@ -1050,6 +1051,15 @@ function toNormalizedClub(club: ClubSeedRecord, signal?: ClubSignal): ArchwayClu
     instagramUrl: club.instagramUrl || signal?.instagramUrl,
     groupmeUrls: groupmeUrls.length > 0 ? groupmeUrls : undefined,
   };
+}
+
+/** Rebuild only from the seed cards and their successful, scoped detail captures. */
+export function rebuildClubsFromRaw(rawClubs: unknown, details: RawDatasetV1): ArchwayClub[] {
+  const clubs = validateArchwayClubs(rawClubs).map(club => ({ ...club, sourceUrl: CLUBS_URL }));
+  const pages = details.pages.filter(page => page.statusCode !== null && page.statusCode >= 200 && page.statusCode < 300);
+  const signals = extractClubSignalsFromDetailPages(clubs, pages);
+  return validateArchwayClubs(clubs.map(club => toNormalizedClub(club,
+    club.websiteUrl ? signals.get(buildUrlKey(club.websiteUrl)) : undefined)));
 }
 
 async function fetchArchwayClubs() {
@@ -1108,15 +1118,7 @@ async function fetchArchwayClubs() {
     }
 
     console.log('Building normalized club records from raw dataset signals...');
-    const signalByClubKey = extractClubSignalsFromDetailPages(rawClubs, detailDataset.pages);
-    const normalizedClubsFromArchway = validateArchwayClubs(
-      rawClubs.map((club) =>
-        toNormalizedClub(
-          club,
-          club.websiteUrl ? signalByClubKey.get(buildUrlKey(club.websiteUrl)) : undefined
-        )
-      )
-    );
+    const normalizedClubsFromArchway = rebuildClubsFromRaw(rawClubs, detailDataset);
 
     // Authenticated GroupMe captures are a separate, manual workflow. Do not
     // silently mix an untracked/stale local capture into the automated
@@ -1138,4 +1140,6 @@ async function fetchArchwayClubs() {
   }
 }
 
-fetchArchwayClubs();
+if (process.argv[1]?.endsWith('archway-clubs.ts')) {
+  void fetchArchwayClubs();
+}

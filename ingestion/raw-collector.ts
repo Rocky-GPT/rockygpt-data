@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import { load } from 'cheerio';
 import pLimit from 'p-limit';
 import { fetchWithPolicy } from './http-client';
@@ -166,7 +167,6 @@ function extractLists($: ReturnType<typeof load>): RawPageV1['lists'] {
   $('ul, ol').each((_, element) => {
     const items = $(element)
       .find('li')
-      .slice(0, 30)
       .toArray()
       .map((item) => cleanText($(item).text()))
       .filter(Boolean);
@@ -176,7 +176,7 @@ function extractLists($: ReturnType<typeof load>): RawPageV1['lists'] {
     }
   });
 
-  return lists.slice(0, 100);
+  return lists;
 }
 
 function extractTables($: ReturnType<typeof load>): RawPageV1['tables'] {
@@ -207,11 +207,11 @@ function extractTables($: ReturnType<typeof load>): RawPageV1['tables'] {
     }
 
     if (headers.length > 0 || rows.length > 0) {
-      tables.push({ headers, rows: rows.slice(0, 50) });
+      tables.push({ headers, rows });
     }
   });
 
-  return tables.slice(0, 20);
+  return tables;
 }
 
 function extractContacts($: ReturnType<typeof load>): RawPageV1['contacts'] {
@@ -445,10 +445,11 @@ export function assertRawCollectionCandidate(
       const previous = validateRawDatasetV1(
         JSON.parse(fs.readFileSync(options.outputPath, 'utf8')) as unknown
       );
-      const floor = Math.ceil(previous.pages.length * options.minimumPreviousPageRatio);
-      if (previous.pages.length > 0 && dataset.pages.length < floor) {
+      const previousCount = previous.pages.filter(successfulPage).length;
+      const floor = Math.ceil(previousCount * options.minimumPreviousPageRatio);
+      if (previousCount > 0 && successfulPages.length < floor) {
         throw new Error(
-          `${dataset.dataset}: page count dropped from ${previous.pages.length} to ${dataset.pages.length}; minimum allowed is ${floor}.`
+          `${dataset.dataset}: successful page count dropped from ${previousCount} to ${successfulPages.length}; minimum allowed is ${floor}.`
         );
       }
     } catch (error) {
@@ -476,7 +477,7 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
   }
 
   const pages: RawPageV1[] = [];
-  const seenUrls = new Set<string>();
+  const seenUrls = new Set<string>(normalizedSeedUrls);
   const detailCandidates: string[] = [];
 
   for (const seedUrl of normalizedSeedUrls) {
@@ -497,6 +498,10 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
     seedPage.links.forEach((link) => {
       if (seenUrls.has(link)) return;
       if (!allowedHosts.has(urlHost(link))) return;
+      // Documents remain in the page's documents list. The HTML collector
+      // cannot parse them; requesting them as HTML creates spurious failed
+      // pages and can crowd real detail pages out of the bounded crawl.
+      if (isLikelyDocument(link)) return;
       if (options.detailUrlFilter) {
         try {
           if (!options.detailUrlFilter(new URL(link))) {
@@ -566,6 +571,7 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
     sourceUrl: normalizedSeedUrls[0],
     recordCount: pages.length,
     payload: dataset,
-  });
+    fetchedAt: dataset.collectedAt,
+  }, path.dirname(options.outputPath));
   return dataset;
 }

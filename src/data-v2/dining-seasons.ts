@@ -28,16 +28,19 @@ interface SeasonTime {
   period?: unknown;
 }
 
-export function formatDiningRange(range: JsonRecord): string {
+export function formatDiningRange(range: JsonRecord, includeLabel = true): string {
   const start = range.startTime as SeasonTime | undefined;
   const finish = range.finishTime as SeasonTime | undefined;
   const label = typeof range.label === 'string' ? range.label.trim() : '';
-  if (/^(closed|no service)\b/i.test(label)) return 'Closed';
+  const allDayValue = range.allDay && typeof range.allDay === 'object'
+    ? (range.allDay as JsonRecord).value : range.allDay;
+  if (range.closed === true || (typeof allDayValue === 'string'
+    && allDayValue.trim().toLowerCase() === 'closed') || /^(closed|no service)\b/i.test(label)) return 'Closed';
   const valid = (time: SeasonTime | undefined): boolean => Boolean(time &&
     /^(0?[1-9]|1[0-2])$/.test(String(time.hour)) &&
     /^[0-5]\d$/.test(String(time.minute)) && /^(AM|PM)$/i.test(String(time.period)));
-  if (!valid(start) || !valid(finish)) return label ? `${label}: ${DINING_HOURS_UNKNOWN}` : DINING_HOURS_UNKNOWN;
-  const prefix = label ? `${label}: ` : '';
+  if (!valid(start) || !valid(finish)) return includeLabel && label ? `${label}: ${DINING_HOURS_UNKNOWN}` : DINING_HOURS_UNKNOWN;
+  const prefix = includeLabel && label ? `${label}: ` : '';
   return `${prefix}${start!.hour}:${start!.minute} ${start!.period} - ${finish!.hour}:${finish!.minute} ${finish!.period}`;
 }
 
@@ -53,7 +56,7 @@ function dayGroupSchedule(groups: JsonRecord[], day: string): string | null {
     const days = Array.isArray(group.days) ? (group.days as JsonRecord[]) : [];
     if (!days.some((entry) => entry.value === day)) continue;
     const hours = Array.isArray(group.hours) ? (group.hours as JsonRecord[]) : [];
-    const schedule = hours.map(formatDiningRange).join('; ');
+    const schedule = hours.map((range) => formatDiningRange(range)).join('; ');
     schedules.push(schedule || DINING_HOURS_UNKNOWN);
   }
   return schedules.length ? schedules.join('; ') : null;

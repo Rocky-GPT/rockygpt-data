@@ -1,9 +1,7 @@
 import path from 'path';
 import { load } from 'cheerio';
-import { chromium } from 'playwright';
 import { fetchWithPolicy } from './http-client';
 import {
-    assertCollectionCount,
     isRawOnlyMode,
     runGeneratorScript,
     writeJsonFile,
@@ -11,20 +9,24 @@ import {
 } from './pipeline-utils';
 import { validateCampusHours, type LocationHours } from './schema';
 import { publicPath } from '../src/paths';
-import { partitionHoursForPublication } from '../src/data-v2/validity';
+import { partitionHoursForPublication, readValidityFromNotes } from '../src/data-v2/validity';
 
 const RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'hours.raw.json');
 const PUBLIC_JSON_PATH = publicPath('data', 'hours.json');
 const RAG_JSON_PATH = path.join(process.cwd(), 'data', 'normalized', 'hours.json');
 const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-hours-md.ts');
-const ATHLETICS_HOURS_URL = 'https://ramapoathletics.com/sports/2008/1/21/bradleycenterhours.aspx';
+export const ATHLETICS_HOURS_URL = 'https://ramapoathletics.com/sports/2008/1/21/bradleycenterhours.aspx';
+
+export const LIBRARY_HOURS_URL = 'https://www.ramapo.edu/library/library-hours/';
+const SOURCE_CAPTURE_PATH = path.join(process.cwd(), 'data', 'raw', 'hours-sources.raw.json');
+const OMISSIONS_PATH = path.join(process.cwd(), 'data', 'normalized', 'hours-omissions.json');
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 type DayName = (typeof DAYS)[number];
 
-function createClosedWeek(): Record<string, string> {
+function createUnknownWeek(): Record<string, string> {
     return DAYS.reduce<Record<string, string>>((acc, day) => {
-        acc[day] = 'CLOSED';
+        acc[day] = 'Hours unavailable';
         return acc;
     }, {});
 }
@@ -79,8 +81,15 @@ function scheduleFromLine(line: string): string {
         .join(' and ');
 }
 
-function indexOfInsensitive(text: string, pattern: string, fromIndex: number = 0): number {
-    return text.toLowerCase().indexOf(pattern.toLowerCase(), fromIndex);
+function indexOfInsensitive(text: string, pattern: string, fromIndex = 0): number {
+    // A reference in a page-wide warning is not the facility's own heading.
+    const lines = text.split('\n');
+    let offset = 0;
+    for (const line of lines) {
+        if (offset >= fromIndex && line.toLowerCase().startsWith(pattern.toLowerCase())) return offset;
+        offset += line.length + 1;
+    }
+    return -1;
 }
 
 function sectionBetween(text: string, startHeading: string, endHeading?: string): string {
@@ -109,7 +118,7 @@ function findLine(section: string, matcher: RegExp, contextLabel: string): strin
     return line;
 }
 
-function parseAthleticsFacilityHours(pageText: string): LocationHours[] {
+export function parseAthleticsFacilityHours(pageText: string): LocationHours[] {
     const normalized = normalizePageText(pageText);
 
     const bradleySection = sectionBetween(
@@ -123,7 +132,7 @@ function parseAthleticsFacilityHours(pageText: string): LocationHours[] {
     const rockSection = sectionBetween(normalized, 'Rock Climbing Wall', 'Lodge Fitness Center');
     const lodgeSection = sectionBetween(normalized, 'Lodge Fitness Center', 'To rent our facility');
 
-    const bradleyHours = createClosedWeek();
+    const bradleyHours = createUnknownWeek();
     assignDays(
         bradleyHours,
         ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
@@ -140,7 +149,7 @@ function parseAthleticsFacilityHours(pageText: string): LocationHours[] {
         scheduleFromLine(findLine(bradleySection, /Sunday/i, 'Bradley Center Sunday'))
     );
 
-    const sharpHours = createClosedWeek();
+    const sharpHours = createUnknownWeek();
     assignDays(
         sharpHours,
         ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
@@ -157,7 +166,7 @@ function parseAthleticsFacilityHours(pageText: string): LocationHours[] {
         scheduleFromLine(findLine(sharpSection, /Sundays?/i, 'Sharp Fitness Sunday'))
     );
 
-    const poolHours = createClosedWeek();
+    const poolHours = createUnknownWeek();
     assignDays(
         poolHours,
         ['Monday'],
@@ -189,7 +198,7 @@ function parseAthleticsFacilityHours(pageText: string): LocationHours[] {
         scheduleFromLine(findLine(poolSection, /Sunday/i, 'Pool Sunday'))
     );
 
-    const auxiliaryHours = createClosedWeek();
+    const auxiliaryHours = createUnknownWeek();
     assignDays(
         auxiliaryHours,
         ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
@@ -201,204 +210,189 @@ function parseAthleticsFacilityHours(pageText: string): LocationHours[] {
         scheduleFromLine(findLine(auxiliarySection, /Sunday/i, 'Auxiliary Gym Sunday'))
     );
 
-    const rockHours = createClosedWeek();
+    const rockHours = createUnknownWeek();
     assignDays(
         rockHours,
         ['Monday', 'Wednesday'],
         scheduleFromLine(findLine(rockSection, /Monday\s*(?:&|and)\s*Wednesday/i, 'Rock Climbing Wall'))
     );
 
-    const lodgeHours = createClosedWeek();
-    assignDays(
-        lodgeHours,
-        ['Monday', 'Wednesday', 'Friday'],
-        scheduleFromLine(findLine(lodgeSection, /Monday,\s*Wednesday,\s*Friday/i, 'Lodge Fitness Center'))
-    );
+    const lodgeHours = createUnknownWeek();
+    const lodgeClosure = lodgeSection.split('\n').find((line) => /^closed until further notice$/i.test(line));
+    if (lodgeClosure) assignDays(lodgeHours, [...DAYS], 'CLOSED');
+    else assignDays(lodgeHours, ['Monday', 'Wednesday', 'Friday'],
+        scheduleFromLine(findLine(lodgeSection, /Monday,\s*Wednesday,\s*Friday/i, 'Lodge Fitness Center')));
+    const term = normalized.split('\n').find((line) => /^20\d{2} (Fall|Spring|Summer|Winter) Semester Hours$/i.test(line));
+    if (!term) throw new Error('Athletics hours applicability heading is unavailable');
+    const poolDates = poolSection.split('\n').find((line) => /20\d{2}/.test(line) && /\d.*-.*\d/.test(line));
+    const poolNote = poolDates?.replace(/\b(\d{1,2})(?:st|nd|rd|th)\b/gi, '$1');
+    const poolCondition = poolSection.split('\n').find((line) => /^Saturday/i.test(line))?.split('|')[1]?.trim();
+    const auxiliaryCondition = auxiliarySection.split('\n').find((line) => /times may change/i.test(line));
 
     return [
         {
             name: "Bradley Center (Student & Recreation Lounge)",
-            hours: bradleyHours
+            hours: bradleyHours, notes: term
         },
         {
             name: "Sharp Fitness Center (Weight Room)",
-            hours: sharpHours
+            hours: sharpHours, notes: term
         },
         {
             name: "Swimming Pool",
             hours: poolHours,
-            notes: "Saturday hours pending varsity swim practice"
+            notes: `${term}; ${poolNote || "dates unavailable"}${poolCondition ? `. Saturday: ${poolCondition}` : ''}`
         },
         {
             name: "Auxiliary Gym",
             hours: auxiliaryHours,
-            notes: "Additional Open Recreation times may be available; check IMLeagues for details."
+            notes: `${term}${auxiliaryCondition ? `; ${auxiliaryCondition}` : ''}`
         },
         {
             name: "Rock Climbing Wall",
-            hours: rockHours
+            hours: rockHours, notes: term
         },
         {
             name: "Lodge Fitness Center (College Park Apartments)",
-            hours: lodgeHours
+            hours: lodgeHours, notes: lodgeClosure || term
         }
     ];
 }
 
-async function fetchAthleticsLocations(): Promise<LocationHours[]> {
-    try {
-        console.log(`Fetching athletics facility hours from ${ATHLETICS_HOURS_URL} with HTTP...`);
-        const response = await fetchWithPolicy(
-            ATHLETICS_HOURS_URL,
-            { headers: { Accept: 'text/html,application/xhtml+xml' } },
-            { expectedContentTypes: ['text/html', 'application/xhtml+xml'] }
-        );
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const $ = load(response.text());
-        return parseAthleticsFacilityHours($('body').text());
-    } catch (error: unknown) {
-        console.warn(
-            `HTTP facility-hours parsing failed; using browser fallback. ${
-                error instanceof Error ? error.message : String(error)
-            }`
-        );
-    }
-
-    const browser = await chromium.launch({ headless: true });
-    try {
-        const page = await browser.newPage();
-        await page.goto(ATHLETICS_HOURS_URL, { waitUntil: 'networkidle' });
-        const athleticsPageText = await page.locator('body').innerText();
-        return parseAthleticsFacilityHours(athleticsPageText);
-    } finally {
-        await browser.close();
-    }
+export function hoursPageText(html: string): string {
+    const $ = load(html);
+    $('script,style,noscript').remove();
+    $('br').replaceWith('\n');
+    $('p,li,h1,h2,h3,h4,tr,div').append('\n');
+    return normalizePageText($('body').text());
 }
 
-export function buildCampusHourLocations(
-    athleticsLocations: LocationHours[],
-    now = new Date()
-): LocationHours[] {
-    // Library and research-help hours are deliberately absent: their only
-    // verified schedules expired in Spring 2026, and no collector-compatible
-    // current source is available. Never roll the year forward or guess times.
-    const compiled: LocationHours[] = [
-        {
-            name: "Administrative Offices (Normal Hours)",
-            hours: {
-                "Monday": "8:30am-4:30pm",
-                "Tuesday": "8:30am-4:30pm",
-                "Wednesday": "8:30am-4:30pm",
-                "Thursday": "8:30am-4:30pm",
-                "Friday": "8:30am-4:30pm",
-                "Saturday": "CLOSED",
-                "Sunday": "CLOSED"
-            },
-            notes: "Summer hours: Mon-Thu 8:00am-5:15pm, Fri CLOSED"
-        },
-        {
-            name: "Game Lab",
-            hours: {
-                "Monday": "9:00am-8:00pm",
-                "Tuesday": "9:00am-8:00pm",
-                "Wednesday": "9:00am-8:00pm",
-                "Thursday": "9:00am-8:00pm",
-                "Friday": "9:00am-6:00pm",
-                "Saturday": "CLOSED",
-                "Sunday": "CLOSED"
-            },
-            notes: "Gaming classes have priority 11am-2pm daily"
-        },
-        ...athleticsLocations,
-        {
-            name: "Center for Student Involvement (CSI)",
-            hours: {
-                "Monday": "8:00am-12:00am",
-                "Tuesday": "8:00am-12:00am",
-                "Wednesday": "8:00am-12:00am",
-                "Thursday": "8:00am-12:00am",
-                "Friday": "8:00am-12:00am",
-                "Saturday": "4:00pm-10:00pm",
-                "Sunday": "3:00pm-8:00pm"
-            },
-            notes: "Includes Roadrunner Central, J. Lee's, and Women's Center"
-        },
-        {
-            name: "J. Lee's (Student Lounge & Game Room)",
-            hours: {
-                "Monday": "9:00am-10:00pm",
-                "Tuesday": "9:00am-10:00pm",
-                "Wednesday": "9:00am-10:00pm",
-                "Thursday": "9:00am-10:00pm",
-                "Friday": "9:00am-9:00pm",
-                "Saturday": "CLOSED",
-                "Sunday": "1:00pm-6:00pm"
-            },
-            notes: "Also called jlees, jlee's, or student lounge. Part of the Bradley Center complex."
-        },
-        {
-            name: "Ramapo Bookstore",
-            hours: {
-                "Monday": "9:00am-5:00pm",
-                "Tuesday": "9:00am-5:00pm",
-                "Wednesday": "9:00am-5:00pm",
-                "Thursday": "9:00am-5:00pm",
-                "Friday": "9:00am-4:00pm",
-                "Saturday": "CLOSED",
-                "Sunday": "CLOSED"
-            },
-            notes: "Summer hours: Mon-Fri 10:00am-3:00pm"
-        }
-    ];
-
-    const availability = partitionHoursForPublication(compiled, now);
-    for (const omitted of availability.omitted) {
-        const name = typeof omitted.record.name === 'string' ? omitted.record.name : 'unnamed schedule';
-        console.warn(`Omitting unavailable hours for ${name}: ${omitted.reason}.`);
+function parsedWeek(section: string): Record<string, string> {
+    const hours = createUnknownWeek();
+    for (const line of section.split('\n')) {
+        const match = line.match(/^(Mon-Thu|Mon-Fri|Fri|Sat & Sun|Sat|Sun):\s*(.*)$/i);
+        if (!match) continue;
+        const days: DayName[] = /^Mon-Thu$/i.test(match[1]) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
+            : /^Mon-Fri$/i.test(match[1]) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+            : /^Fri$/i.test(match[1]) ? ['Friday'] : /^Sat & Sun$/i.test(match[1]) ? ['Saturday', 'Sunday']
+            : /^Sat$/i.test(match[1]) ? ['Saturday'] : ['Sunday'];
+        assignDays(hours, days, /^CLOSED$/i.test(match[2]) ? 'CLOSED' : scheduleFromLine(match[2]));
     }
-    return availability.publishable;
+    if (Object.values(hours).some((value) => value === 'Hours unavailable')) {
+        throw new Error('Library weekly schedule has missing or unrecognized days');
+    }
+    return hours;
+}
+
+export function parseLibraryHours(pageText: string): LocationHours[] {
+    const text = normalizePageText(pageText);
+    const circulation = sectionBetween(text, 'CIRCULATION DESK HOURS', 'RESEARCH HELP HOURS');
+    const research = sectionBetween(text, 'RESEARCH HELP HOURS', 'GAME LAB HOURS');
+    const game = sectionBetween(text, 'GAME LAB HOURS', 'If we are offline');
+    const parse = (name: string, section: string): LocationHours => {
+        const lines = section.split('\n');
+        const term = lines.find((line) => /^(Fall|Spring|Summer|Winter) Semester$/i.test(line));
+        const dates = lines.find((line) => /20\d{2}/.test(line) && /\d.*-.*\d/.test(line));
+        if (!term || !dates || !readValidityFromNotes(`${term} ${dates}`).window) {
+            throw new Error(`Library source has no explicit applicability dates for ${name}`);
+        }
+        // Exceptions require dated records, never a silent weekly fallback.
+        if (/Special Hours/i.test(section)) throw new Error(`Library source has unparsed special hours for ${name}`);
+        return { name, hours: parsedWeek(section), notes: `${term} ${dates}` };
+    };
+    const library = parse('Library (Main Building)', circulation);
+    const closingNote = text.split('\n').find((line) => /^Please note that the front doors/i.test(line));
+    if (closingNote) library.notes += `. ${closingNote}`;
+    const lab = parse('Game Lab', game);
+    const priority = game.split('\n').find((line) => /^Please Note:/i.test(line));
+    if (priority) lab.notes += `. ${priority}`;
+    const help = parse('Research Help Desk', research);
+    // Repeated sidebar schedules can disagree with main content on the year.
+    const researchSections = [...text.matchAll(/^RESEARCH HELP HOURS$/gim)];
+    const windows = researchSections.map((match) => {
+        const tail = text.slice(match.index! + match[0].length).split('\n').slice(0, 4).join(' ');
+        return readValidityFromNotes(tail).window;
+    });
+    if (new Set(windows.map((window) => JSON.stringify(window))).size > 1) {
+        help.availabilityIssue = 'conflicting-source-validity';
+        help.notes += '. Source repeats research-help hours with conflicting applicability dates; withheld.';
+    }
+    return [library, help, lab];
+}
+
+export interface HoursSourceCapture {
+    sourceUrl: string;
+    collectedAt: string;
+    html: string;
+}
+
+async function fetchHoursSource(sourceUrl: string): Promise<HoursSourceCapture> {
+    const response = await fetchWithPolicy(sourceUrl,
+        { headers: { Accept: 'text/html,application/xhtml+xml' } },
+        { expectedContentTypes: ['text/html', 'application/xhtml+xml'] });
+    if (!response.ok) throw new Error(`Hours source returned HTTP ${response.status}: ${sourceUrl}`);
+    return { sourceUrl, collectedAt: new Date().toISOString(), html: response.text() };
+}
+
+export function campusHoursFromCaptures(captures: HoursSourceCapture[]): LocationHours[] {
+    const source = (url: string, parser: (text: string) => LocationHours[]): LocationHours[] => {
+        const found = captures.filter((capture) => capture.sourceUrl === url);
+        if (found.length !== 1) throw new Error(`Expected exactly one hours capture from ${url}`);
+        const capture = found[0];
+        if (!Number.isFinite(Date.parse(capture.collectedAt)) || typeof capture.html !== 'string'
+            || !capture.html.trim()) throw new Error(`Invalid hours source capture from ${url}`);
+        return parser(hoursPageText(capture.html)).map((record) => {
+            const window = readValidityFromNotes(record.notes).window;
+            return { ...record, sourceUrl: url, collectedAt: capture.collectedAt,
+                ...(window ? { validFrom: window.validFrom, validUntil: window.validUntil } : {}) };
+        });
+    };
+    return [...source(ATHLETICS_HOURS_URL, parseAthleticsFacilityHours),
+        ...source(LIBRARY_HOURS_URL, parseLibraryHours)];
+}
+
+export function campusHoursPublication(records: LocationHours[], now = new Date()) {
+    const ambiguous = records.filter((record) => record.availabilityIssue);
+    const resolved = partitionHoursForPublication(records.filter((record) => !record.availabilityIssue), now);
+    return { publishable: resolved.publishable, omitted: [
+        ...resolved.omitted,
+        ...ambiguous.map((record) => ({ record, reason: record.availabilityIssue! })),
+    ] };
+}
+
+export function buildCampusHourLocations(locations: LocationHours[], now = new Date()): LocationHours[] {
+    return campusHoursPublication(locations, now).publishable;
 }
 
 async function fetchCampusHours() {
-    try {
-        const athleticsLocations = await fetchAthleticsLocations();
-
-        const locations = buildCampusHourLocations(athleticsLocations);
-
-        console.log(`Successfully compiled hours for ${locations.length} locations`);
-        const normalizedHours = validateCampusHours(locations);
-        assertCollectionCount({
-            dataset: 'campus hours',
-            count: normalizedHours.length,
-            minimum: 10,
-            previousFilePath: RAW_JSON_PATH,
-            minimumPreviousRatio: 0.8,
-        });
-
-        writeJsonFile(RAW_JSON_PATH, locations);
-        writeRawProvenance('hours', { sourceUrl: ATHLETICS_HOURS_URL, recordCount: locations.length, payload: locations });
-        console.log(`Saved raw hours data to ${RAW_JSON_PATH}`);
-
-        if (isRawOnlyMode()) {
-            console.log('RAW_ONLY enabled: skipping normalization and context generation.');
-            return;
-        }
-
-        writeJsonFile(PUBLIC_JSON_PATH, normalizedHours);
-        writeJsonFile(RAG_JSON_PATH, normalizedHours);
-        console.log(`Saved normalized hours to ${PUBLIC_JSON_PATH} and ${RAG_JSON_PATH}`);
-
-        runGeneratorScript(MARKDOWN_GENERATOR_PATH);
-
-    } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : String(error);
-        console.error('Error fetching campus hours:', message);
-        throw error;
-    }
+    const captures = await Promise.all([
+        fetchHoursSource(ATHLETICS_HOURS_URL), fetchHoursSource(LIBRARY_HOURS_URL),
+    ]);
+    const fetchedAt = new Date(Math.min(...captures.map((capture) => Date.parse(capture.collectedAt)))).toISOString();
+    const capturedSources = { version: 1, captures };
+    writeJsonFile(SOURCE_CAPTURE_PATH, capturedSources);
+    writeRawProvenance('hours-sources', { sourceUrl: 'https://www.ramapo.edu/about/campus-hours/',
+        fetchedAt, recordCount: captures.length, payload: capturedSources });
+    const locations = campusHoursFromCaptures(captures);
+    const publication = campusHoursPublication(locations);
+    // Every expected source section is parsed or the collector fails. Count alone
+    // cannot distinguish a source disappearance from honest applicability omissions.
+    if (locations.length !== 9) throw new Error('Hours source section coverage changed');
+    writeJsonFile(RAW_JSON_PATH, locations);
+    writeRawProvenance('hours', { sourceUrl: 'https://www.ramapo.edu/about/campus-hours/',
+        fetchedAt, recordCount: locations.length, payload: locations });
+    for (const omitted of publication.omitted) console.warn(`Withheld hours for ${omitted.record.name}: ${omitted.reason}`);
+    if (isRawOnlyMode()) return;
+    const normalizedHours = validateCampusHours(publication.publishable);
+    writeJsonFile(PUBLIC_JSON_PATH, normalizedHours);
+    writeJsonFile(RAG_JSON_PATH, normalizedHours);
+    writeJsonFile(OMISSIONS_PATH, { version: 1, collectedAt: fetchedAt, omitted: publication.omitted });
+    runGeneratorScript(MARKDOWN_GENERATOR_PATH);
 }
 
 if (process.argv[1]?.endsWith('campus-hours.ts')) {
-    void fetchCampusHours().catch(() => {
+    void fetchCampusHours().catch((error: unknown) => {
+        console.error('Error fetching campus hours:', error instanceof Error ? error.message : String(error));
         process.exitCode = 1;
     });
 }

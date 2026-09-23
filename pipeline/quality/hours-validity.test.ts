@@ -88,3 +88,20 @@ test('omitting the date preserves the previous unfiltered behaviour', async () =
 
   assert.ok(records.some((record) => record.name === LIBRARY));
 });
+
+test('facility conditions and source capture survive the repository response', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-hours-evidence-'));
+  try {
+    fs.mkdirSync(path.join(dir, 'data/normalized'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'data/normalized/hours.json'), JSON.stringify([{
+      name: 'Swimming Pool', hours: { Saturday: '12:30pm-4:00pm' },
+      notes: 'Saturday hours pending varsity swim practice/meets.',
+      sourceUrl: 'https://ramapoathletics.com/sports/2008/1/21/bradleycenterhours.aspx',
+      collectedAt: '2026-09-23T12:00:00Z',
+    }]));
+    const rows = await new FileRepositoryV2(dir).findCampusHours('Swimming Pool', 'Saturday');
+    assert.match(rows[0].notes!, /pending varsity swim/);
+    assert.match(rows[0].source.url, /ramapoathletics.com/);
+    assert.equal(rows[0].source.collectedAt, '2026-09-23T12:00:00Z');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});

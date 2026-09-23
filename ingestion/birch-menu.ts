@@ -1,8 +1,7 @@
 import path from 'path';
-import fs from 'fs';
 import { fetchWithPolicy } from './http-client';
 import { isRawOnlyMode, runGeneratorScript, writeJsonFile, writeRawProvenance } from './pipeline-utils';
-import { validateMenuData } from './schema';
+import { collectMenuDates, normalizeMenuWeek } from './menu-data';
 
 const DEFAULT_API_URL = 'https://api-prd.sodexomyway.net/v0.2/data/menu/97508001/1411019';
 const BIRCH_PAGE_URL = 'https://ramapo.sodexomyway.com/en-us/locations/birch-tree-inn';
@@ -16,7 +15,6 @@ const NORMALIZED_WEEK_JSON_OUTPUT_PATH = path.join(
   'normalized',
   'menu-week.json'
 );
-const MENU_MD_OUTPUT_PATH = path.join(process.cwd(), 'data', 'context', 'dining', 'menu.md');
 const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-menu-md.ts');
 
 async function resolveActiveMenuApiUrl(): Promise<string> {
@@ -116,16 +114,7 @@ async function fetchBirchMenu() {
 
   try {
     const collectedAt = new Date().toISOString();
-    const rawDates: Array<{ date: string; sections: unknown }> = [];
-    for (const [index, date] of dates.entries()) {
-      try {
-        rawDates.push({ date, sections: await fetchMenuDate(apiUrl, date) });
-      } catch (error) {
-        if (index === 0) throw error;
-        console.warn(`Menu was unavailable for ${date}; recording an empty future-day snapshot.`);
-        rawDates.push({ date, sections: [] });
-      }
-    }
+    const rawDates = await collectMenuDates(dates, (date) => fetchMenuDate(apiUrl, date));
     const rawMenuData = rawDates[0].sections;
     const rawWeek = { version: 1, collectedAt, dates: rawDates };
     writeJsonFile(RAW_JSON_OUTPUT_PATH, rawMenuData);
@@ -143,32 +132,9 @@ async function fetchBirchMenu() {
       return;
     }
 
-    const normalizedDates = rawDates.map(({ date, sections }) => {
-      try {
-        return { date, sections: validateMenuData(sections) };
-      } catch {
-        return { date, sections: [] };
-      }
-    });
-    writeJsonFile(NORMALIZED_WEEK_JSON_OUTPUT_PATH, {
-      version: 1,
-      collectedAt,
-      dates: normalizedDates,
-    });
-
-    const normalizedMenuData = normalizedDates[0].sections;
-    try {
-      validateMenuData(normalizedMenuData);
-    } catch {
-      console.warn('No menu items available for today — writing empty-menu placeholder.');
-      const now = new Date().toISOString();
-      const placeholder = `# Birch Tree Inn Menu\n\n*Generated (UTC): ${now}*\n\n---\n\nNo menu is available for today. The dining hall may be closed or the menu has not been published yet.\n\nCheck back later or visit the Ramapo dining page for updates.\n`;
-      fs.mkdirSync(path.dirname(MENU_MD_OUTPUT_PATH), { recursive: true });
-      fs.writeFileSync(MENU_MD_OUTPUT_PATH, placeholder, 'utf-8');
-      writeJsonFile(NORMALIZED_JSON_OUTPUT_PATH, []);
-      console.log(`Wrote empty-menu placeholder to ${MENU_MD_OUTPUT_PATH}`);
-      return;
-    }
+    const normalizedWeek = normalizeMenuWeek(rawWeek);
+    writeJsonFile(NORMALIZED_WEEK_JSON_OUTPUT_PATH, normalizedWeek);
+    const normalizedMenuData = normalizedWeek.dates[0].sections;
 
     writeJsonFile(NORMALIZED_JSON_OUTPUT_PATH, normalizedMenuData);
     console.log(`Saved normalized menu data to ${NORMALIZED_JSON_OUTPUT_PATH}`);
@@ -181,4 +147,4 @@ async function fetchBirchMenu() {
   }
 }
 
-fetchBirchMenu();
+if (process.argv[1]?.endsWith('birch-menu.ts')) void fetchBirchMenu();

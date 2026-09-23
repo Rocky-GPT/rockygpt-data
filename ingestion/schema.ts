@@ -118,6 +118,11 @@ export interface LocationHours {
   name: string;
   hours: Record<string, string>;
   notes?: string;
+  sourceUrl?: string;
+  collectedAt?: string;
+  validFrom?: string;
+  validUntil?: string;
+  availabilityIssue?: 'conflicting-source-validity';
 }
 
 export interface CalendarEvent {
@@ -163,6 +168,8 @@ export interface DiningHoursTime {
 
 export interface DiningHoursRange {
   allDay: boolean;
+  /** Explicit source closure, distinct from an otherwise unexplained all-day flag. */
+  closed?: boolean;
   startTime?: DiningHoursTime;
   finishTime?: DiningHoursTime;
   label?: string;
@@ -468,6 +475,13 @@ export function validateCampusHours(input: unknown): LocationHours[] {
     const normalized: LocationHours = { name, hours };
     const notes = asOptionalString(location.notes);
     if (notes) normalized.notes = notes;
+    for (const key of ['sourceUrl', 'collectedAt', 'validFrom', 'validUntil'] as const) {
+      const value = asOptionalString(location[key]);
+      if (value) normalized[key] = value;
+    }
+    if (location.availabilityIssue === 'conflicting-source-validity') {
+      normalized.availabilityIssue = location.availabilityIssue;
+    }
     locations.push(normalized);
   });
 
@@ -781,13 +795,13 @@ function parseAllDayBoolean(value: unknown): boolean {
   }
   if (typeof value === 'string') {
     const lower = value.trim().toLowerCase();
-    return lower === 'true' || lower === 'closed';
+    return lower === 'true';
   }
   if (isRecord(value)) {
     const val = asOptionalString(value.value);
     if (val) {
       const lower = val.trim().toLowerCase();
-      return lower === 'true' || lower === 'closed';
+      return lower === 'true';
     }
   }
   return false;
@@ -799,9 +813,14 @@ function validateDiningHoursRange(input: unknown): DiningHoursRange | null {
   }
 
   const allDay = parseAllDayBoolean(input.allDay);
+  const allDayValue = isRecord(input.allDay) ? input.allDay.value : input.allDay;
+  const closed = input.closed === true || (
+    typeof allDayValue === 'string' && allDayValue.trim().toLowerCase() === 'closed'
+  );
 
   return {
     allDay,
+    ...(closed ? { closed: true } : {}),
     startTime: validateDiningTime(input.startTime),
     finishTime: validateDiningTime(input.finishTime),
     label: asOptionalString(input.label),
