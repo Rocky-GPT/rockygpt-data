@@ -1,4 +1,5 @@
 import { isMenuArtifact, menuCalories } from '../menu-normalization';
+import { publishedMenuNutrients } from '../menu-nutrition';
 import { dietaryLabels } from '../dietary-labels';
 import fs from 'fs';
 import path from 'path';
@@ -372,6 +373,8 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
             meal: mealGroup.name,
             station: station.name,
             name,
+            ingredients: typeof item.ingredients === 'string' ? item.ingredients : undefined,
+            nutrients: publishedMenuNutrients(item),
             calories: menuCalories(item.calories),
             portionSize: typeof item.portionSize === 'string' ? item.portionSize : undefined,
             vegan: dietaryLabels(item).vegan,

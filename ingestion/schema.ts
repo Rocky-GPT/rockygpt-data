@@ -1,4 +1,5 @@
 import { isMenuArtifact, menuCalories } from '../src/data-v2/menu-normalization';
+import { publishedMenuNutrients, type MenuNutrients } from '../src/data-v2/menu-nutrition';
 import type { CalendarFamily, CalendarKind } from '../src/data-v2/calendar-concepts';
 
 type UnknownRecord = Record<string, unknown>;
@@ -50,6 +51,8 @@ function asOptionalBoolean(value: unknown): boolean | undefined {
 export interface MenuItem {
   formalName: string;
   description?: string;
+  ingredients?: string;
+  nutrients?: MenuNutrients;
   calories?: number;
   portionSize?: string;
   isVegan?: boolean;
@@ -243,6 +246,8 @@ function validateMenuItem(input: unknown): MenuItem | null {
   return {
     formalName,
     description: asOptionalString(input.description),
+    ingredients: typeof input.ingredients === 'string' ? input.ingredients : undefined,
+    nutrients: publishedMenuNutrients(input),
     calories: menuCalories(input.calories),
     portionSize: asOptionalString(input.portionSize) || asOptionalString(input.portion),
     isVegan: asOptionalBoolean(input.isVegan),
