@@ -3,7 +3,8 @@ import test from 'node:test';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset } from './raw-collector';
+import { createHash } from 'node:crypto';
+import { assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, replayRawSourceCapture } from './raw-collector';
 import type { RawDatasetV1 } from './raw-types';
 
 const page = (statusCode = 200) => buildRawPageFromHtml({url:'https://example.edu/policy', html:'<main><h1>Policy</h1><p>Source content.</p></main>', sourceType:'seed', allowedHost:'example.edu',statusCode});
@@ -96,4 +97,32 @@ test('HTML crawl retains document links without fetching them or fetching anothe
     assert.ok(result.pages[0].documents.some(document=>document.url.endsWith('/policy.pdf')));
     assert.ok(fs.existsSync(path.join(dir,'test.provenance.json')));
   } finally {globalThis.fetch=original;fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('opt-in source capture retains original HTML and its hash even when collection validation fails', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-raw-source-'));
+  const original = globalThis.fetch;
+  const html = '<main><h1>Health</h1><p><a href="/book">Appointment portal</a></p></main>';
+  globalThis.fetch = async () => new Response(html, {headers:{'content-type':'text/html'}});
+  try {
+    await assert.rejects(() => collectRawDataset({dataset:'health',seedUrls:['https://example.edu/health'],
+      allowedHost:'example.edu',outputPath:path.join(dir,'health.raw.json'),attempts:1,maxDetailPages:0,
+      minimumSuccessfulPages:2,retainSourceHtml:true}), /expected at least 2/);
+    assert.ok(!fs.existsSync(path.join(dir,'health.raw.json')));
+    const capture = JSON.parse(fs.readFileSync(path.join(dir,'health-sources.raw.json'),'utf8'));
+    assert.equal(capture.schemaVersion,1);
+    assert.equal(capture.pages.length,1);
+    assert.equal(capture.pages[0].html,html);
+    assert.equal(capture.pages[0].contentHash,createHash('sha256').update(html).digest('hex'));
+    assert.equal(capture.pages[0].requestedUrl,'https://example.edu/health');
+    assert.equal(capture.pages[0].statusCode,200);
+    assert.equal(capture.pages[0].sourceType,'seed');
+    assert.ok(fs.existsSync(path.join(dir,'health-sources.provenance.json')));
+    const replayed = replayRawSourceCapture(capture);
+    assert.equal(replayed.pages[0].fetchedAt,capture.pages[0].fetchedAt);
+    assert.equal(replayed.collectedAt,capture.generatedAt);
+    assert.ok(replayed.pages[0].sections[0].text.includes('Appointment portal (https://example.edu/book)'));
+    capture.pages[0].html += 'changed';
+    assert.throws(() => replayRawSourceCapture(capture), /hash mismatch/);
+  } finally { globalThis.fetch=original; fs.rmSync(dir,{recursive:true,force:true}); }
 });

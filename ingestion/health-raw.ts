@@ -19,6 +19,7 @@ async function run() {
   console.log('Collecting health raw dataset...');
   const dataset = await collectRawDataset({
     dataset: 'health',
+    retainSourceHtml: true,
     seedUrls: SEED_URLS,
     outputPath: OUTPUT_PATH,
     allowedHosts: ALLOWED_HOSTS,
