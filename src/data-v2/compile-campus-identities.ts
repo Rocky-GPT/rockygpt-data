@@ -9,6 +9,7 @@ import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtif
 import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, type AliasLedger, type AliasRecord, type ReviewedAlias } from './identity-aliases';
 import type { ReviewedBuilding } from './campus-buildings';
 import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
+import { compileSubjectIdentities, courseSubjectsArtifact, type CourseSubjectsArtifact, type CourseSubjectsInput } from './course-subjects';
 import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
 
 type Row = Record<string, unknown>;
@@ -137,11 +138,11 @@ export function catalogConvenersArtifact(raw: unknown): Record<string, unknown> 
 export interface CompiledIdentityArtifacts {
   registry: CampusIdentities; report: IdentityCoverageReport; eventOrganizers: EventOrganizersArtifact;
   courseIdentities: CourseIdentitiesArtifact; requirementGroups: RequirementGroupsArtifact;
-  campusBuildings: CampusBuildingsArtifact; campusSchools: CampusSchoolsArtifact;
+  campusBuildings: CampusBuildingsArtifact; campusSchools: CampusSchoolsArtifact; courseSubjects: CourseSubjectsArtifact;
 }
-/** Inputs outside the release snapshot: Archway captures, the committed campus map and the reviewed schools. */
+/** Inputs outside the release snapshot: Archway captures, the committed campus map, the reviewed schools and the catalog's subject list. */
 export interface IdentityInputs extends ArchwayIdentityInputs {
-  campusMap?: unknown; campusSchools?: ReviewedSchools;
+  campusMap?: unknown; campusSchools?: ReviewedSchools; courseSubjects?: CourseSubjectsInput;
   identityReviews?: { aliases?: ReviewedAlias[]; buildings?: ReviewedBuilding[] };
 }
 export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, inputs: IdentityInputs = {}): CompiledIdentityArtifacts {
@@ -262,6 +263,9 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const places = compileBuildingIdentities(campusBuildings, entities, contactRows);
   entities.push(...places.buildings);
   unresolved.push(...places.unresolved);
+  const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects);
+  entities.push(...compileSubjectIdentities(subjects.artifact, snapshot.artifacts.courses, ledger));
+  unresolved.push(...subjects.unresolved);
   applyPublishedAliases(entities, recordRows, ledger);
   const reviewedAliases = applyReviewedAliases(entities, inputs.identityReviews?.aliases ?? [], ledger);
   unresolved.push(...reviewedAliases.unresolved);
@@ -276,7 +280,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   }
   const courseIdentities = compileCourseIdentities(snapshot.artifacts.courses);
   const requirementGroups = compileRequirementGroups(snapshot.artifacts.programs, registry, courseIdentities);
-  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools) };
+  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact };
 }
 function listStrings(value: unknown): string[] { return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []; }
 

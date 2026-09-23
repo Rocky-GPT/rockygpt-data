@@ -47,7 +47,7 @@ export function allowedLoss(previous: number): number {
 
 /** Evidence row IDs are regenerated in every release; the fact is source, type and target. */
 function relationshipKey(source: string, relation: CampusIdentityRelationship): string {
-  const target = relation.type === 'profile_course'
+  const target = 'target_record' in relation
     ? ['record', relation.target_record.collection, relation.target_record.source_key, relation.target_record.source_record_key]
     : ['entity', relation.target_entity_id];
   return JSON.stringify([source, relation.type, ...target]);
@@ -104,7 +104,7 @@ export function compareIdentityRegistries(
   for (const entity of previous.entities) {
     if (!current.has(entity.id)) continue; // Already counted as an identity change.
     for (const relation of entity.relationships || []) {
-      if (relation.type !== 'profile_course' && !current.has(relation.target_entity_id)) continue;
+      if ('target_entity_id' in relation && !current.has(relation.target_entity_id)) continue;
       comparable[relation.type] = (comparable[relation.type] || 0) + 1;
       if (!candidateRelationships.has(relationshipKey(entity.id, relation))) {
         report.lost_relationships_by_type[relation.type] = (report.lost_relationships_by_type[relation.type] || 0) + 1;

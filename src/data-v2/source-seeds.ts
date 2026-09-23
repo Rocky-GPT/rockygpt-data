@@ -33,4 +33,6 @@ export const SOURCES: SourceSeed[] = [
   { key: 'campus-map', title: 'Ramapo Campus Map', url: 'https://map.ramapo.edu/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'map' },
   // Repository-static: the reviewed capture of the official schools page.
   { key: 'ramapo-schools', title: 'Ramapo Schools', url: 'https://www.ramapo.edu/academics/schools/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'schools' },
+  // Repository-static: the committed capture of the catalog's department list.
+  { key: 'course-subjects', title: 'Ramapo Catalog Subjects', url: 'https://catalog.ramapo.edu/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'courses' },
 ];
