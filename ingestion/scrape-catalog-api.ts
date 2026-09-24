@@ -11,7 +11,8 @@
 
 import fs from 'fs';
 import path from 'path';
-import { load } from 'cheerio';
+import { load, type CheerioAPI } from 'cheerio';
+import { catalogDepartments, catalogSettings, type CatalogDepartment, type CatalogSettings, type PageLayout } from './catalog-page-settings';
 import { fetchWithPolicy } from './http-client';
 import {
   assertCollectionCount,
@@ -33,6 +34,8 @@ const COURSES_JSON = publicPath('data', 'courses.json');
 const FACULTY_JSON = path.join(process.cwd(), 'data', 'normalized', 'faculty.json');
 const FACULTY_RAW_JSON = path.join(process.cwd(), 'data', 'raw', 'faculty.raw.json');
 const RAW_OUT = path.join(process.cwd(), 'data', 'raw', 'catalog-programs-api.raw.json');
+// Any server-rendered catalog page carries the page layouts; this one also lists every department.
+const CATALOG_DEPARTMENTS_PAGE = 'https://catalog.ramapo.edu/departments';
 
 const API_BASE = 'https://app.coursedog.com/api/v1/cm/ramapo_banner_ethos';
 const HEADERS = {
@@ -87,8 +90,12 @@ interface CoursedogRequirementBlock {
 
 interface CoursedogProgram {
   id: string;
+  programGroupId?: string;
   name?: string;
   code?: string;
+  career?: string;
+  degreeDesignations?: string[];
+  departments?: string[];
   longName?: string;
   catalogFullDescription?: string;
   catalogDescription?: string;
@@ -162,6 +169,15 @@ interface MajorEntry {
   concentrations?: string[];
 
   learningOutcomes?: string[];
+  /** Every field the catalog's program page displays, by tab, under the catalog's own labels. */
+  catalogSections?: Array<{ title: string; fields: Array<{ key: string; label: string; text: string }> }>;
+  learningGoalsAndOutcomes?: string;
+  sampleGraduationPlan?: string;
+  /** The catalog's Concentrations field, as displayed. */
+  catalogConcentrations?: string;
+  programLevel?: string;
+  degreeDesignations?: string[];
+  conveningGroups?: string[];
 }
 
 interface SchoolGroup {
@@ -229,11 +245,41 @@ async function apiPost(path: string, body: unknown): Promise<unknown> {
   return res.json();
 }
 
-function stripHtml(html: string): string {
+/** Linked programs and courses display their catalog names, not the text stored with the link. */
+interface CatalogNames { program(id: string): string | undefined; course(id: string): string | undefined }
+
+function resolveCatalogLinks($: CheerioAPI, names?: CatalogNames) {
+  if (!names) return;
+  $('a[data-program-id]').each((_, element) => {
+    const name = names.program($(element).attr('data-program-id') || '');
+    if (name) $(element).text(name);
+  });
+  $('a[data-course-id]').each((_, element) => {
+    const name = names.course($(element).attr('data-course-id') || '');
+    if (name) $(element).text(name);
+  });
+}
+
+function stripHtml(html: string, names?: CatalogNames): string {
   const $ = load(html);
   $('script,style').remove();
+  resolveCatalogLinks($, names);
   $('p,li,div,br,h1,h2,h3,h4').before(' ').after(' ');
   return $.root().text().replace(/\s+/g, ' ').trim();
+}
+
+/** Catalog rich text with its structure kept: each paragraph, heading and list item on its
+ * own line, bulleted items marked and numbered items keeping their numbers. */
+export function catalogText(html: string, names?: CatalogNames): string {
+  const $ = load(html);
+  $('script,style').remove();
+  resolveCatalogLinks($, names);
+  $('li p').each((_, paragraph) => { $(paragraph).before(' ').after(' ').replaceWith($(paragraph).contents()); });
+  $('br').replaceWith('\n');
+  $('ol').each((_, list) => { $(list).children('li').each((index, item) => { $(item).prepend(`${index + 1}. `); }); });
+  $('ul').each((_, list) => { $(list).children('li').prepend('- '); });
+  $('p,li,div,h1,h2,h3,h4,h5,h6,tr').before('\n').after('\n');
+  return $.root().text().split('\n').map(line => line.replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n');
 }
 
 // ─── Extract structured requirements from Coursedog requisitesSimple ──────
@@ -242,7 +288,7 @@ function formatCode(raw: string): string {
   return raw.replace(/([A-Z]+)(\d)/, '$1 $2').trim();
 }
 
-export function parseRule(rule: CoursedogRule, courseMap: Map<string, string>): ReqRule {
+export function parseRule(rule: CoursedogRule, courseMap: Map<string, string>, references?: Map<string, string>): ReqRule {
   const res: ReqRule = { condition: rule.condition || '' };
   const constraints: Record<string, unknown> = Object.fromEntries(Object.entries(rule).filter(([key]) =>
     !['id', 'condition', 'name', 'description', 'notes', 'restriction', 'credits', 'subRules', 'value'].includes(key)));
@@ -258,9 +304,9 @@ export function parseRule(rule: CoursedogRule, courseMap: Map<string, string>): 
   if (count !== undefined) res.count = count;
   if (credits !== undefined) res.credits = credits;
   if (rule.name) res.name = stripHtml(rule.name);
-  const note = [rule.description, rule.notes].filter((value): value is string => typeof value === 'string' && Boolean(value.trim())).map(stripHtml).join('\n');
+  const note = [rule.description, rule.notes].filter((value): value is string => typeof value === 'string' && Boolean(value.trim())).map(value => catalogText(value)).join('\n');
   if (note) res.note = note;
-  if (Array.isArray(rule.subRules)) res.subRules = rule.subRules.map(sub => parseRule(sub, courseMap));
+  if (Array.isArray(rule.subRules)) res.subRules = rule.subRules.map(sub => parseRule(sub, courseMap, references));
   if (typeof rule.value === 'string') res.text = stripHtml(rule.value);
   else if (rule.value && typeof rule.value === 'object') {
     const values = rule.value.values?.length ? rule.value.values : rule.value.subSelections;
@@ -272,7 +318,8 @@ export function parseRule(rule: CoursedogRule, courseMap: Map<string, string>): 
           continue;
         }
         const codes = val.value.map(value => {
-          const code = formatCode(value.replace(/\s+/g, ''));
+          // Most options name a course code; some cite the course's catalog group ID instead.
+          const code = formatCode((references?.get(value) ?? value).replace(/\s+/g, ''));
           return { code, name: courseMap.get(code.replace(/\s+/g, '')) || '' };
         });
         res.items.push({ codes, logic: typeof val.logic === 'string' ? val.logic : '' });
@@ -283,7 +330,7 @@ export function parseRule(rule: CoursedogRule, courseMap: Map<string, string>): 
   return res;
 }
 
-export function extractRequirements(program: CoursedogProgram, courseMap: Map<string, string>): MajorEntry['requirements'] {
+export function extractRequirements(program: Pick<CoursedogProgram, 'requisites'>, courseMap: Map<string, string>, references?: Map<string, string>): MajorEntry['requirements'] {
   const blocks = program.requisites?.requisitesSimple;
   if (!blocks?.length) return undefined;
 
@@ -293,7 +340,7 @@ export function extractRequirements(program: CoursedogProgram, courseMap: Map<st
     if (block.showInCatalog === false) continue;
     const sectionName = (block.name || block.label || 'Requirements').trim();
     if (block.rules && block.rules.length > 0) {
-      const parsed = block.rules.map(rule => parseRule(rule, courseMap));
+      const parsed = block.rules.map(rule => parseRule(rule, courseMap, references));
         result.push({
           section: sectionName,
           note: block.description ? stripHtml(block.description) : undefined,
@@ -513,8 +560,8 @@ function cleanRequirementCourses(reqs: NonNullable<MajorEntry['requirements']>):
   });
 }
 
-function cleanDescription(raw: string): string {
-  return stripHtml(raw)
+function cleanDescription(raw: string, names?: CatalogNames): string {
+  return stripHtml(raw, names)
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -564,7 +611,68 @@ export function catalogRecords(value: unknown): Record<string, any>[] {
   throw new Error('Unrecognized catalog response; refusing a partial catalog.');
 }
 
-export interface CatalogCapture { scrapedAt: string; programs: CoursedogProgram[]; courses: Record<string, any>[] }
+export interface CatalogCapture {
+  scrapedAt: string; programs: CoursedogProgram[]; courses: Record<string, any>[];
+  /** The catalog's page layouts and department names, captured with the records they describe. */
+  settings?: CatalogSettings; departments?: CatalogDepartment[];
+}
+
+const CONDITIONS: Record<string, string> = {
+  allOf: 'all of', completedAllOf: 'complete all of', anyOf: 'any of', completedAnyOf: 'complete any of',
+  catalogBlock: '', freeformText: '',
+};
+
+/** Requirements as the catalog lists them: each section, each rule by its published name and
+ * condition, every course option and note. The structured requirements remain the record. */
+export function requirementsText(sections: NonNullable<MajorEntry['requirements']>): string {
+  const lines: string[] = [];
+  const rule = (item: ReqRule, depth: number) => {
+    const pad = '  '.repeat(depth);
+    const condition = item.condition === 'completedAtLeastXOf' && item.count !== undefined ? `complete at least ${item.count} of`
+      : CONDITIONS[item.condition] ?? item.condition;
+    const head = [item.name, condition, item.text].filter(Boolean).join(': ');
+    if (head) lines.push(`${pad}${head}`);
+    if (item.credits !== undefined) lines.push(`${pad}  ${item.credits} credits`);
+    for (const option of item.items ?? []) {
+      lines.push(`${pad}  ${option.codes.map(course => [course.code, course.name].filter(Boolean).join(' ')).join(option.logic === 'or' ? ' or ' : ', ')}`);
+    }
+    for (const note of item.note?.split('\n') ?? []) lines.push(`${pad}  ${note}`);
+    for (const sub of item.subRules ?? []) rule(sub, depth + 1);
+  };
+  for (const section of sections) {
+    lines.push(section.section);
+    for (const note of section.note?.split('\n') ?? []) lines.push(`  ${note}`);
+    for (const course of section.courses ?? []) lines.push(`  ${[course.code, course.name].filter(Boolean).join(' ')}`);
+    if (section.rule) rule(section.rule, 1);
+  }
+  return lines.join('\n');
+}
+
+type CatalogSection = NonNullable<MajorEntry['catalogSections']>[number];
+
+/** The fields a catalog page displays, tab by tab, as their displayed text. Requirements are kept
+ * in their structured form elsewhere; empty fields display nothing and are left out. */
+function pageSections(
+  source: Record<string, unknown>, layout: PageLayout, names: CatalogNames, departments: Map<string, string>,
+): CatalogSection[] {
+  const customFields = (source.customFields && typeof source.customFields === 'object' ? source.customFields : {}) as Record<string, unknown>;
+  const text = (key: string, value: unknown): string => {
+    if (typeof value === 'string') return key === 'catalogFullDescription' || /<[a-z]/i.test(value) ? catalogText(value, names) : value.trim();
+    if (Array.isArray(value)) {
+      // A department select stores department IDs; the page shows their names.
+      return value.filter((item): item is string => typeof item === 'string' && Boolean(item.trim()))
+        .map(item => departments.get(item) ?? item.trim()).join('\n');
+    }
+    return typeof value === 'number' ? String(value) : '';
+  };
+  return layout.tabs.map(tab => ({
+    title: tab.title,
+    fields: tab.fields.filter(field => field.key !== 'requisites' && field.label !== field.key).flatMap(field => {
+      const value = text(field.key, field.key in customFields ? customFields[field.key] : source[field.key]);
+      return value ? [{ key: field.key, label: field.label, text: value }] : [];
+    }),
+  })).filter(tab => tab.fields.length);
+}
 
 /** Catalog fields establish affiliations; exact, unique profile URLs can add contact details. */
 function catalogPeople(program: CoursedogProgram, field: 'rJQmj' | 'xiQxl', profiles: FacultyProfile[]): NonNullable<MajorEntry['faculty']> {
@@ -597,15 +705,45 @@ export function normalizeCatalogCapture(capture: CatalogCapture, profiles: Facul
   if (!Number.isFinite(Date.parse(capture.scrapedAt)) || !Array.isArray(capture.programs) || !Array.isArray(capture.courses)) throw new Error('Expected a dated program and course capture.');
   const courses: Record<string, Record<string, unknown>> = {};
   const courseMap = new Map<string, string>();
+  // Course group and record IDs, which some requirements and links cite instead of a code.
+  const references = new Map<string, string>();
+  const active: Record<string, any>[] = [];
   for (const source of capture.courses) {
     if (typeof source.code !== 'string' || !source.code.trim()) throw new Error('A catalog course has no code.');
+    const compact = source.code.replace(/\s+/g, '');
+    for (const key of [source.courseGroupId, source.id, source._id]) if (typeof key === 'string' && key.trim()) references.set(key.trim(), compact);
     if (source.status && String(source.status).toLowerCase() !== 'active') continue;
+    active.push(source);
+    courseMap.set(compact, String(source.longName || source.name || '').trim());
+  }
+  const programNames = new Map<string, string>();
+  for (const source of capture.programs) {
+    for (const key of [source.code, source.programGroupId, source.id]) if (typeof key === 'string' && key.trim()) programNames.set(key.trim(), getProgramDisplayName(source));
+  }
+  const names: CatalogNames = {
+    program: id => programNames.get(id),
+    course: id => { const code = references.get(id) ?? (courseMap.has(id) ? id : undefined); return code ? formatCode(code) : undefined; },
+  };
+  const departments = new Map((capture.departments ?? []).map(department => [department.id, department.name]));
+  // Programs cite departments by ID; course records embed each department with its display name.
+  const departmentNames = (values: unknown): string[] => dedupeStrings((Array.isArray(values) ? values : []).map(value => {
+    if (typeof value === 'string') return departments.get(value);
+    const department = value && typeof value === 'object' ? value as Record<string, unknown> : {};
+    return typeof department.displayName === 'string' ? department.displayName : departments.get(String(department.id ?? ''));
+  }));
+  for (const source of active) {
     const code = formatCode(source.code.replace(/\s+/g, ''));
     const name = String(source.longName || source.name || '').trim();
-    const value = { code, name, description: stripHtml(source.description || ''), credits: source.credits?.creditHours ?? source.credits ?? '', attributes: source.attributes || [] };
+    const requisites = extractRequirements(source, courseMap, references);
+    const conveningGroups = departmentNames(source.departments);
+    const value = {
+      code, name, description: stripHtml(source.description || '', names), credits: source.credits?.creditHours ?? source.credits ?? '', attributes: source.attributes || [],
+      ...(requisites?.length ? { requisites, requisitesText: requirementsText(requisites) } : {}),
+      ...(conveningGroups.length ? { conveningGroups } : {}),
+      ...(typeof source.college === 'string' && source.college.trim() ? { school: source.college.trim() } : {}),
+    };
     if (courses[code] && JSON.stringify(courses[code]) !== JSON.stringify(value)) throw new Error(`Conflicting catalog course code ${code}.`);
     courses[code] = value;
-    courseMap.set(code.replace(/\s+/g, ''), name);
   }
   const byCode = new Map<string, MajorEntry>();
   for (const source of capture.programs) {
@@ -615,8 +753,13 @@ export function normalizeCatalogCapture(capture: CatalogCapture, profiles: Facul
     if (!code) throw new Error('A catalog program has no code.');
     const type = inferProgramType(source) || (inferProgramKind(source) === 'certificate' ? 'graduate' : 'undergraduate');
     const catalogUrl = `https://catalog.ramapo.edu/programs/${code}`;
-    const requirements = cleanRequirementCourses([...(extractRequirements(source, courseMap) || []), ...(extractFreeformRequirements(source) || [])]);
-    const description = cleanDescription(source.catalogFullDescription || source.catalogDescription || source.descriptionHtml || '');
+    const requirements = cleanRequirementCourses([...(extractRequirements(source, courseMap, references) || []), ...(extractFreeformRequirements(source) || [])]);
+    const description = cleanDescription(source.catalogFullDescription || source.catalogDescription || source.descriptionHtml || '', names);
+    const catalogSections = capture.settings ? pageSections(source, capture.settings.program, names, departments) : [];
+    const displayed = (label: string) => catalogSections.flatMap(section => section.fields).find(field => field.label === label)?.text;
+    const degreeDesignations = dedupeStrings(source.degreeDesignations ?? []);
+    // The page shows the Convening Group field; the record's own department list is the fallback.
+    const conveningGroups = departmentNames(source.customFields?.YdbEO ?? source.departments);
     const faculty = catalogPeople(source, 'xiQxl', profiles);
     const conveners = catalogPeople(source, 'rJQmj', profiles);
     const concentrations = dedupeStrings((source.concentrations || []).map(item => item.name));
@@ -632,6 +775,13 @@ export function normalizeCatalogCapture(capture: CatalogCapture, profiles: Facul
       ...(conveners.length === 1 ? { convener: conveners[0] } : {}),
       ...(concentrations.length ? { concentrations } : {}),
       ...(learningOutcomes.length ? { learningOutcomes } : {}),
+      ...(catalogSections.length ? { catalogSections } : {}),
+      ...Object.fromEntries(([
+        ['learningGoalsAndOutcomes', 'Learning Goals and Outcomes'], ['sampleGraduationPlan', 'Sample Graduation Plan'],
+        ['catalogConcentrations', 'Concentrations'], ['programLevel', 'Program Level'],
+      ] as const).flatMap(([key, label]) => { const text = displayed(label); return text ? [[key, text]] : []; })),
+      ...(degreeDesignations.length ? { degreeDesignations } : {}),
+      ...(conveningGroups.length ? { conveningGroups } : {}),
     };
     const previous = byCode.get(code);
     if (previous && JSON.stringify(previous) !== JSON.stringify(entry)) throw new Error(`Conflicting catalog program code ${code}.`);
@@ -649,8 +799,14 @@ export function normalizeCatalogCapture(capture: CatalogCapture, profiles: Facul
 }
 
 async function main() {
+  const page = await fetchWithPolicy(CATALOG_DEPARTMENTS_PAGE, { headers: { ...HEADERS, accept: 'text/html,application/xhtml+xml' } },
+    { expectedContentTypes: ['text/html'], maxResponseBytes: 16 * 1024 * 1024 });
+  if (!page.ok) throw new Error(`${page.status} ${page.statusText} for ${CATALOG_DEPARTMENTS_PAGE}`);
+  const html = page.text();
+  const settings = catalogSettings(html);
+  const departments = catalogDepartments(html);
   const searchBody = { skip: 0, limit: 500, formatDependencies: true,
-    columns: ['name', 'code', 'longName', 'college', 'degreeDesignation', 'status', 'catalogFullDescription', 'catalogDescription', 'totalCredits', 'requisites', 'learningOutcomes', 'concentrations', 'customFields'] };
+    columns: ['name', 'code', 'longName', 'programGroupId', 'college', 'career', 'degreeDesignation', 'degreeDesignations', 'departments', 'status', 'catalogFullDescription', 'catalogDescription', 'totalCredits', 'requisites', 'learningOutcomes', 'concentrations', 'customFields'] };
   let programs: CoursedogProgram[];
   try { programs = catalogRecords(await apiPost('/programs/search/%24filters', searchBody)) as CoursedogProgram[]; }
   catch { programs = catalogRecords(await apiGet('/programs?limit=500&formatDependencies=true')) as CoursedogProgram[]; }
@@ -658,10 +814,10 @@ async function main() {
   assertCollectionCount({ dataset: 'Coursedog catalog programs', count: programs.length, minimum: 50,
     previousFilePath: RAW_OUT, minimumPreviousRatio: 0.8 });
   const courses = catalogRecords(await apiPost('/courses/search/%24filters', { skip: 0, limit: 10000,
-    columns: ['code', 'name', 'longName', 'status', 'attributes', 'description', 'credits'] }));
+    columns: ['code', 'name', 'longName', 'courseGroupId', 'status', 'attributes', 'description', 'credits', 'college', 'departments', 'requisites'] }));
   if (courses.length >= 10000) throw new Error('Course response reached its page limit; refusing an incomplete catalog.');
   assertCollectionCount({ dataset: 'Coursedog catalog courses', count: courses.length, minimum: 1000 });
-  const capture: CatalogCapture = { scrapedAt: new Date().toISOString(), programs, courses };
+  const capture: CatalogCapture = { scrapedAt: new Date().toISOString(), programs, courses, settings, departments };
   const facultyPath = fs.existsSync(FACULTY_JSON) ? FACULTY_JSON : FACULTY_RAW_JSON;
   const profiles = fs.existsSync(facultyPath) ? JSON.parse(fs.readFileSync(facultyPath, 'utf8')) as FacultyProfile[] : [];
   const normalized = normalizeCatalogCapture(capture, profiles, parseBooleanEnv(process.env.PROGRAMS_INCLUDE_INACTIVE, false));
