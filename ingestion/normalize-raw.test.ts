@@ -26,7 +26,7 @@ function fixture() {
   const html='<div class="callout-no-image"><h1>Professor</h1></div><div id="content-block"><div class="col-lg-12"><h3>Professor</h3><p><strong>Recent Publications</strong></p><ul><li>Complete captured research citation.</li></ul></div></div>';
   put('faculty-sources',{schemaVersion:1,pages:[{requestedUrl:'https://example.edu/faculty/professor',url:'https://example.edu/faculty/professor',role:'profile',school:'School',fetchedAt:captured,status:200,html,contentHash:createHash('sha256').update(html).digest('hex')}]});
   put('hours',[{name:'Library',hours:{Monday:'9am-5pm'},sourceUrl:'https://example.edu/library',collectedAt:captured},{name:'Gym',hours:{Monday:'9am-5pm'},notes:'Fall 2026',sourceUrl:'https://example.edu/gym',collectedAt:captured}]);
-  for(const name of ['transportation','directory','housing','health','counseling','safety','major-page-links']) {
+  for(const name of ['transportation','directory','housing','health','counseling','safety','major-page-links','office-pages']) {
     put(name,dataset(name));
     put(`${name}-sources`,{schemaVersion:1,dataset:name,generatedAt:captured,collectionSucceeded:true,pages:[]});
   }
