@@ -100,3 +100,15 @@ test('unknown catalog links, a page with no program of its own, and a redirect e
   assert.deepEqual(moved.programCodes, []);
   assert.match(moved.limitations.join(' '), /led to https:\/\/www\.ramapo\.edu\/majors-minors\/, titled "Majors & Minors"/);
 });
+
+test('a page that also describes its minor links its first catalog program as its own', () => {
+  const content = parseMajorPage(`<h1>Africana Studies</h1><div id="content-block">
+    <h3>Classes you can take:</h3><a href="https://catalog.ramapo.edu/programs/AH-BA-AFST">SEE ALL COURSES</a>
+    <h3>Africana Studies Minor</h3><a href="https://catalog.ramapo.edu/programs/minorGroupId">Minor</a></div>`,
+  `${MAJORS}/africana-studies/`);
+  const listing = { url: `${MAJORS}/africana-studies/`, name: 'Africana Studies', degrees: ['Bachelor of Arts'], offers: ['Major', 'Minor'] };
+  const page = majorPage(listing, content, listing.url, new Set(['AH-BA-AFST', 'AH-MN-AFST']), new Map([['minorGroupId', 'AH-MN-AFST']]));
+  assert.deepEqual(page.programCodes, ['AH-BA-AFST']);
+  assert.deepEqual(page.otherProgramCodes, ['AH-MN-AFST']);
+  assert.deepEqual(page.relatedProgramCodes, []);
+});
