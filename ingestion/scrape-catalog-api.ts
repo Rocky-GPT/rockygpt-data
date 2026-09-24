@@ -159,6 +159,8 @@ interface MajorEntry {
   catalogCode?: string;
   catalogUrl?: string;
   totalCredits?: string;
+  /** The requirements as the catalog lists them; the structured sections remain the record. */
+  requirementsText?: string;
   requirements?: Array<{
     section: string;
     note?: string;
@@ -736,11 +738,16 @@ export function normalizeCatalogCapture(capture: CatalogCapture, profiles: Facul
     const name = String(source.longName || source.name || '').trim();
     const requisites = extractRequirements(source, courseMap, references);
     const conveningGroups = departmentNames(source.departments);
+    // The catalog page shows a course's maximum credit hours as its Credits (4 for a stored
+    // "0 TO 4"); the stored hours are kept beside it as creditHours.
+    const hours = source.credits?.creditHours ?? source.credits ?? '';
+    const shown = hours && typeof hours === 'object' ? hours.max : undefined;
     const value = {
-      code, name, description: stripHtml(source.description || '', names), credits: source.credits?.creditHours ?? source.credits ?? '', attributes: source.attributes || [],
-      ...(requisites?.length ? { requisites, requisitesText: requirementsText(requisites) } : {}),
-      ...(conveningGroups.length ? { conveningGroups } : {}),
-      ...(typeof source.college === 'string' && source.college.trim() ? { school: source.college.trim() } : {}),
+      code, name, description: stripHtml(source.description || '', names), attributes: source.attributes || [],
+      ...(typeof shown === 'number' && Number.isFinite(shown) && shown >= 0 ? { credits: shown, creditHours: hours } : { credits: hours }),
+      // Written for every course, empty when the catalog has none, so absence reads as unpublished.
+      requisites: requisites ?? [], requisitesText: requisites?.length ? requirementsText(requisites) : null,
+      conveningGroups, school: typeof source.college === 'string' && source.college.trim() ? source.college.trim() : null,
     };
     if (courses[code] && JSON.stringify(courses[code]) !== JSON.stringify(value)) throw new Error(`Conflicting catalog course code ${code}.`);
     courses[code] = value;
@@ -770,7 +777,7 @@ export function normalizeCatalogCapture(capture: CatalogCapture, profiles: Facul
       school: normalizeCatalogSchool(source.college).school, programKind: inferProgramKind(source),
       ...(description ? { description } : {}),
       ...(source.totalCredits !== undefined && source.totalCredits !== '' ? { totalCredits: String(source.totalCredits) } : {}),
-      ...(requirements.length ? { requirements } : {}),
+      ...(requirements.length ? { requirements, requirementsText: requirementsText(requirements) } : {}),
       ...(faculty.length ? { faculty } : {}),
       ...(conveners.length === 1 ? { convener: conveners[0] } : {}),
       ...(concentrations.length ? { concentrations } : {}),

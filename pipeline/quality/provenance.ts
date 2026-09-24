@@ -46,6 +46,7 @@ export const SOURCE_RAW_DATASETS: Record<string, string[]> = {
   health: ['health', 'health-sources'],
   counseling: ['counseling', 'counseling-sources'],
   faculty: ['faculty', 'faculty-sources'],
+  'graduation-plans': ['graduation-plans'],
 };
 
 export const RAW_DATASET_FILES: Record<string, string> = {
@@ -69,6 +70,7 @@ export const RAW_DATASET_FILES: Record<string, string> = {
   counseling: 'counseling.raw.json',
   faculty: 'faculty.raw.json',
   'faculty-sources': 'faculty-sources.raw.json',
+  'graduation-plans': 'graduation-plans.raw.json',
   'safety-sources': 'safety-sources.raw.json',
   'directory-sources': 'directory-sources.raw.json',
   'transportation-sources': 'transportation-sources.raw.json',

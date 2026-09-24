@@ -56,7 +56,9 @@ test('catalog rebuild uses current explicit fields without guessed faculty, conv
   assert.equal(program.requirements?.length, 2);
   assert.equal(program.requirements?.[1].note, 'Mandatory preface. One choice. Additional restriction.');
   assert.equal(normalized.programs.generatedAt, raw.scrapedAt);
-  assert.deepEqual(normalized.courses['CMPS 147'].credits, { min: 3.5, max: 4, operator: 'TO' });
+  // The catalog page displays the maximum credit hours; the stored hours stay beside it.
+  assert.equal(normalized.courses['CMPS 147'].credits, 4);
+  assert.deepEqual(normalized.courses['CMPS 147'].creditHours, { min: 3.5, max: 4, operator: 'TO' });
   const faculty = '<a href="https://www.ramapo.edu/snh/faculty/person/">Person</a>';
   const listedOnly = normalizeCatalogCapture({ ...raw, programs: [{ ...base, customFields: { xiQxl: faculty, other: faculty } }] }, profiles).programs.schools[0].majors[0];
   assert.equal(listedOnly.faculty?.[0].email, 'person@example.edu');
@@ -171,5 +173,6 @@ test('course prerequisites keep their rules, options and placement-test notes', 
     '      - SAT MATH (minimum score 580)',
   ].join('\n'));
   assert.equal((course.requisites as Array<{ section: string }>)[0].section, 'Prerequisite');
-  assert.equal((normalized.courses['MATH 110'] as Record<string, unknown>).requisites, undefined);
+  // A course without them publishes none, recorded as empty rather than left out.
+  assert.deepEqual([(normalized.courses['MATH 110'] as Record<string, unknown>).requisites, (normalized.courses['MATH 110'] as Record<string, unknown>).requisitesText], [[], null]);
 });
