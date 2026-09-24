@@ -26,6 +26,12 @@ from playwright.sync_api import TimeoutError as PwTimeout
 from playwright.sync_api import sync_playwright
 
 
+# A browser's user agent, as the other collectors send: requests never name the project.
+USER_AGENT = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+)
+
 JOIN_LINK_RE = re.compile(
     r"https?://groupme\.com/join_(?:group|community)/\d+/[A-Za-z0-9_-]{8}", re.I
 )
@@ -104,7 +110,7 @@ def sanitize_groupme_output(payload: Dict[str, Any]) -> Dict[str, Any]:
 def groupme_get(url: str, token: Optional[str]) -> Dict[str, Any]:
     headers: Dict[str, str] = {
         "Accept": "application/json",
-        "User-Agent": "RockyGPT groupme fetcher",
+        "User-Agent": USER_AGENT,
     }
     if token:
         headers["X-Access-Token"] = token
@@ -188,7 +194,7 @@ def list_directory_groups_page(
     url = f"https://api.groupme.com/v3/directories/{directory_id}/groups"
     headers: Dict[str, str] = {
         "Accept": "application/json",
-        "User-Agent": "RockyGPT groupme fetcher",
+        "User-Agent": USER_AGENT,
         "X-Access-Token": token,
     }
     r = requests.get(url, headers=headers, params=params, timeout=30)

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import pLimit from 'p-limit';
+import { DEFAULT_USER_AGENT } from './http-client';
 
 interface MapBuilding {
   key: string;
@@ -76,7 +77,6 @@ const REQUEST_TIMEOUT_MS = 15000;
 const CONCURRENCY = 8;
 const MAX_SUBPAGES_PER_URL = 12;
 const MAX_RAW_ENTRIES_PER_SCOPE = 1200;
-const USER_AGENT = 'RockyGPT-MapRoomEnricher/1.0 (+https://www.ramapo.edu/map/)';
 const ALLOW_EXISTING_ROOMS = process.env.RESET_EXISTING_ROOMS !== '1';
 const OFFICE_TOKEN_STOP_WORDS = new Set([
   'academic',
@@ -408,7 +408,7 @@ async function fetchText(url: string): Promise<string> {
       redirect: 'follow',
       signal: controller.signal,
       headers: {
-        'User-Agent': USER_AGENT,
+        'User-Agent': DEFAULT_USER_AGENT,
       },
     });
 
