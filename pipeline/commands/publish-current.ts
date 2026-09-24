@@ -543,6 +543,7 @@ const RELEASE_ARTIFACT_FILES: Record<string, string> = {
   'hours-omissions': 'data/normalized/hours-omissions.json',
   programs: 'public/data/programs.json',
   'graduation-plans': 'public/data/graduation-plans.json',
+  'major-pages': 'public/data/major-pages.json',
   menu: 'data/normalized/menu.json',
   'menu-week': 'data/normalized/menu-week.json',
   'menu-context': 'data/context/dining/menu.md',
@@ -898,6 +899,7 @@ async function main(): Promise<void> {
       identityReviews: readJson('src/reference/campus-identity-reviews.json'),
       courseSubjects: courseSubjectsInput(readJson('src/reference/course-subjects.source.json'), readJson('src/reference/course-subjects.json')),
       graduationPlans: readJson('public/data/graduation-plans.json'),
+      majorPages: readJson('public/data/major-pages.json'),
     });
     const releaseArtifactCount = sourceArtifactCount + identityArtifacts.count;
     if (criticalCount !== Object.keys(CRITICAL_FACT_VALUES_V2).length) throw new Error('Critical fact verification failed.');

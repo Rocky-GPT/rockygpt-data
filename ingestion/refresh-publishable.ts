@@ -31,6 +31,8 @@ export const SOURCE_REFRESH_SCRIPTS: Record<string, string[]> = {
   health: ['fetch:health:raw'],
   counseling: ['fetch:counseling:raw'],
   faculty: ['fetch:faculty'],
+  'graduation-plans': ['fetch:graduation-plans'],
+  'major-pages': ['fetch:major-pages'],
 };
 
 // The workflow runs daily. Renew a source that would cross its SLA before
@@ -136,7 +138,7 @@ function runNpmScript(script: string, rawOnly: boolean): void {
   }
 }
 
-function assertRefreshCoverage(): void {
+export function assertRefreshCoverage(): void {
   const required = Object.keys(SOURCE_RAW_DATASETS).sort();
   const configured = Object.keys(SOURCE_REFRESH_SCRIPTS).sort();
   if (JSON.stringify(required) !== JSON.stringify(configured)) {

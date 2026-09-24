@@ -44,6 +44,7 @@
     "fetch:programs:catalog": "tsx ingestion/scrape-catalog-api.ts",
     "fetch:course-subjects": "tsx ingestion/course-subjects.ts",
     "fetch:graduation-plans": "tsx ingestion/graduation-plans.ts",
+    "fetch:major-pages": "tsx ingestion/major-pages.ts",
     "normalize:campus-hours": "tsx scripts/backfill-campus-hours.ts",
     "normalize:contacts": "tsx scripts/backfill-contact-fields.ts",
     "normalize:raw": "tsx ingestion/normalize-raw.ts",

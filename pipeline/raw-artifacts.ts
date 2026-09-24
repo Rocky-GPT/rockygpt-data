@@ -24,6 +24,7 @@ export const SOURCE_RAW_ARTIFACT_FILES: Record<string, string[]> = {
   counseling: ['counseling.raw.json', 'counseling-sources.raw.json'],
   faculty: ['faculty.raw.json', 'faculty-sources.raw.json'],
   'graduation-plans': ['graduation-plans.raw.json'],
+  'major-pages': ['major-pages.raw.json'],
 };
 
 export interface ArchivedRawArtifact {

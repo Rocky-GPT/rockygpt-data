@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildCampusHourLocations } from './campus-hours';
 import {
+  assertRefreshCoverage,
   hoursArtifactRequiresRefresh,
   refreshScriptsForArtifactCompatibility,
 } from './refresh-publishable';
@@ -52,4 +53,9 @@ test('artifact compatibility refreshes stale hours once, then accepts filtered o
 
   const filtered = partitionHoursForPublication([expired, ordinary], now).publishable;
   assert.equal(hoursArtifactRequiresRefresh(filtered, now), false);
+});
+
+test('every source with publication provenance has a refresh command', () => {
+  // The daily update stops at this check, before collecting anything, if a source is missed.
+  assert.doesNotThrow(() => assertRefreshCoverage());
 });
