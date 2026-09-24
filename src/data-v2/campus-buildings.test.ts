@@ -82,3 +82,19 @@ test('a human-reviewed map location is a building without room prefixes, only as
   assert.ok(renamed.unresolved.some(u => u.reason.includes('is not published until the review matches') && u.kind === 'unlinked_record'));
   assert.ok(campusBuildingsArtifact(map, [{ ...reviewed[0], concept3d_id: '999' }]).unresolved.some(u => u.reason.includes('not on the committed map') && u.kind === 'no_records'));
 });
+
+test('a reviewed location places a roomless office in its building, citing the building record', () => {
+  const library: CampusIdentity = { id: '00000000-0000-4000-8000-000000000006', kind: 'office', name: 'Library', aliases: [], links: [{ collection: 'contacts', source_key: 'campus-directory', source_record_keys: ['office:library'] }] };
+  const location = { entity_id: library.id, entity: 'Library', concept3d_id: '1133371', building: 'Academic Building D', statement: 'Library in Academic Building D', source_url: 'https://www.ramapo.edu/about/campus-hours/', reviewed_at: '2026-09-24', note: 'Approved.' };
+  const absent = { ...location, entity_id: '00000000-0000-4000-8000-000000000009' };
+  const artifact = campusBuildingsArtifact(map, [], [location, absent, { ...location, concept3d_id: '1133424' }]);
+  // The building's own record carries the statement and its source; the reviewer's note stays in review.
+  assert.deepEqual(artifact.buildings.find(b => b.concept3d_id === '1133371')?.reviewed_locations?.[0],
+    { entity_id: library.id, entity: 'Library', statement: 'Library in Academic Building D', source_url: 'https://www.ramapo.edu/about/campus-hours/', reviewed_at: '2026-09-24' });
+  assert.ok(artifact.unresolved.some(u => u.reason.includes('"Library" names a building that is not published under that name') && u.kind === 'no_records'));
+  const { unresolved } = compileBuildingIdentities(artifact, [library], new Map());
+  assert.deepEqual(library.relationships, [{ type: 'located_at', target_entity_id: buildingIdentityId('1133371'), evidence: [
+    { collection: 'buildings', source_key: artifact.source.source_key, source_record_key: '1133371', field: 'reviewed_locations', source_url: 'https://www.ramapo.edu/about/campus-hours/' },
+  ] }]);
+  assert.ok(unresolved.some(u => u.reason.includes('names no office, facility or venue') && u.kind === 'no_records'));
+});

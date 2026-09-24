@@ -5,8 +5,10 @@
     "Each alias here is a name campus language uses, approved by a person, and is",
     "recorded as human-reviewed rather than source-derived evidence. Each building",
     "here is a campus map location approved as its own building identity even",
-    "though no room prefix places anyone in it. Entries name persistent IDs or",
-    "Concept3D locations, never names to match."
+    "though no room prefix places anyone in it. Each location here places an",
+    "identity that has no published room in a building: an official page makes",
+    "the statement, and a person decided which identity and building it names.",
+    "Entries name persistent IDs or Concept3D locations, never names to match."
   ],
   "aliases": [
     {
@@ -23,6 +25,18 @@
       "name": "Birch Mansion",
       "reviewed_at": "2026-09-23",
       "note": "Approved as its own building identity, so \"Birch Mansion\" resolves to it and not to the Birch Tree Inn."
+    }
+  ],
+  "locations": [
+    {
+      "entity_id": "00a23005-150e-4640-b07e-0cb350c4bb6f",
+      "entity": "Library",
+      "concept3d_id": "1133431",
+      "building": "Peter P. Mercer Learning Commons",
+      "statement": "Library in the Peter P. Mercer Learning Commons",
+      "source_url": "https://www.ramapo.edu/about/campus-hours/",
+      "reviewed_at": "2026-09-24",
+      "note": "Approved: the campus-hours page heads the Library's section with this statement and links it to the Library's own hours page. The Library's directory entry publishes no room, so no room prefix places it."
     }
   ]
 }
