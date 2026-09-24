@@ -35,6 +35,7 @@ test('a subject is the code in front of a course, named only by the catalog depa
   assert.deepEqual(unresolved.map(u => u.record), ['LITR', 'CYBR']);
   assert.match(unresolved[0].reason, /^The catalog department list publishes no name/);
   assert.match(unresolved[1].reason, /^No course in this release's catalog carries this subject code/);
+  assert.deepEqual(unresolved.map(u => u.kind), ['note', 'no_records']);
   // Without the reviewed subject list there are no subjects.
   assert.deepEqual(courseSubjectsArtifact(courses).artifact.subjects, []);
 });

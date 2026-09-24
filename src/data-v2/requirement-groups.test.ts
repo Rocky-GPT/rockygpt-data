@@ -53,7 +53,7 @@ test('identical sections are one shared record with every program link and prove
     [0, ['schools', 0, 'majors', 1, 'requirements', 0]],
   ]);
   assert.deepEqual(shared.course_list?.choose, { at_least: 1 });
-  assert.ok(artifact.unresolved.some(i => i.record === 'catalog:TS-BS-NONE' && i.reason.includes('no identity')));
+  assert.ok(artifact.unresolved.some(i => i.record === 'catalog:TS-BS-NONE' && i.reason.includes('no identity') && i.kind === 'unlinked_record'));
   assert.deepEqual(compiled(), artifact);
 });
 
@@ -76,11 +76,11 @@ test('codes resolve only by exact catalog key; ambiguous forms and text stay as 
   const artifact = compiled();
   const electives = group('Electives: Select Seven (7)');
   assert.deepEqual(electives.rule?.items.map(i => i.courses[0].course_id), [courseIdentityId('academic-programs', 'CMPS 331'), null]);
-  assert.ok(artifact.unresolved.some(i => i.record === 'NOPE 999' && i.reason.includes('not a key in this release catalog')));
+  assert.ok(artifact.unresolved.some(i => i.record === 'NOPE 999' && i.reason.includes('not a key in this release catalog') && i.kind === 'missing_connection'));
   const ambiguous = group('300-Level Course');
   assert.equal(ambiguous.rule?.choose, null);
   assert.equal(ambiguous.rule?.items[0].courses[0].course_id, null);  // "CMPS  311" is not "CMPS 311".
-  assert.ok(artifact.unresolved.some(i => i.record === '300-Level Course' && i.reason.includes('not interpreted')));
+  assert.ok(artifact.unresolved.some(i => i.record === '300-Level Course' && i.reason.includes('not interpreted') && i.kind === 'note'));
   const text = group('Catalog Requirements');
   assert.equal(text.shape, 'text');
   assert.equal(text.note, '- Two 200-level courses');

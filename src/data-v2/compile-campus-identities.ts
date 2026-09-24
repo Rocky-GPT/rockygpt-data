@@ -21,7 +21,12 @@ export interface IdentitySnapshot {
   clubs?: Row[]; events?: Row[];
   artifacts: Record<string, unknown>;
 }
-export interface IdentityCoverageIssue { entity?: string; collection: string; record?: string; reason: string }
+/** What a coverage issue means for lookups: `unlinked_record`, an original record no identity
+ * links; `missing_connection`, an identity missing one of its links, relationships or
+ * references; `no_records`, a reviewed or listed entry with no record in this release;
+ * `note`, a naming or interpretation note. The reason says why. */
+export type CoverageKind = 'unlinked_record' | 'missing_connection' | 'no_records' | 'note';
+export interface IdentityCoverageIssue { entity?: string; collection: string; record?: string; reason: string; kind: CoverageKind }
 export interface IdentityCoverageReport {
   identity_count: number; identities_by_kind: Record<string, number>; linked_records: Record<string, number>;
   relationships: Record<string, number>; unresolved: IdentityCoverageIssue[];
@@ -170,15 +175,15 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     for (const link of entity.links) {
       const found = candidates.filter(candidate => matches(candidate, link));
       if (link.selector && ['faculty_identity', 'contact_identity'].includes(link.selector.field) && new Set(found.map(row => row.key)).size > 1) {
-        unresolved.push({ entity: entity.name, collection: link.collection, reason: 'Identity anchors resolve to multiple distinct subjects (for example a reused email and retained profile URL); no link is approved.' });
+        unresolved.push({ entity: entity.name, collection: link.collection, reason: 'Identity anchors resolve to multiple distinct subjects (for example a reused email and retained profile URL); no link is approved.', kind: 'missing_connection' });
         continue;
       }
       if (!found.length) {
-        unresolved.push({ entity: entity.name, collection: link.collection, reason: 'No current source row satisfies the reviewed selector. The seed is retained, but an identity is published only if another verified record link resolves.' });
+        unresolved.push({ entity: entity.name, collection: link.collection, reason: 'No current source row satisfies the reviewed selector. The seed is retained, but an identity is published only if another verified record link resolves.', kind: 'no_records' });
         continue;
       }
       if (!link.selector) for (const key of link.source_record_keys) if (!found.some(c => c.key === key)) {
-        unresolved.push({ entity: entity.name, collection: link.collection, record: key, reason: 'Broken original record link in this release.' });
+        unresolved.push({ entity: entity.name, collection: link.collection, record: key, reason: 'Broken original record link in this release.', kind: 'no_records' });
       }
       for (const row of found) {
         const key = `${row.collection}:${row.source}:${row.key}`;
@@ -218,7 +223,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     for (const record of records.filter(candidate => !linked.has(candidate.id))) {
       unresolved.push({ collection, record: record.id, reason: record.programCodes.length
         ? `No program identity has the catalog code ${record.programCodes.join(', ')} this ${noun} names.`
-        : record.limitations.join(' ') || unlinked });
+        : record.limitations.join(' ') || unlinked, kind: 'unlinked_record' });
     }
   };
   linkByCatalogCode('graduation_plans', GRADUATION_PLANS_SOURCE_KEY,
@@ -239,11 +244,11 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
       for (const course of listStrings(faculty.row.courses)) {
         const codes = [...course.matchAll(/\b([A-Z]{3,5})\s*-?\s*(\d{3})\b/g)].map(m => `${m[1]} ${m[2]}`);
         if (!codes.length) {
-          unresolved.push({ entity: entity.name, collection: 'courses', record: course, reason: 'Undated profile course title has no explicit catalog code; title similarity does not establish a catalog link.' });
+          unresolved.push({ entity: entity.name, collection: 'courses', record: course, reason: 'Undated profile course title has no explicit catalog code; title similarity does not establish a catalog link.', kind: 'missing_connection' });
         }
         for (const code of codes) {
           if (!(code in courses)) {
-            unresolved.push({ entity: entity.name, collection: 'courses', record: course, reason: `Explicit code ${code} is absent from this release catalog.` }); continue;
+            unresolved.push({ entity: entity.name, collection: 'courses', record: course, reason: `Explicit code ${code} is absent from this release catalog.`, kind: 'missing_connection' }); continue;
           }
           entity.relationships ||= [];
           if (entity.relationships.some(r => r.type === 'profile_course' && r.target_record.source_record_key === code)) continue;
@@ -261,11 +266,11 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
       const candidate = programCandidates.find(p => p.key === key); if (!candidate) continue;
       const code = string(candidate.row.catalogCode); const explicit = conveners.get(code) || [];
       const sourceUrl = string(candidate.row.catalogUrl) || `https://catalog.ramapo.edu/programs/${code}`;
-      if (!explicit.length) unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: 'No explicit catalog Convener-field profile link; normalized convener may be a legacy first-faculty fallback and is not approved.' });
+      if (!explicit.length) unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: 'No explicit catalog Convener-field profile link; normalized convener may be a legacy first-faculty fallback and is not approved.', kind: 'missing_connection' });
       for (const convener of explicit) {
         const ids = personByUrl.get(reviewedUrl(convener.profileUrl));
         if (ids?.size !== 1) {
-          unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: `Explicit convener profile URL ${convener.profileUrl} resolves to ${ids?.size || 0} person identities.` }); continue;
+          unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: `Explicit convener profile URL ${convener.profileUrl} resolves to ${ids?.size || 0} person identities.`, kind: 'missing_connection' }); continue;
         }
         entity.relationships ||= [];
         entity.relationships.push({ type: 'convener', target_entity_id: [...ids][0], evidence: [{ collection: 'programs', source_key: 'academic-programs', source_record_key: key, field: 'customFields.rJQmj', source_url: sourceUrl }] });
@@ -273,11 +278,11 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
       // The published faculty array mixes these fields with name matches and a scraper
       // fallback; only the explicit Program Faculty field is evidence of a listing.
       const listed = programFaculty.get(code) || [];
-      if (!listed.length) unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: 'No explicit catalog Program Faculty-field profile link.' });
+      if (!listed.length) unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: 'No explicit catalog Program Faculty-field profile link.', kind: 'missing_connection' });
       for (const person of listed) {
         const ids = personByUrl.get(reviewedUrl(person.profileUrl));
         if (ids?.size !== 1) {
-          unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: `Explicit Program Faculty profile URL ${person.profileUrl} resolves to ${ids?.size || 0} person identities.` }); continue;
+          unresolved.push({ entity: entity.name, collection: 'programs', record: key, reason: `Explicit Program Faculty profile URL ${person.profileUrl} resolves to ${ids?.size || 0} person identities.`, kind: 'missing_connection' }); continue;
         }
         const target = [...ids][0];
         entity.relationships ||= [];
@@ -288,7 +293,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     }
   }
   for (const candidate of candidates) if (!owners.has(`${candidate.collection}:${candidate.source}:${candidate.key}`)) {
-    unresolved.push({ collection: candidate.collection, record: candidate.key, reason: 'No reviewed persistent identity selector covers this original record; existing search remains available.' });
+    unresolved.push({ collection: candidate.collection, record: candidate.key, reason: 'No reviewed persistent identity selector covers this original record; existing search remains available.', kind: 'unlinked_record' });
   }
   const recordRows = new Map(candidates.map(c => [`${c.collection}:${c.source}:${c.key}`, c.row]));
   const schools = compileSchoolIdentities(entities, recordRows, snapshot.clubs || [], inputs.campusSchools, ledger);

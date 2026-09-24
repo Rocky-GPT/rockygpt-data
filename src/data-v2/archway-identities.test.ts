@@ -69,7 +69,7 @@ test('recurring names across dates are separate occurrences; duplicated external
   snapshot.events![1].event_url = event.event_url;
   const result = compileArchwayIdentities(snapshot);
   assert.equal(result.entities.filter(e => e.kind === 'event').length, 0);
-  assert.equal(result.unresolved.filter(i => i.reason.includes('nonunique')).length, 2);
+  assert.equal(result.unresolved.filter(i => i.reason.includes('nonunique') && i.kind === 'unlinked_record').length, 2);
 });
 
 test('missing date preserves occurrence identity without pretending a date is known', () => {
@@ -78,7 +78,7 @@ test('missing date preserves occurrence identity without pretending a date is kn
   const e = result.entities.find(e => e.kind === 'event')!;
   assert.equal(e.id, archwayIdentityId('event', '901'));
   assert.equal(e.name, 'Meeting (date not published)');
-  assert.ok(result.unresolved.some(i => i.reason.includes('date is not published')));
+  assert.ok(result.unresolved.some(i => i.reason.includes('date is not published') && i.kind === 'note'));
 });
 
 test('organizer name and venue text alone never join identities; a group needs its explicit ID bridge', () => {
@@ -88,8 +88,8 @@ test('organizer name and venue text alone never join identities; a group needs i
   assert.equal(result.entities.filter(e => e.kind === 'club').length, 1);
   assert.equal(result.entities.filter(e => e.kind === 'organization').length, 0);
   assert.equal(result.entities.find(e => e.kind === 'event')!.relationships, undefined);
-  assert.ok(result.unresolved.some(i => i.record === 'CSI' && i.reason.includes('No unique explicit Archway group ID')));
-  assert.ok(result.unresolved.some(i => i.reason.includes('organizer and location names remain source text')));
+  assert.ok(result.unresolved.some(i => i.record === 'CSI' && i.reason.includes('No unique explicit Archway group ID') && i.kind === 'unlinked_record'));
+  assert.ok(result.unresolved.some(i => i.reason.includes('organizer and location names remain source text') && i.kind === 'missing_connection'));
 });
 
 test('non-club directory groups become organizations that can organize events and keep IDs across categories', () => {
@@ -121,7 +121,7 @@ test('an Archway group named like a reviewed identity is reported instead of dup
     links: [{ collection: 'contacts', source_key: 'directory', source_record_keys: ['office:csi'] }],
   }] }, { ...snapshot, campus_contacts: [{ source_key: 'directory', source_record_key: 'office:csi', name: 'Center for Student Involvement' }] });
   assert.equal(reviewed.registry.entities.filter(e => e.kind === 'organization').length, 0);
-  assert.ok(reviewed.report.unresolved.some(i => i.record === 'CSI' && i.reason.includes('needs a reviewed link')));
+  assert.ok(reviewed.report.unresolved.some(i => i.record === 'CSI' && i.reason.includes('needs a reviewed link') && i.kind === 'unlinked_record'));
 });
 
 test('an Archway group named like the published department of a reviewed office is not duplicated', () => {
@@ -156,7 +156,7 @@ test('same-organizer repeated captures preserve timestamps; conflicting captures
   const conflict = compileArchwayIdentities(snapshot, repeated);
   assert.equal(conflict.organizers.events.length, 2);
   assert.equal(conflict.entities.find(e => e.kind === 'event')!.relationships, undefined);
-  assert.ok(conflict.unresolved.some(i => i.reason.includes('conflicts')));
+  assert.ok(conflict.unresolved.some(i => i.reason.includes('conflicts') && i.kind === 'missing_connection'));
   snapshot.events![0].organizer = 'Example Club';
   snapshot.artifacts.clubs = [sourceClub, { ...sourceClub, name: 'Other Club', clubId: '802', websiteUrl: 'https://archway.ramapo.edu/other/' }];
   const other = { ...page, links: ['https://archway.ramapo.edu/other/', 'https://archway.ramapo.edu/events?group_ids=802'], sections: [{ text: 'by Other Club Social' }] };

@@ -73,4 +73,7 @@ test('programs follow reviewed legacy names with one successor; people follow th
   assert.ok(reasons.some(r => r.startsWith('librarian') && r.includes('Library Faculty & Staff')));
   assert.ok(reasons.some(r => r.includes('Missing Group has 0 records')));
   assert.ok(reasons.some(r => r.startsWith('School of Science, Nursing, and Health') && r.includes('office "School of Contemporary Arts Office"')));
+  const kind = (text: string) => unresolved.find(u => u.reason.includes(text))?.kind;
+  assert.deepEqual(['was split', 'retired;', 'Library Faculty & Staff', 'Missing Group has 0 records', 'a name lookup asks'].map(kind),
+    ['missing_connection', 'missing_connection', 'missing_connection', 'no_records', 'note']);
 });

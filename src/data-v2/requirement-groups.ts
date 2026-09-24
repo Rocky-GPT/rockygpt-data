@@ -101,16 +101,16 @@ export function compileRequirementGroups(programs: unknown, registry: CampusIden
     const legacyKey = legacyProgramRecordKey(major, school.school);
     const programId = programIds.get(key) ?? (legacyKeyCounts.get(legacyKey) === 1 ? programIds.get(legacyKey) : undefined);
     const sections = rows(major.requirements);
-    if (!programId && sections.length) report({ entity: name, collection: 'programs', record: key, reason: 'The program has no identity, so its requirement groups are published without a program link.' });
+    if (!programId && sections.length) report({ entity: name, collection: 'programs', record: key, reason: 'The program has no identity, so its requirement groups are published without a program link.', kind: 'unlinked_record' });
     sections.forEach((section, sectionIndex) => {
       const path: Path = ['schools', schoolIndex, 'majors', majorIndex, 'requirements', sectionIndex];
       const content = sectionContent(section);
       const id = uuid5(REQUIREMENT_NAMESPACE, canonical(content));
       let group = groups.get(id);
       if (!group) {
-        group = buildGroup(id, section, courseIds, (code, where) => report({ entity: name, collection: 'courses', record: code, reason: `Requirement "${text(section.section) ?? ''}" cites a code that is not a key in this release catalog (${where.join('.')}); it stays as published and unlinked.` }));
+        group = buildGroup(id, section, courseIds, (code, where) => report({ entity: name, collection: 'courses', record: code, reason: `Requirement "${text(section.section) ?? ''}" cites a code that is not a key in this release catalog (${where.join('.')}); it stays as published and unlinked.`, kind: 'missing_connection' }));
         const uninterpreted = uninterpretedNodes(group.rule);
-        for (const node of uninterpreted) report({ entity: name, collection: 'programs', record: group.label, reason: `Published condition ${node.condition ?? 'none'} with count ${node.count ?? 'none'} and credits ${node.credits ?? 'none'} is kept as published and not interpreted.` });
+        for (const node of uninterpreted) report({ entity: name, collection: 'programs', record: group.label, reason: `Published condition ${node.condition ?? 'none'} with count ${node.count ?? 'none'} and credits ${node.credits ?? 'none'} is kept as published and not interpreted.`, kind: 'note' });
         groups.set(id, group);
         edges.push(...optionEdges(group));
       }

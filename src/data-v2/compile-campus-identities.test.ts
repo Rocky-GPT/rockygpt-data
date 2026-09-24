@@ -40,7 +40,8 @@ test('compiled source links and evidence retain originals and preserve field con
   assert.equal(result.report.relationships.profile_course, 1);
   assert.equal(result.registry.entities[0].relationships?.[0].type, 'profile_course');
   assert.equal('selector' in result.registry.entities[0].links[0], false);
-  assert.ok(result.report.unresolved.some(r => r.reason.includes('no explicit catalog code')));
+  assert.ok(result.report.unresolved.some(r => r.reason.includes('no explicit catalog code') && r.kind === 'missing_connection'));
+  assert.ok(result.report.unresolved.every(r => ['unlinked_record', 'missing_connection', 'no_records', 'note'].includes(r.kind)));
   // Both reviewed person fields are kept verbatim so every relationship can be rechecked.
   assert.deepEqual(catalogConvenersArtifact(raw), { collected_at: raw.scrapedAt, source_url: 'https://app.coursedog.com/api/v1/cm/ramapo_banner_ethos/programs/search/%24filters', programs: [{ catalogCode: 'TS-BS-CMPS', catalogUrl: 'https://catalog.ramapo.edu/programs/TS-BS-CMPS', customFields: { rJQmj: raw.programs[0].customFields.rJQmj, xiQxl: raw.programs[0].customFields.xiQxl } }] });
   assert.deepEqual(catalogConvenersArtifact({ programs: [{ code: 'X', customFields: { other: '<p>x</p>' } }] }).programs, []);
@@ -91,7 +92,7 @@ test('convener is only established by the reviewed explicit field, never first f
   assert.equal(explicitCatalogConveners({ programs: [{ code: 'P', customFields: { xiQxl: raw.programs[0].customFields.rJQmj } }] }).size, 0);
   const result = compileCampusIdentities(seed, snapshot(), { programs: [] });
   assert.equal(result.report.relationships.convener, undefined);
-  assert.ok(result.report.unresolved.some(r => r.reason.includes('first-faculty fallback')));
+  assert.ok(result.report.unresolved.some(r => r.reason.includes('first-faculty fallback') && r.kind === 'missing_connection'));
 });
 
 test('listed faculty come only from the explicit Program Faculty field, through reviewed redirects', () => {
@@ -108,7 +109,7 @@ test('listed faculty come only from the explicit Program Faculty field, through 
     { collection: 'programs', source_key: 'academic-programs', source_record_key: 'School:Computer Science BS', field: 'customFields.xiQxl', source_url: 'https://catalog.ramapo.edu/programs/TS-BS-CMPS' },
   ] }]);
   assert.equal(result.report.relationships.convener, undefined);
-  assert.ok(result.report.unresolved.some(r => r.reason === 'Explicit Program Faculty profile URL https://www.ramapo.edu/tas/faculty/nobody resolves to 0 person identities.'));
+  assert.ok(result.report.unresolved.some(r => r.reason === 'Explicit Program Faculty profile URL https://www.ramapo.edu/tas/faculty/nobody resolves to 0 person identities.' && r.kind === 'missing_connection'));
 });
 
 test('a convener field or the published faculty array never creates a listing', () => {
@@ -118,7 +119,7 @@ test('a convener field or the published faculty array never creates a listing', 
   const result = compileCampusIdentities(seed, input, raw);
   assert.equal(result.report.relationships.convener, 1);
   assert.equal(result.report.relationships.listed_faculty, undefined);
-  assert.ok(result.report.unresolved.some(r => r.reason === 'No explicit catalog Program Faculty-field profile link.'));
+  assert.ok(result.report.unresolved.some(r => r.reason === 'No explicit catalog Program Faculty-field profile link.' && r.kind === 'missing_connection'));
   assert.equal(explicitCatalogProgramFaculty({ programs: [{ code: 'P', customFields: { rJQmj: raw.programs[0].customFields.rJQmj } }] }).size, 0);
 });
 
@@ -181,7 +182,7 @@ test('disagreeing independent anchors cannot silently merge a reassigned email w
   input.campus_contacts.push({ source_key: 'faculty', source_record_key: 'faculty:new-account-owner:school', email: faculty.email, name: 'New Account Owner' });
   const result = compileCampusIdentities(seed, input);
   assert.equal(result.registry.entities.some(e => e.id === personId), false);
-  assert.ok(result.report.unresolved.some(r => r.reason.includes('multiple distinct subjects')));
+  assert.ok(result.report.unresolved.some(r => r.reason.includes('multiple distinct subjects') && r.kind === 'missing_connection'));
 });
 
 test('a program links every graduation plan the plan index names by its catalog code', () => {
@@ -199,6 +200,7 @@ test('a program links every graduation plan the plan index names by its catalog 
   assert.deepEqual([...unlinked.keys()].sort(), ['no-code', 'retired-major']);
   assert.match(unlinked.get('retired-major')!, /TS-BS-GONE/);
   assert.match(unlinked.get('no-code')!, /no program code/);
+  assert.ok(result.report.unresolved.filter(issue => issue.collection === 'graduation_plans').every(issue => issue.kind === 'unlinked_record'));
   // Without plans, and for the release's own plans artifact, nothing else changes.
   assert.equal(compileCampusIdentities(seed, snapshot(), raw).registry.entities.find(entity => entity.id === programId)!
     .links.some(link => link.collection === 'graduation_plans'), false);
@@ -222,6 +224,7 @@ test('a program links the public program pages that link its catalog code as the
   assert.deepEqual([...unlinked.keys()].sort(), ['gone-major', 'no-link']);
   assert.match(unlinked.get('gone-major')!, /TS-BS-GONE this page names/);
   assert.match(unlinked.get('no-link')!, /links no catalog program of its own/);
+  assert.ok(result.report.unresolved.filter(issue => issue.collection === 'major_pages').every(issue => issue.kind === 'unlinked_record'));
   const own = snapshot(); own.artifacts['major-pages'] = majorPages;
   assert.ok(compileCampusIdentities(seed, own, raw).registry.entities.find(entity => entity.id === programId)!
     .links.some(link => link.collection === 'major_pages'));

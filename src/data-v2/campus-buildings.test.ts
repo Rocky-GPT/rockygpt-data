@@ -22,6 +22,7 @@ test('only buildings with reviewed room prefixes and their own map location beco
     ['1133371', 'Academic Building D', ['D']], ['1133424', 'Anisfield School of Business (ASB)', ['ASB']],
   ]);
   assert.deepEqual(artifact.unresolved.map(u => u.name), ['Laurel Hall North Building', 'Visitor Kiosk']);
+  assert.deepEqual(artifact.unresolved.map(u => u.kind), ['unlinked_record', 'unlinked_record']);
   assert.deepEqual(artifact.source, { source_key: 'campus-map', title: 'Ramapo Campus Map', canonical_url: 'https://map.ramapo.edu/', trust_tier: 'official_primary', freshness_sla_hours: 4320, domain: 'map' });
   assert.equal(artifact.map_generated_at, map.generatedAt);
   // A rename keeps the building's identity; the ID derives from its map location.
@@ -65,9 +66,9 @@ test('people get office_at and offices get located_at from their own contact roo
   assert.deepEqual(registrar.relationships?.map(r => [r.type, 'target_entity_id' in r && r.target_entity_id]), [['located_at', d.id]]);
   assert.equal(unplaced.relationships, undefined);
   assert.equal(program.relationships, undefined);
-  assert.ok(unresolved.some(u => u.entity === 'No Building' && u.reason.includes('no building is inferred')));
+  assert.ok(unresolved.some(u => u.entity === 'No Building' && u.reason.includes('no building is inferred') && u.kind === 'missing_connection'));
   // A building named like another identity is kept for an ambiguous lookup, not merged.
-  assert.ok(unresolved.some(u => u.entity === 'Academic Building D' && u.reason.includes('program "Academic Building D"')));
+  assert.ok(unresolved.some(u => u.entity === 'Academic Building D' && u.reason.includes('program "Academic Building D"') && u.kind === 'note'));
 });
 
 test('a human-reviewed map location is a building without room prefixes, only as reviewed', () => {
@@ -78,6 +79,6 @@ test('a human-reviewed map location is a building without room prefixes, only as
   assert.equal(artifact.buildings.find(b => b.concept3d_id === '1133371')?.basis, 'room_prefixes');
   const renamed = campusBuildingsArtifact(map, [{ ...reviewed[0], name: 'Another Name' }]);
   assert.equal(renamed.buildings.some(b => b.concept3d_id === '1133500'), false);
-  assert.ok(renamed.unresolved.some(u => u.reason.includes('is not published until the review matches')));
-  assert.ok(campusBuildingsArtifact(map, [{ ...reviewed[0], concept3d_id: '999' }]).unresolved.some(u => u.reason.includes('not on the committed map')));
+  assert.ok(renamed.unresolved.some(u => u.reason.includes('is not published until the review matches') && u.kind === 'unlinked_record'));
+  assert.ok(campusBuildingsArtifact(map, [{ ...reviewed[0], concept3d_id: '999' }]).unresolved.some(u => u.reason.includes('not on the committed map') && u.kind === 'no_records'));
 });
