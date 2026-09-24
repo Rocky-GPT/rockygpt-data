@@ -2,7 +2,7 @@ import { load } from 'cheerio';
 import type { PoolClient } from 'pg';
 import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
-import { compileArchwayIdentities, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact } from './archway-identities';
+import { compileArchwayIdentities, linkReviewedArchwayGroups, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact, type ReviewedArchwayGroup } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
@@ -151,7 +151,7 @@ export interface CompiledIdentityArtifacts {
 /** Inputs outside the release snapshot: Archway captures, the committed campus map, the reviewed schools and the catalog's subject list. */
 export interface IdentityInputs extends ArchwayIdentityInputs {
   campusMap?: unknown; campusSchools?: ReviewedSchools; courseSubjects?: CourseSubjectsInput;
-  identityReviews?: { aliases?: ReviewedAlias[]; buildings?: ReviewedBuilding[]; locations?: ReviewedLocation[]; rooms?: ReviewedRoom[] };
+  identityReviews?: { aliases?: ReviewedAlias[]; buildings?: ReviewedBuilding[]; locations?: ReviewedLocation[]; rooms?: ReviewedRoom[]; archway_groups?: ReviewedArchwayGroup[] };
   /** The published graduation plans artifact, whose plans name their programs' catalog codes. */
   graduationPlans?: unknown;
   /** The published program pages artifact, whose pages name their own programs' catalog codes. */
@@ -300,7 +300,9 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   entities.push(...schools.schools);
   unresolved.push(...schools.unresolved);
   for (const name of entities.flatMap(entity => [entity.name, ...entity.aliases])) reserved.add(normalizeName(name));
-  const archway = compileArchwayIdentities(snapshot, inputs, reserved, schools.ownedClubs, ledger);
+  const offices = linkReviewedArchwayGroups(entities, snapshot.clubs || [], inputs.identityReviews?.archway_groups ?? [], schools.ownedClubs);
+  unresolved.push(...offices.unresolved);
+  const archway = compileArchwayIdentities(snapshot, inputs, reserved, new Set([...schools.ownedClubs, ...offices.owned]), ledger);
   entities.push(...archway.entities);
   unresolved.push(...archway.unresolved);
   const campusBuildings = campusBuildingsArtifact(inputs.campusMap, inputs.identityReviews?.buildings, inputs.identityReviews?.locations, inputs.identityReviews?.rooms);

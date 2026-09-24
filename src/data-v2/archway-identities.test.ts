@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { archwayEventId, archwayIdentityId, compileArchwayIdentities, eventOrganizersArtifact } from './archway-identities';
+import { archwayEventId, archwayIdentityId, compileArchwayIdentities, eventOrganizersArtifact, linkReviewedArchwayGroups } from './archway-identities';
+import type { CampusIdentity } from './campus-identities';
 import { validateCampusIdentities } from './campus-identities';
 import { compileCampusIdentities, type IdentitySnapshot } from './compile-campus-identities';
 import { validateArchwayClubs } from '../../ingestion/schema';
@@ -175,4 +176,19 @@ test('relationship extraction requires explicit by-line, group link, exact event
 test('normal ingestion preserves the official group ID without inventing one', () => {
   assert.equal(validateArchwayClubs([sourceClub])[0].clubId, '801');
   assert.equal(validateArchwayClubs([{ ...sourceClub, clubId: 'not-an-id' }])[0].clubId, undefined);
+});
+
+test('a reviewed club page joins the office it names and never becomes a second identity', () => {
+  const office: CampusIdentity = { id: id(30), kind: 'office', name: 'Library', aliases: [], links: [{ collection: 'contacts', source_key: 'campus-directory', source_record_keys: ['office:library'] }] };
+  const page = { ...club, id: id(31), source_record_key: 'Potter Library', name: 'Potter Library', category: 'Department' };
+  const review = { entity_id: office.id, entity: 'Library', group: 'Potter Library', reviewed_at: '2026-09-24', note: 'Approved.' };
+  const { owned, unresolved } = linkReviewedArchwayGroups([office], [page], [
+    review, { ...review, group: 'Missing Page' }, { ...review, entity: 'Another Name' }, { ...review, group: 'School Page' },
+  ], new Set(['School Page']));
+  assert.deepEqual(office.links[1], { collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['Potter Library'], source_record_ids: [id(31)] });
+  assert.deepEqual([...owned], ['Potter Library']);
+  assert.deepEqual(unresolved.map(issue => [issue.record, issue.kind]), [['Missing Page', 'no_records'], ['Potter Library', 'no_records'], ['School Page', 'missing_connection']]);
+  // An owned page is skipped by the Archway compiler, so no identity takes the office's department name.
+  const snapshot = { ...fixture(), clubs: [page] };
+  assert.equal(compileArchwayIdentities(snapshot, inputs(), new Set(['library']), owned).unresolved.some(issue => issue.record === 'Potter Library'), false);
 });

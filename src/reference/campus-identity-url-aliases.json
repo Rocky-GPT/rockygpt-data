@@ -894,6 +894,18 @@
       "to": "https://www.ramapo.edu/sssw/faculty/jessica-terrizzi",
       "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
       "observed_at": "2026-09-24T19:07:21.360Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/asb/faculty/joy-m-de-los-reyes",
+      "to": "https://www.ramapo.edu/asb/faculty/joy-de-los-reyes",
+      "evidence": "Human-reviewed 2026-09-24: the catalog URL adds a middle initial to her name and returns 404. The unique current faculty profile in the same school, without the initial, names Joy de los Reyes.",
+      "observed_at": "2026-09-24T19:17:39.543Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/cathy-hajo",
+      "to": "https://www.ramapo.edu/ahe/faculty/cathy-moran-hajo",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects the old /hgs/ profile to /ahe/, and WordPress then guesses her full name, so the redirect is not the evidence. The unique current faculty profile under /ahe/ names Cathy Moran Hajo.",
+      "observed_at": "2026-09-24T19:17:47.513Z"
     }
   ]
 }
