@@ -8,9 +8,11 @@
  * courses and degree requirements").
  *
  * A page names its programs only through those catalog links: a catalog code, or the
- * catalog's program group ID, which the captured catalog resolves to a code. Links in a
- * "Related Programs" section name other programs and are kept apart. Nothing is linked
- * by name, and a page that links no catalog program of its own is reported, not guessed.
+ * catalog's program group ID, which the captured catalog resolves to a code. The first one
+ * is the page's own program; others it links as its own, such as a minor on a major's page,
+ * are kept as further programs it describes. Links in a "Related Programs" section name
+ * other programs and are kept apart. Nothing is linked by name, and a page that links no
+ * catalog program of its own is reported, not guessed.
  *
  * Run: npm run fetch:major-pages
  */
@@ -53,8 +55,11 @@ export interface MajorPage extends MajorListing, MajorPageContent {
   /** Where the listed page led, when it redirected. */
   finalUrl: string | null;
   catalogLinks: CatalogLink[];
-  /** Catalog codes of the programs the page links as its own. */
+  /** The catalog code of the page's own program: the first catalog program it links as its
+   * own ("See all courses and degree requirements"). A source record has one identity. */
   programCodes: string[];
+  /** Other catalog programs the page links as its own, such as a minor it also describes. */
+  otherProgramCodes: string[];
   /** Catalog codes the page links in a "Related Programs" section. */
   relatedProgramCodes: string[];
   limitations: string[];
@@ -175,7 +180,8 @@ export function majorPage(listing: MajorListing, content: MajorPageContent, fina
   if (!own.length && !elsewhere) limitations.push('The page links no catalog program of its own, so it is not linked to one.');
   return {
     id: pageId(listing.url), ...listing, finalUrl: finalUrl === listing.url ? null : finalUrl, ...content,
-    catalogLinks: catalog, programCodes: elsewhere ? [] : own,
+    catalogLinks: catalog, programCodes: elsewhere ? [] : own.slice(0, 1),
+    otherProgramCodes: elsewhere ? [] : own.slice(1),
     relatedProgramCodes: unique(catalog.filter(link => related(link) && link.code).map(link => link.code!))
       .filter(code => !own.includes(code)),
     limitations,
