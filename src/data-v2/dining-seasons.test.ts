@@ -19,7 +19,19 @@ test('meal labels, split periods and midnight survive publication without flatte
   const expected = 'Lunch: 11:00 AM - 02:00 PM; Dinner: 05:00 PM - 12:00 AM';
   assert.equal(activeSeasonSchedule(opening, 'Monday', new Date('2026-09-21T18:00:00Z')), expected);
   assert.equal(seasonalPublicationRows(opening).find(r => r.day === 'Monday')?.schedule, expected);
-  assert.equal(seasonalPublicationRows(opening).find(r => r.day === 'Tuesday')?.schedule, DINING_HOURS_UNKNOWN);
+});
+
+test('season rows cover only the weekdays inside the season, and a covered day without hours stays unknown', () => {
+  // Sunday 2026-08-23 through Tuesday 2026-08-25, campus time; no Tuesday hours are listed.
+  const opening = { seasonalHours: [{ from: '2026-08-23T04:00:00Z', to: '2026-08-26T03:59:59Z', openingHours: [
+    { days: [{ value: 'Sunday' }, { value: 'Monday' }], hours: [period('Dinner', '05', 'PM', '07', 'PM')] },
+  ] }] };
+  const rows = seasonalPublicationRows(opening);
+  assert.deepEqual(rows.map(r => r.day), ['Sunday', 'Monday', 'Tuesday']);
+  assert.ok(rows.every(r => r.validFrom === '2026-08-23' && r.validUntil === '2026-08-25'));
+  assert.equal(rows.find(r => r.day === 'Tuesday')?.schedule, DINING_HOURS_UNKNOWN);
+  const summer = { seasonalHours: [{ from: '2026-05-26T04:00:00Z', to: '2026-08-23T03:59:59Z', openingHours: [] }] };
+  assert.equal(seasonalPublicationRows(summer).length, 7);
 });
 
 test('active empty exceptions block weekly fallback without inventing a closure', () => {

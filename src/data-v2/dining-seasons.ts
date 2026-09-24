@@ -104,11 +104,22 @@ export interface SeasonalPublicationRow {
   validUntil: string;
 }
 
+/** The weekdays that occur between two campus-local dates, inclusive. */
+function weekdaysBetween(validFrom: string, validUntil: string): Set<string> {
+  const days = new Set<string>();
+  const until = Date.parse(`${validUntil}T00:00:00Z`);
+  for (let at = Date.parse(`${validFrom}T00:00:00Z`); at <= until && days.size < 7; at += 86_400_000) {
+    days.add(WEEK[new Date(at).getUTCDay()]);
+  }
+  return days;
+}
+
 /**
- * Database rows for each season × weekday, bounded by the season's
- * campus-local dates. Day-granular bounds round outward, so an override can
- * only over-apply on its boundary day. A missing override remains unknown;
- * it must never be rendered as a confirmed closure.
+ * Database rows for each season × weekday that occurs within the season's
+ * campus-local dates; a weekday outside them could never apply. Day-granular
+ * bounds round outward, so an override can only over-apply on its boundary
+ * day. A missing override remains unknown; it must never be rendered as a
+ * confirmed closure.
  */
 export function seasonalPublicationRows(openingHours: JsonRecord): SeasonalPublicationRow[] {
   const rows: SeasonalPublicationRow[] = [];
@@ -121,7 +132,9 @@ export function seasonalPublicationRows(openingHours: JsonRecord): SeasonalPubli
     const groups = Array.isArray(season.openingHours)
       ? (season.openingHours as JsonRecord[])
       : [];
+    const days = weekdaysBetween(validFrom, validUntil);
     for (const day of WEEK) {
+      if (!days.has(day)) continue;
       const schedule = groups.length ? dayGroupSchedule(groups, day) : null;
       rows.push({
         day,
