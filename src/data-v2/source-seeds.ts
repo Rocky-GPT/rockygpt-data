@@ -37,4 +37,5 @@ export const SOURCES: SourceSeed[] = [
   { key: 'course-subjects', title: 'Ramapo Catalog Subjects', url: 'https://catalog.ramapo.edu/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'courses' },
   { key: 'graduation-plans', title: 'Recommended Graduation Plans', url: 'https://www.ramapo.edu/mygraduationplan/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'programs' },
   { key: 'major-pages', title: 'Majors, Minors & Concentrations', url: 'https://www.ramapo.edu/majors-minors/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'programs' },
+  { key: 'major-page-links', title: 'Related Ramapo College Pages', url: 'https://www.ramapo.edu/majors-minors/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'programs' },
 ];
