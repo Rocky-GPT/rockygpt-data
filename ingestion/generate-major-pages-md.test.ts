@@ -16,7 +16,7 @@ const ARTIFACT = {
       { heading: 'About the Computer Science Major', text: 'Technology is woven into society and our everyday lives, and the career prospects are bright.' },
       { heading: 'Careers & Outcomes', text: '#1 in the region for placements, among many software careers students go on to.' },
     ],
-    links: [], catalogLinks: [], programCodes: ['SN-BS-CMPS'], relatedProgramCodes: [], limitations: [],
+    links: [], catalogLinks: [], programCodes: ['SN-BS-CMPS'], otherProgramCodes: [], relatedProgramCodes: [], limitations: [],
   }],
 } as MajorPagesArtifact;
 
