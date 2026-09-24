@@ -50,6 +50,14 @@ On the September 22 snapshot, 585 `listed_faculty` relationships cover 107 progr
 - 3 profiles belong to people without a person identity.
 - 2 redirects are WordPress guesses.
 
+On September 24, 2026, 21 more aliases resolve 87 links on the dev release: 13 conveners and 74 Program Faculty listings. Each old URL was followed hop by hop, and each target profile loaded and named its person.
+
+- 6 are server redirects that land on the person's current profile, like the aliases above.
+- 2 are catalog typos around the exact profile path, a stray ")" and a URL written twice. Ramapo reaches them only through WordPress guesses, so a person approved them.
+- 13 are profiles from a split school. Ramapo redirects every old `/hgs/` profile to `/ahe/` and every old `/sshs/` profile to `/sssw/`, but these faculty moved to the other school, so the redirect ends in a 404. A person approved each one, because the same URL name is the person's unique current profile under the other school.
+
+19 listings stay unresolved; their people have no person identity. Each alias's `evidence` says which basis applies.
+
 32 programs publish no Program Faculty field. Unresolved listings are reported in the coverage artifact.
 
 The cited catalog's Computer Science convener assertion differs from the [current public major page](https://www.ramapo.edu/majors-minors/majors/computer-science/). The registry relationship means the captured catalog explicitly names that person, not that the catalog outranks every other source or proves a current appointment. The public page is not silently imported into this release.

@@ -768,6 +768,132 @@
       "to": "https://www.ramapo.edu/snh/faculty/victor-j-miller",
       "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
       "observed_at": "2026-09-23T01:52:53.388Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/jeremy-teigen",
+      "to": "https://www.ramapo.edu/sssw/faculty/jeremy-teigen",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /hgs/ profile to /ahe/, where this one is a 404. The same URL name is the unique current faculty profile under /sssw/, the other school /hgs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:05:13.002Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/erick-castellanos",
+      "to": "https://www.ramapo.edu/sssw/faculty/erick-castellanos",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /hgs/ profile to /ahe/, where this one is a 404. The same URL name is the unique current faculty profile under /sssw/, the other school /hgs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:05:19.623Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/susan-hangen",
+      "to": "https://www.ramapo.edu/sssw/faculty/susan-hangen",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /hgs/ profile to /ahe/, where this one is a 404. The same URL name is the unique current faculty profile under /sssw/, the other school /hgs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:05:27.060Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/zachary-peck",
+      "to": "https://www.ramapo.edu/ahe/faculty/zachary-peck",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-24T19:05:32.879Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/susan-petro",
+      "to": "https://www.ramapo.edu/snh/faculty/susan-petro",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-24T19:05:38.709Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/asb/faculty/fariba-nosrati/)",
+      "to": "https://www.ramapo.edu/asb/faculty/fariba-nosrati",
+      "evidence": "Human-reviewed 2026-09-24: the catalog URL is this exact profile path with a stray \")\" after it. Ramapo reaches the profile only through a WordPress slug guess, so the redirect is not the evidence.",
+      "observed_at": "2026-09-24T19:05:44.362Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/kaitlin-sidorsky",
+      "to": "https://www.ramapo.edu/sssw/faculty/kaitlin-sidorsky",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /hgs/ profile to /ahe/, where this one is a 404. The same URL name is the unique current faculty profile under /sssw/, the other school /hgs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:05:51.043Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/carol-bonilla-bowman",
+      "to": "https://www.ramapo.edu/ahe/faculty/carol-bonilla-bowman",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /sshs/ profile to /sssw/, where this one is a 404. The same URL name is the unique current faculty profile under /ahe/, the other school /sshs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:05:56.969Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/dean-chen",
+      "to": "https://www.ramapo.edu/sssw/faculty/dean-chen",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /hgs/ profile to /ahe/, where this one is a 404. The same URL name is the unique current faculty profile under /sssw/, the other school /hgs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:06:03.956Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/julie-norflus-good",
+      "to": "https://www.ramapo.edu/ahe/faculty/julie-norflus-good",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /sshs/ profile to /sssw/, where this one is a 404. The same URL name is the unique current faculty profile under /ahe/, the other school /sshs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:06:09.835Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/ellen-kaiden",
+      "to": "https://www.ramapo.edu/ahe/faculty/ellen-kaiden",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /sshs/ profile to /sssw/, where this one is a 404. The same URL name is the unique current faculty profile under /ahe/, the other school /sshs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:06:16.262Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/elvira-katic",
+      "to": "https://www.ramapo.edu/ahe/faculty/elvira-katic",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /sshs/ profile to /sssw/, where this one is a 404. The same URL name is the unique current faculty profile under /ahe/, the other school /sshs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:06:22.322Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/michael-bitz",
+      "to": "https://www.ramapo.edu/ahe/faculty/michael-bitz",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /sshs/ profile to /sssw/, where this one is a 404. The same URL name is the unique current faculty profile under /ahe/, the other school /sshs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:06:28.512Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/sharon-leathers",
+      "to": "https://www.ramapo.edu/ahe/faculty/sharon-leathers",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /sshs/ profile to /sssw/, where this one is a 404. The same URL name is the unique current faculty profile under /ahe/, the other school /sshs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:06:34.415Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/michael-unger",
+      "to": "https://www.ramapo.edu/sssw/faculty/michael-unger",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /hgs/ profile to /ahe/, where this one is a 404. The same URL name is the unique current faculty profile under /sssw/, the other school /hgs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:06:40.984Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/hgs/faculty/rebecca-root",
+      "to": "https://www.ramapo.edu/sssw/faculty/rebecca-root",
+      "evidence": "Human-reviewed 2026-09-24: Ramapo redirects every old /hgs/ profile to /ahe/, where this one is a 404. The same URL name is the unique current faculty profile under /sssw/, the other school /hgs/ was split into, and that page names this person.",
+      "observed_at": "2026-09-24T19:06:47.664Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/sandra-suarez/https://www.ramapo.edu/tas/faculty/sandra-suarez",
+      "to": "https://www.ramapo.edu/snh/faculty/sandra-suarez",
+      "evidence": "Human-reviewed 2026-09-24: the catalog URL is her old /tas/ profile path written twice. Ramapo reaches her current /snh/ profile only through WordPress slug guesses, so the redirect is not the evidence.",
+      "observed_at": "2026-09-24T19:06:56.853Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/alice-park",
+      "to": "https://www.ramapo.edu/snh/faculty/alice-park",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-24T19:07:02.802Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/kaneez-odgers",
+      "to": "https://www.ramapo.edu/snh/faculty/kaneez-odgers",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-24T19:07:08.823Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/tas/faculty/lorraine-santangelo",
+      "to": "https://www.ramapo.edu/snh/faculty/lorraine-santangelo",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-24T19:07:14.585Z"
+    },
+    {
+      "from": "https://www.ramapo.edu/sshs/faculty/jessica-terrizzi",
+      "to": "https://www.ramapo.edu/sssw/faculty/jessica-terrizzi",
+      "evidence": "Official Ramapo server redirect completed with status 200 at the unique current faculty profile URL; no hop was a WordPress slug guess.",
+      "observed_at": "2026-09-24T19:07:21.360Z"
     }
   ]
 }
