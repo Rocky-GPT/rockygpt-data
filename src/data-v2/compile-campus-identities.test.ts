@@ -183,3 +183,27 @@ test('disagreeing independent anchors cannot silently merge a reassigned email w
   assert.equal(result.registry.entities.some(e => e.id === personId), false);
   assert.ok(result.report.unresolved.some(r => r.reason.includes('multiple distinct subjects')));
 });
+
+test('a program links every graduation plan the plan index names by its catalog code', () => {
+  const graduationPlans = { plans: [
+    { id: 'plan-2026', programCodes: ['TS-BS-CMPS'], limitations: [] },
+    { id: 'plan-2025', programCodes: ['TS-BS-CMPS'], limitations: [] },
+    { id: 'retired-major', programCodes: ['TS-BS-GONE'], limitations: [] },
+    { id: 'no-code', programCodes: [], limitations: ['The index gives this plan no program code, so it is not linked to a catalog program.'] },
+  ] };
+  const result = compileCampusIdentities(seed, snapshot(), raw, { graduationPlans });
+  const program = result.registry.entities.find(entity => entity.id === programId)!;
+  assert.deepEqual(program.links.find(link => link.collection === 'graduation_plans'),
+    { collection: 'graduation_plans', source_key: 'graduation-plans', source_record_keys: ['plan-2025', 'plan-2026'] });
+  const unlinked = new Map(result.report.unresolved.filter(issue => issue.collection === 'graduation_plans').map(issue => [issue.record, issue.reason]));
+  assert.deepEqual([...unlinked.keys()].sort(), ['no-code', 'retired-major']);
+  assert.match(unlinked.get('retired-major')!, /TS-BS-GONE/);
+  assert.match(unlinked.get('no-code')!, /no program code/);
+  // Without plans, and for the release's own plans artifact, nothing else changes.
+  assert.equal(compileCampusIdentities(seed, snapshot(), raw).registry.entities.find(entity => entity.id === programId)!
+    .links.some(link => link.collection === 'graduation_plans'), false);
+  const own = snapshot(); own.artifacts['graduation-plans'] = graduationPlans;
+  assert.ok(compileCampusIdentities(seed, own, raw).registry.entities.find(entity => entity.id === programId)!
+    .links.some(link => link.collection === 'graduation_plans'));
+  assert.throws(() => compileCampusIdentities(seed, snapshot(), raw, { graduationPlans: { plans: [{ programCodes: [] }] } }), /no ID or program links/);
+});
