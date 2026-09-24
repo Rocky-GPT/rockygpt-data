@@ -128,6 +128,31 @@ export function eventOrganizersArtifact(snapshot: IdentitySnapshot, inputs: Arch
   return { schema_version: 1, events: [...new Map(events.map(e => [JSON.stringify(e), e])).values()].sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b))) };
 }
 
+/** A club-directory page a person approved as an office's own page, named by the office's persistent ID. */
+export interface ReviewedArchwayGroup { entity_id: string; entity: string; group: string; reviewed_at: string; note: string }
+
+/**
+ * Link reviewed club-directory pages to the offices, facilities or venues they belong to,
+ * as schools own theirs. A page must be exactly one row in this release and no school's.
+ * The returned keys are owned, so the page never becomes a second identity with the
+ * office's name.
+ */
+export function linkReviewedArchwayGroups(entities: CampusIdentity[], clubs: Row[], reviews: ReviewedArchwayGroup[], taken: ReadonlySet<string>): { owned: Set<string>; unresolved: IdentityCoverageIssue[] } {
+  const owned = new Set<string>(); const unresolved: IdentityCoverageIssue[] = [];
+  const byId = new Map(entities.map(entity => [entity.id, entity]));
+  for (const review of reviews) {
+    const entity = byId.get(review.entity_id);
+    const rows = clubs.filter(row => text(row.source_record_key) === review.group);
+    const issue = (kind: CoverageKind, reason: string) => unresolved.push({ entity: review.entity, collection: 'clubs', record: review.group, reason, kind });
+    if (!entity || entity.name !== review.entity || !['office', 'facility', 'venue'].includes(entity.kind)) { issue('no_records', 'The reviewed club page names no office, facility or venue in this release under that name; it is not linked.'); continue; }
+    if (taken.has(review.group) || owned.has(review.group)) { issue('missing_connection', `The reviewed club page ${review.group} already belongs to another identity; it is not linked.`); continue; }
+    if (rows.length !== 1) { issue(rows.length ? 'missing_connection' : 'no_records', `The reviewed club page ${review.group} has ${rows.length} records in this release; it is not linked.`); continue; }
+    entity.links.push({ collection: 'clubs', source_key: text(rows[0].source_key), source_record_keys: [review.group], source_record_ids: [text(rows[0].id)] });
+    owned.add(review.group);
+  }
+  return { owned, unresolved };
+}
+
 /** `reserved` holds normalized names and aliases of reviewed identities, and the
  * departments their own contact records publish. A non-club group with one of
  * those names is most likely the same office, so it needs a reviewed link

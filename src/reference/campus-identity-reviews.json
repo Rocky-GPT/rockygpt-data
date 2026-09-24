@@ -9,7 +9,8 @@
     "identity that has no published room in a building: an official page makes",
     "the statement, and a person decided which identity and building it names.",
     "Each room here is an exact published room value that is not a PREFIX-NUMBER",
-    "room, read by a person as naming a building.",
+    "room, read by a person as naming a building. Each Archway group here is a",
+    "club-directory page a person approved as an office's own page.",
     "Entries name persistent IDs or Concept3D locations, never names to match."
   ],
   "aliases": [
@@ -55,6 +56,43 @@
       "building": "The Lodge (CPA)",
       "reviewed_at": "2026-09-24",
       "note": "Approved: Housing & Residence Life publishes its office as \"The Lodge\", and the campus map's own office list places Residence Life in The Lodge (CPA)."
+    }
+  ],
+  "archway_groups": [
+    {
+      "entity_id": "00a23005-150e-4640-b07e-0cb350c4bb6f",
+      "entity": "Library",
+      "group": "Potter Library",
+      "reviewed_at": "2026-09-24",
+      "note": "Approved: the Archway department page for the Library. Its name, Potter Library, is the department the Library's own directory entry publishes."
+    },
+    {
+      "entity_id": "418cf077-132d-4b72-a3a9-e48d33353a5e",
+      "entity": "Counseling Center",
+      "group": "Counseling Services",
+      "reviewed_at": "2026-09-24",
+      "note": "Approved: the Archway department page for the Counseling Center. Its name, Counseling Services, is the department the center's own directory entry publishes."
+    },
+    {
+      "entity_id": "9f4a8a53-67a1-4ce4-b4da-5d19630f135b",
+      "entity": "Center for Student Involvement",
+      "group": "Center for Student Involvement",
+      "reviewed_at": "2026-09-24",
+      "note": "Approved: the Archway department page for the Center for Student Involvement, under the name its own directory entry publishes."
+    },
+    {
+      "entity_id": "2d601e96-ce7f-4ea1-bc72-287fc01ae407",
+      "entity": "Center for Student Success (Academic Advising)",
+      "group": "Center for Student Success",
+      "reviewed_at": "2026-09-24",
+      "note": "Approved: the Archway page for the Center for Student Success, which links to ramapo.edu/studentsuccess/. Its name is the department this office's own directory entry publishes."
+    },
+    {
+      "entity_id": "4c0063a5-62be-44cd-8a11-35151b945be4",
+      "entity": "Public Safety (Non-Emergency)",
+      "group": "Public Safety",
+      "reviewed_at": "2026-09-24",
+      "note": "Approved: the Archway department page for Public Safety, which links to ramapo.edu/publicsafety/. It belongs to the non-emergency office, the department's everyday office; the Emergency entry stays the emergency line."
     }
   ]
 }
