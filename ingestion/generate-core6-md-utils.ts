@@ -16,6 +16,8 @@ export interface Core6MarkdownOptions {
   maxContactsPerPage?: number;
   maxDocumentsPerPage?: number;
   derivedSections?: (page: RawPageV1) => readonly ContextSection[];
+  /** Write a section or document list repeated on at least half of the pages once, not on every page. */
+  hoistRepeatedSections?: boolean;
 }
 
 export interface ContextSection {
@@ -37,6 +39,11 @@ const SECTION_MIN_LENGTH = 24;
 // in large datasets, the floor keeps small datasets (3-page health) intact.
 const SHARED_CONTACT_MIN_PAGE_RATIO = 0.3;
 const SHARED_CONTACT_MIN_PAGES = 3;
+// A block repeated on at least half of a site's pages (a sidebar's contact block, link list
+// or document list) is the site's template, not a fact about each page. Written once, it
+// stops identical passages from crowding distinct ones out of search results.
+const SHARED_SECTION_MIN_PAGE_RATIO = 0.5;
+const SHARED_SECTION_MIN_PAGES = 3;
 const NOISE_HEADING_PATTERNS = [
   /^related resources$/i,
   /^virtual tour$/i,
@@ -286,11 +293,6 @@ function ensureOutputDir(filePath: string): void {
 }
 
 export function generateCore6Markdown(options: Core6MarkdownOptions): void {
-  const maxPages = options.maxPages ?? DEFAULT_MAX_PAGES;
-  const maxSectionsPerPage = options.maxSectionsPerPage ?? DEFAULT_MAX_SECTIONS_PER_PAGE;
-  const maxContactsPerPage = options.maxContactsPerPage ?? DEFAULT_MAX_CONTACTS_PER_PAGE;
-  const maxDocumentsPerPage = options.maxDocumentsPerPage ?? DEFAULT_MAX_DOCUMENTS_PER_PAGE;
-
   if (!fs.existsSync(options.inputFilePath)) {
     console.error(`Error: normalized dataset not found at ${options.inputFilePath}`);
     process.exit(1);
@@ -313,9 +315,53 @@ export function generateCore6Markdown(options: Core6MarkdownOptions): void {
     process.exit(1);
   }
 
-  const selectedPages = selectPages(dataset, maxPages);
+  const { markdown, pages } = core6Markdown(dataset, options);
   console.log(`Loaded ${dataset.pages.length} pages for ${options.datasetName}.`);
-  console.log(`Selected ${selectedPages.length} pages for context markdown.`);
+  console.log(`Selected ${pages} pages for context markdown.`);
+
+  ensureOutputDir(options.outputFilePath);
+  fs.writeFileSync(options.outputFilePath, markdown, 'utf-8');
+  console.log(`Successfully generated markdown at ${options.outputFilePath}`);
+}
+
+export type Core6MarkdownContent = Pick<Core6MarkdownOptions, 'title' | 'description' | 'maxPages'
+  | 'maxSectionsPerPage' | 'maxContactsPerPage' | 'maxDocumentsPerPage' | 'derivedSections'
+  | 'hoistRepeatedSections'>;
+
+interface RenderedPage {
+  page: RawPageV1;
+  title: string;
+  sections: ContextSection[];
+  documents: ContextSection | null;
+}
+
+type SharedSections = Map<string, { block: ContextSection; pages: RenderedPage[] }>;
+
+const blockKey = (block: ContextSection) => `${block.heading.toLowerCase()}|${block.text.toLowerCase()}`;
+
+/** Blocks repeated on at least half of the pages, with the pages that show them, in first-seen order. */
+function collectSharedSections(pages: readonly RenderedPage[]): SharedSections {
+  const occurrences: SharedSections = new Map();
+  for (const page of pages) {
+    const blocks = [...page.sections, ...(page.documents ? [page.documents] : [])];
+    for (const key of new Set(blocks.map(blockKey))) {
+      const block = blocks.find(candidate => blockKey(candidate) === key)!;
+      const entry = occurrences.get(key) ?? { block, pages: [] };
+      entry.pages.push(page);
+      occurrences.set(key, entry);
+    }
+  }
+  const threshold = Math.max(SHARED_SECTION_MIN_PAGES, Math.ceil(pages.length * SHARED_SECTION_MIN_PAGE_RATIO));
+  return new Map([...occurrences].filter(([, entry]) => entry.pages.length >= threshold));
+}
+
+/** The context document for a crawled dataset: its usable pages, each cited to its URL and capture time. */
+export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownContent): { markdown: string; pages: number } {
+  const maxPages = options.maxPages ?? DEFAULT_MAX_PAGES;
+  const maxSectionsPerPage = options.maxSectionsPerPage ?? DEFAULT_MAX_SECTIONS_PER_PAGE;
+  const maxContactsPerPage = options.maxContactsPerPage ?? DEFAULT_MAX_CONTACTS_PER_PAGE;
+  const maxDocumentsPerPage = options.maxDocumentsPerPage ?? DEFAULT_MAX_DOCUMENTS_PER_PAGE;
+  const selectedPages = selectPages(dataset, maxPages);
 
   let markdown = `# ${options.title}\n\n`;
   markdown += `*Generated (UTC): ${getGeneratedTimestamp()}*\n\n`;
@@ -342,15 +388,36 @@ export function generateCore6Markdown(options: Core6MarkdownOptions): void {
       markdown += '\n---\n\n';
     }
 
-    selectedPages.forEach((page) => {
-      const title = normalizeTitle(page.title, page.url);
-      const sections = pickSections(
-        page,
-        maxSectionsPerPage,
-        options.derivedSections?.(page)
-      );
-      const contacts = pickContacts(page, maxContactsPerPage, sharedContactFingerprints);
+    const rendered: RenderedPage[] = selectedPages.map((page) => {
       const documents = pickDocuments(page, maxDocumentsPerPage);
+      return {
+        page,
+        title: normalizeTitle(page.title, page.url),
+        sections: pickSections(page, maxSectionsPerPage, options.derivedSections?.(page)),
+        documents: documents.length
+          ? { heading: 'Documents', text: documents.map((document) => `- ${document.label}: ${document.url}`).join('\n') }
+          : null,
+      };
+    });
+    const shared: SharedSections = options.hoistRepeatedSections ? collectSharedSections(rendered) : new Map();
+    if (shared.size > 0) {
+      markdown += '## Site-wide sections\n\n';
+      shared.forEach(({ block, pages }) => {
+        // Cite the site's home page when it shows the block: the shortest path among them.
+        const cited = pages.reduce((best, candidate) =>
+          new URL(candidate.page.url).pathname.length < new URL(best.page.url).pathname.length ? candidate : best).page;
+        markdown += `### ${block.heading}\n\n- URL: ${cited.url}\n- Collected At: ${cited.fetchedAt}\n\n${block.text}\n\n`;
+        markdown += pages.length === rendered.length
+          ? `Shown on every ${options.title} page.\n\n`
+          : `Shown on ${pages.length} of ${rendered.length} ${options.title} pages: ${pages.map((page) => page.title).join('; ')}.\n\n`;
+      });
+      markdown += '---\n\n';
+    }
+
+    rendered.forEach(({ page, title, sections: allSections, documents: documentBlock }) => {
+      const sections = allSections.filter((section) => !shared.has(blockKey(section)));
+      const contacts = pickContacts(page, maxContactsPerPage, sharedContactFingerprints);
+      const documents = documentBlock && !shared.has(blockKey(documentBlock)) ? documentBlock : null;
 
       markdown += `## ${title}\n\n`;
       markdown += `- URL: ${page.url}\n`;
@@ -376,19 +443,13 @@ export function generateCore6Markdown(options: Core6MarkdownOptions): void {
         markdown += '\n';
       }
 
-      if (documents.length > 0) {
-        markdown += '### Documents\n\n';
-        documents.forEach((document) => {
-          markdown += `- ${document.label}: ${document.url}\n`;
-        });
-        markdown += '\n';
+      if (documents) {
+        markdown += `### Documents\n\n${documents.text}\n\n`;
       }
 
       markdown += '---\n\n';
     });
   }
 
-  ensureOutputDir(options.outputFilePath);
-  fs.writeFileSync(options.outputFilePath, markdown, 'utf-8');
-  console.log(`Successfully generated markdown at ${options.outputFilePath}`);
+  return { markdown, pages: selectedPages.length };
 }
