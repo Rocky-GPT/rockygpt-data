@@ -66,7 +66,7 @@ export function compileSchoolIdentities(entities: CampusIdentity[], rows: Map<st
     const groups = clubs.filter(row => school.archway_groups.includes(text(row.source_record_key)));
     for (const key of school.archway_groups) {
       const matches = groups.filter(row => text(row.source_record_key) === key);
-      if (matches.length !== 1) unresolved.push({ entity: school.name, collection: 'clubs', record: key, reason: `The reviewed Archway group ${key} has ${matches.length} records in this release; it is not linked.` });
+      if (matches.length !== 1) unresolved.push({ entity: school.name, collection: 'clubs', record: key, reason: `The reviewed Archway group ${key} has ${matches.length} records in this release; it is not linked.`, kind: matches.length ? 'missing_connection' : 'no_records' });
     }
     const linked = groups.filter(row => groups.filter(other => text(other.source_record_key) === text(row.source_record_key)).length === 1);
     if (linked.length) {
@@ -75,7 +75,7 @@ export function compileSchoolIdentities(entities: CampusIdentity[], rows: Map<st
     }
     const other = names.get(normalizeName(school.name));
     // A shared name is kept for an ambiguous lookup, never merged by name.
-    if (other) unresolved.push({ entity: school.name, collection: 'schools', record: school.section, reason: `Shares its name with the ${other}; a name lookup asks which one is meant.` });
+    if (other) unresolved.push({ entity: school.name, collection: 'schools', record: school.section, reason: `Shares its name with the ${other}; a name lookup asks which one is meant.`, kind: 'note' });
     const aliases = [...new Set([school.abbreviation, ...school.legacy_names.map(legacy => legacy.name)])];
     noteAlias(ledger, school.id, school.abbreviation, { basis: 'school_abbreviation', source_url: school.url });
     for (const legacy of school.legacy_names) noteAlias(ledger, school.id, legacy.name, { basis: 'school_former_name', note: legacy.evidence });
@@ -97,14 +97,14 @@ export function compileSchoolIdentities(entities: CampusIdentity[], rows: Map<st
         let targets: string[];
         if (entity.kind === 'program') {
           targets = successors.get(value) || [];
-          if (targets.length > 1) { unresolved.push({ entity: entity.name, collection, record: key, reason: `Catalog school "${value}" was split between current schools; the program is not placed in one.` }); continue; }
+          if (targets.length > 1) { unresolved.push({ entity: entity.name, collection, record: key, reason: `Catalog school "${value}" was split between current schools; the program is not placed in one.`, kind: 'missing_connection' }); continue; }
         } else {
           const status = STATUS_SUFFIX.exec(value)?.[1];
-          if (status === 'Retired') { unresolved.push({ entity: entity.name, collection, record: key, reason: 'The faculty profile marks this person retired; no current school is linked.' }); continue; }
+          if (status === 'Retired') { unresolved.push({ entity: entity.name, collection, record: key, reason: 'The faculty profile marks this person retired; no current school is linked.', kind: 'missing_connection' }); continue; }
           const school = byName.get(value.replace(STATUS_SUFFIX, ''));
           targets = school ? [school] : [];
         }
-        if (!targets.length) { unresolved.push({ entity: entity.name, collection, record: key, reason: `Published school "${value}" is not a current official school or a reviewed legacy name of one.` }); continue; }
+        if (!targets.length) { unresolved.push({ entity: entity.name, collection, record: key, reason: `Published school "${value}" is not a current official school or a reviewed legacy name of one.`, kind: 'missing_connection' }); continue; }
         const references = evidence.get(targets[0]) || [];
         references.push({ collection, source_key: link.source_key, source_record_key: key, field: 'school' });
         evidence.set(targets[0], references);

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { CampusIdentity } from './campus-identities';
-import type { IdentityCoverageIssue, IdentitySnapshot } from './compile-campus-identities';
+import type { CoverageKind, IdentityCoverageIssue, IdentitySnapshot } from './compile-campus-identities';
 import { noteAlias, type AliasLedger } from './identity-aliases';
 import reviewedCaptures from '../reference/archway-event-identity-captures.json';
 
@@ -141,21 +141,21 @@ export function compileArchwayIdentities(snapshot: IdentitySnapshot, inputs: Arc
   for (const row of snapshot.clubs || []) {
     // A group a reviewed identity links explicitly (a school's Archway page) is not a second identity.
     if (owned.has(text(row.source_record_key))) continue;
-    const issue = (reason: string) => unresolved.push({ entity: text(row.name), collection: 'clubs', record: text(row.source_record_key), reason });
+    const issue = (coverage: CoverageKind, reason: string) => unresolved.push({ entity: text(row.name), collection: 'clubs', record: text(row.source_record_key), reason, kind: coverage });
     // Student groups are clubs; departments, residence halls, teams, schools and
     // seminars are other campus organizations. The published category decides.
     const kind = groupCategories.has(text(row.category).split(' - ')[0]) ? 'club' : 'organization';
-    if (kind === 'organization' && reserved.has(normalizeName(text(row.name)))) { issue('An Archway group named like a reviewed campus identity or its published department needs a reviewed link; no duplicate identity is created. Existing search remains available.'); continue; }
+    if (kind === 'organization' && reserved.has(normalizeName(text(row.name)))) { issue('unlinked_record', 'An Archway group named like a reviewed campus identity or its published department needs a reviewed link; no duplicate identity is created. Existing search remains available.'); continue; }
     const url = canonicalClubUrl(row.website_url);
     const matches = url ? sourcesByUrl.get(url) || [] : [];
     const ids = new Set(matches.map(r => numericId(r.clubId)).filter(Boolean));
-    if (!url || (publishedByUrl.get(url)?.length || 0) !== 1 || ids.size !== 1 || !UUID.test(text(row.id))) { issue('No unique explicit Archway group ID can be attached through the original published website URL; a matching name alone is insufficient.'); continue; }
+    if (!url || (publishedByUrl.get(url)?.length || 0) !== 1 || ids.size !== 1 || !UUID.test(text(row.id))) { issue('unlinked_record', 'No unique explicit Archway group ID can be attached through the original published website URL; a matching name alone is insufficient.'); continue; }
     approved.push({ row, groupId: [...ids][0], kind });
   }
   const byGroup = uniqueBy(approved, item => item.groupId);
   const groupEntities = new Map<string, CampusIdentity>();
   for (const { row, groupId, kind } of approved) {
-    if (byGroup.get(groupId)?.length !== 1) { unresolved.push({ entity: text(row.name), collection: 'clubs', record: text(row.source_record_key), reason: 'Several original club records claim the same external group ID; identity is ambiguous.' }); continue; }
+    if (byGroup.get(groupId)?.length !== 1) { unresolved.push({ entity: text(row.name), collection: 'clubs', record: text(row.source_record_key), reason: 'Several original club records claim the same external group ID; identity is ambiguous.', kind: 'unlinked_record' }); continue; }
     const entity: CampusIdentity = { id: archwayIdentityId('club', groupId), kind, name: text(row.name).slice(0, 240), aliases: [], links: [{ collection: 'clubs', source_key: text(row.source_key), source_record_keys: [text(row.source_record_key)], source_record_ids: [text(row.id)] }] };
     entities.push(entity); groupEntities.set(groupId, entity);
   }
@@ -163,19 +163,19 @@ export function compileArchwayIdentities(snapshot: IdentitySnapshot, inputs: Arc
   const organizers = eventOrganizersArtifact(snapshot, inputs);
   for (const row of eventRows) {
     const eventId = archwayEventId(row.event_url); const date = campusDate(row.starts_at);
-    const issue = (reason: string) => unresolved.push({ entity: text(row.title), collection: 'events', record: text(row.source_record_key), reason });
-    if (!eventId || byEventId.get(eventId)?.length !== 1 || !UUID.test(text(row.id))) { issue('Missing or nonunique explicit Archway event occurrence ID; title similarity and date alone cannot establish a stable identity.'); continue; }
+    const issue = (coverage: CoverageKind, reason: string) => unresolved.push({ entity: text(row.title), collection: 'events', record: text(row.source_record_key), reason, kind: coverage });
+    if (!eventId || byEventId.get(eventId)?.length !== 1 || !UUID.test(text(row.id))) { issue('unlinked_record', 'Missing or nonunique explicit Archway event occurrence ID; title similarity and date alone cannot establish a stable identity.'); continue; }
     const title = text(row.title);
     const entity: CampusIdentity = { id: archwayIdentityId('event', eventId), kind: 'event', name: `${title.slice(0, 215)} (${date || 'date not published'})`, aliases: title.length <= 240 ? [title] : [], links: [{ collection: 'events', source_key: text(row.source_key), source_record_keys: [text(row.source_record_key)], source_record_ids: [text(row.id)] }] };
     for (const alias of entity.aliases) noteAlias(ledger, entity.id, alias, { basis: 'event_title', evidence: { collection: 'events', source_key: text(row.source_key), source_record_key: text(row.source_record_key), source_record_id: text(row.id), field: 'title' } });
-    if (!date) issue('Event occurrence identity is explicit but its date is not published; the profile must keep the date unknown.');
+    if (!date) issue('note', 'Event occurrence identity is explicit but its date is not published; the profile must keep the date unknown.');
     const assertions = organizers.events.filter(e => e.source_record_id === row.id);
     const groupIds = new Set(assertions.map(e => e.organizer_group_id));
-    if (groupIds.size !== 1) issue(assertions.length ? 'Explicit captured organizer assertions conflict; no organizer identity relationship is approved.' : 'No captured explicit organizer group ID and linked group page; organizer and location names remain source text, not identity links.');
+    if (groupIds.size !== 1) issue('missing_connection', assertions.length ? 'Explicit captured organizer assertions conflict; no organizer identity relationship is approved.' : 'No captured explicit organizer group ID and linked group page; organizer and location names remain source text, not identity links.');
     else {
       const assertion = assertions[0]; const target = groupEntities.get(assertion.organizer_group_id);
-      if (!target) issue('Explicit organizer group ID has no Archway group identity; directory groups are never merged with offices by name.');
-      else if (text(row.organizer) !== assertion.organizer_name || assertions.some(a => a.organizer_name !== assertion.organizer_name || a.organizer_url !== assertion.organizer_url)) issue('Current event organizer text conflicts with the captured explicitly identified organizer; both source assertions are retained without choosing authority.');
+      if (!target) issue('missing_connection', 'Explicit organizer group ID has no Archway group identity; directory groups are never merged with offices by name.');
+      else if (text(row.organizer) !== assertion.organizer_name || assertions.some(a => a.organizer_name !== assertion.organizer_name || a.organizer_url !== assertion.organizer_url)) issue('missing_connection', 'Current event organizer text conflicts with the captured explicitly identified organizer; both source assertions are retained without choosing authority.');
       else entity.relationships = [{ type: 'organized_by', target_entity_id: target.id, evidence: [{ collection: 'events', source_key: text(row.source_key), source_record_key: text(row.source_record_key), source_record_id: text(row.id), field: 'organizer_group_id', source_url: assertion.source_url }] }];
     }
     entities.push(entity);

@@ -82,16 +82,16 @@ export function courseSubjectsArtifact(courses: unknown, input?: CourseSubjectsI
   for (const key of Object.keys(courses && typeof courses === 'object' ? courses : {})) {
     const code = courseSubjectCode(key);
     if (code) counts.set(code, (counts.get(code) ?? 0) + 1);
-    else unresolved.push({ collection: 'courses', record: key, reason: 'The course code has no leading subject code; it is not placed in a subject.' });
+    else unresolved.push({ collection: 'courses', record: key, reason: 'The course code has no leading subject code; it is not placed in a subject.', kind: 'missing_connection' });
   }
   const reference = new Map(input.subjects.map(subject => [text(subject.code), subject]));
   const subjects: CourseSubject[] = [...counts].sort(([a], [b]) => (a < b ? -1 : 1)).map(([code, count]) => {
     const name = text(reference.get(code)?.name) || null;
-    if (!name) unresolved.push({ entity: code, collection: 'subjects', record: code, reason: 'The catalog department list publishes no name for this subject code; the subject is named by its code.' });
+    if (!name) unresolved.push({ entity: code, collection: 'subjects', record: code, reason: 'The catalog department list publishes no name for this subject code; the subject is named by its code.', kind: 'note' });
     return { code, name, display_name: name ? `${name} (${code})` : code, search_terms: [...new Set((reference.get(code)?.aliases ?? []).map(text).filter(Boolean))], course_count: count };
   });
   for (const [code, subject] of reference) {
-    if (!counts.has(code)) unresolved.push({ entity: text(subject.name) || code, collection: 'subjects', record: code, reason: 'No course in this release\'s catalog carries this subject code; no subject identity is created.' });
+    if (!counts.has(code)) unresolved.push({ entity: text(subject.name) || code, collection: 'subjects', record: code, reason: 'No course in this release\'s catalog carries this subject code; no subject identity is created.', kind: 'no_records' });
   }
   return {
     artifact: { schema_version: 1, source, source_url: input.source_url, captured_at: input.captured_at, subjects },

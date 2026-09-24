@@ -28,6 +28,15 @@ Unresolved evidence remains visible in the coverage artifact:
 - 626 profile-listed course entries have no explicit catalog code. They remain undated lists; no current-semester claims follow.
 - Only CSI has a confidently supported directory contact plus campus schedule. Birch Tree Inn has its own contact, dining schedule and collector-declared menu feed. Other offices/facilities/venues retain available sections; department or building proximity does not transfer contact details or hours.
 
+Each coverage issue has a `kind`, and its `reason` says why:
+
+- `unlinked_record`: an original record no identity links.
+- `missing_connection`: an identity is missing one of its links, relationships or references.
+- `no_records`: a reviewed or listed entry has no record in the release.
+- `note`: a naming or interpretation note.
+
+Releases compiled before kinds existed carry only the reason.
+
 ## Program faculty evidence
 
 A `listed_faculty` relationship means the program's catalog Program Faculty field (`customFields.xiQxl`) links to that person's profile. It is not a convener, an appointment or a current teaching assignment. The published `faculty` array in `programs` is never evidence. It mixes the Convener and Program Faculty fields and adds name matches. For 22 programs it is a scraper heuristic: faculty whose text overlaps the program name, or else the school's first ten faculty. Profile links resolve exactly as convener links do: by exact profile URL, or by a reviewed official redirect. Two URLs for one person produce one listing.

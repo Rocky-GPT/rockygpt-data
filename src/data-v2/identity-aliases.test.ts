@@ -68,7 +68,7 @@ test('a human-reviewed alias is applied by persistent ID and recorded as human-r
   const { applied, unresolved } = applyReviewedAliases([venue], [review, { ...review, entity_id: id(9) }], ledger);
   assert.deepEqual(venue.aliases, ['Birch']);
   assert.deepEqual(applied, [{ entity_id: id(8), entity: 'Birch Tree Inn', alias: 'Birch', basis: 'human_reviewed', reviewed_at: '2026-09-23' }]);
-  assert.equal(unresolved.length, 1);
+  assert.deepEqual(unresolved.map(u => u.kind), ['no_records']);
   assert.deepEqual(aliasRecords([venue], ledger), [{ entity_id: id(8), entity: 'Birch Tree Inn', kind: 'venue', alias: 'Birch', sources: [{ basis: 'human_reviewed', reviewed_at: '2026-09-23', note: 'Approved.' }] }]);
   // A renamed identity is not silently given the reviewed alias.
   assert.equal(applyReviewedAliases([{ ...venue, aliases: [], name: 'Renamed' }], [review]).applied.length, 0);

@@ -1,5 +1,5 @@
 import type { CampusIdentity } from './campus-identities';
-import type { IdentityCoverageIssue } from './compile-campus-identities';
+import type { CoverageKind, IdentityCoverageIssue } from './compile-campus-identities';
 import { uuid5 } from './course-identities';
 import { normalizeName } from './archway-identities';
 import { SOURCES } from './source-seeds';
@@ -43,7 +43,7 @@ export interface CampusBuildingsArtifact {
   map_source_url: string | null;
   map_generated_at: string | null;
   buildings: CampusBuilding[];
-  unresolved: { name: string; reason: string }[];
+  unresolved: { name: string; reason: string; kind: CoverageKind }[];
 }
 
 export const buildingIdentityId = (concept3dId: string): string => uuid5(BUILDING_NAMESPACE, `concept3d:location:${concept3dId}`);
@@ -64,20 +64,20 @@ export function campusBuildingsArtifact(map: unknown, reviewed: ReviewedBuilding
   const owners = new Map<string, number>();
   for (const entry of entries) for (const prefix of entry.prefixes) owners.set(prefix, (owners.get(prefix) || 0) + 1);
   const buildings: CampusBuilding[] = [];
-  const unresolved: { name: string; reason: string }[] = [];
+  const unresolved: CampusBuildingsArtifact['unresolved'] = [];
   const approved = new Map(reviewed.map(building => [building.concept3d_id, building]));
   for (const { row, id, prefixes } of entries) {
     const review = id ? approved.get(id) : undefined;
     if (!prefixes.length && !review) continue;
     const name = text(row.name);
-    if (review && review.name !== name) { unresolved.push({ name, reason: `The reviewed building "${review.name}" is named "${name}" on the map; it is not published until the review matches.` }); continue; }
-    if (!id) unresolved.push({ name, reason: 'The map entry has no Concept3D location ID, so it has no persistent building identity.' });
-    else if (shared.get(id) !== 1) unresolved.push({ name, reason: `Concept3D location ${id} is shared by several map entries; no single building identity.` });
-    else if (prefixes.some(prefix => owners.get(prefix) !== 1 || !/^[A-Z]+$/.test(prefix))) unresolved.push({ name, reason: 'A room prefix is claimed by another building or is not an uppercase code.' });
+    if (review && review.name !== name) { unresolved.push({ name, reason: `The reviewed building "${review.name}" is named "${name}" on the map; it is not published until the review matches.`, kind: 'unlinked_record' }); continue; }
+    if (!id) unresolved.push({ name, reason: 'The map entry has no Concept3D location ID, so it has no persistent building identity.', kind: 'unlinked_record' });
+    else if (shared.get(id) !== 1) unresolved.push({ name, reason: `Concept3D location ${id} is shared by several map entries; no single building identity.`, kind: 'unlinked_record' });
+    else if (prefixes.some(prefix => owners.get(prefix) !== 1 || !/^[A-Z]+$/.test(prefix))) unresolved.push({ name, reason: 'A room prefix is claimed by another building or is not an uppercase code.', kind: 'unlinked_record' });
     else buildings.push({ concept3d_id: id, name, category: text(row.category) || null, map_url: text(row.mapUrl), room_prefixes: prefixes, basis: prefixes.length ? 'room_prefixes' : 'human_reviewed' });
   }
   for (const building of reviewed) {
-    if (!entries.some(entry => entry.id === building.concept3d_id)) unresolved.push({ name: building.name, reason: `The reviewed Concept3D location ${building.concept3d_id} is not on the committed map.` });
+    if (!entries.some(entry => entry.id === building.concept3d_id)) unresolved.push({ name: building.name, reason: `The reviewed Concept3D location ${building.concept3d_id} is not on the committed map.`, kind: 'no_records' });
   }
   return {
     schema_version: 1,
@@ -115,13 +115,13 @@ export function compileBuildingIdentities(artifact: CampusBuildingsArtifact, ent
   const buildings: CampusIdentity[] = artifact.buildings.map(building => {
     const other = names.get(normalizeName(building.name));
     // A shared name is kept for an ambiguous lookup, never merged by name.
-    if (other) unresolved.push({ entity: building.name, collection: 'buildings', record: building.concept3d_id, reason: `Shares its name with the ${other}; a name lookup asks which one is meant.` });
+    if (other) unresolved.push({ entity: building.name, collection: 'buildings', record: building.concept3d_id, reason: `Shares its name with the ${other}; a name lookup asks which one is meant.`, kind: 'note' });
     return { id: buildingIdentityId(building.concept3d_id), kind: 'building', name: building.name, aliases: [], links: [
       { collection: 'buildings', source_key: artifact.source.source_key, source_record_keys: [building.concept3d_id] },
     ] };
   });
   const byPrefix = new Map(artifact.buildings.flatMap((building, index) => building.room_prefixes.map(prefix => [prefix, buildings[index].id] as const)));
-  for (const unlisted of artifact.unresolved) unresolved.push({ entity: unlisted.name, collection: 'buildings', reason: unlisted.reason });
+  for (const unlisted of artifact.unresolved) unresolved.push({ entity: unlisted.name, collection: 'buildings', reason: unlisted.reason, kind: unlisted.kind });
   for (const entity of entities) {
     const type = entity.kind === 'person' ? 'office_at' : ['office', 'facility', 'venue'].includes(entity.kind) ? 'located_at' : null;
     if (!type) continue;
@@ -130,7 +130,7 @@ export function compileBuildingIdentities(artifact: CampusBuildingsArtifact, ent
       for (const key of link.source_record_keys) {
         const placed = roomBuildings(contacts.get(`${link.source_key}:${key}`)?.office, byPrefix);
         if (placed === null) continue;
-        if ('reason' in placed) { unresolved.push({ entity: entity.name, collection: 'contacts', record: key, reason: placed.reason }); continue; }
+        if ('reason' in placed) { unresolved.push({ entity: entity.name, collection: 'contacts', record: key, reason: placed.reason, kind: 'missing_connection' }); continue; }
         for (const building of placed.buildings) {
           const references = evidence.get(building) || [];
           references.push({ collection: 'contacts', source_key: link.source_key, source_record_key: key, field: 'office' });
