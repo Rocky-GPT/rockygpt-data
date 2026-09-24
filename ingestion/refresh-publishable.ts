@@ -33,6 +33,8 @@ export const SOURCE_REFRESH_SCRIPTS: Record<string, string[]> = {
   faculty: ['fetch:faculty'],
   'graduation-plans': ['fetch:graduation-plans'],
   'major-pages': ['fetch:major-pages'],
+  // Reads the program pages' links, so it follows fetch:major-pages in source order.
+  'major-page-links': ['fetch:major-page-links'],
 };
 
 // The workflow runs daily. Renew a source that would cross its SLA before

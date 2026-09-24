@@ -6,6 +6,7 @@ export function sourceKeyForPath(filePath: string): string {
   if (relative.includes('/dining/')) return 'dining';
   if (relative.includes('calendar')) return 'academic-calendar';
   if (relative.includes('major-pages')) return 'major-pages';
+  if (relative.includes('major-page-links')) return 'major-page-links';
   if (relative.includes('program') || relative.includes('/courses/')) return 'academic-programs';
   if (relative.includes('faculty')) return 'faculty';
   if (relative.includes('club')) return 'archway-clubs';

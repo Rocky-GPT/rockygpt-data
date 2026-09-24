@@ -48,6 +48,7 @@ export const SOURCE_RAW_DATASETS: Record<string, string[]> = {
   faculty: ['faculty', 'faculty-sources'],
   'graduation-plans': ['graduation-plans'],
   'major-pages': ['major-pages'],
+  'major-page-links': ['major-page-links', 'major-page-links-sources'],
 };
 
 export const RAW_DATASET_FILES: Record<string, string> = {
@@ -73,6 +74,8 @@ export const RAW_DATASET_FILES: Record<string, string> = {
   'faculty-sources': 'faculty-sources.raw.json',
   'graduation-plans': 'graduation-plans.raw.json',
   'major-pages': 'major-pages.raw.json',
+  'major-page-links': 'major-page-links.raw.json',
+  'major-page-links-sources': 'major-page-links-sources.raw.json',
   'safety-sources': 'safety-sources.raw.json',
   'directory-sources': 'directory-sources.raw.json',
   'transportation-sources': 'transportation-sources.raw.json',
