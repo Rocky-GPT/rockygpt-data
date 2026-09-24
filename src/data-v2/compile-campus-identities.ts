@@ -7,7 +7,7 @@ import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, t
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
 import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, type AliasLedger, type AliasRecord, type ReviewedAlias } from './identity-aliases';
-import type { ReviewedBuilding, ReviewedLocation } from './campus-buildings';
+import type { ReviewedBuilding, ReviewedLocation, ReviewedRoom } from './campus-buildings';
 import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileSubjectIdentities, courseSubjectsArtifact, type CourseSubjectsArtifact, type CourseSubjectsInput } from './course-subjects';
 import { GRADUATION_PLANS_SOURCE_KEY, graduationPlansInput } from './graduation-plans';
@@ -151,7 +151,7 @@ export interface CompiledIdentityArtifacts {
 /** Inputs outside the release snapshot: Archway captures, the committed campus map, the reviewed schools and the catalog's subject list. */
 export interface IdentityInputs extends ArchwayIdentityInputs {
   campusMap?: unknown; campusSchools?: ReviewedSchools; courseSubjects?: CourseSubjectsInput;
-  identityReviews?: { aliases?: ReviewedAlias[]; buildings?: ReviewedBuilding[]; locations?: ReviewedLocation[] };
+  identityReviews?: { aliases?: ReviewedAlias[]; buildings?: ReviewedBuilding[]; locations?: ReviewedLocation[]; rooms?: ReviewedRoom[] };
   /** The published graduation plans artifact, whose plans name their programs' catalog codes. */
   graduationPlans?: unknown;
   /** The published program pages artifact, whose pages name their own programs' catalog codes. */
@@ -303,7 +303,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const archway = compileArchwayIdentities(snapshot, inputs, reserved, schools.ownedClubs, ledger);
   entities.push(...archway.entities);
   unresolved.push(...archway.unresolved);
-  const campusBuildings = campusBuildingsArtifact(inputs.campusMap, inputs.identityReviews?.buildings, inputs.identityReviews?.locations);
+  const campusBuildings = campusBuildingsArtifact(inputs.campusMap, inputs.identityReviews?.buildings, inputs.identityReviews?.locations, inputs.identityReviews?.rooms);
   const contactRows = new Map(candidates.filter(c => c.collection === 'contacts').map(c => [`${c.source}:${c.key}`, c.row]));
   const places = compileBuildingIdentities(campusBuildings, entities, contactRows);
   entities.push(...places.buildings);

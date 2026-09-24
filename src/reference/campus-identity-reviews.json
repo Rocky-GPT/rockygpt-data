@@ -8,6 +8,8 @@
     "though no room prefix places anyone in it. Each location here places an",
     "identity that has no published room in a building: an official page makes",
     "the statement, and a person decided which identity and building it names.",
+    "Each room here is an exact published room value that is not a PREFIX-NUMBER",
+    "room, read by a person as naming a building.",
     "Entries name persistent IDs or Concept3D locations, never names to match."
   ],
   "aliases": [
@@ -37,6 +39,22 @@
       "source_url": "https://www.ramapo.edu/about/campus-hours/",
       "reviewed_at": "2026-09-24",
       "note": "Approved: the campus-hours page heads the Library's section with this statement and links it to the Library's own hours page. The Library's directory entry publishes no room, so no room prefix places it."
+    }
+  ],
+  "rooms": [
+    {
+      "room": "Learning Commons 204A",
+      "concept3d_id": "1133431",
+      "building": "Peter P. Mercer Learning Commons",
+      "reviewed_at": "2026-09-24",
+      "note": "Approved: the published office names the Learning Commons itself; its other rooms are published as LC-."
+    },
+    {
+      "room": "The Lodge",
+      "concept3d_id": "1133346",
+      "building": "The Lodge (CPA)",
+      "reviewed_at": "2026-09-24",
+      "note": "Approved: Housing & Residence Life publishes its office as \"The Lodge\", and the campus map's own office list places Residence Life in The Lodge (CPA)."
     }
   ]
 }

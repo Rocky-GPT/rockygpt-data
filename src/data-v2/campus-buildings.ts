@@ -18,10 +18,12 @@ import { SOURCES } from './source-seeds';
  *
  * A published room places its holder in a building only when the whole value
  * is one or more `PREFIX-NUMBER` rooms separated by "/" and each prefix belongs
- * to one building. Map aliases, building names and free text such as
- * "Learning Commons 204A" or "The Lodge" never do. "LC" was added for the
- * Peter P. Mercer Learning Commons on September 24, 2026, where the Library
- * staff's LC rooms are.
+ * to one building, or when a person reviewed that exact published value as
+ * naming a building, such as "Learning Commons 204A". Map aliases, building
+ * names and other free text never do. On September 24, 2026, "LC" was added for
+ * the Peter P. Mercer Learning Commons, where the Library staff's LC rooms are,
+ * and "SS" for the Sculpture Studios by a person's review: the one SS room is a
+ * sculpture professor's, and no Ramapo source spells SS out.
  *
  * An office, facility or venue with no published room can still be placed by a
  * reviewed location: a person confirms an official page's statement, such as the
@@ -43,6 +45,8 @@ export interface CampusBuilding {
   basis: 'room_prefixes' | 'human_reviewed';
   /** Identities placed here by a reviewed official statement; the evidence for their located_at. */
   reviewed_locations?: BuildingLocation[];
+  /** Exact published room values a person reviewed as naming this building. */
+  reviewed_rooms?: string[];
 }
 /** A map location a person approved as its own building identity. */
 export interface ReviewedBuilding { concept3d_id: string; name: string; reviewed_at: string; note: string }
@@ -52,6 +56,8 @@ export interface ReviewedLocation {
   statement: string; source_url: string; reviewed_at: string; note: string;
 }
 export type BuildingLocation = Pick<ReviewedLocation, 'entity_id' | 'entity' | 'statement' | 'source_url' | 'reviewed_at'>;
+/** A published room value that is not a `PREFIX-NUMBER` room, read by a person as naming a building. */
+export interface ReviewedRoom { room: string; concept3d_id: string; building: string; reviewed_at: string; note: string }
 export interface CampusBuildingsArtifact {
   schema_version: 1;
   /** The published source these records belong to, as the publisher seeds it. */
@@ -68,7 +74,7 @@ const rows = (value: unknown): Row[] => Array.isArray(value) ? value.filter(v =>
 const text = (value: unknown): string => typeof value === 'string' ? value.trim() : '';
 
 /** Buildings with reviewed room prefixes, or approved by a human review, at a Concept3D location no other map entry shares. */
-export function campusBuildingsArtifact(map: unknown, reviewed: ReviewedBuilding[] = [], locations: ReviewedLocation[] = []): CampusBuildingsArtifact {
+export function campusBuildingsArtifact(map: unknown, reviewed: ReviewedBuilding[] = [], locations: ReviewedLocation[] = [], rooms: ReviewedRoom[] = []): CampusBuildingsArtifact {
   const seed = SOURCES.find(source => source.key === CAMPUS_MAP_SOURCE_KEY);
   if (!seed) throw new Error('The campus-map source seed is missing.');
   const entries = rows((map as Row)?.buildings).map(row => ({
@@ -101,6 +107,13 @@ export function campusBuildingsArtifact(map: unknown, reviewed: ReviewedBuilding
     const { entity_id, entity, statement, source_url, reviewed_at } = location;
     building.reviewed_locations = [...(building.reviewed_locations ?? []), { entity_id, entity, statement, source_url, reviewed_at }];
   }
+  const readings = new Map<string, number>();
+  for (const reading of rooms) readings.set(reading.room, (readings.get(reading.room) || 0) + 1);
+  for (const reading of rooms) {
+    const building = buildings.find(item => item.concept3d_id === reading.concept3d_id);
+    if (!building || building.name !== reading.building || readings.get(reading.room) !== 1) { unresolved.push({ name: reading.building, reason: `The reviewed room "${reading.room}" does not name exactly one building published under that name; nothing is placed.`, kind: 'no_records' }); continue; }
+    building.reviewed_rooms = [...(building.reviewed_rooms ?? []), reading.room];
+  }
   return {
     schema_version: 1,
     source: { source_key: seed.key, title: seed.title, canonical_url: seed.url, trust_tier: seed.trustTier, freshness_sla_hours: seed.freshnessHours, domain: seed.domain },
@@ -112,9 +125,12 @@ export function campusBuildingsArtifact(map: unknown, reviewed: ReviewedBuilding
 }
 
 /** The buildings a published room value names, or why it names none. */
-export function roomBuildings(value: unknown, byPrefix: Map<string, string>): { buildings: string[] } | { reason: string } | null {
+export function roomBuildings(value: unknown, byPrefix: Map<string, string>, byReading: Map<string, string> = new Map()): { buildings: string[] } | { reason: string } | null {
   const room = text(value);
   if (!room) return null;
+  // A reviewed reading names its building for this exact published value only.
+  const read = byReading.get(room);
+  if (read) return { buildings: [read] };
   const found: string[] = [];
   for (const part of room.split('/').map(p => p.trim())) {
     const prefix = ROOM.exec(part)?.[1];
@@ -144,6 +160,7 @@ export function compileBuildingIdentities(artifact: CampusBuildingsArtifact, ent
     ] };
   });
   const byPrefix = new Map(artifact.buildings.flatMap((building, index) => building.room_prefixes.map(prefix => [prefix, buildings[index].id] as const)));
+  const byReading = new Map(artifact.buildings.flatMap((building, index) => (building.reviewed_rooms ?? []).map(room => [room, buildings[index].id] as const)));
   for (const unlisted of artifact.unresolved) unresolved.push({ entity: unlisted.name, collection: 'buildings', reason: unlisted.reason, kind: unlisted.kind });
   // A reviewed location places only the identity it names by ID, and only one that
   // has no room of its own to be placed by: an office, facility or venue.
@@ -168,7 +185,7 @@ export function compileBuildingIdentities(artifact: CampusBuildingsArtifact, ent
     for (const placement of placements.get(entity.id) ?? []) evidence.set(placement.building, [...(evidence.get(placement.building) ?? []), placement.evidence]);
     for (const link of entity.links.filter(l => l.collection === 'contacts')) {
       for (const key of link.source_record_keys) {
-        const placed = roomBuildings(contacts.get(`${link.source_key}:${key}`)?.office, byPrefix);
+        const placed = roomBuildings(contacts.get(`${link.source_key}:${key}`)?.office, byPrefix, byReading);
         if (placed === null) continue;
         if ('reason' in placed) { unresolved.push({ entity: entity.name, collection: 'contacts', record: key, reason: placed.reason, kind: 'missing_connection' }); continue; }
         for (const building of placed.buildings) {

@@ -98,3 +98,25 @@ test('a reviewed location places a roomless office in its building, citing the b
   ] }]);
   assert.ok(unresolved.some(u => u.reason.includes('names no office, facility or venue') && u.kind === 'no_records'));
 });
+
+test('a reviewed reading places only its exact published room value, in one named building', () => {
+  const reading = { room: 'Learning Commons 204A', concept3d_id: '1133371', building: 'Academic Building D', reviewed_at: '2026-09-24', note: 'Approved.' };
+  const artifact = campusBuildingsArtifact(map, [], [], [
+    reading, { ...reading, room: 'The Lodge', building: 'Another Name' },
+    { ...reading, room: 'Twice' }, { ...reading, room: 'Twice', concept3d_id: '1133424', building: 'Anisfield School of Business (ASB)' },
+  ]);
+  assert.deepEqual(artifact.buildings.find(b => b.concept3d_id === '1133371')?.reviewed_rooms, ['Learning Commons 204A']);
+  assert.equal(artifact.unresolved.filter(u => u.reason.includes('does not name exactly one building') && u.kind === 'no_records').length, 3);
+  const byReading = new Map([['Learning Commons 204A', 'building-d']]);
+  assert.deepEqual(roomBuildings('Learning Commons 204A', new Map(), byReading), { buildings: ['building-d'] });
+  assert.ok('reason' in (roomBuildings('Learning Commons 204', new Map(), byReading) ?? {}));
+  const office: CampusIdentity = { id: '00000000-0000-4000-8000-000000000007', kind: 'office', name: 'Housing', aliases: [], links: [{ collection: 'contacts', source_key: 'campus-directory', source_record_keys: ['office:housing'] }] };
+  const reader = person('00000000-0000-4000-8000-000000000008', 'Room Reader', 'faculty:reader');
+  const contacts = new Map([['campus-directory:office:housing', { office: 'Learning Commons 204A' }], ['faculty:faculty:reader', { office: 'Learning Commons 204A' }]]);
+  compileBuildingIdentities(artifact, [office, reader], contacts);
+  assert.deepEqual([office.relationships?.[0].type, reader.relationships?.[0].type], ['located_at', 'office_at']);
+  // The evidence is still the contact's own published office.
+  assert.deepEqual(reader.relationships?.[0], { type: 'office_at', target_entity_id: buildingIdentityId('1133371'), evidence: [
+    { collection: 'contacts', source_key: 'faculty', source_record_key: 'faculty:reader', field: 'office' },
+  ] });
+});

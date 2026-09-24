@@ -575,7 +575,9 @@
       "aliases": [
         "sculpture studios"
       ],
-      "roomPrefixes": []
+      "roomPrefixes": [
+        "SS"
+      ]
     },
     {
       "key": "building_sharp-sustainability-education-center",
