@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import path from 'node:path';
 import test from 'node:test';
 import type { ShuttleQueryResponse } from '../contract';
 import type { ApiRequest } from '../http';
@@ -7,6 +8,10 @@ import { setRepositoryV2ForTests } from '../../src/data-v2/repositories/index';
 import type { RockyRepositoryV2 } from '../../src/data-v2/repositories/types';
 import type { ShuttleServiceDay, ShuttleTripRecord } from '../../src/data-v2/schemas';
 import { postShuttleQuery } from './shuttle-query';
+
+// data/normalized is not committed. These are the four official timetables as
+// captured on 2026-09-23, so the tests read the same trips everywhere.
+const CAPTURED = path.join(__dirname, '../../ingestion/fixtures/transportation-root');
 
 function request(body: Record<string, unknown>): ApiRequest {
   return {
@@ -20,7 +25,7 @@ function request(body: Record<string, unknown>): ApiRequest {
 
 async function query(
   body: Record<string, unknown>,
-  repository: RockyRepositoryV2 = new FileRepositoryV2(process.cwd())
+  repository: RockyRepositoryV2 = new FileRepositoryV2(CAPTURED)
 ) {
   setRepositoryV2ForTests(repository);
   try {
