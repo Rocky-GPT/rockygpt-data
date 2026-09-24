@@ -7652,9 +7652,10 @@
           "selector": {
             "field": "name",
             "values": [
-              "Library (Main Building)"
+              "Library (Main Building)",
+              "Research Help Desk"
             ],
-            "evidence": "Reviewed schedule subject: the Library's own hours page publishes these Circulation Desk hours as the Library's operating hours. The scope is operating hours, not staff/phone availability. Research Help Desk hours stay a separate schedule subject."
+            "evidence": "Reviewed schedule subjects from the Library's own hours page: its Circulation Desk section, published as Library (Main Building), gives the Library's operating hours, and its Research Help Desk section gives the reference desk's hours, the desk behind the Library's refdesk contact. Each schedule keeps its own name. The scope is operating hours, not staff/phone availability."
           }
         }
       ]
