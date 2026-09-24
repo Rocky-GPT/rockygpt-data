@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { gunzipSync, gzipSync } from 'node:zlib';
 import { load } from 'cheerio';
 import type { AnyNode } from 'domhandler';
 import pLimit from 'p-limit';
@@ -11,7 +12,7 @@ import { type RawDatasetV1, type RawPageV1, validateRawDatasetV1 } from './raw-t
 const DEFAULT_TIMEOUT_MS = 15000;
 const DEFAULT_ATTEMPTS = 2;
 const DEFAULT_DETAIL_CONCURRENCY = 8;
-const DEFAULT_USER_AGENT =
+export const DEFAULT_USER_AGENT =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
 const SECTION_HEADINGS = 'h1, h2, h3, h4, h5, h6, summary, [role="heading"], .collapsableTitle';
 
@@ -45,6 +46,32 @@ export interface RawCollectorOptions {
   minimumPreviousPageRatio?: number;
   /** Opt-in source retention for bounded policy/service crawls, never detail feeds by default. */
   retainSourceHtml?: boolean;
+  /** Keep retained HTML gzip-compressed, so a capture of thousands of pages stays small enough to read back. */
+  compressSourceHtml?: boolean;
+  /** Start each request at least this long after the previous one, so a large crawl reads the site gently. */
+  requestIntervalMs?: number;
+}
+
+export interface PacerClock {
+  now: () => number;
+  sleep: (ms: number) => Promise<void>;
+}
+
+const REAL_CLOCK: PacerClock = {
+  now: () => Date.now(),
+  sleep: ms => new Promise(resolve => setTimeout(resolve, ms)),
+};
+
+/** Space request starts at least `intervalMs` apart, including across concurrent callers. */
+export function createRequestPacer(intervalMs: number, clock: PacerClock = REAL_CLOCK): () => Promise<void> {
+  let nextStart = -Infinity;
+  return async () => {
+    if (!(intervalMs > 0)) return;
+    const start = Math.max(clock.now(), nextStart);
+    nextStart = start + intervalMs;
+    const wait = start - clock.now();
+    if (wait > 0) await clock.sleep(wait);
+  };
 }
 
 interface BuildRawPageFromHtmlOptions {
@@ -68,7 +95,14 @@ export interface RawSourceCaptureV1 {
   dataset: string;
   generatedAt: string;
   collectionSucceeded: boolean;
-  pages: Array<FetchHtmlResult & { requestedUrl: string; sourceType: 'seed' | 'detail'; fetchedAt: string; contentHash: string }>;
+  pages: Array<FetchHtmlResult & { requestedUrl: string; sourceType: 'seed' | 'detail'; fetchedAt: string; contentHash: string;
+    /** The page's HTML, gzip-compressed and base64-encoded; `html` is then empty. */
+    htmlGzip?: string }>;
+}
+
+/** A retained page's original HTML, decompressed when the capture kept it compressed. */
+export function sourceHtml(source: Pick<RawSourceCaptureV1['pages'][number], 'html' | 'htmlGzip'>): string {
+  return source.htmlGzip ? gunzipSync(Buffer.from(source.htmlGzip, 'base64')).toString('utf8') : source.html;
 }
 
 const CHALLENGE_PAGE_PATTERNS = [
@@ -84,10 +118,22 @@ function cleanText(value: string): string {
   return value.replace(/\s+/g, ' ').trim();
 }
 
+// Challenge and block pages are small interstitials, a few kilobytes of markup and a script.
+const CHALLENGE_PAGE_MAX_CHARS = 60_000;
+
+/**
+ * A bot challenge or block page names itself in its title or top headings, and is small.
+ * The same words in an ordinary page's text are not one: a policy asking for "careful human
+ * verification" of AI output is still the policy.
+ */
 export function isLikelyChallengeHtml(html: string): boolean {
   if (!html) return false;
   const sample = html.slice(0, 250_000);
-  return CHALLENGE_PAGE_PATTERNS.some((pattern) => pattern.test(sample));
+  const headline = [...sample.matchAll(/<(title|h1|h2)\b[^>]*>([\s\S]*?)<\/\1>/gi)]
+    .map((match) => match[2].replace(/<[^>]+>/g, ' '))
+    .join(' ');
+  const text = html.length <= CHALLENGE_PAGE_MAX_CHARS ? sample : headline;
+  return CHALLENGE_PAGE_PATTERNS.some((pattern) => pattern.test(text));
 }
 
 function normalizeUrl(raw: string): string {
@@ -380,10 +426,11 @@ export function replayRawSourceCapture(capture: RawSourceCaptureV1): RawDatasetV
   if (capture.schemaVersion !== 1) throw new Error('Unsupported raw source capture schema version');
   if (capture.collectionSucceeded !== true) throw new Error('Source capture belongs to an incomplete or failed collection');
   const pages = capture.pages.map(source => {
-    if (createHash('sha256').update(source.html).digest('hex') !== source.contentHash) {
+    const html = sourceHtml(source);
+    if (createHash('sha256').update(html).digest('hex') !== source.contentHash) {
       throw new Error(`Source capture content hash mismatch: ${source.requestedUrl}`);
     }
-    return source.html ? buildRawPageFromHtml({url:source.url,html:source.html,sourceType:source.sourceType,
+    return html ? buildRawPageFromHtml({url:source.url,html,sourceType:source.sourceType,
       fetchedAt:source.fetchedAt,statusCode:source.statusCode,allowedHost:urlHost(source.url)})
       : buildEmptyPage(source.url,source.sourceType,source.statusCode,source.fetchedAt);
   });
@@ -547,11 +594,18 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
   const detailCandidates: string[] = [];
   const sourcePages: RawSourceCaptureV1['pages'] = [];
   let collectionSucceeded = false;
+  const pace = createRequestPacer(options.requestIntervalMs ?? 0);
   async function fetchSource(url: string, sourceType: 'seed' | 'detail'): Promise<FetchHtmlResult & { fetchedAt: string }> {
+    await pace();
     const fetched = await fetchHtmlWithRetry(url, timeoutMs, attempts);
     const fetchedAt = new Date().toISOString();
-    if (options.retainSourceHtml) sourcePages.push({ ...fetched, requestedUrl: url, sourceType,
-      fetchedAt, contentHash: createHash('sha256').update(fetched.html).digest('hex') });
+    if (options.retainSourceHtml) {
+      const contentHash = createHash('sha256').update(fetched.html).digest('hex');
+      sourcePages.push(options.compressSourceHtml && fetched.html
+        ? { ...fetched, html: '', htmlGzip: gzipSync(fetched.html).toString('base64'), requestedUrl: url, sourceType,
+          fetchedAt, contentHash }
+        : { ...fetched, requestedUrl: url, sourceType, fetchedAt, contentHash });
+    }
     return { ...fetched, fetchedAt };
   }
 

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, replayRawSourceCapture } from './raw-collector';
+import { assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml } from './raw-collector';
 import type { RawDatasetV1 } from './raw-types';
 
 const page = (statusCode = 200) => buildRawPageFromHtml({url:'https://example.edu/policy', html:'<main><h1>Policy</h1><p>Source content.</p></main>', sourceType:'seed', allowedHost:'example.edu',statusCode});
@@ -133,4 +133,72 @@ test('opt-in source capture retains original HTML and its hash even when collect
     capture.pages[0].html += 'changed';
     assert.throws(() => replayRawSourceCapture(capture), /hash mismatch/);
   } finally { globalThis.fetch=original; fs.rmSync(dir,{recursive:true,force:true}); }
+});
+
+test('the request pacer spaces request starts, including concurrent ones', async () => {
+  let now = 1_000;
+  const starts: number[] = [];
+  const pace = createRequestPacer(1_000, { now: () => now, sleep: async ms => { now += ms; } });
+  await pace(); starts.push(now);
+  now += 200;
+  await pace(); starts.push(now);
+  now += 5_000;
+  await pace(); starts.push(now);
+  assert.deepEqual(starts, [1_000, 2_000, 7_000]);
+
+  let clock = 0;
+  const waits: number[] = [];
+  const concurrent = createRequestPacer(500, { now: () => clock, sleep: async ms => { waits.push(ms); } });
+  await Promise.all([concurrent(), concurrent(), concurrent()]);
+  assert.deepEqual(waits, [500, 1_000]);
+  clock = 0;
+  const unpaced = createRequestPacer(0, { now: () => clock, sleep: async () => { throw new Error('should not wait'); } });
+  await unpaced(); await unpaced();
+});
+
+test('a paced crawl starts each request at least the interval after the last', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-raw-paced-'));
+  const original = globalThis.fetch;
+  const started: number[] = [];
+  globalThis.fetch = async () => {
+    started.push(Date.now());
+    return new Response('<main><h1>Office</h1><p>Office page text.</p></main>', {headers:{'content-type':'text/html'}});
+  };
+  try {
+    await collectRawDataset({dataset:'paced',seedUrls:['https://example.edu/a','https://example.edu/b','https://example.edu/c'],
+      allowedHost:'example.edu',outputPath:path.join(dir,'paced.raw.json'),attempts:1,maxDetailPages:0,requestIntervalMs:40});
+    assert.equal(started.length, 3);
+    for (let index = 1; index < started.length; index += 1) assert.ok(started[index] - started[index - 1] >= 35);
+  } finally {globalThis.fetch=original;fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('a compressed source capture keeps the original HTML and replays it the same way', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-raw-gzip-'));
+  const original = globalThis.fetch;
+  const html = '<main><h1>Financial Aid</h1><h2>Deadlines</h2><p>File the <a href="/finaid/fafsa/">FAFSA</a> by March 1.</p></main>';
+  globalThis.fetch = async () => new Response(html, {headers:{'content-type':'text/html'}});
+  try {
+    const collected = await collectRawDataset({dataset:'office',seedUrls:['https://example.edu/finaid/'],allowedHost:'example.edu',
+      outputPath:path.join(dir,'office.raw.json'),attempts:1,maxDetailPages:0,retainSourceHtml:true,compressSourceHtml:true});
+    const capture = JSON.parse(fs.readFileSync(path.join(dir,'office-sources.raw.json'),'utf8'));
+    assert.equal(capture.pages[0].html,'');
+    assert.equal(sourceHtml(capture.pages[0]),html);
+    assert.equal(capture.pages[0].contentHash,createHash('sha256').update(html).digest('hex'));
+    assert.deepEqual(replayRawSourceCapture(capture).pages[0].sections, collected.pages[0].sections);
+    capture.pages[0].htmlGzip = Buffer.from('changed').toString('base64');
+    assert.throws(() => replayRawSourceCapture(capture));
+  } finally {globalThis.fetch=original;fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('a challenge page is recognized by its title, headings or small size, not by words in page text', () => {
+  const filler = '<p>' + 'Policy text. '.repeat(8_000) + '</p>';
+  const policy = `<title>Use of Artificial Intelligence (AI) in the Workplace - Policies</title><main><h1>Use of AI</h1>${filler}
+    <p>The output is often prone to inaccuracies, making careful human verification essential.</p></main>`;
+  assert.equal(isLikelyChallengeHtml(policy), false);
+  assert.throws(() => buildRawPageFromHtml({url:'https://example.edu/tiny',sourceType:'seed',allowedHost:'example.edu',
+    html:'<title>Human Verification</title><body><div id="captcha-container"></div></body>'}), /bot challenge/);
+  assert.equal(isLikelyChallengeHtml('<html><head><title>ERROR: The request could not be satisfied</title></head><body><h1>403 ERROR</h1><h2>The request could not be satisfied.</h2></body></html>'), true);
+  assert.equal(isLikelyChallengeHtml('<title>Just a moment...</title><body><noscript><span>Enable JavaScript and cookies to continue</span></noscript></body>'), true);
+  assert.equal(isLikelyChallengeHtml(`<title>Human Verification</title><main>${filler}</main>`), true);
+  assert.equal(isLikelyChallengeHtml(`<title>Office</title><main><h2>Attention Required! | Cloudflare</h2>${filler}</main>`), true);
 });
