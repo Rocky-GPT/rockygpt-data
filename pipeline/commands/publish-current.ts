@@ -21,6 +21,7 @@ import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository
 import { assertQualityV2, validateCurrentDatasetV2 } from '../quality/validate';
 import { CRITICAL_FACT_VALIDITY_V2, CRITICAL_FACT_VALUES_V2 } from './check-quality';
 import { readValidityFromNotes } from '../../src/data-v2/validity';
+import { sourceKeyForPath } from '../context-sources';
 import {
   chunkDocumentSections,
   listMarkdownFiles,
@@ -80,23 +81,6 @@ function cleanText(value: unknown): string {
     .replace(/&gt;/gi, '>')
     .replace(/\s+/g, ' ')
     .trim();
-}
-
-function sourceKeyForPath(filePath: string): string {
-  const relative = filePath.split(path.sep).join('/').toLowerCase();
-  if (relative.includes('/dining/')) return 'dining';
-  if (relative.includes('calendar')) return 'academic-calendar';
-  if (relative.includes('program') || relative.includes('/courses/')) return 'academic-programs';
-  if (relative.includes('faculty')) return 'faculty';
-  if (relative.includes('club')) return 'archway-clubs';
-  if (relative.includes('event')) return 'archway-events';
-  if (relative.includes('transport')) return 'transportation';
-  if (relative.includes('directory')) return 'campus-directory';
-  if (relative.includes('safety')) return 'public-safety';
-  if (relative.includes('housing')) return 'housing';
-  if (relative.includes('health')) return 'health';
-  if (relative.includes('counsel')) return 'counseling';
-  return 'campus-hours';
 }
 
 async function sourceIds(client: PoolClient): Promise<Map<string, string>> {
