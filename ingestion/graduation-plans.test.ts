@@ -85,6 +85,8 @@ test('a plan page keeps every semester line, placement, total, GPA, general educ
   assert.deepEqual([page.terms[1].items[1].category, page.terms[1].items[1].hours], ['Career Pathways', null]);
   assert.equal(page.totalCredits, 128);
   assert.equal(page.gpa, '2.0');
+  assert.deepEqual(page.totals, ['Total Credits Required: 128 credits', 'GPA: 2.0']);
+  assert.equal(page.graduateCredits, null);
   assert.deepEqual(page.generalEducation, [{ category: 'Global Awareness', waivedForTransfers: true, text: 'Global Awareness or Honors Global Awareness',
     links: [{ name: 'Global Awareness', url: 'https://catalog.ramapo.edu/courses/INTD299' }] }]);
   assert.deepEqual(page.notes, ['NOTE: CRWT and MATH courses are determined by placement testing.', '*General Education courses can be done in any order.',
@@ -132,4 +134,31 @@ test('a redirect must land on a page that names the listed plan', () => {
   assert.match(elsewhere.limitations[0], /does not name this plan/);
   const flat = withSiteGrouping(planListings(INDEX))[3];
   assert.match(graduationPlan(flat, page, flat.url, programs).limitations[0], /lists the same plan under Computer Science in another cohort/);
+});
+
+test('older and 4+1 plan pages state their totals and applicability in their own words', () => {
+  const older = PAGE.replace('<p><strong>NOTE:</strong> This recommended Graduation Plan is applicable to students admitted into the major during the 2026-2027 academic year.</p>', '')
+    .replace('<p><b>NOTE</b>: CRWT and MATH courses are determined by placement testing.</p>',
+      '<p><strong>NOTE:</strong> This recommended Four-Year Plan is applicable to students admitted into the major during the 2023-2024 academic year.</p>')
+    .replace('<p><strong>Total Credits Required: </strong>128 credits<br><strong>GPA:</strong> 2.0</p>',
+      '<p>Total Undergraduate Credits Required: 128 credits (all courses listed in first four years)</p><p>Major GPA required for undergraduate graduation: 2.0</p><p>Total Graduate Credits Required: 30 credits (listed with MS in fourth year and all fifth year courses)</p>');
+  const page = parseGraduationPlan(older, `${PLAN}/snh/computer-science/`);
+  assert.equal(page.applicability, 'This recommended Four-Year Plan is applicable to students admitted into the major during the 2023-2024 academic year.');
+  assert.deepEqual([page.totalCredits, page.graduateCredits, page.gpa], [128, 30, '2.0']);
+  assert.equal(page.totals.length, 3);
+  assert.ok(!page.notes.some(note => /Credits Required|GPA/.test(note)));
+});
+
+test('credits and GPA are read only from plain statements, and every statement is kept as written', () => {
+  const page = (totals: string) => parseGraduationPlan(PAGE.replace('<p><strong>Total Credits Required: </strong>128 credits<br><strong>GPA:</strong> 2.0</p>', totals), `${PLAN}/x/`);
+  const graduation = page('<div class="fouryear"><p>Total Credits Required for Graduation: 128 credits</p></div><p>GPA: Must be at least a 2.0</p>');
+  assert.deepEqual([graduation.totalCredits, graduation.gpa], [128, null]);
+  assert.deepEqual(graduation.totals, ['Total Credits Required for Graduation: 128 credits', 'GPA: Must be at least a 2.0']);
+  const nursing = page('<p>Total Credits Required (Transfer Credits plus RCNJ RN/BSN credits): 128 credits</p><p>GPA Required: overall GPA 2.0 and major GPA 2.0</p>');
+  assert.deepEqual([nursing.totalCredits, nursing.gpa], [128, null]);
+  const teaching = page('<p>Total Credits Required: 134 credits<br>GPA: AMER: 2.0; Teacher Ed: 3.0</p>');
+  assert.deepEqual([teaching.totalCredits, teaching.gpa, teaching.totals], [134, null, ['Total Credits Required: 134 credits', 'GPA: AMER: 2.0; Teacher Ed: 3.0']]);
+  const joint = page('<p>Total RCNJ Credits: 104.5 credits GPA: 2.85</p>');
+  // Ramapo's share of a joint program is not the degree's total, but it stays as written.
+  assert.deepEqual([joint.totalCredits, joint.gpa, joint.totals], [null, '2.85', ['Total RCNJ Credits: 104.5 credits GPA: 2.85']]);
 });

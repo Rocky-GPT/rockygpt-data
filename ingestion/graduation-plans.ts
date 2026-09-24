@@ -65,8 +65,12 @@ export interface GraduationPlanPage {
   documents: NamedLink[];
   placement: Array<{ title: string; sequences: string[] }>;
   terms: PlanTerm[];
+  /** Undergraduate credits required; a 4+1 plan also states its graduate credits. */
   totalCredits: number | null;
+  graduateCredits: number | null;
   gpa: string | null;
+  /** The page's own lines stating credits and GPA requirements, as written. */
+  totals: string[];
   generalEducation: GeneralEducationCategory[];
   notes: string[];
   /** Every line of the page's content, so nothing the page says is lost. */
@@ -93,6 +97,8 @@ export interface GraduationPlan extends GraduationPlanPage {
 }
 
 const clean = (value: string) => value.replace(/\s+/g, ' ').trim();
+// A line stating a credit total or a GPA requirement.
+const STATEMENT = /\bCredits\b[^:]{0,80}:\s*[\d.]|\bGPA\b[^:]{0,40}:/i;
 const cohortOf = (title: string) => /\b(?:Fall|Spring|Summer)\s+\d{4}\b|\b\d{4}\s*[-–]\s*\d{4}\b/i.exec(title)?.[0].replace(/\s*[-–]\s*/, '-') ?? clean(title);
 
 /** Every plan the index lists, by cohort section, with nested variants under their major. */
@@ -171,14 +177,10 @@ export function parseGraduationPlan(html: string, url: string): GraduationPlanPa
   const paragraphs = (scope: ReturnType<CheerioAPI>) => scope.find('p').toArray().map(p => clean($(p).text())).filter(Boolean);
   const before = block.find('.colSet').first();
   const introduction = paragraphs(before);
-  const applicability = introduction.find(text => /applicable to students/i.test(text))?.replace(/^NOTE:\s*/i, '') ?? null;
   const placement = block.find('.infoBox').toArray().map(box => ({
     title: clean($(box).find('.boxTitle').first().text()),
     sequences: paragraphs($(box).find('.boxContent').first()),
   })).filter(box => box.title && box.sequences.length);
-  const totals = clean(block.text());
-  const credits = /Total Credits Required:\s*([\d.]+)/i.exec(totals);
-  const gpa = /\bGPA:\s*([\d.]+)/i.exec(totals);
   const generalEducation = block.find('.collapsableContent').toArray().map(section => {
     const title = clean($(section).children('.collapsableTitle').first().text());
     const content = $(section).children('.c_content').first();
@@ -188,18 +190,32 @@ export function parseGraduationPlan(html: string, url: string): GraduationPlanPa
   // Notes: the paragraphs outside the plan, placement boxes and general education lists.
   const notes = block.children().find('p').addBack('p').toArray()
     .filter(p => !$(p).closest('.fouryear, .infoBox, .collapsableContent').length && !$(p).closest(before).length)
-    .map(p => clean($(p).text())).filter(text => text && !/^Total Credits Required:/i.test(text));
+    .map(p => clean($(p).text())).filter(text => text && !STATEMENT.test(text));
   const lines: string[] = [];
   block.find('h1,h2,h3,h4,h5,h6,p,li,.boxTitle,.collapsableTitle').each((_, element) => {
     if ($(element).is('p') && $(element).closest('li').length) return;
     const text = clean($(element).text());
     if (text && lines[lines.length - 1] !== text) lines.push(text);
   });
+  // Pages word totals differently: "Total Credits Required: 128 credits GPA: 2.0", or
+  // "Total Undergraduate Credits Required: 128 credits" and "Major GPA required for
+  // undergraduate graduation: 2.0", with a 4+1's graduate credits on their own line.
+  // Each paragraph line, wherever it sits, and each heading or list line.
+  const statements = [...new Set([
+    ...block.find('p').toArray().flatMap(p => $(p).text().split('\n').map(clean)),
+    ...block.find('h1,h2,h3,h4,h5,h6,li').toArray().map(element => clean($(element).text())),
+  ])].filter(text => text && STATEMENT.test(text));
+  const first = (pattern: RegExp) => statements.map(text => pattern.exec(text)).find(Boolean);
+  const credits = first(/Total (?:Undergraduate )?Credits Required(?: \([^)]*\))?(?: for (?:the )?(?:undergraduate degree|graduation))?:\s*([\d.]+)/i);
+  const graduate = first(/Total Graduate Credits Required(?: for [a-z ]+)?:\s*([\d.]+)/i);
+  // A single stated GPA only; varied or multiple requirements stay in their own words.
+  const gpa = first(/\bGPA\b[^:\d]{0,60}:\s*([\d.]+)\s*$/i);
+  const applicability = [...introduction, ...notes].find(text => /applicable to students/i.test(text))?.replace(/^NOTE:\s*/i, '') ?? null;
   return {
     title: clean($('h1').last().text()) || clean($('title').text()),
     applicability, introduction, documents: namedLinks($, before.find('.btn').parent(), url).filter(link => /\.(pdf|docx?)(\?|$)/i.test(link.url)),
-    placement, terms, totalCredits: credits ? Number(credits[1]) : null, gpa: gpa ? gpa[1] : null,
-    generalEducation, notes, text: lines.join('\n'),
+    placement, terms, totalCredits: credits ? Number(credits[1]) : null, graduateCredits: graduate ? Number(graduate[1]) : null,
+    gpa: gpa ? gpa[1] : null, totals: [...new Set(statements)], generalEducation, notes, text: lines.join('\n'),
   };
 }
 
