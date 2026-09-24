@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import net from 'node:net';
+import path from 'node:path';
 import test from 'node:test';
 import type http from 'node:http';
 import { createDataServer } from './server';
@@ -93,7 +94,10 @@ test('staging token gates data routes while probes stay public', async () => {
 });
 
 test('V2 POST routes are registered and advertised by CORS', async () => {
-  setRepositoryV2ForTests(new FileRepositoryV2(process.cwd()));
+  // The committed shuttle capture; data/normalized is not in the repository.
+  setRepositoryV2ForTests(
+    new FileRepositoryV2(path.join(__dirname, '../ingestion/fixtures/transportation-root'))
+  );
   const server = createDataServer();
   const port = await listen(server);
   try {
