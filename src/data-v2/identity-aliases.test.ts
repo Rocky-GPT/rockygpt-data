@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import type { CampusIdentity } from './campus-identities';
+import rawSeed from '../reference/campus-identities.json';
+import reviews from '../reference/campus-identity-reviews.json';
+import type { CampusIdentities, CampusIdentity } from './campus-identities';
 import { validateCampusIdentities } from './campus-identities';
-import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, programFamily, type AliasLedger } from './identity-aliases';
+import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, programFamily, type AliasLedger, type ReviewedAlias } from './identity-aliases';
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 const contact = (key: string, source = 'campus-directory') => [{ collection: 'contacts' as const, source_key: source, source_record_keys: [key] }];
@@ -72,6 +74,28 @@ test('a human-reviewed alias is applied by persistent ID and recorded as human-r
   assert.deepEqual(aliasRecords([venue], ledger), [{ entity_id: id(8), entity: 'Birch Tree Inn', kind: 'venue', alias: 'Birch', sources: [{ basis: 'human_reviewed', reviewed_at: '2026-09-23', note: 'Approved.' }] }]);
   // A renamed identity is not silently given the reviewed alias.
   assert.equal(applyReviewedAliases([{ ...venue, aliases: [], name: 'Renamed' }], [review]).applied.length, 0);
+});
+
+test('a reviewed alias keeps the official page that labels the identity with it', () => {
+  const venue: CampusIdentity = { id: id(8), kind: 'venue', name: 'Birch Tree Inn', aliases: [], links: contact('office:birch-tree-inn') };
+  const review = { entity_id: id(8), entity: 'Birch Tree Inn', alias: 'Dining Hall', reviewed_at: '2026-09-24', note: 'Approved.', source_url: 'https://www.ramapo.edu/undergraduate/asd/' };
+  const ledger: AliasLedger = new Map();
+  applyReviewedAliases([venue], [review], ledger);
+  assert.deepEqual(aliasRecords([venue], ledger)[0].sources, [{ basis: 'human_reviewed', reviewed_at: '2026-09-24', note: 'Approved.', source_url: 'https://www.ramapo.edu/undergraduate/asd/' }]);
+});
+
+test('the Birch Tree Inn reviews apply to the reviewed map, where no other identity answers to "Dining Hall"', () => {
+  const birch = 'c98a4db7-9948-4e2c-98b5-4fe3f73ae488';
+  // Typed without a cast, so an entry missing a required field fails typecheck.
+  const reviewed: ReviewedAlias[] = reviews.aliases;
+  const entities = structuredClone((rawSeed as CampusIdentities).entities);
+  const { applied, unresolved } = applyReviewedAliases(entities, reviewed.filter(review => review.entity_id === birch));
+  assert.deepEqual(unresolved, []);
+  assert.ok(applied.some(review => review.alias === 'Dining Hall'));
+  // The alias rests on no other current venue being a dining hall. This covers the reviewed map
+  // only; identities the compile adds (clubs, buildings, events) are checked on the compiled release.
+  const answering = entities.filter(e => [e.name, ...e.aliases].some(name => name.toLowerCase() === 'dining hall'));
+  assert.deepEqual(answering.map(e => e.id), [birch]);
 });
 
 test('an alias no rule noted is a compiler error, and a repeated source is kept once', () => {
