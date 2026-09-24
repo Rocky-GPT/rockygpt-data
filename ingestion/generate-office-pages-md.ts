@@ -13,7 +13,9 @@
 import fs from 'fs';
 import path from 'path';
 import { core6Markdown } from './generate-core6-md-utils';
-import { isSkippedPostTypePath, officeFolder, pageKey, readOfficeSites, readSkippedPages, type OfficeSite } from './office-pages';
+import {
+  isSkippedPostTypePath, officeFolder, pageKey, pagesCollectedElsewhere, readOfficeSites, readSkippedPages, type OfficeSite,
+} from './office-pages';
 import { type RawDatasetV1, validateRawDatasetV1 } from './raw-types';
 
 const INPUT = path.join(process.cwd(), 'data', 'normalized', 'office-pages.json');
@@ -22,16 +24,20 @@ const OUTPUT_DIR = path.join(process.cwd(), 'data', 'context', 'campus', 'office
 const succeeded = (page: RawDatasetV1['pages'][number]) =>
   page.statusCode !== null && page.statusCode >= 200 && page.statusCode < 400;
 
-/** Each office's pages as a dataset of their own, in the office list's order; offices without pages are left out. */
+/**
+ * Each office's pages as a dataset of their own, in the office list's order; offices without
+ * pages are left out. So are pages whose final URL is excluded: a reviewed skipped page, or a
+ * page another collector keeps that a link reached by redirect.
+ */
 export function officeDatasets(
   dataset: RawDatasetV1,
   sites: readonly OfficeSite[],
-  skippedPages: ReadonlyMap<string, string> = new Map()
+  excluded: ReadonlySet<string> = new Set()
 ): Array<{ site: OfficeSite; dataset: RawDatasetV1 }> {
   return sites.flatMap(site => {
     const own = new Set([site.folder.toLowerCase()]);
     const pages = dataset.pages.filter(page => officeFolder(page.url, own) && !isSkippedPostTypePath(page.url)
-      && !skippedPages.has(pageKey(page.url) ?? ''));
+      && !excluded.has(pageKey(page.url) ?? ''));
     if (!pages.length) return [];
     const pagesFetched = pages.filter(succeeded).length;
     return [{
@@ -54,10 +60,10 @@ export function officeDatasets(
 export function officeDocuments(
   dataset: RawDatasetV1,
   sites: readonly OfficeSite[],
-  skippedPages: ReadonlyMap<string, string> = new Map()
+  excluded: ReadonlySet<string> = new Set()
 ): Map<string, { markdown: string; pages: number }> {
   const documents = new Map<string, { markdown: string; pages: number }>();
-  for (const { site, dataset: office } of officeDatasets(dataset, sites, skippedPages)) {
+  for (const { site, dataset: office } of officeDatasets(dataset, sites, excluded)) {
     const document = core6Markdown(office, {
       title: site.name,
       description: `Pages of Ramapo College's ${site.name} site (https://www.ramapo.edu/${site.folder}/), `
@@ -72,7 +78,8 @@ export function officeDocuments(
 function main() {
   const dataset = validateRawDatasetV1(JSON.parse(fs.readFileSync(INPUT, 'utf8')));
   if (dataset.dataset !== 'office-pages') throw new Error(`${INPUT} holds ${dataset.dataset}, not office-pages.`);
-  const documents = officeDocuments(dataset, readOfficeSites(), readSkippedPages());
+  const documents = officeDocuments(dataset, readOfficeSites(),
+    new Set([...readSkippedPages().keys(), ...pagesCollectedElsewhere()]));
   // Rewrite the folder, so an office that no longer has pages leaves no document behind.
   fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
