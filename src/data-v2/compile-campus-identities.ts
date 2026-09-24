@@ -11,6 +11,7 @@ import type { ReviewedBuilding } from './campus-buildings';
 import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileSubjectIdentities, courseSubjectsArtifact, type CourseSubjectsArtifact, type CourseSubjectsInput } from './course-subjects';
 import { GRADUATION_PLANS_SOURCE_KEY, graduationPlansInput } from './graduation-plans';
+import { MAJOR_PAGES_SOURCE_KEY, majorPagesInput } from './major-pages';
 import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
 import { legacyProgramRecordKey, programRecordKey } from './program-records';
 
@@ -148,6 +149,8 @@ export interface IdentityInputs extends ArchwayIdentityInputs {
   identityReviews?: { aliases?: ReviewedAlias[]; buildings?: ReviewedBuilding[] };
   /** The published graduation plans artifact, whose plans name their programs' catalog codes. */
   graduationPlans?: unknown;
+  /** The published program pages artifact, whose pages name their own programs' catalog codes. */
+  majorPages?: unknown;
 }
 export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, inputs: IdentityInputs = {}): CompiledIdentityArtifacts {
   validateCampusIdentities(seed);
@@ -191,29 +194,39 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     }
     if (links.length) entities.push({ id: entity.id, kind: entity.kind, name: entity.name, aliases: [...displayNames].slice(0, 32), links });
   }
-  // A program's recommended graduation plans: the plan index links each plan to its major's
-  // catalog code, and a program links every plan that names one of its own catalog codes.
-  // The publisher passes the plans it publishes; an offline compile reads the release's own.
-  const plans = graduationPlansInput(inputs.graduationPlans ?? (snapshot.artifacts as Record<string, unknown> | undefined)?.['graduation-plans']);
-  const plansByCode = new Map<string, string[]>();
-  for (const plan of plans) for (const code of plan.programCodes) plansByCode.set(code, [...(plansByCode.get(code) ?? []), plan.id]);
-  const linkedPlans = new Set<string>();
+  // Records that name their programs by catalog code: a recommended graduation plan names its
+  // major's code, and a public program page the codes it links as its own. A program links
+  // every record that names one of its own catalog codes, and a record no program takes is
+  // reported. The publisher passes what it publishes; an offline compile reads the release's own.
+  const artifacts = snapshot.artifacts as Record<string, unknown> | undefined;
   // A linked program record's catalog code, which older releases do not carry in its key.
   const programCodes = new Map(candidates.filter(candidate => candidate.collection === 'programs')
     .map(candidate => [candidate.key, string(candidate.row.catalogCode)]));
-  for (const entity of entities.filter(candidate => candidate.kind === 'program')) {
-    const codes = entity.links.filter(link => link.collection === 'programs').flatMap(link => link.source_record_keys)
-      .map(key => programCodes.get(key)).filter((code): code is string => Boolean(code));
-    const ids = [...new Set(codes.flatMap(code => plansByCode.get(code) ?? []))].sort();
-    if (!ids.length) continue;
-    entity.links.push({ collection: 'graduation_plans', source_key: GRADUATION_PLANS_SOURCE_KEY, source_record_keys: ids });
-    for (const id of ids) linkedPlans.add(id);
-  }
-  for (const plan of plans.filter(candidate => !linkedPlans.has(candidate.id))) {
-    unresolved.push({ collection: 'graduation_plans', record: plan.id, reason: plan.programCodes.length
-      ? `No program identity has the catalog code ${plan.programCodes.join(', ')} this plan names.`
-      : plan.limitations.join(' ') || 'The plan index links this plan to no catalog program.' });
-  }
+  const linkByCatalogCode = (collection: IdentityCollection, sourceKey: string,
+    records: Array<{ id: string; programCodes: string[]; limitations: string[] }>, noun: string, unlinked: string) => {
+    const byCode = new Map<string, string[]>();
+    for (const record of records) for (const code of record.programCodes) byCode.set(code, [...(byCode.get(code) ?? []), record.id]);
+    const linked = new Set<string>();
+    for (const entity of entities.filter(candidate => candidate.kind === 'program')) {
+      const codes = entity.links.filter(link => link.collection === 'programs').flatMap(link => link.source_record_keys)
+        .map(key => programCodes.get(key)).filter((code): code is string => Boolean(code));
+      const ids = [...new Set(codes.flatMap(code => byCode.get(code) ?? []))].sort();
+      if (!ids.length) continue;
+      entity.links.push({ collection, source_key: sourceKey, source_record_keys: ids });
+      for (const id of ids) linked.add(id);
+    }
+    for (const record of records.filter(candidate => !linked.has(candidate.id))) {
+      unresolved.push({ collection, record: record.id, reason: record.programCodes.length
+        ? `No program identity has the catalog code ${record.programCodes.join(', ')} this ${noun} names.`
+        : record.limitations.join(' ') || unlinked });
+    }
+  };
+  linkByCatalogCode('graduation_plans', GRADUATION_PLANS_SOURCE_KEY,
+    graduationPlansInput(inputs.graduationPlans ?? artifacts?.['graduation-plans']), 'plan',
+    'The plan index links this plan to no catalog program.');
+  linkByCatalogCode('major_pages', MAJOR_PAGES_SOURCE_KEY,
+    majorPagesInput(inputs.majorPages ?? artifacts?.['major-pages']), 'page',
+    'The page links no catalog program of its own.');
   const registry: CampusIdentities = { schema_version: 1, entities };
   const courses = snapshot.artifacts.courses as Record<string, unknown> || {};
   const facultyByKey = new Map(candidates.filter(c => c.collection === 'faculty').map(c => [c.key, c]));

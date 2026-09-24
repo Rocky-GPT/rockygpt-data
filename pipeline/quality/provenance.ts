@@ -47,6 +47,7 @@ export const SOURCE_RAW_DATASETS: Record<string, string[]> = {
   counseling: ['counseling', 'counseling-sources'],
   faculty: ['faculty', 'faculty-sources'],
   'graduation-plans': ['graduation-plans'],
+  'major-pages': ['major-pages'],
 };
 
 export const RAW_DATASET_FILES: Record<string, string> = {
@@ -71,6 +72,7 @@ export const RAW_DATASET_FILES: Record<string, string> = {
   faculty: 'faculty.raw.json',
   'faculty-sources': 'faculty-sources.raw.json',
   'graduation-plans': 'graduation-plans.raw.json',
+  'major-pages': 'major-pages.raw.json',
   'safety-sources': 'safety-sources.raw.json',
   'directory-sources': 'directory-sources.raw.json',
   'transportation-sources': 'transportation-sources.raw.json',

@@ -207,3 +207,23 @@ test('a program links every graduation plan the plan index names by its catalog 
     .links.some(link => link.collection === 'graduation_plans'));
   assert.throws(() => compileCampusIdentities(seed, snapshot(), raw, { graduationPlans: { plans: [{ programCodes: [] }] } }), /no ID or program links/);
 });
+
+test('a program links the public program pages that link its catalog code as their own', () => {
+  const majorPages = { pages: [
+    { id: 'cs-page', programCodes: ['TS-BS-CMPS'], limitations: [] },
+    { id: 'gone-major', programCodes: ['TS-BS-GONE'], limitations: [] },
+    { id: 'no-link', programCodes: [], limitations: ['The page links no catalog program of its own, so it is not linked to one.'] },
+  ] };
+  const result = compileCampusIdentities(seed, snapshot(), raw, { majorPages });
+  const program = result.registry.entities.find(entity => entity.id === programId)!;
+  assert.deepEqual(program.links.find(link => link.collection === 'major_pages'),
+    { collection: 'major_pages', source_key: 'major-pages', source_record_keys: ['cs-page'] });
+  const unlinked = new Map(result.report.unresolved.filter(issue => issue.collection === 'major_pages').map(issue => [issue.record, issue.reason]));
+  assert.deepEqual([...unlinked.keys()].sort(), ['gone-major', 'no-link']);
+  assert.match(unlinked.get('gone-major')!, /TS-BS-GONE this page names/);
+  assert.match(unlinked.get('no-link')!, /links no catalog program of its own/);
+  const own = snapshot(); own.artifacts['major-pages'] = majorPages;
+  assert.ok(compileCampusIdentities(seed, own, raw).registry.entities.find(entity => entity.id === programId)!
+    .links.some(link => link.collection === 'major_pages'));
+  assert.throws(() => compileCampusIdentities(seed, snapshot(), raw, { majorPages: { pages: [{ programCodes: [] }] } }), /no ID or program links/);
+});
