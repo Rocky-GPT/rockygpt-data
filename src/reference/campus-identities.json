@@ -7644,6 +7644,18 @@
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Library (Main Building)"
+            ],
+            "evidence": "Reviewed schedule subject: the Library's own hours page publishes these Circulation Desk hours as the Library's operating hours. The scope is operating hours, not staff/phone availability. Research Help Desk hours stay a separate schedule subject."
+          }
         }
       ]
     },

@@ -28,6 +28,8 @@ Unresolved evidence remains visible in the coverage artifact:
 - 626 profile-listed course entries have no explicit catalog code. They remain undated lists; no current-semester claims follow.
 - Only CSI has a confidently supported directory contact plus campus schedule. Birch Tree Inn has its own contact, dining schedule and collector-declared menu feed. Other offices/facilities/venues retain available sections; department or building proximity does not transfer contact details or hours.
 
+Since September 24, 2026 the Library also has both. A reviewed `name` selector links it to the "Library (Main Building)" campus-hours records, which are the Circulation Desk section of the Library's own hours page. That page's Research Help Desk section stays a separate, unlinked schedule subject.
+
 Each coverage issue has a `kind`, and its `reason` says why:
 
 - `unlinked_record`: an original record no identity links.
