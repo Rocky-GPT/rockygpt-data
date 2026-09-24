@@ -16,7 +16,11 @@ export interface Core6MarkdownOptions {
   maxContactsPerPage?: number;
   maxDocumentsPerPage?: number;
   derivedSections?: (page: RawPageV1) => readonly ContextSection[];
-  /** Write a section or document list repeated on at least half of the pages once, not on every page. */
+  /**
+   * Write a section or document list repeated on at least half of the pages once, not on
+   * every page. A page left with nothing of its own, such as an image's attachment page
+   * that shows only the sidebar, is then left out.
+   */
   hoistRepeatedSections?: boolean;
 }
 
@@ -362,6 +366,31 @@ export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownConte
   const maxContactsPerPage = options.maxContactsPerPage ?? DEFAULT_MAX_CONTACTS_PER_PAGE;
   const maxDocumentsPerPage = options.maxDocumentsPerPage ?? DEFAULT_MAX_DOCUMENTS_PER_PAGE;
   const selectedPages = selectPages(dataset, maxPages);
+  const sharedContacts = collectSharedContacts(selectedPages);
+  const sharedContactFingerprints = new Set(sharedContacts.map(contactFingerprint));
+
+  const rendered: RenderedPage[] = selectedPages.map((page) => {
+    const documents = pickDocuments(page, maxDocumentsPerPage);
+    return {
+      page,
+      title: normalizeTitle(page.title, page.url),
+      sections: pickSections(page, maxSectionsPerPage, options.derivedSections?.(page)),
+      documents: documents.length
+        ? { heading: 'Documents', text: documents.map((document) => `- ${document.label}: ${document.url}`).join('\n') }
+        : null,
+    };
+  });
+  const shared: SharedSections = options.hoistRepeatedSections ? collectSharedSections(rendered) : new Map();
+  const written = rendered
+    .map(({ page, title, sections, documents }) => ({
+      page,
+      title,
+      sections: sections.filter((section) => !shared.has(blockKey(section))),
+      contacts: pickContacts(page, maxContactsPerPage, sharedContactFingerprints),
+      documents: documents && !shared.has(blockKey(documents)) ? documents : null,
+    }))
+    .filter((page) => !options.hoistRepeatedSections
+      || page.sections.length > 0 || page.contacts.length > 0 || page.documents !== null);
 
   let markdown = `# ${options.title}\n\n`;
   markdown += `*Generated (UTC): ${getGeneratedTimestamp()}*\n\n`;
@@ -370,15 +399,12 @@ export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownConte
   markdown += `- Seed URLs: ${dataset.seedUrls.length}\n`;
   markdown += `- Pages Fetched: ${dataset.stats.pagesFetched}\n`;
   markdown += `- Pages Failed: ${dataset.stats.pagesFailed}\n`;
-  markdown += `- Pages Included in Context: ${selectedPages.length}\n\n`;
+  markdown += `- Pages Included in Context: ${written.length}\n\n`;
   markdown += '---\n\n';
 
   if (selectedPages.length === 0) {
     markdown += 'No usable pages found.\n';
   } else {
-    const sharedContacts = collectSharedContacts(selectedPages);
-    const sharedContactFingerprints = new Set(sharedContacts.map(contactFingerprint));
-
     if (sharedContacts.length > 0) {
       markdown += `## ${options.title} Contacts\n\n`;
       markdown += `These contacts apply across ${options.title.toLowerCase()} pages.\n\n`;
@@ -388,37 +414,24 @@ export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownConte
       markdown += '\n---\n\n';
     }
 
-    const rendered: RenderedPage[] = selectedPages.map((page) => {
-      const documents = pickDocuments(page, maxDocumentsPerPage);
-      return {
-        page,
-        title: normalizeTitle(page.title, page.url),
-        sections: pickSections(page, maxSectionsPerPage, options.derivedSections?.(page)),
-        documents: documents.length
-          ? { heading: 'Documents', text: documents.map((document) => `- ${document.label}: ${document.url}`).join('\n') }
-          : null,
-      };
-    });
-    const shared: SharedSections = options.hoistRepeatedSections ? collectSharedSections(rendered) : new Map();
     if (shared.size > 0) {
+      const writtenPages = new Set(written.map(({ page }) => page));
       markdown += '## Site-wide sections\n\n';
       shared.forEach(({ block, pages }) => {
         // Cite the site's home page when it shows the block: the shortest path among them.
         const cited = pages.reduce((best, candidate) =>
           new URL(candidate.page.url).pathname.length < new URL(best.page.url).pathname.length ? candidate : best).page;
+        const shownOn = pages.filter(({ page }) => writtenPages.has(page));
         markdown += `### ${block.heading}\n\n- URL: ${cited.url}\n- Collected At: ${cited.fetchedAt}\n\n${block.text}\n\n`;
-        markdown += pages.length === rendered.length
-          ? `Shown on every ${options.title} page.\n\n`
-          : `Shown on ${pages.length} of ${rendered.length} ${options.title} pages: ${pages.map((page) => page.title).join('; ')}.\n\n`;
+        if (shownOn.length === written.length) markdown += `Shown on every ${options.title} page.\n\n`;
+        else if (shownOn.length === 0) markdown += `Shown on ${options.title} pages.\n\n`;
+        else markdown += `Shown on ${shownOn.length} of ${written.length} ${options.title} pages: `
+          + `${shownOn.map(({ title }) => title).join('; ')}.\n\n`;
       });
       markdown += '---\n\n';
     }
 
-    rendered.forEach(({ page, title, sections: allSections, documents: documentBlock }) => {
-      const sections = allSections.filter((section) => !shared.has(blockKey(section)));
-      const contacts = pickContacts(page, maxContactsPerPage, sharedContactFingerprints);
-      const documents = documentBlock && !shared.has(blockKey(documentBlock)) ? documentBlock : null;
-
+    written.forEach(({ page, title, sections, contacts, documents }) => {
       markdown += `## ${title}\n\n`;
       markdown += `- URL: ${page.url}\n`;
       markdown += `- Collected At: ${page.fetchedAt}\n`;
@@ -451,5 +464,5 @@ export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownConte
     });
   }
 
-  return { markdown, pages: selectedPages.length };
+  return { markdown, pages: written.length };
 }

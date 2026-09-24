@@ -46,3 +46,14 @@ test('without the option every page keeps its own copy, as the other crawled doc
   assert.equal(markdown.split('Call the Help Desk at 201-684-7777').length - 1, 4);
   assert.doesNotMatch(markdown, /Site-wide sections/);
 });
+
+test("with the option, a page left with nothing of its own, such as an image's attachment page, is left out", () => {
+  const attachment = page('https://www.ramapo.edu/its/screenshot_2026/', `<title>Screenshot_2026 - ITS</title><main>${sidebar}</main>`);
+  const withAttachment = { ...dataset, pages: [...dataset.pages, attachment] };
+  const hoisted = core6Markdown(withAttachment, { ...options, hoistRepeatedSections: true });
+  assert.equal(hoisted.pages, 4);
+  assert.doesNotMatch(hoisted.markdown, /Screenshot_2026/);
+  assert.match(hoisted.markdown, /- Pages Included in Context: 4\n/);
+  assert.match(hoisted.markdown, /Shown on every Information Technology Services page\./);
+  assert.equal(core6Markdown(withAttachment, options).pages, 5);
+});
