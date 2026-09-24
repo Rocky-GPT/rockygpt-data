@@ -5,15 +5,13 @@ import { gunzipSync, gzipSync } from 'node:zlib';
 import { load } from 'cheerio';
 import type { AnyNode } from 'domhandler';
 import pLimit from 'p-limit';
-import { fetchWithPolicy } from './http-client';
+import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
 import { writeJsonFile, writeRawProvenance } from './pipeline-utils';
 import { type RawDatasetV1, type RawPageV1, validateRawDatasetV1 } from './raw-types';
 
 const DEFAULT_TIMEOUT_MS = 15000;
 const DEFAULT_ATTEMPTS = 2;
 const DEFAULT_DETAIL_CONCURRENCY = 8;
-export const DEFAULT_USER_AGENT =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
 const SECTION_HEADINGS = 'h1, h2, h3, h4, h5, h6, summary, [role="heading"], .collapsableTitle';
 
 const DOCUMENT_EXTENSIONS = new Set([

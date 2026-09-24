@@ -22,8 +22,8 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fetchWithPolicy } from './http-client';
-import { collectRawDataset, createRequestPacer, DEFAULT_USER_AGENT } from './raw-collector';
+import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
+import { collectRawDataset, createRequestPacer } from './raw-collector';
 
 export interface OfficeSite {
   folder: string;

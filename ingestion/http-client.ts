@@ -6,8 +6,9 @@ const DEFAULT_MAX_RESPONSE_BYTES = 12 * 1024 * 1024;
 const DEFAULT_PER_HOST_CONCURRENCY = 8;
 const DEFAULT_BACKOFF_MS = 400;
 const MAX_BACKOFF_MS = 30_000;
-const DEFAULT_USER_AGENT =
-  'RockyGPTDataCollector/1.0 (Ramapo College public-data refresh)';
+// A browser's user agent, sent unless a request sets its own: requests never name the project.
+export const DEFAULT_USER_AGENT =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
 const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const IDEMPOTENT_METHODS = new Set(['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']);
 
