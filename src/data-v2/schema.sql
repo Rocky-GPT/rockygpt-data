@@ -331,12 +331,6 @@ CREATE TABLE IF NOT EXISTS rockygpt_v2.feedback (
   category TEXT,
   comments TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  expires_at TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '90 days'),
   CONSTRAINT feedback_request_id_unique UNIQUE (request_id)
 );
-
-ALTER TABLE rockygpt_v2.feedback
-  ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '90 days');
-
-CREATE INDEX IF NOT EXISTS feedback_expires_at_idx
-  ON rockygpt_v2.feedback (expires_at);
+-- Feedback has no expiry; see migrations/023_feedback_has_no_expiry.sql on dev.
