@@ -23,13 +23,14 @@ test('each office gets its own document, named for the office, with every page c
       page('https://www.ramapo.edu/testing/', '<title>Testing Center Home - Testing Center</title><main><h1>Testing Center</h1><p>Placement tests are taken by appointment in the Testing Center.</p></main>'),
       page('https://www.ramapo.edu/finaid/recipient/jane-doe/', '<title>Jane Doe - Financial Aid</title><main><h1>Jane Doe</h1><p>Jane Doe received an award for her studies in biology.</p></main>'),
       page('https://www.ramapo.edu/testing/roster/', '<title>Roster - Testing Center</title><main><h1>Roster</h1><p>John Roe, Mary Major and Richard Miles passed the proctor training.</p></main>'),
+      page('https://www.ramapo.edu/finaid/forms/', '<title>Forms - Financial Aid</title><main><h1>Forms</h1><p>Another collector already keeps this verification worksheet page.</p></main>'),
     ],
   };
   const documents = officeDocuments(dataset, [
     { folder: 'finaid', name: 'Financial Aid' },
     { folder: 'registrar', name: 'Registrar' },
     { folder: 'testing', name: 'Testing Center' },
-  ], new Map([['www.ramapo.edu/testing/roster', 'lists students by name']]));
+  ], new Set(['www.ramapo.edu/testing/roster', 'www.ramapo.edu/finaid/forms']));
   assert.deepEqual([...documents.keys()], ['finaid.md', 'testing.md']);
   const finaid = documents.get('finaid.md')!;
   assert.equal(finaid.pages, 2);
@@ -38,6 +39,7 @@ test('each office gets its own document, named for the office, with every page c
   assert.doesNotMatch(finaid.markdown, /Testing Center/);
   assert.doesNotMatch(finaid.markdown, /Jane Doe/);
   assert.doesNotMatch(documents.get('testing.md')!.markdown, /John Roe/);
+  assert.doesNotMatch(finaid.markdown, /verification worksheet/);
   const deadline = chunkDocumentSections(finaid.markdown).find(chunk => chunk.content.includes('March 1'));
   assert.equal(deadline?.canonicalUrl, 'https://www.ramapo.edu/finaid/fafsa/');
   assert.equal(deadline?.collectedAt, '2026-09-24T20:00:00.000Z');
