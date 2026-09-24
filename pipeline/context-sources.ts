@@ -3,6 +3,8 @@ import path from 'node:path';
 /** The publishable source a generated context document belongs to, by its path. */
 export function sourceKeyForPath(filePath: string): string {
   const relative = filePath.split(path.sep).join('/').toLowerCase();
+  // First: office documents are named for their folders (clubs, health, eof-program...).
+  if (relative.includes('/campus/offices/')) return 'office-pages';
   if (relative.includes('/dining/')) return 'dining';
   if (relative.includes('calendar')) return 'academic-calendar';
   if (relative.includes('major-pages')) return 'major-pages';
