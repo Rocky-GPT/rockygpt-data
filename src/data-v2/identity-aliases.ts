@@ -45,7 +45,7 @@ export type AliasBasis =
   | 'abbreviation' // The parenthesized abbreviation in its own name, or the name without it.
   | 'program_family' // Its program name without the degree designation.
   | 'subject_code' // A course subject's catalog code, the only name it answers to in lookup.
-  | 'human_reviewed'; // A person approved it; no source publishes it.
+  | 'human_reviewed'; // A person approved it; no rule derives it. A source_url is a page using it as a label.
 export interface AliasSource {
   basis: AliasBasis;
   /** The published field a linked record states it in. */
@@ -76,8 +76,11 @@ export function aliasRecords(entities: CampusIdentity[], ledger: AliasLedger): A
   }));
 }
 
-/** A name campus language uses that a person approved; not source-derived evidence. */
-export interface ReviewedAlias { entity_id: string; entity: string; alias: string; reviewed_at: string; note: string }
+/**
+ * A name campus language uses that a person approved; not source-derived evidence.
+ * `source_url` is an official page that labels the identity with it, when one does.
+ */
+export interface ReviewedAlias { entity_id: string; entity: string; alias: string; reviewed_at: string; note: string; source_url?: string }
 
 /** Apply human-reviewed aliases by persistent ID; report any whose identity is absent. */
 export function applyReviewedAliases(entities: CampusIdentity[], reviewed: ReviewedAlias[], ledger: AliasLedger = new Map()): { applied: { entity_id: string; entity: string; alias: string; basis: 'human_reviewed'; reviewed_at: string }[]; unresolved: IdentityCoverageIssue[] } {
@@ -88,7 +91,7 @@ export function applyReviewedAliases(entities: CampusIdentity[], reviewed: Revie
     if (!entity || entity.name !== review.entity) { unresolved.push({ entity: review.entity, collection: 'aliases', reason: `The reviewed alias "${review.alias}" names an identity that is not in this release under that name; it is not applied.`, kind: 'no_records' }); continue; }
     if (!entity.aliases.includes(review.alias) && entity.aliases.length < MAX_ALIASES) entity.aliases = [...entity.aliases, review.alias];
     if (!entity.aliases.includes(review.alias)) { unresolved.push({ entity: review.entity, collection: 'aliases', reason: `The reviewed alias "${review.alias}" does not fit: the identity already has ${MAX_ALIASES} aliases.`, kind: 'note' }); continue; }
-    noteAlias(ledger, entity.id, review.alias, { basis: 'human_reviewed', reviewed_at: review.reviewed_at, note: review.note });
+    noteAlias(ledger, entity.id, review.alias, { basis: 'human_reviewed', reviewed_at: review.reviewed_at, note: review.note, ...(review.source_url ? { source_url: review.source_url } : {}) });
     applied.push({ entity_id: entity.id, entity: entity.name, alias: review.alias, basis: 'human_reviewed' as const, reviewed_at: review.reviewed_at });
   }
   return { applied, unresolved };

@@ -3,7 +3,8 @@
     "Human-reviewed identity decisions that no published source establishes.",
     "",
     "Each alias here is a name campus language uses, approved by a person, and is",
-    "recorded as human-reviewed rather than source-derived evidence. Each building",
+    "recorded as human-reviewed rather than source-derived evidence; its",
+    "source_url, when present, is an official page that uses it as a label. Each building",
     "here is a campus map location approved as its own building identity even",
     "though no room prefix places anyone in it. Each location here places an",
     "identity that has no published room in a building: an official page makes",
@@ -20,6 +21,14 @@
       "alias": "Birch",
       "reviewed_at": "2026-09-23",
       "note": "Approved: campus language uses \"Birch\" for the Birch Tree Inn dining room. No Ramapo source publishes it. Birch Mansion keeps its own name and identity."
+    },
+    {
+      "entity_id": "c98a4db7-9948-4e2c-98b5-4fe3f73ae488",
+      "entity": "Birch Tree Inn",
+      "alias": "Dining Hall",
+      "reviewed_at": "2026-09-24",
+      "source_url": "https://www.ramapo.edu/undergraduate/asd/",
+      "note": "Approved: students ask about \"the dining hall\". Admissions labels the venue \"Food – Birch Tree Inn – Dining Hall: 1st Floor Student Center\" (Admitted Student Day, modified 2026-04-17) and \"Birch Tree Inn Dining Hall (1st Fl. Student Center)\" (Open House agenda, modified 2026-09-24). Neither page says \"the dining hall\"; pages that do (EOF freshman page, Residence Life photo text) name no venue. Older pages (2014 Welcome Week, 2017 Conference Center) also called the Trustees Pavilion a dining hall, and the Graduate Hub page (modified 2026-08-05) still lists Pavilion Dining as a second all-you-care-to-eat facility. Sodexo lists no Pavilion dining venue today, and the registry has none."
     }
   ],
   "buildings": [

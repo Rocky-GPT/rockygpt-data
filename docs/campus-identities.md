@@ -123,8 +123,9 @@ After compilation, each identity gains the aliases its own name and linked recor
 - **Program family:** a catalog program name ending in a degree designation gives the name without it. The designations are BA, BS, BSN, BSW, MA, MS, MSN, MBA, MFA, MPP, MSW, DNP, Minor, 4+1 and -Graduate Certificate. Every program sharing that name gets the alias, so "Computer Science" names the BS, MS, Minor and 4+1, and a lookup asks which. A remainder ending mid-phrase gives none ("Nursing RN to BSN").
 
 On the September 22 snapshot this adds 152 aliases: 131 program families, 9 departments and 12 abbreviation aliases.
-- **Human-reviewed aliases:** a colloquial name no source publishes is added only through `src/reference/campus-identity-reviews.json`, by persistent ID. Each entry records who approved it and when. The coverage report lists these separately as `human_reviewed_aliases`, apart from source-derived aliases.
-  - Today there is one: "Birch" → Birch Tree Inn, approved on September 23, 2026, because campus language uses it.
+- **Human-reviewed aliases:** a colloquial name no rule derives is added only through `src/reference/campus-identity-reviews.json`, by persistent ID. Each entry records who approved it and when, and may name an official page that uses it as a label (`source_url`). The coverage report lists these separately as `human_reviewed_aliases`, apart from source-derived aliases.
+  - "Birch" → Birch Tree Inn, approved on September 23, 2026, because campus language uses it. No source publishes it.
+  - "Dining Hall" → Birch Tree Inn, approved on September 24, 2026, so "the dining hall" resolves. Two Admissions pages label the venue "Birch Tree Inn – Dining Hall" and "Birch Tree Inn Dining Hall"; neither says "the dining hall" in words. Older pages also called the Trustees Pavilion a dining hall. Sodexo lists no Pavilion dining venue today, though the Graduate Hub page still names Pavilion Dining.
   - An entry whose identity is absent or renamed is reported, not applied.
 - **Retired status:** a person whose own contact record publishes status `retired` gets `status: {state: "retired", evidence}`, citing that record's `status` field. 21 people are retired; absence of a status publishes nothing about a person.
 
@@ -142,7 +143,7 @@ The coverage report's `alias_sources` lists every alias in the registry with the
 | `school_abbreviation` | The reviewed school entry | the school's official page |
 | `school_former_name` | A former name the school replaced | the recorded evidence, such as a redirect |
 | `event_title` | The event's published title, without its date | the event record's `title` field |
-| `human_reviewed` | A person's approval in `campus-identity-reviews.json` | the review date and note |
+| `human_reviewed` | A person's approval in `campus-identity-reviews.json` | the review date and note, and the labeling page when one exists |
 
 An alias no rule recorded fails the compile, so the list always covers the whole registry. On the September 23 release it lists all 625 aliases. The development UI's Aliases page (`/data/aliases`) reads it through the Brain.
 
