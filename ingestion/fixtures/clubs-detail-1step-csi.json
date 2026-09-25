@@ -1,0 +1,1344 @@
+{
+ "note": "The 1Step and Center for Student Involvement pages from the clubs-detail capture of 2026-09-23T20:14:52.665Z, pinned so the renderer test does not depend on whichever capture is on disk.",
+ "clubs": [
+  {
+   "name": "1Step",
+   "category": "Student Organization",
+   "bucket": "student_orgs",
+   "mission": "Mission We are 1STEP (Students Together for Environmental Progress). We come from a diverse background and have a wide range of interests, but are all passionate about making the world we live in more sustainable.1Step is a student organization and outreach arm for localized sustainability, environmental issues, and to help further the Ramapo Green initiative at Ramapo College of New Jersey. Ascertaining that Ramapo meets its commitment to increase recycling and waste awareness on campus, as does personal growth in all realms of sustainability. We also act as a bridge between local sustainable organizations and the general campus community.Based on the guiding principles of feasible solutions, service, awareness, and collaboration, 1Step aims to recruit a diverse and passionate body of members that embrace sustainable development.Just like nature itself, our organization is constantly evolving and adapting to the unique needs and desires of the Ramapo community and its constituents.For more information, contact any of our officers.",
+   "membershipInfo": "Lifetime membership",
+   "logoUrl": "https://archway.ramapo.edu/upload/ramapo/2020/s2_image_upload_1479734_1Step_logo4_422121615.png",
+   "clubId": "34119",
+   "websiteUrl": "https://archway.ramapo.edu/1Step/",
+   "email": "1step@ramapo.edu"
+  },
+  {
+   "name": "Center for Student Involvement",
+   "category": "Department",
+   "bucket": "departments",
+   "mission": "Mission As innovative educators guided by the mission of Ramapo College, we provide co-curricular programs, activities and services to promote student learning and success. We support the development of students as globally conscious citizens and active partners in our communities. Through these efforts we foster inclusive environments where students can explore their identities and celebrate diversity. By challenging and supporting individuals, clubs, and organizations, we empower students to live and lead with integrity.",
+   "membershipInfo": "Lifetime membership",
+   "logoUrl": "https://archway.ramapo.edu/upload/ramapo/2020/s2_image_upload_1394963_CSI_profileIcon_511164538.png",
+   "clubId": "34106",
+   "websiteUrl": "https://archway.ramapo.edu/CSI/"
+  }
+ ],
+ "capture": {
+  "version": "1.0",
+  "dataset": "clubs-detail",
+  "collectedAt": "2026-09-23T20:14:52.665Z",
+  "seedUrls": [
+   "https://archway.ramapo.edu/1Step/",
+   "https://archway.ramapo.edu/1step/",
+   "https://archway.ramapo.edu/1Step/club_signup",
+   "https://archway.ramapo.edu/1step/home/",
+   "https://archway.ramapo.edu/1step/events/",
+   "https://archway.ramapo.edu/1step/news/",
+   "https://archway.ramapo.edu/1step/leadership-team/",
+   "https://archway.ramapo.edu/1step/photos/",
+   "https://archway.ramapo.edu/1step/documents/",
+   "https://archway.ramapo.edu/1step/past-newsletters/",
+   "https://archway.ramapo.edu/1step/surveys-forms/",
+   "https://archway.ramapo.edu/1step/useful-links/",
+   "https://archway.ramapo.edu/1step/contact-us/",
+   "https://archway.ramapo.edu/CSI/",
+   "https://archway.ramapo.edu/csi/",
+   "https://archway.ramapo.edu/CSI/club_signup",
+   "https://archway.ramapo.edu/csi/home/",
+   "https://archway.ramapo.edu/csi/events/",
+   "https://archway.ramapo.edu/csi/news/",
+   "https://archway.ramapo.edu/csi/leadership-team/",
+   "https://archway.ramapo.edu/csi/photos/",
+   "https://archway.ramapo.edu/csi/documents/",
+   "https://archway.ramapo.edu/csi/past-newsletters/",
+   "https://archway.ramapo.edu/csi/surveys-forms/",
+   "https://archway.ramapo.edu/csi/useful-links/",
+   "https://archway.ramapo.edu/csi/contact-us/"
+  ],
+  "stats": {
+   "pagesFetched": 34,
+   "pagesFailed": 0,
+   "externalLinksSeen": 20
+  },
+  "pages": [
+   {
+    "url": "https://archway.ramapo.edu/1step/home/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:52.892Z",
+    "statusCode": 200,
+    "title": "Home - 1Step | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/1Step/",
+     "https://archway.ramapo.edu/1Step/club_signup",
+     "https://archway.ramapo.edu/1step/home/",
+     "https://archway.ramapo.edu/1step/home/[CONTENT-EVENTS_LINK_FEATURED]",
+     "https://archway.ramapo.edu/events"
+    ],
+    "externalLinks": [
+     "https://twitter.com/ReadyEducation",
+     "https://www.facebook.com/161692710550935"
+    ],
+    "sections": [
+     {
+      "heading": "Become part of our vibrant community.",
+      "text": "JOIN"
+     },
+     {
+      "heading": "About Us",
+      "text": "We are 1STEP (Students Together for Environmental Progress). We come from a diverse background and have a wide range of interests, but are all passionate about making the world we live in more sustainable. 1Step is a student organization and outreach arm for localized sustainability, environmental issues, and to help further the Ramapo Green initiative at Ramapo College of New Jersey. Ascertaining that Ramapo meets its commitment to increase recycling and waste awareness on campus, as does personal growth in all realms of sustainability. We also act as a bridge between local sustainable organizations and the general campus community. Based on the guiding principles of feasible solutions, service, awareness, and collaboration, 1Step aims to recruit a diverse and passionate body of members that embrace sustainable development. Just like nature itself, our organization is constantly evolving and adapting to the unique needs and desires of the Ramapo community and its constituents. For more information, contact any of our officers."
+     },
+     {
+      "heading": "6",
+      "text": "Officers"
+     },
+     {
+      "heading": "294",
+      "text": "Members"
+     },
+     {
+      "heading": "135",
+      "text": "Events"
+     },
+     {
+      "heading": "62",
+      "text": "Emails/Newsletters"
+     },
+     {
+      "heading": "Members Benefits",
+      "text": "Membership benefits include (define your member benefits under group settings)"
+     },
+     {
+      "heading": "Events & Activities",
+      "text": "Be the first to know about what we have planned and add our group calendar to your schedule."
+     },
+     {
+      "heading": "Exclusive Resources",
+      "text": "Get our newsletter and stay in the loop."
+     },
+     {
+      "heading": "Connnections",
+      "text": "Meeting new students with shared interest"
+     },
+     {
+      "heading": "Join our group and make an impact in your campus community.",
+      "text": "Become a member and find out more! join E: 1step@ramapo.edu P: 1Step 505 Ramapo Valley Road Mahwah NJ 07430 United States"
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [
+     {
+      "email": "1step@ramapo.edu",
+      "name": "1step@ramapo.edu"
+     }
+    ],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1Step/club_signup",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:53.072Z",
+    "statusCode": 200,
+    "title": "List of Groups",
+    "links": [
+     "https://archway.ramapo.edu/1Step/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Join Group",
+      "text": "Loading..."
+     },
+     {
+      "heading": "Join Group",
+      "text": "1Step Select 1Step's group. Select the group and click on the Join button at the bottom of the page to register for this group 1Step Student Organization Website Mission Contact: Mimi Fouda, Email group officers Mission We are 1STEP (Students Together for Environmental Progress). We come from a diverse background and have a wide range of interests, but are all passionate about making the world we live in more sustainable.1Step is a student organization and outreach arm for localized sustainability, environmental issues, and to help further the Ramapo Green initiative at Ramapo College of New Jersey. Ascertaining that Ramapo meets its commitment to increase recycling and waste awareness on campus, as does personal growth in all realms of sustainability. We also act as a bridge between local sustainable organizations and the general campus community.Based on the guiding principles of feasible solutions, service, awareness, and collaboration, 1Step aims to recruit a diverse and passionate body of members that embrace sustainable development.Just like nature itself, our organization is constantly evolving and adapting to the unique needs and desires of the Ramapo community and its constituents.For more information, contact any of our officers. Membership Benefits Lifetime membership"
+     }
+    ],
+    "lists": [
+     [
+      "1Step Select 1Step's group. Select the group and click on the Join button at the bottom of the page to register for this group 1Step Student Organization Website Mission Contact: Mimi Fouda, Email group officers Mission We are 1STEP (Students Together for Environmental Progress). We come from a diverse background and have a wide range of interests, but are all passionate about making the world we live in more sustainable.1Step is a student organization and outreach arm for localized sustainability, environmental issues, and to help further the Ramapo Green initiative at Ramapo College of New Jersey. Ascertaining that Ramapo meets its commitment to increase recycling and waste awareness on campus, as does personal growth in all realms of sustainability. We also act as a bridge between local sustainable organizations and the general campus community.Based on the guiding principles of feasible solutions, service, awareness, and collaboration, 1Step aims to recruit a diverse and passionate body of members that embrace sustainable development.Just like nature itself, our organization is constantly evolving and adapting to the unique needs and desires of the Ramapo community and its constituents.For more information, contact any of our officers. Membership Benefits Lifetime membership"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1step/events/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:53.651Z",
+    "statusCode": 200,
+    "title": "Events - 1Step | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/1Step/",
+     "https://archway.ramapo.edu/1step/events/",
+     "https://archway.ramapo.edu/1step/events/[CONTENT-EVENTS_LINK_FEATURED]",
+     "https://archway.ramapo.edu/events"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "There are no upcoming events.",
+      "text": "Events [CONTENT-EVENTS_MONTH_FEATURED] [CONTENT-EVENTS_DAY_FEATURED] | [CONTENT-EVENTS_TIME_FEATURED] [CONTENT-EVENTS_NAME_FEATURED] There are no upcoming events.Discover more events"
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1step/news/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:53.886Z",
+    "statusCode": 200,
+    "title": "News - 1Step | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/1Step/",
+     "https://archway.ramapo.edu/1Step/blog/big-event-tomorrow!-/19154/",
+     "https://archway.ramapo.edu/1Step/blog/greener-by-default--helping-create-plant-based-menus-for-institutions/18561/",
+     "https://archway.ramapo.edu/1step/news/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Latest News",
+      "text": "BIG Event Tomorrow! Mar 19, 2023 - Geri Andrea"
+     },
+     {
+      "heading": "BIG Event Tomorrow!",
+      "text": "Greener by Default: Helping create plant-based menus for institutions Sep 10, 2021 - Ashwani Vasishth"
+     }
+    ],
+    "lists": [
+     [
+      "BIG Event Tomorrow! Mar 19, 2023 - Geri Andrea",
+      "Greener by Default: Helping create plant-based menus for institutions Sep 10, 2021 - Ashwani Vasishth"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1step/leadership-team/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:54.416Z",
+    "statusCode": 200,
+    "title": "Leadership Team - 1Step | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/1Step/",
+     "https://archway.ramapo.edu/1step/leadership-team/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Amisha Singh",
+      "text": "Team Elana Elmazi Secretary Shannon Lawlor Vice-President Julia Kotowski Treasurer Mimi Fouda President Allene Shapiro Amisha Singh Officer"
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1step/photos/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:54.639Z",
+    "statusCode": 200,
+    "title": "Photos - 1Step | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/1Step/",
+     "https://archway.ramapo.edu/1step/photos/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Photos",
+      "text": "Photos Category:"
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1step/documents/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:55.141Z",
+    "statusCode": 200,
+    "title": "Documents - 1Step | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/1Step/",
+     "https://archway.ramapo.edu/1step/documents/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "There are no documents.",
+      "text": "Documents There are no documents."
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1step/past-newsletters/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:55.356Z",
+    "statusCode": 200,
+    "title": "Past Newsletters - 1Step | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/1Step/",
+     "https://archway.ramapo.edu/1step/past-newsletters/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "There are no newsletters.",
+      "text": "Past Newsletters There are no newsletters."
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1step/surveys-forms/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:55.819Z",
+    "statusCode": 200,
+    "title": "Surveys & Forms - 1Step | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/1Step/",
+     "https://archway.ramapo.edu/1step/surveys-forms/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "There are no surveys/forms.",
+      "text": "Surveys & Forms There are no surveys/forms."
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1step/useful-links/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:56.283Z",
+    "statusCode": 200,
+    "title": "Useful Links - 1Step | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/1Step/",
+     "https://archway.ramapo.edu/1step/useful-links/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "There are no useful links.",
+      "text": "Useful Links There are no useful links."
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1step/contact-us/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:56.497Z",
+    "statusCode": 200,
+    "title": "Contact Us - 1Step | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/1Step/",
+     "https://archway.ramapo.edu/1step/contact-us/"
+    ],
+    "externalLinks": [
+     "https://twitter.com/ReadyEducation",
+     "https://www.facebook.com/161692710550935"
+    ],
+    "sections": [
+     {
+      "heading": "Overview",
+      "text": "E: 1step@ramapo.edu P: 1Step 505 Ramapo Valley Road Mahwah NJ 07430 United States"
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [
+     {
+      "email": "1step@ramapo.edu",
+      "name": "1step@ramapo.edu"
+     }
+    ],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1Step/blog/big-event-tomorrow!-/19154/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:57.011Z",
+    "statusCode": 200,
+    "title": "BIG Event Tomorrow!",
+    "links": [
+     "https://archway.ramapo.edu/news",
+     "https://archway.ramapo.edu/news?tags=4261946",
+     "https://archway.ramapo.edu/news?tags=4261947",
+     "https://archway.ramapo.edu/news?tags=4261948",
+     "https://archway.ramapo.edu/news?tags=4261949",
+     "https://archway.ramapo.edu/news?tags=9194115",
+     "https://archway.ramapo.edu/student_profile?uid=10152185-73b2-11ea-80af-0a85c368333a"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "BIG Event Tomorrow!",
+      "text": "Loading..."
+     },
+     {
+      "heading": "BIG Event Tomorrow!",
+      "text": "Join Us Ramapo Green, 1-STEP, the Sunrise Hub at RCNJ, the Fashion Club, and the Cosmetics Club Fashion, Beauty, and Climate Change Monday, Mar 20th, 2023, 6:30 PM - 8:00 PM Trustees Pavilion 3 (PAV3) With funding support from the The Women's Center and the President's Committee for Campus Sustainability (PCCS) FOOD WILL BE SERVED If able, please bring your own plates, cups, and utensils Fashion is easily connectable to sustainability, using the ideas within \"fast fashion\" and such. But with beauty products and cosmetics, this relationship is less obvious. How do fashion, beauty products and cosmetics adversely affect climate and our ecosphere? Come find out all the ways these topics intersect. Journalist Jessica DeFino, a former editor for the Kardashian-Jenner Official Apps, and a beauty journalist whose work can be found in Vogue, ELLE, Allure, VICE and more. In this talk, with Q&A, Jessica takes us behind the scenes of the beauty industry to reveal how beauty standards are created and consumed, how they contribute to the climate crisis, and how we might work toward an understanding of beauty that doesn't harm the planet and its people. | Join Us Ramapo Green, 1-STEP, the Sunrise Hub at RCNJ, the Fashion Club, and the Cosmetics Club Fashion, Beauty, and Climate Change Monday, Mar 20th, 2023, 6:30 PM - 8:00 PM Trustees Pavilion 3 (PAV3) With funding support from the The Women's Center and the President's Committee for Campus Sustainability (PCCS) FOOD WILL BE SERVED If able, please bring your own plates, cups, and utensils Fashion is easily connectable to sustainability, using the ideas within \"fast fashion\" and such. But with beauty products and cosmetics, this relationship is less obvious. How do fashion, beauty products and cosmetics adversely affect climate and our ecosphere? Come find out all the ways these topics intersect. Journalist Jessica DeFino, a former editor for the Kardashian-Jenner Official Apps, and a beauty journalist whose work can be found in Vogue, ELLE, Allure, VICE and more. In this talk, with Q&A, Jessica takes us behind the scenes of the beauty industry to reveal how beauty standards are created and consumed, how they contribute to the climate crisis, and how we might work toward an understanding of beauty that doesn't harm the planet and its people.; Join Us Ramapo Green, 1-STEP, the Sunrise Hub at RCNJ, the Fashion Club, and the Cosmetics Club Fashion, Beauty, and Climate Change Monday, Mar 20th, 2023, 6:30 PM - 8:00 PM Trustees Pavilion 3 (PAV3) With funding support from the The Women's Center and the President's Committee for Campus Sustainability (PCCS) FOOD WILL BE SERVED If able, please bring your own plates, cups, and utensils Fashion is easily connectable to sustainability, using the ideas within \"fast fashion\" and such. But with beauty products and cosmetics, this relationship is less obvious. How do fashion, beauty products and cosmetics adversely affect climate and our ecosphere? Come find out all the ways these topics intersect. Journalist Jessica DeFino, a former editor for the Kardashian-Jenner Official Apps, and a beauty journalist whose work can be found in Vogue, ELLE, Allure, VICE and more. In this talk, with Q&A, Jessica takes us behind the scenes of the beauty industry to reveal how beauty standards are created and consumed, how they contribute to the climate crisis, and how we might work toward an understanding of beauty that doesn't harm the planet and its people."
+     },
+     {
+      "heading": "Join Us",
+      "text": " | ;  Ramapo Green: The Campus Sustainability Hub! When we care about sustainability, we certainly DO care about the environment…! But we never lose sight of -- People; Planet; Profit -- Taken Together.... Now, and Into the Future…! | Ramapo Green: The Campus Sustainability Hub! When we care about sustainability, we certainly DO care about the environment…! But we never lose sight of -- People; Planet; Profit -- Taken Together.... Now, and Into the Future…!; Ramapo Green: The Campus Sustainability Hub! When we care about sustainability, we certainly DO care about the environment…! But we never lose sight of -- People; Planet; Profit -- Taken Together.... Now, and Into the Future…!"
+     }
+    ],
+    "lists": [],
+    "tables": [
+     {
+      "headers": [
+       "Join Us Ramapo Green, 1-STEP, the Sunrise Hub at RCNJ, the Fashion Club, and the Cosmetics Club Fashion, Beauty, and Climate Change Monday, Mar 20th, 2023, 6:30 PM - 8:00 PM Trustees Pavilion 3 (PAV3) With funding support from the The Women's Center and the President's Committee for Campus Sustainability (PCCS) FOOD WILL BE SERVED If able, please bring your own plates, cups, and utensils Fashion is easily connectable to sustainability, using the ideas within \"fast fashion\" and such. But with beauty products and cosmetics, this relationship is less obvious. How do fashion, beauty products and cosmetics adversely affect climate and our ecosphere? Come find out all the ways these topics intersect. Journalist Jessica DeFino, a former editor for the Kardashian-Jenner Official Apps, and a beauty journalist whose work can be found in Vogue, ELLE, Allure, VICE and more. In this talk, with Q&A, Jessica takes us behind the scenes of the beauty industry to reveal how beauty standards are created and consumed, how they contribute to the climate crisis, and how we might work toward an understanding of beauty that doesn't harm the planet and its people.",
+       "Join Us Ramapo Green, 1-STEP, the Sunrise Hub at RCNJ, the Fashion Club, and the Cosmetics Club Fashion, Beauty, and Climate Change Monday, Mar 20th, 2023, 6:30 PM - 8:00 PM Trustees Pavilion 3 (PAV3) With funding support from the The Women's Center and the President's Committee for Campus Sustainability (PCCS) FOOD WILL BE SERVED If able, please bring your own plates, cups, and utensils Fashion is easily connectable to sustainability, using the ideas within \"fast fashion\" and such. But with beauty products and cosmetics, this relationship is less obvious. How do fashion, beauty products and cosmetics adversely affect climate and our ecosphere? Come find out all the ways these topics intersect. Journalist Jessica DeFino, a former editor for the Kardashian-Jenner Official Apps, and a beauty journalist whose work can be found in Vogue, ELLE, Allure, VICE and more. In this talk, with Q&A, Jessica takes us behind the scenes of the beauty industry to reveal how beauty standards are created and consumed, how they contribute to the climate crisis, and how we might work toward an understanding of beauty that doesn't harm the planet and its people."
+      ],
+      "rows": [
+       [
+        "Join Us Ramapo Green, 1-STEP, the Sunrise Hub at RCNJ, the Fashion Club, and the Cosmetics Club Fashion, Beauty, and Climate Change Monday, Mar 20th, 2023, 6:30 PM - 8:00 PM Trustees Pavilion 3 (PAV3) With funding support from the The Women's Center and the President's Committee for Campus Sustainability (PCCS) FOOD WILL BE SERVED If able, please bring your own plates, cups, and utensils Fashion is easily connectable to sustainability, using the ideas within \"fast fashion\" and such. But with beauty products and cosmetics, this relationship is less obvious. How do fashion, beauty products and cosmetics adversely affect climate and our ecosphere? Come find out all the ways these topics intersect. Journalist Jessica DeFino, a former editor for the Kardashian-Jenner Official Apps, and a beauty journalist whose work can be found in Vogue, ELLE, Allure, VICE and more. In this talk, with Q&A, Jessica takes us behind the scenes of the beauty industry to reveal how beauty standards are created and consumed, how they contribute to the climate crisis, and how we might work toward an understanding of beauty that doesn't harm the planet and its people.",
+        "Join Us Ramapo Green, 1-STEP, the Sunrise Hub at RCNJ, the Fashion Club, and the Cosmetics Club Fashion, Beauty, and Climate Change Monday, Mar 20th, 2023, 6:30 PM - 8:00 PM Trustees Pavilion 3 (PAV3) With funding support from the The Women's Center and the President's Committee for Campus Sustainability (PCCS) FOOD WILL BE SERVED If able, please bring your own plates, cups, and utensils Fashion is easily connectable to sustainability, using the ideas within \"fast fashion\" and such. But with beauty products and cosmetics, this relationship is less obvious. How do fashion, beauty products and cosmetics adversely affect climate and our ecosphere? Come find out all the ways these topics intersect. Journalist Jessica DeFino, a former editor for the Kardashian-Jenner Official Apps, and a beauty journalist whose work can be found in Vogue, ELLE, Allure, VICE and more. In this talk, with Q&A, Jessica takes us behind the scenes of the beauty industry to reveal how beauty standards are created and consumed, how they contribute to the climate crisis, and how we might work toward an understanding of beauty that doesn't harm the planet and its people."
+       ],
+       [
+        "Join Us Ramapo Green, 1-STEP, the Sunrise Hub at RCNJ, the Fashion Club, and the Cosmetics Club Fashion, Beauty, and Climate Change Monday, Mar 20th, 2023, 6:30 PM - 8:00 PM Trustees Pavilion 3 (PAV3) With funding support from the The Women's Center and the President's Committee for Campus Sustainability (PCCS) FOOD WILL BE SERVED If able, please bring your own plates, cups, and utensils Fashion is easily connectable to sustainability, using the ideas within \"fast fashion\" and such. But with beauty products and cosmetics, this relationship is less obvious. How do fashion, beauty products and cosmetics adversely affect climate and our ecosphere? Come find out all the ways these topics intersect. Journalist Jessica DeFino, a former editor for the Kardashian-Jenner Official Apps, and a beauty journalist whose work can be found in Vogue, ELLE, Allure, VICE and more. In this talk, with Q&A, Jessica takes us behind the scenes of the beauty industry to reveal how beauty standards are created and consumed, how they contribute to the climate crisis, and how we might work toward an understanding of beauty that doesn't harm the planet and its people."
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "Join Us Ramapo Green, 1-STEP, the Sunrise Hub at RCNJ, the Fashion Club, and the Cosmetics Club Fashion, Beauty, and Climate Change Monday, Mar 20th, 2023, 6:30 PM - 8:00 PM Trustees Pavilion 3 (PAV3) With funding support from the The Women's Center and the President's Committee for Campus Sustainability (PCCS) FOOD WILL BE SERVED If able, please bring your own plates, cups, and utensils Fashion is easily connectable to sustainability, using the ideas within \"fast fashion\" and such. But with beauty products and cosmetics, this relationship is less obvious. How do fashion, beauty products and cosmetics adversely affect climate and our ecosphere? Come find out all the ways these topics intersect. Journalist Jessica DeFino, a former editor for the Kardashian-Jenner Official Apps, and a beauty journalist whose work can be found in Vogue, ELLE, Allure, VICE and more. In this talk, with Q&A, Jessica takes us behind the scenes of the beauty industry to reveal how beauty standards are created and consumed, how they contribute to the climate crisis, and how we might work toward an understanding of beauty that doesn't harm the planet and its people."
+      ],
+      "rows": [
+       [
+        "Join Us Ramapo Green, 1-STEP, the Sunrise Hub at RCNJ, the Fashion Club, and the Cosmetics Club Fashion, Beauty, and Climate Change Monday, Mar 20th, 2023, 6:30 PM - 8:00 PM Trustees Pavilion 3 (PAV3) With funding support from the The Women's Center and the President's Committee for Campus Sustainability (PCCS) FOOD WILL BE SERVED If able, please bring your own plates, cups, and utensils Fashion is easily connectable to sustainability, using the ideas within \"fast fashion\" and such. But with beauty products and cosmetics, this relationship is less obvious. How do fashion, beauty products and cosmetics adversely affect climate and our ecosphere? Come find out all the ways these topics intersect. Journalist Jessica DeFino, a former editor for the Kardashian-Jenner Official Apps, and a beauty journalist whose work can be found in Vogue, ELLE, Allure, VICE and more. In this talk, with Q&A, Jessica takes us behind the scenes of the beauty industry to reveal how beauty standards are created and consumed, how they contribute to the climate crisis, and how we might work toward an understanding of beauty that doesn't harm the planet and its people."
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "Ramapo Green: The Campus Sustainability Hub! When we care about sustainability, we certainly DO care about the environment…! But we never lose sight of -- People; Planet; Profit -- Taken Together.... Now, and Into the Future…!",
+       "Ramapo Green: The Campus Sustainability Hub! When we care about sustainability, we certainly DO care about the environment…! But we never lose sight of -- People; Planet; Profit -- Taken Together.... Now, and Into the Future…!"
+      ],
+      "rows": [
+       [
+        "Ramapo Green: The Campus Sustainability Hub! When we care about sustainability, we certainly DO care about the environment…! But we never lose sight of -- People; Planet; Profit -- Taken Together.... Now, and Into the Future…!",
+        "Ramapo Green: The Campus Sustainability Hub! When we care about sustainability, we certainly DO care about the environment…! But we never lose sight of -- People; Planet; Profit -- Taken Together.... Now, and Into the Future…!"
+       ],
+       [
+        "Ramapo Green: The Campus Sustainability Hub! When we care about sustainability, we certainly DO care about the environment…! But we never lose sight of -- People; Planet; Profit -- Taken Together.... Now, and Into the Future…!"
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "Ramapo Green: The Campus Sustainability Hub! When we care about sustainability, we certainly DO care about the environment…! But we never lose sight of -- People; Planet; Profit -- Taken Together.... Now, and Into the Future…!"
+      ],
+      "rows": [
+       [
+        "Ramapo Green: The Campus Sustainability Hub! When we care about sustainability, we certainly DO care about the environment…! But we never lose sight of -- People; Planet; Profit -- Taken Together.... Now, and Into the Future…!"
+       ]
+      ]
+     }
+    ],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/1Step/blog/greener-by-default--helping-create-plant-based-menus-for-institutions/18561/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:11:57.383Z",
+    "statusCode": 200,
+    "title": "Greener by Default: Helping create plant-based menus for institutions",
+    "links": [
+     "https://archway.ramapo.edu/news",
+     "https://archway.ramapo.edu/news?tags=4261946",
+     "https://archway.ramapo.edu/news?tags=4261947",
+     "https://archway.ramapo.edu/news?tags=4261948",
+     "https://archway.ramapo.edu/news?tags=4261949",
+     "https://archway.ramapo.edu/news?tags=9194115",
+     "https://archway.ramapo.edu/student_profile?uid=bc612ef9-7e60-11ea-bc6e-0a85c368333a"
+    ],
+    "externalLinks": [
+     "https://www.greenerbydefault.com/"
+    ],
+    "sections": [
+     {
+      "heading": "Greener by Default: Helping create plant-based menus for institutions",
+      "text": "Loading..."
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/csi/home/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:14.993Z",
+    "statusCode": 200,
+    "title": "Home - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/club-management-info/",
+     "https://archway.ramapo.edu/csi/home/",
+     "https://archway.ramapo.edu/csi/sarm-landing-page/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Overview",
+      "text": "This website is for internal use only. If you are looking for more information about CSI, please go to www.ramapo.edu/CSI."
+     },
+     {
+      "heading": "Center for Student Involvement",
+      "text": "Clubs and Organizations are a vital part of campus life at Ramapo College of NJ and CSI is committed to providing resources and training to our student leaders. This internal site will provide student leaders with policies, procedures, resources, and ideas to grow and develop clubs and organizations. The hope is this area will help you answer any questions while also providing you the ability to grow your leadership skills for your organizations. If you have any questions, comments, or ideas to enhance this site please email csi@ramapo.edu."
+     },
+     {
+      "heading": "Club Management Info",
+      "text": "Discover information and tools to help make you successful with leading your club and organization. Club Management Info"
+     },
+     {
+      "heading": "SARM",
+      "text": "Need help navigating financial policies and procedures? This is a shortcut to help with some of the major questions you might have about budgets and raised revenue. SARM Information"
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/club_signup",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:15.412Z",
+    "statusCode": 200,
+    "title": "List of Groups",
+    "links": [
+     "https://archway.ramapo.edu/CSI/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Join Group",
+      "text": "Loading..."
+     },
+     {
+      "heading": "Join Group",
+      "text": "Center for Student Involvement Center for Student Involvement Department Website Mission Contact: Edward Seavers, Email group officers Mission As innovative educators guided by the mission of Ramapo College, we provide co-curricular programs, activities and services to promote student learning and success. We support the development of students as globally conscious citizens and active partners in our communities. Through these efforts we foster inclusive environments where students can explore their identities and celebrate diversity. By challenging and supporting individuals, clubs, and organizations, we empower students to live and lead with integrity. Membership Benefits Lifetime membership"
+     }
+    ],
+    "lists": [
+     [
+      "Center for Student Involvement Center for Student Involvement Department Website Mission Contact: Edward Seavers, Email group officers Mission As innovative educators guided by the mission of Ramapo College, we provide co-curricular programs, activities and services to promote student learning and success. We support the development of students as globally conscious citizens and active partners in our communities. Through these efforts we foster inclusive environments where students can explore their identities and celebrate diversity. By challenging and supporting individuals, clubs, and organizations, we empower students to live and lead with integrity. Membership Benefits Lifetime membership"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/web_officers",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:16.565Z",
+    "statusCode": 200,
+    "title": "Archway",
+    "links": [
+     "https://archway.ramapo.edu/CSI/web_login?redirect=%2fCSI%2fweb_officers",
+     "https://archway.ramapo.edu/student_profile.aspx?uid=72d9fc34-7e60-11ea-bc6e-0a85c368333a",
+     "https://archway.ramapo.edu/student_profile.aspx?uid=a1e4a5bb-9ba7-11ea-bc6e-0a85c368333a",
+     "https://archway.ramapo.edu/student_profile.aspx?uid=bb0f02f8-4108-11ea-a04e-0a85c368333a",
+     "https://archway.ramapo.edu/student_profile.aspx?uid=e05fa9f9-9c64-11ef-bd6b-0a86d64fe70d"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Center for Student Involvement",
+      "text": "Loading..."
+     },
+     {
+      "heading": "Center for Student Involvement",
+      "text": " | Rick Brown Staff | Director, Center for Student Involvement  | Kriselle Bellini Staff | Officer  | Andrea Oliver Staff | Officer  | Megan Williams Staff | Officer  | Allene Shapiro Staff | Officer  | Cheyenne Shannon Staff | Officer  | Dylan Heffernan Staff | Officer  | Jack Nesmith Staff | Coordinator for Civic Engagement and Student Leadership Programs  | Edward Seavers Staff | Associate Director for the Center for Student Involvement"
+     }
+    ],
+    "lists": [],
+    "tables": [
+     {
+      "headers": [
+       "",
+       "Rick Brown Staff",
+       "Director, Center for Student Involvement"
+      ],
+      "rows": [
+       [
+        "",
+        "Rick Brown Staff",
+        "Director, Center for Student Involvement"
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "",
+       "Kriselle Bellini Staff",
+       "Officer"
+      ],
+      "rows": [
+       [
+        "",
+        "Kriselle Bellini Staff",
+        "Officer"
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "",
+       "Andrea Oliver Staff",
+       "Officer"
+      ],
+      "rows": [
+       [
+        "",
+        "Andrea Oliver Staff",
+        "Officer"
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "",
+       "Megan Williams Staff",
+       "Officer"
+      ],
+      "rows": [
+       [
+        "",
+        "Megan Williams Staff",
+        "Officer"
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "",
+       "Allene Shapiro Staff",
+       "Officer"
+      ],
+      "rows": [
+       [
+        "",
+        "Allene Shapiro Staff",
+        "Officer"
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "",
+       "Cheyenne Shannon Staff",
+       "Officer"
+      ],
+      "rows": [
+       [
+        "",
+        "Cheyenne Shannon Staff",
+        "Officer"
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "",
+       "Dylan Heffernan Staff",
+       "Officer"
+      ],
+      "rows": [
+       [
+        "",
+        "Dylan Heffernan Staff",
+        "Officer"
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "",
+       "Jack Nesmith Staff",
+       "Coordinator for Civic Engagement and Student Leadership Programs"
+      ],
+      "rows": [
+       [
+        "",
+        "Jack Nesmith Staff",
+        "Coordinator for Civic Engagement and Student Leadership Programs"
+       ]
+      ]
+     },
+     {
+      "headers": [
+       "",
+       "Edward Seavers Staff",
+       "Associate Director for the Center for Student Involvement"
+      ],
+      "rows": [
+       [
+        "",
+        "Edward Seavers Staff",
+        "Associate Director for the Center for Student Involvement"
+       ]
+      ]
+     }
+    ],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/csi/news/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:17.105Z",
+    "statusCode": 200,
+    "title": "In the Loop! - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/csi/news/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "There is no news.",
+      "text": "Latest News There is no news."
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/csi/surveys-forms/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:20.045Z",
+    "statusCode": 200,
+    "title": "Surveys & Forms - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/survey?survey_uid=a2998a1d-39ea-11f1-85ac-0afff28bcb11",
+     "https://archway.ramapo.edu/csi/surveys-forms/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Surveys & Forms",
+      "text": "Class of 2030...I'm Interested In! Monday, May 18 &nbsp;Please take a few minutes to review the following activities and what you might be interested in receiving more information about! Before you return in the fall, or within the days after your return, you may receive additional information on topics you have selected below!"
+     }
+    ],
+    "lists": [
+     [
+      "Class of 2030...I'm Interested In! Monday, May 18 &nbsp;Please take a few minutes to review the following activities and what you might be interested in receiving more information about! Before you return in the fall, or within the days after your return, you may receive additional information on topics you have selected below!"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/csi/useful-links/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:20.263Z",
+    "statusCode": 200,
+    "title": "Advisor Guide - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/csi/useful-links/"
+    ],
+    "externalLinks": [
+     "https://docs.google.com/document/d/1wGz1v9Evm0Us8ypOmvwAdniZkuMJO0lLvXKSStJNOjE/edit?usp=sharing"
+    ],
+    "sections": [
+     {
+      "heading": "Useful Links",
+      "text": "Student Leader Policies and Procedures"
+     }
+    ],
+    "lists": [
+     [
+      "Student Leader Policies and Procedures"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/club-management-info/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:20.826Z",
+    "statusCode": 200,
+    "title": "Club Management Info - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/club-management-info/",
+     "https://archway.ramapo.edu/CSI/motivation/",
+     "https://archway.ramapo.edu/CSI/policies-and-procedure/",
+     "https://archway.ramapo.edu/CSI/programs-and-events/",
+     "https://archway.ramapo.edu/CSI/retreats/",
+     "https://archway.ramapo.edu/CSI/surveys-forms/",
+     "https://archway.ramapo.edu/CSI/team-builders/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Club Management Information",
+      "text": "There are many steps and processes to be a successful organization and student leader. CSI hopes to provide you resources to develop yourself and your organization on campus. This is a resource guide to help you when you have questions or need additional resources. It is not a complete list or guide, but will provide you a framework to be successful on campus."
+     },
+     {
+      "heading": "Policies and Procedures",
+      "text": "Club and Org Policies and Procedures New Club Process Recharterment Process Policies and Procedures"
+     },
+     {
+      "heading": "Surveys and Forms",
+      "text": "Important Surveys and Forms that are required by CSI. Surveys and Forms"
+     },
+     {
+      "heading": "Programs and Events",
+      "text": "Event and Program Ideas along with best practices to ensure your events are successful Programs & Events"
+     },
+     {
+      "heading": "Team Builders",
+      "text": "Discover team builder and ice breaker ideas. Team Builders"
+     },
+     {
+      "heading": "Retreats",
+      "text": "Should you plan a retreat? What are retreats for? Learn best practices and suggestions to make your retreat successful. Retreats"
+     },
+     {
+      "heading": "Motivating Others",
+      "text": "Need help getting people to help or do things for your club, then come learn tips to build stronger relationships with your club members. Motivating Others"
+     }
+    ],
+    "lists": [
+     [
+      "Club and Org Policies and Procedures",
+      "New Club Process",
+      "Recharterment Process"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/csi/sarm-landing-page/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:21.139Z",
+    "statusCode": 200,
+    "title": "SARM Details - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/budget-details/",
+     "https://archway.ramapo.edu/csi/sarm-landing-page/"
+    ],
+    "externalLinks": [
+     "https://docs.google.com/document/d/1oKgp7FnVpwUn9mn2vrP5_gvfEi7dzx_T7iIdDIfkPig/edit?usp=sharing"
+    ],
+    "sections": [
+     {
+      "heading": "Student Activities Revenue Management (SARM)",
+      "text": "SARM is the financial hub for CSI. SARM will help your clubs access and process funding for club activities. This is help center to provide you guidance, but if you have any questions please email SARM@ramapo.edu. Clubs/Organizations/Honor Societies do not have access to any budget funding. You must request funding on a per event/activity basis. How to use budget funding If your club has raised revenue, you are able to purchase approved items with it. Items still need to be reviewed by our office before they are allowed to be processed, since there are additional restrictions on this funding source. How to pay with raised revenue SARM is still able to process deposits for your organization. All checks must be made out to Ramapo College. The College will not accept any checks that do not have Ramapo College in the payee line. How to make a deposit"
+     },
+     {
+      "heading": "Payments",
+      "text": "SARM is responsible for processing payments for your organization. There are 3 main ways to pay for items: P-cards, checks, & reimbursements. Find out more about the payment options below."
+     },
+     {
+      "heading": "P-Cards",
+      "text": "Purchasing Cards are office credit cards that can be reserved by your club. There are several restrictions for p-cards, so click the link to learn more. Learn More"
+     },
+     {
+      "heading": "Check Request",
+      "text": "A check request is needed for vendors and guest speakers for services rendered. This is the preferred method of payment for the College. Learn More"
+     },
+     {
+      "heading": "Reimbursements",
+      "text": "There are times when you will need to pay for an item and be reimbursed from club funds. There are two types of reimbursements: Travel and Non-Travel. It is important to learn about restrictions and requirements prior to requesting a reimbursement. Learn More"
+     },
+     {
+      "heading": "Online Orders",
+      "text": "SARM has a Amazon Prime Business Account and requires that any organization that is using their budget and/or raised revenue order items using our Online Order Process. Learn more"
+     },
+     {
+      "heading": "Prizes",
+      "text": "Clubs and Organizations are allowed to distribute prizes for events and activities. Currently, you are only allowed to give out Ramapo Dollars, a gift card to the book store, or a specific item (not a different vendor gift card). There is a specific process for prizes. Learn more"
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/web_login?redirect=%2fCSI%2fweb_officers",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:21.390Z",
+    "statusCode": 200,
+    "title": "Sign In",
+    "links": [
+     "https://archway.ramapo.edu/CSI/club_signup?ts=923161221",
+     "https://archway.ramapo.edu/webapp/auth/login?redirect=%2fCSI%2fweb_officers"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Sign in",
+      "text": "Loading..."
+     },
+     {
+      "heading": "Sign in",
+      "text": "Log In"
+     },
+     {
+      "heading": "Center for Student Involvement",
+      "text": "Not a member yet? Please click on the Join Groups button below to become a member or newer your membership."
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/motivation/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:21.863Z",
+    "statusCode": 200,
+    "title": "Motivation - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/motivation/"
+    ],
+    "externalLinks": [
+     "https://cen.acs.org/careers/career-tips/9-ways-motivate-others/96/i44",
+     "https://www.inc.com/marcel-schwantes/8-powerful-ways-to-motivate-inspire-your-employees-this-week.html",
+     "https://www.lifehack.org/articles/communication/7-ways-motivate-others-even-you-can.html",
+     "https://www.opencolleges.edu.au/informed/features/intrinsic-motivation/"
+    ],
+    "sections": [
+     {
+      "heading": "Motivating Others",
+      "text": "Motivating your fellow officers and club members to stay on tasks and excited is a lot of work! There is no easy answer, but hopefully using some tools that we discuss here and from your own experience you can help motivate others."
+     },
+     {
+      "heading": "Relationship Matter",
+      "text": "You probably know that it is easier to get your friends to do what you want compared to people you are not really close to. This is why creating relationships with other officers and club members matter. You can find out way to start a relationship in the Team Building and Retreats sections. The stronger your relationship with others the more likely people will invest in your ideas and leadership."
+     },
+     {
+      "heading": "Not 1 size fits all",
+      "text": "Each person is motivated by different things and respond to different methods. It is really important that what you use for one person may not work for someone else. This graphic are just some ways for you to motivate others around you. You will also find that the more you use these techniques the easier they will fold into other parts of your life. It is might be easiest to start with what motivates you to do something and build from there."
+     },
+     {
+      "heading": "Details Matter",
+      "text": "Personalizing feedback and information is important. If you always call someone the wrong name and then ask them do to something, what is the likelihood they will do it? It can be really hard to adopt some of these suggestions, but the more you use them, the easier it becomes."
+     },
+     {
+      "heading": "Additional Resources",
+      "text": "25 Ways to Cultivate Intrinsic Motivation 9 Ways to Motivate Others How to Motivate People Around You and Inspire Them 8 Things the Smartest Leaders Do to Motivate Their Employees"
+     }
+    ],
+    "lists": [
+     [
+      "25 Ways to Cultivate Intrinsic Motivation",
+      "9 Ways to Motivate Others",
+      "How to Motivate People Around You and Inspire Them",
+      "8 Things the Smartest Leaders Do to Motivate Their Employees"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/policies-and-procedure/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:22.058Z",
+    "statusCode": 200,
+    "title": "Policies and Procedure - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/policies-and-procedure/",
+     "https://archway.ramapo.edu/csi/recharterment-process/"
+    ],
+    "externalLinks": [
+     "https://docs.google.com/document/d/1wGz1v9Evm0Us8ypOmvwAdniZkuMJO0lLvXKSStJNOjE/edit?usp=sharing"
+    ],
+    "sections": [
+     {
+      "heading": "Policies and Procedures",
+      "text": "The Center for Student Involvement strives to provide a clear guidelines for clubs and organizations. Our policies are subject to change, so please refer them throughout the semester. Policies and Procedures"
+     },
+     {
+      "heading": "Club Recharterment",
+      "text": "Clubs are required to go through a recharterment process every 3 years to ensure they are in good standing. This process it coordinated by SGA and CSI. Recharterment"
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/programs-and-events/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:22.486Z",
+    "statusCode": 200,
+    "title": "Programs and Events - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/blank-event-checklist/",
+     "https://archway.ramapo.edu/CSI/completed-event-checklist/",
+     "https://archway.ramapo.edu/CSI/event-timeline-template/",
+     "https://archway.ramapo.edu/CSI/programs-and-events/"
+    ],
+    "externalLinks": [
+     "https://docs.google.com/document/d/1s0Jm_hzhWjl9L5PSkFsRRGhChWgHN4DQfPijxBV7qB8/edit?usp=sharing"
+    ],
+    "sections": [
+     {
+      "heading": "Programs and Events",
+      "text": "Per SGA, it is required that your organization holds at least 3 in person events per semester (when we are on campus) or 1 virtual event if we are remote. Planning and executing events can be stressful and challenging, so this area is to help elevate some of those challenges."
+     },
+     {
+      "heading": "The Why?",
+      "text": "The first step to event planning is to establish the \"why\" of the event. This provides a purpose and can help you frame the event details around it The why can be: To raise money for a charity or philanthropy Provide a fun experience for our club members Provide resources for a cause Educate members about professional opportunities after graduation When you see different purposes for an event, it is easier to see why the planning might be different for each one. They have different timelines, requirements, and budgets."
+     },
+     {
+      "heading": "Create a plan",
+      "text": "After you have the why, create a checklist for your event. Since each event will have a different \"why\", the checklist will be different too. Blank Event Planning Checklist"
+     },
+     {
+      "heading": "Timeline",
+      "text": "fter you establish your event details it's important to create a timeline to help you stay on task. Timelines will change based on the event type, but they help you visualize when things need to get done."
+     },
+     {
+      "heading": "Programming Ideas",
+      "text": "Due to the coronavirus all programs must be held virtually for clubs and organizations. Programming is stressful! You want to create an event that will attract a lot of people, will be fun, and is unique! The challenge is that every organization wants this too! Work with your club members and officers to brainstorm ideas, talk to CSI, other offices on campus, look online, and if you can't create a never before seen program, that's ok! You just need to make sure the program you host is executed perfectly and people have a great time! Here are some ideas for you in case you are having challenges brainstorming. Netflix Party Karaoke Nights Open Mic Nights Virtual Concerts Dance Competitions Book Club Virtual Field Trips Cooking and Club Meals Guest Speakers Art Lessons Online Volunteering Trivia Digital Game Bracket Challenges"
+     },
+     {
+      "heading": "Virtual Program Ideas",
+      "text": "For a more complete list with suggestion please go here: Virtual Program Ideas"
+     }
+    ],
+    "lists": [
+     [
+      "To raise money for a charity or philanthropy",
+      "Provide a fun experience for our club members",
+      "Provide resources for a cause",
+      "Educate members about professional opportunities after graduation"
+     ],
+     [
+      "Netflix Party",
+      "Karaoke Nights",
+      "Open Mic Nights",
+      "Virtual Concerts",
+      "Dance Competitions"
+     ],
+     [
+      "Book Club",
+      "Virtual Field Trips",
+      "Cooking and Club Meals",
+      "Guest Speakers",
+      "Art Lessons",
+      "Online Volunteering"
+     ],
+     [
+      "Trivia",
+      "Digital Game",
+      "Bracket Challenges"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/retreats/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:22.911Z",
+    "statusCode": 200,
+    "title": "Retreats - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/retreats/"
+    ],
+    "externalLinks": [
+     "https://studentaffairs.psu.edu/involvement-student-life/student-organizations/training-development/student-organization-3",
+     "https://www.pace.edu/sites/default/files/files/SDCA/Westchester/student-org-transition-resources/tips-for-your-retreat.pdf",
+     "https://www.winthrop.edu/uploadedFiles/clubsorgs/leadership/Retreat-Buliding.pdf"
+    ],
+    "sections": [
+     {
+      "heading": "Are Retreats Right for Us?",
+      "text": "Retreats are a great way to start or end your semester. Each retreat will be different and will have a unique purpose. Even if you don't get \"work\" done, it provides you the opportunity to connect to your fellow members."
+     },
+     {
+      "heading": "Virtual Retreat",
+      "text": "Virtual retreats are a great way to connect if all members are unable to meet at the same place. You can host using Google Meet, WebEx, or Zoom. WebEx has a new feature called WebEx Teams which allows for collaboration between individuals and Ramapo has a premium account with."
+     },
+     {
+      "heading": "In Person Retreats",
+      "text": "With an in person retreat, your location matters. You want a place that will be free of distractions and will help you focus on the tasks on hand. It is also important to make sure you have access to any supplies that will make the retreat impactful. This means don't hold a retreat in the Reservation, but need wifi, your computers, or other technology."
+     },
+     {
+      "heading": "Resources",
+      "text": "Use these sites to see how other institutions organize retreats: Pace University Penn State Winthrop University"
+     }
+    ],
+    "lists": [
+     [
+      "Pace University",
+      "Penn State",
+      "Winthrop University"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": [
+     {
+      "label": "Pace University",
+      "url": "https://www.pace.edu/sites/default/files/files/SDCA/Westchester/student-org-transition-resources/tips-for-your-retreat.pdf"
+     },
+     {
+      "label": "Winthrop University",
+      "url": "https://www.winthrop.edu/uploadedFiles/clubsorgs/leadership/Retreat-Buliding.pdf"
+     }
+    ]
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/team-builders/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:23.362Z",
+    "statusCode": 200,
+    "title": "Team Builders - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/team-builders/"
+    ],
+    "externalLinks": [
+     "https://snacknation.com/blog/team-building-activities-for-work/",
+     "https://www.tinypulse.com/blog/the-ultimate-list-of-team-building-activities",
+     "https://www.workamajig.com/blog/team-building-activities",
+     "https://www.wrike.com/blog/team-building-games/"
+    ],
+    "sections": [
+     {
+      "heading": "Team Builders",
+      "text": "Team Builders are a great way to learn more about your friends, fellow officer, and new members. There are SEVERAL options for team builders and you should pick the best one for your situation. There are many resources for team builders. This is just a quick list of some websites for you to reference: 35 Team Building Activities 12 Team Building Activities Your Team Won't Hate The Ultimate List of Team Building Activities 74 Insanely Fun Team Building Activities For Work In 2021 (Not \"Trust Falls\")"
+     }
+    ],
+    "lists": [
+     [
+      "35 Team Building Activities",
+      "12 Team Building Activities Your Team Won't Hate",
+      "The Ultimate List of Team Building Activities",
+      "74 Insanely Fun Team Building Activities For Work In 2021 (Not \"Trust Falls\")"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/budget-details/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:23.730Z",
+    "statusCode": 200,
+    "title": "Budget Details - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/budget-details/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Budget",
+      "text": "Budget is provided by the Club & Finance Committee and the Center for Student Involvement. This account has restrictions on what may be purchased. A club's budget can be accessed after attending a SARM Budget Training and returning the Policies and Procedures Acknowledgment form to SARM. No cash can be withdrawn from this account, but the monies can be accessed via reimbursement, check request, and/or purchasing cards (p-cards)."
+     },
+     {
+      "heading": "The budget process is subject to change based on available funding and at the discretion of the Director of CSI. Currently, clubs are required to request funding per event.",
+      "text": "This process is available to all club officers. You can see all requests and transactions via the Accounting Book on your Archway group page."
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/club_signup?ts=923161221",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:24.064Z",
+    "statusCode": 200,
+    "title": "List of Groups",
+    "links": [
+     "https://archway.ramapo.edu/CSI/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Join Group",
+      "text": "Loading..."
+     },
+     {
+      "heading": "Join Group",
+      "text": "Center for Student Involvement Center for Student Involvement Department Website Mission Contact: Edward Seavers, Email group officers Mission As innovative educators guided by the mission of Ramapo College, we provide co-curricular programs, activities and services to promote student learning and success. We support the development of students as globally conscious citizens and active partners in our communities. Through these efforts we foster inclusive environments where students can explore their identities and celebrate diversity. By challenging and supporting individuals, clubs, and organizations, we empower students to live and lead with integrity. Membership Benefits Lifetime membership"
+     }
+    ],
+    "lists": [
+     [
+      "Center for Student Involvement Center for Student Involvement Department Website Mission Contact: Edward Seavers, Email group officers Mission As innovative educators guided by the mission of Ramapo College, we provide co-curricular programs, activities and services to promote student learning and success. We support the development of students as globally conscious citizens and active partners in our communities. Through these efforts we foster inclusive environments where students can explore their identities and celebrate diversity. By challenging and supporting individuals, clubs, and organizations, we empower students to live and lead with integrity. Membership Benefits Lifetime membership"
+     ]
+    ],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/csi/recharterment-process/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:24.288Z",
+    "statusCode": 200,
+    "title": "Recharterment Process - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/csi/recharterment-graphic/",
+     "https://archway.ramapo.edu/csi/recharterment-process/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Recharterment",
+      "text": "CSI and SGA oversee the recharterment process for clubs and organizations. To ensure that all organizations are rechartered every three years, the Club and Finance Committee divides the total number of registered organization into 3 groups alphabetically."
+     },
+     {
+      "heading": "What's Does Recharterment Mean?",
+      "text": "Recharterment is a process to ensure your club is meaning all requirements to be in good standing. To help facilitate this process, the Student Government Vice President will be your guide and advocate. This process does not judge you as an individual but your entire organization. You will need to complete the following process:"
+     },
+     {
+      "heading": "Club Requirements",
+      "text": "You must meet all club requirements before moving to the next step."
+     },
+     {
+      "heading": "Group Presentation",
+      "text": "You will present to the Club and Finance Committee (CFC) about your organization. CFC will vote to support/deny/approve with restriction(s)."
+     },
+     {
+      "heading": "SGA Approval",
+      "text": "With CFC's notes and comments, process moves to SGA Senate for a full vote. Results will be shared by SGA VP once completed."
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/blank-event-checklist/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:24.752Z",
+    "statusCode": 200,
+    "title": "Blank Event Checklist - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/blank-event-checklist/"
+    ],
+    "externalLinks": [],
+    "sections": [
+     {
+      "heading": "Event Management Checklist",
+      "text": "Event Management Checklist"
+     }
+    ],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/completed-event-checklist/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:25.222Z",
+    "statusCode": 200,
+    "title": "Completed Event Checklist - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/completed-event-checklist/"
+    ],
+    "externalLinks": [],
+    "sections": [],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/CSI/event-timeline-template/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:25.651Z",
+    "statusCode": 200,
+    "title": "Event Timeline Template - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/CSI/event-timeline-template/"
+    ],
+    "externalLinks": [],
+    "sections": [],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   },
+   {
+    "url": "https://archway.ramapo.edu/csi/recharterment-graphic/",
+    "sourceType": "detail",
+    "fetchedAt": "2026-09-23T20:12:25.973Z",
+    "statusCode": 200,
+    "title": "Recharterment Graphic - Center for Student Involvement | Ramapo College of New Jersey",
+    "links": [
+     "https://archway.ramapo.edu/CSI/",
+     "https://archway.ramapo.edu/csi/recharterment-graphic/"
+    ],
+    "externalLinks": [],
+    "sections": [],
+    "lists": [],
+    "tables": [],
+    "contacts": [],
+    "documents": []
+   }
+  ]
+ }
+}
