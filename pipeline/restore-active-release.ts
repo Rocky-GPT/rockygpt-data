@@ -324,13 +324,19 @@ async function loadActiveRelease(client: PoolClient): Promise<LoadedActiveReleas
   }
 }
 
-async function downloadPinnedRawBundles(
+export async function downloadPinnedRawBundles(
   artifacts: ReadonlyArray<ActiveSourceArtifact>,
   downloadBundle: NonNullable<RestoreActiveReleaseOptions['downloadBundle']>
 ): Promise<Array<{ artifact: ActiveSourceArtifact; bundle: RawArtifactBundleEnvelope }>> {
   const bySource = new Map(artifacts.map((artifact) => [artifact.sourceKey, artifact]));
   const requiredSources = Object.keys(SOURCE_RAW_DATASETS);
-  const missing = requiredSources.filter((sourceKey) => !bySource.get(sourceKey)?.rawUri);
+  // A source added after the active release was published has nothing to
+  // restore; with no raw capture its provenance reads unknown, so the refresh
+  // collects it. A source the release did publish without an archive cannot be
+  // restored faithfully, so that still stops the refresh.
+  const missing = requiredSources.filter(
+    (sourceKey) => bySource.has(sourceKey) && !bySource.get(sourceKey)?.rawUri
+  );
   if (missing.length) {
     throw new Error(
       `Active release is missing archived raw artifact URI(s) for: ${missing.join(', ')}.`
