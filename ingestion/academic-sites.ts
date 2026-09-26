@@ -21,6 +21,7 @@ export const SKIPPED_POST_TYPES: Readonly<Record<string, string>> = {
   faculty: 'a faculty profile or the faculty list: the faculty source keeps every school\'s faculty and is the authority for them',
   tribe_venue: "the event calendar's venue listings",
   tribe_organizer: "the event calendar's organizer listings",
+  tribe_event_series: "the event calendar's series pages, mostly past productions; each coming performance has its own event page",
 };
 
 export const ACADEMIC_SITES: FolderSiteSource = {

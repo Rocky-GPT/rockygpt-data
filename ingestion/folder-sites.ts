@@ -68,8 +68,10 @@ const WORDPRESS_LISTING =
 const WORDPRESS_SAMPLE = /\/(?:hello-world|sample-page)\/?$/i;
 // A dated post's permalink, /folder/2019/03/01/slug/, and anything below it, such as its images' pages.
 const POST_PERMALINK = /\/\d{4}\/\d{2}\/\d{2}\/[^/]+(?:\/|$)/;
-// Post types WordPress serves under a path other than their own name: The Events Calendar's venues and organizers.
-const POST_TYPE_PATHS: Readonly<Record<string, string>> = { tribe_venue: 'venue', tribe_organizer: 'organizer' };
+// Post types WordPress serves under a path other than their own name: The Events Calendar's venues, organizers and series.
+const POST_TYPE_PATHS: Readonly<Record<string, string>> = {
+  tribe_venue: 'venue', tribe_organizer: 'organizer', tribe_event_series: 'series',
+};
 const BODY_CLASS = /<body\b[^>]*\bclass\s*=\s*(["'])([^"']*)\1/i;
 
 /**

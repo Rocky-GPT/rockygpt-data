@@ -132,6 +132,7 @@ test('event venues and organizers are skipped under the paths The Events Calenda
   assert.equal(isSkippedPostTypePath('https://www.ramapo.edu/holocaust/venue/adler-theater/', types), true);
   assert.equal(isSkippedPostTypePath('https://www.ramapo.edu/holocaust/organizer/chgs/', types), true);
   assert.equal(isSkippedPostTypePath('https://www.ramapo.edu/holocaust/tribe_venue/adler-theater/', types), true);
+  assert.equal(isSkippedPostTypePath('https://www.ramapo.edu/berriecenter/series/macbeth/', { tribe_event_series: 'series' }), true);
   assert.equal(isSkippedPostTypePath('https://www.ramapo.edu/holocaust/venues/', types), false);
   assert.equal(isSkippedPostTypePath('https://www.ramapo.edu/holocaust/venue/adler-theater/', {}), false);
 });
