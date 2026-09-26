@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml } from './raw-collector';
+import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber} from './raw-collector';
 import type { RawDatasetV1 } from './raw-types';
 
 const page = (statusCode = 200) => buildRawPageFromHtml({url:'https://example.edu/policy', html:'<main><h1>Policy</h1><p>Source content.</p></main>', sourceType:'seed', allowedHost:'example.edu',statusCode});
@@ -215,4 +215,31 @@ test('a challenge page is recognized by its title, headings or small size, not b
   assert.equal(isLikelyChallengeHtml('<title>Just a moment...</title><body><noscript><span>Enable JavaScript and cookies to continue</span></noscript></body>'), true);
   assert.equal(isLikelyChallengeHtml(`<title>Human Verification</title><main>${filler}</main>`), true);
   assert.equal(isLikelyChallengeHtml(`<title>Office</title><main><h2>Attention Required! | Cloudflare</h2>${filler}</main>`), true);
+});
+
+test('a mailto link that shows one address and sends to another is not a contact', () => {
+  const page = buildRawPageFromHtml({ url: 'https://www.ramapo.edu/snh/sigma-xi-research-showcase/', sourceType: 'seed', allowedHost: 'www.ramapo.edu',
+    html: `<main><h1>Sigma Xi</h1><p>Ash Stuart <a href="mailto:ltan@ramapo.edu">astuart@ramapo.edu</a></p>
+      <p>Loraine Tan <a href="mailto:ltan@ramapo.edu?subject=Hi">LTan@Ramapo.edu.</a></p>
+      <p>Jim Monen <a href="mailto:jmonen@ramapo.edu">jmonen@ramapo.ed</a></p>
+      <p><a href="mailto:graduate@ramapo.edu">graduate@ramapo.edu and we will be happy to assist you!</a></p>
+      <p><a href="mailto:oss@ramapo.edu">Email the Office of Specialized Services</a></p></main>` });
+  assert.deepEqual(page.contacts.map(contact => contact.email).sort(), ['graduate@ramapo.edu', 'ltan@ramapo.edu', 'oss@ramapo.edu']);
+  assert.equal(page.contacts.find(contact => contact.email === 'ltan@ramapo.edu')?.name, 'LTan@Ramapo.edu.');
+  assert.equal(isMismatchedMailto('astuart@ramapo.edu', 'ltan@ramapo.edu'), true);
+  assert.equal(isMismatchedMailto('kayala2@ramapo.edu', 'kayala@ramapo.edu'), true);
+  assert.equal(isMismatchedMailto('(jdoe@ramapo.edu).', 'JDoe@ramapo.edu'), false);
+  assert.equal(isMismatchedMailto('jdoe@ramapo.edu', '%20jdoe@ramapo.edu'), false);
+  assert.equal(isMismatchedMailto('Contact Us', 'reg@ramapo.edu'), false);
+});
+
+test('a tel link is a contact only when it is a phone number', () => {
+  const page = buildRawPageFromHtml({ url: 'https://www.ramapo.edu/snh/publications-research/', sourceType: 'seed', allowedHost: 'www.ramapo.edu',
+    html: `<main><h1>Publications</h1><p>Journal of Chemistry 12, <a href="tel:2641-2673">2641-2673</a> (2021).</p>
+      <p>Call <a href="tel:(201)%20684-7593">(201) 684-7593</a> or <a href="tel:%28201%29%20684-7432">201-684-7432</a>.</p></main>` });
+  assert.deepEqual(page.contacts.map(contact => contact.phone), ['(201)%20684-7593', '%28201%29%20684-7432']);
+  for (const number of ['(201)%20684-7593', '%28201%29%20684-7432', '201-684-7000', '+1 201 684 7000', '201-684-7000 ext. 12', 'x7451']) {
+    assert.equal(isPhoneNumber(number), true, number);
+  }
+  for (const range of ['2641-2673', '2025-2031', '684-7593', '%zz']) assert.equal(isPhoneNumber(range), false, range);
 });

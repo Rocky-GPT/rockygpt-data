@@ -302,6 +302,40 @@ function extractTables($: ReturnType<typeof load>, baseUrl: string): RawPageV1['
   return tables;
 }
 
+const EMAIL_ADDRESS = /^[^\s@()]+@[^\s@()]+\.[^\s@()]+$/;
+
+/** An address as written for comparing a link's text with its target: no case, spaces, %20, parentheses or trailing punctuation. */
+function comparableEmail(value: string): string {
+  return value.toLowerCase().replace(/%20/gi, '').replace(/[\s()]/g, '').replace(/[.,;:!?]+$/, '');
+}
+
+/**
+ * Whether a mailto link shows one address and sends to another, such as "astuart@ramapo.edu"
+ * linking to ltan@ramapo.edu. Neither address can then be trusted as the contact. Link text that
+ * is not an address ("Email us", "graduate@ramapo.edu and we will help") is not a mismatch.
+ */
+export function isMismatchedMailto(text: string, email: string): boolean {
+  const shown = text.replace(/%20/gi, '').replace(/[()]/g, '').replace(/[.,;:!?]+$/, '').trim();
+  return EMAIL_ADDRESS.test(shown) && comparableEmail(shown) !== comparableEmail(email);
+}
+
+/**
+ * Whether a tel link's number is a phone number: 10 US digits (11 with a leading 1) or an
+ * extension, once percent-encoding is decoded. A browser's phone detection can link a
+ * citation's page range, such as "tel:2641-2673", which is not a number to call.
+ */
+export function isPhoneNumber(raw: string): boolean {
+  let value = raw;
+  try {
+    value = decodeURIComponent(raw);
+  } catch {
+    // Not valid percent-encoding: read it as written.
+  }
+  const digits = value.replace(/\D/g, '');
+  return digits.length === 10 || (digits.length === 11 && digits.startsWith('1'))
+    || /(?:\bext\.?|\bx)\s*\d+/i.test(value);
+}
+
 function extractContacts($: ReturnType<typeof load>): RawPageV1['contacts'] {
   const contactsMap = new Map<string, RawPageV1['contacts'][number]>();
 
@@ -311,6 +345,7 @@ function extractContacts($: ReturnType<typeof load>): RawPageV1['contacts'] {
     if (!email) return;
 
     const name = cleanText($(element).text()) || undefined;
+    if (name && isMismatchedMailto(name, email)) return;
     const office = cleanText($(element).closest('p, li, td, div').first().find('strong').first().text()) || undefined;
 
     contactsMap.set(`email:${email.toLowerCase()}`, {
@@ -323,7 +358,7 @@ function extractContacts($: ReturnType<typeof load>): RawPageV1['contacts'] {
   $('a[href^="tel:"]').each((_, element) => {
     const href = $(element).attr('href') || '';
     const phone = href.replace(/^tel:/i, '').trim();
-    if (!phone) return;
+    if (!phone || !isPhoneNumber(phone)) return;
 
     const name = cleanText($(element).text()) || undefined;
     const key = `phone:${phone}`;
