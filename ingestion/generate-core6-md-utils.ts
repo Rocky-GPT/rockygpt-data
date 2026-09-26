@@ -418,10 +418,10 @@ export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownConte
       const writtenPages = new Set(written.map(({ page }) => page));
       markdown += '## Site-wide sections\n\n';
       shared.forEach(({ block, pages }) => {
-        // Cite the site's home page when it shows the block: the shortest path among them.
-        const cited = pages.reduce((best, candidate) =>
-          new URL(candidate.page.url).pathname.length < new URL(best.page.url).pathname.length ? candidate : best).page;
         const shownOn = pages.filter(({ page }) => writtenPages.has(page));
+        // Cite the site's home page when it shows the block: the shortest path among the written pages that show it.
+        const cited = (shownOn.length ? shownOn : pages).reduce((best, candidate) =>
+          new URL(candidate.page.url).pathname.length < new URL(best.page.url).pathname.length ? candidate : best).page;
         markdown += `### ${block.heading}\n\n- URL: ${cited.url}\n- Collected At: ${cited.fetchedAt}\n\n${block.text}\n\n`;
         if (shownOn.length === written.length) markdown += `Shown on every ${options.title} page.\n\n`;
         else if (shownOn.length === 0) markdown += `Shown on ${options.title} pages.\n\n`;
