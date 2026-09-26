@@ -9,6 +9,9 @@ interface RetentionSummary {
   dryRun: boolean;
 }
 
+/** Retired dataset versions kept for rollback; with daily publishes, about 3 days. */
+export const RETIRED_VERSIONS_KEPT = 3;
+
 async function tableExists(pool: Pool, table: string): Promise<boolean> {
   const result = await pool.query<{ present: boolean }>(
     `SELECT to_regclass($1) IS NOT NULL AS present`,
@@ -37,32 +40,30 @@ export async function runDataRetention(
       ? Number(failed.rows[0]?.count || 0)
       : Number(failed.rowCount || 0);
 
-    // Always preserve the ten newest retired versions. Older rollback
-    // payloads are removed only after they are also at least 30 days old.
-    const retiredSql = dryRun
-      ? `WITH ranked AS (
-           SELECT id, created_at,
-                  row_number() OVER (ORDER BY created_at DESC) AS rollback_rank
-           FROM rockygpt_v2.dataset_versions
-           WHERE status = 'retired'
-         ), removable AS (
-           SELECT id FROM ranked
-           WHERE rollback_rank > 10 AND created_at < now() - interval '30 days'
-         ) SELECT count(*)::integer AS count FROM removable`
-      : `WITH ranked AS (
-           SELECT id, created_at,
-                  row_number() OVER (ORDER BY created_at DESC) AS rollback_rank
-           FROM rockygpt_v2.dataset_versions
-           WHERE status = 'retired'
-         ), removable AS (
-           SELECT id FROM ranked
-           WHERE rollback_rank > 10 AND created_at < now() - interval '30 days'
-         ) DELETE FROM rockygpt_v2.dataset_versions
-           WHERE id IN (SELECT id FROM removable)`;
-    const retired = await pool.query<{ count?: number }>(retiredSql);
-    retiredDatasetsDeleted = dryRun
-      ? Number(retired.rows[0]?.count || 0)
-      : Number(retired.rowCount || 0);
+    // Keep the newest retired versions for rollback, and nothing older. A
+    // release is several times the size it was before identities and office
+    // pages, and the free database's 0.5 GB cannot hold a month of them.
+    const removable = await pool.query<{ id: string }>(
+      `SELECT id FROM (
+         SELECT id, row_number() OVER (ORDER BY created_at DESC) AS rollback_rank
+         FROM rockygpt_v2.dataset_versions
+         WHERE status = 'retired'
+       ) ranked
+       WHERE rollback_rank > $1`,
+      [RETIRED_VERSIONS_KEPT]
+    );
+    if (dryRun) {
+      retiredDatasetsDeleted = removable.rows.length;
+    } else {
+      // One version per statement keeps each cascade inside the statement timeout.
+      for (const { id } of removable.rows) {
+        const deleted = await pool.query(
+          `DELETE FROM rockygpt_v2.dataset_versions WHERE id = $1::uuid AND status = 'retired'`,
+          [id]
+        );
+        retiredDatasetsDeleted += deleted.rowCount || 0;
+      }
+    }
   }
 
   let sourceSnapshotsDeleted = 0;
