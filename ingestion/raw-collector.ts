@@ -392,6 +392,36 @@ function extractDocuments($: ReturnType<typeof load>, baseUrl: string): RawPageV
   return Array.from(documentsMap.values());
 }
 
+const ISO_DATE_YEAR = /^(\d{4})-\d{2}-\d{2}/;
+
+/** A date shown without its year, such as "Tue, November 10" or "October 8 @ 1:15 pm", with the year after the date. */
+export function withYear(text: string, year: string): string {
+  if (/\b\d{4}\b/.test(text)) return text;
+  const at = text.indexOf(' @ ');
+  return at === -1 ? `${text.trimEnd()}, ${year}` : `${text.slice(0, at)}, ${year}${text.slice(at)}`;
+}
+
+/**
+ * The Events Calendar leaves the year out of a date in the current year: "Date: Tue, November 10".
+ * Its date elements keep the full date in their title (title="2026-11-10"), so the year is put
+ * back into the text, and into the event header's start and end dates.
+ */
+function addEventCalendarYears($: ReturnType<typeof load>): void {
+  $('abbr.tribe-events-abbr[title]').each((_, element) => {
+    const node = $(element);
+    const year = node.attr('title')?.match(ISO_DATE_YEAR)?.[1];
+    if (year) node.text(withYear(cleanText(node.text()), year));
+  });
+  const yearOf = (selector: string) => $(selector).first().attr('title')?.match(ISO_DATE_YEAR)?.[1];
+  const start = yearOf('abbr.tribe-events-start-date, abbr.tribe-events-start-datetime');
+  const end = yearOf('abbr.tribe-events-end-date, abbr.tribe-events-end-datetime') ?? start;
+  for (const [selector, year] of [['.tribe-event-date-start', start], ['.tribe-event-date-end', end]] as const) {
+    if (year) $(`.tribe-events-schedule ${selector}`).each((_, element) => {
+      $(element).text(withYear(cleanText($(element).text()), year));
+    });
+  }
+}
+
 export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawPageV1 {
   if (isLikelyChallengeHtml(options.html)) {
     throw new Error(`${options.url}: received a bot challenge or human-verification page.`);
@@ -400,6 +430,7 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
   const document = load(options.html);
   document('script, style, noscript, template, svg, nav, footer, [role="navigation"]').remove();
   document('header').not('main header, article header, [role="main"] header').remove();
+  addEventCalendarYears(document);
   const initialHeading = document('h1').toArray().map(element => cleanText(document(element).text())).find(Boolean) || '';
   const title = cleanText(document('title').first().text()) || initialHeading || null;
   // Site-wide links outside the declared content region are not page evidence.

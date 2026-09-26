@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber} from './raw-collector';
+import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber, withYear} from './raw-collector';
 import type { RawDatasetV1 } from './raw-types';
 
 const page = (statusCode = 200) => buildRawPageFromHtml({url:'https://example.edu/policy', html:'<main><h1>Policy</h1><p>Source content.</p></main>', sourceType:'seed', allowedHost:'example.edu',statusCode});
@@ -243,3 +243,27 @@ test('a tel link is a contact only when it is a phone number', () => {
   }
   for (const range of ['2641-2673', '2025-2031', '684-7593', '%zz']) assert.equal(isPhoneNumber(range), false, range);
 });
+
+test('an Events Calendar date gets back the year the plugin leaves out', () => {
+  const event = (details: string, schedule: string) => buildRawPageFromHtml({ url: 'https://www.ramapo.edu/holocaust/event/x/', sourceType: 'seed',
+    allowedHost: 'www.ramapo.edu', html: `<body class="single-tribe_events"><main><h1>Event</h1><div class="tribe-events-schedule tribe-clearfix"><p>${schedule}</p></div>
+      <div class="tribe-events-meta-group"><h2 class="tribe-events-single-section-title">Details</h2><ul>${details}</ul>
+      <p><abbr class="tribe-region tribe-events-abbr" title="New Jersey">NJ</abbr></p></div></main></body>` });
+  const oneDay = event(`<li><span>Date:</span> <abbr class="tribe-events-abbr tribe-events-start-date published dtstart" title="2026-11-10"> Tue, November 10 </abbr></li>
+    <li><span>Time:</span> <div class="tribe-events-abbr tribe-events-start-time published dtstart" title="2026-11-10"> 1:50 pm – 3:05 pm </div></li>`,
+    '<span class="tribe-event-date-start">Tue, November 10 @ 1:50 pm</span> – <span class="tribe-event-time">3:05 pm</span>');
+  const text = oneDay.sections.map(section => section.text).join(' ');
+  assert.match(text, /Date: Tue, November 10, 2026 Time: 1:50 pm – 3:05 pm/);
+  assert.match(text, /NJ/);
+  assert.doesNotMatch(text, /NJ, /);
+  const run = event(`<li><span>Start:</span> <abbr class="tribe-events-abbr tribe-events-start-date published dtstart" title="2026-09-16"> Wed, September 16 </abbr></li>
+    <li><span>End:</span> <abbr class="tribe-events-abbr tribe-events-end-date dtend" title="2027-01-04"> Mon, January 4 </abbr></li>`,
+    '<span class="tribe-event-date-start">Wed, September 16</span> – <span class="tribe-event-date-end">Mon, January 4</span>');
+  const runText = run.sections.map(section => section.text).join(' ');
+  assert.match(runText, /Wed, September 16, 2026 – Mon, January 4, 2027/);
+  assert.match(text, /Tue, November 10, 2026 @ 1:50 pm – 3:05 pm/);
+  assert.match(runText, /Start: Wed, September 16, 2026 End: Mon, January 4, 2027/);
+  assert.equal(withYear('October 8 @ 1:15 pm', '2026'), 'October 8, 2026 @ 1:15 pm');
+  assert.equal(withYear('October 8, 2025', '2026'), 'October 8, 2025');
+});
+
