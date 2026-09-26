@@ -42,7 +42,7 @@ test('the reviewed academic list names each folder once and leaves the office si
 });
 
 test('academic sites leave out faculty profiles, dated posts and event venue listings, and keep pages and events', () => {
-  for (const type of ['post', 'faculty', 'tribe_venue', 'tribe_organizer']) assert.ok(SKIPPED_POST_TYPES[type], type);
+  for (const type of ['post', 'faculty', 'tribe_venue', 'tribe_organizer', 'tribe_event_series']) assert.ok(SKIPPED_POST_TYPES[type], type);
   for (const type of ['page', 'tribe_events']) assert.equal(Object.hasOwn(SKIPPED_POST_TYPES, type), false, type);
   assert.equal(isSkippedPostTypePath('https://www.ramapo.edu/ahe/faculty/jane-doe/', SKIPPED_POST_TYPES), true);
   assert.equal(isSkippedPostTypePath('https://www.ramapo.edu/sssw/faculty/', SKIPPED_POST_TYPES), true);
