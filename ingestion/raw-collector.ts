@@ -42,6 +42,12 @@ export interface RawCollectorOptions {
   minimumSeedSuccessRate?: number;
   minimumDetailSuccessRate?: number;
   minimumPreviousPageRatio?: number;
+  /**
+   * The previous capture's pages that still count toward minimumPreviousPageRatio. A source that
+   * narrows what it collects leaves out the pages it no longer collects, so the narrower capture
+   * is not taken for a failed one.
+   */
+  comparablePreviousPage?: (page: RawPageV1) => boolean;
   /** Opt-in source retention for bounded policy/service crawls, never detail feeds by default. */
   retainSourceHtml?: boolean;
   /** Keep retained HTML gzip-compressed, so a capture of thousands of pages stays small enough to read back. */
@@ -504,6 +510,7 @@ export function assertRawCollectionCandidate(
     | 'minimumSeedSuccessRate'
     | 'minimumDetailSuccessRate'
     | 'minimumPreviousPageRatio'
+    | 'comparablePreviousPage'
   >
 ): void {
   if (dataset.pages.length < (options.minimumPages ?? 1)) {
@@ -556,7 +563,8 @@ export function assertRawCollectionCandidate(
       const previous = validateRawDatasetV1(
         JSON.parse(fs.readFileSync(options.outputPath, 'utf8')) as unknown
       );
-      const previousCount = previous.pages.filter(successfulPage).length;
+      const previousCount = previous.pages.filter(successfulPage)
+        .filter(page => !options.comparablePreviousPage || options.comparablePreviousPage(page)).length;
       const floor = Math.ceil(previousCount * options.minimumPreviousPageRatio);
       if (previousCount > 0 && successfulPages.length < floor) {
         throw new Error(
