@@ -40,4 +40,6 @@ export const SOURCES: SourceSeed[] = [
   { key: 'major-page-links', title: 'Related Ramapo College Pages', url: 'https://www.ramapo.edu/majors-minors/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'programs' },
   // Last: it skips the pages the Ramapo site collectors above keep, so it refreshes after them.
   { key: 'office-pages', title: 'Ramapo College Office Sites', url: 'https://www.ramapo.edu/', trustTier: 'official_primary', freshnessHours: 168, domain: 'offices' },
+  // After office-pages: it skips the office pages as well as the collectors above.
+  { key: 'academic-sites', title: 'Ramapo College School, Program and Center Sites', url: 'https://www.ramapo.edu/', trustTier: 'official_primary', freshnessHours: 168, domain: 'academics' },
 ];

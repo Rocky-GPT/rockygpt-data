@@ -56,7 +56,7 @@ export function normalizeRaw(cwd = process.cwd(), options: NormalizationOptions 
   const collectedAt = new Date(Math.min(...hours.map(record => Date.parse(record.collectedAt!)))).toISOString();
   stage('hours-omissions', { version: 1, collectedAt, omitted: publication.omitted });
 
-  for (const name of ['transportation', 'directory', 'housing', 'health', 'counseling', 'safety', 'major-page-links', 'office-pages']) {
+  for (const name of ['transportation', 'directory', 'housing', 'health', 'counseling', 'safety', 'major-page-links', 'office-pages', 'academic-sites']) {
     const original = validateRawDatasetV1(read(`${name}.raw.json`));
     const dataset = validateRawDatasetV1(replayRawSourceCapture(read(`${name}-sources.raw.json`) as RawSourceCaptureV1));
     const pageIdentities = (pages: typeof dataset.pages) => pages.map(page =>
