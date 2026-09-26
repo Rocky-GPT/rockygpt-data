@@ -9,6 +9,7 @@ import {
   restoreActiveReleaseFiles,
 } from './restore-active-release';
 import type { RawArtifactBundleEnvelope } from './raw-artifacts';
+import { RELEASE_ARTIFACT_FILES } from './release-artifact-files';
 import { SOURCE_RAW_DATASETS } from './quality/provenance';
 import { writeJsonFile } from '../ingestion/pipeline-utils';
 
@@ -59,4 +60,36 @@ test('legacy release restoration removes an optional manifest left by another re
   assert.equal(fs.existsSync(omissionsPath), false);
   assert.equal(summary.artifactsRestored, artifacts.length);
   assert.equal(fs.readFileSync(path.join(rootDir, 'data/context/hours/source.md'), 'utf8'), '# Source document');
+});
+
+// Published artifacts that come back without a release artifact target: the
+// search vocabulary is committed, and context markdown is restored from the
+// release's documents.
+const RESTORED_ANOTHER_WAY = new Set([
+  'search-vocabulary',
+  'menu-context',
+  'transportation',
+  'dining-hours-context',
+]);
+
+test('the restore writes every file the publisher saves', () => {
+  for (const [key, relativePath] of Object.entries(RELEASE_ARTIFACT_FILES)) {
+    if (RESTORED_ANOTHER_WAY.has(key)) {
+      assert.ok(
+        relativePath.startsWith('src/') || relativePath.startsWith('data/context/'),
+        `${key} is exempt from restore but ${relativePath} is neither committed nor a context document.`
+      );
+      continue;
+    }
+    assert.ok(
+      RELEASE_ARTIFACT_TARGETS[key]?.includes(relativePath),
+      `Publish saves ${key} from ${relativePath}, but the restore does not write it back.`
+    );
+  }
+});
+
+test('the restore only expects artifacts the publisher saves', () => {
+  for (const key of Object.keys(RELEASE_ARTIFACT_TARGETS)) {
+    assert.ok(key in RELEASE_ARTIFACT_FILES, `The restore expects ${key}, which publish never saves.`);
+  }
 });

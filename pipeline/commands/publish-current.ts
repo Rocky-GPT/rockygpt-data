@@ -37,6 +37,7 @@ import {
 } from '../raw-artifacts';
 import { applyDatabaseSchema } from '../database/migrations';
 import { programRecordKey } from '../../src/data-v2/program-records';
+import { RELEASE_ARTIFACT_FILES } from '../release-artifact-files';
 
 type JsonRecord = Record<string, unknown>;
 
@@ -516,26 +517,6 @@ async function insertDocuments(
   }
   return stats;
 }
-
-const RELEASE_ARTIFACT_FILES: Record<string, string> = {
-  'search-vocabulary': 'src/reference/search-vocabulary.json',
-  calendar: 'public/data/calendar.json',
-  clubs: 'public/data/clubs.json',
-  courses: 'public/data/courses.json',
-  events: 'public/data/events.json',
-  hours: 'public/data/hours.json',
-  'hours-omissions': 'data/normalized/hours-omissions.json',
-  programs: 'public/data/programs.json',
-  'graduation-plans': 'public/data/graduation-plans.json',
-  'major-pages': 'public/data/major-pages.json',
-  menu: 'data/normalized/menu.json',
-  'menu-week': 'data/normalized/menu-week.json',
-  'menu-context': 'data/context/dining/menu.md',
-  'dining-hours': 'data/normalized/dining-hours.json',
-  faculty: 'data/normalized/faculty.json',
-  transportation: 'data/context/campus/transportation.md',
-  'dining-hours-context': 'data/context/dining/hours.md',
-};
 
 function prepareReleaseArtifacts(): PreparedArtifact[] {
   return Object.entries(RELEASE_ARTIFACT_FILES).map(([key, relativePath]) => {
