@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import fs from 'node:fs';
+import path from 'node:path';
 import { renderHoursSourceContext } from './hours-source-context';
 import { GENERAL_CAMPUS_HOURS_URL, LIBRARY_HOURS_URL } from './campus-hours';
 import { chunkDocumentSections } from '../src/data-v2/document-text';
@@ -40,10 +41,11 @@ test('library conditions and source contact links remain separate from conflicti
   assert.match(markdown, /refdesk@ramapo.edu/);
 });
 
-test('current captured hours pages retain all closure definitions and bookstore access instructions', () => {
-  const file = 'data/raw/hours-sources.raw.json';
-  if (!fs.existsSync(file)) return;
-  const markdown = renderHoursSourceContext(JSON.parse(fs.readFileSync(file, 'utf8')).captures);
+// A pinned capture: the refresh restores or recollects data/raw, and Ramapo
+// editing these pages must not fail the daily publish's tests.
+test('captured hours pages retain all closure definitions and bookstore access instructions', () => {
+  const fixture = path.join(__dirname, 'fixtures/hours-sources-2026-09-23.json');
+  const markdown = renderHoursSourceContext(JSON.parse(fs.readFileSync(fixture, 'utf8')).captures);
   for (const phrase of ['Lines of authority', 'Non-essential staff will be remote', 'The College will close early',
     'is currently closed and all functions of Roadrunner Central', 'Follett ACCESS', 'January 30, 2026', '05/12/26',
     'full name, phone number and email address', '201.684.7590', '201-425-0095', 'refdesk@ramapo.edu']) {
