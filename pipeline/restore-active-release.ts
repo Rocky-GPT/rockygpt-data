@@ -81,6 +81,8 @@ export const RELEASE_ARTIFACT_TARGETS: Readonly<Record<string, readonly string[]
   hours: ['public/data/hours.json', 'data/normalized/hours.json'],
   'hours-omissions': ['data/normalized/hours-omissions.json'],
   programs: ['public/data/programs.json', 'data/normalized/programs.json'],
+  'graduation-plans': ['public/data/graduation-plans.json'],
+  'major-pages': ['public/data/major-pages.json'],
   menu: ['data/normalized/menu.json'],
   'menu-week': ['data/normalized/menu-week.json'],
   'dining-hours': ['data/normalized/dining-hours.json'],
