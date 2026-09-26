@@ -265,6 +265,7 @@
   ],
   "skippedSections": [
     {"url": "https://www.ramapo.edu/ahe/convening-group-webs/english-literary-studies-major/", "heading": "Success Stories", "reason": "A roster of named alumni; the rest of the page is about the major."},
+    {"url": "https://www.ramapo.edu/ahe/creative-writing-conc/", "heading": "Student Feedback", "reason": "Quotes from named alumni; the rest of the page is about the concentration."},
     {"url": "https://www.ramapo.edu/ahe/philosophy/", "heading": "Success Stories", "reason": "A roster of named alumni; the rest of the page is about the major."},
     {"url": "https://www.ramapo.edu/sssw/psychology/symposium/", "heading": "2021 PSYCHOLOGY STUDENT POSTER GALLERY", "andLater": true, "reason": "The 2021 poster gallery is a set of named students' bios and plans; the 2027 symposium details above it stay."},
     {"url": "https://www.ramapo.edu/te/grad-programs/", "heading": "Educational Studies Graduate Student Success Stories", "reason": "A roster of named alumni; the rest of the page is about the graduate programs."}

@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { pageKey, readSites, readSkippedPages, siteFolder } from './folder-sites';
+import fs from 'node:fs';
+
+import { pageKey, readSites, readSkippedPages, readSkippedSections, siteFolder } from './folder-sites';
 import { OFFICE_PAGES } from './office-pages';
 
 test('the reviewed office list names each folder once and leaves other sources their folders', () => {
@@ -22,4 +24,18 @@ test('the reviewed office list names each folder once and leaves other sources t
     assert.ok(siteFolder(`https://${key}/`, new Set(names)), key);
     assert.ok(reason.trim(), key);
   }
+  for (const page of ['https://www.ramapo.edu/adult-students/curriculum-test/', 'https://www.ramapo.edu/honors/success-stories/']) {
+    assert.ok(skipped.has(pageKey(page)!), page);
+  }
+  // Test copies are named one by one: the Testing Center's real pages have "test" in their names too.
+  assert.ok(![...skipped.keys()].some(key => key.startsWith('www.ramapo.edu/testing/')));
+  const { skippedSections } = JSON.parse(fs.readFileSync(OFFICE_PAGES.sitesPath, 'utf8')) as {
+    skippedSections: Array<{ url: string; heading: string; reason: string }>;
+  };
+  for (const cut of skippedSections) {
+    assert.ok(siteFolder(cut.url, new Set(names)), cut.url);
+    assert.ok(cut.heading.trim() && cut.reason.trim(), cut.url);
+  }
+  assert.deepEqual(readSkippedSections(OFFICE_PAGES.sitesPath).get('www.ramapo.edu/study-abroad/academic-search/literature'),
+    [{ heading: 'Student Testimonials & Videos' }]);
 });
