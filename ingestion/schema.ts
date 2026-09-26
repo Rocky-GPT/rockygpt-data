@@ -771,7 +771,13 @@ export function validateFacultyProfiles(input: unknown): FacultyProfile[] {
     const name = asOptionalString(profile.name);
     const title = cleanFacultyTitle(profile.title);
     const school = asOptionalString(profile.school);
-    if (!name || !title || !school) {
+    if (!name || !school) {
+      return;
+    }
+    // Adjunct profiles publish no title. The title stays empty instead of the
+    // person disappearing, as long as the page gives a way to reach them.
+    if (!title && !asOptionalString(profile.email) && !asOptionalString(profile.phone)
+      && !asOptionalString(profile.office)) {
       return;
     }
 

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { renderFacultyMarkdown } from './generate-faculty-md';
-import type { FacultyProfile } from './schema';
+import { type FacultyProfile, validateFacultyProfiles } from './schema';
 import { chunkDocumentSections } from '../src/data-v2/document-text';
 
 test('retrieval documents preserve complete profile sections beyond former summary caps', () => {
@@ -27,4 +27,22 @@ test('retrieval documents preserve complete profile sections beyond former summa
   assert.ok(chunks.length > 1);
   assert.ok(chunks.every(chunk => chunk.collectedAt === captured));
   assert.ok(chunks.some(chunk => chunk.content.includes('Final biographical fact.')));
+});
+
+test('an adjunct profile with no published title is kept, and its write-up has no empty title line', () => {
+  const adjunct: FacultyProfile = {
+    name: 'Adjunct Example', title: '', school: 'Anisfield School of Business',
+    email: 'adjunct@ramapo.edu', phone: '', office: 'ASB-331', imageUrl: '',
+    profileUrl: 'https://www.ramapo.edu/asb/faculty/adjunct-example/', bio: '',
+    education: [], courses: ['ACCT 329 Federal Taxation I'],
+    teachingInterests: [], researchInterests: [], publishedResearch: [],
+  };
+  const nameOnly = { ...adjunct, name: 'Name Only', email: '', office: '',
+    profileUrl: 'https://www.ramapo.edu/asb/faculty/name-only/' };
+  const kept = validateFacultyProfiles([adjunct, nameOnly]);
+  assert.deepEqual(kept.map(profile => [profile.name, profile.title]), [['Adjunct Example', '']]);
+  const markdown = renderFacultyMarkdown(kept);
+  assert.match(markdown, /## Adjunct Example/);
+  assert.match(markdown, /adjunct@ramapo\.edu/);
+  assert.doesNotMatch(markdown, /\*\*Title:\*\*/);
 });

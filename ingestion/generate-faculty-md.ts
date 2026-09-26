@@ -6,7 +6,7 @@ import { type FacultyProfile, validateFacultyProfiles } from './schema';
 
 interface ContextFacultyProfile {
   name: string;
-  title: string;
+  title?: string;
   school: string;
   office?: string;
   email?: string;
@@ -50,7 +50,8 @@ function toContextProfiles(profiles: FacultyProfile[]): ContextFacultyProfile[] 
         const name = normalizeText(profile.name);
         const title = normalizeText(profile.title);
         const school = normalizeText(profile.school);
-        if (!name || !title || !school) return null;
+        // Adjunct profiles publish no title; validation already kept them.
+        if (!name || !school) return null;
 
         const courses = normalizeList(profile.courses);
         const education = normalizeList(profile.education);
@@ -128,7 +129,7 @@ export function renderFacultyMarkdown(profiles: FacultyProfile[], collectedAt: R
       if (collectedAt[profile.profileUrl]) markdown += `- Collected At: ${collectedAt[profile.profileUrl]}\n`;
       markdown += '\n';
     }
-    markdown += `- **Title:** ${profile.title}\n`;
+    if (profile.title) markdown += `- **Title:** ${profile.title}\n`;
     markdown += `- **School:** ${profile.school}\n`;
     if (profile.office) markdown += `- **Office:** ${profile.office}\n`;
     if (profile.email) markdown += `- **Email:** ${profile.email}\n`;
