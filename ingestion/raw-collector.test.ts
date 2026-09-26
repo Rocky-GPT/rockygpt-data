@@ -83,6 +83,20 @@ test('collection regression measures successful pages, not old failed document r
   } finally {fs.rmSync(dir,{recursive:true,force:true});}
 });
 
+test('a source that narrows what it collects compares only the previous pages it still collects', () => {
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'rocky-raw-narrowed-'));
+  try {
+    const outputPath=path.join(dir,'test.raw.json');
+    const previous=dataset(30,0);
+    previous.pages.forEach((entry,index)=>{entry.url=`https://example.edu/${index<22?'stories':'dept'}/${index}/`;});
+    fs.writeFileSync(outputPath,JSON.stringify(previous));
+    const inScope=(entry:{url:string})=>!entry.url.includes('/stories/');
+    assert.throws(()=>assertRawCollectionCandidate(dataset(8,0),{outputPath,minimumPreviousPageRatio:0.8}),/dropped from 30 to 8/);
+    assert.doesNotThrow(()=>assertRawCollectionCandidate(dataset(8,0),{outputPath,minimumPreviousPageRatio:0.8,comparablePreviousPage:inScope}));
+    assert.throws(()=>assertRawCollectionCandidate(dataset(5,0),{outputPath,minimumPreviousPageRatio:0.8,comparablePreviousPage:inScope}),/dropped from 8 to 5/);
+  } finally {fs.rmSync(dir,{recursive:true,force:true});}
+});
+
 test('HTML crawl retains document links without fetching them or fetching another seed twice', async () => {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'rocky-raw-crawl-'));
   const original=globalThis.fetch;

@@ -16,6 +16,8 @@ export interface Core6MarkdownOptions {
   maxContactsPerPage?: number;
   maxDocumentsPerPage?: number;
   derivedSections?: (page: RawPageV1) => readonly ContextSection[];
+  /** The part of the normalized dataset to write, when a source publishes less than it captured. */
+  selectPages?: (dataset: RawDatasetV1) => RawDatasetV1;
   /**
    * Write a section or document list repeated on at least half of the pages once, not on
    * every page. A page left with nothing of its own, such as an image's attachment page
@@ -319,8 +321,10 @@ export function generateCore6Markdown(options: Core6MarkdownOptions): void {
     process.exit(1);
   }
 
+  const loaded = dataset.pages.length;
+  if (options.selectPages) dataset = options.selectPages(dataset);
   const { markdown, pages } = core6Markdown(dataset, options);
-  console.log(`Loaded ${dataset.pages.length} pages for ${options.datasetName}.`);
+  console.log(`Loaded ${loaded} pages for ${options.datasetName}; ${dataset.pages.length} are published.`);
   console.log(`Selected ${pages} pages for context markdown.`);
 
   ensureOutputDir(options.outputFilePath);
