@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { buildFrontmatter } from './frontmatter';
+import { DAILY_SOURCE_FRESHNESS_HOURS } from '../src/data-v2/source-seeds';
 import { getGeneratedTimestamp, sortByName } from './pipeline-utils';
 import { type MenuSection, validateMenuData } from './schema';
 import { MENU_NUTRIENT_FIELDS, type MenuNutrients } from '../src/data-v2/menu-nutrition';
@@ -108,7 +109,7 @@ export function renderMenuMarkdown(menuData: MenuSection[], generatedAt: string)
     source_url: "https://ramapo.sodexomyway.com/en-us/locations/birch-tree-inn",
     title: "Dining Menus",
     trust_tier: "official_primary",
-    freshness_sla_hours: 24
+    freshness_sla_hours: DAILY_SOURCE_FRESHNESS_HOURS
   });
 
   let markdown = frontmatter + '# Birch Tree Inn Menu\n\n';
