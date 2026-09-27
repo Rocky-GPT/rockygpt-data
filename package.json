@@ -74,6 +74,7 @@
     "generate:context": "npm run generate:menu:md && npm run generate:dining-hours:md && npm run generate:events:md && npm run generate:hours:md && npm run generate:clubs:md && npm run generate:calendar:md && npm run generate:faculty:md && npm run generate:programs:md && npm run generate:major-pages:md && npm run generate:major-page-links:md && npm run generate:office-pages:md && npm run generate:academic-sites:md && npm run generate:context:core6",
     "redact:data": "tsx ingestion/redact-personal-data.ts",
     "quality:raw": "tsx scripts/database/quality-gates.ts --raw",
+    "check:pages": "tsx ingestion/page-check.ts",
     "refresh": "npm run fetch:menu && npm run fetch:dining-hours && npm run fetch:events:live && npm run fetch:hours && npm run fetch:clubs && npm run data:quality",
     "refresh:all": "npm run fetch:menu && npm run fetch:dining-hours && npm run fetch:events:live && npm run fetch:hours && npm run fetch:clubs && npm run fetch:calendar && npm run fetch:faculty && npm run refresh:context && npm run data:quality",
     "refresh:daily": "npm run fetch:menu && npm run fetch:events:live && npm run data:quality",

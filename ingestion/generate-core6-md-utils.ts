@@ -363,8 +363,18 @@ function collectSharedSections(pages: readonly RenderedPage[]): SharedSections {
   return new Map([...occurrences].filter(([, entry]) => entry.pages.length >= threshold));
 }
 
-/** The context document for a crawled dataset: its usable pages, each cited to its URL and capture time. */
-export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownContent): { markdown: string; pages: number } {
+type PageLayoutOptions = Omit<Core6MarkdownContent, 'title' | 'description'>;
+
+/** A page as its context document writes it: the sections, contacts and documents left once repeated blocks are hoisted. */
+export interface WrittenPage {
+  page: RawPageV1;
+  title: string;
+  sections: ContextSection[];
+  contacts: RawPageV1['contacts'];
+  documents: ContextSection | null;
+}
+
+function layoutPages(dataset: RawDatasetV1, options: PageLayoutOptions) {
   const maxPages = options.maxPages ?? DEFAULT_MAX_PAGES;
   const maxSectionsPerPage = options.maxSectionsPerPage ?? DEFAULT_MAX_SECTIONS_PER_PAGE;
   const maxContactsPerPage = options.maxContactsPerPage ?? DEFAULT_MAX_CONTACTS_PER_PAGE;
@@ -395,6 +405,17 @@ export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownConte
     }))
     .filter((page) => !options.hoistRepeatedSections
       || page.sections.length > 0 || page.contacts.length > 0 || page.documents !== null);
+  return { selectedPages, sharedContacts, shared, written };
+}
+
+/** The pages a dataset's context document writes, in its order. */
+export function core6Pages(dataset: RawDatasetV1, options: PageLayoutOptions): WrittenPage[] {
+  return layoutPages(dataset, options).written;
+}
+
+/** The context document for a crawled dataset: its usable pages, each cited to its URL and capture time. */
+export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownContent): { markdown: string; pages: number } {
+  const { selectedPages, sharedContacts, shared, written } = layoutPages(dataset, options);
 
   let markdown = `# ${options.title}\n\n`;
   markdown += `*Generated (UTC): ${getGeneratedTimestamp()}*\n\n`;
