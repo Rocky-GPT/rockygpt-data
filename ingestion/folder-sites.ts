@@ -20,7 +20,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { core6Markdown } from './generate-core6-md-utils';
+import { core6Markdown, core6Pages, type WrittenPage } from './generate-core6-md-utils';
 import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
 import { collectRawDataset, createRequestPacer, type RawSourceCaptureV1, sourceHtml } from './raw-collector';
 import { type RawDatasetV1, validateRawDatasetV1 } from './raw-types';
@@ -437,6 +437,21 @@ export function siteDatasets(
   });
 }
 
+// Each site's document writes a sidebar block or document list repeated on half its pages once.
+const SITE_PAGE_LAYOUT = { hoistRepeatedSections: true } as const;
+
+/** Each site's pages as its context document writes them (siteDocuments), in the list's order. */
+export function sitePages(
+  dataset: RawDatasetV1,
+  sites: readonly FolderSite[],
+  skippedPostTypes: Readonly<Record<string, string>>,
+  excluded: ReadonlySet<string> = new Set(),
+  skippedSections: ReadonlyMap<string, readonly SkippedSection[]> = new Map()
+): Array<{ site: FolderSite; pages: WrittenPage[] }> {
+  return siteDatasets(dataset, sites, skippedPostTypes, excluded, skippedSections)
+    .map(({ site, dataset: siteDataset }) => ({ site, pages: core6Pages(siteDataset, SITE_PAGE_LAYOUT) }));
+}
+
 /**
  * One context document per site, titled with the site's name, so every passage's heading path
  * names the site it came from. A sidebar block or document list repeated on half the site's
@@ -456,7 +471,7 @@ export function siteDocuments(
       title: site.name,
       description: `Pages of Ramapo College's ${site.name} site (https://www.ramapo.edu/${site.folder}/), `
         + 'each under its own title with the page it came from.',
-      hoistRepeatedSections: true,
+      ...SITE_PAGE_LAYOUT,
     });
     if (document.pages) documents.set(`${site.folder}.md`, document);
   }
@@ -464,21 +479,28 @@ export function siteDocuments(
 }
 
 /**
- * Writes a source's documents from data/normalized/<dataset>.json, which normalize:raw replays
- * from the captured HTML, into outputDir, replacing what was there. Image, file and
+ * What a source's documents are written from: data/normalized/<dataset>.json, which normalize:raw
+ * replays from the captured HTML, its sites, and the pages and sections left out. Image, file and
  * password-protected pages are left out, found by their captured HTML in
  * data/raw/<dataset>-sources.raw.json.
  */
-export function writeSiteDocuments(source: FolderSiteSource, outputDir: string): void {
+export function readPublishedPages(source: FolderSiteSource) {
   const input = path.join(process.cwd(), 'data', 'normalized', `${source.dataset}.json`);
   const dataset = validateRawDatasetV1(JSON.parse(fs.readFileSync(input, 'utf8')));
   if (dataset.dataset !== source.dataset) throw new Error(`${input} holds ${dataset.dataset}, not ${source.dataset}.`);
   const sites = readSites(source.sitesPath);
   const capture = JSON.parse(fs.readFileSync(path.join(RAW_DIR, `${source.dataset}-sources.raw.json`), 'utf8')) as RawSourceCaptureV1;
   const shells = wordpressShellPages(capture);
-  const documents = siteDocuments(dataset, sites, source.skippedPostTypes, new Set([
+  const excluded = new Set([
     ...readSkippedPages(source.sitesPath).keys(), ...pagesCollectedElsewhere(source.collectedElsewhere), ...shells,
-  ]), readSkippedSections(source.sitesPath));
+  ]);
+  return { dataset, sites, shells, excluded, skippedSections: readSkippedSections(source.sitesPath) };
+}
+
+/** Writes a source's documents (readPublishedPages) into outputDir, replacing what was there. */
+export function writeSiteDocuments(source: FolderSiteSource, outputDir: string): void {
+  const { dataset, sites, shells, excluded, skippedSections } = readPublishedPages(source);
+  const documents = siteDocuments(dataset, sites, source.skippedPostTypes, excluded, skippedSections);
   // Rewrite the folder, so a site that no longer has pages leaves no document behind.
   fs.rmSync(outputDir, { recursive: true, force: true });
   fs.mkdirSync(outputDir, { recursive: true });
