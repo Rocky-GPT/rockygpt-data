@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { buildFrontmatter } from './frontmatter';
+import { DAILY_SOURCE_FRESHNESS_HOURS } from '../src/data-v2/source-seeds';
 import { getGeneratedTimestamp, sortByName } from './pipeline-utils';
 import { type ArchwayEvent, validateArchwayEvents } from './schema';
 import { sanitizeEventDescription } from './event-description';
@@ -95,7 +96,7 @@ function generateMarkdown() {
     source_url: "https://archway.ramapo.edu/events",
     title: "Events Page",
     trust_tier: "official_primary",
-    freshness_sla_hours: 24
+    freshness_sla_hours: DAILY_SOURCE_FRESHNESS_HOURS
   });
 
   let markdown = frontmatter + '# Archway Campus Events\n\n';
