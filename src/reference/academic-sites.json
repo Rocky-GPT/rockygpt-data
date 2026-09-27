@@ -29,7 +29,10 @@
     "that read as current, faculty lists the faculty source keeps, and out-of-date",
     "copies. skippedSections cut one section of a page (and with andLater every",
     "section after it); a cut whose heading is no longer on the page leaves the",
-    "whole page out."
+    "whole page out.",
+    "",
+    "keptPages are pages the page check (npm run check:pages) flagged that a person",
+    "reviewed and kept, each with the reason; the check does not ask about them again."
   ],
   "skippedPages": [
     {"url": "https://www.ramapo.edu/ahe/alumni/", "reason": "A list or biographies of individual named alumni or students (success stories, alumni updates), not information about the program."},
@@ -291,6 +294,7 @@
     {"url": "https://www.ramapo.edu/sssw/psychology/symposium/", "heading": "2021 PSYCHOLOGY STUDENT POSTER GALLERY", "andLater": true, "reason": "The 2021 poster gallery is a set of named students' bios and plans; the 2027 symposium details above it stay."},
     {"url": "https://www.ramapo.edu/te/grad-programs/", "heading": "Educational Studies Graduate Student Success Stories", "reason": "A roster of named alumni; the rest of the page is about the graduate programs."}
   ],
+  "keptPages": [],
   "sites": [
     {"folder": "ahe", "name": "School of Arts, Humanities, and Education (AHE)"},
     {"folder": "asb", "name": "Anisfield School of Business (ASB)"},

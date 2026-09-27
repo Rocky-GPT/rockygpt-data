@@ -23,7 +23,10 @@
     "WordPress test copies of other pages, and rosters or lists of named students",
     "and alumni. skippedSections cut one section of a page, such as a block of",
     "named students' testimonials; a cut whose heading is no longer on the page",
-    "leaves the whole page out."
+    "leaves the whole page out.",
+    "",
+    "keptPages are pages the page check (npm run check:pages) flagged that a person",
+    "reviewed and kept, each with the reason; the check does not ask about them again."
   ],
   "skippedPages": [
     {"url": "https://www.ramapo.edu/admissions/test-admit-2/", "reason": "A WordPress test copy of another page, not the office's information."},
@@ -71,6 +74,7 @@
     {"url": "https://www.ramapo.edu/study-abroad/academic-search/psychology/", "heading": "Student Testimonials", "reason": "Named students' own study abroad stories, which the office source does not publish."},
     {"url": "https://www.ramapo.edu/undergraduate/ramapo-ambassadors/", "heading": "MEET OUR AMBASSADORS!", "andLater": true, "reason": "A roster of student ambassadors by name, year, major and hometown; the program description above it stays."}
   ],
+  "keptPages": [],
   "sites": [
     {"folder": "about", "name": "About / Information"},
     {"folder": "academics", "name": "Academics"},
