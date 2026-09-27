@@ -5,6 +5,8 @@ export function sourceKeyForPath(filePath: string): string {
   const relative = filePath.split(path.sep).join('/').toLowerCase();
   // First: office documents are named for their folders (clubs, health, eof-program...).
   if (relative.includes('/campus/offices/')) return 'office-pages';
+  // School, program and center documents are named for their folders too (nursing, holocaust...).
+  if (relative.includes('/academic/sites/')) return 'academic-sites';
   if (relative.includes('/dining/')) return 'dining';
   if (relative.includes('calendar')) return 'academic-calendar';
   if (relative.includes('major-pages')) return 'major-pages';

@@ -16,6 +16,8 @@ export interface Core6MarkdownOptions {
   maxContactsPerPage?: number;
   maxDocumentsPerPage?: number;
   derivedSections?: (page: RawPageV1) => readonly ContextSection[];
+  /** The part of the normalized dataset to write, when a source publishes less than it captured. */
+  selectPages?: (dataset: RawDatasetV1) => RawDatasetV1;
   /**
    * Write a section or document list repeated on at least half of the pages once, not on
    * every page. A page left with nothing of its own, such as an image's attachment page
@@ -319,8 +321,10 @@ export function generateCore6Markdown(options: Core6MarkdownOptions): void {
     process.exit(1);
   }
 
+  const loaded = dataset.pages.length;
+  if (options.selectPages) dataset = options.selectPages(dataset);
   const { markdown, pages } = core6Markdown(dataset, options);
-  console.log(`Loaded ${dataset.pages.length} pages for ${options.datasetName}.`);
+  console.log(`Loaded ${loaded} pages for ${options.datasetName}; ${dataset.pages.length} are published.`);
   console.log(`Selected ${pages} pages for context markdown.`);
 
   ensureOutputDir(options.outputFilePath);
@@ -359,8 +363,18 @@ function collectSharedSections(pages: readonly RenderedPage[]): SharedSections {
   return new Map([...occurrences].filter(([, entry]) => entry.pages.length >= threshold));
 }
 
-/** The context document for a crawled dataset: its usable pages, each cited to its URL and capture time. */
-export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownContent): { markdown: string; pages: number } {
+type PageLayoutOptions = Omit<Core6MarkdownContent, 'title' | 'description'>;
+
+/** A page as its context document writes it: the sections, contacts and documents left once repeated blocks are hoisted. */
+export interface WrittenPage {
+  page: RawPageV1;
+  title: string;
+  sections: ContextSection[];
+  contacts: RawPageV1['contacts'];
+  documents: ContextSection | null;
+}
+
+function layoutPages(dataset: RawDatasetV1, options: PageLayoutOptions) {
   const maxPages = options.maxPages ?? DEFAULT_MAX_PAGES;
   const maxSectionsPerPage = options.maxSectionsPerPage ?? DEFAULT_MAX_SECTIONS_PER_PAGE;
   const maxContactsPerPage = options.maxContactsPerPage ?? DEFAULT_MAX_CONTACTS_PER_PAGE;
@@ -391,6 +405,17 @@ export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownConte
     }))
     .filter((page) => !options.hoistRepeatedSections
       || page.sections.length > 0 || page.contacts.length > 0 || page.documents !== null);
+  return { selectedPages, sharedContacts, shared, written };
+}
+
+/** The pages a dataset's context document writes, in its order. */
+export function core6Pages(dataset: RawDatasetV1, options: PageLayoutOptions): WrittenPage[] {
+  return layoutPages(dataset, options).written;
+}
+
+/** The context document for a crawled dataset: its usable pages, each cited to its URL and capture time. */
+export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownContent): { markdown: string; pages: number } {
+  const { selectedPages, sharedContacts, shared, written } = layoutPages(dataset, options);
 
   let markdown = `# ${options.title}\n\n`;
   markdown += `*Generated (UTC): ${getGeneratedTimestamp()}*\n\n`;
@@ -418,10 +443,10 @@ export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownConte
       const writtenPages = new Set(written.map(({ page }) => page));
       markdown += '## Site-wide sections\n\n';
       shared.forEach(({ block, pages }) => {
-        // Cite the site's home page when it shows the block: the shortest path among them.
-        const cited = pages.reduce((best, candidate) =>
-          new URL(candidate.page.url).pathname.length < new URL(best.page.url).pathname.length ? candidate : best).page;
         const shownOn = pages.filter(({ page }) => writtenPages.has(page));
+        // Cite the site's home page when it shows the block: the shortest path among the written pages that show it.
+        const cited = (shownOn.length ? shownOn : pages).reduce((best, candidate) =>
+          new URL(candidate.page.url).pathname.length < new URL(best.page.url).pathname.length ? candidate : best).page;
         markdown += `### ${block.heading}\n\n- URL: ${cited.url}\n- Collected At: ${cited.fetchedAt}\n\n${block.text}\n\n`;
         if (shownOn.length === written.length) markdown += `Shown on every ${options.title} page.\n\n`;
         else if (shownOn.length === 0) markdown += `Shown on ${options.title} pages.\n\n`;

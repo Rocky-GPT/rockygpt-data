@@ -94,6 +94,27 @@ Missing linked records are handled as unavailable information at retrieval, not
 silently rematched by name. Older releases without this artifact continue serving
 existing tools; profile lookup reports unavailable until a new release includes it.
 
+## Page check
+
+`npm run check:pages` asks Jev, TypeSafe's classifier, what kind of page each
+published office and school site page is. Pages it calls a test copy, a past event,
+out of date, a placeholder, about named students, a faculty list, "page not found"
+or a login page are listed in `data/review/page-check.md` for a person to review.
+Nothing is left out automatically: a page stays published until its line is added to
+`skippedPages` in `src/reference/office-sites.json` or `academic-sites.json`. A flag
+the person rejects goes in that list's `keptPages`, and the check skips those pages.
+
+```sh
+npm run check:pages -- --site berriecenter --dry-run   # count and cost, sends nothing
+npm run check:pages -- --site berriecenter             # needs TYPESAFE_API_KEY in .env
+```
+
+Only new pages, changed pages and verdicts 30 days old are sent, about $0.0001 a page.
+Past verdicts stay in `data/review/page-check-verdicts.json`. Without `TYPESAFE_API_KEY`
+nothing is sent, and a run stops before spending more than `--max-usd` (default $1).
+The daily refresh runs it after publishing and keeps the list in a "[Page check] Pages
+to review" issue once the `TYPESAFE_API_KEY` repository secret is set.
+
 ## Service boundary
 
 **This repository no longer runs a deployed service.** Ingestion and
