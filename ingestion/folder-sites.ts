@@ -15,11 +15,16 @@
  * the site's own information are listed but skipped, each with the reason. A list's
  * reviewed skippedPages are not collected either.
  *
+ * An Events Calendar event page stays up after its event and reads as coming up, so it leaves
+ * publication the day after its event ends on campus (pastEventPages), with no list line to add.
+ *
  * Requests go one at a time, one a second.
  */
 
 import fs from 'fs';
 import path from 'path';
+import { load } from 'cheerio';
+import { CAMPUS_TIME_ZONE } from '../src/data-v2/event-time';
 import { core6Markdown, core6Pages, type WrittenPage } from './generate-core6-md-utils';
 import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
 import { collectRawDataset, createRequestPacer, type RawSourceCaptureV1, sourceHtml } from './raw-collector';
@@ -73,6 +78,10 @@ const POST_TYPE_PATHS: Readonly<Record<string, string>> = {
   tribe_venue: 'venue', tribe_organizer: 'organizer', tribe_event_series: 'series',
 };
 const BODY_CLASS = /<body\b[^>]*\bclass\s*=\s*(["'])([^"']*)\1/i;
+// The Events Calendar keeps an event's full date in its date elements' title: title="2026-12-04".
+const EVENT_END_DATE = 'abbr.tribe-events-end-date[title], abbr.tribe-events-end-datetime[title]';
+const EVENT_START_DATE = 'abbr.tribe-events-start-date[title], abbr.tribe-events-start-datetime[title]';
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}/;
 
 /**
  * The Ramapo site collectors every folder-site source leaves alone, and the fields that name
@@ -167,6 +176,37 @@ export function wordpressShellPages(capture: Pick<RawSourceCaptureV1, 'pages'>):
     const html = key ? sourceHtml(page) : '';
     const classes = html.match(BODY_CLASS)?.[2].split(/\s+/) ?? [];
     if (key && (classes.includes('attachment') || /\bpost-password-form\b/.test(html))) keys.add(key);
+  }
+  return keys;
+}
+
+/** A time's date on campus, as YYYY-MM-DD: a UTC date is already tomorrow after 8 p.m. (7 p.m. in winter). */
+export function campusDate(now: Date): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: CAMPUS_TIME_ZONE, year: 'numeric', month: '2-digit', day: '2-digit' })
+    .format(now);
+}
+
+/** An Events Calendar event's last day, as YYYY-MM-DD: its end date, or its start date when it has none. */
+export function eventLastDay(html: string): string | null {
+  const $ = load(html);
+  const title = $(EVENT_END_DATE).first().attr('title') ?? $(EVENT_START_DATE).first().attr('title');
+  return title?.match(ISO_DATE)?.[0] ?? null;
+}
+
+/**
+ * The captured Events Calendar event pages (body class "single-tribe_events") whose event ended
+ * before today, a campus date, as page keys. An event still on today stays, and so does an event
+ * page without a date.
+ */
+export function pastEventPages(capture: Pick<RawSourceCaptureV1, 'pages'>, today: string): Set<string> {
+  const keys = new Set<string>();
+  for (const page of capture.pages) {
+    const key = pageKey(page.url);
+    const html = key ? sourceHtml(page) : '';
+    const classes = html.match(BODY_CLASS)?.[2].split(/\s+/) ?? [];
+    if (!key || !classes.includes('single-tribe_events')) continue;
+    const lastDay = eventLastDay(html);
+    if (lastDay && lastDay < today) keys.add(key);
   }
   return keys;
 }
@@ -481,25 +521,26 @@ export function siteDocuments(
 /**
  * What a source's documents are written from: data/normalized/<dataset>.json, which normalize:raw
  * replays from the captured HTML, its sites, and the pages and sections left out. Image, file and
- * password-protected pages are left out, found by their captured HTML in
- * data/raw/<dataset>-sources.raw.json.
+ * password-protected pages are left out, and so are pages of events that ended before now's
+ * campus date, found by their captured HTML in data/raw/<dataset>-sources.raw.json.
  */
-export function readPublishedPages(source: FolderSiteSource) {
+export function readPublishedPages(source: FolderSiteSource, now = new Date()) {
   const input = path.join(process.cwd(), 'data', 'normalized', `${source.dataset}.json`);
   const dataset = validateRawDatasetV1(JSON.parse(fs.readFileSync(input, 'utf8')));
   if (dataset.dataset !== source.dataset) throw new Error(`${input} holds ${dataset.dataset}, not ${source.dataset}.`);
   const sites = readSites(source.sitesPath);
   const capture = JSON.parse(fs.readFileSync(path.join(RAW_DIR, `${source.dataset}-sources.raw.json`), 'utf8')) as RawSourceCaptureV1;
   const shells = wordpressShellPages(capture);
+  const pastEvents = pastEventPages(capture, campusDate(now));
   const excluded = new Set([
-    ...readSkippedPages(source.sitesPath).keys(), ...pagesCollectedElsewhere(source.collectedElsewhere), ...shells,
+    ...readSkippedPages(source.sitesPath).keys(), ...pagesCollectedElsewhere(source.collectedElsewhere), ...shells, ...pastEvents,
   ]);
-  return { dataset, sites, shells, excluded, skippedSections: readSkippedSections(source.sitesPath) };
+  return { dataset, sites, shells, pastEvents, excluded, skippedSections: readSkippedSections(source.sitesPath) };
 }
 
 /** Writes a source's documents (readPublishedPages) into outputDir, replacing what was there. */
 export function writeSiteDocuments(source: FolderSiteSource, outputDir: string): void {
-  const { dataset, sites, shells, excluded, skippedSections } = readPublishedPages(source);
+  const { dataset, sites, shells, pastEvents, excluded, skippedSections } = readPublishedPages(source);
   const documents = siteDocuments(dataset, sites, source.skippedPostTypes, excluded, skippedSections);
   // Rewrite the folder, so a site that no longer has pages leaves no document behind.
   fs.rmSync(outputDir, { recursive: true, force: true });
@@ -513,5 +554,5 @@ export function writeSiteDocuments(source: FolderSiteSource, outputDir: string):
   const unplaced = dataset.pages.filter(page => succeeded(page) && !siteFolder(page.url, folders));
   unplaced.forEach(page => console.warn(`Not in a listed folder after redirects, so not written: ${page.url}`));
   console.log(`Wrote ${pages} pages of ${documents.size} sites to ${path.relative(process.cwd(), outputDir)}; `
-    + `left out ${shells.size} image, file and password-protected pages.`);
+    + `left out ${shells.size} image, file and password-protected pages and ${pastEvents.size} pages of events that have ended.`);
 }

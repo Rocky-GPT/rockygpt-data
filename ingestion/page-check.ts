@@ -25,7 +25,7 @@ import path from 'node:path';
 import pLimit from 'p-limit';
 import { ACADEMIC_SITES } from './academic-sites';
 import {
-  type FolderSite, type FolderSiteSource, pageKey, readPublishedPages, readSites, siteFolder, sitePages,
+  campusDate, type FolderSite, type FolderSiteSource, pageKey, readPublishedPages, readSites, siteFolder, sitePages,
 } from './folder-sites';
 import type { WrittenPage } from './generate-core6-md-utils';
 import { type AskJev, type ChoiceQuestion, JEV_MODEL, JEV_NANODOLLARS_PER_INPUT_TOKEN, jevClient } from './jev';
@@ -204,7 +204,7 @@ export async function checkPages(input: {
   limit?: number;
 }): Promise<CheckResult> {
   const now = input.now ?? new Date();
-  const today = now.toISOString().slice(0, 10);
+  const today = campusDate(now);
   const verdicts = { ...input.verdicts };
   const pages: Array<{ key: string; list: string; site: FolderSite; page: WrittenPage; state: unknown; hash: string }> = [];
   let kept = 0;
