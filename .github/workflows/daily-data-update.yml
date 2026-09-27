@@ -74,6 +74,16 @@ jobs:
           RAW_ARTIFACT_REQUIRED: '1'
         run: npm run data:publish
 
+      # A release now holds about 21,700 document chunks, so a week of daily
+      # publishes between Sunday cleanups can outgrow the free database's
+      # 0.5 GB, and a full database also stops the Brain's budget ledger.
+      # Prune right after each publish so the database keeps the active
+      # release and the three newest retired ones; the log shows its size.
+      - name: Remove retired datasets beyond the rollback window
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run maintenance:data-retention
+
       # After publishing, Jev labels the office and school pages that are new, changed or a
       # month past their last check, and flagged pages wait in an issue for a person. A
       # flagged page stays published until its skippedPages line is added. Without the
