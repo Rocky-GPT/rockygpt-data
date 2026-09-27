@@ -74,6 +74,80 @@ jobs:
           RAW_ARTIFACT_REQUIRED: '1'
         run: npm run data:publish
 
+      # After publishing, Jev labels the office and school pages that are new, changed or a
+      # month past their last check, and flagged pages wait in an issue for a person. A
+      # flagged page stays published until its skippedPages line is added. Without the
+      # TYPESAFE_API_KEY secret nothing is sent; a run spends at most PAGE_CHECK_MAX_USD
+      # (default $1).
+      - name: Restore page check verdicts
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: data/review/page-check-verdicts.json
+          key: page-check-${{ github.run_id }}
+          restore-keys: page-check-
+
+      - name: Check new and changed pages with Jev
+        continue-on-error: true
+        timeout-minutes: 45
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          PAGE_CHECK_MAX_USD: ${{ vars.PAGE_CHECK_MAX_USD }}
+        run: npm run check:pages
+
+      - name: Save page check verdicts
+        if: ${{ hashFiles('data/review/page-check-verdicts.json') != '' }}
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: data/review/page-check-verdicts.json
+          key: page-check-${{ github.run_id }}
+
+      - name: List flagged pages for review
+        if: ${{ hashFiles('data/review/page-check.json') != '' }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          title='[Page check] Pages to review'
+          issue_number="$(
+            gh issue list \
+              --repo "$REPOSITORY" \
+              --state open \
+              --label page-review \
+              --limit 100 \
+              --json number,title \
+              --jq ".[] | select(.title == \"$title\") | .number" \
+              | head -n 1
+          )"
+          flagged="$(jq '.flagged | length' data/review/page-check.json)"
+          unjudged="$(jq '.unjudged' data/review/page-check.json)"
+          if [[ "$flagged" == 0 ]]; then
+            # Close only when every page has a verdict; missing verdicts are not a clean list.
+            if [[ -n "$issue_number" && "$unjudged" == 0 ]]; then
+              gh issue close "$issue_number" \
+                --repo "$REPOSITORY" \
+                --reason completed \
+                --comment 'Every flagged page has been reviewed.'
+            fi
+            exit 0
+          fi
+          if [[ -n "$issue_number" ]]; then
+            gh issue edit "$issue_number" --repo "$REPOSITORY" --body-file data/review/page-check.md
+          else
+            gh label create page-review \
+              --repo "$REPOSITORY" \
+              --color FBCA04 \
+              --description "Scraped pages Jev flagged for a person to review" \
+              --force
+            gh issue create \
+              --repo "$REPOSITORY" \
+              --title "$title" \
+              --label page-review \
+              --body-file data/review/page-check.md
+          fi
+
       - name: Resolve data refresh incident
         if: ${{ success() }}
         continue-on-error: true
