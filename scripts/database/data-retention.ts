@@ -6,6 +6,8 @@ interface RetentionSummary {
   retiredDatasetsDeleted: number;
   sourceSnapshotsDeleted: number;
   ingestionRunsDeleted: number;
+  /** pg_database_size after cleanup; the free Neon plan stops writes at 0.5 GB. */
+  databaseBytes: number;
   dryRun: boolean;
 }
 
@@ -112,11 +114,16 @@ export async function runDataRetention(
       : Number(result.rowCount || 0);
   }
 
+  const size = await pool.query<{ bytes: string }>(
+    `SELECT pg_database_size(current_database())::text AS bytes`
+  );
+
   return {
     failedDatasetsDeleted,
     retiredDatasetsDeleted,
     sourceSnapshotsDeleted,
     ingestionRunsDeleted,
+    databaseBytes: Number(size.rows[0]?.bytes || 0),
     dryRun,
   };
 }
