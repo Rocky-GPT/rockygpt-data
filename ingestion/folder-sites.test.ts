@@ -7,12 +7,15 @@ import path from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 import {
+  campusDate,
   contentSitemaps,
   cutSections,
+  eventLastDay,
   isSkippedPostTypePath,
   isUnlistedSitePage,
   pageKey,
   pagesCollectedElsewhere,
+  pastEventPages,
   RAMAPO_SITE_COLLECTORS,
   sitemapLocs,
   sitemapPostType,
@@ -153,6 +156,46 @@ test('pages WordPress made for an uploaded image, or put behind a password, are 
     'www.ramapo.edu/holocaust/landscape/mailchimp-png1',
     'www.ramapo.edu/snh/graduate-certificate-data-modeling',
   ]);
+});
+
+test('the campus date turns over at midnight in New York, not in UTC', () => {
+  assert.equal(campusDate(new Date('2026-09-27T12:00:00Z')), '2026-09-27');
+  assert.equal(campusDate(new Date('2026-09-28T01:30:00Z')), '2026-09-27');
+  assert.equal(campusDate(new Date('2026-09-28T04:30:00Z')), '2026-09-28');
+  assert.equal(campusDate(new Date('2026-12-01T04:30:00Z')), '2026-11-30');
+});
+
+test('an event page leaves publication the day after its event ends on campus', () => {
+  const details = (dates: string) => `<div class="tribe-events-meta-group"><h2>Details</h2><dl>${dates}</dl></div>`;
+  const start = (iso: string, kind = 'date') => `<dt>Start:</dt><dd><abbr class="tribe-events-abbr tribe-events-start-${kind} published dtstart" title="${iso}"> x </abbr></dd>`;
+  const end = (iso: string, kind = 'date') => `<dt>End:</dt><dd><abbr class="tribe-events-abbr tribe-events-end-${kind} dtend" title="${iso}"> x </abbr></dd>`;
+  const event = (slug: string, dates: string, bodyClass = 'tribe-events-page-template single-tribe_events postid-9') => ({
+    url: `https://www.ramapo.edu/berriecenter/event/${slug}/`,
+    html: `<html><body class="${bodyClass}"><main><h1>${slug}</h1>${details(dates)}</main></body></html>`,
+  });
+  const pages = [
+    event('one-night-2024/2024-03-07', start('2024-03-07')),
+    event('yesterday', start('2026-09-26')),
+    event('tonight', start('2026-09-27')),
+    event('on-view', start('2026-09-16') + end('2026-12-04')),
+    event('closed-run', start('2023-09-13 08:00:00', 'datetime') + end('2023-10-13 17:00:00', 'datetime')),
+    event('no-date', ''),
+    event('not-an-event', start('2024-03-07'), 'page-template-default page'),
+  ];
+  pages.push({ url: 'https://www.ramapo.edu/holocaust/event/zipped/', html: '', htmlGzip: gzipSync(pages[0].html).toString('base64') } as typeof pages[0]);
+  assert.equal(eventLastDay(pages[3].html), '2026-12-04');
+  assert.equal(eventLastDay(pages[4].html), '2023-10-13');
+  assert.equal(eventLastDay(pages[5].html), null);
+  const past = pastEventPages({ pages } as Parameters<typeof pastEventPages>[0], '2026-09-27');
+  assert.deepEqual([...past].sort(), [
+    'www.ramapo.edu/berriecenter/event/closed-run',
+    'www.ramapo.edu/berriecenter/event/one-night-2024/2024-03-07',
+    'www.ramapo.edu/berriecenter/event/yesterday',
+    'www.ramapo.edu/holocaust/event/zipped',
+  ]);
+  const later = pastEventPages({ pages } as Parameters<typeof pastEventPages>[0], '2026-12-05');
+  assert.equal(later.size, 6);
+  assert.ok(later.has('www.ramapo.edu/berriecenter/event/on-view'));
 });
 
 test('a reviewed section cut leaves out that section, or everything from it on, and fails closed when it no longer matches', () => {
