@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml } from './raw-collector';
+import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber, withYear} from './raw-collector';
 import type { RawDatasetV1 } from './raw-types';
 
 const page = (statusCode = 200) => buildRawPageFromHtml({url:'https://example.edu/policy', html:'<main><h1>Policy</h1><p>Source content.</p></main>', sourceType:'seed', allowedHost:'example.edu',statusCode});
@@ -80,6 +80,20 @@ test('collection regression measures successful pages, not old failed document r
     fs.writeFileSync(outputPath,JSON.stringify(dataset(22,18)));
     assert.doesNotThrow(()=>assertRawCollectionCandidate(dataset(22,0),{outputPath,minimumPreviousPageRatio:0.6}));
     assert.throws(()=>assertRawCollectionCandidate(dataset(10,30),{outputPath,minimumPreviousPageRatio:0.6}),/successful page count dropped/);
+  } finally {fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('a source that narrows what it collects compares only the previous pages it still collects', () => {
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'rocky-raw-narrowed-'));
+  try {
+    const outputPath=path.join(dir,'test.raw.json');
+    const previous=dataset(30,0);
+    previous.pages.forEach((entry,index)=>{entry.url=`https://example.edu/${index<22?'stories':'dept'}/${index}/`;});
+    fs.writeFileSync(outputPath,JSON.stringify(previous));
+    const inScope=(entry:{url:string})=>!entry.url.includes('/stories/');
+    assert.throws(()=>assertRawCollectionCandidate(dataset(8,0),{outputPath,minimumPreviousPageRatio:0.8}),/dropped from 30 to 8/);
+    assert.doesNotThrow(()=>assertRawCollectionCandidate(dataset(8,0),{outputPath,minimumPreviousPageRatio:0.8,comparablePreviousPage:inScope}));
+    assert.throws(()=>assertRawCollectionCandidate(dataset(5,0),{outputPath,minimumPreviousPageRatio:0.8,comparablePreviousPage:inScope}),/dropped from 8 to 5/);
   } finally {fs.rmSync(dir,{recursive:true,force:true});}
 });
 
@@ -202,3 +216,54 @@ test('a challenge page is recognized by its title, headings or small size, not b
   assert.equal(isLikelyChallengeHtml(`<title>Human Verification</title><main>${filler}</main>`), true);
   assert.equal(isLikelyChallengeHtml(`<title>Office</title><main><h2>Attention Required! | Cloudflare</h2>${filler}</main>`), true);
 });
+
+test('a mailto link that shows one address and sends to another is not a contact', () => {
+  const page = buildRawPageFromHtml({ url: 'https://www.ramapo.edu/snh/sigma-xi-research-showcase/', sourceType: 'seed', allowedHost: 'www.ramapo.edu',
+    html: `<main><h1>Sigma Xi</h1><p>Ash Stuart <a href="mailto:ltan@ramapo.edu">astuart@ramapo.edu</a></p>
+      <p>Loraine Tan <a href="mailto:ltan@ramapo.edu?subject=Hi">LTan@Ramapo.edu.</a></p>
+      <p>Jim Monen <a href="mailto:jmonen@ramapo.edu">jmonen@ramapo.ed</a></p>
+      <p><a href="mailto:graduate@ramapo.edu">graduate@ramapo.edu and we will be happy to assist you!</a></p>
+      <p><a href="mailto:oss@ramapo.edu">Email the Office of Specialized Services</a></p></main>` });
+  assert.deepEqual(page.contacts.map(contact => contact.email).sort(), ['graduate@ramapo.edu', 'ltan@ramapo.edu', 'oss@ramapo.edu']);
+  assert.equal(page.contacts.find(contact => contact.email === 'ltan@ramapo.edu')?.name, 'LTan@Ramapo.edu.');
+  assert.equal(isMismatchedMailto('astuart@ramapo.edu', 'ltan@ramapo.edu'), true);
+  assert.equal(isMismatchedMailto('kayala2@ramapo.edu', 'kayala@ramapo.edu'), true);
+  assert.equal(isMismatchedMailto('(jdoe@ramapo.edu).', 'JDoe@ramapo.edu'), false);
+  assert.equal(isMismatchedMailto('jdoe@ramapo.edu', '%20jdoe@ramapo.edu'), false);
+  assert.equal(isMismatchedMailto('Contact Us', 'reg@ramapo.edu'), false);
+});
+
+test('a tel link is a contact only when it is a phone number', () => {
+  const page = buildRawPageFromHtml({ url: 'https://www.ramapo.edu/snh/publications-research/', sourceType: 'seed', allowedHost: 'www.ramapo.edu',
+    html: `<main><h1>Publications</h1><p>Journal of Chemistry 12, <a href="tel:2641-2673">2641-2673</a> (2021).</p>
+      <p>Call <a href="tel:(201)%20684-7593">(201) 684-7593</a> or <a href="tel:%28201%29%20684-7432">201-684-7432</a>.</p></main>` });
+  assert.deepEqual(page.contacts.map(contact => contact.phone), ['(201)%20684-7593', '%28201%29%20684-7432']);
+  for (const number of ['(201)%20684-7593', '%28201%29%20684-7432', '201-684-7000', '+1 201 684 7000', '201-684-7000 ext. 12', 'x7451']) {
+    assert.equal(isPhoneNumber(number), true, number);
+  }
+  for (const range of ['2641-2673', '2025-2031', '684-7593', '%zz']) assert.equal(isPhoneNumber(range), false, range);
+});
+
+test('an Events Calendar date gets back the year the plugin leaves out', () => {
+  const event = (details: string, schedule: string) => buildRawPageFromHtml({ url: 'https://www.ramapo.edu/holocaust/event/x/', sourceType: 'seed',
+    allowedHost: 'www.ramapo.edu', html: `<body class="single-tribe_events"><main><h1>Event</h1><div class="tribe-events-schedule tribe-clearfix"><p>${schedule}</p></div>
+      <div class="tribe-events-meta-group"><h2 class="tribe-events-single-section-title">Details</h2><ul>${details}</ul>
+      <p><abbr class="tribe-region tribe-events-abbr" title="New Jersey">NJ</abbr></p></div></main></body>` });
+  const oneDay = event(`<li><span>Date:</span> <abbr class="tribe-events-abbr tribe-events-start-date published dtstart" title="2026-11-10"> Tue, November 10 </abbr></li>
+    <li><span>Time:</span> <div class="tribe-events-abbr tribe-events-start-time published dtstart" title="2026-11-10"> 1:50 pm – 3:05 pm </div></li>`,
+    '<span class="tribe-event-date-start">Tue, November 10 @ 1:50 pm</span> – <span class="tribe-event-time">3:05 pm</span>');
+  const text = oneDay.sections.map(section => section.text).join(' ');
+  assert.match(text, /Date: Tue, November 10, 2026 Time: 1:50 pm – 3:05 pm/);
+  assert.match(text, /NJ/);
+  assert.doesNotMatch(text, /NJ, /);
+  const run = event(`<li><span>Start:</span> <abbr class="tribe-events-abbr tribe-events-start-date published dtstart" title="2026-09-16"> Wed, September 16 </abbr></li>
+    <li><span>End:</span> <abbr class="tribe-events-abbr tribe-events-end-date dtend" title="2027-01-04"> Mon, January 4 </abbr></li>`,
+    '<span class="tribe-event-date-start">Wed, September 16</span> – <span class="tribe-event-date-end">Mon, January 4</span>');
+  const runText = run.sections.map(section => section.text).join(' ');
+  assert.match(runText, /Wed, September 16, 2026 – Mon, January 4, 2027/);
+  assert.match(text, /Tue, November 10, 2026 @ 1:50 pm – 3:05 pm/);
+  assert.match(runText, /Start: Wed, September 16, 2026 End: Mon, January 4, 2027/);
+  assert.equal(withYear('October 8 @ 1:15 pm', '2026'), 'October 8, 2026 @ 1:15 pm');
+  assert.equal(withYear('October 8, 2025', '2026'), 'October 8, 2025');
+});
+

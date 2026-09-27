@@ -24,6 +24,7 @@ npm-debug.log*
 /data/context/
 /data/cache/
 /data/logs/
+/data/review/
 /data/.cache/
 /data/playwright/
 /data/capability-test-results.json

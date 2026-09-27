@@ -37,6 +37,8 @@ export const SOURCE_REFRESH_SCRIPTS: Record<string, string[]> = {
   'major-page-links': ['fetch:major-page-links'],
   // Skips the pages the other Ramapo site collectors keep, so it follows them in source order.
   'office-pages': ['fetch:office-pages'],
+  // Skips the office pages as well, so it follows fetch:office-pages in source order.
+  'academic-sites': ['fetch:academic-sites'],
 };
 
 // The workflow runs daily. Renew a source that would cross its SLA before

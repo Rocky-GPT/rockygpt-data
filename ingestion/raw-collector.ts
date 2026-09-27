@@ -42,6 +42,12 @@ export interface RawCollectorOptions {
   minimumSeedSuccessRate?: number;
   minimumDetailSuccessRate?: number;
   minimumPreviousPageRatio?: number;
+  /**
+   * The previous capture's pages that still count toward minimumPreviousPageRatio. A source that
+   * narrows what it collects leaves out the pages it no longer collects, so the narrower capture
+   * is not taken for a failed one.
+   */
+  comparablePreviousPage?: (page: RawPageV1) => boolean;
   /** Opt-in source retention for bounded policy/service crawls, never detail feeds by default. */
   retainSourceHtml?: boolean;
   /** Keep retained HTML gzip-compressed, so a capture of thousands of pages stays small enough to read back. */
@@ -296,6 +302,40 @@ function extractTables($: ReturnType<typeof load>, baseUrl: string): RawPageV1['
   return tables;
 }
 
+const EMAIL_ADDRESS = /^[^\s@()]+@[^\s@()]+\.[^\s@()]+$/;
+
+/** An address as written for comparing a link's text with its target: no case, spaces, %20, parentheses or trailing punctuation. */
+function comparableEmail(value: string): string {
+  return value.toLowerCase().replace(/%20/gi, '').replace(/[\s()]/g, '').replace(/[.,;:!?]+$/, '');
+}
+
+/**
+ * Whether a mailto link shows one address and sends to another, such as "astuart@ramapo.edu"
+ * linking to ltan@ramapo.edu. Neither address can then be trusted as the contact. Link text that
+ * is not an address ("Email us", "graduate@ramapo.edu and we will help") is not a mismatch.
+ */
+export function isMismatchedMailto(text: string, email: string): boolean {
+  const shown = text.replace(/%20/gi, '').replace(/[()]/g, '').replace(/[.,;:!?]+$/, '').trim();
+  return EMAIL_ADDRESS.test(shown) && comparableEmail(shown) !== comparableEmail(email);
+}
+
+/**
+ * Whether a tel link's number is a phone number: 10 US digits (11 with a leading 1) or an
+ * extension, once percent-encoding is decoded. A browser's phone detection can link a
+ * citation's page range, such as "tel:2641-2673", which is not a number to call.
+ */
+export function isPhoneNumber(raw: string): boolean {
+  let value = raw;
+  try {
+    value = decodeURIComponent(raw);
+  } catch {
+    // Not valid percent-encoding: read it as written.
+  }
+  const digits = value.replace(/\D/g, '');
+  return digits.length === 10 || (digits.length === 11 && digits.startsWith('1'))
+    || /(?:\bext\.?|\bx)\s*\d+/i.test(value);
+}
+
 function extractContacts($: ReturnType<typeof load>): RawPageV1['contacts'] {
   const contactsMap = new Map<string, RawPageV1['contacts'][number]>();
 
@@ -305,6 +345,7 @@ function extractContacts($: ReturnType<typeof load>): RawPageV1['contacts'] {
     if (!email) return;
 
     const name = cleanText($(element).text()) || undefined;
+    if (name && isMismatchedMailto(name, email)) return;
     const office = cleanText($(element).closest('p, li, td, div').first().find('strong').first().text()) || undefined;
 
     contactsMap.set(`email:${email.toLowerCase()}`, {
@@ -317,7 +358,7 @@ function extractContacts($: ReturnType<typeof load>): RawPageV1['contacts'] {
   $('a[href^="tel:"]').each((_, element) => {
     const href = $(element).attr('href') || '';
     const phone = href.replace(/^tel:/i, '').trim();
-    if (!phone) return;
+    if (!phone || !isPhoneNumber(phone)) return;
 
     const name = cleanText($(element).text()) || undefined;
     const key = `phone:${phone}`;
@@ -351,6 +392,36 @@ function extractDocuments($: ReturnType<typeof load>, baseUrl: string): RawPageV
   return Array.from(documentsMap.values());
 }
 
+const ISO_DATE_YEAR = /^(\d{4})-\d{2}-\d{2}/;
+
+/** A date shown without its year, such as "Tue, November 10" or "October 8 @ 1:15 pm", with the year after the date. */
+export function withYear(text: string, year: string): string {
+  if (/\b\d{4}\b/.test(text)) return text;
+  const at = text.indexOf(' @ ');
+  return at === -1 ? `${text.trimEnd()}, ${year}` : `${text.slice(0, at)}, ${year}${text.slice(at)}`;
+}
+
+/**
+ * The Events Calendar leaves the year out of a date in the current year: "Date: Tue, November 10".
+ * Its date elements keep the full date in their title (title="2026-11-10"), so the year is put
+ * back into the text, and into the event header's start and end dates.
+ */
+function addEventCalendarYears($: ReturnType<typeof load>): void {
+  $('abbr.tribe-events-abbr[title]').each((_, element) => {
+    const node = $(element);
+    const year = node.attr('title')?.match(ISO_DATE_YEAR)?.[1];
+    if (year) node.text(withYear(cleanText(node.text()), year));
+  });
+  const yearOf = (selector: string) => $(selector).first().attr('title')?.match(ISO_DATE_YEAR)?.[1];
+  const start = yearOf('abbr.tribe-events-start-date, abbr.tribe-events-start-datetime');
+  const end = yearOf('abbr.tribe-events-end-date, abbr.tribe-events-end-datetime') ?? start;
+  for (const [selector, year] of [['.tribe-event-date-start', start], ['.tribe-event-date-end', end]] as const) {
+    if (year) $(`.tribe-events-schedule ${selector}`).each((_, element) => {
+      $(element).text(withYear(cleanText($(element).text()), year));
+    });
+  }
+}
+
 export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawPageV1 {
   if (isLikelyChallengeHtml(options.html)) {
     throw new Error(`${options.url}: received a bot challenge or human-verification page.`);
@@ -359,6 +430,7 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
   const document = load(options.html);
   document('script, style, noscript, template, svg, nav, footer, [role="navigation"]').remove();
   document('header').not('main header, article header, [role="main"] header').remove();
+  addEventCalendarYears(document);
   const initialHeading = document('h1').toArray().map(element => cleanText(document(element).text())).find(Boolean) || '';
   const title = cleanText(document('title').first().text()) || initialHeading || null;
   // Site-wide links outside the declared content region are not page evidence.
@@ -504,6 +576,7 @@ export function assertRawCollectionCandidate(
     | 'minimumSeedSuccessRate'
     | 'minimumDetailSuccessRate'
     | 'minimumPreviousPageRatio'
+    | 'comparablePreviousPage'
   >
 ): void {
   if (dataset.pages.length < (options.minimumPages ?? 1)) {
@@ -556,7 +629,8 @@ export function assertRawCollectionCandidate(
       const previous = validateRawDatasetV1(
         JSON.parse(fs.readFileSync(options.outputPath, 'utf8')) as unknown
       );
-      const previousCount = previous.pages.filter(successfulPage).length;
+      const previousCount = previous.pages.filter(successfulPage)
+        .filter(page => !options.comparablePreviousPage || options.comparablePreviousPage(page)).length;
       const floor = Math.ceil(previousCount * options.minimumPreviousPageRatio);
       if (previousCount > 0 && successfulPages.length < floor) {
         throw new Error(
