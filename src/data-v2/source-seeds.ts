@@ -12,15 +12,26 @@ export interface SourceSeed {
   domain: string;
 }
 
+/**
+ * How long a source collected by every daily update stays usable. The update
+ * is scheduled for 11:00 UTC, but in September 2026 GitHub started it between
+ * 13:59 and 16:56 UTC, a different time each day. With a 24-hour limit,
+ * yesterday's menus and events expired whenever today's run started later
+ * than yesterday's, and stayed unusable until today's publish finished.
+ * 36 hours covers that drift and the run itself; refresh-publishable still
+ * renews these sources on every daily run.
+ */
+export const DAILY_SOURCE_FRESHNESS_HOURS = 36;
+
 export const SOURCES: SourceSeed[] = [
   { key: 'public-safety', title: 'Public Safety', url: 'https://www.ramapo.edu/publicsafety/', trustTier: 'official_primary', freshnessHours: 168, domain: 'safety' },
   { key: 'password-reset', title: 'Password Reset', url: 'https://password.ramapo.edu/', trustTier: 'official_primary', freshnessHours: 720, domain: 'technology' },
   { key: 'information-technology-services', title: 'Information Technology Services', url: 'https://www.ramapo.edu/its/', trustTier: 'official_primary', freshnessHours: 720, domain: 'technology' },
   { key: 'tuition-costs', title: 'Tuition & Costs', url: 'https://www.ramapo.edu/admissions/financial-aid-tuition/tuition-costs/', trustTier: 'official_primary', freshnessHours: 720, domain: 'financial_aid' },
   { key: 'academic-calendar', title: 'Academic Calendar', url: 'https://www.ramapo.edu/academic-calendars/', trustTier: 'official_primary', freshnessHours: 168, domain: 'calendar' },
-  { key: 'dining', title: 'Ramapo Dining', url: 'https://ramapo.sodexomyway.com/', trustTier: 'official_primary', freshnessHours: 24, domain: 'dining' },
+  { key: 'dining', title: 'Ramapo Dining', url: 'https://ramapo.sodexomyway.com/', trustTier: 'official_primary', freshnessHours: DAILY_SOURCE_FRESHNESS_HOURS, domain: 'dining' },
   { key: 'campus-hours', title: 'Campus Hours', url: 'https://www.ramapo.edu/about/campus-hours/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'hours' },
-  { key: 'archway-events', title: 'Archway Events', url: 'https://archway.ramapo.edu/events', trustTier: 'official_primary', freshnessHours: 24, domain: 'events' },
+  { key: 'archway-events', title: 'Archway Events', url: 'https://archway.ramapo.edu/events', trustTier: 'official_primary', freshnessHours: DAILY_SOURCE_FRESHNESS_HOURS, domain: 'events' },
   { key: 'archway-clubs', title: 'Archway Student Organizations', url: 'https://archway.ramapo.edu/club_signup?view=all&', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'clubs' },
   { key: 'academic-programs', title: 'Ramapo Programs', url: 'https://www.ramapo.edu/majors-minors/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'programs' },
   { key: 'campus-directory', title: 'Campus Directory', url: 'https://www.ramapo.edu/campus-directory/', trustTier: 'official_primary', freshnessHours: 168, domain: 'directory' },
