@@ -5,7 +5,10 @@ import {
   assertRefreshCoverage,
   hoursArtifactRequiresRefresh,
   refreshScriptsForArtifactCompatibility,
+  refreshScriptsForStates,
+  SOURCE_REFRESH_SCRIPTS,
 } from './refresh-publishable';
+import { DAILY_SOURCE_FRESHNESS_HOURS, SOURCES } from '../src/data-v2/source-seeds';
 import { partitionHoursForPublication } from '../src/data-v2/validity';
 
 const expired = {
@@ -58,4 +61,24 @@ test('artifact compatibility refreshes stale hours once, then accepts filtered o
 test('every source with publication provenance has a refresh command', () => {
   // The daily update stops at this check, before collecting anything, if a source is missed.
   assert.doesNotThrow(() => assertRefreshCoverage());
+});
+
+test('daily sources outlast a daily run that starts late and are renewed by one that starts early', () => {
+  const daily = SOURCES.filter((source) => source.freshnessHours === DAILY_SOURCE_FRESHNESS_HOURS);
+  assert.deepEqual(daily.map((source) => source.key).sort(), ['archway-events', 'dining']);
+
+  // September 2026's runs started up to 3 hours later than the day before and
+  // took up to an hour to publish, so data from yesterday's run must still be
+  // fresh 28 hours after it was collected.
+  assert.ok(DAILY_SOURCE_FRESHNESS_HOURS >= 28);
+
+  for (const source of daily) {
+    // A run that starts 6 hours earlier than yesterday's still recollects it.
+    assert.deepEqual(
+      refreshScriptsForStates([
+        { key: source.key, status: 'fresh', ageHours: 18, maxAgeHours: source.freshnessHours },
+      ]),
+      SOURCE_REFRESH_SCRIPTS[source.key]
+    );
+  }
 });
