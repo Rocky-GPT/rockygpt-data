@@ -50,6 +50,7 @@
     "fetch:academic-sites": "tsx ingestion/academic-sites.ts",
     "normalize:campus-hours": "tsx scripts/backfill-campus-hours.ts",
     "normalize:contacts": "tsx scripts/backfill-contact-fields.ts",
+    "check:contacts": "tsx scripts/check-contact-evidence.ts",
     "normalize:raw": "tsx ingestion/normalize-raw.ts",
     "normalize:calendar:concepts": "tsx scripts/backfill-calendar-concepts.ts",
     "generate:menu:md": "tsx ingestion/generate-menu-md.ts",
