@@ -153,6 +153,32 @@ export function linkReviewedArchwayGroups(entities: CampusIdentity[], clubs: Row
   return { owned, unresolved };
 }
 
+/** A reviewed contact record for an Archway group's own desk (a residence hall office, a center). */
+export interface ReviewedArchwayContact { group: string; contact: string; reviewed_at: string; note: string }
+
+/**
+ * Links a reviewed contact record to the Archway group identity it belongs to, so a
+ * residence hall or center keeps its Archway ID and kind and gains its phone, email
+ * and room. The contact must carry the group's exact name, so the identity's name
+ * stays one value, and it must not already belong to another identity.
+ */
+export function linkReviewedArchwayContacts(entities: CampusIdentity[], contacts: ReadonlyMap<string, Row>, reviews: ReviewedArchwayContact[], owned: ReadonlySet<string>): { linked: Set<string>; unresolved: IdentityCoverageIssue[] } {
+  const linked = new Set<string>(); const unresolved: IdentityCoverageIssue[] = [];
+  for (const review of reviews) {
+    const issue = (kind: CoverageKind, reason: string) => unresolved.push({ entity: review.group, collection: 'contacts', record: review.contact, reason, kind });
+    const entity = entities.find(candidate => ['club', 'organization'].includes(candidate.kind)
+      && candidate.links.some(link => link.collection === 'clubs' && link.source_record_keys.includes(review.group)));
+    const row = contacts.get(review.contact);
+    if (!entity) { issue('no_records', `No Archway group identity named ${review.group} in this release; the reviewed contact is not linked.`); continue; }
+    if (!row) { issue('no_records', 'The reviewed contact record is not in this release; it is not linked.'); continue; }
+    if (owned.has(review.contact) || linked.has(review.contact)) { issue('missing_connection', 'The reviewed contact record already belongs to another identity; it is not linked.'); continue; }
+    if (text(row.name) !== entity.name) { issue('missing_connection', `The reviewed contact is named ${text(row.name)}, not ${entity.name}; it is not linked.`); continue; }
+    entity.links.push({ collection: 'contacts', source_key: text(row.source_key), source_record_keys: [review.contact] });
+    linked.add(review.contact);
+  }
+  return { linked, unresolved };
+}
+
 /** `reserved` holds normalized names and aliases of reviewed identities, and the
  * departments their own contact records publish. A non-club group with one of
  * those names is most likely the same office, so it needs a reviewed link

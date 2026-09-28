@@ -11,7 +11,9 @@
     "the statement, and a person decided which identity and building it names.",
     "Each room here is an exact published room value that is not a PREFIX-NUMBER",
     "room, read by a person as naming a building. Each Archway group here is a",
-    "club-directory page a person approved as an office's own page.",
+    "club-directory page a person approved as an office's own page. Each Archway",
+    "contact here is a directory contact for an Archway group's own desk (a",
+    "residence hall office, a center), linked to that group's identity by name.",
     "Entries name persistent IDs or Concept3D locations, never names to match."
   ],
   "aliases": [
@@ -102,6 +104,68 @@
       "group": "Public Safety",
       "reviewed_at": "2026-09-24",
       "note": "Approved: the Archway department page for Public Safety, which links to ramapo.edu/publicsafety/. It belongs to the non-emergency office, the department's everyday office; the Emergency entry stays the emergency line."
+    }
+  ],
+  "archway_contacts": [
+    {
+      "group": "Bischoff Hall",
+      "contact": "office:bischoff-hall",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+    },
+    {
+      "group": "College Park Apartments",
+      "contact": "office:college-park-apartments",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+    },
+    {
+      "group": "Laurel Hall",
+      "contact": "office:laurel-hall",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+    },
+    {
+      "group": "Mackin Hall",
+      "contact": "office:mackin-hall",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+    },
+    {
+      "group": "Pine Hall",
+      "contact": "office:pine-hall",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+    },
+    {
+      "group": "The Overlook",
+      "contact": "office:the-overlook",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+    },
+    {
+      "group": "The Village",
+      "contact": "office:the-village",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+    },
+    {
+      "group": "Women's Center & LGBTQ+ Services",
+      "contact": "office:women-s-center-lgbtq-services",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved: the unit's own site publishes this contact, and the Archway department page is the same unit."
+    },
+    {
+      "group": "RCNJ Center for Holocaust and Genocide Studies",
+      "contact": "office:rcnj-center-for-holocaust-and-genocide-studies",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved: the center's own contact page publishes this contact, and the Archway page is the same center."
+    },
+    {
+      "group": "The Multicultural Center and the Office of Access, Belonging and Community (ABC)",
+      "contact": "office:the-multicultural-center-and-the-office-of-access-belonging-and-community-abc",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved: the unit's own site publishes this contact, and the Archway department page is the same unit."
     }
   ]
 }

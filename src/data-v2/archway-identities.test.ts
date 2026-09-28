@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { archwayEventId, archwayIdentityId, compileArchwayIdentities, eventOrganizersArtifact, linkReviewedArchwayGroups } from './archway-identities';
+import { archwayEventId, archwayIdentityId, compileArchwayIdentities, eventOrganizersArtifact, linkReviewedArchwayContacts, linkReviewedArchwayGroups } from './archway-identities';
 import type { CampusIdentity } from './campus-identities';
 import { validateCampusIdentities } from './campus-identities';
 import { compileCampusIdentities, type IdentitySnapshot } from './compile-campus-identities';
@@ -191,4 +191,42 @@ test('a reviewed club page joins the office it names and never becomes a second 
   // An owned page is skipped by the Archway compiler, so no identity takes the office's department name.
   const snapshot = { ...fixture(), clubs: [page] };
   assert.equal(compileArchwayIdentities(snapshot, inputs(), new Set(['library']), owned).unresolved.some(issue => issue.record === 'Potter Library'), false);
+});
+
+test('a reviewed desk contact joins its Archway group identity, which keeps its ID and kind', () => {
+  const hall = { ...club, source_record_key: 'Mackin Hall', name: 'Mackin Hall', category: 'Residence Life' };
+  const contact = { source_key: 'campus-directory', source_record_key: 'office:mackin-hall', name: 'Mackin Hall', phone: '(201) 684-7043', email: 'mackin@ramapo.edu' };
+  const snapshot: IdentitySnapshot = { ...fixture(), clubs: [hall], campus_contacts: [contact], artifacts: { clubs: [{ ...sourceClub, name: 'Mackin Hall', category: 'Residence Life' }] } };
+  const review = { group: 'Mackin Hall', contact: 'office:mackin-hall', reviewed_at: '2026-09-28', note: 'Approved.' };
+  const without = compileCampusIdentities({ schema_version: 1, entities: [] }, snapshot, undefined, inputs());
+  const result = compileCampusIdentities({ schema_version: 1, entities: [] }, snapshot, undefined, { ...inputs(), identityReviews: { archway_contacts: [review] } });
+  const before = without.registry.entities.find(entity => entity.name === 'Mackin Hall')!;
+  const after = result.registry.entities.find(entity => entity.name === 'Mackin Hall')!;
+  assert.equal(after.id, before.id);
+  assert.equal(after.kind, 'organization');
+  assert.deepEqual(after.links.find(link => link.collection === 'contacts'), { collection: 'contacts', source_key: 'campus-directory', source_record_keys: ['office:mackin-hall'] });
+  assert.equal(without.report.unresolved.some(issue => issue.record === 'office:mackin-hall' && issue.kind === 'unlinked_record'), true);
+  assert.equal(result.report.unresolved.some(issue => issue.record === 'office:mackin-hall'), false);
+  validateCampusIdentities(result.registry);
+});
+
+test('a reviewed desk contact is not linked to a missing group, under another name, or twice', () => {
+  const group: CampusIdentity = { id: id(40), kind: 'organization', name: 'Pine Hall', aliases: [], links: [{ collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['Pine Hall'] }] };
+  const contacts = new Map([
+    ['office:pine-hall', { source_key: 'campus-directory', name: 'Pine Hall' }],
+    ['office:pine-desk', { source_key: 'campus-directory', name: 'Pine Hall Desk' }],
+    ['office:registrar', { source_key: 'campus-directory', name: 'Pine Hall' }],
+  ]);
+  const review = (group: string, contact: string) => ({ group, contact, reviewed_at: '2026-09-28', note: 'Approved.' });
+  const { linked, unresolved } = linkReviewedArchwayContacts([group], contacts, [
+    review('Pine Hall', 'office:pine-hall'), review('Oak Hall', 'office:pine-hall'), review('Pine Hall', 'office:pine-desk'),
+    review('Pine Hall', 'office:registrar'), review('Pine Hall', 'office:missing'), review('Pine Hall', 'office:pine-hall'),
+  ], new Set(['office:registrar']));
+  assert.deepEqual([...linked], ['office:pine-hall']);
+  assert.deepEqual(group.links.filter(link => link.collection === 'contacts').map(link => link.source_record_keys), [['office:pine-hall']]);
+  assert.deepEqual(unresolved.map(issue => [issue.entity, issue.record, issue.kind]), [
+    ['Oak Hall', 'office:pine-hall', 'no_records'], ['Pine Hall', 'office:pine-desk', 'missing_connection'],
+    ['Pine Hall', 'office:registrar', 'missing_connection'], ['Pine Hall', 'office:missing', 'no_records'],
+    ['Pine Hall', 'office:pine-hall', 'missing_connection'],
+  ]);
 });
