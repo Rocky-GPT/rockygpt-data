@@ -7912,6 +7912,18 @@
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Financial Aid"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/finaid/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -7994,6 +8006,18 @@
               "email:registrar@ramapo.edu"
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Registrar"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/registrar/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
           }
         }
       ]
@@ -11564,6 +11588,18 @@
             ],
             "evidence": "Office's own page (https://www.ramapo.edu/student-accounts/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Student Accounts"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/student-accounts/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -11605,6 +11641,18 @@
               "email:careercenter@ramapo.edu"
             ],
             "evidence": "Office's own page (https://www.ramapo.edu/careercenter/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Cahill Career Development Center"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/careercenter/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
           }
         }
       ]
@@ -11648,6 +11696,18 @@
             ],
             "evidence": "Office's own page (https://www.ramapo.edu/student-affairs/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Dean of Students"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/student-affairs/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -11669,6 +11729,18 @@
             ],
             "evidence": "Office's own page (https://www.ramapo.edu/eof-program/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Educational Opportunity Fund (EOF) Program"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/eof-program/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -11689,6 +11761,18 @@
               "email:studentconduct@ramapo.edu"
             ],
             "evidence": "Office's own page (https://www.ramapo.edu/student-conduct/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Office of Student Conduct"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/student-conduct/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
           }
         }
       ]

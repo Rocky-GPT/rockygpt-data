@@ -3,7 +3,9 @@ import test from 'node:test';
 import {
   ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, campusHoursFromCaptures,
   campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
+  OFFICE_HOURS_PAGES, parseOfficeHours, termWindows,
 } from './campus-hours';
+import { readValidityFromNotes } from '../src/data-v2/validity';
 import { validateCampusHours } from './schema';
 import { hoursSourceErrors } from '../pipeline/quality/hours-coverage';
 
@@ -179,4 +181,45 @@ test('parent page preserves facility evidence without selecting ambiguous hours 
   assert.deepEqual(parseGeneralCampusHours(`Bookstore\nUnrelated navigation\n${general}`), records);
   assert.throws(() => parseGeneralCampusHours(general.replace('J. LEE’S', 'Other facility')), /Could not find heading/);
   assert.throws(() => parseGeneralCampusHours(general.replace('Normal Store Hours:', 'Other hours:')), /seasonal schedules/);
+});
+
+test('office pages give their regular hours for the semester the academic calendar dates', () => {
+  const calendar = [
+    { name: 'Fall 2026', events: [
+      { kind: 'classes_begin', startsAt: '2026-08-26T04:00:00.000Z' },
+      { kind: 'classes_begin', startsAt: '2026-10-19T04:00:00.000Z' },
+      { kind: 'classes_end', startsAt: '2026-12-09T05:00:00.000Z' },
+      { kind: 'finals', startsAt: '2026-12-16T05:00:00.000Z' }] },
+    { name: 'Winter 2027', events: [{ kind: 'classes_begin', startsAt: '2026-12-21T05:00:00.000Z' },
+      { kind: 'finals', startsAt: '2027-01-15T05:00:00.000Z' }] },
+    { name: 'Spring 2027', events: [{ kind: 'classes_begin', startsAt: '2027-01-19T05:00:00.000Z' },
+      { kind: 'finals', startsAt: '2027-05-12T04:00:00.000Z' }] },
+  ];
+  const terms = termWindows(calendar);
+  assert.deepEqual(terms.map((term) => [term.name, term.from, term.until]),
+    [['Fall 2026', '2026-08-26', '2026-12-16'], ['Spring 2027', '2027-01-19', '2027-05-12']]);
+  const registrar = OFFICE_HOURS_PAGES.find((office) => office.name === 'Registrar')!;
+  // The Registrar prints its schedule on the line after its label, then the summer one.
+  const page = 'Contact Information:\nFall/Spring Hours:\n8:30 A.M. - 4:30 P.M. Monday - Friday\n'
+    + 'Summer Hours:\n8:00 AM - 5:15 P.M. Monday-Thursday Closed Friday';
+  const fall = parseOfficeHours('Registrar', registrar.label, page, '2026-09-28T13:00:00Z', terms);
+  assert.equal(fall.hours.Monday, '8:30am-4:30pm');
+  assert.equal(fall.hours.Friday, '8:30am-4:30pm');
+  assert.equal(fall.hours.Saturday, 'Hours unavailable');
+  assert.doesNotMatch(fall.notes!, /Summer|5:15/);
+  assert.deepEqual(readValidityFromNotes(fall.notes).window, { validFrom: '2026-08-26', validUntil: '2026-12-16' });
+  // Captured between semesters, the schedule is dated by the next one, never by winter session.
+  const spring = parseOfficeHours('Registrar', registrar.label, page, '2026-12-20T13:00:00Z', terms);
+  assert.deepEqual(readValidityFromNotes(spring.notes).window, { validFrom: '2027-01-19', validUntil: '2027-05-12' });
+  // Same-line schedules, and a Monday-Thursday week.
+  const accounts = parseOfficeHours('Student Accounts', /^Academic Year:/i,
+    'Academic Year: Monday-Friday, 8:30 a.m.-4:30 p.m.\nSummer: Monday-Thursday, 8:00 a.m-5:15 p.m.', '2026-09-28T13:00:00Z', terms);
+  assert.equal(accounts.hours.Friday, '8:30am-4:30pm');
+  const short = parseOfficeHours('Example', /^Office Hours:/i, 'Office Hours: Monday to Thursday, 9 am - 5 pm', '2026-09-28T13:00:00Z', terms);
+  assert.equal(short.hours.Thursday, '9:00am-5:00pm');
+  assert.equal(short.hours.Friday, 'Hours unavailable');
+  assert.throws(() => parseOfficeHours('Registrar', registrar.label, 'Contact Information:', '2026-09-28T13:00:00Z', terms),
+    /line is unavailable/);
+  assert.throws(() => parseOfficeHours('Registrar', registrar.label, page, '2027-06-01T13:00:00Z', terms),
+    /No academic calendar semester/);
 });
