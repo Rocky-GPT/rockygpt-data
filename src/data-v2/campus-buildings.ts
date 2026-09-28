@@ -179,7 +179,10 @@ export function compileBuildingIdentities(artifact: CampusBuildingsArtifact, ent
     }
   }
   for (const entity of entities) {
-    const type = entity.kind === 'person' ? 'office_at' : ['office', 'facility', 'venue'].includes(entity.kind) ? 'located_at' : null;
+    // An Archway group with a reviewed contact (a residence hall desk) is placed by that contact's room too.
+    const placed = ['office', 'facility', 'venue'].includes(entity.kind)
+      || (['club', 'organization'].includes(entity.kind) && entity.links.some(link => link.collection === 'contacts'));
+    const type = entity.kind === 'person' ? 'office_at' : placed ? 'located_at' : null;
     if (!type) continue;
     const evidence = new Map<string, IdentityEvidence[]>();
     for (const placement of placements.get(entity.id) ?? []) evidence.set(placement.building, [...(evidence.get(placement.building) ?? []), placement.evidence]);
