@@ -126,6 +126,20 @@ export function isWindowExpired(window: ValidityWindow, now: Date): boolean {
 interface HoursRecord {
   name?: unknown;
   notes?: unknown;
+  validFrom?: unknown;
+  validUntil?: unknown;
+}
+
+/**
+ * A schedule's validity: its own dates when the collector set them (office hours are
+ * dated by the academic calendar, which their pages never name), else what its note says.
+ */
+export function recordValidity(record: HoursRecord): NotesValidity {
+  const { validFrom, validUntil } = record;
+  if (typeof validFrom === 'string' && typeof validUntil === 'string') {
+    return { window: { validFrom, validUntil }, termWithoutDates: null };
+  }
+  return readValidityFromNotes(typeof record.notes === 'string' ? record.notes : undefined);
 }
 
 export interface OmittedHoursRecord<T> {
@@ -148,8 +162,7 @@ export function partitionHoursForPublication<T extends HoursRecord>(
   const omitted: Array<OmittedHoursRecord<T>> = [];
 
   for (const record of records) {
-    const notes = typeof record.notes === 'string' ? record.notes : undefined;
-    const { window, termWithoutDates } = readValidityFromNotes(notes);
+    const { window, termWithoutDates } = recordValidity(record);
     if (window && isWindowExpired(window, now)) {
       omitted.push({ record, reason: 'expired' });
     } else if (termWithoutDates) {
@@ -180,7 +193,7 @@ export function hoursValidityErrors(
   for (const record of records as HoursRecord[]) {
     const name = typeof record?.name === 'string' ? record.name : 'unnamed location';
     const notes = typeof record?.notes === 'string' ? record.notes : undefined;
-    const { window, termWithoutDates } = readValidityFromNotes(notes);
+    const { window, termWithoutDates } = recordValidity(record ?? {});
 
     if (window && isWindowExpired(window, now)) {
       errors.push(
