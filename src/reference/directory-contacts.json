@@ -11,6 +11,17 @@
         "Emergencies",
         "Safety escorts",
         "Incident reports"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/publicsafety/",
+          "section": "Academic Complex C-Wing, C-102 (ground floor)",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -24,30 +35,58 @@
         "Safety escorts",
         "Lost & found",
         "General safety questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "Public Safety - ",
+          "fields": [
+            "phone"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/publicsafety/",
+          "section": "Public Safety Contact Information",
+          "fields": [
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
       "name": "Birch Tree Inn",
-      "phone": "(201) 684-7592",
       "category": "Dining",
-      "email": "jeff.dannhardt@sodexo.com",
       "department": "Dining Services",
       "helpsWith": [
         "Meal service info",
         "Dining questions"
-      ]
+      ],
+      "evidence": []
     },
     {
       "name": "Registrar",
       "phone": "(201) 684-7695",
       "category": "Academic",
-      "email": "registrar@ramapo.edu",
+      "email": "reg@ramapo.edu",
       "department": "Office of the Registrar",
       "office": "D-224",
       "helpsWith": [
         "Registration",
         "Transcripts",
         "Graduation records"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/registrar/",
+          "section": "Contact Information:",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -62,11 +101,22 @@
         "Degree planning",
         "Course withdrawal guidance",
         "Academic support"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/studentsuccess/",
+          "section": "D-207 (Academic Building)",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
       "name": "Anisfield School of Business",
-      "phone": "(201) 684-7378",
+      "phone": "(201) 684-7379",
       "category": "Academic",
       "email": "asb@ramapo.edu",
       "department": "Anisfield School of Business",
@@ -75,6 +125,17 @@
         "Business programs",
         "School contacts",
         "Academic questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/asb/",
+          "section": "Contact Us",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -88,6 +149,17 @@
         "FAFSA",
         "Aid packages",
         "Funding questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/finaid/",
+          "section": "Office of Financial Aid",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -102,45 +174,80 @@
         "Account access",
         "Canvas help",
         "Account lockout"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/its/",
+          "section": "Tech Support",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
       ]
     },
     {
       "name": "Health Services",
       "phone": "(201) 684-7536",
       "category": "Health",
-      "email": "immunize@ramapo.edu",
       "department": "Health Services",
-      "office": "D-216C",
       "helpsWith": [
         "Appointments",
         "Immunization records",
         "Medical forms"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.valleyhealth.com/save-your-spot-ramapo-college-health-services",
+          "section": "Save Your Spot - Ramapo College Health Services",
+          "fields": [
+            "phone"
+          ]
+        }
       ]
     },
     {
       "name": "Counseling Center",
       "phone": "(201) 684-7522",
       "category": "Health",
-      "email": "studentwellness@ramapo.edu",
       "department": "Counseling Services",
       "office": "D-216",
       "helpsWith": [
         "Mental health support",
         "Crisis support",
         "Wellness resources"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/counseling/",
+          "section": "Counseling Services",
+          "fields": [
+            "phone",
+            "office"
+          ]
+        }
       ]
     },
     {
       "name": "Housing & Residence Life",
-      "phone": "(201) 684-7453",
+      "phone": "(201) 684-7461",
       "category": "Housing",
       "email": "reslife@ramapo.edu",
       "department": "Residence Life",
-      "office": "The Lodge",
       "helpsWith": [
         "Housing assignments",
         "Room changes",
         "Residence policies"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/reslife/",
+          "section": "Office of Residence Life",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
       ]
     },
     {
@@ -154,29 +261,72 @@
         "Student clubs",
         "Campus events",
         "Leadership opportunities"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/homecoming/",
+          "section": "Center for Student Involvement",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/csi/roadrunner-central/",
+          "section": "Hours of Operation:",
+          "fields": [
+            "office"
+          ]
+        }
       ]
     },
     {
       "name": "Athletics",
-      "phone": "(201) 684-7095",
+      "phone": "(201) 684-7674",
       "category": "Athletics",
-      "email": "information@ramapo.edu",
       "department": "Athletics",
       "helpsWith": [
         "Varsity athletics",
         "Team contacts"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "Athletics - ",
+          "fields": [
+            "phone"
+          ]
+        }
       ]
     },
     {
       "name": "Library",
-      "phone": "(201) 684-7578",
+      "phone": "(201) 684-7575",
       "category": "Academic",
-      "email": "refdesk@ramapo.edu",
+      "email": "circ@ramapo.edu",
       "department": "Potter Library",
       "helpsWith": [
         "Research help",
         "Citation support",
         "Borrowing services"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/library/",
+          "section": "Library News",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/library/circulation/",
+          "section": "Circulation Services and Policies",
+          "fields": [
+            "phone"
+          ]
+        }
       ]
     },
     {
@@ -189,6 +339,26 @@
         "Cashiering and billing",
         "Calculating and processing student refunds",
         "Tuition payment plans"
+      ],
+      "office": "D-Wing, First Floor",
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/student-accounts/",
+          "section": "To schedule a personal appointment, please email studentaccts@ramapo.edu and include “Requesting Appointment” in the subject line.",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/student-accounts/contacts/",
+          "section": "Methods of Contact:",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
       ]
     },
     {
@@ -201,6 +371,18 @@
         "Freshman, transfer, international and returning student admission",
         "Early Decision & Early Action",
         "Scholarships for admitted freshmen"
+      ],
+      "office": "McBride House",
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/undergraduate/",
+          "section": "Ramapo College Office of Admissions",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -213,6 +395,18 @@
         "Career exploration",
         "Internships and experiential learning",
         "Career events and fairs"
+      ],
+      "office": "C-209",
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/careercenter/",
+          "section": "Contact and Hours of Operation",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -225,6 +419,24 @@
         "Accommodations for students with disabilities",
         "Alternative testing/exam requests",
         "Housing accommodations"
+      ],
+      "office": "C-Wing, Room 205",
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/oss/",
+          "section": "Welcome to the Office of Specialized Services",
+          "fields": [
+            "phone"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/oss/",
+          "section": "Disability Support Overview",
+          "fields": [
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -238,6 +450,17 @@
         "Student well-being support programs and activities",
         "Dean's Certification forms for transferring students",
         "Interim Suspension hearings"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/student-affairs/",
+          "section": "C-212",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -251,6 +474,17 @@
         "Access to higher education for qualified New Jersey students",
         "Advising and academic mentoring",
         "Pre-Freshman Summer Program"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/eof-program/",
+          "section": "EOF Services",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -264,6 +498,17 @@
         "Code of Conduct process",
         "Disciplinary hearings",
         "Completing sanctions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/student-conduct/",
+          "section": "Office of Student Conduct Contacts",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -275,6 +520,17 @@
         "One-to-one writing and reading consulting sessions",
         "All stages of the writing process, from brainstorming to polishing final papers",
         "Reading strategies for difficult texts"
+      ],
+      "office": "Peter P. Mercer Learning Commons, Room 420",
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/crw/",
+          "section": "Peter P. Mercer Learning Commons | Room 420 (4th floor)",
+          "fields": [
+            "phone",
+            "office"
+          ]
+        }
       ]
     },
     {
@@ -286,6 +542,25 @@
         "Reporting sex discrimination and sexual misconduct",
         "Responses to complaints of sexual violence, harassment or discrimination",
         "Title IX training and prevention"
+      ],
+      "office": "D-104",
+      "email": "titleix@ramapo.edu",
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/titleix/",
+          "section": "Who is the College’s Director of Title IX/Title IX Coordinator?",
+          "fields": [
+            "phone",
+            "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/oabc/complaint-processing-forms/",
+          "section": "Discrimination/Bias/Title IX Complaints and Resources",
+          "fields": [
+            "email"
+          ]
+        }
       ]
     }
   ],
@@ -294,41 +569,76 @@
       "name": "Cindy R. Jebb, Ph.D.",
       "title": "President",
       "unit": "Office of the President",
-      "phone": "(201) 684-7500",
-      "email": "information@ramapo.edu",
-      "profileUrl": "https://www.ramapo.edu/president/biography/"
+      "phone": "(201) 684-7607",
+      "email": "president@ramapo.edu",
+      "profileUrl": "https://www.ramapo.edu/president/biography/",
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/college-leadership/",
+          "section": "President:",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ]
     },
     {
       "name": "Michael Middleton, Ph.D.",
       "title": "Provost/Vice President for Teaching, Learning, and Growth",
       "unit": "Office of the Provost",
-      "phone": "(201) 684-7330",
-      "email": "provost@ramapo.edu",
-      "profileUrl": "https://www.ramapo.edu/provost/"
+      "phone": "(201) 684-7515",
+      "profileUrl": "https://www.ramapo.edu/provost/",
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/college-leadership/",
+          "section": "Mission Element Team:",
+          "near": "Michael Middleton",
+          "fields": [
+            "phone"
+          ]
+        }
+      ]
     },
     {
       "name": "Joyce Shim, Ph.D., MIA, MSW",
       "title": "Vice Provost for Academic and Faculty Affairs",
       "unit": "Office of the Provost",
-      "phone": "(201) 684-7585",
       "email": "viceprovost@ramapo.edu",
-      "profileUrl": "https://www.ramapo.edu/provost/"
+      "profileUrl": "https://www.ramapo.edu/provost/",
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/about/accreditation/",
+          "section": "2028 Self Study",
+          "fields": [
+            "email"
+          ]
+        }
+      ]
     },
     {
       "name": "Stasi Papandreou Webber",
       "title": "Special Assistant to the President",
       "unit": "Office of the President",
-      "phone": "Ext. 7537",
-      "email": "apapandr@ramapo.edu",
-      "profileUrl": "https://www.ramapo.edu/president/advancing-requests-to-the-office-of-the-president/"
+      "profileUrl": "https://www.ramapo.edu/president/advancing-requests-to-the-office-of-the-president/",
+      "evidence": []
     },
     {
       "name": "Brittany A. Williams-Goldstein",
       "title": "Chief of Staff and Board Liaison",
       "unit": "Office of the President",
-      "phone": "Ext. 7609",
-      "email": "bwillia1@ramapo.edu",
-      "profileUrl": "https://www.ramapo.edu/president/advancing-requests-to-the-office-of-the-president/"
+      "phone": "(201) 684-7609",
+      "profileUrl": "https://www.ramapo.edu/president/advancing-requests-to-the-office-of-the-president/",
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/college-leadership/",
+          "section": "Mission Element Team:",
+          "near": "Brittany A. Williams-Goldstein",
+          "fields": [
+            "phone"
+          ]
+        }
+      ]
     }
   ]
 }

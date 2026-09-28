@@ -6,6 +6,7 @@ import { execFileSync } from 'child_process';
 import 'dotenv/config';
 import { Pool, type PoolClient } from 'pg';
 import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
+import { loadCapturedPages } from '../../src/directory/contact-evidence';
 import { parseTransportationSchedules } from '../../ingestion/transportation-schedule';
 import { validateRawDatasetV1 } from '../../ingestion/raw-types';
 import { normalizeMenuWeek } from '../../ingestion/menu-data';
@@ -356,9 +357,17 @@ async function insertStructured(
     }
   }
 
+  // Reviewed office and staff values publish only where the page section they cite
+  // states them in this run's capture; the rest are withheld and logged.
   const directoryContacts = buildStructuredDirectoryContacts(
-    readJson<unknown>('data/normalized/faculty.json')
+    readJson<unknown>('data/normalized/faculty.json'),
+    loadCapturedPages()
   );
+  for (const contact of directoryContacts) {
+    for (const withheld of contact.evidence?.withheld ?? []) {
+      console.warn(`Withheld ${contact.name} ${withheld.field} ${withheld.value}: ${withheld.reason}`);
+    }
+  }
   for (const contact of directoryContacts) {
     const name = cleanText(contact.name);
     if (!name) continue;

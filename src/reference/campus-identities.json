@@ -7640,9 +7640,9 @@
             "field": "contact_identity",
             "values": [
               "key:office:library",
-              "email:refdesk@ramapo.edu"
+              "email:circ@ramapo.edu"
             ],
-            "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+            "evidence": "Reviewed directory contact key and the role email its own page states; no shared-phone matching."
           }
         },
         {
@@ -7673,10 +7673,9 @@
           "selector": {
             "field": "contact_identity",
             "values": [
-              "key:office:birch-tree-inn",
-              "email:jeff.dannhardt@sodexo.com"
+              "key:office:birch-tree-inn"
             ],
-            "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+            "evidence": "Reviewed directory contact key; no shared-phone matching."
           }
         },
         {
@@ -7760,10 +7759,9 @@
           "selector": {
             "field": "contact_identity",
             "values": [
-              "key:office:counseling-center",
-              "email:studentwellness@ramapo.edu"
+              "key:office:counseling-center"
             ],
-            "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+            "evidence": "Reviewed directory contact key; no shared-phone matching."
           }
         }
       ]
@@ -7961,10 +7959,9 @@
           "selector": {
             "field": "contact_identity",
             "values": [
-              "key:office:health-services",
-              "email:immunize@ramapo.edu"
+              "key:office:health-services"
             ],
-            "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+            "evidence": "Reviewed directory contact key; no shared-phone matching."
           }
         }
       ]
@@ -8003,9 +8000,9 @@
             "field": "contact_identity",
             "values": [
               "key:office:registrar",
-              "email:registrar@ramapo.edu"
+              "email:reg@ramapo.edu"
             ],
-            "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+            "evidence": "Reviewed directory contact key and the role email its own page states; no shared-phone matching."
           }
         },
         {
