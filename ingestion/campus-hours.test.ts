@@ -100,8 +100,17 @@ test('a facility closure parses without an opening-time line and unlisted days r
 });
 
 test('library capture keeps term bounds and withholds conflicting repeated research years', () => {
-  const rows = parseLibraryHours(library);
-  assert.equal(rows.find((row) => row.name === 'Research Help Desk')?.availabilityIssue,
+  // The repeated sidebar keeps an older year above the same hours: only the label is stale.
+  const stale = parseLibraryHours(library).find((row) => row.name === 'Research Help Desk')!;
+  assert.equal(stale.availabilityIssue, undefined);
+  assert.equal(stale.hours.Monday, '9:00am-9:00pm');
+  assert.match(stale.notes ?? '', /same hours under an older year/);
+  // Different hours, or a newer year only in the repeat, still withhold.
+  const changed = parseLibraryHours(library.replace(/(Research Help Hours\n[^]*?Mon-Thu: )9:00am/, '$110:00am'));
+  assert.equal(changed.find((row) => row.name === 'Research Help Desk')?.availabilityIssue,
+    'conflicting-source-validity');
+  const newer = parseLibraryHours(library.replace('Dec. 15, 2025', 'Dec. 15, 2027'));
+  assert.equal(newer.find((row) => row.name === 'Research Help Desk')?.availabilityIssue,
     'conflicting-source-validity');
   const consistent = parseLibraryHours(library.replace('Dec. 15, 2025', 'Dec. 15, 2026'));
   assert.equal(consistent.find((row) => row.name === 'Research Help Desk')?.availabilityIssue, undefined);
@@ -123,10 +132,11 @@ test('every published hour has its own capture provenance and every omission is 
   assert.equal(raw.length, 13);
   const result = campusHoursPublication(raw, new Date(collectedAt));
   assert.deepEqual(result.publishable.filter(row => !row.availabilityIssue).map((row) => row.name), [
-    'Swimming Pool', 'Lodge Fitness Center (College Park Apartments)', 'Library (Main Building)', 'Game Lab',
+    'Swimming Pool', 'Lodge Fitness Center (College Park Apartments)', 'Library (Main Building)',
+    'Research Help Desk', 'Game Lab',
   ]);
   assert.equal(result.publishable.length, 13);
-  assert.equal(result.omitted.length, 9);
+  assert.equal(result.omitted.length, 8);
   assert.equal(result.omitted.filter((row) => row.reason === 'unbounded-term').length, 4);
   assert.deepEqual(validateCampusHours(raw), raw);
   for (const row of raw) assert.equal(row.collectedAt, collectedAt);
