@@ -4,7 +4,7 @@ import rawSeed from '../reference/campus-identities.json';
 import reviews from '../reference/campus-identity-reviews.json';
 import type { CampusIdentities, CampusIdentity } from './campus-identities';
 import { validateCampusIdentities } from './campus-identities';
-import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, programFamily, type AliasLedger, type ReviewedAlias } from './identity-aliases';
+import { aliasRecords, applyPublishedAliases, applyReviewedAliases, degreeField, noteAlias, programFamily, type AliasLedger, type ReviewedAlias } from './identity-aliases';
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 const contact = (key: string, source = 'campus-directory') => [{ collection: 'contacts' as const, source_key: source, source_record_keys: [key] }];
@@ -18,6 +18,39 @@ test('a program family is the catalog name without its degree designation', () =
   for (const name of ['Nursing RN to BSN', 'Elementary Education BS (TA to Teacher)', 'SB-BA-Matric Undeclared', 'Prov-MASE', 'BS']) {
     assert.equal(programFamily(name), null, name);
   }
+});
+
+test('a catalog degree that names its field gives every program on it that family', () => {
+  assert.equal(degreeField('Bachelor of Science in Nursing'), 'Nursing');
+  assert.equal(degreeField('Master of Science in Nursing'), 'Nursing');
+  for (const degree of ['Bachelor of Science', 'Doctor of Nursing Practice', 'Master of Business Administration', 'Minor', '']) {
+    assert.equal(degreeField(degree), null, degree);
+  }
+  const program = (n: number, name: string, key: string): CampusIdentity =>
+    ({ id: id(n), kind: 'program', name, aliases: [], links: [{ collection: 'programs', source_key: 'academic-programs', source_record_keys: [key] }] });
+  const entities = [
+    program(1, 'Nursing Accelerated BSN', 'catalog:SN-BSN-NURA'),
+    program(2, 'Nursing RN to BSN', 'catalog:SN-BSN-NURS'),
+    program(3, 'Nursing MSN', 'catalog:SN-MSN-NURM'),
+    program(4, 'Nursing Practice DNP', 'catalog:SN-DNP-NUPR'),
+  ];
+  const rows = new Map<string, Record<string, unknown>>([
+    ['programs:academic-programs:catalog:SN-BSN-NURA', { degree: 'Bachelor of Science in Nursing' }],
+    ['programs:academic-programs:catalog:SN-BSN-NURS', { degree: 'Bachelor of Science in Nursing' }],
+    ['programs:academic-programs:catalog:SN-MSN-NURM', { degree: 'Master of Science in Nursing' }],
+    ['programs:academic-programs:catalog:SN-DNP-NUPR', { degree: 'Doctor of Nursing Practice' }],
+  ]);
+  const ledger: AliasLedger = new Map();
+  applyPublishedAliases(entities, rows, ledger);
+  assert.deepEqual(entities.map(e => e.aliases), [
+    ['Nursing Accelerated', 'Nursing'], ['Nursing'], ['Nursing'], ['Nursing Practice'],
+  ]);
+  const degree = (key: string) => ({ basis: 'program_family', evidence: { collection: 'programs', source_key: 'academic-programs', source_record_key: key, field: 'degree' } });
+  assert.deepEqual(aliasRecords(entities, ledger).filter(r => r.alias === 'Nursing').map(r => [r.entity, r.sources]), [
+    ['Nursing Accelerated BSN', [degree('catalog:SN-BSN-NURA')]],
+    ['Nursing RN to BSN', [degree('catalog:SN-BSN-NURS')]],
+    ['Nursing MSN', [{ basis: 'program_family' }, degree('catalog:SN-MSN-NURM')]],
+  ]);
 });
 
 test('aliases come only from the identity own name and records, and shared aliases stay shared', () => {
