@@ -42,7 +42,7 @@ import {
   programNameScore,
 } from './program-search';
 import { CURRENT_MENU_VENUE_NAME, diningVenueRecord } from '../dining-venues';
-import { readValidityFromNotes } from '../validity';
+import { recordValidity } from '../validity';
 import { courseCredits } from '../course-record';
 import { calendarConcept } from '../calendar-concepts';
 
@@ -464,7 +464,7 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
     return locations
       .filter((location) => {
         if (!onDate) return true;
-        const { window } = readValidityFromNotes(location.notes);
+        const { window } = recordValidity(location);
         if (!window) return true;
         return onDate >= window.validFrom && onDate <= window.validUntil;
       })

@@ -345,7 +345,7 @@ export function parseLibraryHours(pageText: string): LocationHours[] {
         const sameHours = repeats.every((repeat) => Object.entries(repeat.listed)
             .every(([day, schedule]) => help.hours[day] === schedule));
         if (latest && sameHours) {
-            help.notes += '. A repeated schedule on the page gives the same hours under an older year.';
+            help.derivation = 'A repeated schedule on the page gives the same hours under an older year.';
         } else {
             help.availabilityIssue = 'conflicting-source-validity';
             help.notes += '. Source repeats research-help hours with conflicting applicability dates; withheld.';
@@ -474,9 +474,11 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     const captured = collectedAt.slice(0, 10);
     const term = terms.filter((window) => window.until >= captured).sort((a, b) => a.from.localeCompare(b.from))[0];
     if (!term) throw new Error(`No academic calendar semester dates the office hours for ${name}`);
-    const year = term.until.slice(0, 4);
-    return { name, hours, notes: `${lines[index].match(label)![0]} ${text} Applies during ${term.name} `
-        + `per the academic calendar (${shortDate(term.from)} - ${shortDate(term.until)}, ${year}).` };
+    // Notes carry only the page's own words; the dating is the collector's, so it stays apart.
+    return { name, hours, notes: `${lines[index].match(label)![0]} ${text}`,
+        validFrom: term.from, validUntil: term.until,
+        derivation: `Applies during ${term.name} per the academic calendar `
+            + `(${shortDate(term.from)} - ${shortDate(term.until)}, ${term.until.slice(0, 4)}).` };
 }
 
 export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireGeneralSource = false,

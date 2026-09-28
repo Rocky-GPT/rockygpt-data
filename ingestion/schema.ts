@@ -132,6 +132,8 @@ export interface LocationHours {
   collectedAt?: string;
   validFrom?: string;
   validUntil?: string;
+  /** How the collector read or dated the schedule; kept out of the published notes. */
+  derivation?: string;
   availabilityIssue?: (typeof HOURS_AVAILABILITY_ISSUES)[number];
 }
 
@@ -493,7 +495,7 @@ export function validateCampusHours(input: unknown): LocationHours[] {
     const normalized: LocationHours = { name, hours };
     const notes = asOptionalString(location.notes);
     if (notes) normalized.notes = notes;
-    for (const key of ['sourceUrl', 'collectedAt', 'validFrom', 'validUntil'] as const) {
+    for (const key of ['sourceUrl', 'collectedAt', 'validFrom', 'validUntil', 'derivation'] as const) {
       const value = asOptionalString(location[key]);
       if (value) normalized[key] = value;
     }

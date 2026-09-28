@@ -5,7 +5,7 @@ import {
   campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
   OFFICE_HOURS_PAGES, parseOfficeHours, termWindows,
 } from './campus-hours';
-import { readValidityFromNotes } from '../src/data-v2/validity';
+import { partitionHoursForPublication, recordValidity } from '../src/data-v2/validity';
 import { validateCampusHours } from './schema';
 import { hoursSourceErrors } from '../pipeline/quality/hours-coverage';
 
@@ -106,7 +106,9 @@ test('library capture keeps term bounds and withholds conflicting repeated resea
   const stale = parseLibraryHours(library).find((row) => row.name === 'Research Help Desk')!;
   assert.equal(stale.availabilityIssue, undefined);
   assert.equal(stale.hours.Monday, '9:00am-9:00pm');
-  assert.match(stale.notes ?? '', /same hours under an older year/);
+  // The collector's reading stays out of the notes the Brain states.
+  assert.doesNotMatch(stale.notes ?? '', /older year/);
+  assert.match(stale.derivation ?? '', /same hours under an older year/);
   // Different hours, or a newer year only in the repeat, still withhold.
   const changed = parseLibraryHours(library.replace(/(Research Help Hours\n[^]*?Mon-Thu: )9:00am/, '$110:00am'));
   assert.equal(changed.find((row) => row.name === 'Research Help Desk')?.availabilityIssue,
@@ -206,11 +208,17 @@ test('office pages give their regular hours for the semester the academic calend
   assert.equal(fall.hours.Monday, '8:30am-4:30pm');
   assert.equal(fall.hours.Friday, '8:30am-4:30pm');
   assert.equal(fall.hours.Saturday, 'Hours unavailable');
-  assert.doesNotMatch(fall.notes!, /Summer|5:15/);
-  assert.deepEqual(readValidityFromNotes(fall.notes).window, { validFrom: '2026-08-26', validUntil: '2026-12-16' });
+  // Notes are the page's words; the calendar dating is the collector's.
+  assert.equal(fall.notes, 'Fall/Spring Hours: 8:30 A.M. - 4:30 P.M. Monday - Friday');
+  assert.deepEqual([fall.validFrom, fall.validUntil], ['2026-08-26', '2026-12-16']);
+  assert.match(fall.derivation!, /Fall 2026 per the academic calendar \(Aug\. 26 - Dec\. 16, 2026\)/);
+  // The page's own "Fall/Spring" names no dates, yet the record is dated and publishable.
+  assert.deepEqual(recordValidity(fall).window, { validFrom: '2026-08-26', validUntil: '2026-12-16' });
+  assert.equal(partitionHoursForPublication([fall], new Date('2026-09-28T12:00:00Z')).publishable.length, 1);
+  assert.equal(partitionHoursForPublication([fall], new Date('2026-12-20T12:00:00Z')).omitted[0].reason, 'expired');
   // Captured between semesters, the schedule is dated by the next one, never by winter session.
   const spring = parseOfficeHours('Registrar', registrar.label, page, '2026-12-20T13:00:00Z', terms);
-  assert.deepEqual(readValidityFromNotes(spring.notes).window, { validFrom: '2027-01-19', validUntil: '2027-05-12' });
+  assert.deepEqual([spring.validFrom, spring.validUntil], ['2027-01-19', '2027-05-12']);
   // Same-line schedules, and a Monday-Thursday week.
   const accounts = parseOfficeHours('Student Accounts', /^Academic Year:/i,
     'Academic Year: Monday-Friday, 8:30 a.m.-4:30 p.m.\nSummer: Monday-Thursday, 8:00 a.m-5:15 p.m.', '2026-09-28T13:00:00Z', terms);

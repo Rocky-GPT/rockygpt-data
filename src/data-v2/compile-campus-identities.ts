@@ -2,7 +2,7 @@ import { load } from 'cheerio';
 import type { PoolClient } from 'pg';
 import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
-import { compileArchwayIdentities, linkReviewedArchwayGroups, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact, type ReviewedArchwayGroup } from './archway-identities';
+import { compileArchwayIdentities, linkReviewedArchwayContacts, linkReviewedArchwayGroups, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact, type ReviewedArchwayContact, type ReviewedArchwayGroup } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
@@ -151,7 +151,7 @@ export interface CompiledIdentityArtifacts {
 /** Inputs outside the release snapshot: Archway captures, the committed campus map, the reviewed schools and the catalog's subject list. */
 export interface IdentityInputs extends ArchwayIdentityInputs {
   campusMap?: unknown; campusSchools?: ReviewedSchools; courseSubjects?: CourseSubjectsInput;
-  identityReviews?: { aliases?: ReviewedAlias[]; buildings?: ReviewedBuilding[]; locations?: ReviewedLocation[]; rooms?: ReviewedRoom[]; archway_groups?: ReviewedArchwayGroup[] };
+  identityReviews?: { aliases?: ReviewedAlias[]; buildings?: ReviewedBuilding[]; locations?: ReviewedLocation[]; rooms?: ReviewedRoom[]; archway_groups?: ReviewedArchwayGroup[]; archway_contacts?: ReviewedArchwayContact[] };
   /** The published graduation plans artifact, whose plans name their programs' catalog codes. */
   graduationPlans?: unknown;
   /** The published program pages artifact, whose pages name their own programs' catalog codes. */
@@ -305,6 +305,16 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const archway = compileArchwayIdentities(snapshot, inputs, reserved, new Set([...schools.ownedClubs, ...offices.owned]), ledger);
   entities.push(...archway.entities);
   unresolved.push(...archway.unresolved);
+  // Reviewed contacts of Archway groups' own desks join those groups' identities; they
+  // were reported unlinked above only because no seed identity claims them.
+  const directoryContacts = new Map(candidates.filter(c => c.collection === 'contacts' && c.source === 'campus-directory').map(c => [c.key, c.row]));
+  const archwayContacts = linkReviewedArchwayContacts(archway.entities, directoryContacts, inputs.identityReviews?.archway_contacts ?? [],
+    new Set([...owners.keys()].filter(key => key.startsWith('contacts:campus-directory:')).map(key => key.slice('contacts:campus-directory:'.length))));
+  for (let index = unresolved.length - 1; index >= 0; index--) {
+    const issue = unresolved[index];
+    if (issue.kind === 'unlinked_record' && issue.collection === 'contacts' && archwayContacts.linked.has(issue.record ?? '')) unresolved.splice(index, 1);
+  }
+  unresolved.push(...archwayContacts.unresolved);
   const campusBuildings = campusBuildingsArtifact(inputs.campusMap, inputs.identityReviews?.buildings, inputs.identityReviews?.locations, inputs.identityReviews?.rooms);
   const contactRows = new Map(candidates.filter(c => c.collection === 'contacts').map(c => [`${c.source}:${c.key}`, c.row]));
   const places = compileBuildingIdentities(campusBuildings, entities, contactRows);

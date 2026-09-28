@@ -120,3 +120,15 @@ test('a reviewed reading places only its exact published room value, in one name
     { collection: 'contacts', source_key: 'faculty', source_record_key: 'faculty:reader', field: 'office' },
   ] });
 });
+
+test('an Archway group with a reviewed desk contact is placed by that room; one without stays unplaced', () => {
+  const artifact = campusBuildingsArtifact(map);
+  const withDesk: CampusIdentity = { id: '00000000-0000-4000-8000-000000000011', kind: 'organization', name: 'Women\'s Center', aliases: [], links: [
+    { collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['Women\'s Center'] },
+    { collection: 'contacts', source_key: 'campus-directory', source_record_keys: ['office:women-s-center'] },
+  ] };
+  const clubOnly: CampusIdentity = { id: '00000000-0000-4000-8000-000000000012', kind: 'club', name: 'Chess Club', aliases: [], links: [{ collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['Chess Club'] }] };
+  const { buildings } = compileBuildingIdentities(artifact, [withDesk, clubOnly], new Map([['campus-directory:office:women-s-center', { office: 'D-224' }]]));
+  assert.deepEqual(withDesk.relationships?.map(r => [r.type, 'target_entity_id' in r && r.target_entity_id]), [['located_at', buildings[0].id]]);
+  assert.equal(clubOnly.relationships, undefined);
+});
