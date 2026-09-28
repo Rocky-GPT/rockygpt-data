@@ -88,6 +88,14 @@
       "alias": "CS",
       "reviewed_at": "2026-09-28",
       "note": "Approved by Dan on 2026-09-28: students type \"CS\" for Computer Science, and \"who is the cs convener\" found nothing named CS. All four Computer Science programs carry it, as they carry \"Computer Science\"; a lookup by it returns the four, and answers once when they share the answer asked."
+    },
+    {
+      "entity_id": "378a9e7f-1057-5bf9-a556-25189866b944",
+      "entity": "Peter P. Mercer Learning Commons",
+      "alias": "Learning Commons",
+      "reviewed_at": "2026-09-28",
+      "source_url": "https://www.ramapo.edu/learning-commons/",
+      "note": "Approved by Dan on 2026-09-28: students say \"the Learning Commons\", and \"the dining place in the Learning Commons\" found nothing, since the building's only name was its full one. The college's own site lives at /learning-commons/ and its pages call it the Learning Commons. No other identity carries the name."
     }
   ],
   "buildings": [
