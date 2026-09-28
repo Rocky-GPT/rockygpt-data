@@ -21,7 +21,7 @@ import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 import { assertQualityV2, validateCurrentDatasetV2 } from '../quality/validate';
 import { CRITICAL_FACT_VALIDITY_V2, CRITICAL_FACT_VALUES_V2 } from './check-quality';
-import { readValidityFromNotes } from '../../src/data-v2/validity';
+import { recordValidity } from '../../src/data-v2/validity';
 import { sourceKeyForPath } from '../context-sources';
 import {
   chunkDocumentSections,
@@ -215,9 +215,9 @@ async function insertStructured(
       collectedAt?: string; sourceUrl?: string; validFrom?: string; validUntil?: string }>
   >('data/normalized/hours.json');
   for (const location of campusHours) {
-    const { window } = readValidityFromNotes(location.notes);
-    const validFrom = location.validFrom || window?.validFrom || null;
-    const validUntil = location.validUntil || window?.validUntil || null;
+    const { window } = recordValidity(location);
+    const validFrom = window?.validFrom || null;
+    const validUntil = window?.validUntil || null;
     for (const [day, schedule] of Object.entries(location.hours || {})) {
       const recordKey = `${location.name}:${day}`;
       const hours = normalizeOpeningHours(schedule);

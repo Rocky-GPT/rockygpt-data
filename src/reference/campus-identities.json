@@ -7652,10 +7652,9 @@
           "selector": {
             "field": "name",
             "values": [
-              "Library (Main Building)",
-              "Research Help Desk"
+              "Library (Main Building)"
             ],
-            "evidence": "Reviewed schedule subjects from the Library's own hours page: its Circulation Desk section, published as Library (Main Building), gives the Library's operating hours, and its Research Help Desk section gives the reference desk's hours, the desk behind the Library's refdesk contact. Each schedule keeps its own name. The scope is operating hours, not staff/phone availability."
+            "evidence": "Reviewed schedule subject from the Library's own hours page: its Circulation Desk section, published as Library (Main Building), gives the Library's operating hours. The Research Help Desk section is the desk's own identity. The scope is operating hours, not staff/phone availability."
           }
         }
       ]
@@ -12086,6 +12085,29 @@
               "key:office:id-card-room"
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/publicsafety/id-cards/, read 2026-09-28) states this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "afe2b03a-ff5b-4e43-93ab-735ce5fa9d05",
+      "kind": "facility",
+      "name": "Research Help Desk",
+      "aliases": [
+        "Research Help",
+        "Reference Desk"
+      ],
+      "links": [
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Research Help Desk"
+            ],
+            "evidence": "Reviewed schedule subject from the Library's own hours page, whose section is headed \"Research Help Hours\"; the campus phone listing names the same desk \"Library - Reference\". Kept apart from the Library so each has one schedule. The scope is operating hours, not staff/phone availability."
           }
         }
       ]
