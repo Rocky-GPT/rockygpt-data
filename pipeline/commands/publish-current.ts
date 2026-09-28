@@ -363,10 +363,21 @@ async function insertStructured(
     readJson<unknown>('data/normalized/faculty.json'),
     loadCapturedPages()
   );
+  let reviewedValues = 0;
+  let withheldValues = 0;
   for (const contact of directoryContacts) {
-    for (const withheld of contact.evidence?.withheld ?? []) {
+    if (!contact.evidence) continue;
+    reviewedValues += [contact.phone || contact.raw_phone, contact.email, contact.office].filter(Boolean).length
+      + contact.evidence.withheld.length;
+    withheldValues += contact.evidence.withheld.length;
+    for (const withheld of contact.evidence.withheld) {
       console.warn(`Withheld ${contact.name} ${withheld.field} ${withheld.value}: ${withheld.reason}`);
     }
+  }
+  // A page that changed withholds a value or two. Losing a quarter of them means the
+  // captures themselves are missing, so stop rather than publish offices with no phones.
+  if (withheldValues > Math.max(5, reviewedValues * 0.25)) {
+    throw new Error(`${withheldValues} of ${reviewedValues} reviewed contact values have no supporting page in this run's captures.`);
   }
   for (const contact of directoryContacts) {
     const name = cleanText(contact.name);
