@@ -6,6 +6,8 @@
  * search-index shape consumed by the directory API and modal UI.
  */
 
+import type { ContactEvidence } from './contact-evidence';
+
 /**
  * Top-level directory buckets shown in the directory modal and API response.
  */
@@ -16,12 +18,14 @@ export type DirectoryTab = 'Offices' | 'Staff & Faculty' | 'Others';
  */
 export interface OfficeDirectoryContact {
   name: string;
-  phone: string;
+  phone?: string;
   category: string;
   email?: string;
   department: string;
   office?: string;
   helpsWith: string[];
+  /** The page sections that state this office's phone, email and office. */
+  evidence: ContactEvidence[];
 }
 
 /**
@@ -35,6 +39,8 @@ export interface OtherDirectoryContact {
   phone?: string;
   office?: string;
   profileUrl?: string;
+  /** The page sections that state this person's phone, email and office. */
+  evidence: ContactEvidence[];
 }
 
 /**
