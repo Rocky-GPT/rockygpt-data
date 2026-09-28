@@ -60,6 +60,34 @@
       "alias": "Starbucks",
       "reviewed_at": "2026-09-28",
       "note": "Approved by Dan on 2026-09-28 with the other place nicknames: students say \"Starbucks\" for the only Starbucks on campus, whose full name no one types."
+    },
+    {
+      "entity_id": "4483f628-fd2b-4929-8c7c-7105ba2fd862",
+      "entity": "Computer Science BS",
+      "alias": "CS",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved by Dan on 2026-09-28: students type \"CS\" for Computer Science, and \"who is the cs convener\" found nothing named CS. All four Computer Science programs carry it, as they carry \"Computer Science\"; a lookup by it returns the four, and answers once when they share the answer asked."
+    },
+    {
+      "entity_id": "6b2bba9f-a68f-47c3-a0dd-11903ae325f3",
+      "entity": "Computer Science MS",
+      "alias": "CS",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved by Dan on 2026-09-28: students type \"CS\" for Computer Science, and \"who is the cs convener\" found nothing named CS. All four Computer Science programs carry it, as they carry \"Computer Science\"; a lookup by it returns the four, and answers once when they share the answer asked."
+    },
+    {
+      "entity_id": "d7ceae44-1113-4237-a674-7545223e548f",
+      "entity": "Computer Science 4+1",
+      "alias": "CS",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved by Dan on 2026-09-28: students type \"CS\" for Computer Science, and \"who is the cs convener\" found nothing named CS. All four Computer Science programs carry it, as they carry \"Computer Science\"; a lookup by it returns the four, and answers once when they share the answer asked."
+    },
+    {
+      "entity_id": "7786bb83-850a-49a5-8d7d-caf101b0618c",
+      "entity": "Computer Science Minor",
+      "alias": "CS",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved by Dan on 2026-09-28: students type \"CS\" for Computer Science, and \"who is the cs convener\" found nothing named CS. All four Computer Science programs carry it, as they carry \"Computer Science\"; a lookup by it returns the four, and answers once when they share the answer asked."
     }
   ],
   "buildings": [
@@ -80,6 +108,36 @@
       "source_url": "https://www.ramapo.edu/about/campus-hours/",
       "reviewed_at": "2026-09-24",
       "note": "Approved: the campus-hours page heads the Library's section with this statement and links it to the Library's own hours page. The Library's directory entry publishes no room, so no room prefix places it."
+    },
+    {
+      "entity_id": "88f3c935-406f-4680-a92b-4f0170f0e347",
+      "entity": "The Atrium",
+      "concept3d_id": "1218428",
+      "building": "Student Center (SC)",
+      "statement": "the Atrium, located in the Scott Student Center",
+      "source_url": "https://www.ramapo.edu/reslife/gtcl/",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved by Dan on 2026-09-28. Residence Life's Guide to Community Living (Dining Plan Commonly Used Terms) says: \"The retail operations on campus are the Atrium, located in the Scott Student Center, Dunkin’ located in the Adler Nursing Building, and Common Grounds located in the Peter P. Mercer Learning Commons.\" \"The dining place in the Learning Commons\" found no venue, because no venue was placed in a building."
+    },
+    {
+      "entity_id": "c276b7b9-f74b-473d-8409-b60df022b3c7",
+      "entity": "Dunkin'",
+      "concept3d_id": "1133423",
+      "building": "Adler Center for Nursing Excellence",
+      "statement": "Dunkin’ located in the Adler Nursing Building",
+      "source_url": "https://www.ramapo.edu/reslife/gtcl/",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved by Dan on 2026-09-28. Residence Life's Guide to Community Living (Dining Plan Commonly Used Terms) says: \"The retail operations on campus are the Atrium, located in the Scott Student Center, Dunkin’ located in the Adler Nursing Building, and Common Grounds located in the Peter P. Mercer Learning Commons.\" \"The dining place in the Learning Commons\" found no venue, because no venue was placed in a building."
+    },
+    {
+      "entity_id": "37d9beb2-3352-4f14-bf73-b5508d3309c4",
+      "entity": "We Proudly Serve Starbucks at Common Grounds",
+      "concept3d_id": "1133431",
+      "building": "Peter P. Mercer Learning Commons",
+      "statement": "Common Grounds located in the Peter P. Mercer Learning Commons",
+      "source_url": "https://www.ramapo.edu/reslife/gtcl/",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved by Dan on 2026-09-28. Residence Life's Guide to Community Living (Dining Plan Commonly Used Terms) says: \"The retail operations on campus are the Atrium, located in the Scott Student Center, Dunkin’ located in the Adler Nursing Building, and Common Grounds located in the Peter P. Mercer Learning Commons.\" \"The dining place in the Learning Commons\" found no venue, because no venue was placed in a building."
     }
   ],
   "rooms": [
