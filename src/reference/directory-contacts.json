@@ -562,6 +562,307 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Graduate Admissions",
+      "phone": "(201) 684-7270",
+      "category": "Academic",
+      "email": "graduate@ramapo.edu",
+      "department": "Graduate Admissions",
+      "office": "McBride House",
+      "helpsWith": [
+        "Graduate applications"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/graduate/",
+          "section": "Ramapo College Office of Graduate Admissions",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Testing Center",
+      "phone": "(201) 684-7441",
+      "category": "Academic",
+      "email": "testing@ramapo.edu",
+      "department": "Testing Center",
+      "office": "Laurel Hall, North",
+      "helpsWith": [
+        "Placement testing"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/testing/",
+          "section": "Testing Center",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Payroll",
+      "phone": "(201) 684-7783",
+      "category": "Services",
+      "email": "payroll@ramapo.edu",
+      "department": "Payroll",
+      "office": "D-119",
+      "helpsWith": [
+        "Payroll questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/payroll/",
+          "section": "Staff:",
+          "near": "Payroll General Email",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Berrie Center Box Office",
+      "phone": "(201) 684-7844",
+      "category": "Student Life",
+      "email": "tickets@ramapo.edu",
+      "department": "Berrie Center Box Office",
+      "helpsWith": [
+        "Tickets"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/berriecenter/",
+          "section": "Upcoming Events",
+          "near": "contact the Box Office",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Photography Lab",
+      "phone": "(201) 684-7235",
+      "category": "Academic",
+      "email": "photolab@ramapo.edu",
+      "department": "Photography Lab",
+      "office": "Berrie Center 135",
+      "helpsWith": [
+        "Darkroom",
+        "Film processing"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/photolab/contact/",
+          "section": "CONTACT",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ombuds Office",
+      "phone": "(201) 684-7804",
+      "category": "Services",
+      "email": "jwoods1@ramapo.edu",
+      "department": "Ombuds Office",
+      "helpsWith": [
+        "Dispute resolution"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/ombuds/",
+          "section": "Contacts",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Environmental Health and Safety",
+      "phone": "(201) 684-6252",
+      "category": "Services",
+      "email": "ehs@ramapo.edu",
+      "department": "Environmental Health and Safety",
+      "helpsWith": [
+        "Fire safety"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/ehs/construction-safety-program/",
+          "section": "Related College Applications>",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Nursing Programs Office",
+      "phone": "(201) 684-7749",
+      "category": "Academic",
+      "department": "Nursing Programs Office",
+      "office": "Adler Center for Nursing Excellence 215",
+      "helpsWith": [
+        "Nursing programs"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/nursing/",
+          "section": "Nursing Programs Contact Information:",
+          "fields": [
+            "phone",
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Roadrunner Central",
+      "phone": "(201) 684-7593",
+      "category": "Student Life",
+      "email": "rrc@ramapo.edu",
+      "department": "Roadrunner Central",
+      "office": "SC-202",
+      "helpsWith": [
+        "Bus tickets",
+        "Postage stamps"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/csi/",
+          "section": "Business Hours:",
+          "near": "Roadrunner Central Location",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Investigative Genetic Genealogy Center",
+      "category": "Academic",
+      "email": "igg@ramapo.edu",
+      "department": "Investigative Genetic Genealogy Center",
+      "helpsWith": [
+        "Investigative genetic genealogy"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/igg/",
+          "section": "Ramapo College",
+          "fields": [
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ENHANCE Program",
+      "phone": "(201) 684-7522",
+      "category": "Health",
+      "email": "enhance@ramapo.edu",
+      "department": "ENHANCE Program",
+      "office": "D-216",
+      "helpsWith": [],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/enhance/",
+          "section": "Contact Us",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/enhance/",
+          "section": "Academic Building D, Room D-216",
+          "fields": [
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ID Card Room",
+      "phone": "(201) 684-6229",
+      "category": "Services",
+      "department": "ID Card Room",
+      "office": "C-101",
+      "helpsWith": [
+        "Student ID cards"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/publicsafety/id-cards/",
+          "section": "Identification Card Information",
+          "fields": [
+            "phone",
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "J. Lee's (Student Lounge & Game Room)",
+      "phone": "(201) 684-7796",
+      "category": "Student Life",
+      "department": "J. Lee's (Student Lounge & Game Room)",
+      "office": "SC-226",
+      "helpsWith": [
+        "Student lounge",
+        "Game room"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/csi/",
+          "section": "J. Lee’s",
+          "fields": [
+            "phone",
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ramapo Bookstore",
+      "phone": "(201) 825-8770 or (201) 684-7800",
+      "category": "Services",
+      "department": "Ramapo Bookstore",
+      "office": "Student Center, 2nd Floor",
+      "helpsWith": [
+        "Textbooks"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/csi/",
+          "section": "Business Hours:",
+          "near": "Bookstore Location",
+          "fields": [
+            "phone",
+            "office"
+          ]
+        }
+      ]
     }
   ],
   "other": [
