@@ -58,6 +58,9 @@ interface PreparedDocument {
   chunks: PreparedChunk[];
 }
 
+/** Chunks written per statement; a large document is still a handful of statements. */
+const CHUNK_BATCH_SIZE = 500;
+
 interface PreparedArtifact {
   key: string;
   payload: unknown;
@@ -526,15 +529,20 @@ async function insertDocuments(
         JSON.stringify(prepared.metadata), prepared.collectedAt]
     );
     stats.documents += 1;
-    for (const chunk of prepared.chunks) {
+    // One statement per batch of chunks: each database call costs a network round trip
+    // (about 80 ms from the daily workflow to production), and a release has ~24,000 chunks.
+    for (let start = 0; start < prepared.chunks.length; start += CHUNK_BATCH_SIZE) {
+      const batch = prepared.chunks.slice(start, start + CHUNK_BATCH_SIZE);
       await client.query(
         `INSERT INTO rockygpt_v2.document_chunks
          (document_id, chunk_index, content, content_hash, metadata)
-         VALUES ($1,$2,$3,$4,$5::jsonb)`,
-        [document.rows[0].id, chunk.index, chunk.content, chunk.contentHash,
-          JSON.stringify(chunk.metadata)]
+         SELECT $1::uuid, chunk.chunk_index, chunk.content, chunk.content_hash, chunk.metadata::jsonb
+         FROM unnest($2::int[], $3::text[], $4::text[], $5::text[])
+           AS chunk(chunk_index, content, content_hash, metadata)`,
+        [document.rows[0].id, batch.map(chunk => chunk.index), batch.map(chunk => chunk.content),
+          batch.map(chunk => chunk.contentHash), batch.map(chunk => JSON.stringify(chunk.metadata))]
       );
-      stats.chunks += 1;
+      stats.chunks += batch.length;
     }
   }
   return stats;
