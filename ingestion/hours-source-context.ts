@@ -3,7 +3,7 @@
  */
 import { load, type CheerioAPI } from 'cheerio';
 import { chunkDocumentText } from '../src/data-v2/document-text';
-import { ATHLETICS_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, LIBRARY_HOURS_URL,
+import { ATHLETICS_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, LIBRARY_HOURS_URL, OFFICE_HOURS_PAGES,
   type HoursSourceCapture } from './campus-hours';
 
 interface Section { heading: string; text: string }
@@ -90,11 +90,14 @@ export function renderHoursSourceContext(captures: HoursSourceCapture[]): string
   let markdown = '# Campus service policies and notices from hours sources\n\n';
   const seen = new Set<string>();
   for (const capture of captures) {
+    const office = OFFICE_HOURS_PAGES.some((page) => page.url === capture.sourceUrl);
     const parse = parsers[capture.sourceUrl];
-    if (!parse || seen.has(capture.sourceUrl) || !Number.isFinite(Date.parse(capture.collectedAt))) {
+    if ((!parse && !office) || seen.has(capture.sourceUrl) || !Number.isFinite(Date.parse(capture.collectedAt))) {
       throw new Error('Invalid or duplicate campus-hours source capture');
     }
     seen.add(capture.sourceUrl);
+    // An office page is read for its hours only; its text is already a stored page document.
+    if (office) continue;
     for (const section of parse(capture)) {
       // Repeat the applicability qualifier in every retrieval chunk, including
       // latter portions of long dated FAQ sections.

@@ -7,6 +7,9 @@ export const CRITICAL_FACT_VALUES_V2: Record<string, string> = {
   'safety.id_card_room_location': 'C-101',
   'safety.id_card_room_email': 'publicsafety@ramapo.edu',
   'password.reset_url': 'https://password.ramapo.edu/',
+  // "Where is the official withdrawal policy?" ranked housing pages first. The Registrar's
+  // page covers withdrawing from a course and from the College (checked 2026-09-28).
+  'registrar.withdrawal_policy_url': 'https://www.ramapo.edu/registrar/withdrawing-leave-of-absence/',
   'printing.free_pages_per_academic_year': '200',
   'tuition.nj_12_18_semester': '$8,807.68',
   'calendar.spring2026.add_drop_100_refund.full': 'January 26, 2026',

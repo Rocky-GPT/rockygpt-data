@@ -115,6 +115,8 @@ async function insertCriticalFacts(
   const sourceByKey: Record<string, string> = {
     safety: 'public-safety',
     password: 'password-reset',
+    // The Registrar's pages are captured with the campus directory.
+    registrar: 'campus-directory',
     printing: 'information-technology-services',
     tuition: 'tuition-costs',
     calendar: 'academic-calendar',
