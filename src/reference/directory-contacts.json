@@ -863,6 +863,216 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Bischoff Hall",
+      "phone": "(201) 684-7053",
+      "category": "Housing",
+      "email": "bischoff@ramapo.edu",
+      "department": "Bischoff Hall",
+      "helpsWith": [
+        "Hall office"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/reslife/bischoff-hall/",
+          "section": "Contact Information:",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "College Park Apartments",
+      "phone": "(201) 684-7061",
+      "category": "Housing",
+      "email": "cpa@ramapo.edu",
+      "department": "College Park Apartments",
+      "office": "The Lodge",
+      "helpsWith": [
+        "Hall office"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/reslife/college-park-apartments-cpa/",
+          "section": "Contact Information:",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Laurel Hall",
+      "phone": "(201) 684-7015",
+      "category": "Housing",
+      "email": "laurel@ramapo.edu",
+      "department": "Laurel Hall",
+      "helpsWith": [
+        "Hall office"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/reslife/laurel-hall/",
+          "section": "Contact Information:",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Mackin Hall",
+      "phone": "(201) 684-7043",
+      "category": "Housing",
+      "email": "mackin@ramapo.edu",
+      "department": "Mackin Hall",
+      "helpsWith": [
+        "Hall office"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/reslife/mackin-hall/",
+          "section": "Contact Information:",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pine Hall",
+      "phone": "(201) 684-7213",
+      "category": "Housing",
+      "email": "pine@ramapo.edu",
+      "department": "Pine Hall",
+      "helpsWith": [
+        "Hall office"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/reslife/pine-hall/",
+          "section": "Contact Information:",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Overlook",
+      "phone": "(201) 684-7074",
+      "category": "Housing",
+      "email": "overlook@ramapo.edu",
+      "department": "The Overlook",
+      "helpsWith": [
+        "Hall office"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/reslife/the-overlook/",
+          "section": "Contact Information:",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Village",
+      "phone": "(201) 684-7104",
+      "category": "Housing",
+      "email": "village@ramapo.edu",
+      "department": "The Village",
+      "helpsWith": [
+        "Hall office"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/reslife/village/",
+          "section": "Contact Information:",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Women's Center & LGBTQ+ Services",
+      "phone": "(201) 684-7468",
+      "category": "Student Life",
+      "email": "women@ramapo.edu",
+      "department": "Women's Center & LGBTQ+ Services",
+      "office": "C-220",
+      "helpsWith": [],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/womenscenter/",
+          "section": "Contact Us",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/womenscenter/",
+          "section": "Visit Us",
+          "fields": [
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "RCNJ Center for Holocaust and Genocide Studies",
+      "phone": "(201) 684-7409",
+      "category": "Academic",
+      "email": "holgen@ramapo.edu",
+      "department": "RCNJ Center for Holocaust and Genocide Studies",
+      "office": "LC-216",
+      "helpsWith": [
+        "Group visits"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/holocaust/contact-us/",
+          "section": "Connect & Contact Us",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Multicultural Center and the Office of Access, Belonging and Community (ABC)",
+      "phone": "(201) 684-7720",
+      "category": "Student Life",
+      "email": "abc@ramapo.edu",
+      "department": "The Multicultural Center and the Office of Access, Belonging and Community (ABC)",
+      "office": "D-214",
+      "helpsWith": [],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/multicultural-center/",
+          "section": "Room D-214",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ]
     }
   ],
   "other": [
