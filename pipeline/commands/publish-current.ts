@@ -789,11 +789,27 @@ async function createReleaseManifest(
   return { releaseId, manifestHash };
 }
 
+/**
+ * Logs how long each publication step took, so a slow publish shows which step
+ * spent the time instead of only its total.
+ */
+function stepTimer(): (step: string) => void {
+  const started = Date.now();
+  let last = started;
+  return (step) => {
+    const now = Date.now();
+    console.log(`Publish step: ${step} took ${((now - last) / 1000).toFixed(1)}s (${((now - started) / 1000).toFixed(1)}s so far)`);
+    last = now;
+  };
+}
+
 async function main(): Promise<void> {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required.');
 
+  const step = stepTimer();
   const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 2 });
   await applyDatabaseSchema(pool);
+  step('apply schema');
 
   const version = process.env.DATASET_VERSION || `v2-${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}`;
   const created = await pool.query<{ id: string }>(
@@ -817,6 +833,7 @@ async function main(): Promise<void> {
       enforceProvenance: true,
     });
     assertQualityV2(quality);
+    step('check source freshness and provenance');
     const sources = await sourceIds(client);
     // PROB-002: records carry their source's real collection instant, never
     // the publication instant. Repository-static sources (critical facts,
@@ -836,6 +853,7 @@ async function main(): Promise<void> {
     // Network and CPU-heavy work happens before the staging transaction. Raw
     // captures are archived, documents are chunked, and only previously unseen
     const archived = await archiveRawArtifacts(provenanceStates);
+    step('archive raw captures');
     const manifest = await createReleaseManifest(client, {
       datasetId,
       version,
@@ -845,11 +863,13 @@ async function main(): Promise<void> {
       publishedAt,
     });
     releaseId = manifest.releaseId;
+    step('write release manifest');
     const preparedDocuments = prepareDocuments(collectedAtFor);
     const artifacts = prepareReleaseArtifacts();
     const identitySeed = readJson<CampusIdentities>('src/reference/campus-identities.json');
     validateCampusIdentities(identitySeed);
     const rawCatalog = readJson<unknown>('data/raw/catalog-programs-api.raw.json');
+    step('prepare documents and artifacts');
 
     // Build the candidate release transactionally, but do not hold this
     // transaction open across object-storage calls.
@@ -870,14 +890,18 @@ async function main(): Promise<void> {
       collectedAtFor,
       verifiedAtFor
     );
+    step('insert critical facts');
     const structured = await insertStructured(client, datasetId, sources, collectedAtFor);
+    step('insert structured records');
     const documents = await insertDocuments(
       client,
       datasetId,
       sources,
       preparedDocuments
     );
+    step(`insert ${documents.documents} documents and ${documents.chunks} chunks`);
     const sourceArtifactCount = await insertReleaseArtifacts(client, datasetId, artifacts);
+    step('insert release artifacts');
     const identityArtifacts = await insertCampusIdentityArtifacts(client, datasetId, identitySeed, rawCatalog, {
       clubs: readJson('data/raw/clubs.raw.json'),
       eventDetails: readJson('data/raw/events-detail.raw.json'),
@@ -888,6 +912,7 @@ async function main(): Promise<void> {
       graduationPlans: readJson('public/data/graduation-plans.json'),
       majorPages: readJson('public/data/major-pages.json'),
     });
+    step('compile and insert campus identities');
     const releaseArtifactCount = sourceArtifactCount + identityArtifacts.count;
     if (criticalCount !== Object.keys(CRITICAL_FACT_VALUES_V2).length) throw new Error('Critical fact verification failed.');
 
@@ -915,12 +940,15 @@ async function main(): Promise<void> {
     }
     await client.query('COMMIT');
     transactionStarted = false;
+    step('record source runs and commit');
 
     // Verification reads the committed-but-inactive candidate. Activation is
     // a separate short pointer-swap transaction, so readers never see partial
     // data and a failed gate leaves the previous release untouched.
     const verifiedCounts = await verifyStagingDataset(client, datasetId);
+    step('verify record counts');
     const identityContinuity = await verifyIdentityContinuity(client, datasetId, identitySeed, { catalog: rawCatalog });
+    step('verify identity continuity');
     const summary = {
       ...quality,
       criticalCount,
@@ -952,6 +980,7 @@ async function main(): Promise<void> {
     );
     await client.query('COMMIT');
     transactionStarted = false;
+    step('activate');
     console.log(JSON.stringify({ activated: version, datasetId, releaseId, summary }, null, 2));
   } catch (error) {
     if (transactionStarted) await client.query('ROLLBACK');
