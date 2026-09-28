@@ -11545,6 +11545,193 @@
           }
         }
       ]
+    },
+    {
+      "id": "73e85425-9159-41af-81c6-5fde35497dc9",
+      "kind": "office",
+      "name": "Student Accounts",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:student-accounts",
+              "email:studentaccts@ramapo.edu"
+            ],
+            "evidence": "Office's own page (https://www.ramapo.edu/student-accounts/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "5ab938ac-bc5c-4fce-9771-db49be4fd2ef",
+      "kind": "office",
+      "name": "Admissions",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:admissions",
+              "email:admissions@ramapo.edu"
+            ],
+            "evidence": "Office's own page (https://www.ramapo.edu/undergraduate/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "30adf6c0-33f9-4349-873d-18ae7e504766",
+      "kind": "office",
+      "name": "Cahill Career Development Center",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:cahill-career-development-center",
+              "email:careercenter@ramapo.edu"
+            ],
+            "evidence": "Office's own page (https://www.ramapo.edu/careercenter/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "bd448eaa-d1c1-49b6-bbda-597b7c4e1423",
+      "kind": "office",
+      "name": "Office of Specialized Services",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:office-of-specialized-services",
+              "email:oss@ramapo.edu"
+            ],
+            "evidence": "Office's own page (https://www.ramapo.edu/oss/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "809920fd-5a64-44af-8bad-a92dd9cc0b8d",
+      "kind": "office",
+      "name": "Dean of Students",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:dean-of-students",
+              "email:deanofstudents@ramapo.edu"
+            ],
+            "evidence": "Office's own page (https://www.ramapo.edu/student-affairs/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "f5e3961d-c56b-4b29-89f3-64488f464e64",
+      "kind": "office",
+      "name": "Educational Opportunity Fund (EOF) Program",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:educational-opportunity-fund-eof-program",
+              "email:eofdesk@ramapo.edu"
+            ],
+            "evidence": "Office's own page (https://www.ramapo.edu/eof-program/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "4b1188ba-9990-4ed5-b8be-624ac96b9a08",
+      "kind": "office",
+      "name": "Office of Student Conduct",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:office-of-student-conduct",
+              "email:studentconduct@ramapo.edu"
+            ],
+            "evidence": "Office's own page (https://www.ramapo.edu/student-conduct/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "5711a0b1-2370-41d1-953f-739e3afba757",
+      "kind": "office",
+      "name": "Center for Reading and Writing",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:center-for-reading-and-writing"
+            ],
+            "evidence": "Office's own page (https://www.ramapo.edu/crw/, read 2026-09-28) publishes this phone; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "28b63d78-614d-4e1d-a697-7711568dbe0b",
+      "kind": "office",
+      "name": "Title IX",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:title-ix"
+            ],
+            "evidence": "Office's own page (https://www.ramapo.edu/titleix/, read 2026-09-28) publishes this phone; no shared-phone matching."
+          }
+        }
+      ]
     }
   ]
 }

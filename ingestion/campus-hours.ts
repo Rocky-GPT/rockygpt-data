@@ -269,21 +269,41 @@ export function hoursPageText(html: string): string {
     return normalizePageText($('body').text());
 }
 
+/** A library day line such as "Mon-Thu: 9:00am - 9:00pm", or null for any other line. */
+function dayLine(line: string): { days: DayName[]; schedule: string } | null {
+    const match = line.match(/^(Mon-Thu|Mon-Fri|Fri|Sat & Sun|Sat|Sun):\s*(.*)$/i);
+    if (!match) return null;
+    const days: DayName[] = /^Mon-Thu$/i.test(match[1]) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
+        : /^Mon-Fri$/i.test(match[1]) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+        : /^Fri$/i.test(match[1]) ? ['Friday'] : /^Sat & Sun$/i.test(match[1]) ? ['Saturday', 'Sunday']
+        : /^Sat$/i.test(match[1]) ? ['Saturday'] : ['Sunday'];
+    return { days, schedule: /^CLOSED$/i.test(match[2]) ? 'CLOSED' : scheduleFromLine(match[2]) };
+}
+
 function parsedWeek(section: string): Record<string, string> {
     const hours = createUnknownWeek();
     for (const line of section.split('\n')) {
-        const match = line.match(/^(Mon-Thu|Mon-Fri|Fri|Sat & Sun|Sat|Sun):\s*(.*)$/i);
-        if (!match) continue;
-        const days: DayName[] = /^Mon-Thu$/i.test(match[1]) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
-            : /^Mon-Fri$/i.test(match[1]) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-            : /^Fri$/i.test(match[1]) ? ['Friday'] : /^Sat & Sun$/i.test(match[1]) ? ['Saturday', 'Sunday']
-            : /^Sat$/i.test(match[1]) ? ['Saturday'] : ['Sunday'];
-        assignDays(hours, days, /^CLOSED$/i.test(match[2]) ? 'CLOSED' : scheduleFromLine(match[2]));
+        const parsed = dayLine(line);
+        if (parsed) assignDays(hours, parsed.days, parsed.schedule);
     }
     if (Object.values(hours).some((value) => value === 'Hours unavailable')) {
         throw new Error('Library weekly schedule has missing or unrecognized days');
     }
     return hours;
+}
+
+/** The days a repeated schedule lists, from its first day line to the next other line. */
+function listedDays(lines: string[]): Record<string, string> {
+    const listed: Record<string, string> = {};
+    for (const line of lines) {
+        const parsed = dayLine(line);
+        if (!parsed) {
+            if (Object.keys(listed).length) break;
+            continue;
+        }
+        assignDays(listed, parsed.days, parsed.schedule);
+    }
+    return listed;
 }
 
 export function parseLibraryHours(pageText: string): LocationHours[] {
@@ -311,13 +331,24 @@ export function parseLibraryHours(pageText: string): LocationHours[] {
     const help = parse('Research Help Desk', research);
     // Repeated sidebar schedules can disagree with main content on the year.
     const researchSections = [...text.matchAll(/^RESEARCH HELP HOURS$/gim)];
-    const windows = researchSections.map((match) => {
-        const tail = text.slice(match.index! + match[0].length).split('\n').slice(0, 4).join(' ');
-        return readValidityFromNotes(tail).window;
+    const repeats = researchSections.map((match) => {
+        const tail = text.slice(match.index! + match[0].length).split('\n').slice(1, 9);
+        return { window: readValidityFromNotes(tail.slice(0, 3).join(' ')).window, listed: listedDays(tail) };
     });
-    if (new Set(windows.map((window) => JSON.stringify(window))).size > 1) {
-        help.availabilityIssue = 'conflicting-source-validity';
-        help.notes += '. Source repeats research-help hours with conflicting applicability dates; withheld.';
+    if (new Set(repeats.map((repeat) => JSON.stringify(repeat.window))).size > 1) {
+        // In September 2026 the sidebar kept "Fall 2025" above the same hours the main
+        // content lists for Fall 2026. Only a stale year label differs, so publish the main
+        // schedule when it carries the latest term and every repeated day agrees with it.
+        const latest = repeats.every((repeat) => (repeat.window?.validUntil ?? '')
+            <= (repeats[0].window?.validUntil ?? ''));
+        const sameHours = repeats.every((repeat) => Object.entries(repeat.listed)
+            .every(([day, schedule]) => help.hours[day] === schedule));
+        if (latest && sameHours) {
+            help.notes += '. A repeated schedule on the page gives the same hours under an older year.';
+        } else {
+            help.availabilityIssue = 'conflicting-source-validity';
+            help.notes += '. Source repeats research-help hours with conflicting applicability dates; withheld.';
+        }
     }
     return [library, help, lab];
 }

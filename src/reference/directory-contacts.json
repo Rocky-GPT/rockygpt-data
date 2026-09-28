@@ -178,6 +178,115 @@
         "Citation support",
         "Borrowing services"
       ]
+    },
+    {
+      "name": "Student Accounts",
+      "phone": "(201) 684-7495",
+      "category": "Financial",
+      "email": "studentaccts@ramapo.edu",
+      "department": "Office of Student Accounts",
+      "helpsWith": [
+        "Cashiering and billing",
+        "Calculating and processing student refunds",
+        "Tuition payment plans"
+      ]
+    },
+    {
+      "name": "Admissions",
+      "phone": "(201) 684-7300",
+      "category": "Academic",
+      "email": "admissions@ramapo.edu",
+      "department": "Office of Admissions",
+      "helpsWith": [
+        "Freshman, transfer, international and returning student admission",
+        "Early Decision & Early Action",
+        "Scholarships for admitted freshmen"
+      ]
+    },
+    {
+      "name": "Cahill Career Development Center",
+      "phone": "(201) 684-7444",
+      "category": "Services",
+      "email": "careercenter@ramapo.edu",
+      "department": "Cahill Career Development Center",
+      "helpsWith": [
+        "Career exploration",
+        "Internships and experiential learning",
+        "Career events and fairs"
+      ]
+    },
+    {
+      "name": "Office of Specialized Services",
+      "phone": "(201) 684-7514",
+      "category": "Services",
+      "email": "oss@ramapo.edu",
+      "department": "Office of Specialized Services",
+      "helpsWith": [
+        "Accommodations for students with disabilities",
+        "Alternative testing/exam requests",
+        "Housing accommodations"
+      ]
+    },
+    {
+      "name": "Dean of Students",
+      "phone": "(201) 684-7457",
+      "category": "Student Life",
+      "email": "deanofstudents@ramapo.edu",
+      "department": "Student Affairs",
+      "office": "C-212",
+      "helpsWith": [
+        "Student well-being support programs and activities",
+        "Dean's Certification forms for transferring students",
+        "Interim Suspension hearings"
+      ]
+    },
+    {
+      "name": "Educational Opportunity Fund (EOF) Program",
+      "phone": "(201) 684-7541",
+      "category": "Academic",
+      "email": "EOFdesk@ramapo.edu",
+      "department": "Educational Opportunity Fund Program",
+      "office": "D-101",
+      "helpsWith": [
+        "Access to higher education for qualified New Jersey students",
+        "Advising and academic mentoring",
+        "Pre-Freshman Summer Program"
+      ]
+    },
+    {
+      "name": "Office of Student Conduct",
+      "phone": "(201) 684-7869",
+      "category": "Student Life",
+      "email": "studentconduct@ramapo.edu",
+      "department": "Office of Student Conduct",
+      "office": "C-212",
+      "helpsWith": [
+        "Code of Conduct process",
+        "Disciplinary hearings",
+        "Completing sanctions"
+      ]
+    },
+    {
+      "name": "Center for Reading and Writing",
+      "phone": "(201) 684-7557",
+      "category": "Academic",
+      "department": "Center for Reading and Writing",
+      "helpsWith": [
+        "One-to-one writing and reading consulting sessions",
+        "All stages of the writing process, from brainstorming to polishing final papers",
+        "Reading strategies for difficult texts"
+      ]
+    },
+    {
+      "name": "Title IX",
+      "phone": "(201) 684-7220",
+      "category": "Services",
+      "department": "Title IX and Institutional Compliance",
+      "helpsWith": [
+        "Reporting sex discrimination and sexual misconduct",
+        "Responses to complaints of sexual violence, harassment or discrimination",
+        "Title IX training and prevention"
+      ]
     }
   ],
   "other": [

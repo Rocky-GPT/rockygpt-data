@@ -4,6 +4,7 @@ import { buildCampusHourLocations } from './campus-hours';
 import {
   assertRefreshCoverage,
   hoursArtifactRequiresRefresh,
+  hoursReplayRequiresRefresh,
   refreshScriptsForArtifactCompatibility,
   refreshScriptsForStates,
   SOURCE_REFRESH_SCRIPTS,
@@ -81,4 +82,16 @@ test('daily sources outlast a daily run that starts late and are renewed by one 
       SOURCE_REFRESH_SCRIPTS[source.key]
     );
   }
+});
+
+test('hours that no longer replay from their archived pages are recollected', () => {
+  // The quality gate replays the pages with the current parser; a parser change must not
+  // leave every daily run failing until campus hours age out.
+  const unreplayable = { version: 1, captures: [] };
+  assert.equal(hoursReplayRequiresRefresh([ordinary], unreplayable), true);
+  const hours = SOURCE_REFRESH_SCRIPTS['campus-hours'][0];
+  assert.ok(refreshScriptsForArtifactCompatibility({ hours: [ordinary], hoursRaw: [ordinary],
+    hoursSources: unreplayable }).includes(hours));
+  // Callers that pass no captures keep the age and applicability checks only.
+  assert.ok(!refreshScriptsForArtifactCompatibility({ hours: [ordinary] }).includes(hours));
 });
