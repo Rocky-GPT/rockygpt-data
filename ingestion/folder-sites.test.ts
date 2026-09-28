@@ -111,8 +111,13 @@ test('pages other collectors kept successfully are read from their raw captures'
       { url: 'https://www.ramapo.edu/reslife/gone/', statusCode: 404 },
     ] }));
     fs.writeFileSync(path.join(dir, 'faculty.raw.json'), JSON.stringify([{ profileUrl: 'https://www.ramapo.edu/library/staff/' }]));
-    fs.writeFileSync(path.join(dir, 'hours.raw.json'), JSON.stringify([{ sourceUrl: 'https://www.ramapo.edu/library/library-hours/' }]));
+    fs.writeFileSync(path.join(dir, 'hours.raw.json'), JSON.stringify([
+      { sourceUrl: 'https://www.ramapo.edu/library/library-hours/' },
+      // Only the schedule line comes from an office home page; its text stays with the office site.
+      { sourceUrl: 'https://www.ramapo.edu/student-accounts/' },
+    ]));
     const kept = pagesCollectedElsewhere(RAMAPO_SITE_COLLECTORS, dir);
+    assert.ok(!kept.has(pageKey('https://www.ramapo.edu/student-accounts/')!));
     assert.ok(kept.has(pageKey('https://www.ramapo.edu/reslife')!));
     assert.ok(!kept.has(pageKey('https://www.ramapo.edu/reslife/gone/')!));
     assert.ok(kept.has(pageKey('https://www.ramapo.edu/library/staff/')!));

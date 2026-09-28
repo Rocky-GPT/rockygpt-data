@@ -11,6 +11,7 @@ import {
 } from '../pipeline/quality/provenance';
 import { validateFacultyProfiles } from './schema';
 import { partitionHoursForPublication } from '../src/data-v2/validity';
+import { hoursSourceErrors } from '../pipeline/quality/hours-coverage';
 
 /**
  * Collector commands that can renew each non-static publishable source.
@@ -97,15 +98,28 @@ export function hoursArtifactRequiresRefresh(input: unknown, now = new Date()): 
   return partitionHoursForPublication(input, now).omitted.length > 0;
 }
 
+/**
+ * A parser change can make the archived pages read differently, as when a stale sidebar
+ * year stopped withholding the Research Help Desk's identical hours. The quality gate
+ * replays the pages with the current parser and rejects hours collected by the old one,
+ * and no age check asks for a recollection, so every daily run would fail until campus
+ * hours aged out months later.
+ */
+export function hoursReplayRequiresRefresh(raw: unknown, sources: unknown): boolean {
+  return hoursSourceErrors(raw, sources).length > 0;
+}
+
 export function refreshScriptsForArtifactCompatibility(
-  artifacts: Readonly<{ faculty?: unknown; hours?: unknown }>,
+  artifacts: Readonly<{ faculty?: unknown; hours?: unknown; hoursRaw?: unknown; hoursSources?: unknown }>,
   now = new Date()
 ): string[] {
+  const replays = !('hoursSources' in artifacts)
+    || !hoursReplayRequiresRefresh(artifacts.hoursRaw, artifacts.hoursSources);
   return [
     ...(facultyArtifactRequiresRefresh(artifacts.faculty)
       ? SOURCE_REFRESH_SCRIPTS.faculty
       : []),
-    ...(hoursArtifactRequiresRefresh(artifacts.hours, now)
+    ...(hoursArtifactRequiresRefresh(artifacts.hours, now) || !replays
       ? SOURCE_REFRESH_SCRIPTS['campus-hours']
       : []),
   ];
@@ -121,10 +135,20 @@ function readNormalized(cwd: string, name: string): unknown {
   }
 }
 
+function readRaw(cwd: string, name: string): unknown {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(cwd, 'data', 'raw', name), 'utf8')) as unknown;
+  } catch {
+    return undefined;
+  }
+}
+
 function restoredArtifactCompatibilityScripts(cwd = process.cwd()): string[] {
   return refreshScriptsForArtifactCompatibility({
     faculty: readNormalized(cwd, 'faculty.json'),
     hours: readNormalized(cwd, 'hours.json'),
+    hoursRaw: readRaw(cwd, 'hours.raw.json'),
+    hoursSources: readRaw(cwd, 'hours-sources.raw.json'),
   });
 }
 

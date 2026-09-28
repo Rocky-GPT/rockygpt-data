@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { load } from 'cheerio';
 import { fetchWithPolicy } from './http-client';
@@ -269,21 +270,41 @@ export function hoursPageText(html: string): string {
     return normalizePageText($('body').text());
 }
 
+/** A library day line such as "Mon-Thu: 9:00am - 9:00pm", or null for any other line. */
+function dayLine(line: string): { days: DayName[]; schedule: string } | null {
+    const match = line.match(/^(Mon-Thu|Mon-Fri|Fri|Sat & Sun|Sat|Sun):\s*(.*)$/i);
+    if (!match) return null;
+    const days: DayName[] = /^Mon-Thu$/i.test(match[1]) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
+        : /^Mon-Fri$/i.test(match[1]) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+        : /^Fri$/i.test(match[1]) ? ['Friday'] : /^Sat & Sun$/i.test(match[1]) ? ['Saturday', 'Sunday']
+        : /^Sat$/i.test(match[1]) ? ['Saturday'] : ['Sunday'];
+    return { days, schedule: /^CLOSED$/i.test(match[2]) ? 'CLOSED' : scheduleFromLine(match[2]) };
+}
+
 function parsedWeek(section: string): Record<string, string> {
     const hours = createUnknownWeek();
     for (const line of section.split('\n')) {
-        const match = line.match(/^(Mon-Thu|Mon-Fri|Fri|Sat & Sun|Sat|Sun):\s*(.*)$/i);
-        if (!match) continue;
-        const days: DayName[] = /^Mon-Thu$/i.test(match[1]) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
-            : /^Mon-Fri$/i.test(match[1]) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-            : /^Fri$/i.test(match[1]) ? ['Friday'] : /^Sat & Sun$/i.test(match[1]) ? ['Saturday', 'Sunday']
-            : /^Sat$/i.test(match[1]) ? ['Saturday'] : ['Sunday'];
-        assignDays(hours, days, /^CLOSED$/i.test(match[2]) ? 'CLOSED' : scheduleFromLine(match[2]));
+        const parsed = dayLine(line);
+        if (parsed) assignDays(hours, parsed.days, parsed.schedule);
     }
     if (Object.values(hours).some((value) => value === 'Hours unavailable')) {
         throw new Error('Library weekly schedule has missing or unrecognized days');
     }
     return hours;
+}
+
+/** The days a repeated schedule lists, from its first day line to the next other line. */
+function listedDays(lines: string[]): Record<string, string> {
+    const listed: Record<string, string> = {};
+    for (const line of lines) {
+        const parsed = dayLine(line);
+        if (!parsed) {
+            if (Object.keys(listed).length) break;
+            continue;
+        }
+        assignDays(listed, parsed.days, parsed.schedule);
+    }
+    return listed;
 }
 
 export function parseLibraryHours(pageText: string): LocationHours[] {
@@ -311,13 +332,24 @@ export function parseLibraryHours(pageText: string): LocationHours[] {
     const help = parse('Research Help Desk', research);
     // Repeated sidebar schedules can disagree with main content on the year.
     const researchSections = [...text.matchAll(/^RESEARCH HELP HOURS$/gim)];
-    const windows = researchSections.map((match) => {
-        const tail = text.slice(match.index! + match[0].length).split('\n').slice(0, 4).join(' ');
-        return readValidityFromNotes(tail).window;
+    const repeats = researchSections.map((match) => {
+        const tail = text.slice(match.index! + match[0].length).split('\n').slice(1, 9);
+        return { window: readValidityFromNotes(tail.slice(0, 3).join(' ')).window, listed: listedDays(tail) };
     });
-    if (new Set(windows.map((window) => JSON.stringify(window))).size > 1) {
-        help.availabilityIssue = 'conflicting-source-validity';
-        help.notes += '. Source repeats research-help hours with conflicting applicability dates; withheld.';
+    if (new Set(repeats.map((repeat) => JSON.stringify(repeat.window))).size > 1) {
+        // In September 2026 the sidebar kept "Fall 2025" above the same hours the main
+        // content lists for Fall 2026. Only a stale year label differs, so publish the main
+        // schedule when it carries the latest term and every repeated day agrees with it.
+        const latest = repeats.every((repeat) => (repeat.window?.validUntil ?? '')
+            <= (repeats[0].window?.validUntil ?? ''));
+        const sameHours = repeats.every((repeat) => Object.entries(repeat.listed)
+            .every(([day, schedule]) => help.hours[day] === schedule));
+        if (latest && sameHours) {
+            help.notes += '. A repeated schedule on the page gives the same hours under an older year.';
+        } else {
+            help.availabilityIssue = 'conflicting-source-validity';
+            help.notes += '. Source repeats research-help hours with conflicting applicability dates; withheld.';
+        }
     }
     return [library, help, lab];
 }
@@ -373,7 +405,82 @@ async function fetchHoursSource(sourceUrl: string): Promise<HoursSourceCapture> 
     return { sourceUrl, collectedAt: new Date().toISOString(), html: response.text() };
 }
 
-export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireGeneralSource = false): LocationHours[] {
+/**
+ * Offices whose own page publishes a regular (Fall/Spring) schedule beside a
+ * separate summer one. Each name is the office's campus identity, and the label
+ * is the line that starts its regular schedule on that page (read 2026-09-28).
+ * Summer schedules stay out: no page dates them.
+ */
+export const OFFICE_HOURS_PAGES: ReadonlyArray<{ name: string; url: string; label: RegExp }> = [
+    { name: 'Registrar', url: 'https://www.ramapo.edu/registrar/', label: /^Fall\s*\/\s*Spring Hours:/i },
+    { name: 'Student Accounts', url: 'https://www.ramapo.edu/student-accounts/', label: /^Academic Year:/i },
+    { name: 'Financial Aid', url: 'https://www.ramapo.edu/finaid/', label: /^Academic Year:/i },
+    { name: 'Cahill Career Development Center', url: 'https://www.ramapo.edu/careercenter/', label: /^Office Hours:/i },
+    { name: 'Dean of Students', url: 'https://www.ramapo.edu/student-affairs/', label: /^Regular Office Hours:/i },
+    { name: 'Educational Opportunity Fund (EOF) Program', url: 'https://www.ramapo.edu/eof-program/',
+        label: /^Academic Year Hours:/i },
+    { name: 'Office of Student Conduct', url: 'https://www.ramapo.edu/student-conduct/',
+        label: /^Fall and Spring Semester Hours:/i },
+];
+
+/** A Fall or Spring semester, from its first class day to its last class or final exam. */
+export interface TermWindow { name: string; from: string; until: string }
+
+const CALENDAR_PATH = path.join(process.cwd(), 'data', 'normalized', 'calendar.json');
+
+/** Fall and Spring windows from the published academic calendar. */
+export function termWindows(calendar: unknown): TermWindow[] {
+    if (!Array.isArray(calendar)) throw new Error('Academic calendar is unavailable for office hours');
+    const day = (event: { startsAt?: unknown }) => String(event.startsAt ?? '').slice(0, 10);
+    return calendar.flatMap((term: { name?: unknown; events?: Array<{ kind?: unknown; startsAt?: unknown }> }) => {
+        const name = String(term.name ?? '');
+        if (!/^(Fall|Spring) 20\d{2}$/.test(name) || !Array.isArray(term.events)) return [];
+        const begins = term.events.filter((event) => event.kind === 'classes_begin').map(day).filter(Boolean).sort();
+        const ends = term.events.filter((event) => event.kind === 'classes_end' || event.kind === 'finals')
+            .map(day).filter(Boolean).sort();
+        return begins.length && ends.length ? [{ name, from: begins[0], until: ends[ends.length - 1] }] : [];
+    });
+}
+
+function readTermWindows(): TermWindow[] {
+    return termWindows(JSON.parse(fs.readFileSync(CALENDAR_PATH, 'utf8')) as unknown);
+}
+
+const MONTH_ABBREVIATIONS = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'];
+const shortDate = (iso: string) => `${MONTH_ABBREVIATIONS[Number(iso.slice(5, 7)) - 1]} ${Number(iso.slice(8, 10))}`;
+
+/**
+ * An office's regular schedule, dated by the semester the capture falls in (or
+ * the next one): "Fall/Spring Hours" name no dates, and the academic calendar
+ * does. Between semesters no schedule applies, so none is stated.
+ */
+export function parseOfficeHours(name: string, label: RegExp, pageText: string, collectedAt: string,
+    terms: TermWindow[]): LocationHours {
+    const lines = pageText.split('\n').map((line) => line.trim()).filter(Boolean);
+    const index = lines.findIndex((line) => label.test(line));
+    if (index < 0) throw new Error(`Office hours line is unavailable for ${name}`);
+    const range = /(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?\s*(?:-|to)\s*(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?/i;
+    // The schedule follows its label on the same line, or on the next line (Registrar).
+    const rest = lines[index].replace(label, '').trim();
+    const text = range.test(rest) ? rest : `${rest} ${lines[index + 1] ?? ''}`.trim();
+    const days = text.match(/\b(Monday|Mon\.?)\s*(?:-|to)\s*(Thursday|Thurs?\.?|Friday|Fri\.?)(?![a-z])/i);
+    const time = text.match(range);
+    if (!days || !time) throw new Error(`Office hours are unrecognized for ${name}: "${text}"`);
+    const clock = (hour: string, minute: string | undefined, half: string) => `${hour}:${minute ?? '00'} ${half}M`;
+    const schedule = scheduleFromLine(`${clock(time[1], time[2], time[3])} - ${clock(time[4], time[5], time[6])}`);
+    const last = /^Fri/i.test(days[2]) ? 5 : 4;
+    const hours = createUnknownWeek();
+    DAYS.slice(0, last).forEach((day) => { hours[day] = schedule; });
+    const captured = collectedAt.slice(0, 10);
+    const term = terms.filter((window) => window.until >= captured).sort((a, b) => a.from.localeCompare(b.from))[0];
+    if (!term) throw new Error(`No academic calendar semester dates the office hours for ${name}`);
+    const year = term.until.slice(0, 4);
+    return { name, hours, notes: `${lines[index].match(label)![0]} ${text} Applies during ${term.name} `
+        + `per the academic calendar (${shortDate(term.from)} - ${shortDate(term.until)}, ${year}).` };
+}
+
+export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireGeneralSource = false,
+    terms?: TermWindow[]): LocationHours[] {
     const source = (url: string, parser: (text: string) => LocationHours[]): LocationHours[] => {
         const found = captures.filter((capture) => capture.sourceUrl === url);
         if (found.length !== 1) throw new Error(`Expected exactly one hours capture from ${url}`);
@@ -390,8 +497,15 @@ export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireG
     // requires and archives the primary parent page as its third source.
     const general = requireGeneralSource || captures.some(capture => capture.sourceUrl === GENERAL_CAMPUS_HOURS_URL)
         ? source(GENERAL_CAMPUS_HOURS_URL, parseGeneralCampusHours) : [];
+    // Captures from before office pages were collected replay without them; the
+    // collector checks that every office page was parsed.
+    const offices = OFFICE_HOURS_PAGES.filter((office) =>
+        captures.some((capture) => capture.sourceUrl === office.url));
+    const windows = offices.length ? terms ?? readTermWindows() : [];
     return [...source(ATHLETICS_HOURS_URL, parseAthleticsFacilityHours),
-        ...source(LIBRARY_HOURS_URL, parseLibraryHours), ...general];
+        ...source(LIBRARY_HOURS_URL, parseLibraryHours), ...general,
+        ...offices.flatMap((office) => source(office.url, (text) => [parseOfficeHours(office.name, office.label, text,
+            captures.find((capture) => capture.sourceUrl === office.url)!.collectedAt, windows)]))];
 }
 
 export function campusHoursPublication(records: LocationHours[], now = new Date()) {
@@ -413,13 +527,14 @@ async function fetchCampusHours() {
         fetchHoursSource(ATHLETICS_HOURS_URL), fetchHoursSource(LIBRARY_HOURS_URL),
         fetchHoursSource(GENERAL_CAMPUS_HOURS_URL),
     ]);
+    for (const office of OFFICE_HOURS_PAGES) captures.push(await fetchHoursSource(office.url));
     const fetchedAt = new Date(Math.min(...captures.map((capture) => Date.parse(capture.collectedAt)))).toISOString();
     const capturedSources = { version: 1, captures };
     const locations = campusHoursFromCaptures(captures, true);
     const publication = campusHoursPublication(locations);
     // Every expected source section is parsed or the collector fails. Count alone
     // cannot distinguish a source disappearance from honest applicability omissions.
-    if (locations.length !== 13) throw new Error('Hours source section coverage changed');
+    if (locations.length !== 13 + OFFICE_HOURS_PAGES.length) throw new Error('Hours source section coverage changed');
     writeJsonFile(SOURCE_CAPTURE_PATH, capturedSources);
     writeRawProvenance('hours-sources', { sourceUrl: GENERAL_CAMPUS_HOURS_URL,
         fetchedAt, recordCount: captures.length, payload: capturedSources });

@@ -28,6 +28,7 @@ import { CAMPUS_TIME_ZONE } from '../src/data-v2/event-time';
 import { core6Markdown, core6Pages, type WrittenPage } from './generate-core6-md-utils';
 import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
 import { collectRawDataset, createRequestPacer, type RawSourceCaptureV1, sourceHtml } from './raw-collector';
+import { OFFICE_HOURS_PAGES } from './campus-hours';
 import { type RawDatasetV1, validateRawDatasetV1 } from './raw-types';
 
 export interface FolderSite {
@@ -40,6 +41,8 @@ export interface CollectedPages {
   file: string;
   list: string;
   fields: readonly string[];
+  /** Pages this collector reads one detail from, not their text, so a site source keeps them. */
+  except?: readonly string[];
 }
 
 /** A reviewed cut: the page's section with this heading is left out, and with andLater every section after it too. */
@@ -92,7 +95,9 @@ export const RAMAPO_SITE_COLLECTORS: readonly CollectedPages[] = [
     .map(name => ({ file: `${name}.raw.json`, list: 'pages', fields: ['url'] })),
   { file: 'major-pages.raw.json', list: 'pages', fields: ['url', 'finalUrl'] },
   { file: 'faculty.raw.json', list: '', fields: ['profileUrl'] },
-  { file: 'hours.raw.json', list: '', fields: ['sourceUrl'] },
+  // The hours collector reads only the schedule line from office home pages; their text,
+  // staff lists included, stays in the office sites' documents.
+  { file: 'hours.raw.json', list: '', fields: ['sourceUrl'], except: OFFICE_HOURS_PAGES.map(page => page.url) },
 ];
 
 export function readSites(filePath: string): FolderSite[] {
@@ -303,7 +308,8 @@ export function isUnlistedSitePage(
 /** The pages the given collectors kept successfully, as page keys. */
 export function pagesCollectedElsewhere(collectors: readonly CollectedPages[], rawDir = RAW_DIR): Set<string> {
   const keys = new Set<string>();
-  for (const { file, list, fields } of collectors) {
+  for (const { file, list, fields, except = [] } of collectors) {
+    const shared = new Set(except.map(pageKey));
     let parsed: unknown;
     try {
       parsed = JSON.parse(fs.readFileSync(path.join(rawDir, file), 'utf8'));
@@ -319,7 +325,7 @@ export function pagesCollectedElsewhere(collectors: readonly CollectedPages[], r
       for (const field of fields) {
         const value = record[field];
         const key = typeof value === 'string' ? pageKey(value) : null;
-        if (key) keys.add(key);
+        if (key && !shared.has(key)) keys.add(key);
       }
     }
   }
