@@ -120,7 +120,7 @@ After compilation, each identity gains the aliases its own name and linked recor
 
 - **Department:** an office, facility or venue's own directory entry publishes a department. Examples are "Potter Library" for the Library, "Public Safety" for both Public Safety entries, and "Office of the Registrar". The contact lookup has always treated this as an alternative name. A person's department never names the person.
 - **Abbreviation:** a name ending in an uppercase abbreviation in parentheses gives both the abbreviation and the name without it: "SC" and "Student Center" from "Student Center (SC)"; "EDIC"; "XAE".
-- **Program family:** a catalog program name ending in a degree designation gives the name without it. The designations are BA, BS, BSN, BSW, MA, MS, MSN, MBA, MFA, MPP, MSW, DNP, Minor, 4+1 and -Graduate Certificate. Every program sharing that name gets the alias, so "Computer Science" names the BS, MS, Minor and 4+1, and a lookup asks which. A remainder ending mid-phrase gives none ("Nursing RN to BSN").
+- **Program family:** a catalog program name ending in a degree designation gives the name without it. The designations are BA, BS, BSN, BSW, MA, MS, MSN, MBA, MFA, MPP, MSW, DNP, Minor, 4+1 and -Graduate Certificate. Every program sharing that name gets the alias, so "Computer Science" names the BS, MS, Minor and 4+1, and a lookup asks which. A remainder ending mid-phrase gives none ("Nursing RN to BSN"). A catalog degree that names its field gives that field too: the three BSN tracks and the MSN all publish "... in Nursing", so "Nursing" names all four and a lookup asks which, rather than meaning only "Nursing MSN".
 
 On the September 22 snapshot this adds 152 aliases: 131 program families, 9 departments and 12 abbreviation aliases.
 - **Human-reviewed aliases:** a colloquial name no rule derives is added only through `src/reference/campus-identity-reviews.json`, by persistent ID. Each entry records who approved it and when, and may name an official page that uses it as a label (`source_url`). The coverage report lists these separately as `human_reviewed_aliases`, apart from source-derived aliases.
@@ -139,7 +139,7 @@ The coverage report's `alias_sources` lists every alias in the registry with the
 | `record_name` | The name a linked source record publishes | that record's `name` field |
 | `department` | The department on the identity's own directory entry | that entry's `department` field |
 | `abbreviation` | The abbreviation in parentheses in the identity's own name, or the name without it | none |
-| `program_family` | The program name without its degree designation | none |
+| `program_family` | The program name without its degree designation, or the field its catalog degree names ("Bachelor of Science in Nursing" gives "Nursing" to all three BSN tracks) | none, or the program record's `degree` field |
 | `school_abbreviation` | The reviewed school entry | the school's official page |
 | `school_former_name` | A former name the school replaced | the recorded evidence, such as a redirect |
 | `event_title` | The event's published title, without its date | the event record's `title` field |

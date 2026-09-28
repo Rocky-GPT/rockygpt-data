@@ -17,7 +17,9 @@ import type { IdentityCoverageIssue } from './compile-campus-identities';
  *   the abbreviation and the name without it ("Student Center (SC)").
  * - Program family: a program name ending in a published degree designation gives
  *   the name without it ("Computer Science BS" → "Computer Science"). A remainder
- *   that ends mid-phrase ("Nursing RN to BSN") gives none.
+ *   that ends mid-phrase ("Nursing RN to BSN") gives none. A catalog degree that
+ *   names its field gives that field: all three BSN tracks and the MSN publish
+ *   "... in Nursing", so "Nursing" names all four, not only "Nursing MSN".
  *
  * Status: a person whose own contact record publishes status "retired" is retired.
  *
@@ -30,6 +32,7 @@ type Row = Record<string, unknown>;
 const ABBREVIATED = /^(.+?) \(([A-Z][A-Z0-9&]{1,9})\)$/;
 const DESIGNATIONS = [' BA', ' BS', ' BSN', ' BSW', ' MA', ' MS', ' MSN', ' MBA', ' MFA', ' MPP', ' MSW', ' DNP', ' Minor', ' 4+1', '-Graduate Certificate'];
 const DANGLING = /\b(to|and|of|in|the|for)$|[&-]$/i;
+const DEGREE_FIELD = /^(?:Bachelor|Master|Doctor) of [A-Z][A-Za-z ]*? in ([A-Z][A-Za-z ]+)$/;
 const MAX_ALIASES = 32;
 
 const text = (value: unknown): string => typeof value === 'string' ? value.trim() : '';
@@ -104,6 +107,11 @@ export function programFamily(name: string): string | null {
   return family && !DANGLING.test(family) ? family : null;
 }
 
+/** The field a catalog degree names ("Bachelor of Science in Nursing" → "Nursing"), or null. */
+export function degreeField(degree: string): string | null {
+  return DEGREE_FIELD.exec(degree.trim())?.[1].trim() || null;
+}
+
 /**
  * Add published aliases and retired status in place. `rows` maps
  * `${collection}:${source_key}:${source_record_key}` to the original record.
@@ -118,6 +126,12 @@ export function applyPublishedAliases(entities: CampusIdentity[], rows: Map<stri
     if (entity.kind === 'program') {
       const family = programFamily(entity.name);
       if (family) found.push([family, { basis: 'program_family' }]);
+      for (const link of entity.links.filter(l => l.collection === 'programs')) {
+        for (const key of link.source_record_keys) {
+          const field = degreeField(text(rows.get(`programs:${link.source_key}:${key}`)?.degree));
+          if (field) found.push([field, { basis: 'program_family', evidence: { collection: 'programs', source_key: link.source_key, source_record_key: key, field: 'degree' } }]);
+        }
+      }
     }
     const retired: IdentityEvidence[] = [];
     for (const link of entity.links.filter(l => l.collection === 'contacts')) {
