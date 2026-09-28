@@ -31,6 +31,35 @@
       "reviewed_at": "2026-09-24",
       "source_url": "https://www.ramapo.edu/undergraduate/asd/",
       "note": "Approved: students ask about \"the dining hall\". Admissions labels the venue \"Food – Birch Tree Inn – Dining Hall: 1st Floor Student Center\" (Admitted Student Day, modified 2026-04-17) and \"Birch Tree Inn Dining Hall (1st Fl. Student Center)\" (Open House agenda, modified 2026-09-24). Neither page says \"the dining hall\"; pages that do (EOF freshman page, Residence Life photo text) name no venue. Older pages (2014 Welcome Week, 2017 Conference Center) also called the Trustees Pavilion a dining hall, and the Graduate Hub page (modified 2026-08-05) still lists Pavilion Dining as a second all-you-care-to-eat facility. Sodexo lists no Pavilion dining venue today, and the registry has none."
+    },
+    {
+      "entity_id": "e2f70325-f937-446d-9ddd-f54a2eb2b746",
+      "entity": "Public Safety (Emergency)",
+      "alias": "Campus Police",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved by Dan on 2026-09-28: students ask for \"campus police\", and an emergency-number question got no answer because nothing tied the phrase to Public Safety. The Non-Emergency line carries the same alias, so the phrase names both lines."
+    },
+    {
+      "entity_id": "4c0063a5-62be-44cd-8a11-35151b945be4",
+      "entity": "Public Safety (Non-Emergency)",
+      "alias": "Campus Police",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved by Dan on 2026-09-28, with the Emergency line: \"campus police\" is how students name Public Safety."
+    },
+    {
+      "entity_id": "30adf6c0-33f9-4349-873d-18ae7e504766",
+      "entity": "Cahill Career Development Center",
+      "alias": "Career Center",
+      "reviewed_at": "2026-09-28",
+      "source_url": "https://www.ramapo.edu/careercenter/",
+      "note": "Approved by Dan on 2026-09-28: students ask for \"the career center\"; the office's own site lives at /careercenter/. \"Career center hours\" found nothing although the hours are published."
+    },
+    {
+      "entity_id": "37d9beb2-3352-4f14-bf73-b5508d3309c4",
+      "entity": "We Proudly Serve Starbucks at Common Grounds",
+      "alias": "Starbucks",
+      "reviewed_at": "2026-09-28",
+      "note": "Approved by Dan on 2026-09-28 with the other place nicknames: students say \"Starbucks\" for the only Starbucks on campus, whose full name no one types."
     }
   ],
   "buildings": [
