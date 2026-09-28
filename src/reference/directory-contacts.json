@@ -203,6 +203,21 @@
           "fields": [
             "phone"
           ]
+        },
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "Health Services - ",
+          "fields": [
+            "phone"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/csw/",
+          "section": "Valley Medical Group Health Services",
+          "fields": [
+            "phone"
+          ]
         }
       ]
     },
@@ -626,6 +641,14 @@
             "phone",
             "email",
             "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "Payroll - ",
+          "fields": [
+            "phone"
           ]
         }
       ]
@@ -1090,6 +1113,14 @@
           "fields": [
             "phone",
             "email"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "President's Office - ",
+          "fields": [
+            "phone"
           ]
         }
       ]
