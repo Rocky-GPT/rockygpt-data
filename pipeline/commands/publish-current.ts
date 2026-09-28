@@ -6,6 +6,7 @@ import { execFileSync } from 'child_process';
 import 'dotenv/config';
 import { Pool, type PoolClient } from 'pg';
 import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
+import { loadCapturedPages } from '../../src/directory/contact-evidence';
 import { parseTransportationSchedules } from '../../ingestion/transportation-schedule';
 import { validateRawDatasetV1 } from '../../ingestion/raw-types';
 import { normalizeMenuWeek } from '../../ingestion/menu-data';
@@ -356,9 +357,28 @@ async function insertStructured(
     }
   }
 
+  // Reviewed office and staff values publish only where the page section they cite
+  // states them in this run's capture; the rest are withheld and logged.
   const directoryContacts = buildStructuredDirectoryContacts(
-    readJson<unknown>('data/normalized/faculty.json')
+    readJson<unknown>('data/normalized/faculty.json'),
+    loadCapturedPages()
   );
+  let reviewedValues = 0;
+  let withheldValues = 0;
+  for (const contact of directoryContacts) {
+    if (!contact.evidence) continue;
+    reviewedValues += [contact.phone || contact.raw_phone, contact.email, contact.office].filter(Boolean).length
+      + contact.evidence.withheld.length;
+    withheldValues += contact.evidence.withheld.length;
+    for (const withheld of contact.evidence.withheld) {
+      console.warn(`Withheld ${contact.name} ${withheld.field} ${withheld.value}: ${withheld.reason}`);
+    }
+  }
+  // A page that changed withholds a value or two. Losing a quarter of them means the
+  // captures themselves are missing, so stop rather than publish offices with no phones.
+  if (withheldValues > Math.max(5, reviewedValues * 0.25)) {
+    throw new Error(`${withheldValues} of ${reviewedValues} reviewed contact values have no supporting page in this run's captures.`);
+  }
   for (const contact of directoryContacts) {
     const name = cleanText(contact.name);
     if (!name) continue;

@@ -6,6 +6,13 @@ import {
 } from './static-contacts';
 import { parseAndNormalizePhone } from './phone-normalizer';
 import { normalizeContactFields, reviewContacts } from './contact-normalizer';
+import {
+  checkContactValues,
+  type CapturedPage,
+  type ContactEvidence,
+  type ContactValues,
+  type WithheldContactValue,
+} from './contact-evidence';
 
 type JsonRecord = Record<string, unknown>;
 
@@ -24,6 +31,11 @@ export interface StructuredDirectoryContact extends ContactRecord {
   sourceRecordKey: string;
   /** Alternative names explicitly present in the published directory. */
   aliases: string[];
+  /**
+   * For a reviewed contact checked against this run's captures: the pages that state
+   * its published values, and the reviewed values no cited section stated.
+   */
+  evidence?: { source_urls: string[]; withheld: WithheldContactValue[] };
 }
 
 interface FacultyContactSeed {
@@ -143,12 +155,32 @@ export function normalizePhoneNumber(phone: string | undefined | null): string |
   return parseAndNormalizePhone(phone).phone || undefined;
 }
 
-/** Builds the authoritative structured contact population for both repositories. */
+/**
+ * A reviewed contact's phone, email and office. With this run's captured pages, only
+ * the values a cited page section states; without them (file mode), the reviewed values.
+ */
+function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[] },
+  capturedPages: ReadonlyMap<string, CapturedPage> | undefined): {
+  values: ContactValues; evidence?: StructuredDirectoryContact['evidence'];
+} {
+  const values = { phone: entry.phone, email: entry.email, office: entry.office };
+  if (!capturedPages) return { values };
+  const checked = checkContactValues(values, entry.evidence, capturedPages);
+  return { values: checked.values, evidence: { source_urls: checked.sourceUrls, withheld: checked.withheld } };
+}
+
+/**
+ * Builds the authoritative structured contact population for both repositories.
+ * Publication passes the captured pages, so a reviewed value reaches the graph only
+ * when the page section it cites states it in this run's capture.
+ */
 export function buildStructuredDirectoryContacts(
-  facultyInput: unknown
+  facultyInput: unknown,
+  capturedPages?: ReadonlyMap<string, CapturedPage>
 ): StructuredDirectoryContact[] {
   const offices: StructuredDirectoryContact[] = OFFICE_DIRECTORY_CONTACTS.map((entry) => {
-    const normalized = parseAndNormalizePhone(entry.phone);
+    const { values, evidence } = reviewedValues(entry, capturedPages);
+    const normalized = parseAndNormalizePhone(values.phone);
     return {
       name: entry.name,
       type: 'office',
@@ -160,19 +192,21 @@ export function buildStructuredDirectoryContacts(
       prefers_email: normalized.prefers_email,
       raw_phone: normalized.raw_phone || undefined,
       phone_normalization_status: normalized.phone_normalization_status,
-      email: entry.email,
-      office: entry.office,
+      email: values.email,
+      office: values.office,
       source: V2_SOURCES.directory,
-      searchable: [entry.name, entry.department, entry.office, ...entry.helpsWith]
+      searchable: [entry.name, entry.department, values.office, ...entry.helpsWith]
         .filter(Boolean)
         .join(' '),
       publicationSourceKey: 'campus-directory',
       sourceRecordKey: `office:${keyPart(entry.name)}`,
       aliases: entry.department && entry.department !== entry.name ? [entry.department] : [],
+      evidence,
     };
   });
   const others: StructuredDirectoryContact[] = OTHER_DIRECTORY_CONTACTS.map((entry) => {
-    const normalized = parseAndNormalizePhone(entry.phone);
+    const { values, evidence } = reviewedValues(entry, capturedPages);
+    const normalized = parseAndNormalizePhone(values.phone);
     return {
       name: entry.name,
       type: 'person',
@@ -185,13 +219,14 @@ export function buildStructuredDirectoryContacts(
       prefers_email: normalized.prefers_email,
       raw_phone: normalized.raw_phone || undefined,
       phone_normalization_status: normalized.phone_normalization_status,
-      email: entry.email,
-      office: entry.office,
+      email: values.email,
+      office: values.office,
       source: V2_SOURCES.directory,
-      searchable: [entry.name, entry.title, entry.unit, entry.office].filter(Boolean).join(' '),
+      searchable: [entry.name, entry.title, entry.unit, values.office].filter(Boolean).join(' '),
       publicationSourceKey: 'campus-directory',
       sourceRecordKey: `other:${keyPart(entry.name)}`,
       aliases: [],
+      evidence,
     };
   });
   const contacts = [...offices, ...others, ...facultyContacts(facultyInput)].map(contact => {
@@ -206,6 +241,7 @@ export function buildStructuredDirectoryContacts(
         version: 1,
         raw_fields: { name: contact.name, title: contact.title, department: contact.department, office: contact.office },
         review_flags: [],
+        ...(contact.evidence ? { evidence: contact.evidence } : {}),
       },
     };
   });
