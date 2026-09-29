@@ -230,6 +230,23 @@ function tabPanel($: ReturnType<typeof load>, element: AnyNode): { node: AnyNode
 const ACCORDION_LEVEL = 7;
 const TOP_LINK = /^(?:back|return) to (?:the )?top$/i;
 
+/**
+ * The text directly in a tab panel before its first heading, which no paragraph holds: the
+ * Student Printing tab opens "... to any swipe-to-release printer located in the Learning
+ * Commons and Fishbowl" as bare text, so it was lost (09-29).
+ */
+function panelIntro($: ReturnType<typeof load>, panel: AnyNode): string {
+  const texts: string[] = [];
+  for (const child of $(panel).contents().toArray()) {
+    if (child.type === 'text') {
+      texts.push(cleanText((child as unknown as { data?: string }).data || ''));
+      continue;
+    }
+    if ($(child).is(SECTION_HEADINGS) || $(child).find(SECTION_HEADINGS).length) break;
+  }
+  return cleanText(texts.join(' '));
+}
+
 /** A heading's level: h1 to h6 or its ARIA level; an accordion's title sits under the page's headings. */
 function headingLevel(node: ReturnType<ReturnType<typeof load>>): number {
   const tag = /^h([1-6])$/i.exec(node.prop('tagName') || '');
@@ -285,6 +302,8 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
         parents = labels();
         heading = panel.label;
         open.push({ level: 0, label: panel.label, panel: panel.node });
+        const intro = panelIntro($, panel.node);
+        if (intro) parts.push(intro);
       } else {
         heading = open.at(-1)?.label || initialHeading || 'Overview';
         parents = labels(open.slice(0, -1));

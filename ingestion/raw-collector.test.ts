@@ -299,6 +299,22 @@ test('a section keeps the tab and headings it sits under', () => {
   assert.equal(result.sections.find(section => section.heading === 'Printer Locations')?.text, 'ASB122 – Undergraduate Studies Office');
 });
 
+test("a tab panel's own opening text, outside any paragraph, is its section's text", () => {
+  const result = buildRawPageFromHtml({url:'https://www.ramapo.edu/its/mobile-printing/',sourceType:'seed',allowedHost:'www.ramapo.edu',
+    html:`<main><h1>Printing</h1><div id="content-block"><div id="tab-content"><div class="wrapper">
+      <div title="Student Printing" class="content active"><br /><img src="p.jpg" alt="" />The Ramapo Printing service is available to active
+        students, allowing them to print to any swipe-to-release printer located in the Learning Commons and Fishbowl.</p>
+        <h2>Printing/Copying Allowance</h2><p>Each student receives 200 pages per academic year.</p>
+        Text after a heading stays out of the opening.
+        <h3>Costs</h3><p>A single-sided page costs $0.10.</p></div>
+      <div title="Faculty Printing" class="content"><h2>Faculty Printing</h2><p>Faculty share printers near the deans' offices.</p></div>
+      </div></div></div></main>`});
+  assert.deepEqual(result.sections[0], { heading: 'Student Printing', text: 'The Ramapo Printing service is available to active '
+    + 'students, allowing them to print to any swipe-to-release printer located in the Learning Commons and Fishbowl.' });
+  assert.doesNotMatch(JSON.stringify(result.sections), /Text after a heading/);
+  assert.equal(result.sections.find(section => section.heading === 'Faculty Printing' && !section.parents?.length)?.text, undefined);
+});
+
 test('headings nest by level, accordions sit under them, and ARIA and Divi tabs name their panels', () => {
   const result = buildRawPageFromHtml({url:'https://example.edu/office/',sourceType:'seed',allowedHost:'example.edu',
     html:`<main><h1>Office</h1><p>The office helps students with everything below.</p>
