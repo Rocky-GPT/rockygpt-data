@@ -33,13 +33,19 @@ export interface ContextSection {
   parents?: string[];
 }
 
+// A heading that only says the sections under it are questions and answers names no subject,
+// and its "Asked" matched every "who can I ask" search: Title IV authorization FAQs outranked
+// the Financial Aid office's own contact passage for "financial aid ask office location".
+const QUESTIONS_AND_ANSWERS = /^(?:frequently asked questions|faqs?)(?:\s*\((?:faqs?)\))?:?$/i;
+
 /**
  * A section's heading as its context document writes it: under the headings and tab it sits in,
  * so its passages' heading path says "Faculty Printing › Printer Locations", not only "Printer
  * Locations". A tab and the heading repeating its name are written once.
  */
 export function sectionTitle(section: ContextSection): string {
-  const labels = [...section.parents ?? [], section.heading];
+  const parents = (section.parents ?? []).filter(parent => !QUESTIONS_AND_ANSWERS.test(parent));
+  const labels = [...parents, section.heading];
   return labels.filter((label, index) => index === 0 || label.toLowerCase() !== labels[index - 1].toLowerCase())
     .join(' › ');
 }
