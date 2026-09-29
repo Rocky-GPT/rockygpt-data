@@ -29,6 +29,19 @@ export interface Core6MarkdownOptions {
 export interface ContextSection {
   heading: string;
   text: string;
+  /** The headings and tab the section sits under on its page, outermost first. */
+  parents?: string[];
+}
+
+/**
+ * A section's heading as its context document writes it: under the headings and tab it sits in,
+ * so its passages' heading path says "Faculty Printing › Printer Locations", not only "Printer
+ * Locations". A tab and the heading repeating its name are written once.
+ */
+export function sectionTitle(section: ContextSection): string {
+  const labels = [...section.parents ?? [], section.heading];
+  return labels.filter((label, index) => index === 0 || label.toLowerCase() !== labels[index - 1].toLowerCase())
+    .join(' › ');
 }
 
 // The collector bounds the crawl; downstream chunking bounds retrieval. Do not
@@ -142,26 +155,28 @@ function pickSections(
   page: RawPageV1,
   maxSections: number,
   derivedSections: readonly ContextSection[] = []
-): Array<{ heading: string; text: string }> {
+): ContextSection[] {
   const candidates = [...derivedSections, ...page.sections]
-    .map((section) => {
+    .map((section): ContextSection | null => {
       const heading = normalizeText(section.heading) || 'Overview';
       const text = normalizeText(section.text);
       if (!text) return null;
       if (text.length < SECTION_MIN_LENGTH) return null;
       if (isNoiseHeading(heading)) return null;
       if (isNoiseText(text)) return null;
+      const parents = (section.parents ?? []).map((parent) => normalizeText(parent) || '').filter(Boolean);
 
       return {
         heading,
         text,
+        ...parents.length ? { parents } : {},
       };
     })
-    .filter((section): section is { heading: string; text: string } => section !== null);
+    .filter((section): section is ContextSection => section !== null);
 
   return dedupeByKey(
     candidates,
-    (section) => `${section.heading.toLowerCase()}|${section.text.toLowerCase()}`
+    (section) => `${sectionTitle(section).toLowerCase()}|${section.text.toLowerCase()}`
   )
     .slice(0, maxSections);
 }
@@ -345,7 +360,7 @@ interface RenderedPage {
 
 type SharedSections = Map<string, { block: ContextSection; pages: RenderedPage[] }>;
 
-const blockKey = (block: ContextSection) => `${block.heading.toLowerCase()}|${block.text.toLowerCase()}`;
+const blockKey = (block: ContextSection) => `${sectionTitle(block).toLowerCase()}|${block.text.toLowerCase()}`;
 
 /** Blocks repeated on at least half of the pages, with the pages that show them, in first-seen order. */
 function collectSharedSections(pages: readonly RenderedPage[]): SharedSections {
@@ -447,7 +462,7 @@ export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownConte
         // Cite the site's home page when it shows the block: the shortest path among the written pages that show it.
         const cited = (shownOn.length ? shownOn : pages).reduce((best, candidate) =>
           new URL(candidate.page.url).pathname.length < new URL(best.page.url).pathname.length ? candidate : best).page;
-        markdown += `### ${block.heading}\n\n- URL: ${cited.url}\n- Collected At: ${cited.fetchedAt}\n\n${block.text}\n\n`;
+        markdown += `### ${sectionTitle(block)}\n\n- URL: ${cited.url}\n- Collected At: ${cited.fetchedAt}\n\n${block.text}\n\n`;
         if (shownOn.length === written.length) markdown += `Shown on every ${options.title} page.\n\n`;
         else if (shownOn.length === 0) markdown += `Shown on ${options.title} pages.\n\n`;
         else markdown += `Shown on ${shownOn.length} of ${written.length} ${options.title} pages: `
@@ -468,7 +483,7 @@ export function core6Markdown(dataset: RawDatasetV1, options: Core6MarkdownConte
 
       if (sections.length > 0) {
         sections.forEach((section) => {
-          markdown += `### ${section.heading}\n\n${section.text}\n\n`;
+          markdown += `### ${sectionTitle(section)}\n\n${section.text}\n\n`;
         });
         markdown += '\n';
       }

@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber, withYear} from './raw-collector';
-import type { RawDatasetV1 } from './raw-types';
+import { type RawDatasetV1, validateRawDatasetV1 } from './raw-types';
 
 const page = (statusCode = 200) => buildRawPageFromHtml({url:'https://example.edu/policy', html:'<main><h1>Policy</h1><p>Source content.</p></main>', sourceType:'seed', allowedHost:'example.edu',statusCode});
 const dataset = (good: number, bad: number): RawDatasetV1 => ({ version:'1.0', dataset:'test', collectedAt:'2026-09-23T12:00:00Z', seedUrls:[], stats:{pagesFetched:good,pagesFailed:bad,externalLinksSeen:0},pages:[...Array.from({length:good},()=>page()),...Array.from({length:bad},()=>page(404))]});
@@ -267,3 +267,78 @@ test('an Events Calendar date gets back the year the plugin leaves out', () => {
   assert.equal(withYear('October 8, 2025', '2026'), 'October 8, 2025');
 });
 
+
+const titled = (sections: RawDatasetV1['pages'][number]['sections']) =>
+  sections.map(({ heading, parents }) => [...parents ?? [], heading].join(' › '));
+
+test('a section keeps the tab and headings it sits under', () => {
+  // The ITS printing page as captured on 09-26: "Printer Locations" lists printers only faculty
+  // can use, and only its tab and the h2 above it say so.
+  const result = buildRawPageFromHtml({url:'https://www.ramapo.edu/its/mobile-printing/',sourceType:'seed',allowedHost:'www.ramapo.edu',
+    html:`<main><h1>Printing</h1><div id="content-block"><h2>Printing</h2>
+      <div id="tabs"><a href="#" rel="t1"><span>Student Printing</span></a><a href="#" rel="t2"><span>Faculty Printing</span></a></div>
+      <div id="tab-content"><div class="wrapper">
+        <div id="t1" title="Student Printing" class="content active"><p>Students print from a phone or laptop to swipe-to-release printers.</p>
+          <h2>Printing/Copying Allowance</h2><ul><li>Each student receives 200 pages per academic year.</li></ul>
+          <h3>Where can students print or copy?</h3><p>In the Fishbowl, or in the Learning Commons on floors 1 to 4.</p></div>
+        <div id="t2" title="Faculty Printing" class="content"><h2>Faculty Printing</h2><p>Faculty share printers near the deans' offices.</p>
+          <h3>Printer Locations</h3><ul><li>ASB122 – Undergraduate Studies Office</li></ul></div>
+      </div></div>
+      <p>Questions about printing go to the Help Desk.</p></div></main>`});
+  assert.deepEqual(titled(result.sections), [
+    'Printing › Student Printing',
+    'Printing › Student Printing › Printing/Copying Allowance',
+    'Printing › Student Printing › Printing/Copying Allowance › Where can students print or copy?',
+    'Printing › Faculty Printing › Faculty Printing',
+    'Printing › Faculty Printing › Faculty Printing › Printer Locations',
+    'Printing',
+  ]);
+  // The tabs' own links are controls, not page text; the h1 is the page's title, written anyway.
+  assert.doesNotMatch(JSON.stringify(result.sections), /mobile-printing\/#/);
+  assert.equal(result.sections.at(-1)?.text, 'Questions about printing go to the Help Desk.');
+  assert.equal(result.sections.find(section => section.heading === 'Printer Locations')?.text, 'ASB122 – Undergraduate Studies Office');
+});
+
+test('headings nest by level, accordions sit under them, and ARIA and Divi tabs name their panels', () => {
+  const result = buildRawPageFromHtml({url:'https://example.edu/office/',sourceType:'seed',allowedHost:'example.edu',
+    html:`<main><h1>Office</h1><p>The office helps students with everything below.</p>
+      <h2>Parking</h2><p>Every car on campus needs a permit.</p><h2><a href="javascript:scrollTop();">return to top</a></h2>
+      <h3>Faculty and Staff</h3><p>Staff park in Lot A with a staff permit.</p>
+      <h4>Carpools</h4><p>Carpools of three or more park in the front row.</p>
+      <h3>Students</h3><p>Students park in Lots B and C.</p>
+      <h2>FAQ</h2><div class="collapsableTitle">Can guests park overnight?</div><p>Guests need a pass after 10 p.m.</p>
+      <div class="collapsableTitle">Where do I pay a ticket?</div><p>Pay tickets online through the parking portal.</p>
+      <div role="tablist"><button role="tab" id="tab-new">New ID <b>Cards</b></button><button role="tab" id="tab-lost">Lost Cards</button></div>
+      <div role="tabpanel" aria-labelledby="tab-new"><p>New students get an ID card at orientation.</p></div>
+      <div role="tabpanel" aria-labelledby="tab-lost"><p>A replacement ID card costs $25 at the ID Card Room.</p></div>
+      <div class="et_pb_tabs"><ul class="et_pb_tabs_controls"><li><a href="#">Hours</a></li><li><a href="#">Contact</a></li></ul>
+        <div class="et_pb_all_tabs"><div class="et_pb_tab"><p>The library opens at 8 a.m. on weekdays.</p></div>
+        <div class="et_pb_tab"><p>Email the library desk with any question.</p></div></div></div>
+      <div id="tab-content"><div class="content" title="&lt;strong&gt;Pre-Arrival&lt;/strong&gt;"><p>Book your flight to arrive before orientation.</p></div></div>
+      </main>`});
+  assert.deepEqual(titled(result.sections), [
+    'Office',
+    'Parking',
+    'Parking › Faculty and Staff',
+    'Parking › Faculty and Staff › Carpools',
+    'Parking › Students',
+    'FAQ › Can guests park overnight?',
+    'FAQ › Where do I pay a ticket?',
+    'FAQ › New ID Cards',
+    'FAQ › Lost Cards',
+    'FAQ › Hours',
+    'FAQ › Contact',
+    'FAQ › Pre-Arrival',
+  ]);
+  assert.ok(!result.sections.some(section => /^(?:Hours|Contact) \(/.test(section.text)));
+});
+
+test('a capture replayed through validation keeps its sections\' parents', () => {
+  const page = buildRawPageFromHtml({url:'https://example.edu/a/',sourceType:'seed',allowedHost:'example.edu',
+    html:'<main><h1>A</h1><h2>Parking</h2><h3>Students</h3><p>Students park in Lots B and C.</p></main>'});
+  const checked = validateRawDatasetV1({ version:'1.0', dataset:'test', collectedAt:'2026-09-29T00:00:00Z', seedUrls:[],
+    stats:{pagesFetched:1,pagesFailed:0,externalLinksSeen:0}, pages:[page] });
+  assert.deepEqual(checked.pages[0].sections, [{ heading: 'Students', text: 'Students park in Lots B and C.', parents: ['Parking'] }]);
+  assert.throws(() => validateRawDatasetV1({ ...checked, pages: [{ ...page, sections: [{ heading: 'Students', text: 'x', parents: [1] }] }] }),
+    /parents\[0\] must be a string/);
+});
