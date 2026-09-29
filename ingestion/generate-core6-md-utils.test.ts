@@ -72,3 +72,14 @@ test("a section is written under the tab and headings it sits under, so its pass
   assert.equal(locations?.headingPath, 'Information Technology Services › Printing - ITS › Faculty Printing › Printer Locations');
   assert.match(locations?.content ?? '', /^### Faculty Printing › Printer Locations/);
 });
+
+test("a heading that only says what follows are questions is not written above them", () => {
+  const faqs = page('https://www.ramapo.edu/student-accounts/title-iv/', `<title>Title IV - Student Accounts</title><main>
+    <h1>Title IV</h1><h2>Frequently Asked Questions (FAQ)</h2><h3>What is Title IV financial aid?</h3>
+    <p>Title IV aid is federal student aid such as Pell Grants and Direct Loans.</p>
+    <h2>Financial Aid FAQs</h2><h3>Can I change my answers?</h3><p>Yes, change them any time in the student portal.</p></main>`);
+  const { markdown } = core6Markdown({ ...dataset, pages: [faqs] }, options);
+  assert.match(markdown, /\n### What is Title IV financial aid\?\n/);
+  // A question list named for its subject still names it.
+  assert.match(markdown, /\n### Financial Aid FAQs › Can I change my answers\?\n/);
+});
