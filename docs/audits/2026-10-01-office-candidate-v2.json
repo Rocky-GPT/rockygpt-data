@@ -1,0 +1,796 @@
+{
+  "candidate": "rockygpt_profiles_dev_offices_20261001_v2",
+  "status": "staging",
+  "baseVersion": "dev-profiles-headings3-20260929",
+  "version": "dev-offices-20261001-v2",
+  "datasetId": "7e5ed799-f72a-4398-931a-a9b746280fe7",
+  "releaseId": "08a6cc56-c51e-4f26-996c-51420a17e9f0",
+  "contactsWithFreshFieldObservations": 50,
+  "observedFields": {
+    "email": 40,
+    "phones": 47,
+    "offices": 31
+  },
+  "withheldFieldObservations": [
+    {
+      "source_record_key": "office:j-lee-s-student-lounge-game-room",
+      "field": "phones",
+      "reason": "The complete published value is not stated together in its scoped fresh evidence."
+    }
+  ],
+  "unchangedUnobservedContacts": 2,
+  "copiedRows": {
+    "critical_facts": 15,
+    "campus_contacts": 278,
+    "campus_hours": 140,
+    "dining_hours": 46,
+    "menu_items": 892,
+    "shuttle_routes": 4,
+    "shuttle_trips": 51,
+    "academic_dates": 106,
+    "campus_events": 317,
+    "clubs": 255,
+    "programs": 140,
+    "documents": 135,
+    "source_runs": 24,
+    "document_chunks": 24419
+  },
+  "changedArtifactPins": [
+    "campus-identities",
+    "campus-identity-coverage",
+    "event-organizers"
+  ],
+  "evidenceArtifactHash": "e606cf167b1d30a2182b57834cb36bb66373359c7bb683066b7a0b50554419e6",
+  "canonicalIdentityIdsUnchanged": true,
+  "canonicalOfficesResolved": 34,
+  "canonicalOfficesWithFreshContactFields": 34,
+  "officeFieldCoverage": [
+    {
+      "entity_id": "9f4a8a53-67a1-4ce4-b4da-5d19630f135b",
+      "name": "Center for Student Involvement",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "6917efd3-3f23-4cd5-8ada-8330b2f2d00f",
+      "name": "Anisfield School of Business",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "8fd2b319-eeaa-4cad-9244-7fd54c1096cc",
+      "name": "Athletics",
+      "fields": {
+        "email": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "00a23005-150e-4640-b07e-0cb350c4bb6f",
+      "name": "Library",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "c8fe1166-f8e7-4684-923a-164591b4b4dd",
+      "name": "Housing & Residence Life",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "4c0063a5-62be-44cd-8a11-35151b945be4",
+      "name": "Public Safety (Non-Emergency)",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "418cf077-132d-4b72-a3a9-e48d33353a5e",
+      "name": "Counseling Center",
+      "fields": {
+        "email": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "6806de2c-1cbc-436e-a26c-fcfcd3c80850",
+      "name": "IT Help Desk",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "e2f70325-f937-446d-9ddd-f54a2eb2b746",
+      "name": "Public Safety (Emergency)",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "2d601e96-ce7f-4ea1-bc72-287fc01ae407",
+      "name": "Center for Student Success (Academic Advising)",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "8e6d26cc-df5c-4644-9d1b-b0a4548cce9d",
+      "name": "Financial Aid",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "1487b421-1a9d-4151-9326-16b744094308",
+      "name": "Health Services",
+      "fields": {
+        "email": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "0458a32a-e19c-49e9-8170-1a08a17d1658",
+      "name": "Registrar",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "73e85425-9159-41af-81c6-5fde35497dc9",
+      "name": "Student Accounts",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "5ab938ac-bc5c-4fce-9771-db49be4fd2ef",
+      "name": "Admissions",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "30adf6c0-33f9-4349-873d-18ae7e504766",
+      "name": "Cahill Career Development Center",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "bd448eaa-d1c1-49b6-bbda-597b7c4e1423",
+      "name": "Office of Specialized Services",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "809920fd-5a64-44af-8bad-a92dd9cc0b8d",
+      "name": "Dean of Students",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "f5e3961d-c56b-4b29-89f3-64488f464e64",
+      "name": "Educational Opportunity Fund (EOF) Program",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "4b1188ba-9990-4ed5-b8be-624ac96b9a08",
+      "name": "Office of Student Conduct",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "5711a0b1-2370-41d1-953f-739e3afba757",
+      "name": "Center for Reading and Writing",
+      "fields": {
+        "email": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "28b63d78-614d-4e1d-a697-7711568dbe0b",
+      "name": "Title IX",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "6584f35e-b41f-486e-942b-53868d78e40a",
+      "name": "Graduate Admissions",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "5cf51f94-8b75-4fbd-8d0d-b49bcb0d4a3b",
+      "name": "Testing Center",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "514776ab-f932-4206-aa1b-14596559fde0",
+      "name": "Payroll",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "18ab518c-16ff-4fc2-8c4e-4ade42d89d40",
+      "name": "Berrie Center Box Office",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "cd4b3e87-2664-453e-a27b-5d6fa6460b61",
+      "name": "Photography Lab",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "e181be45-8ccb-409a-a98c-3c777dc65063",
+      "name": "Ombuds Office",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "d3119a09-70fa-4ad7-8f9c-6492e8b2379b",
+      "name": "Environmental Health and Safety",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "0691dd1e-07c7-4189-bc7c-3bb469bda8e4",
+      "name": "Nursing Programs Office",
+      "fields": {
+        "email": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "ed84d47b-2751-4890-afdf-c8a971f8190a",
+      "name": "Roadrunner Central",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "4c02fa98-2f33-4fb2-a80c-fbe9c79b5310",
+      "name": "Investigative Genetic Genealogy Center",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "9693a999-b08b-4993-93f8-3a971b3eab81",
+      "name": "ENHANCE Program",
+      "fields": {
+        "email": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    },
+    {
+      "entity_id": "f761977e-9e04-4155-a0ba-6f1229545bb6",
+      "name": "ID Card Room",
+      "fields": {
+        "email": {
+          "publishedRecords": 0,
+          "freshObservations": 0,
+          "unobservedRecords": 0
+        },
+        "phones": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        },
+        "offices": {
+          "publishedRecords": 1,
+          "freshObservations": 1,
+          "unobservedRecords": 0
+        }
+      }
+    }
+  ],
+  "originalCollectedAtPreserved": true,
+  "identityHash": "3f68b8ec0ad94f7623310ee66969cab4786d0051a225c56b0cae20d9ac28f355",
+  "unrelatedValueDifferences": {
+    "critical_facts": 0,
+    "campus_contacts": 0,
+    "campus_hours": 0,
+    "dining_hours": 0,
+    "menu_items": 0,
+    "shuttle_routes": 0,
+    "shuttle_trips": 0,
+    "academic_dates": 0,
+    "campus_events": 0,
+    "clubs": 0,
+    "programs": 0,
+    "documents": 0,
+    "source_runs": 0,
+    "document_chunks": 0
+  },
+  "unrelatedContactProvenanceDifferences": 0,
+  "originalContactMetadataDifferences": 0,
+  "preservedArtifacts": 26,
+  "sameReleaseObservationArtifactFailures": 0,
+  "baseSourceCommitSha": "614c93326b1d62f93d2a8d60f5c3635d1e46a3fa",
+  "refreshImplementationSha256": {
+    "pipeline/development-office-candidate.ts": "c54b4fd076218b72cd7973c8e722b502998c55d3fb6d7b816f71273981f31d0d",
+    "pipeline/commands/capture-development-offices.ts": "805d14d90eaadf8c9b2b10df52c83dfac515703189cc0d9cbdd72e8b96e96c40",
+    "src/directory/structured-contacts.ts": "e12e9b3ada9943807591eacefb7e1271f3663d6701f1f8b01a32001e4fd8a52d",
+    "src/directory/contact-evidence.ts": "3a66d70e3d90e489b9171019c2f870e970b381e4d9dfc88f3d58629abb57021b",
+    "src/directory/contact-normalizer.ts": "774586d7058f56cd5213e054b0b736bd54b80728e5e01aaf201e8abab5ff11a4",
+    "src/directory/phone-normalizer.ts": "0494180f44e67dddd87bfb1ac2a5dc195253e9bd35e61fac11f55d2cf14051a1"
+  },
+  "sourceDatabaseUnchanged": true,
+  "activated": false
+}
