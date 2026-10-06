@@ -6,6 +6,7 @@ import test from 'node:test';
 import {
   CONTACT_FIELDS,
   checkContactValues,
+  findUnrecordedValues,
   loadCapturedPages,
   pageKey,
   statesValue,
@@ -109,4 +110,21 @@ test('publication records where each value came from and what it withheld', () =
   assert.deepEqual(metadata.evidence?.source_urls, []);
   // File mode (no captures) keeps the reviewed values as before.
   assert.equal(buildStructuredDirectoryContacts([]).find(contact => contact.name === 'Registrar')?.phone, '(201) 684-7695');
+});
+
+test('a cited section that states a value the entry leaves out is reported, so "not published" cannot hide it', () => {
+  // The ID Card Room's own line listed an email that the reviewed entry never recorded.
+  const evidence = [{ url: 'https://www.ramapo.edu/publicsafety/id-cards/', section: 'Identification Card Information',
+    fields: ['phone', 'office'] as Array<'phone' | 'office'> }];
+  const captured = pages(page(evidence[0].url, [['Identification Card Information',
+    'ID Room, C-Wing, C-101 (201)-684-6229/x6229 publicsafety@ramapo.edu']]));
+  const missed = findUnrecordedValues({ phone: '(201) 684-6229', office: 'C-101' }, evidence, captured);
+  assert.deepEqual(missed.map(({ field, found }) => [field, found]), [['email', ['publicsafety@ramapo.edu']]]);
+  assert.equal(missed[0].section, 'Identification Card Information');
+  // Once the email is recorded there is nothing to report, and a page that is not captured reports nothing.
+  assert.deepEqual(findUnrecordedValues({ phone: '(201) 684-6229', email: 'publicsafety@ramapo.edu', office: 'C-101' }, evidence, captured), []);
+  assert.deepEqual(findUnrecordedValues({}, evidence, pages()), []);
+  // It never changes what is published: the unrecorded value is not returned as a contact value.
+  assert.deepEqual(checkContactValues({ phone: '(201) 684-6229', office: 'C-101' }, evidence, captured).values,
+    { phone: '(201) 684-6229', office: 'C-101' });
 });

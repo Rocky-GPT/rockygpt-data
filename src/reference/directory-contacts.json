@@ -828,6 +828,7 @@
     {
       "name": "ID Card Room",
       "phone": "(201) 684-6229",
+      "email": "publicsafety@ramapo.edu",
       "category": "Services",
       "department": "ID Card Room",
       "office": "C-101",
@@ -840,6 +841,7 @@
           "section": "Identification Card Information",
           "fields": [
             "phone",
+            "email",
             "office"
           ]
         }
