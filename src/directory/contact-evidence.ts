@@ -208,3 +208,33 @@ export function checkContactValues(values: ContactValues, evidence: readonly Con
   }
   return { values: published, withheld, sourceUrls: [...sourceUrls] };
 }
+
+/** A value a cited section states for a field the reviewed entry leaves empty. */
+export interface UnrecordedValue { field: ContactField; found: string[]; url: string; section: string }
+
+/**
+ * The values each cited section states for a field the entry has no value for. An entry
+ * that cites a section and omits what the section plainly lists is a likely mistake: the
+ * graph then says "not published" about something the office's own page publishes. These
+ * are for a person to review (a staff list can name other people's addresses). They are
+ * never published on their own, and publication does not withhold anything for them.
+ */
+export function findUnrecordedValues(values: ContactValues, evidence: readonly ContactEvidence[],
+  pages: ReadonlyMap<string, CapturedPage>): UnrecordedValue[] {
+  const unrecorded: UnrecordedValue[] = [];
+  const unique = (found: string[]) => [...new Set(found)];
+  for (const entry of evidence) {
+    const found = evidenceText(entry, pages);
+    if ('reason' in found) continue;
+    const stated: Record<ContactField, string[]> = {
+      phone: unique(phonesIn(found.text)),
+      email: unique(emailsIn(found.text)),
+      office: unique(roomsIn(found.text)),
+    };
+    for (const field of CONTACT_FIELDS) {
+      if (values[field]?.trim() || !stated[field].length) continue;
+      unrecorded.push({ field, found: stated[field], url: entry.url, section: entry.section });
+    }
+  }
+  return unrecorded;
+}
