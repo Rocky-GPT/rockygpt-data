@@ -56,6 +56,31 @@ not by themselves establish useful or grounded answers.
 This is a development validation workflow. Production still needs a reviewed
 source-scoped publication/rollback process; this helper is not that process.
 
+## Reviewed aliases for an existing development release
+
+A reviewed alias in `src/reference/campus-identity-reviews.json` reaches a release only when that
+release is compiled. To give an already staged local release the aliases approved since, without
+recompiling anything else, copy its database and apply them to the copy:
+
+```bash
+createdb -h 127.0.0.1 -p 55434 -U postgres rockygpt_profiles_dev_NEW
+pg_dump -h 127.0.0.1 -p 55434 -U postgres rockygpt_profiles_dev_SOURCE \
+  | psql -q -h 127.0.0.1 -p 55434 -U postgres -v ON_ERROR_STOP=1 rockygpt_profiles_dev_NEW
+DOTENV_CONFIG_PATH=/dev/null node_modules/.bin/tsx \
+  pipeline/commands/apply-reviewed-aliases-development.ts \
+  --database postgresql://postgres@127.0.0.1:55434/rockygpt_profiles_dev_NEW          # report only
+  # add --apply to write
+```
+
+The command refuses a host that is not loopback, any URL with connection options (a `?host=`
+would send the connection elsewhere), and any database not named `rockygpt_profiles_dev_*`. Without
+`--apply` it prints what it would add and rolls back. It rewrites only the active release's
+identity registry and coverage report, using the compiler's own `applyReviewedAliases`, so every
+alias keeps its recorded source (a repeated source is kept once) and no identity, link or
+relationship changes. The registry's content hash, which is the identity hash consumers pin,
+changes. It never activates anything; the source database stays as the rollback, and the target
+must be a throwaway copy. Pointing a Brain at the new database is a separate local step.
+
 ## October 1, 2026 evidence
 
 The [first candidate report](audits/2026-10-01-office-candidate-rejected.json) is

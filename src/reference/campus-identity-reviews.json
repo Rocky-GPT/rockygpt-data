@@ -96,6 +96,142 @@
       "reviewed_at": "2026-09-28",
       "source_url": "https://www.ramapo.edu/learning-commons/",
       "note": "Approved by Dan on 2026-09-28: students say \"the Learning Commons\", and \"the dining place in the Learning Commons\" found nothing, since the building's only name was its full one. The college's own site lives at /learning-commons/ and its pages call it the Learning Commons. No other identity carries the name."
+    },
+    {
+      "entity_id": "5ab938ac-bc5c-4fce-9771-db49be4fd2ef",
+      "entity": "Admissions",
+      "alias": "Undergraduate Admissions",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/undergraduate/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: data/context/campus/offices/undergraduate.md is the office's own 'Undergraduate Admissions' site, and directory.md says 'the undergraduate admissions website'. It separates this office from Graduate Admissions."
+    },
+    {
+      "entity_id": "6917efd3-3f23-4cd5-8ada-8330b2f2d00f",
+      "entity": "Anisfield School of Business",
+      "alias": "ASB",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/asb/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: src/reference/campus-schools.json abbreviation 'ASB'; directory.md lists the dean in 'Room ASB-333'; clubs pages say 'All ASB students'. Note: ASB is also the school building's short name in room codes (ASB-333). The Brain's office lookup only reaches the school's office, so \"where is ASB\" returns that office's contact."
+    },
+    {
+      "entity_id": "30adf6c0-33f9-4349-873d-18ae7e504766",
+      "entity": "Cahill Career Development Center",
+      "alias": "Career Services",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/careercenter/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: careercenter.md 'The Office of Career Services at Ramapo College of New Jersey'; major-pages.md 'contact Career Services (cahill@ramapo.edu)'; adult-students.md 'the Cahill Center for Career Services'."
+    },
+    {
+      "entity_id": "5711a0b1-2370-41d1-953f-739e3afba757",
+      "entity": "Center for Reading and Writing",
+      "alias": "CRW",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/crw/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: directory.md 'Center for Reading and Writing (CRW)'; crw.md uses CRW throughout ('CRW website', 'CRW Satellite Sessions')."
+    },
+    {
+      "entity_id": "9f4a8a53-67a1-4ce4-b4da-5d19630f135b",
+      "entity": "Center for Student Involvement",
+      "alias": "Student Activities",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/csi/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: directory.md A-Z lists 'Student Activities (CSI) (https://www.ramapo.edu/csi/)'; the consumer-information page links 'Student Activities' to /csi/."
+    },
+    {
+      "entity_id": "d3119a09-70fa-4ad7-8f9c-6492e8b2379b",
+      "entity": "Environmental Health and Safety",
+      "alias": "EHS",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/ehs/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: directory.md 'Environmental Health & Safety (EHS) (https://web.ramapo.edu/ehs/)'; the safety pages link /ehs/. No other entity uses EHS."
+    },
+    {
+      "entity_id": "1487b421-1a9d-4151-9326-16b744094308",
+      "entity": "Health Services",
+      "alias": "Health Center",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/health/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: health.md 'the campus health center at Ramapo College of New Jersey'; emergency.md 'advise the Health Center of their travel plans'. The other 'health center' hits are a parking lot label, Planned Parenthood sites and outside mental-health centers, none a campus office."
+    },
+    {
+      "entity_id": "6806de2c-1cbc-436e-a26c-fcfcd3c80850",
+      "entity": "IT Help Desk",
+      "alias": "ITS Help Desk",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/about/phone/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: directory.md 'ITS Help Desk - (201) 684-7777'."
+    },
+    {
+      "entity_id": "6806de2c-1cbc-436e-a26c-fcfcd3c80850",
+      "entity": "IT Help Desk",
+      "alias": "ITS",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/its/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: directory.md 'Information Technology Services (ITS) - (201) 684-7777'; the ITS site and policies use it constantly. 'its' is also a common English word, so a query containing it may add IT Help Desk as an extra candidate. That does no harm. Note: ITS is also an English word. The Brain never searches a student's own words; the model picks a published name, so this only helps a student who writes ITS."
+    },
+    {
+      "entity_id": "bd448eaa-d1c1-49b6-bbda-597b7c4e1423",
+      "entity": "Office of Specialized Services",
+      "alias": "OSS",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/oss/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: clubs-detail.md 'The Office of Specialized Services (OSS) is located in room C 205'; directory.md 'Disability Services (OSS)'; email oss@ramapo.edu."
+    },
+    {
+      "entity_id": "bd448eaa-d1c1-49b6-bbda-597b7c4e1423",
+      "entity": "Office of Specialized Services",
+      "alias": "Disability Services",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/oss/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: directory.md A-Z 'Disability Services (OSS) (https://www.ramapo.edu/students/oss/)'; undergraduate.md 'Office of Specialized Services (OSS)/Disability Services'."
+    },
+    {
+      "entity_id": "e181be45-8ccb-409a-a98c-3c777dc65063",
+      "entity": "Ombuds Office",
+      "alias": "Ombudsperson",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/ombuds/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: directory.md 'Ombudsperson - (201) 684-7804'; college-leadership.md 'College Ombudsperson'; policies cite 'the Office of the Ombudsperson'. The name has only 'Ombuds', and search does no stemming."
+    },
+    {
+      "entity_id": "cd4b3e87-2664-453e-a27b-5d6fa6460b61",
+      "entity": "Photography Lab",
+      "alias": "Photo Lab",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/photolab/contact/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: photolab.md page titles 'Contact - Photo Lab' and 'Lighting Studio - Photo Lab'; the AHE directory lists 'Photo Lab Supervisor'."
+    },
+    {
+      "entity_id": "e2f70325-f937-446d-9ddd-f54a2eb2b746",
+      "entity": "Public Safety (Emergency)",
+      "alias": "Campus Security",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/oss/campus-resources/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: oss.md 'please contact Campus Security at x6666' (this record's number); pairs with the existing 'Campus Police' alias. Page text rather than an official label, so medium confidence. Note: both Public Safety offices carry this alias, as they already carry Campus Police, so a lookup asks which one is meant."
+    },
+    {
+      "entity_id": "4c0063a5-62be-44cd-8a11-35151b945be4",
+      "entity": "Public Safety (Non-Emergency)",
+      "alias": "Campus Security",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/oss/campus-resources/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: Same oss.md wording ('Campus Security at x6666'); shared to match how 'Campus Police' and 'Public Safety' are already listed on both Public Safety records. Low confidence. Note: both Public Safety offices carry this alias, as they already carry Campus Police, so a lookup asks which one is meant."
+    },
+    {
+      "entity_id": "73e85425-9159-41af-81c6-5fde35497dc9",
+      "entity": "Student Accounts",
+      "alias": "Bursar",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/student-accounts/costinfo/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: student-accounts.md page titles 'Cost Information – Bursar | Ramapo College of New Jersey' and 'Bursar Deadlines – Payments/Refunds/Waivers'; the library page says fees are paid to 'the Bursar's Office'."
+    },
+    {
+      "entity_id": "5cf51f94-8b75-4fbd-8d0d-b49bcb0d4a3b",
+      "entity": "Testing Center",
+      "alias": "Testing and Placement",
+      "reviewed_at": "2026-10-06",
+      "source_url": "https://www.ramapo.edu/testing/",
+      "note": "Added 2026-10-06 after Dan said \"yes add the nicknames\"; the list was chosen from Ramapo's own pages and was not reviewed alias by alias by him. Evidence: directory.md 'Office of Testing and Placement Program - (201) 684-7560'; orientation.md 'Testing and Placement: Visit https://www.ramapo.edu/testing/'."
     }
   ],
   "buildings": [
