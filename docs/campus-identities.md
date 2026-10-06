@@ -30,6 +30,18 @@ Unresolved evidence remains visible in the coverage artifact:
 
 Since September 24, 2026 the Library also has both. A reviewed `name` selector links it to two schedules from the Library's own hours page: "Library (Main Building)", which is the Circulation Desk section, and "Research Help Desk", the desk behind the Library's refdesk contact. Each schedule keeps its own name, so an answer can tell the Library's opening hours from the desk's.
 
+## Office hours
+
+An office's hours come from its own page, through the reviewed list `OFFICE_HOURS_PAGES` in `ingestion/campus-hours.ts`. Each entry names the office's identity, its page and the sentence that starts its schedule. A selector on `name` in `src/reference/campus-identities.json` links the office to those weekday records, and the Brain reads them through the shared reader. Three kinds of entry exist, all checked against the page text, and a page that no longer says it stops the collector for a person to look:
+
+- **Regular hours.** A Fall/Spring schedule beside a summer one (Registrar, Student Accounts, Financial Aid, Cahill, Dean of Students, EOF, Student Conduct and, since October 6, 2026, the Counseling Center). The academic calendar dates the semester it applies to. The summer schedule stays out, because no page dates it.
+- **Always open.** The Public Safety page says the department is available 24 hours a day, 7 days a week, 365 days a year. Both Public Safety offices carry that sentence, each day reads "24 hours", and no dates are made up. Nothing in it is seasonal.
+- **A page that disagrees with itself.** The IT Help Desk page gives different Fall/Spring hours in its table and in the paragraph under it. The record is withheld and says the hours are unverified. The full record, both statements included, stays in the omissions manifest. It must be reviewed again when the page changes.
+
+What counts as dated enough: a value with no validity window is kept when nothing in it is seasonal (a phone, an email, a room, "open 24 hours"). It still carries the date it was captured, and the Brain shows it as a dated observation once that capture is old. A schedule that names a season or term without dates is withheld, because today's date cannot select it. A value with no capture date at all cannot be aged and is not trusted.
+
+`npm run check:contacts` also lists each value a reviewed entry's cited section states that the entry leaves out (`?` lines). A published "not found" can hide a value the office's own page lists, as the ID Card Room's email did until October 6, 2026. `--strict` makes those lines fail the check. The list is for a person to read, because a staff list can name other people's addresses.
+
 Each coverage issue has a `kind`, and its `reason` says why:
 
 - `unlinked_record`: an original record no identity links.

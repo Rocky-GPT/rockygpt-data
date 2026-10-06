@@ -406,12 +406,26 @@ async function fetchHoursSource(sourceUrl: string): Promise<HoursSourceCapture> 
 }
 
 /**
- * Offices whose own page publishes a regular (Fall/Spring) schedule beside a
- * separate summer one. Each name is the office's campus identity, and the label
- * is the line that starts its regular schedule on that page (read 2026-09-28).
- * Summer schedules stay out: no page dates them.
+ * Offices whose own page publishes their hours. Each name is the office's campus identity.
+ * Three kinds, each reviewed against the page:
+ * - regular (no `kind`): a regular (Fall/Spring) schedule beside a separate summer one. The
+ *   label is the line that starts the regular schedule (read 2026-09-28). Summer schedules
+ *   stay out: no page dates them.
+ * - `always`: the page says the office is open every hour of every day. The label is the
+ *   sentence that says so. Nothing in it is seasonal, so the record names no dates.
+ * - `conflict`: the page states two schedules that disagree (read 2026-10-06). Both
+ *   statements must still be on the page, or the collector stops for a person to look: a
+ *   fixed page must not stay withheld, and a changed one must not be guessed.
  */
-export const OFFICE_HOURS_PAGES: ReadonlyArray<{ name: string; url: string; label: RegExp }> = [
+export interface OfficeHoursPage {
+    name: string;
+    url: string;
+    label: RegExp;
+    kind?: 'always' | 'conflict';
+    /** For `conflict`: the other statement the label's line disagrees with. */
+    against?: RegExp;
+}
+export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'Registrar', url: 'https://www.ramapo.edu/registrar/', label: /^Fall\s*\/\s*Spring Hours:/i },
     { name: 'Student Accounts', url: 'https://www.ramapo.edu/student-accounts/', label: /^Academic Year:/i },
     { name: 'Financial Aid', url: 'https://www.ramapo.edu/finaid/', label: /^Academic Year:/i },
@@ -421,6 +435,16 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<{ name: string; url: string; labe
         label: /^Academic Year Hours:/i },
     { name: 'Office of Student Conduct', url: 'https://www.ramapo.edu/student-conduct/',
         label: /^Fall and Spring Semester Hours:/i },
+    { name: 'Counseling Center', url: 'https://www.ramapo.edu/counseling/', label: /^Academic Year Hours:/i },
+    // One page states it for the whole department, so both Public Safety offices share the sentence.
+    { name: 'Public Safety (Emergency)', url: 'https://www.ramapo.edu/publicsafety/get-support/', kind: 'always',
+        label: /The Public Safety Department is available 24 hours a day, 7 days a week(?:, 365 days a year)?\./i },
+    { name: 'Public Safety (Non-Emergency)', url: 'https://www.ramapo.edu/publicsafety/get-support/', kind: 'always',
+        label: /The Public Safety Department is available 24 hours a day, 7 days a week(?:, 365 days a year)?\./i },
+    // The hours table and the paragraph beneath it give different Fall/Spring hours.
+    { name: 'IT Help Desk', url: 'https://www.ramapo.edu/its/help-desk/', kind: 'conflict',
+        label: /Fall \/ Spring\nMonday-Thursday\nFriday\n8:30 AM - 8:00 PM\n8:30 AM - 6:00 PM/,
+        against: /Fall\/Spring: Monday-Friday 8:00am-8:00pm/i },
 ];
 
 /** A Fall or Spring semester, from its first class day to its last class or final exam. */
@@ -481,6 +505,28 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
             + `(${shortDate(term.from)} - ${shortDate(term.until)}, ${term.until.slice(0, 4)}).` };
 }
 
+/** An office the page says is open every hour of every day. The page's sentence is the note. */
+export function parseAlwaysOpenHours(name: string, label: RegExp, pageText: string): LocationHours {
+    const sentence = pageText.match(label)?.[0];
+    if (!sentence) throw new Error(`Always-open statement is unavailable for ${name}`);
+    const hours = createUnknownWeek();
+    DAYS.forEach((day) => { hours[day] = '24 hours'; });
+    return { name, hours, notes: sentence.replace(/\s+/g, ' ') };
+}
+
+/**
+ * An office whose page states two schedules that disagree. Neither is published: the record
+ * is withheld, and its note keeps both statements as written so a person can compare them.
+ * It fails when either statement is gone, so a corrected page is noticed, not ignored.
+ */
+export function parseConflictingOfficeHours(name: string, label: RegExp, against: RegExp, pageText: string): LocationHours {
+    const first = pageText.match(label)?.[0];
+    const second = pageText.match(against)?.[0];
+    if (!first || !second) throw new Error(`The reviewed conflict in the hours of ${name} is no longer on its page; review it`);
+    return { name, hours: createUnknownWeek(), availabilityIssue: 'conflicting-source-schedules',
+        notes: `${first.replace(/\s+/g, ' ')}\n${second.replace(/\s+/g, ' ')}` };
+}
+
 export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireGeneralSource = false,
     terms?: TermWindow[]): LocationHours[] {
     const source = (url: string, parser: (text: string) => LocationHours[]): LocationHours[] => {
@@ -506,8 +552,11 @@ export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireG
     const windows = offices.length ? terms ?? readTermWindows() : [];
     return [...source(ATHLETICS_HOURS_URL, parseAthleticsFacilityHours),
         ...source(LIBRARY_HOURS_URL, parseLibraryHours), ...general,
-        ...offices.flatMap((office) => source(office.url, (text) => [parseOfficeHours(office.name, office.label, text,
-            captures.find((capture) => capture.sourceUrl === office.url)!.collectedAt, windows)]))];
+        ...offices.flatMap((office) => source(office.url, (text) => [
+            office.kind === 'always' ? parseAlwaysOpenHours(office.name, office.label, text)
+                : office.kind === 'conflict' ? parseConflictingOfficeHours(office.name, office.label, office.against!, text)
+                    : parseOfficeHours(office.name, office.label, text,
+                        captures.find((capture) => capture.sourceUrl === office.url)!.collectedAt, windows)]))];
 }
 
 export function campusHoursPublication(records: LocationHours[], now = new Date()) {
@@ -529,7 +578,8 @@ async function fetchCampusHours() {
         fetchHoursSource(ATHLETICS_HOURS_URL), fetchHoursSource(LIBRARY_HOURS_URL),
         fetchHoursSource(GENERAL_CAMPUS_HOURS_URL),
     ]);
-    for (const office of OFFICE_HOURS_PAGES) captures.push(await fetchHoursSource(office.url));
+    // Two offices can share one page; it is fetched and archived once.
+    for (const url of new Set(OFFICE_HOURS_PAGES.map((office) => office.url))) captures.push(await fetchHoursSource(url));
     const fetchedAt = new Date(Math.min(...captures.map((capture) => Date.parse(capture.collectedAt)))).toISOString();
     const capturedSources = { version: 1, captures };
     const locations = campusHoursFromCaptures(captures, true);

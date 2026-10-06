@@ -7742,6 +7742,18 @@
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Public Safety (Non-Emergency)"
+            ],
+            "evidence": "The department's own page (https://www.ramapo.edu/publicsafety/get-support/) states that Public Safety is available 24 hours a day, 7 days a week, 365 days a year. The same statement is recorded for both Public Safety offices; it names no dates."
+          }
         }
       ]
     },
@@ -7761,6 +7773,18 @@
               "key:office:counseling-center"
             ],
             "evidence": "Reviewed directory contact key; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Counseling Center"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/counseling/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
           }
         }
       ]
@@ -7804,6 +7828,18 @@
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "IT Help Desk"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/its/help-desk/) states two different Fall/Spring schedules, in its hours table and in the paragraph under it. The record is withheld, and its note says the hours are unverified."
+          }
         }
       ]
     },
@@ -7824,6 +7860,18 @@
               "email:publicsafety@ramapo.edu"
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Public Safety (Emergency)"
+            ],
+            "evidence": "The department's own page (https://www.ramapo.edu/publicsafety/get-support/) states that Public Safety is available 24 hours a day, 7 days a week, 365 days a year. The same statement is recorded for both Public Safety offices; it names no dates."
           }
         }
       ]
