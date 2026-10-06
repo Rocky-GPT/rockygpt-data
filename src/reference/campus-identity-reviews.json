@@ -16,7 +16,7 @@
     "residence hall office, a center), linked to that group's identity by name.",
     "Entries name persistent IDs or Concept3D locations, never names to match.",
     "",
-    "Aliases whose note starts \"Proposed 2026-10-06 by Claude\" are page-evidenced service labels that a script checked against the captured pages; no person has reviewed them yet."
+    "Aliases whose note starts \"Kept 2026-10-06 on Dan's batch approval\" are page-evidenced service labels that a script checked against the captured pages. Dan approved them as a batch, not alias by alias."
   ],
   "aliases": [
     {
@@ -241,7 +241,7 @@
       "alias": "Dual Enrollment",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/undergraduate/dual-enrollment/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Dual Enrollment - Undergraduate'; heading 'About Ramapo College Dual Enrollment'; contact is Assistant Director of Admissions and Dual Enrollment; page footer is the Office of Admissions. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Dual Enrollment - Undergraduate'; heading 'About Ramapo College Dual Enrollment'; contact is Assistant Director of Admissions and Dual Enrollment; page footer is the Office of Admissions. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "5ab938ac-bc5c-4fce-9771-db49be4fd2ef",
@@ -249,7 +249,7 @@
       "alias": "Campus Tours",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/campustours/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Home - Campus Tours'; heading 'Register for a Campus Tour'; 'please call Admissions at 201-684-7300 or email admissions@ramapo.edu'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Home - Campus Tours'; heading 'Register for a Campus Tour'; 'please call Admissions at 201-684-7300 or email admissions@ramapo.edu'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "5ab938ac-bc5c-4fce-9771-db49be4fd2ef",
@@ -257,7 +257,7 @@
       "alias": "Re-Admit",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/admissions/sections/re-admit/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Admissions & Aid page titled and headed 'Re-Admit': students who interrupt study for two or more semesters 'must apply for readmission' using the online application. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Admissions & Aid page titled and headed 'Re-Admit': students who interrupt study for two or more semesters 'must apply for readmission' using the online application. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "6917efd3-3f23-4cd5-8ada-8330b2f2d00f",
@@ -265,7 +265,7 @@
       "alias": "Trading Lab",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/asb/tradinglab/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Global Financial Markets Trading Lab - Anisfield School of Business (ASB)'; heading 'Trading Lab Hours'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Global Financial Markets Trading Lab - Anisfield School of Business (ASB)'; heading 'Trading Lab Hours'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "30adf6c0-33f9-4349-873d-18ae7e504766",
@@ -273,7 +273,7 @@
       "alias": "Handshake",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/careercenter/archway/handshake-job-postings/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Handshake Job Postings - Cahill Career Development Center'; career-tools page: 'Handshake: Access the job board, career fair registration, and campus interviews'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Handshake Job Postings - Cahill Career Development Center'; career-tools page: 'Handshake: Access the job board, career fair registration, and campus interviews'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "30adf6c0-33f9-4349-873d-18ae7e504766",
@@ -281,7 +281,7 @@
       "alias": "Cooperative Education",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/careercenter/co-op-employers/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Co-operative Education': a for-credit internship described as 'a core value of the Career Center'; the Career Center employers page has a 'Cooperative Education' link heading. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Co-operative Education': a for-credit internship described as 'a core value of the Career Center'; the Career Center employers page has a 'Cooperative Education' link heading. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "30adf6c0-33f9-4349-873d-18ae7e504766",
@@ -289,7 +289,7 @@
       "alias": "Career Fair",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/careercenter/career-fair-employers/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Career Fair - Employers - Cahill Career Development Center'; heading 'CAREER FAIRS & NETWORKING EVENTS' on the Career Center engage page. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Career Fair - Employers - Cahill Career Development Center'; heading 'CAREER FAIRS & NETWORKING EVENTS' on the Career Center engage page. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "9f4a8a53-67a1-4ce4-b4da-5d19630f135b",
@@ -297,7 +297,7 @@
       "alias": "Locker Rentals",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/csi/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Locker Rentals' on the CSI home page: rent small or medium lockers at the Student Center Office, $10 per semester. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Locker Rentals' on the CSI home page: rent small or medium lockers at the Student Center Office, $10 per semester. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "2d601e96-ce7f-4ea1-bc72-287fc01ae407",
@@ -305,7 +305,7 @@
       "alias": "GPA Calculator",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/myadvisor/gpa-calculator/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'GPA Calculator - My Advisor'; page contact D-207, success@ramapo.edu (Center for Student Success). Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'GPA Calculator - My Advisor'; page contact D-207, success@ramapo.edu (Center for Student Success). Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "418cf077-132d-4b72-a3a9-e48d33353a5e",
@@ -313,7 +313,7 @@
       "alias": "Uwill",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/counseling/uwill/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Uwill - Free Telehealth Counseling - Counseling Services'; headings 'What is Uwill?' etc. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Uwill - Free Telehealth Counseling - Counseling Services'; headings 'What is Uwill?' etc. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "418cf077-132d-4b72-a3a9-e48d33353a5e",
@@ -321,7 +321,7 @@
       "alias": "Suicide Prevention",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/counseling/suicide-prevention/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Suicide Prevention - Counseling Services'; 'Ramapo Counseling Services Offers Emergency Counseling 24/7/365'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Suicide Prevention - Counseling Services'; 'Ramapo Counseling Services Offers Emergency Counseling 24/7/365'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "809920fd-5a64-44af-8bad-a92dd9cc0b8d",
@@ -329,7 +329,7 @@
       "alias": "Used Name",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/student-affairs/request-for-used-name/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Request for Used Name - Dean of Students': 'please complete the information requested below and submit to the Dean of Students Office'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Request for Used Name - Dean of Students': 'please complete the information requested below and submit to the Dean of Students Office'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "f5e3961d-c56b-4b29-89f3-64488f464e64",
@@ -337,7 +337,7 @@
       "alias": "EOF Summer Studies Institute",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/eof-program/freshman/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'EOF Summer Studies Institute - Educational Opportunity Fund Program'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'EOF Summer Studies Institute - Educational Opportunity Fund Program'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "d3119a09-70fa-4ad7-8f9c-6492e8b2379b",
@@ -345,7 +345,7 @@
       "alias": "Safety Data Sheets",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/ehs/safety-data-sheets/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Safety Data Sheets - Environmental Health and Safety'; SDS are available through Campus Optics, contact EHS if not found. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Safety Data Sheets - Environmental Health and Safety'; SDS are available through Campus Optics, contact EHS if not found. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "d3119a09-70fa-4ad7-8f9c-6492e8b2379b",
@@ -353,7 +353,7 @@
       "alias": "Fire Marshal",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/ehs/fire-safety/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: EHS Fire Safety page: 'The Office of the Fire Marshal is dedicated to providing...'; the EHS home page lists Evan Kutzin, Fire Marshal, as an EHS contact. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: EHS Fire Safety page: 'The Office of the Fire Marshal is dedicated to providing...'; the EHS home page lists Evan Kutzin, Fire Marshal, as an EHS contact. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "8e6d26cc-df5c-4644-9d1b-b0a4548cce9d",
@@ -361,7 +361,7 @@
       "alias": "FAFSA",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/finaid/fafsa/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Federal Student Aid (FAFSA) - Financial Aid'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Federal Student Aid (FAFSA) - Financial Aid'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "8e6d26cc-df5c-4644-9d1b-b0a4548cce9d",
@@ -369,7 +369,7 @@
       "alias": "Garden State Guarantee",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/finaid/garden-state-guarantee/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Garden State Guarantee - Financial Aid'; heading 'What is the Garden State Guarantee (GSG)?'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Garden State Guarantee - Financial Aid'; heading 'What is the Garden State Guarantee (GSG)?'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "8e6d26cc-df5c-4644-9d1b-b0a4548cce9d",
@@ -377,7 +377,7 @@
       "alias": "Satisfactory Academic Progress",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/finaid/policies/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Satisfactory Academic Progress policy SAP' on the Financial Aid policies page; reviewed for continued financial aid eligibility. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Satisfactory Academic Progress policy SAP' on the Financial Aid policies page; reviewed for continued financial aid eligibility. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "1487b421-1a9d-4151-9326-16b744094308",
@@ -385,7 +385,7 @@
       "alias": "Valley Medical Group",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/health/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Health Services home: Ramapo partnered with Valley Medical Group to manage the on-campus Health Services Center; heading 'Services & Valley Medical Group FAQs'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Health Services home: Ramapo partnered with Valley Medical Group to manage the on-campus Health Services Center; heading 'Services & Valley Medical Group FAQs'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "1487b421-1a9d-4151-9326-16b744094308",
@@ -393,7 +393,7 @@
       "alias": "Immunizations",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.valleyhealth.com/ramapo-college-health-services",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Immunizations' on the Ramapo College Health Services page (health dataset seed): immunization requirements and records. Source is the Valley Health-hosted page, not ramapo.edu. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Immunizations' on the Ramapo College Health Services page (health dataset seed): immunization requirements and records. Source is the Valley Health-hosted page, not ramapo.edu. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "c8fe1166-f8e7-4684-923a-164591b4b4dd",
@@ -401,7 +401,7 @@
       "alias": "Room Change",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/reslife/rcp/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Room Change Process Information - Residence Life'; heading 'Important Room Change Considerations:'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Room Change Process Information - Residence Life'; heading 'Important Room Change Considerations:'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "c8fe1166-f8e7-4684-923a-164591b4b4dd",
@@ -409,7 +409,7 @@
       "alias": "Summer Housing",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/reslife/summerhousing/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Summer Housing - Residence Life'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Summer Housing - Residence Life'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "c8fe1166-f8e7-4684-923a-164591b4b4dd",
@@ -417,7 +417,7 @@
       "alias": "Housing Withdrawal",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/reslife/withdrawal/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'CURRENT STUDENT HOUSING WITHDRAWAL FORM': 'All students who wish to withdraw from housing must complete this form.' Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'CURRENT STUDENT HOUSING WITHDRAWAL FORM': 'All students who wish to withdraw from housing must complete this form.' Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "f761977e-9e04-4155-a0ba-6f1229545bb6",
@@ -425,7 +425,7 @@
       "alias": "ID Room",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/publicsafety/id-cards/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: 'please contact the ID room ... and make an appointment'; contact block 'ID Room, C-Wing, C-101'; Residence Life says go to the Public Safety ID Room (C-101). Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: 'please contact the ID room ... and make an appointment'; contact block 'ID Room, C-Wing, C-101'; Residence Life says go to the Public Safety ID Room (C-101). Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "f761977e-9e04-4155-a0ba-6f1229545bb6",
@@ -433,7 +433,7 @@
       "alias": "Lost ID Card",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/publicsafety/lost-found/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Lost ID Card': contact the ID Card Room at (201)-684-7789; the ID card page heading 'Lost/Damaged ID Cards' says the ID room reprints the card. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Lost ID Card': contact the ID Card Room at (201)-684-7789; the ID card page heading 'Lost/Damaged ID Cards' says the ID room reprints the card. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "f761977e-9e04-4155-a0ba-6f1229545bb6",
@@ -441,7 +441,7 @@
       "alias": "New ID Card",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/publicsafety/id-cards/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'New ID Cards': 'In order to get a new identification card, please contact the ID room'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'New ID Cards': 'In order to get a new identification card, please contact the ID room'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "6806de2c-1cbc-436e-a26c-fcfcd3c80850",
@@ -449,7 +449,7 @@
       "alias": "Two-Factor Authentication",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/its/mfa/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Two-Factor Authentication (2FA) - Information Technology Services (ITS)'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Two-Factor Authentication (2FA) - Information Technology Services (ITS)'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "6806de2c-1cbc-436e-a26c-fcfcd3c80850",
@@ -457,7 +457,7 @@
       "alias": "Password Reset",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/its/important-notes-for-password-reset/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Important Notes for Password Reset - Information Technology Services (ITS)'; the ITS home page has a 'Password Reset' link. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Important Notes for Password Reset - Information Technology Services (ITS)'; the ITS home page has a 'Password Reset' link. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "6806de2c-1cbc-436e-a26c-fcfcd3c80850",
@@ -465,7 +465,7 @@
       "alias": "Email Activation",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/its/email-activation-and-information/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Email Activation and Information - ITS'; the heading 'Email Activation'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Email Activation and Information - ITS'; the heading 'Email Activation'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "4c02fa98-2f33-4fb2-a80c-fbe9c79b5310",
@@ -473,7 +473,7 @@
       "alias": "IGG Certificate Program",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/igg/certificate-program/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'IGG Certificate Program - Investigative Genetic Genealogy Center (IGG)'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'IGG Certificate Program - Investigative Genetic Genealogy Center (IGG)'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "4c02fa98-2f33-4fb2-a80c-fbe9c79b5310",
@@ -481,7 +481,7 @@
       "alias": "IGG Bootcamp",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/igg/bootcamp/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'IGG Bootcamp at Ramapo College - Investigative Genetic Genealogy Center (IGG)'; heading 'The Investigative Genetic Genealogy (IGG) Bootcamp'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'IGG Bootcamp at Ramapo College - Investigative Genetic Genealogy Center (IGG)'; heading 'The Investigative Genetic Genealogy (IGG) Bootcamp'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "00a23005-150e-4640-b07e-0cb350c4bb6f",
@@ -489,7 +489,7 @@
       "alias": "Interlibrary Loan",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/library/interlibrary-loan/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Interlibrary Loan - George T. Potter Library'; heading 'Interlibrary Loan Services and Policies'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Interlibrary Loan - George T. Potter Library'; heading 'Interlibrary Loan Services and Policies'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "00a23005-150e-4640-b07e-0cb350c4bb6f",
@@ -497,7 +497,7 @@
       "alias": "Course Reserves",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/library/course-reserves/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Course Reserves - George T. Potter Library'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Course Reserves - George T. Potter Library'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "00a23005-150e-4640-b07e-0cb350c4bb6f",
@@ -505,7 +505,7 @@
       "alias": "Study Rooms",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/library/study-rooms-reservations-and-usage/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Study Rooms: Reservations and Usage - George T. Potter Library'; heading 'How to Reserve a Study Room'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Study Rooms: Reservations and Usage - George T. Potter Library'; heading 'How to Reserve a Study Room'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "0691dd1e-07c7-4189-bc7c-3bb469bda8e4",
@@ -513,7 +513,7 @@
       "alias": "Nursing Student Handbook",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/nursing/current-nursing-students/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Nursing Student Handbook': 'Download the 2026-2027 Nursing Student Handbook'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Nursing Student Handbook': 'Download the 2026-2027 Nursing Student Handbook'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "bd448eaa-d1c1-49b6-bbda-597b7c4e1423",
@@ -521,7 +521,7 @@
       "alias": "Alternative Testing",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/oss/alternative-testing-for-students/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Alternative Testing/Exam Requests for Students - Office of Specialized Services (OSS)'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Alternative Testing/Exam Requests for Students - Office of Specialized Services (OSS)'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "bd448eaa-d1c1-49b6-bbda-597b7c4e1423",
@@ -529,7 +529,7 @@
       "alias": "Peer Notetaking",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/oss/notetaking/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Notetaking - OSS': 'Peer Notetaking is an accommodation that must be approved during the affiliation process.' Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Notetaking - OSS': 'Peer Notetaking is an accommodation that must be approved during the affiliation process.' Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "bd448eaa-d1c1-49b6-bbda-597b7c4e1423",
@@ -537,7 +537,7 @@
       "alias": "Emotional Support Animals",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/oss/campus-accessibility-and-services-information/service-support-animal-policy/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Service and Emotional Support Animals on Campus - OSS'; heading 'Emotional Support Animals on campus...'; OSS housing page: call 201-684-7514 to discuss an ESA. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Service and Emotional Support Animals on Campus - OSS'; heading 'Emotional Support Animals on campus...'; OSS housing page: call 201-684-7514 to discuss an ESA. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "4b1188ba-9990-4ed5-b8be-624ac96b9a08",
@@ -545,7 +545,7 @@
       "alias": "Disciplinary Hearing",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/student-conduct/hearing/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Disciplinary Hearings: What You Need to Know - Office of Student Conduct'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Disciplinary Hearings: What You Need to Know - Office of Student Conduct'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "4b1188ba-9990-4ed5-b8be-624ac96b9a08",
@@ -553,7 +553,7 @@
       "alias": "Good Samaritan Policy",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/student-conduct/student-handbook/good-samaritan-policy-2/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Good Samaritan Policy - Office of Student Conduct'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Good Samaritan Policy - Office of Student Conduct'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "4b1188ba-9990-4ed5-b8be-624ac96b9a08",
@@ -561,7 +561,7 @@
       "alias": "Completing Sanctions",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/student-conduct/guide/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Guide to Completing Sanctions - Office of Student Conduct'; 'What happens if I do not complete my sanction?'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Guide to Completing Sanctions - Office of Student Conduct'; 'What happens if I do not complete my sanction?'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "e181be45-8ccb-409a-a98c-3c777dc65063",
@@ -569,7 +569,7 @@
       "alias": "Mediation",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/ombuds/services/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Mediation': 'The Ombuds Office provides mediation services to resolve conflict and disputes within the Ramapo College Community.' Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Mediation': 'The Ombuds Office provides mediation services to resolve conflict and disputes within the Ramapo College Community.' Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "514776ab-f932-4206-aa1b-14596559fde0",
@@ -577,7 +577,7 @@
       "alias": "Paystub",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/payroll/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Payroll home heading 'Understanding your paystub' with steps to view pay stubs. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Payroll home heading 'Understanding your paystub' with steps to view pay stubs. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "514776ab-f932-4206-aa1b-14596559fde0",
@@ -585,7 +585,7 @@
       "alias": "Pay Schedule",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/payroll/student-payroll-schedules/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Student Payroll Schedules - Payroll'; heading 'Student Bi-Weekly Pay Schedule 2026'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Student Payroll Schedules - Payroll'; heading 'Student Bi-Weekly Pay Schedule 2026'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "cd4b3e87-2664-453e-a27b-5d6fa6460b61",
@@ -593,7 +593,7 @@
       "alias": "Lighting Studio",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/photolab/lightingstudio/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Lighting Studio - Photo Lab'; heading 'Welcome to the Lighting Studio'; reservations by email to photolab@ramapo.edu. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Lighting Studio - Photo Lab'; heading 'Welcome to the Lighting Studio'; reservations by email to photolab@ramapo.edu. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "cd4b3e87-2664-453e-a27b-5d6fa6460b61",
@@ -601,7 +601,7 @@
       "alias": "Darkroom",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/photolab/hours/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Photo Lab open-hours page body: 'Use of the Darkroom, including film and print processing, and the Digital Print Lab does not require reservations.' (body text, not a heading). Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Photo Lab open-hours page body: 'Use of the Darkroom, including film and print processing, and the Digital Print Lab does not require reservations.' (body text, not a heading). Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "e2f70325-f937-446d-9ddd-f54a2eb2b746",
@@ -609,7 +609,7 @@
       "alias": "Emergency Callboxes",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/publicsafety/emergency-callboxes/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Emergency Callboxes - Public Safety': blue-light callboxes connect directly to the Department of Public Safety. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Emergency Callboxes - Public Safety': blue-light callboxes connect directly to the Department of Public Safety. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "e2f70325-f937-446d-9ddd-f54a2eb2b746",
@@ -617,7 +617,7 @@
       "alias": "RCNJ Alerts",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/publicsafety/campus-safety/rcnj-alerts/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'RCNJ Alerts - Public Safety': Ramapo's mass notification system; contact publicsafety@ramapo.edu. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'RCNJ Alerts - Public Safety': Ramapo's mass notification system; contact publicsafety@ramapo.edu. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "e2f70325-f937-446d-9ddd-f54a2eb2b746",
@@ -625,7 +625,7 @@
       "alias": "Campus Safety Escorts",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/publicsafety/campus-safety-escorts/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Campus Safety Escorts - Public Safety'; 'Call the Public Safety Department at 201-684-6666' to schedule an escort. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Campus Safety Escorts - Public Safety'; 'Call the Public Safety Department at 201-684-6666' to schedule an escort. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "4c0063a5-62be-44cd-8a11-35151b945be4",
@@ -633,7 +633,7 @@
       "alias": "Lost & Found",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/publicsafety/lost-found/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Lost & Found Information - Public Safety': Public Safety maintains a Lost and Found log at C-Wing, C-102. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Lost & Found Information - Public Safety': Public Safety maintains a Lost and Found log at C-Wing, C-102. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "4c0063a5-62be-44cd-8a11-35151b945be4",
@@ -641,7 +641,7 @@
       "alias": "Parking Permit Registration",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/publicsafety/parking-permits/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Public Safety page 'Parking Permits - Public Safety' with the link text 'Click Here for Parking Permit Registration'; the Student Accounts page of the same title covers only fee and waiver and links here. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Public Safety page 'Parking Permits - Public Safety' with the link text 'Click Here for Parking Permit Registration'; the Student Accounts page of the same title covers only fee and waiver and links here. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "4c0063a5-62be-44cd-8a11-35151b945be4",
@@ -649,7 +649,7 @@
       "alias": "Parking Citations",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/publicsafety/vehicle-citation-information/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Parking Citations': citations are paid online through the portal; an Appeals section covers contesting a citation. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Parking Citations': citations are paid online through the portal; an Appeals section covers contesting a citation. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "0458a32a-e19c-49e9-8170-1a08a17d1658",
@@ -657,7 +657,7 @@
       "alias": "Official Transcripts",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/registrar/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Registrar home heading 'Official Transcripts': 'The Registrar requires a completed Official Transcript Request Form for copies of official transcripts.' Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Registrar home heading 'Official Transcripts': 'The Registrar requires a completed Official Transcript Request Form for copies of official transcripts.' Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "0458a32a-e19c-49e9-8170-1a08a17d1658",
@@ -665,7 +665,7 @@
       "alias": "Enrollment Verification",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/registrar/forms-transcripts/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Enrollment Verification': verification requests 'must be submitted to the Registrar's Office'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Enrollment Verification': verification requests 'must be submitted to the Registrar's Office'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "0458a32a-e19c-49e9-8170-1a08a17d1658",
@@ -673,7 +673,7 @@
       "alias": "Dropping a Course",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/registrar/registrationinfo/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Registration Information heading 'Dropping a Course' with the 100% drop policy in Web Self Service. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Registration Information heading 'Dropping a Course' with the 100% drop policy in Web Self Service. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "ed84d47b-2751-4890-afdf-c8a971f8190a",
@@ -681,7 +681,7 @@
       "alias": "AMC Movie Tickets",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/csi/roadrunner-central/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'AMC Movie Tickets' on the Roadrunner Central page; $10.00, valid for one admission. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'AMC Movie Tickets' on the Roadrunner Central page; $10.00, valid for one admission. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "ed84d47b-2751-4890-afdf-c8a971f8190a",
@@ -689,7 +689,7 @@
       "alias": "Shortline Bus Tickets",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/csi/roadrunner-central/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Shortline Bus Tickets (One-Way)' on the Roadrunner Central page; Residence Life says discounted tickets are available at Roadrunner Central. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Shortline Bus Tickets (One-Way)' on the Roadrunner Central page; Residence Life says discounted tickets are available at Roadrunner Central. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "73e85425-9159-41af-81c6-5fde35497dc9",
@@ -697,7 +697,7 @@
       "alias": "Methods of Payment",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/student-accounts/methods/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Methods of Payment - Office of Student Accounts'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title and heading 'Methods of Payment - Office of Student Accounts'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "73e85425-9159-41af-81c6-5fde35497dc9",
@@ -705,7 +705,7 @@
       "alias": "Tuition Payment Plans",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/student-accounts/options-policies/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Payment Options > Tuition Payment Plans' on the Student Accounts options and policies page. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'Payment Options > Tuition Payment Plans' on the Student Accounts options and policies page. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "73e85425-9159-41af-81c6-5fde35497dc9",
@@ -713,7 +713,7 @@
       "alias": "Direct Deposit of Your Refunds",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/student-accounts/direct-deposit/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Sign Up for Direct Deposit of Your Refunds - Office of Student Accounts'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Sign Up for Direct Deposit of Your Refunds - Office of Student Accounts'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "5cf51f94-8b75-4fbd-8d0d-b49bcb0d4a3b",
@@ -721,7 +721,7 @@
       "alias": "ACCUPLACER",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/testing/math/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Titles 'ACCUPLACER: Math/Calculus Test' and 'ACCUPLACER: Reading/Essay Test - Testing Center'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Titles 'ACCUPLACER: Math/Calculus Test' and 'ACCUPLACER: Reading/Essay Test - Testing Center'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "5cf51f94-8b75-4fbd-8d0d-b49bcb0d4a3b",
@@ -729,7 +729,7 @@
       "alias": "CLEP",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/testing/clep/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'CLEP: College Level Examination Program - Testing Center'; 'Take Your CLEP Exam at Ramapo College!'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'CLEP: College Level Examination Program - Testing Center'; 'Take Your CLEP Exam at Ramapo College!'. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "5cf51f94-8b75-4fbd-8d0d-b49bcb0d4a3b",
@@ -737,7 +737,7 @@
       "alias": "STAMP",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/testing/stamp/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'STAMP: World Language Assessment - Testing Center'; the Testing Center offers in-person and remote STAMP testing. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'STAMP: World Language Assessment - Testing Center'; the Testing Center offers in-person and remote STAMP testing. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "28b63d78-614d-4e1d-a697-7711568dbe0b",
@@ -745,7 +745,7 @@
       "alias": "Sexual Misconduct Policy",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/titleix/sexual-misconduct-policy/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Sexual Misconduct Policy - Title IX'; heading 'Sexual Misconduct Policy' on the Title IX home page. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Sexual Misconduct Policy - Title IX'; heading 'Sexual Misconduct Policy' on the Title IX home page. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "28b63d78-614d-4e1d-a697-7711568dbe0b",
@@ -753,7 +753,7 @@
       "alias": "Sexual Harassment Resources",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/titleix/sexual-harassment-resources/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Sexual Harassment Resources - Title IX' with the plain-language guide and complaint procedure. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Sexual Harassment Resources - Title IX' with the plain-language guide and complaint procedure. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
       "entity_id": "28b63d78-614d-4e1d-a697-7711568dbe0b",
@@ -761,7 +761,7 @@
       "alias": "Pregnant and Parenting Students",
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/titleix/pregnant-parenting-students/",
-      "note": "Proposed 2026-10-06 by Claude while fixing topic routing for Dan; no person has reviewed this alias yet. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Pregnant and Parenting Students - Title IX'; the OSS pregnancy accommodations page says most pregnancy-related accommodations are addressed through the Title IX Office. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+      "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Pregnant and Parenting Students - Title IX'; the OSS pregnancy accommodations page says most pregnancy-related accommodations are addressed through the Title IX Office. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     }
   ],
   "buildings": [
