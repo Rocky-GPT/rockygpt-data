@@ -3,7 +3,7 @@ import test from 'node:test';
 import {
   ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, campusHoursFromCaptures,
   campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
-  OFFICE_HOURS_PAGES, parseOfficeHours, termWindows,
+  OFFICE_HOURS_PAGES, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, termWindows,
 } from './campus-hours';
 import { partitionHoursForPublication, recordValidity } from '../src/data-v2/validity';
 import { validateCampusHours } from './schema';
@@ -230,4 +230,120 @@ test('office pages give their regular hours for the semester the academic calend
     /line is unavailable/);
   assert.throws(() => parseOfficeHours('Registrar', registrar.label, page, '2027-06-01T13:00:00Z', terms),
     /No academic calendar semester/);
+});
+
+// Lines as the live pages printed them on 2026-10-06 (read in memory, not stored).
+const counselingPage = `Connect With Us
+To learn more about our services or to schedule an appointment, please visit us in the Academic Building D, Room 216, or call our office at (201) 684-7522.
+Academic Year Hours:
+Monday - Friday: 8:30 am - 4:30 pm
+Summer Hours:
+Monday - Thursday: 8:00 am - 5:15 pm
+Closed on Fridays`;
+const publicSafetyPage = `Public Safety (Non-Confidential Resource)
+(201) 684-6666
+Public Safety is open 24 hours. Please call Public Safety to speak with an emergency counselor after regular business hours.
+(NON-Confidential Resource)
+Office Location: C-102
+Phone: (201) 684-6666
+The Public Safety Department is available 24 hours a day, 7 days a week, 365 days a year. By contacting the Public Safety Department, you are not obligated to file an incident report.`;
+const helpDeskPage = `Hours of Support
+Fall / Spring
+Monday-Thursday
+Friday
+8:30 AM - 8:00 PM
+8:30 AM - 6:00 PM
+Call Us!
+201-684-7777
+By visiting the Help Desk office. We are located on the 4th floor of the Learning Commons and our hours are:
+Fall/Spring: Monday-Friday 8:00am-8:00pm
+Summer: Monday-Thursday 8:00am-5:15pm`;
+const fallTerms = [{ name: 'Fall 2026', from: '2026-08-26', until: '2026-12-16' }];
+
+test('the Counseling Center publishes its academic-year hours and leaves the undated summer ones out', () => {
+  const entry = OFFICE_HOURS_PAGES.find((office) => office.name === 'Counseling Center')!;
+  const row = parseOfficeHours(entry.name, entry.label, counselingPage, '2026-09-28T13:00:00Z', fallTerms);
+  assert.equal(row.hours.Monday, '8:30am-4:30pm');
+  assert.equal(row.hours.Friday, '8:30am-4:30pm');
+  assert.equal(row.hours.Saturday, 'Hours unavailable');
+  assert.equal(row.notes, 'Academic Year Hours: Monday - Friday: 8:30 am - 4:30 pm');
+  assert.deepEqual([row.validFrom, row.validUntil], ['2026-08-26', '2026-12-16']);
+  assert.doesNotMatch(JSON.stringify(row), /5:15|Summer/);
+});
+
+test('a page that says an office is open around the clock gives every day, in its own words and with no dates', () => {
+  for (const name of ['Public Safety (Emergency)', 'Public Safety (Non-Emergency)']) {
+    const entry = OFFICE_HOURS_PAGES.find((office) => office.name === name)!;
+    assert.equal(entry.kind, 'always');
+    assert.equal(entry.url, 'https://www.ramapo.edu/publicsafety/get-support/');
+    const row = parseAlwaysOpenHours(entry.name, entry.label, publicSafetyPage);
+    assert.deepEqual(Object.values(row.hours), Array(7).fill('24 hours'));
+    assert.equal(row.notes, 'The Public Safety Department is available 24 hours a day, 7 days a week, 365 days a year.');
+    // Nothing in it is seasonal: no window is made up, and the record is still publishable.
+    assert.equal(row.validFrom, undefined);
+    assert.equal(recordValidity(row).window, null);
+    assert.equal(partitionHoursForPublication([row], new Date('2027-06-01T12:00:00Z')).publishable.length, 1);
+    assert.deepEqual(validateCampusHours([{ ...row, sourceUrl: entry.url, collectedAt: '2026-10-06T12:00:00Z' }]).map((r) => r.name), [name]);
+  }
+  // A page that no longer says so is an error, never a guess.
+  const entry = OFFICE_HOURS_PAGES.find((office) => office.name === 'Public Safety (Emergency)')!;
+  assert.throws(() => parseAlwaysOpenHours(entry.name, entry.label,
+    publicSafetyPage.replace('is available 24 hours a day, 7 days a week, 365 days a year', 'is available weekdays')),
+    /Always-open statement is unavailable/);
+  // Two offices on one page are one capture, not two.
+  const urls = OFFICE_HOURS_PAGES.map((office) => office.url);
+  assert.equal(urls.filter((url) => url === entry.url).length, 2);
+});
+
+test('an office page that states two different schedules is withheld, keeping both statements', () => {
+  const entry = OFFICE_HOURS_PAGES.find((office) => office.name === 'IT Help Desk')!;
+  assert.equal(entry.kind, 'conflict');
+  const row = parseConflictingOfficeHours(entry.name, entry.label, entry.against!, helpDeskPage);
+  assert.equal(row.availabilityIssue, 'conflicting-source-schedules');
+  assert.ok(Object.values(row.hours).every((value) => value === 'Hours unavailable'));
+  assert.match(row.notes!, /Monday-Thursday Friday 8:30 AM - 8:00 PM 8:30 AM - 6:00 PM/);
+  assert.match(row.notes!, /Fall\/Spring: Monday-Friday 8:00am-8:00pm/);
+  // Published, it says only that the hours are unverified; neither schedule is stated.
+  const published = campusHoursPublication([{ ...row, sourceUrl: entry.url, collectedAt: '2026-10-06T12:00:00Z' }]).publishable[0];
+  assert.equal(published.availabilityIssue, 'unverified-hours');
+  assert.match(published.notes!, /two different schedules for the same hours/);
+  assert.doesNotMatch(JSON.stringify(published), /8:30 AM|8:00am/);
+  // When the page agrees with itself, the collector stops for a person to look.
+  assert.throws(() => parseConflictingOfficeHours(entry.name, entry.label, entry.against!,
+    helpDeskPage.replace('Fall/Spring: Monday-Friday 8:00am-8:00pm', 'Fall/Spring: see the table above')),
+    /no longer on its page/);
+});
+
+test('every reviewed office page replays from its archived capture, two offices sharing one capture', () => {
+  const collectedAt = '2026-09-28T13:00:00Z';
+  const pages: Record<string, string> = {
+    'https://www.ramapo.edu/registrar/': 'Fall/Spring Hours:\n8:30 A.M. - 4:30 P.M. Monday - Friday',
+    'https://www.ramapo.edu/student-accounts/': 'Academic Year: Monday-Friday, 8:30 a.m.-4:30 p.m.',
+    'https://www.ramapo.edu/finaid/': 'Academic Year: Monday- Friday; 8:30 AM - 4:30 PM',
+    'https://www.ramapo.edu/careercenter/': 'Office Hours: Monday to Friday, 8:30 am - 4:30 pm',
+    'https://www.ramapo.edu/student-affairs/': 'Regular Office Hours: Monday - Friday 8:30 AM - 4:30 PM',
+    'https://www.ramapo.edu/eof-program/': 'Academic Year Hours: Monday - Friday, 8:30 AM - 4:30 PM',
+    'https://www.ramapo.edu/student-conduct/': 'Fall and Spring Semester Hours: Monday - Friday 8:30 AM - 4:30 PM',
+    'https://www.ramapo.edu/counseling/': counselingPage,
+    'https://www.ramapo.edu/publicsafety/get-support/': publicSafetyPage,
+    'https://www.ramapo.edu/its/help-desk/': helpDeskPage,
+  };
+  const html = (text: string) => `<body>${text.split('\n').map((line) => `<p>${line}</p>`).join('')}</body>`;
+  const captures = [[ATHLETICS_HOURS_URL, athletics], [LIBRARY_HOURS_URL, library], [GENERAL_CAMPUS_HOURS_URL, general],
+    ...Object.entries(pages)].map(([sourceUrl, text]) => ({ sourceUrl, collectedAt, html: html(text) }));
+  assert.deepEqual([...new Set(OFFICE_HOURS_PAGES.map((office) => office.url))].sort(), Object.keys(pages).sort());
+  const raw = campusHoursFromCaptures(captures, true, fallTerms);
+  assert.equal(raw.length, 13 + OFFICE_HOURS_PAGES.length);
+  assert.deepEqual(hoursSourceErrors(raw, { version: 1, captures }), []);
+  const byName = new Map(raw.map((row) => [row.name, row]));
+  for (const office of OFFICE_HOURS_PAGES) assert.equal(byName.get(office.name)?.sourceUrl, office.url);
+  const safety = ['Public Safety (Emergency)', 'Public Safety (Non-Emergency)'].map((name) => byName.get(name)!);
+  assert.deepEqual(safety.map((row) => row.sourceUrl), Array(2).fill('https://www.ramapo.edu/publicsafety/get-support/'));
+  const result = campusHoursPublication(raw, new Date(collectedAt));
+  const published = new Map(result.publishable.map((row) => [row.name, row]));
+  assert.equal(published.get('Public Safety (Emergency)')!.hours.Sunday, '24 hours');
+  assert.equal(published.get('Counseling Center')!.hours.Monday, '8:30am-4:30pm');
+  assert.equal(published.get('IT Help Desk')!.availabilityIssue, 'unverified-hours');
+  assert.ok(result.omitted.some(({ record, reason }) => record.name === 'IT Help Desk' && reason === 'conflicting-source-schedules'));
+  assert.deepEqual(validateCampusHours(raw), raw);
 });

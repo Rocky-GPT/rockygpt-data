@@ -121,8 +121,8 @@ export interface ArchwayClub {
   groupmeGroups?: Array<{ name: string; url: string }>;
 }
 
-export const HOURS_AVAILABILITY_ISSUES = ['conflicting-source-validity', 'ambiguous-source-season',
-  'source-update-only', 'missing-schedule', 'unverified-hours'] as const;
+export const HOURS_AVAILABILITY_ISSUES = ['conflicting-source-validity', 'conflicting-source-schedules',
+  'ambiguous-source-season', 'source-update-only', 'missing-schedule', 'unverified-hours'] as const;
 
 export interface LocationHours {
   name: string;
