@@ -177,7 +177,8 @@ function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; no
   const values = { phone: entry.phone, email: entry.email, office: entry.office };
   if (!capturedPages) return { values };
   const checked = checkContactValues(values, entry.evidence, capturedPages);
-  const absences = checkAbsences(entry.notPublished ?? [], checked.values, capturedPages);
+  // Against the reviewed values, not the published ones: a value withheld this run is still a value.
+  const absences = checkAbsences(entry.notPublished ?? [], values, capturedPages);
   return {
     values: checked.values,
     evidence: { source_urls: checked.sourceUrls, withheld: checked.withheld,

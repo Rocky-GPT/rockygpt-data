@@ -179,6 +179,50 @@ test('an absence nobody could read is unconfirmed, never confirmed', () => {
   assert.deepEqual(checkAbsences([{ field: 'email', evidence: [] }], {}, contactBlock('x')).issues.map(i => i.kind), ['unconfirmed']);
 });
 
+test('an absence is not believed when the section states a value in any form a person would read as one', () => {
+  const claim = (field: 'phone' | 'email' | 'office' | 'hours') => [{ field, evidence: [{ url: NURSING, section: 'Contact Us' }] }];
+  const cases: Array<[Parameters<typeof claim>[0], string]> = [
+    ['hours', '9:00 - 5:00 p.m.'], ['hours', 'Open 1-5 p.m.'], ['hours', '8:30-4:30 pm'], ['hours', 'from 9 a.m. through 5 p.m.'],
+    ['hours', 'noon - 5pm'], ['hours', 'open until noon'], ['hours', '24-hour service'], ['hours', 'available 24x7'], ['hours', '08:30-16:30'],
+    ['hours', 'open daily'], ['hours', 'Closed on weekends'], ['hours', 'By appointment only'], ['hours', 'Walk-in hours Monday 9 to 5'],
+    ['hours', 'Open 8 \u2013 5 Monday through Friday'], ['hours', 'around the clock'],
+    ['phone', 'Call 684-7777'], ['phone', 'Phone: 7749'], ['phone', 'Reach us at 201/684-7749'], ['phone', 'Tel: (201) 684-RAMA'],
+    ['phone', 'Call us to schedule'], ['phone', 'Text us any time'],
+    ['email', 'Email us'], ['email', 'write to nursing [at] ramapo.edu'], ['email', 'nursing(at)ramapo.edu'], ['email', 'E-mail: see below'],
+    ['office', 'Room 420 on the fourth floor'], ['office', 'Suite 100'], ['office', 'Learning Commons 204A'], ['office', 'located in the Berrie Center'],
+    ['office', '505 Ramapo Valley Road'], ['office', 'Office: Adler Center'], ['office', 'in the CPA garage building'], ['office', 'on the 4th floor'],
+  ];
+  for (const [field, text] of cases) {
+    const checked = checkAbsences(claim(field), {}, contactBlock(text));
+    assert.deepEqual(checked.confirmed, [], `${field}: ${text}`);
+    assert.equal(checked.issues[0]?.kind, 'contradicted', `${field}: ${text}`);
+  }
+  // Plain prose that states and hints at nothing still confirms.
+  for (const field of ['phone', 'email', 'office', 'hours'] as const) {
+    assert.equal(checkAbsences(claim(field), {}, contactBlock('Our mission is to support students.')).confirmed.length, 1, field);
+  }
+});
+
+test('a claim is read through the whole section after its "near" phrase, and one field gets one answer', () => {
+  const far = `Nursing Office ${'x'.repeat(900)} write to nursing@ramapo.edu`;
+  const near = [{ field: 'email' as const, evidence: [{ url: NURSING, section: 'Contact Us', near: 'Nursing Office' }] }];
+  assert.deepEqual(checkAbsences(near, {}, contactBlock(far)).confirmed, []);
+  assert.equal(checkAbsences(near, {}, contactBlock(far)).issues[0].kind, 'contradicted');
+  assert.equal(checkAbsences(near, {}, contactBlock('Nursing Office Phone only')).confirmed.length, 1);
+  // A second claim that fails cancels a first that passed, so the two never disagree in the row.
+  const both = [{ field: 'email' as const, evidence: [{ url: NURSING, section: 'Contact Us' }] },
+    { field: 'email' as const, evidence: [{ url: NURSING, section: 'News' }] }];
+  const checked = checkAbsences(both, {}, contactBlock('Phone only'));
+  assert.deepEqual(checked.confirmed, []);
+  assert.equal(checked.issues.length, 1);
+  // Two agreeing claims are one confirmation.
+  const twice = [both[0], both[0]];
+  assert.equal(checkAbsences(twice, {}, contactBlock('Phone only')).confirmed.length, 1);
+  // A field name the system does not know cannot be claimed.
+  const odd = [{ field: 'phones' as unknown as 'phone', evidence: [{ url: NURSING, section: 'Contact Us' }] }];
+  assert.equal(checkAbsences(odd, {}, contactBlock('Phone only')).issues[0].kind, 'unconfirmed');
+});
+
 test('only ramapo.edu pages can confirm an absence; an office whose page lives elsewhere stays unknown', () => {
   const ATHLETICS = 'https://ramapoathletics.com/staff/';
   const captured = pages(page(ATHLETICS, [['Staff', 'Phone: (201) 684-7674']]));

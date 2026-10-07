@@ -376,6 +376,10 @@ async function insertStructured(
     for (const withheld of contact.evidence.withheld) {
       console.warn(`Withheld ${contact.name} ${withheld.field} ${withheld.value}: ${withheld.reason}`);
     }
+    // A "not published" note this run could not confirm is left out (the field stays unknown), loudly.
+    for (const issue of contact.evidence.absence_issues) {
+      console.warn(`Not published, unconfirmed: ${contact.name} ${issue.field} (${issue.kind}): ${issue.reason}`);
+    }
   }
   // A page that changed withholds a value or two. Losing a quarter of them means the
   // captures themselves are missing, so stop rather than publish offices with no phones.

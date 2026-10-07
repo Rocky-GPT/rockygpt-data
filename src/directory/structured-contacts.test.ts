@@ -140,6 +140,14 @@ test('a confirmed absence reaches the contact row, and one this capture cannot c
     assert.deepEqual(evidence.not_published, [{ field: 'email',
       checks: [{ url: NOT_PUBLISHED_URL, section: 'Contact Us', checked_at: '2026-10-07T02:30:00.000Z' }] }]);
     assert.deepEqual(evidence.absence_issues.map(issue => [issue.field, issue.kind]), [['hours', 'unconfirmed']]);
+    // A reviewed value that this run withheld is still a value: the field cannot be called not published.
+    (entry as { notPublished: unknown }).notPublished = [{ field: 'phone', evidence: [{ url: NOT_PUBLISHED_URL, section: 'Contact Us' }] }];
+    entry.phone = '(201) 684-9999';
+    const withheld = buildStructuredDirectoryContacts([], captured).find(contact => contact.name === entry.name)!;
+    const withheldEvidence = (withheld.normalization_metadata as unknown as
+      { evidence: { not_published: unknown[]; absence_issues: Array<{ kind: string }> } }).evidence;
+    assert.deepEqual(withheldEvidence.not_published, []);
+    assert.equal(withheldEvidence.absence_issues[0].kind, 'contradicted');
     // With no capture (file mode) nothing can be confirmed, so nothing is claimed.
     const fileMode = buildStructuredDirectoryContacts([]).find(contact => contact.name === entry.name)!;
     assert.equal((fileMode as { evidence?: unknown }).evidence, undefined);

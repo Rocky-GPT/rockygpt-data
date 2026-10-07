@@ -40,10 +40,9 @@
           "selector": {
             "field": "name",
             "values": [
-              "Center for Student Involvement (CSI)",
               "Center for Student Involvement"
             ],
-            "evidence": "Reviewed campus-hours record explicitly expands CSI to Center for Student Involvement. The scope is operating hours, not staff/phone availability. The office's own page, under the name without \"(CSI)\", (https://www.ramapo.edu/csi/) prints a schedule that differs by day; the academic calendar dates the semester it applies to."
+            "evidence": "The office's own page (https://www.ramapo.edu/csi/) prints a schedule that differs by day; the academic calendar dates the semester it applies to. The general campus hours page's \"Center for Student Involvement (CSI)\" record states no applicable period, is withheld, and is not linked."
           }
         }
       ]
