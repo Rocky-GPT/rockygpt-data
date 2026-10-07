@@ -1,13 +1,14 @@
 /**
  * Checks every reviewed office and staff contact against the pages in data/raw, the
  * same way publication does, and lists each value the cited section doesn't state.
- * It also lists each value a cited section states that the entry leaves out ("?"), which
- * is how a published "not found" can hide something the office's own page says.
+ * It also scans captured home/contact/FAQ/staff pages for additional values ("?"),
+ * even when a primary contact exists. These candidates need review, not automatic publication.
  * Run it after editing src/reference/directory-contacts.json or recollecting pages;
  * it exits non-zero when publication would withhold anything, and, with --strict, when
- * a cited section states a value the entry leaves out.
+ * a scanned section has an unrecorded value or a required cited section was not captured.
  */
-import { checkAbsences, checkContactAdditions, checkContactNotes, checkContactValues, checkWebsite, findUnrecordedValues, loadCapturedPages } from '../src/directory/contact-evidence';
+import { checkAbsences, checkContactAdditions, checkContactNotes, checkContactValues, checkWebsite, loadCapturedPages } from '../src/directory/contact-evidence';
+import { reviewContactCoverage } from '../src/directory/contact-coverage';
 import { OFFICE_DIRECTORY_CONTACTS, OTHER_DIRECTORY_CONTACTS } from '../src/directory/static-contacts';
 
 const pages = loadCapturedPages();
@@ -18,6 +19,7 @@ let absenceIssues = 0;
 let websites = 0;
 let websiteIssues = 0;
 let contactNoteIssues = 0;
+let coverageGaps = 0;
 for (const entry of [...OFFICE_DIRECTORY_CONTACTS, ...OTHER_DIRECTORY_CONTACTS]) {
   const checked = checkContactValues({ phone: entry.phone, email: entry.email, office: entry.office }, entry.evidence, pages);
   const published = Object.entries(checked.values).map(([field, value]) => `${field} ${value}`).join(', ') || 'no values';
@@ -51,11 +53,16 @@ for (const entry of [...OFFICE_DIRECTORY_CONTACTS, ...OTHER_DIRECTORY_CONTACTS])
     console.log(`    ✗ website ${site.issue.url}: ${site.issue.reason}`);
     websiteIssues += 1;
   }
-  for (const missed of findUnrecordedValues({ phone: entry.phone, email: entry.email, office: entry.office }, entry.evidence, pages)) {
+  const coverage = reviewContactCoverage(entry, pages);
+  for (const gap of coverage.unavailable_sections) {
+    console.log(`    ? coverage gap: ${gap.reason}`);
+    coverageGaps += 1;
+  }
+  for (const missed of coverage.unrecorded) {
     console.log(`    ? ${missed.field} not recorded, but "${missed.section}" of ${missed.url} states ${missed.found.join(', ')}`);
-    unrecorded += 1;
+    unrecorded += missed.found.length;
   }
 }
 console.log(`\n${pages.size} captured pages; ${withheld} reviewed value(s) withheld; ${unrecorded} stated value(s) not recorded; `
-  + `${confirmedAbsences} absence(s) confirmed, ${absenceIssues} not confirmed; ${websites} website(s) kept, ${websiteIssues} not; ${contactNoteIssues} contact instruction(s) withheld.`);
-process.exit(withheld || absenceIssues || websiteIssues || contactNoteIssues || (unrecorded && process.argv.includes('--strict')) ? 1 : 0);
+  + `${confirmedAbsences} absence(s) confirmed, ${absenceIssues} not confirmed; ${websites} website(s) kept, ${websiteIssues} not; ${contactNoteIssues} contact instruction(s) withheld; ${coverageGaps} coverage gap(s).`);
+process.exit(withheld || absenceIssues || websiteIssues || contactNoteIssues || ((unrecorded || coverageGaps) && process.argv.includes('--strict')) ? 1 : 0);

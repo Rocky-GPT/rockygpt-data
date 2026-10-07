@@ -6,6 +6,7 @@ import {
 } from './static-contacts';
 import { parseAndNormalizePhone } from './phone-normalizer';
 import { formatOffices, normalizeContactFields, reviewContacts } from './contact-normalizer';
+import { reviewContactCoverage, type ContactCoverageReport } from './contact-coverage';
 import {
   checkAbsences,
   checkContactValues,
@@ -62,6 +63,8 @@ export interface StructuredDirectoryContact extends ContactRecord {
     additional_contacts?: ConfirmedContactAddition[];
     contact_notes?: ConfirmedContactNote[];
     contact_note_issues?: Array<{ text: string; reason: string }>;
+    /** Unreviewed discoveries are diagnostic metadata, never attribute evidence. */
+    contact_review?: ContactCoverageReport;
   };
 }
 
@@ -209,6 +212,7 @@ function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; no
       withheld: [...checked.withheld, ...additions.withheld],
       not_published: absences.confirmed, absence_issues: absences.issues,
       additional_contacts: additions.confirmed, contact_notes: notes.confirmed, contact_note_issues: notes.issues,
+      contact_review: reviewContactCoverage(entry, capturedPages),
       ...(site.confirmed ? { website: site.confirmed } : {}),
       ...(site.issue ? { website_issue: site.issue } : {}) },
   };

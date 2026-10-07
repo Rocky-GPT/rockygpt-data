@@ -942,6 +942,23 @@
             }
           ]
         }
+      ],
+      "additionalContacts": [
+        {
+          "field": "email",
+          "value": "kmcgee@ramapo.edu",
+          "label": "Kat McGee, Director of Title IX and Institutional Compliance",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/titleix/",
+              "section": "Reporting an Incident of Discrimination",
+              "near": "Kat McGee",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -973,6 +990,23 @@
             {
               "url": "https://www.ramapo.edu/graduate/",
               "section": "Ramapo College Office of Graduate Admissions"
+            }
+          ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 800-6057",
+          "label": "Text",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/graduate/faqs/",
+              "section": "Who should I contact if I have questions about the application process?",
+              "near": "by text at",
+              "fields": [
+                "phone"
+              ]
             }
           ]
         }
