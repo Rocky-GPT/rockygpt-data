@@ -21,7 +21,7 @@ for (const entry of [...OFFICE_DIRECTORY_CONTACTS, ...OTHER_DIRECTORY_CONTACTS])
   console.log(`${checked.withheld.length ? '✗' : '✓'} ${entry.name}: ${published}`);
   for (const value of checked.withheld) console.log(`    withheld ${value.field} ${value.value}: ${value.reason}`);
   withheld += checked.withheld.length;
-  const absences = checkAbsences(entry.notPublished ?? [], checked.values, pages);
+  const absences = checkAbsences(entry.notPublished ?? [], { phone: entry.phone, email: entry.email, office: entry.office }, pages);
   for (const absence of absences.confirmed) {
     console.log(`    not published: ${absence.field} (confirmed in ${absence.checks.length} section${absence.checks.length === 1 ? '' : 's'})`);
     confirmedAbsences += 1;

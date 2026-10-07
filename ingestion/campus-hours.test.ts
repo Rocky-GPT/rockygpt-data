@@ -3,7 +3,7 @@ import test from 'node:test';
 import {
   ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, campusHoursFromCaptures,
   campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
-  OFFICE_HOURS_PAGES, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, parseWeeklyHours, termWindows,
+  OFFICE_HOURS_PAGES, hoursPageText, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, parseWeeklyHours, termWindows,
 } from './campus-hours';
 import { partitionHoursForPublication, recordValidity } from '../src/data-v2/validity';
 import { validateCampusHours } from './schema';
@@ -434,13 +434,36 @@ test('a weekly schedule the reader cannot fully account for stops the collector 
   assert.throws(() => read('Hours\nOpen all week'), /unrecognized/);
   assert.throws(() => read('Hours\none\ntwo\nthree\nfour\nMonday 9am - 5pm'), /unrecognized/);
   assert.throws(() => read('Closed on weekends'), /line is unavailable/);
-  // The block ends at the first line that is not purely schedule, and prose-first blocks stop at once.
-  const ended = read('Hours\nMonday 9am - 5pm\nTuesday call us\nWednesday 9am - 5pm');
-  assert.deepEqual([ended.hours.Monday, ended.hours.Tuesday, ended.hours.Wednesday], ['9:00am-5:00pm', 'Hours unavailable', 'Hours unavailable']);
-  const mixed = read("Hours\nMonday 9am - 5pm\nThe lounge next door is open Tuesday 9am - 5pm");
-  assert.deepEqual([mixed.hours.Monday, mixed.hours.Tuesday], ['9:00am-5:00pm', 'Hours unavailable']);
-  const prose = read('Hours\nWe are open Monday 9am - 5pm. Questions? Ask.\nTuesday 9am - 5pm');
+  // The block ends at the first line that is not purely schedule, and that line must not mention a day:
+  // a day that was not understood is a schedule that was not read, so the collector stops.
+  assert.throws(() => read('Hours\nMonday 9am - 5pm\nTuesday call us\nWednesday 9am - 5pm'), /mentions a day/);
+  assert.throws(() => read('Hours\nMonday 9am - 5pm\nThe lounge next door is open Tuesday 9am - 5pm'), /mentions a day/);
+  assert.throws(() => read('Hours\nWe are open Monday 9am - 5pm. Questions? Ask.\nTuesday 9am - 5pm'), /mentions a day/);
+  const ended = read('Hours\nMonday 9am - 5pm\nTuesday 9am - 5pm\nRoom 420 | phone 201-684-7557');
+  assert.deepEqual([ended.hours.Monday, ended.hours.Tuesday, ended.hours.Wednesday], ['9:00am-5:00pm', '9:00am-5:00pm', 'Hours unavailable']);
+  const prose = read('Hours\nWe are open Monday 9am - 5pm. Questions? Ask.\nSee the room for details.');
   assert.deepEqual([prose.hours.Monday, prose.hours.Tuesday], ['9:00am-5:00pm', 'Hours unavailable']);
+  // Whatever a line says beyond its segments must be plain prose: a split shift, an exception, a day list.
+  assert.throws(() => read('Hours\nMonday 9am - 12pm and 1pm - 5pm'), /cannot account for/);
+  assert.throws(() => read('Hours\nMonday - Friday 9am - 5pm except holidays'), /cannot account for/);
+  assert.throws(() => read('Hours\nMon, Wed, Fri 9am - 5pm'), /cannot account for/);
+  assert.throws(() => read('Hours\nMonday 9am - 5pm\nTuesday 9am - 5pm by appointment only'), /cannot account for|mentions a day/);
+  // Prose before the schedule may not be about another season or a closure.
+  assert.throws(() => read('Hours\nSummer hours are shorter.\nMonday 9am - 5pm'), /before its schedule/);
+  assert.throws(() => read('Hours\nThe office is closed over winter break.\nMonday 9am - 5pm'), /before its schedule/);
+  // A hyphen character other than "-" still joins the days of a range.
+  for (const dash of ['\u2010', '\u2011', '\u2012', '\u2212']) {
+    const text = hoursPageText(`<body><p>Hours: Monday ${dash} Friday, 9 am - 5 pm</p></body>`);
+    assert.equal(parseOfficeHours('Example', /^Hours:/i, text, at, fallTerms).hours.Friday, '9:00am-5:00pm', dash);
+  }
+  // A page that names its term must name the one the calendar dates the capture to, and a label that matches two lines is no label.
+  const named = (when: string) => parseWeeklyHours('Example', /^FALL 2026$/i, 'FALL 2026\nMonday 9am - 5pm', when, [
+    { name: 'Fall 2026', from: '2026-08-26', until: '2026-12-16' }, { name: 'Spring 2027', from: '2027-01-19', until: '2027-05-12' }]);
+  assert.equal(named('2026-10-07T12:00:00Z').hours.Monday, '9:00am-5:00pm');
+  assert.throws(() => named('2026-12-20T12:00:00Z'), /says "FALL 2026" but the academic calendar dates this schedule to Spring 2027/);
+  assert.throws(() => read('Hours\nMonday 9am - 5pm\nHours\nTuesday 9am - 5pm'), /matches more than one line/);
+  assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am - 5 pm\nHours: Monday - Friday, 10 am - 6 pm', at, fallTerms), /matches more than one line/);
+  assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am - 5 pm, closed until 10 am - 11 am', at, fallTerms), /more than one time range/);
   assert.equal(read('Hours\nWeekdays 9am - 5pm\nWeekends Closed').hours.Sunday, 'CLOSED');
   assert.throws(() => parseWeeklyHours('Example', /^Hours$/i, 'Hours\nMonday 9am - 5pm', '2027-06-01T12:00:00Z', fallTerms), /No academic calendar semester/);
 });

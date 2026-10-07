@@ -166,7 +166,8 @@ export function statesValue(field: ContactField, value: string, text: string, fi
 }
 
 /** The text an evidence entry points at, or why there is none in this capture. */
-export function evidenceText(evidence: ContactEvidence, pages: ReadonlyMap<string, CapturedPage>): { text: string } | { reason: string } {
+export function evidenceText(evidence: ContactEvidence, pages: ReadonlyMap<string, CapturedPage>,
+  options: { wholeSection?: boolean } = {}): { text: string } | { reason: string } {
   const page = pages.get(pageKey(evidence.url));
   if (!page) return { reason: `${evidence.url} was not captured in this run.` };
   const sections = page.sections.filter(section => sameHeading(section.heading, evidence.section));
@@ -175,7 +176,9 @@ export function evidenceText(evidence: ContactEvidence, pages: ReadonlyMap<strin
   if (!evidence.near) return { text };
   const start = text.toLowerCase().indexOf(evidence.near.toLowerCase());
   if (start < 0) return { reason: `Section "${evidence.section}" of ${evidence.url} doesn't mention "${evidence.near}".` };
-  return { text: text.slice(start, start + evidence.near.length + NEAR_WINDOW) };
+  // A value is only published if it is within a short window after the phrase; an absence is only
+  // believed if nothing in the rest of the section states one, however far from the phrase.
+  return { text: options.wholeSection ? text.slice(start) : text.slice(start, start + evidence.near.length + NEAR_WINDOW) };
 }
 
 /**
@@ -243,17 +246,45 @@ export function findUnrecordedValues(values: ContactValues, evidence: readonly C
   return unrecorded;
 }
 
-/** A time range ("8:30 a.m. - 4:30 p.m.", "10 AM to 8 PM") or an every-hour statement ("24 hours"). */
-const TIME_RANGE = /\b\d{1,2}(?::\d{2})?\s*[ap]\.?\s*m\.?\s*(?:-|\u2013|\u2014|to|until)\s*(?:\d{1,2}(?::\d{2})?\s*[ap]\.?\s*m\.?|noon|midnight)|\b24\s*(?:hours|hrs|\/\s*7)/gi;
+/**
+ * What counts as "the section states a value" when an absence is claimed. It is deliberately
+ * wider than the readers that publish values: a false "not published" tells a student something
+ * untrue, while a section that merely looks like it states a value only leaves the field unknown.
+ * Anything a person or the weekly reader would take for a time, a place, a number or an address,
+ * and any mention of the contact method with nothing shown (the capture drops the target of a
+ * mailto: or tel: link, so "Email us" may hide an address), contradicts the claim.
+ */
+const CLOCK = String.raw`\d{1,2}(?::\d{2})?\s*(?:[ap]\.?\s*m\.?)`;
+const HOURS_CUES: RegExp[] = [
+  new RegExp(CLOCK, 'gi'),
+  /\b\d{1,2}(?::\d{2})?\s*(?:-|\u2010|\u2011|\u2012|\u2013|\u2014|\u2212|to|until|till|through|thru)\s*\d{1,2}(?::\d{2})?\b/gi,
+  /\b\d{2}:\d{2}\b/g,
+  /\b(?:noon|midnight)\b/gi,
+  /\b24\s*[-/x]?\s*(?:hours?|hrs?|7)\b/gi,
+  /\b(?:around the clock|open daily|open (?:every|all) day|by appointment|walk-?ins?)\b/gi,
+  /\b(?:open|closed|hours)\b[^.\n]{0,40}\b(?:mon|tue|wed|thu|fri|sat|sun|weekdays?|weekends?)/gi,
+];
+const PLACE_CUES: RegExp[] = [
+  /\b(?:room|rm|suite|floor|wing|hall|building|bldg|garage|house|lodge|commons|located|location|campus center)\b|\boffice\s*:/gi,
+  /\b\d{1,5}\s+[A-Z][\w.]*(?:\s+[A-Z][\w.]*)*\s+(?:road|rd|street|st|avenue|ave|boulevard|blvd|lane|ln|drive|dr)\b/gi,
+];
+const EMAIL_CUES: RegExp[] = [/@|\[at\]|\(at\)|\bmailto:|\bemail protected\b/gi, /\be-?mail\b/gi];
+const PHONE_CUES: RegExp[] = [
+  /(?<!\d)\d{3}[-.\s]\d{4}(?!\d)/g,
+  /\b(?:phone|tel|telephone|call|ext|extension|fax|x)\.?\s*:?\s*\d{3,4}\b/gi,
+  /\btel:/gi,
+  /\b(?:phone|telephone|call us|call or text|text us|fax)\b/gi,
+];
 
-function timeRangesIn(text: string): string[] {
-  return [...text.matchAll(TIME_RANGE)].map(match => match[0].replace(/\s+/g, ' ').trim());
-}
+const cuesIn = (patterns: RegExp[], text: string): string[] =>
+  patterns.flatMap(pattern => [...text.matchAll(pattern)].map(match => match[0].replace(/\s+/g, ' ').trim()));
 
-/** Every value of this kind the text states (room codes only for an office: a place name can't be searched for). */
+/** Every value, or sign of a value, of this kind the text states. */
 function statedValues(field: AbsenceField, text: string): string[] {
-  const found = field === 'phone' ? phonesIn(text) : field === 'email' ? emailsIn(text)
-    : field === 'office' ? roomsIn(text) : timeRangesIn(text);
+  const found = field === 'phone' ? [...phonesIn(text), ...cuesIn(PHONE_CUES, text)]
+    : field === 'email' ? [...emailsIn(text), ...cuesIn(EMAIL_CUES, text)]
+      : field === 'office' ? [...roomsIn(text), ...cuesIn(PLACE_CUES, text)]
+        : cuesIn(HOURS_CUES, text);
   return [...new Set(found)];
 }
 
@@ -306,6 +337,10 @@ export function checkAbsences(claims: readonly AbsenceClaim[], values: ContactVa
   const confirmed: ConfirmedAbsence[] = [];
   const issues: AbsenceIssue[] = [];
   for (const claim of claims) {
+    if (!ABSENCE_FIELDS.includes(claim.field)) {
+      issues.push({ field: claim.field, kind: 'unconfirmed', reason: `"${String(claim.field)}" is not a field an absence can be claimed for.` });
+      continue;
+    }
     const own = claim.field === 'hours' ? undefined : values[claim.field]?.trim();
     if (own) {
       issues.push({ field: claim.field, kind: 'contradicted', reason: `The entry itself has the ${claim.field} "${own}".` });
@@ -323,7 +358,7 @@ export function checkAbsences(claims: readonly AbsenceClaim[], values: ContactVa
         ok = false;
         continue;
       }
-      const found = evidenceText({ ...entry, fields: [] }, pages);
+      const found = evidenceText({ ...entry, fields: [] }, pages, { wholeSection: true });
       if ('reason' in found) { issues.push({ field: claim.field, kind: 'unconfirmed', reason: found.reason }); ok = false; continue; }
       const stated = statedValues(claim.field, found.text);
       if (stated.length) {
@@ -336,5 +371,12 @@ export function checkAbsences(claims: readonly AbsenceClaim[], values: ContactVa
     }
     if (ok) confirmed.push({ field: claim.field, checks });
   }
-  return { confirmed, issues };
+  // One field, one answer: a claim that could not be confirmed (or a duplicate that disagrees)
+  // cancels a confirmation of the same field, so a contradiction is never published beside a note.
+  const doubted = new Set(issues.map(issue => issue.field));
+  const once = new Set<AbsenceField>();
+  return {
+    confirmed: confirmed.filter(entry => !doubted.has(entry.field) && !once.has(entry.field) && once.add(entry.field)),
+    issues,
+  };
 }

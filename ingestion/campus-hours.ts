@@ -43,7 +43,7 @@ function assignDays(hours: Record<string, string>, days: DayName[], schedule: st
 function normalizePageText(raw: string): string {
     return raw
         .replace(/\u00a0/g, ' ')
-        .replace(/[–—]/g, '-')
+        .replace(/[\u2010-\u2012\u2212–—]/g, '-')
         .replace(/[“”]/g, '"')
         .replace(/[’]/g, "'")
         .replace(/\r/g, '')
@@ -510,12 +510,16 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     const lines = pageText.split('\n').map((line) => line.trim()).filter(Boolean);
     const index = lines.findIndex((line) => label.test(line));
     if (index < 0) throw new Error(`Office hours line is unavailable for ${name}`);
+    if (lines.filter((line) => label.test(line)).length > 1) throw new Error(`The hours label for ${name} matches more than one line`);
     const range = /(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?\s*(?:-|to|until)\s*(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?/i;
     // The schedule follows its label on the same line, or on the next line (Registrar).
     const rest = lines[index].replace(label, '').trim();
     const text = range.test(rest) ? rest : `${rest} ${lines[index + 1] ?? ''}`.trim();
     const days = text.match(/\b(Monday|Mon\.?)\s*(?:-|to|through|thru)\s*(Thursday|Thurs?\.?|Friday|Fri\.?)(?![a-z])/i);
     const time = text.match(range);
+    if ([...text.matchAll(new RegExp(range.source, 'gi'))].length > 1) {
+        throw new Error(`Office hours state more than one time range for ${name}: "${text}"`);
+    }
     if (!days || !time) throw new Error(`Office hours are unrecognized for ${name}: "${text}"`);
     const clock = (hour: string, minute: string | undefined, half: string) => `${hour}:${minute ?? '00'} ${half}M`;
     const schedule = scheduleFromLine(`${clock(time[1], time[2], time[3])} - ${clock(time[4], time[5], time[6])}`);
@@ -527,12 +531,18 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
         ...datedByTerm(name, collectedAt, terms) };
 }
 
-/** The semester the capture falls in (or the next one) dates a schedule that names no dates. */
-function datedByTerm(name: string, collectedAt: string, terms: TermWindow[]):
-    { validFrom: string; validUntil: string; derivation: string } {
+/** The semester the capture falls in (or the next one). */
+function termFor(name: string, collectedAt: string, terms: TermWindow[]): TermWindow {
     const captured = collectedAt.slice(0, 10);
     const term = terms.filter((window) => window.until >= captured).sort((a, b) => a.from.localeCompare(b.from))[0];
     if (!term) throw new Error(`No academic calendar semester dates the office hours for ${name}`);
+    return term;
+}
+
+/** The semester the capture falls in (or the next one) dates a schedule that names no dates. */
+function datedByTerm(name: string, collectedAt: string, terms: TermWindow[]):
+    { validFrom: string; validUntil: string; derivation: string } {
+    const term = termFor(name, collectedAt, terms);
     return { validFrom: term.from, validUntil: term.until,
         derivation: `Applies during ${term.name} per the academic calendar `
             + `(${shortDate(term.from)} - ${shortDate(term.until)}, ${term.until.slice(0, 4)}).` };
@@ -582,6 +592,9 @@ function weekdaySet(first: string, second?: string): DayName[] {
     return DAYS.slice(from, to + 1);
 }
 
+const SEASON_OR_CLOSURE = /\b(?:summer|winter|spring|fall|term|semester|break|holiday|holidays|closed|appointment|except)\b/i;
+const UNACCOUNTED = /\d|\b(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\b|\b(?:closed|except|appointment|only|summer|winter|break|holiday|holidays|until|till|from|by)\b/i;
+
 /** The segments a line states, and whether the line states nothing but segments. */
 function segmentsIn(line: string): { found: RegExpMatchArray[]; pure: boolean } {
     const found = [...line.matchAll(SEGMENT)];
@@ -602,17 +615,40 @@ export function parseWeeklyHours(name: string, label: RegExp, pageText: string, 
     const lines = pageText.split('\n').map((line) => line.trim()).filter(Boolean);
     const index = lines.findIndex((line) => label.test(line));
     if (index < 0) throw new Error(`Office hours line is unavailable for ${name}`);
+    if (lines.filter((line) => label.test(line)).length > 1) throw new Error(`The hours label for ${name} matches more than one line`);
+    // A page that names its own term must name the one the calendar dates this capture to.
+    const term = termFor(name, collectedAt, terms);
+    const named = lines[index].match(/\b(fall|spring|winter|summer)\s+(20\d{2})\b/i);
+    if (named && `${named[1]} ${named[2]}`.toLowerCase() !== term.name.toLowerCase()) {
+        throw new Error(`The page for ${name} says "${named[0]}" but the academic calendar dates this schedule to ${term.name}`);
+    }
     const candidates = [lines[index].replace(label, '').trim(), ...lines.slice(index + 1)].filter(Boolean);
     const block: string[] = [];
     let skipped = 0;
-    for (const line of candidates) {
+    let ending: string | undefined;
+    for (let at = 0; at < candidates.length; at += 1) {
+        const line = candidates[at];
         const { found, pure } = segmentsIn(line);
         if (!block.length) {
-            if (!found.length) { if (++skipped > 3) break; continue; }
+            if (!found.length) {
+                // Prose between the label and the schedule must not be about another season or a closure.
+                if (SEASON_OR_CLOSURE.test(line)) throw new Error(`${name} has a line before its schedule that the reader cannot account for: "${line}"`);
+                if (++skipped > 3) break;
+                continue;
+            }
             block.push(line);
-            if (!pure) break;
+            if (!pure) { ending = candidates[at + 1]; break; }
         } else if (pure) block.push(line);
-        else break;
+        else { ending = line; break; }
+    }
+    // The line that ends the schedule must not itself talk about a day: that is a piece not understood.
+    if (ending && new RegExp(String.raw`\b${DAY_WORD}\b`, 'i').test(ending)) {
+        throw new Error(`${name} has a line after its schedule that mentions a day and that the reader cannot account for: "${ending}"`);
+    }
+    // Whatever the segments did not consume must be plain prose: no time, no day, no exception.
+    for (const line of block) {
+        const left = segmentsIn(line).found.reduce((text, match) => text.replace(match[0], ' '), line);
+        if (UNACCOUNTED.test(left)) throw new Error(`${name} has schedule text the reader cannot account for: "${line}"`);
     }
     if (!block.length) throw new Error(`Office hours are unrecognized for ${name}: no day-and-time lines follow the label`);
     const hours = createUnknownWeek();
@@ -628,7 +664,9 @@ export function parseWeeklyHours(name: string, label: RegExp, pageText: string, 
         }
     }
     return { name, hours, notes: `${lines[index].match(label)![0]} ${block.join(' ')}`.trim(),
-        ...datedByTerm(name, collectedAt, terms) };
+        validFrom: term.from, validUntil: term.until,
+        derivation: `Applies during ${term.name} per the academic calendar `
+            + `(${shortDate(term.from)} - ${shortDate(term.until)}, ${term.until.slice(0, 4)}).` };
 }
 
 /** An office the page says is open every hour of every day. The page's sentence is the note. */

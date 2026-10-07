@@ -919,19 +919,6 @@
       ],
       "notPublished": [
         {
-          "field": "phone",
-          "evidence": [
-            {
-              "url": "https://www.ramapo.edu/igg/",
-              "section": "Ramapo College"
-            },
-            {
-              "url": "https://www.ramapo.edu/igg/lab/",
-              "section": "Refer a Case to the IGG Center"
-            }
-          ]
-        },
-        {
           "field": "hours",
           "evidence": [
             {
