@@ -386,6 +386,15 @@ async function insertStructured(
     for (const issue of contact.evidence.absence_issues) {
       console.warn(`Not published, unconfirmed: ${contact.name} ${issue.field} (${issue.kind}): ${issue.reason}`);
     }
+    for (const issue of contact.evidence.contact_note_issues ?? []) {
+      console.warn(`Contact instruction not kept: ${contact.name}: ${issue.reason}`);
+    }
+    const review = contact.evidence.contact_review;
+    if (review?.status === 'needs_review') {
+      const candidates = review.unrecorded.reduce((total, item) => total + item.found.length, 0);
+      console.warn(`Contact coverage needs review: ${contact.name}: ${candidates} unrecorded candidate(s), `
+        + `${review.unavailable_sections.length} unavailable section(s). See normalization_metadata.evidence.contact_review; candidates are not published facts.`);
+    }
   }
   // A page that changed withholds a value or two. Losing a quarter of them means the
   // captures themselves are missing, so stop rather than publish offices with no phones.

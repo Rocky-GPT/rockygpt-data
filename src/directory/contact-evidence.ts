@@ -288,31 +288,35 @@ export function checkContactNotes(entries: readonly ReviewedContactNote[],
   return { confirmed, issues };
 }
 
-/** A value a cited section states for a field the reviewed entry leaves empty. */
+/** Contact values found in a section but absent from the reviewed primary and additional contacts. */
 export interface UnrecordedValue { field: ContactField; found: string[]; url: string; section: string }
 
 /**
- * The values each cited section states for a field the entry has no value for. An entry
- * that cites a section and omits what the section plainly lists is a likely mistake: the
- * graph then says "not published" about something the office's own page publishes. These
- * are for a person to review (a staff list can name other people's addresses). They are
- * never published on their own, and publication does not withhold anything for them.
+ * Compare every stated value, even when the field already contains another value. These
+ * are review candidates, not office facts: a section can list a fax or another person's
+ * address. Only a source-backed reviewed contact can publish a discovered value.
  */
 export function findUnrecordedValues(values: ContactValues, evidence: readonly ContactEvidence[],
-  pages: ReadonlyMap<string, CapturedPage>): UnrecordedValue[] {
+  pages: ReadonlyMap<string, CapturedPage>,
+  additions: readonly Pick<ReviewedContactAddition, 'field' | 'value'>[] = []): UnrecordedValue[] {
   const unrecorded: UnrecordedValue[] = [];
   const unique = (found: string[]) => [...new Set(found)];
+  const extract: Record<ContactField, (text: string) => string[]> = {
+    phone: phonesIn, email: emailsIn, office: roomsIn,
+  };
+  const recorded: Record<ContactField, Set<string>> = { phone: new Set(), email: new Set(), office: new Set() };
+  for (const field of CONTACT_FIELDS) {
+    for (const value of [values[field] ?? '', ...additions.filter(item => item.field === field).map(item => item.value)]) {
+      for (const key of extract[field](value)) recorded[field].add(key);
+      if (field === 'phone' && phoneValueDigits(value)) recorded.phone.add(phoneValueDigits(value)!);
+    }
+  }
   for (const entry of evidence) {
     const found = evidenceText(entry, pages);
     if ('reason' in found) continue;
-    const stated: Record<ContactField, string[]> = {
-      phone: unique(phonesIn(found.text)),
-      email: unique(emailsIn(found.text)),
-      office: unique(roomsIn(found.text)),
-    };
     for (const field of CONTACT_FIELDS) {
-      if (values[field]?.trim() || !stated[field].length) continue;
-      unrecorded.push({ field, found: stated[field], url: entry.url, section: entry.section });
+      const missing = unique(extract[field](found.text)).filter(value => !recorded[field].has(value));
+      if (missing.length) unrecorded.push({ field, found: missing, url: entry.url, section: entry.section });
     }
   }
   return unrecorded;
