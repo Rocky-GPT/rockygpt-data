@@ -6,7 +6,7 @@
  * search-index shape consumed by the directory API and modal UI.
  */
 
-import type { ContactEvidence } from './contact-evidence';
+import type { AbsenceClaim, ContactEvidence } from './contact-evidence';
 
 /**
  * Top-level directory buckets shown in the directory modal and API response.
@@ -26,6 +26,11 @@ export interface OfficeDirectoryContact {
   helpsWith: string[];
   /** The page sections that state this office's phone, email and office. */
   evidence: ContactEvidence[];
+  /**
+   * Fields this office's own pages were read for and do not publish (an email, a room, its
+   * hours). Publication confirms each against the run's capture before it says so.
+   */
+  notPublished?: AbsenceClaim[];
 }
 
 /**
@@ -41,6 +46,8 @@ export interface OtherDirectoryContact {
   profileUrl?: string;
   /** The page sections that state this person's phone, email and office. */
   evidence: ContactEvidence[];
+  /** Fields this person's pages were read for and do not publish; confirmed at publication. */
+  notPublished?: AbsenceClaim[];
 }
 
 /**

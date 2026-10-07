@@ -7,8 +7,12 @@ import {
 import { parseAndNormalizePhone } from './phone-normalizer';
 import { normalizeContactFields, reviewContacts } from './contact-normalizer';
 import {
+  checkAbsences,
   checkContactValues,
+  type AbsenceClaim,
+  type AbsenceIssue,
   type CapturedPage,
+  type ConfirmedAbsence,
   type ContactEvidence,
   type ContactValues,
   type WithheldContactValue,
@@ -35,7 +39,14 @@ export interface StructuredDirectoryContact extends ContactRecord {
    * For a reviewed contact checked against this run's captures: the pages that state
    * its published values, and the reviewed values no cited section stated.
    */
-  evidence?: { source_urls: string[]; withheld: WithheldContactValue[] };
+  evidence?: {
+    source_urls: string[];
+    withheld: WithheldContactValue[];
+    /** Fields the office's pages were confirmed, in this run's capture, not to publish. */
+    not_published: ConfirmedAbsence[];
+    /** Claims of absence this run could not confirm (a page now states the value, or was not captured). */
+    absence_issues: AbsenceIssue[];
+  };
 }
 
 interface FacultyContactSeed {
@@ -159,14 +170,19 @@ export function normalizePhoneNumber(phone: string | undefined | null): string |
  * A reviewed contact's phone, email and office. With this run's captured pages, only
  * the values a cited page section states; without them (file mode), the reviewed values.
  */
-function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[] },
+function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; notPublished?: AbsenceClaim[] },
   capturedPages: ReadonlyMap<string, CapturedPage> | undefined): {
   values: ContactValues; evidence?: StructuredDirectoryContact['evidence'];
 } {
   const values = { phone: entry.phone, email: entry.email, office: entry.office };
   if (!capturedPages) return { values };
   const checked = checkContactValues(values, entry.evidence, capturedPages);
-  return { values: checked.values, evidence: { source_urls: checked.sourceUrls, withheld: checked.withheld } };
+  const absences = checkAbsences(entry.notPublished ?? [], checked.values, capturedPages);
+  return {
+    values: checked.values,
+    evidence: { source_urls: checked.sourceUrls, withheld: checked.withheld,
+      not_published: absences.confirmed, absence_issues: absences.issues },
+  };
 }
 
 /**
