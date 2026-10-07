@@ -9,12 +9,15 @@ import { normalizeContactFields, reviewContacts } from './contact-normalizer';
 import {
   checkAbsences,
   checkContactValues,
+  checkWebsite,
   type AbsenceClaim,
   type AbsenceIssue,
   type CapturedPage,
   type ConfirmedAbsence,
+  type ConfirmedWebsite,
   type ContactEvidence,
   type ContactValues,
+  type WebsiteIssue,
   type WithheldContactValue,
 } from './contact-evidence';
 
@@ -46,6 +49,10 @@ export interface StructuredDirectoryContact extends ContactRecord {
     not_published: ConfirmedAbsence[];
     /** Claims of absence this run could not confirm (a page now states the value, or was not captured). */
     absence_issues: AbsenceIssue[];
+    /** The office's own ramapo.edu page, when this run's capture loaded it. */
+    website?: ConfirmedWebsite;
+    /** A reviewed website this run could not keep (not a ramapo.edu page, or not captured). */
+    website_issue?: WebsiteIssue;
   };
 }
 
@@ -170,7 +177,7 @@ export function normalizePhoneNumber(phone: string | undefined | null): string |
  * A reviewed contact's phone, email and office. With this run's captured pages, only
  * the values a cited page section states; without them (file mode), the reviewed values.
  */
-function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; notPublished?: AbsenceClaim[] },
+function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; notPublished?: AbsenceClaim[]; website?: string },
   capturedPages: ReadonlyMap<string, CapturedPage> | undefined): {
   values: ContactValues; evidence?: StructuredDirectoryContact['evidence'];
 } {
@@ -179,10 +186,13 @@ function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; no
   const checked = checkContactValues(values, entry.evidence, capturedPages);
   // Against the reviewed values, not the published ones: a value withheld this run is still a value.
   const absences = checkAbsences(entry.notPublished ?? [], values, capturedPages);
+  const site = checkWebsite(entry.website, capturedPages);
   return {
     values: checked.values,
     evidence: { source_urls: checked.sourceUrls, withheld: checked.withheld,
-      not_published: absences.confirmed, absence_issues: absences.issues },
+      not_published: absences.confirmed, absence_issues: absences.issues,
+      ...(site.confirmed ? { website: site.confirmed } : {}),
+      ...(site.issue ? { website_issue: site.issue } : {}) },
   };
 }
 

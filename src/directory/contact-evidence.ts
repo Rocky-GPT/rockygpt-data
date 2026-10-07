@@ -380,3 +380,37 @@ export function checkAbsences(claims: readonly AbsenceClaim[], values: ContactVa
     issues,
   };
 }
+
+/**
+ * A reviewed website: the office's own ramapo.edu page, held to two checks. It must be a plain
+ * https page of ramapo.edu or www.ramapo.edu (no other host, no sign-in, port, query or fragment),
+ * and this run's capture must have loaded it. Whether the page is the office's own is the reviewer's
+ * call; publication only keeps a link that is the college's and that works.
+ */
+export interface ConfirmedWebsite {
+  url: string;
+  /** When this run captured the page. */
+  checked_at: string;
+}
+
+export interface WebsiteIssue { url: string; reason: string }
+
+export function checkWebsite(url: string | undefined,
+  pages: ReadonlyMap<string, CapturedPage>): { confirmed?: ConfirmedWebsite; issue?: WebsiteIssue } {
+  if (url === undefined) return {};
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return { issue: { url, reason: 'Not a URL.' } };
+  }
+  const host = parsed.hostname.toLowerCase();
+  if (parsed.protocol !== 'https:' || (host !== 'ramapo.edu' && host !== 'www.ramapo.edu')
+    || parsed.username || parsed.password || parsed.port || parsed.search || parsed.hash
+    || url !== parsed.href) {
+    return { issue: { url, reason: 'Not a plain https page of ramapo.edu.' } };
+  }
+  const captured = pages.get(pageKey(url));
+  if (!captured) return { issue: { url, reason: 'This run did not capture the page.' } };
+  return { confirmed: { url, checked_at: captured.fetchedAt } };
+}
