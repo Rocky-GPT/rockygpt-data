@@ -6,7 +6,7 @@
  * search-index shape consumed by the directory API and modal UI.
  */
 
-import type { AbsenceClaim, ContactEvidence, ReviewedContactAddition, ReviewedContactNote } from './contact-evidence';
+import type { AbsenceClaim, ContactEvidence, ReviewedContactAddition, ReviewedContactNote, ReviewedContactExclusion } from './contact-evidence';
 
 /**
  * Top-level directory buckets shown in the directory modal and API response.
@@ -32,6 +32,9 @@ export interface OfficeDirectoryContact {
   websiteEvidence?: Pick<ContactEvidence, 'url' | 'section'>;
   additionalContacts?: ReviewedContactAddition[];
   contactNotes?: ReviewedContactNote[];
+  /** Different same-purpose values are kept as conflicting observations, not interchangeable contacts. */
+  contactConflicts?: ReviewedContactAddition[];
+  contactReviewExclusions?: ReviewedContactExclusion[];
   helpsWith: string[];
   /** The page sections that state this office's phone, email and office. */
   evidence: ContactEvidence[];

@@ -29,3 +29,32 @@ review is requested. This is a source-data review command, not a code test suite
 Publication retains those diagnostics without making potentially unrelated staff, fax,
 resource-list or footer values into office facts. Named places, PDF-only details and pages
 outside the bounded scan still require manual review.
+
+The completed 34-office review is retained in
+`src/reference/office-contact-review.json` and saved with each release. Publication
+stops when one of these reviewed offices has a withheld value, an unconfirmed absence,
+a missing source section, an unreviewed discovery or a changed exclusion. It does not
+assign newly discovered values automatically.
+
+Reviewed exclusions in `contactReviewExclusions` name the field, value, source section,
+reason and exact section-text SHA256. A changed section invalidates the decision. Missing
+fields also retain their scope, reason, source capture time and reviewed text hash. A
+missing shared mailbox can coexist with checked, labelled staff addresses; a staff
+address never becomes the general mailbox. A `contactConflicts` assertion is checked like
+an addition but remains a separate conflicting assertion in the canonical fact reader.
+
+Preferences require explicit ranking. “Email us with payroll questions” is an instruction,
+not evidence that email is universally preferred. A missing preference is reviewed and
+stored as not published; it is never defaulted to false.
+
+PDF-only contacts use `fetch:reviewed-contact-documents`. Original PDF bytes, hash,
+requested/final URL and capture time are archived alongside extracted `PDF text` sections.
+`normalize:reviewed-contact-documents` replays those bytes without new network requests or
+capture times. External Athletics and Valley clinic evidence is accepted only through
+its narrowly checked college referral, not by treating arbitrary external sites as campus
+authorities.
+
+`src/reference/office-hours-review.json` separately binds reviewed missing weekdays and
+validity dates to exact captured schedule sections. An omitted weekday is not “Closed”,
+and an undated Summer schedule does not establish today's hours. Conflicting published
+schedules remain conflicting.

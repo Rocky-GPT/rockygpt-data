@@ -80,6 +80,8 @@ export const RELEASE_ARTIFACT_TARGETS: Readonly<Record<string, readonly string[]
   events: ['public/data/events.json', 'data/normalized/events.json'],
   hours: ['public/data/hours.json', 'data/normalized/hours.json'],
   'hours-omissions': ['data/normalized/hours-omissions.json'],
+  'office-contact-review': ['src/reference/office-contact-review.json'],
+  'office-hours-review': ['src/reference/office-hours-review.json'],
   programs: ['public/data/programs.json', 'data/normalized/programs.json'],
   'graduation-plans': ['public/data/graduation-plans.json'],
   'major-pages': ['public/data/major-pages.json'],
@@ -158,7 +160,8 @@ function validatedArtifactMap(
   const byKey = new Map(artifacts.map((artifact) => [artifact.key, artifact.payload]));
   // Legacy releases predate the omission manifest. Restore them so the
   // compatibility/provenance checks can request a fresh hours collection.
-  const missing = Object.keys(RELEASE_ARTIFACT_TARGETS).filter((key) => key !== 'hours-omissions' && !byKey.has(key));
+  const missing = Object.keys(RELEASE_ARTIFACT_TARGETS).filter((key) =>
+    !['hours-omissions', 'office-contact-review', 'office-hours-review'].includes(key) && !byKey.has(key));
   if (missing.length) {
     throw new Error(
       `Active release is missing required release artifact(s): ${missing.join(', ')}.`

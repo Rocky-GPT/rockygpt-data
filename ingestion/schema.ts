@@ -124,6 +124,14 @@ export interface ArchwayClub {
 export const HOURS_AVAILABILITY_ISSUES = ['conflicting-source-validity', 'conflicting-source-schedules',
   'ambiguous-source-season', 'source-update-only', 'missing-schedule', 'unverified-hours'] as const;
 
+export interface ReviewedHoursAbsence {
+  field: 'weekday_hours' | 'valid_from' | 'valid_until';
+  days?: string[];
+  scope: string;
+  reason: string;
+  checks: Array<{ url: string; section: string; checked_at: string; html_sha256: string }>;
+}
+
 export interface LocationHours {
   name: string;
   hours: Record<string, string>;
@@ -142,6 +150,7 @@ export interface LocationHours {
         status?: 'unknown' | 'conflicting';
         reason?: string;
         source_statements?: string[];
+        not_published?: ReviewedHoursAbsence[];
       };
     };
   };
@@ -523,6 +532,41 @@ export function validateCampusHours(input: unknown): LocationHours[] {
       if (typeof schedule.reason === 'string') value.reason = schedule.reason;
       if (Array.isArray(schedule.source_statements) && schedule.source_statements.every(item => typeof item === 'string')) {
         value.source_statements = schedule.source_statements;
+      }
+      if (schedule.not_published !== undefined) {
+        const claims = schedule.not_published;
+        const fields = new Set<string>();
+        if (!Array.isArray(claims) || claims.length > 3) throw new Error(`Invalid reviewed hours omissions: ${name}`);
+        value.not_published = claims.map(claim => {
+          if (!isRecord(claim) || !['weekday_hours', 'valid_from', 'valid_until'].includes(String(claim.field))
+            || fields.has(String(claim.field)) || typeof claim.scope !== 'string' || !claim.scope.trim() || claim.scope.length > 1000
+            || typeof claim.reason !== 'string' || !claim.reason.trim() || claim.reason.length > 2000
+            || !Array.isArray(claim.checks) || !claim.checks.length || claim.checks.length > 16) {
+            throw new Error(`Invalid reviewed hours omission: ${name}`);
+          }
+          fields.add(String(claim.field));
+          const field = claim.field as ReviewedHoursAbsence['field'];
+          let days: string[] | undefined;
+          if (field === 'weekday_hours') {
+            if (!Array.isArray(claim.days) || !claim.days.length || claim.days.length > 7
+              || new Set(claim.days).size !== claim.days.length
+              || claim.days.some(day => typeof day !== 'string' || !['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].includes(day))) {
+              throw new Error(`Invalid reviewed missing weekdays: ${name}`);
+            }
+            days = claim.days as string[];
+          } else if (claim.days !== undefined) throw new Error(`Validity omission cannot name weekdays: ${name}`);
+          const checks = claim.checks.map(check => {
+            if (!isRecord(check) || typeof check.url !== 'string' || !/^https:\/\//.test(check.url)
+              || typeof check.section !== 'string' || !check.section.trim() || check.section.length > 300
+              || typeof check.checked_at !== 'string' || !Number.isFinite(Date.parse(check.checked_at))
+              || !/(?:Z|[+-]\d\d:\d\d)$/.test(check.checked_at)
+              || typeof check.html_sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(check.html_sha256)) {
+              throw new Error(`Invalid reviewed hours source check: ${name}`);
+            }
+            return { url: check.url, section: check.section, checked_at: check.checked_at, html_sha256: check.html_sha256 };
+          });
+          return { field, ...(days ? { days } : {}), scope: claim.scope, reason: claim.reason, checks };
+        });
       }
       normalized.normalization_metadata = { evidence: { schedule: value } };
     }

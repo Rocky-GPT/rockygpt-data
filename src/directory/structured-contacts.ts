@@ -22,8 +22,10 @@ import {
   type ContactValues,
   type ConfirmedContactAddition,
   type ConfirmedContactNote,
+  type AbsenceValues,
   type ReviewedContactAddition,
   type ReviewedContactNote,
+  type ReviewedContactExclusion,
   type WebsiteIssue,
   type WithheldContactValue,
 } from './contact-evidence';
@@ -65,6 +67,7 @@ export interface StructuredDirectoryContact extends ContactRecord {
     contact_note_issues?: Array<{ text: string; reason: string }>;
     /** Unreviewed discoveries are diagnostic metadata, never attribute evidence. */
     contact_review?: ContactCoverageReport;
+    contact_conflicts?: ConfirmedContactAddition[];
   };
 }
 
@@ -190,7 +193,8 @@ export function normalizePhoneNumber(phone: string | undefined | null): string |
  * the values a cited page section states; without them (file mode), the reviewed values.
  */
 function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; notPublished?: AbsenceClaim[]; website?: string;
-  websiteEvidence?: Pick<ContactEvidence, 'url' | 'section'>; additionalContacts?: ReviewedContactAddition[]; contactNotes?: ReviewedContactNote[] },
+  websiteEvidence?: Pick<ContactEvidence, 'url' | 'section'>; additionalContacts?: ReviewedContactAddition[]; contactNotes?: ReviewedContactNote[];
+  contactConflicts?: ReviewedContactAddition[]; contactReviewExclusions?: ReviewedContactExclusion[]; department?: string },
   capturedPages: ReadonlyMap<string, CapturedPage> | undefined): {
   values: ContactValues; evidence?: StructuredDirectoryContact['evidence'];
   additions: Array<Pick<ConfirmedContactAddition, 'field' | 'value' | 'label'>>; notes: string[];
@@ -199,20 +203,29 @@ function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; no
   if (!capturedPages) return { values, additions: entry.additionalContacts ?? [], notes: (entry.contactNotes ?? []).map(note => note.text) };
   const checked = checkContactValues(values, entry.evidence, capturedPages);
   // Against the reviewed values, not the published ones: a value withheld this run is still a value.
-  const allReviewedValues = { ...values };
-  for (const item of entry.additionalContacts ?? []) allReviewedValues[item.field] ||= item.value;
-  const absences = checkAbsences(entry.notPublished ?? [], allReviewedValues, capturedPages);
   const site = checkWebsite(entry.website, capturedPages, entry.websiteEvidence);
   const additions = checkContactAdditions(entry.additionalContacts ?? [], capturedPages);
+  const conflicts = checkContactAdditions(entry.contactConflicts ?? [], capturedPages);
   const notes = checkContactNotes(entry.contactNotes ?? [], capturedPages);
+  const allReviewedValues: AbsenceValues = { ...values, department: entry.department };
+  // A named staff/service address is not a shared office mailbox. Phones and rooms are
+  // arrays, so their additional values do contradict a claim that no value is published.
+  for (const item of entry.additionalContacts ?? []) if (item.field !== 'email') allReviewedValues[item.field] ||= item.value;
+  const normalized = parseAndNormalizePhone(values.phone);
+  allReviewedValues.prefers_email = normalized.prefers_email;
+  allReviewedValues.preferred_contact = normalized.preferred_contact;
+  allReviewedValues.contact_note = [normalized.contact_note, ...notes.confirmed.map(note => note.text),
+    ...additions.confirmed.filter(item => item.field === 'email').map(item => `${item.label}: ${item.value}`)].filter(Boolean).join('\n');
+  const absences = checkAbsences(entry.notPublished ?? [], allReviewedValues, capturedPages, site.confirmed, additions.confirmed);
   return {
     values: checked.values,
     additions: additions.confirmed, notes: notes.confirmed.map(note => note.text),
-    evidence: { source_urls: [...new Set([...checked.sourceUrls, ...additions.confirmed.map(item => item.url), ...notes.confirmed.map(item => item.url)])],
-      withheld: [...checked.withheld, ...additions.withheld],
+    evidence: { source_urls: [...new Set([...checked.sourceUrls, ...additions.confirmed.map(item => item.url), ...conflicts.confirmed.map(item => item.url), ...notes.confirmed.map(item => item.url)])],
+      withheld: [...checked.withheld, ...additions.withheld, ...conflicts.withheld],
       not_published: absences.confirmed, absence_issues: absences.issues,
       additional_contacts: additions.confirmed, contact_notes: notes.confirmed, contact_note_issues: notes.issues,
       contact_review: reviewContactCoverage(entry, capturedPages),
+      contact_conflicts: conflicts.confirmed,
       ...(site.confirmed ? { website: site.confirmed } : {}),
       ...(site.issue ? { website_issue: site.issue } : {}) },
   };
