@@ -37,6 +37,7 @@
     "fetch:map:ids": "tsx ingestion/campus-map-ids.ts",
     "fetch:transportation:raw": "tsx ingestion/transportation-raw.ts",
     "fetch:directory:raw": "tsx ingestion/directory-raw.ts",
+    "fetch:reviewed-contacts": "tsx ingestion/reviewed-contacts-raw.ts",
     "fetch:housing:raw": "tsx ingestion/housing-raw.ts",
     "fetch:health:raw": "tsx ingestion/health-raw.ts",
     "fetch:counseling:raw": "tsx ingestion/counseling-raw.ts",

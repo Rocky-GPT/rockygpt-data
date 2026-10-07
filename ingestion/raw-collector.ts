@@ -196,7 +196,11 @@ function textWithLinks($: ReturnType<typeof load>, element: AnyNode, baseUrl: st
   const copy = $(element).clone();
   copy.find('a[href]').addBack('a[href]').each((_, anchor) => {
     const link = $(anchor);
-    const resolved = resolveHttpUrl(link.attr('href') || '', baseUrl, true);
+    const href = link.attr('href') || '';
+    // Retain literal contact destinations beside their labels. A label and mailto
+    // target can differ; discarding the target loses that original evidence.
+    const contact = /^(?:mailto|tel|sms):/i.test(href) ? href.split('?')[0] : null;
+    const resolved = contact || resolveHttpUrl(href, baseUrl, true);
     if (!resolved) return;
     const label = cleanText(link.text()) || cleanText(link.attr('aria-label') || link.attr('title')
       || link.find('img[alt]').first().attr('alt') || '');
@@ -551,6 +555,20 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
   // useful crawl discovery above, but should not be asserted as page prose.
   $('#left-nav-ul, ul.subnav, #breadcrumbs').remove();
 
+  const sections = extractSections($, options.url, initialHeading);
+  // Potter Library's named research-help contact widget sits beside the article.
+  // Keep that office-owned contact block without importing the site's navigation
+  // or unrelated sidebar schedules into the article's evidence.
+  const pageUrl = new URL(options.url);
+  if (['ramapo.edu', 'www.ramapo.edu'].includes(pageUrl.hostname) && pageUrl.pathname.startsWith('/library/')) {
+    document('.page_in_widget').each((_, element) => {
+      const heading = cleanText(document(element).find('.widgettitle').first().text());
+      if (heading !== 'Ask a Librarian' || sections.some(section => section.heading === heading)) return;
+      const widget = load(document(element).html() || '');
+      sections.push(...extractSections(widget, options.url, heading));
+    });
+  }
+
   return {
     url: normalizeUrl(options.url),
     sourceType: options.sourceType,
@@ -559,7 +577,7 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
     title,
     links: asSortedArray(links),
     externalLinks: asSortedArray(externalLinks),
-    sections: extractSections($, options.url, initialHeading),
+    sections,
     lists: extractLists($, options.url),
     tables: extractTables($, options.url),
     contacts: extractContacts($),

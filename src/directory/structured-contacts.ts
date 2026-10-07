@@ -5,10 +5,12 @@ import {
   OTHER_DIRECTORY_CONTACTS,
 } from './static-contacts';
 import { parseAndNormalizePhone } from './phone-normalizer';
-import { normalizeContactFields, reviewContacts } from './contact-normalizer';
+import { formatOffices, normalizeContactFields, reviewContacts } from './contact-normalizer';
 import {
   checkAbsences,
   checkContactValues,
+  checkContactAdditions,
+  checkContactNotes,
   checkWebsite,
   type AbsenceClaim,
   type AbsenceIssue,
@@ -17,6 +19,10 @@ import {
   type ConfirmedWebsite,
   type ContactEvidence,
   type ContactValues,
+  type ConfirmedContactAddition,
+  type ConfirmedContactNote,
+  type ReviewedContactAddition,
+  type ReviewedContactNote,
   type WebsiteIssue,
   type WithheldContactValue,
 } from './contact-evidence';
@@ -53,6 +59,9 @@ export interface StructuredDirectoryContact extends ContactRecord {
     website?: ConfirmedWebsite;
     /** A reviewed website this run could not keep (not a ramapo.edu page, or not captured). */
     website_issue?: WebsiteIssue;
+    additional_contacts?: ConfirmedContactAddition[];
+    contact_notes?: ConfirmedContactNote[];
+    contact_note_issues?: Array<{ text: string; reason: string }>;
   };
 }
 
@@ -177,20 +186,29 @@ export function normalizePhoneNumber(phone: string | undefined | null): string |
  * A reviewed contact's phone, email and office. With this run's captured pages, only
  * the values a cited page section states; without them (file mode), the reviewed values.
  */
-function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; notPublished?: AbsenceClaim[]; website?: string },
+function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; notPublished?: AbsenceClaim[]; website?: string;
+  websiteEvidence?: Pick<ContactEvidence, 'url' | 'section'>; additionalContacts?: ReviewedContactAddition[]; contactNotes?: ReviewedContactNote[] },
   capturedPages: ReadonlyMap<string, CapturedPage> | undefined): {
   values: ContactValues; evidence?: StructuredDirectoryContact['evidence'];
+  additions: Array<Pick<ConfirmedContactAddition, 'field' | 'value' | 'label'>>; notes: string[];
 } {
   const values = { phone: entry.phone, email: entry.email, office: entry.office };
-  if (!capturedPages) return { values };
+  if (!capturedPages) return { values, additions: entry.additionalContacts ?? [], notes: (entry.contactNotes ?? []).map(note => note.text) };
   const checked = checkContactValues(values, entry.evidence, capturedPages);
   // Against the reviewed values, not the published ones: a value withheld this run is still a value.
-  const absences = checkAbsences(entry.notPublished ?? [], values, capturedPages);
-  const site = checkWebsite(entry.website, capturedPages);
+  const allReviewedValues = { ...values };
+  for (const item of entry.additionalContacts ?? []) allReviewedValues[item.field] ||= item.value;
+  const absences = checkAbsences(entry.notPublished ?? [], allReviewedValues, capturedPages);
+  const site = checkWebsite(entry.website, capturedPages, entry.websiteEvidence);
+  const additions = checkContactAdditions(entry.additionalContacts ?? [], capturedPages);
+  const notes = checkContactNotes(entry.contactNotes ?? [], capturedPages);
   return {
     values: checked.values,
-    evidence: { source_urls: checked.sourceUrls, withheld: checked.withheld,
+    additions: additions.confirmed, notes: notes.confirmed.map(note => note.text),
+    evidence: { source_urls: [...new Set([...checked.sourceUrls, ...additions.confirmed.map(item => item.url), ...notes.confirmed.map(item => item.url)])],
+      withheld: [...checked.withheld, ...additions.withheld],
       not_published: absences.confirmed, absence_issues: absences.issues,
+      additional_contacts: additions.confirmed, contact_notes: notes.confirmed, contact_note_issues: notes.issues,
       ...(site.confirmed ? { website: site.confirmed } : {}),
       ...(site.issue ? { website_issue: site.issue } : {}) },
   };
@@ -206,21 +224,39 @@ export function buildStructuredDirectoryContacts(
   capturedPages?: ReadonlyMap<string, CapturedPage>
 ): StructuredDirectoryContact[] {
   const offices: StructuredDirectoryContact[] = OFFICE_DIRECTORY_CONTACTS.map((entry) => {
-    const { values, evidence } = reviewedValues(entry, capturedPages);
+    const { values, evidence, additions, notes } = reviewedValues(entry, capturedPages);
     const normalized = parseAndNormalizePhone(values.phone);
+    const phones = [...normalized.phones];
+    const locations: NonNullable<ContactRecord['offices']> = values.office ? [values.office] : [];
+    for (const item of additions) {
+      if (item.field === 'phone') {
+        for (const phone of parseAndNormalizePhone(item.value).phones) {
+          const existing = phones.findIndex(value => value.number === phone.number && value.extension === phone.extension);
+          const scoped = { ...phone, type: item.label };
+          if (existing < 0) phones.push(scoped); else phones[existing] = scoped;
+        }
+      } else if (item.field === 'office') {
+        const existing = locations.findIndex(value => typeof value === 'string' && value === item.value);
+        const scoped = { location: item.value, label: item.label };
+        if (existing < 0) locations.push(scoped); else locations[existing] = scoped;
+      } else {
+        notes.push(`${item.label}: ${item.value}`);
+      }
+    }
     return {
       name: entry.name,
       type: 'office',
       department: entry.department,
       phone: normalized.phone || undefined,
-      phones: normalized.phones,
+      phones,
       preferred_contact: normalized.preferred_contact || undefined,
-      contact_note: normalized.contact_note || undefined,
+      contact_note: [normalized.contact_note, ...notes].filter(Boolean).join('\n') || undefined,
       prefers_email: normalized.prefers_email,
       raw_phone: normalized.raw_phone || undefined,
-      phone_normalization_status: normalized.phone_normalization_status,
+      phone_normalization_status: phones.length > 1 ? 'multi_phone' : normalized.phone_normalization_status,
       email: values.email,
       office: values.office,
+      offices: locations,
       source: V2_SOURCES.directory,
       searchable: [entry.name, entry.department, values.office, ...entry.helpsWith]
         .filter(Boolean)
@@ -263,7 +299,7 @@ export function buildStructuredDirectoryContacts(
       ...fields,
       title: fields.title,
       department: fields.department,
-      office: fields.offices?.join(' / '),
+      office: formatOffices(fields.offices),
       normalization_metadata: {
         version: 1,
         raw_fields: { name: contact.name, title: contact.title, department: contact.department, office: contact.office },

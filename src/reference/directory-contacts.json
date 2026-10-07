@@ -90,6 +90,22 @@
             "office"
           ]
         }
+      ],
+      "additionalContacts": [
+        {
+          "field": "email",
+          "value": "registrar@ramapo.edu",
+          "label": "E-mail",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/registrar/",
+              "section": "Contact Information:",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -141,6 +157,51 @@
             "office"
           ]
         }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-7379",
+          "label": "Contact Us",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/asb/",
+              "section": "Contact Us",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 684-7380",
+          "label": "Contact Us",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/asb/",
+              "section": "Contact Us",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 684-7378",
+          "label": "General Phone Number Listing",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/about/phone/",
+              "section": "General Phone Number Listing",
+              "near": "Anisfield School of Business - ",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -165,6 +226,22 @@
             "email",
             "office"
           ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "Appointments can be made through email at finaid@ramapo.edu or through our chat located on our website.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/finaid/",
+            "section": "Schedule an Appointment & Discuss Financial Hardships or Change in Family Circumstances"
+          }
+        },
+        {
+          "text": "However, we are confident that most questions can be handled without in-person visits via a phone call, a Webex meeting or email.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/finaid/",
+            "section": "Schedule an Appointment & Discuss Financial Hardships or Change in Family Circumstances"
+          }
         }
       ]
     },
@@ -248,6 +325,15 @@
             }
           ]
         }
+      ],
+      "contactNotes": [
+        {
+          "text": "Appointments can be made by calling 201-684-7536 or through VMG’s Save Your Spot service. Drop-in visits are always welcome.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/",
+            "section": "Official Announcement: Health Services at Ramapo College"
+          }
+        }
       ]
     },
     {
@@ -269,6 +355,26 @@
           "fields": [
             "phone",
             "office"
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "To learn more about our services or to schedule an appointment, please visit us in the Academic Building D, Room 216, or call our office at (201) 684-7522.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/counseling/",
+            "section": "Connect With Us"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "email",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/counseling/",
+              "section": "Connect With Us"
+            }
           ]
         }
       ]
@@ -311,17 +417,12 @@
       ],
       "evidence": [
         {
-          "url": "https://www.ramapo.edu/homecoming/",
-          "section": "Center for Student Involvement",
+          "url": "https://www.ramapo.edu/csi/",
+          "section": "Contacts",
+          "near": "Main Office",
           "fields": [
             "phone",
-            "email"
-          ]
-        },
-        {
-          "url": "https://www.ramapo.edu/csi/roadrunner-central/",
-          "section": "Hours of Operation:",
-          "fields": [
+            "email",
             "office"
           ]
         }
@@ -345,7 +446,12 @@
             "phone"
           ]
         }
-      ]
+      ],
+      "website": "https://ramapoathletics.com/",
+      "websiteEvidence": {
+        "url": "https://catalog.ramapo.edu/quicklinks/studentservices",
+        "section": "Directory of Student Services"
+      }
     },
     {
       "name": "Library",
@@ -383,7 +489,68 @@
         }
       ],
       "office": "Peter P. Mercer Learning Commons",
-      "website": "https://www.ramapo.edu/library/"
+      "website": "https://www.ramapo.edu/library/",
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-7574",
+          "label": "Ask a Librarian",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/library/library-hours/",
+              "section": "Ask a Librarian",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 425-0095",
+          "label": "SMS",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/library/library-hours/",
+              "section": "Ask a Librarian",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "email",
+          "value": "refdesk@ramapo.edu",
+          "label": "Research Help Services",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/library/",
+              "section": "Library News",
+              "near": "Research Help Services",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "If chat is not online, please feel free to email refdesk@ramapo.edu and we will respond as soon as possible.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/library/",
+            "section": "Library News"
+          }
+        },
+        {
+          "text": "Please note that the front doors will be locked fifteen minutes before closing time. Circulation services will also cease at that time to give the staff a chance to perform proper closing procedures.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/library/library-hours/",
+            "section": "Library Hours"
+          }
+        }
+      ]
     },
     {
       "name": "Student Accounts",
@@ -401,7 +568,7 @@
       "evidence": [
         {
           "url": "https://www.ramapo.edu/student-accounts/",
-          "section": "To schedule a personal appointment, please email studentaccts@ramapo.edu and include “Requesting Appointment” in the subject line.",
+          "section": "To schedule a personal appointment, please email studentaccts@ramapo.edu (mailto:studentaccts@ramapo.edu) and include “Requesting Appointment” in the subject line.",
           "fields": [
             "phone",
             "email",
@@ -415,6 +582,15 @@
             "phone",
             "email"
           ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "To schedule a personal appointment, please email studentaccts@ramapo.edu and include “Requesting Appointment” in the subject line.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/student-accounts/",
+            "section": "To schedule a personal appointment, please email studentaccts@ramapo.edu (mailto:studentaccts@ramapo.edu) and include “Requesting Appointment” in the subject line."
+          }
         }
       ]
     },
@@ -466,6 +642,68 @@
             "office"
           ]
         }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-7444",
+          "label": "Main Office",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/careercenter/",
+              "section": "Contact and Hours of Operation",
+              "near": "Main Office",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 684-7675",
+          "label": "ASB Office",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/careercenter/",
+              "section": "Contact and Hours of Operation",
+              "near": "ASB Office",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "office",
+          "value": "C-209",
+          "label": "Main Office",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/careercenter/",
+              "section": "Contact and Hours of Operation",
+              "near": "Main Office",
+              "fields": [
+                "office"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "office",
+          "value": "ASB-513",
+          "label": "ASB Office",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/careercenter/",
+              "section": "Contact and Hours of Operation",
+              "near": "ASB Office",
+              "fields": [
+                "office"
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -496,6 +734,15 @@
             "email",
             "office"
           ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "Appointments with OSS Advisors can be made through Connect.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/oss/",
+            "section": "Welcome to the Office of Specialized Services"
+          }
         }
       ]
     },
@@ -547,6 +794,15 @@
             "office"
           ]
         }
+      ],
+      "contactNotes": [
+        {
+          "text": "For current students, please get in touch with your EOF Advisor or make an appointment in Connect. For general questions, please call our office or email us.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/eof-program/",
+            "section": "EOF Services"
+          }
+        }
       ]
     },
     {
@@ -594,6 +850,46 @@
             "phone",
             "office"
           ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-7561",
+          "label": "Summer",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/crw/",
+              "section": "Peter P. Mercer Learning Commons | Room 420 (4th floor)",
+              "near": "Summer:",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "email",
+          "value": "crw@ramapo.edu",
+          "label": "Writing Intensive Courses",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/fa/arc/college-wide-policies-courses/",
+              "section": "College-Wide Policies for All Courses",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "To make an appointment, click on Schedule an Appointment here or on the CRW homepage. Select the day and time, and whether you want an in-person or an online session. Appointments can be scheduled up to one hour before the requested time.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/crw/schedules/",
+            "section": "Schedule an Appointment"
+          }
         }
       ]
     },
@@ -735,6 +1031,15 @@
             "phone"
           ]
         }
+      ],
+      "contactNotes": [
+        {
+          "text": "If you have any questions regarding payroll, please e-mail us at payroll@ramapo.edu. Questions will be answered within 24 hours.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/payroll/",
+            "section": "Staff:"
+          }
+        }
       ]
     },
     {
@@ -748,25 +1053,33 @@
       ],
       "evidence": [
         {
-          "url": "https://www.ramapo.edu/berriecenter/",
-          "section": "Upcoming Events",
-          "near": "contact the Box Office",
-          "fields": [
-            "phone",
-            "email"
-          ]
-        },
-        {
           "url": "https://www.ramapo.edu/berriecenter/tickets-seating/",
           "section": "Three convenient ways to purchase tickets:",
-          "near": "Box Office located on",
           "fields": [
+            "phone",
+            "email",
             "office"
           ]
         }
       ],
       "office": "first floor of the Berrie Center for Performing and Visual Arts",
-      "website": "https://www.ramapo.edu/berriecenter/"
+      "website": "https://www.ramapo.edu/berriecenter/",
+      "contactNotes": [
+        {
+          "text": "NOTE: RCNJ Students, Faculty, and Staff MUST purchase tickets at the Berrie Center Box Office in order to receive discounted tickets. Discounts will not be processed over the phone.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/berriecenter/tickets-seating/",
+            "section": "Three convenient ways to purchase tickets:"
+          }
+        },
+        {
+          "text": "To purchase wheelchair accessible seating or for questions regarding alternative formats, please contact the Box Office at (201) 684-7844 or tickets@ramapo.edu",
+          "evidence": {
+            "url": "https://www.ramapo.edu/berriecenter/tickets-seating/",
+            "section": "Seating Chart with Tiers"
+          }
+        }
+      ]
     },
     {
       "name": "Photography Lab",
@@ -789,6 +1102,15 @@
             "email",
             "office"
           ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "Use of the Darkroom, including film and print processing, and the Digital Print Lab does not require reservations. Students should make reservations for The Lighting Studio (BC 140A).",
+          "evidence": {
+            "url": "https://www.ramapo.edu/photolab/hours/",
+            "section": "OPEN LAB HOURS"
+          }
         }
       ]
     },
@@ -831,7 +1153,33 @@
           ]
         }
       ],
-      "website": "https://www.ramapo.edu/ombuds/"
+      "website": "https://www.ramapo.edu/ombuds/",
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(202) 421-1881",
+          "label": "Cell",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ombuds/",
+              "section": "Contacts",
+              "near": "Cell:",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "Meeting locations can vary depending on the preference and needs of inquirers that elect to use this service.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/ombuds/services/",
+            "section": "Consultation"
+          }
+        }
+      ]
     },
     {
       "name": "Environmental Health and Safety",
@@ -844,10 +1192,17 @@
       ],
       "evidence": [
         {
-          "url": "https://www.ramapo.edu/ehs/construction-safety-program/",
-          "section": "Related College Applications>",
+          "url": "https://www.ramapo.edu/ehs/",
+          "section": "Contacts",
+          "near": "Evan Kutzin",
           "fields": [
-            "phone",
+            "phone"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/ehs/stormwater/watershed/",
+          "section": "Public Information Sessions",
+          "fields": [
             "email"
           ]
         },
@@ -870,6 +1225,62 @@
               "section": "Contacts"
             }
           ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-6252",
+          "label": "Fire Marshal",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ehs/",
+              "section": "Contacts",
+              "near": "Evan Kutzin",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 684-7531",
+          "label": "Director of Environmental Health & Safety",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ehs/",
+              "section": "Contacts",
+              "near": "Gina Mayer-Costa",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 684-7614",
+          "label": "Fire and Safety Specialist",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ehs/",
+              "section": "Contacts",
+              "near": "Samuel Antoshak",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "Please contact EHS at ehs@ramapo.edu for more information on any of the below information sessions.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/ehs/stormwater/watershed/",
+            "section": "Public Information Sessions"
+          }
         }
       ]
     },
@@ -900,6 +1311,23 @@
             {
               "url": "https://www.ramapo.edu/nursing/",
               "section": "Nursing Programs Contact Information:"
+            }
+          ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-6768",
+          "label": "General Phone Number Listing",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/about/phone/",
+              "section": "General Phone Number Listing",
+              "near": "Nursing Program - ",
+              "fields": [
+                "phone"
+              ]
             }
           ]
         }
@@ -958,7 +1386,32 @@
           ]
         }
       ],
-      "website": "https://www.ramapo.edu/igg/"
+      "website": "https://www.ramapo.edu/igg/",
+      "contactNotes": [
+        {
+          "text": "For questions about the program, application deadlines, or schedule, please contact IGG Certificate Program Director Monique Platt by emailing mplatt1@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/igg/certificate-program/",
+            "section": "Contact"
+          }
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "email",
+          "value": "iggcm@ramapo.edu",
+          "label": "How to upload to GEDmatch:",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/igg/outreach/",
+              "section": "How to upload to GEDmatch:",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "ENHANCE Program",
@@ -1022,6 +1475,15 @@
             "email",
             "office"
           ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "In order to get a new identification card, please contact the ID room at publicsafety@ramapo.edu and make an appointment.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/publicsafety/id-cards/",
+            "section": "New ID Cards"
+          }
         }
       ]
     },

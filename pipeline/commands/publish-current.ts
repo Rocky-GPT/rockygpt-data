@@ -215,24 +215,27 @@ async function insertStructured(
   // library hours answered an August question.
   const campusHours = readJson<
     Array<{ name: string; hours: Record<string, string>; notes?: string;
-      collectedAt?: string; sourceUrl?: string; validFrom?: string; validUntil?: string }>
+      collectedAt?: string; sourceUrl?: string; validFrom?: string; validUntil?: string;
+      normalization_metadata?: { evidence?: { schedule?: { season?: string } } } }>
   >('data/normalized/hours.json');
   for (const location of campusHours) {
     const { window } = recordValidity(location);
-    const validFrom = window?.validFrom || null;
-    const validUntil = window?.validUntil || null;
+    const validFrom = location.validFrom || window?.validFrom || null;
+    const validUntil = location.validUntil || window?.validUntil || null;
     for (const [day, schedule] of Object.entries(location.hours || {})) {
       const recordKey = `${location.name}:${day}`;
       const hours = normalizeOpeningHours(schedule);
       await client.query(
         `INSERT INTO rockygpt_v2.campus_hours
          (dataset_version_id, source_id, source_record_key, name, day, schedule, collected_at,
-          valid_from, valid_until, content_hash, hours, notes, source_url)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12,$13)`,
+          valid_from, valid_until, content_hash, hours, notes, source_url, normalization_metadata)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12,$13,$14::jsonb)`,
         [datasetId, sources.get('campus-hours'), recordKey, location.name, day, schedule, location.collectedAt || collectedAtFor('campus-hours'),
           validFrom, validUntil,
-          sha256(JSON.stringify({ recordKey, schedule, validFrom, validUntil, notes: location.notes, sourceUrl: location.sourceUrl })),
-          hours === null ? null : JSON.stringify(hours), location.notes || null, location.sourceUrl || null]
+          sha256(JSON.stringify({ recordKey, schedule, validFrom, validUntil, notes: location.notes,
+            sourceUrl: location.sourceUrl, normalization_metadata: location.normalization_metadata })),
+          hours === null ? null : JSON.stringify(hours), location.notes || null, location.sourceUrl || null,
+          JSON.stringify(location.normalization_metadata ?? {})]
       );
       counts.campus_hours = (counts.campus_hours || 0) + 1;
     }

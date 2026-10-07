@@ -34,6 +34,27 @@ export interface ContactEvidence {
 export interface CapturedSection { heading: string; text: string }
 export interface CapturedPage { url: string; fetchedAt: string; sections: CapturedSection[] }
 
+/** A second contact stays tied to its published service or staff role. */
+export interface ReviewedContactAddition {
+  field: ContactField;
+  value: string;
+  label: string;
+  evidence: ContactEvidence[];
+}
+
+export interface ReviewedContactNote {
+  /** A verbatim sentence or phrase, checked against the cited captured section. */
+  text: string;
+  evidence: Pick<ContactEvidence, 'url' | 'section' | 'near'>;
+}
+
+export interface ConfirmedContactAddition {
+  field: ContactField; value: string; label: string; url: string; section: string; checked_at: string;
+}
+export interface ConfirmedContactNote {
+  text: string; url: string; section: string; checked_at: string;
+}
+
 export type ContactValues = Partial<Record<ContactField, string>>;
 
 export interface WithheldContactValue { field: ContactField; value: string; reason: string }
@@ -95,6 +116,11 @@ export function loadCapturedPages(rawDir = path.join(process.cwd(), 'data', 'raw
 }
 
 const collapse = (value: string) => value.replace(/\s+/g, ' ').trim();
+// The collector annotates link labels with their literal destination. Notes quote
+// the visible sentence; the target remains in the captured evidence and value checks.
+const visibleText = (value: string) => collapse(value
+  .replace(/\s+\((?:https?|mailto|tel|sms):[^)]+\)/g, ' ')
+  .replace(/\s+([.,!?;:])/g, '$1'));
 const sameHeading = (left: string, right: string) => collapse(left).toLowerCase() === collapse(right).toLowerCase();
 
 /** Ten-digit North American numbers, however the page spaces or dashes them. */
@@ -137,7 +163,13 @@ function roomsIn(text: string): string[] {
 
 function phonesIn(text: string): string[] {
   const found: Array<{ index: number; digits: string }> = [];
-  for (const match of text.matchAll(PHONE)) found.push({ index: match.index ?? 0, digits: `${match[1]}${match[2]}${match[3]}` });
+  for (const match of text.matchAll(PHONE)) {
+    found.push({ index: match.index ?? 0, digits: `${match[1]}${match[2]}${match[3]}` });
+    // A published suffix such as (201) 684-7379/7380 retains the explicit area/prefix.
+    const after = text.slice((match.index ?? 0) + match[0].length);
+    const suffix = /^\s*\/\s*(\d{4})(?!\d)/.exec(after);
+    if (suffix) found.push({ index: (match.index ?? 0) + match[0].length, digits: `${match[1]}${match[2]}${suffix[1]}` });
+  }
   for (const match of text.matchAll(EXTENSION)) found.push({ index: match.index ?? 0, digits: `201684${match[1]}` });
   return found.sort((left, right) => left.index - right.index).map(entry => entry.digits);
 }
@@ -214,6 +246,46 @@ export function checkContactValues(values: ContactValues, evidence: readonly Con
     }
   }
   return { values: published, withheld, sourceUrls: [...sourceUrls] };
+}
+
+export function checkContactAdditions(entries: readonly ReviewedContactAddition[],
+  pages: ReadonlyMap<string, CapturedPage>): { confirmed: ConfirmedContactAddition[]; withheld: WithheldContactValue[] } {
+  const confirmed: ConfirmedContactAddition[] = [];
+  const withheld: WithheldContactValue[] = [];
+  for (const entry of entries) {
+    const checked = checkContactValues({ [entry.field]: entry.value }, entry.evidence, pages);
+    if (!checked.values[entry.field]) { withheld.push(...checked.withheld); continue; }
+    const support = entry.evidence.find(item => {
+      const found = evidenceText(item, pages);
+      const section = evidenceText({ ...item, near: undefined }, pages);
+      return item.fields.includes(entry.field) && 'text' in found
+        && statesValue(entry.field, entry.value, found.text, Boolean(item.near))
+        && 'text' in section && collapse(section.text).toLowerCase().includes(collapse(entry.label).toLowerCase());
+    });
+    if (!support || !entry.label.trim()) {
+      withheld.push({ field: entry.field, value: entry.value, reason: 'The cited section does not state this contact with its reviewed label.' });
+      continue;
+    }
+    confirmed.push({ field: entry.field, value: entry.value, label: entry.label,
+      url: support.url, section: support.section, checked_at: pages.get(pageKey(support.url))!.fetchedAt });
+  }
+  return { confirmed, withheld };
+}
+
+export function checkContactNotes(entries: readonly ReviewedContactNote[],
+  pages: ReadonlyMap<string, CapturedPage>): { confirmed: ConfirmedContactNote[]; issues: Array<{ text: string; reason: string }> } {
+  const confirmed: ConfirmedContactNote[] = [];
+  const issues: Array<{ text: string; reason: string }> = [];
+  for (const entry of entries) {
+    const found = evidenceText({ ...entry.evidence, fields: [] }, pages);
+    if ('reason' in found || !entry.text.trim() || !visibleText(found.text).includes(visibleText(entry.text))) {
+      issues.push({ text: entry.text, reason: 'reason' in found ? found.reason : 'The cited section does not state this contact instruction.' });
+      continue;
+    }
+    confirmed.push({ text: entry.text, url: entry.evidence.url, section: entry.evidence.section,
+      checked_at: pages.get(pageKey(entry.evidence.url))!.fetchedAt });
+  }
+  return { confirmed, issues };
 }
 
 /** A value a cited section states for a field the reviewed entry leaves empty. */
@@ -382,21 +454,23 @@ export function checkAbsences(claims: readonly AbsenceClaim[], values: ContactVa
 }
 
 /**
- * A reviewed website: the office's own ramapo.edu page, held to two checks. It must be a plain
- * https page of ramapo.edu or www.ramapo.edu (no other host, no sign-in, port, query or fragment),
- * and this run's capture must have loaded it. Whether the page is the office's own is the reviewer's
- * call; publication only keeps a link that is the college's and that works.
+ * A reviewed website must be a plain https college page captured in this run. The
+ * external Athletics root additionally requires the captured college catalog referral.
+ * No other external host, sign-in, port, query or fragment is accepted.
  */
 export interface ConfirmedWebsite {
   url: string;
   /** When this run captured the page. */
   checked_at: string;
+  /** For the narrowly allowed external Athletics site, the college's captured referral. */
+  official_link?: { url: string; section: string; checked_at: string };
 }
 
 export interface WebsiteIssue { url: string; reason: string }
 
 export function checkWebsite(url: string | undefined,
-  pages: ReadonlyMap<string, CapturedPage>): { confirmed?: ConfirmedWebsite; issue?: WebsiteIssue } {
+  pages: ReadonlyMap<string, CapturedPage>,
+  officialLink?: Pick<ContactEvidence, 'url' | 'section'>): { confirmed?: ConfirmedWebsite; issue?: WebsiteIssue } {
   if (url === undefined) return {};
   let parsed: URL;
   try {
@@ -405,12 +479,24 @@ export function checkWebsite(url: string | undefined,
     return { issue: { url, reason: 'Not a URL.' } };
   }
   const host = parsed.hostname.toLowerCase();
-  if (parsed.protocol !== 'https:' || (host !== 'ramapo.edu' && host !== 'www.ramapo.edu')
+  const athletics = url === 'https://ramapoathletics.com/' || url === 'https://www.ramapoathletics.com/';
+  if (parsed.protocol !== 'https:' || (!athletics && host !== 'ramapo.edu' && host !== 'www.ramapo.edu')
     || parsed.username || parsed.password || parsed.port || parsed.search || parsed.hash
     || url !== parsed.href) {
     return { issue: { url, reason: 'Not a plain https page of ramapo.edu.' } };
   }
   const captured = pages.get(pageKey(url));
   if (!captured) return { issue: { url, reason: 'This run did not capture the page.' } };
+  if (athletics) {
+    if (!officialLink || !/^https:\/\/catalog\.ramapo\.edu\/quicklinks\/studentservices\/?$/.test(officialLink.url)) {
+      return { issue: { url, reason: 'The external Athletics site needs the official catalog referral.' } };
+    }
+    const found = evidenceText({ ...officialLink, fields: [] }, pages);
+    if ('reason' in found || !/https:\/\/(?:www\.)?ramapoathletics\.com\//.test(found.text)) {
+      return { issue: { url, reason: 'The captured college catalog section does not link to the Athletics site.' } };
+    }
+    return { confirmed: { url, checked_at: captured.fetchedAt,
+      official_link: { ...officialLink, checked_at: pages.get(pageKey(officialLink.url))!.fetchedAt } } };
+  }
   return { confirmed: { url, checked_at: captured.fetchedAt } };
 }
