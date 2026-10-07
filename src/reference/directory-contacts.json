@@ -229,7 +229,18 @@
           ]
         }
       ],
-      "office": "Near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road"
+      "office": "Near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road",
+      "notPublished": [
+        {
+          "field": "email",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Valley Medical Group Health Services"
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "Counseling Center",
@@ -594,6 +605,26 @@
             "email"
           ]
         }
+      ],
+      "notPublished": [
+        {
+          "field": "hours",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/titleix/",
+              "section": "Who is the College’s Director of Title IX/Title IX Coordinator?"
+            },
+            {
+              "url": "https://www.ramapo.edu/titleix/dating-violence-resources/",
+              "section": "The Office of Title IX (NON-Confidential Resource)"
+            },
+            {
+              "url": "https://www.ramapo.edu/about/phone/",
+              "section": "General Phone Number Listing",
+              "near": "Title IX"
+            }
+          ]
+        }
       ]
     },
     {
@@ -614,6 +645,17 @@
             "phone",
             "email",
             "office"
+          ]
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "hours",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/graduate/",
+              "section": "Ramapo College Office of Graduate Admissions"
+            }
           ]
         }
       ]
@@ -742,6 +784,26 @@
             "email"
           ]
         }
+      ],
+      "notPublished": [
+        {
+          "field": "office",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ombuds/",
+              "section": "Contacts"
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ombuds/",
+              "section": "Contacts"
+            }
+          ]
+        }
       ]
     },
     {
@@ -770,7 +832,18 @@
           ]
         }
       ],
-      "office": "CPA/EHS Garage"
+      "office": "CPA/EHS Garage",
+      "notPublished": [
+        {
+          "field": "hours",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ehs/",
+              "section": "Contacts"
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "Nursing Programs Office",
@@ -788,6 +861,17 @@
           "fields": [
             "phone",
             "office"
+          ]
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "email",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/nursing/",
+              "section": "Nursing Programs Contact Information:"
+            }
           ]
         }
       ]
@@ -832,6 +916,30 @@
             "email"
           ]
         }
+      ],
+      "notPublished": [
+        {
+          "field": "phone",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/igg/",
+              "section": "Ramapo College"
+            },
+            {
+              "url": "https://www.ramapo.edu/igg/lab/",
+              "section": "Refer a Case to the IGG Center"
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/igg/",
+              "section": "Ramapo College"
+            }
+          ]
+        }
       ]
     },
     {
@@ -856,6 +964,21 @@
           "section": "Academic Building D, Room D-216",
           "fields": [
             "office"
+          ]
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "hours",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/enhance/",
+              "section": "Academic Building D, Room D-216"
+            },
+            {
+              "url": "https://www.ramapo.edu/enhance/",
+              "section": "Contact Us"
+            }
           ]
         }
       ]
