@@ -23,6 +23,12 @@ export interface OfficeDirectoryContact {
   email?: string;
   department: string;
   office?: string;
+  /**
+   * The office's own page on ramapo.edu, reviewed by hand. Publication records it only when it is a
+   * ramapo.edu page and this run's capture loaded it. An office with no page of its own on
+   * ramapo.edu (Athletics lives on another site) has none.
+   */
+  website?: string;
   helpsWith: string[];
   /** The page sections that state this office's phone, email and office. */
   evidence: ContactEvidence[];

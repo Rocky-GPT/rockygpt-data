@@ -7,6 +7,7 @@
       "email": "publicsafety@ramapo.edu",
       "department": "Public Safety",
       "office": "C-102",
+      "website": "https://www.ramapo.edu/publicsafety/",
       "helpsWith": [
         "Emergencies",
         "Safety escorts",
@@ -31,6 +32,7 @@
       "email": "secdesk@ramapo.edu",
       "department": "Public Safety",
       "office": "C-102",
+      "website": "https://www.ramapo.edu/publicsafety/",
       "helpsWith": [
         "Safety escorts",
         "Lost & found",
@@ -72,6 +74,7 @@
       "email": "reg@ramapo.edu",
       "department": "Office of the Registrar",
       "office": "D-224",
+      "website": "https://www.ramapo.edu/registrar/",
       "helpsWith": [
         "Registration",
         "Transcripts",
@@ -96,6 +99,7 @@
       "email": "success@ramapo.edu",
       "department": "Center for Student Success",
       "office": "D-207",
+      "website": "https://www.ramapo.edu/studentsuccess/",
       "helpsWith": [
         "Academic Advising",
         "Degree planning",
@@ -121,6 +125,7 @@
       "email": "asb@ramapo.edu",
       "department": "Anisfield School of Business",
       "office": "ASB-333",
+      "website": "https://www.ramapo.edu/asb/",
       "helpsWith": [
         "Business programs",
         "School contacts",
@@ -145,6 +150,7 @@
       "email": "finaid@ramapo.edu",
       "department": "Financial Aid",
       "office": "E-210",
+      "website": "https://www.ramapo.edu/finaid/",
       "helpsWith": [
         "FAFSA",
         "Aid packages",
@@ -192,7 +198,8 @@
           ]
         }
       ],
-      "office": "4th floor of the Learning Commons"
+      "office": "4th floor of the Learning Commons",
+      "website": "https://www.ramapo.edu/its/help-desk/"
     },
     {
       "name": "Health Services",
@@ -230,6 +237,7 @@
         }
       ],
       "office": "Near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road",
+      "website": "https://www.ramapo.edu/health/",
       "notPublished": [
         {
           "field": "email",
@@ -248,6 +256,7 @@
       "category": "Health",
       "department": "Counseling Services",
       "office": "D-216",
+      "website": "https://www.ramapo.edu/counseling/",
       "helpsWith": [
         "Mental health support",
         "Crisis support",
@@ -284,7 +293,8 @@
             "email"
           ]
         }
-      ]
+      ],
+      "website": "https://www.ramapo.edu/reslife/"
     },
     {
       "name": "Center for Student Involvement",
@@ -293,6 +303,7 @@
       "email": "csi@ramapo.edu",
       "department": "Center for Student Involvement",
       "office": "SC-202",
+      "website": "https://www.ramapo.edu/csi/",
       "helpsWith": [
         "Student clubs",
         "Campus events",
@@ -371,7 +382,8 @@
           ]
         }
       ],
-      "office": "Peter P. Mercer Learning Commons"
+      "office": "Peter P. Mercer Learning Commons",
+      "website": "https://www.ramapo.edu/library/"
     },
     {
       "name": "Student Accounts",
@@ -385,6 +397,7 @@
         "Tuition payment plans"
       ],
       "office": "D-Wing, First Floor",
+      "website": "https://www.ramapo.edu/student-accounts/",
       "evidence": [
         {
           "url": "https://www.ramapo.edu/student-accounts/",
@@ -417,6 +430,7 @@
         "Scholarships for admitted freshmen"
       ],
       "office": "McBride House",
+      "website": "https://www.ramapo.edu/undergraduate/",
       "evidence": [
         {
           "url": "https://www.ramapo.edu/undergraduate/",
@@ -441,6 +455,7 @@
         "Career events and fairs"
       ],
       "office": "C-209",
+      "website": "https://www.ramapo.edu/careercenter/",
       "evidence": [
         {
           "url": "https://www.ramapo.edu/careercenter/",
@@ -465,6 +480,7 @@
         "Housing accommodations"
       ],
       "office": "C-Wing, Room 205",
+      "website": "https://www.ramapo.edu/oss/",
       "evidence": [
         {
           "url": "https://www.ramapo.edu/oss/",
@@ -490,6 +506,7 @@
       "email": "deanofstudents@ramapo.edu",
       "department": "Student Affairs",
       "office": "C-212",
+      "website": "https://www.ramapo.edu/student-affairs/",
       "helpsWith": [
         "Student well-being support programs and activities",
         "Dean's Certification forms for transferring students",
@@ -514,6 +531,7 @@
       "email": "EOFdesk@ramapo.edu",
       "department": "Educational Opportunity Fund Program",
       "office": "D-101",
+      "website": "https://www.ramapo.edu/eof-program/",
       "helpsWith": [
         "Access to higher education for qualified New Jersey students",
         "Advising and academic mentoring",
@@ -538,6 +556,7 @@
       "email": "studentconduct@ramapo.edu",
       "department": "Office of Student Conduct",
       "office": "C-212",
+      "website": "https://www.ramapo.edu/student-conduct/",
       "helpsWith": [
         "Code of Conduct process",
         "Disciplinary hearings",
@@ -566,6 +585,7 @@
         "Reading strategies for difficult texts"
       ],
       "office": "Peter P. Mercer Learning Commons, Room 420",
+      "website": "https://www.ramapo.edu/crw/",
       "evidence": [
         {
           "url": "https://www.ramapo.edu/crw/",
@@ -588,6 +608,7 @@
         "Title IX training and prevention"
       ],
       "office": "D-104",
+      "website": "https://www.ramapo.edu/titleix/",
       "email": "titleix@ramapo.edu",
       "evidence": [
         {
@@ -634,6 +655,7 @@
       "email": "graduate@ramapo.edu",
       "department": "Graduate Admissions",
       "office": "McBride House",
+      "website": "https://www.ramapo.edu/graduate/",
       "helpsWith": [
         "Graduate applications"
       ],
@@ -667,6 +689,7 @@
       "email": "testing@ramapo.edu",
       "department": "Testing Center",
       "office": "Laurel Hall, North",
+      "website": "https://www.ramapo.edu/testing/",
       "helpsWith": [
         "Placement testing"
       ],
@@ -689,6 +712,7 @@
       "email": "payroll@ramapo.edu",
       "department": "Payroll",
       "office": "D-119",
+      "website": "https://www.ramapo.edu/payroll/",
       "helpsWith": [
         "Payroll questions"
       ],
@@ -741,7 +765,8 @@
           ]
         }
       ],
-      "office": "first floor of the Berrie Center for Performing and Visual Arts"
+      "office": "first floor of the Berrie Center for Performing and Visual Arts",
+      "website": "https://www.ramapo.edu/berriecenter/"
     },
     {
       "name": "Photography Lab",
@@ -750,6 +775,7 @@
       "email": "photolab@ramapo.edu",
       "department": "Photography Lab",
       "office": "Berrie Center 135",
+      "website": "https://www.ramapo.edu/photolab/",
       "helpsWith": [
         "Darkroom",
         "Film processing"
@@ -804,7 +830,8 @@
             }
           ]
         }
-      ]
+      ],
+      "website": "https://www.ramapo.edu/ombuds/"
     },
     {
       "name": "Environmental Health and Safety",
@@ -833,6 +860,7 @@
         }
       ],
       "office": "CPA/EHS Garage",
+      "website": "https://www.ramapo.edu/ehs/",
       "notPublished": [
         {
           "field": "hours",
@@ -851,6 +879,7 @@
       "category": "Academic",
       "department": "Nursing Programs Office",
       "office": "Adler Center for Nursing Excellence 215",
+      "website": "https://www.ramapo.edu/nursing/",
       "helpsWith": [
         "Nursing programs"
       ],
@@ -883,6 +912,7 @@
       "email": "rrc@ramapo.edu",
       "department": "Roadrunner Central",
       "office": "SC-202",
+      "website": "https://www.ramapo.edu/csi/roadrunner-central/",
       "helpsWith": [
         "Bus tickets",
         "Postage stamps"
@@ -927,7 +957,8 @@
             }
           ]
         }
-      ]
+      ],
+      "website": "https://www.ramapo.edu/igg/"
     },
     {
       "name": "ENHANCE Program",
@@ -936,6 +967,7 @@
       "email": "enhance@ramapo.edu",
       "department": "ENHANCE Program",
       "office": "D-216",
+      "website": "https://www.ramapo.edu/enhance/",
       "helpsWith": [],
       "evidence": [
         {
@@ -977,6 +1009,7 @@
       "category": "Services",
       "department": "ID Card Room",
       "office": "C-101",
+      "website": "https://www.ramapo.edu/publicsafety/id-cards/",
       "helpsWith": [
         "Student ID cards"
       ],

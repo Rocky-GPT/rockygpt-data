@@ -377,6 +377,9 @@ async function insertStructured(
       console.warn(`Withheld ${contact.name} ${withheld.field} ${withheld.value}: ${withheld.reason}`);
     }
     // A "not published" note this run could not confirm is left out (the field stays unknown), loudly.
+    if (contact.evidence.website_issue) {
+      console.warn(`Website not kept: ${contact.name} ${contact.evidence.website_issue.url}: ${contact.evidence.website_issue.reason}`);
+    }
     for (const issue of contact.evidence.absence_issues) {
       console.warn(`Not published, unconfirmed: ${contact.name} ${issue.field} (${issue.kind}): ${issue.reason}`);
     }

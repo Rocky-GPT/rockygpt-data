@@ -8,6 +8,7 @@ import {
   CONTACT_FIELDS,
   checkAbsences,
   checkContactValues,
+  checkWebsite,
   findUnrecordedValues,
   loadCapturedPages,
   pageKey,
@@ -267,4 +268,54 @@ test('the reference data makes only well-formed absence claims that no reviewed 
       if (claim.field !== 'hours') assert.ok(!entry[claim.field], `${entry.name} has a ${claim.field} and says it is not published`);
     }
   }
+});
+
+test('a reviewed website is kept only when it is a plain ramapo.edu page this run captured', () => {
+  const captured = pages(page('https://www.ramapo.edu/finaid/', [['Financial Aid', 'text']]));
+  assert.deepEqual(checkWebsite('https://www.ramapo.edu/finaid/', captured),
+    { confirmed: { url: 'https://www.ramapo.edu/finaid/', checked_at: '2026-09-26T20:00:00.000Z' } });
+  assert.deepEqual(checkWebsite(undefined, captured), {});
+  // Not the college's page: another host, a lookalike, a subdomain, plain http.
+  for (const url of [
+    'https://ramapoathletics.com/', 'https://www.ramapo.edu.evil.example/finaid/', 'https://web.ramapo.edu/finaid/',
+    'http://www.ramapo.edu/finaid/', 'https://user@www.ramapo.edu/finaid/', 'https://www.ramapo.edu:8443/finaid/',
+    'https://www.ramapo.edu/finaid/?q=1', 'https://www.ramapo.edu/finaid/#top', 'finaid', ' https://www.ramapo.edu/finaid/',
+  ]) {
+    assert.ok(checkWebsite(url, captured).issue, url);
+    assert.equal(checkWebsite(url, captured).confirmed, undefined, url);
+  }
+  // The college's page, but this run did not capture it: not kept.
+  assert.match(checkWebsite('https://www.ramapo.edu/oss/', captured).issue?.reason ?? '', /did not capture/);
+});
+
+test('every reviewed website is a plain ramapo.edu page, and only offices with one of their own have one', () => {
+  const sites = OFFICE_DIRECTORY_CONTACTS.filter(entry => entry.website !== undefined);
+  assert.equal(sites.length, 33);
+  const all = pages(...sites.map(entry => page(entry.website as string, [['x', 'y']])));
+  for (const entry of sites) assert.equal(checkWebsite(entry.website, all).issue, undefined, entry.name);
+  // An office whose pages live on another site has none to claim.
+  assert.equal(OFFICE_DIRECTORY_CONTACTS.find(entry => entry.name === 'Athletics')?.website, undefined);
+  assert.equal(OTHER_DIRECTORY_CONTACTS.some(entry => 'website' in entry), false);
+});
+
+test('publication records a confirmed website and a website it could not keep, in the row evidence', () => {
+  const finaid = OFFICE_DIRECTORY_CONTACTS.find(entry => entry.name === 'Financial Aid')!;
+  const captured = pages(
+    ...finaid.evidence.map(ev => page(ev.url, [[ev.section, `${finaid.phone} ${finaid.email} ${finaid.office}`]])),
+    page(finaid.website as string, [['Financial Aid', 'x']]),
+  );
+  const row = buildStructuredDirectoryContacts([], captured).find(contact => contact.name === 'Financial Aid')!;
+  assert.deepEqual(row.evidence?.website, { url: 'https://www.ramapo.edu/finaid/', checked_at: '2026-09-26T20:00:00.000Z' });
+  assert.equal(row.evidence?.website_issue, undefined);
+  // The Photography Lab's page is /photolab/, but its contact values are read from /photolab/contact/:
+  // with only the contact page captured, the link is not kept and the row says why.
+  const lab = OFFICE_DIRECTORY_CONTACTS.find(entry => entry.name === 'Photography Lab')!;
+  const without = buildStructuredDirectoryContacts([], pages(...lab.evidence.map(ev => page(ev.url, [[ev.section, 'x']]))))
+    .find(contact => contact.name === 'Photography Lab')!;
+  assert.equal(without.evidence?.website, undefined);
+  assert.match(without.evidence?.website_issue?.reason ?? '', /did not capture/);
+  // An office with no claim has neither.
+  const athletics = buildStructuredDirectoryContacts([], captured).find(contact => contact.name === 'Athletics')!;
+  assert.equal(athletics.evidence?.website, undefined);
+  assert.equal(athletics.evidence?.website_issue, undefined);
 });

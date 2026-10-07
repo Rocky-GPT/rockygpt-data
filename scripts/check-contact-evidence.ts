@@ -7,7 +7,7 @@
  * it exits non-zero when publication would withhold anything, and, with --strict, when
  * a cited section states a value the entry leaves out.
  */
-import { checkAbsences, checkContactValues, findUnrecordedValues, loadCapturedPages } from '../src/directory/contact-evidence';
+import { checkAbsences, checkContactValues, checkWebsite, findUnrecordedValues, loadCapturedPages } from '../src/directory/contact-evidence';
 import { OFFICE_DIRECTORY_CONTACTS, OTHER_DIRECTORY_CONTACTS } from '../src/directory/static-contacts';
 
 const pages = loadCapturedPages();
@@ -15,6 +15,8 @@ let withheld = 0;
 let unrecorded = 0;
 let confirmedAbsences = 0;
 let absenceIssues = 0;
+let websites = 0;
+let websiteIssues = 0;
 for (const entry of [...OFFICE_DIRECTORY_CONTACTS, ...OTHER_DIRECTORY_CONTACTS]) {
   const checked = checkContactValues({ phone: entry.phone, email: entry.email, office: entry.office }, entry.evidence, pages);
   const published = Object.entries(checked.values).map(([field, value]) => `${field} ${value}`).join(', ') || 'no values';
@@ -30,11 +32,20 @@ for (const entry of [...OFFICE_DIRECTORY_CONTACTS, ...OTHER_DIRECTORY_CONTACTS])
     console.log(`    ✗ not published ${issue.field} ${issue.kind}: ${issue.reason}`);
     absenceIssues += 1;
   }
+  const site = checkWebsite('website' in entry ? entry.website : undefined, pages);
+  if (site.confirmed) {
+    console.log(`    website: ${site.confirmed.url}`);
+    websites += 1;
+  }
+  if (site.issue) {
+    console.log(`    ✗ website ${site.issue.url}: ${site.issue.reason}`);
+    websiteIssues += 1;
+  }
   for (const missed of findUnrecordedValues({ phone: entry.phone, email: entry.email, office: entry.office }, entry.evidence, pages)) {
     console.log(`    ? ${missed.field} not recorded, but "${missed.section}" of ${missed.url} states ${missed.found.join(', ')}`);
     unrecorded += 1;
   }
 }
 console.log(`\n${pages.size} captured pages; ${withheld} reviewed value(s) withheld; ${unrecorded} stated value(s) not recorded; `
-  + `${confirmedAbsences} absence(s) confirmed, ${absenceIssues} not confirmed.`);
-process.exit(withheld || absenceIssues || (unrecorded && process.argv.includes('--strict')) ? 1 : 0);
+  + `${confirmedAbsences} absence(s) confirmed, ${absenceIssues} not confirmed; ${websites} website(s) kept, ${websiteIssues} not.`);
+process.exit(withheld || absenceIssues || websiteIssues || (unrecorded && process.argv.includes('--strict')) ? 1 : 0);
