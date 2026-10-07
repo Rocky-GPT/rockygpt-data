@@ -3,7 +3,7 @@ import test from 'node:test';
 import {
   ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, campusHoursFromCaptures,
   campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
-  OFFICE_HOURS_PAGES, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, termWindows,
+  OFFICE_HOURS_PAGES, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, parseWeeklyHours, termWindows,
 } from './campus-hours';
 import { partitionHoursForPublication, recordValidity } from '../src/data-v2/validity';
 import { validateCampusHours } from './schema';
@@ -268,6 +268,10 @@ const newOfficePages: Record<string, string> = {
   'https://www.ramapo.edu/testing/': 'Hours\nSummer\nMonday to Thursday, 8:00 a.m. to 5:15 p.m.\nClosed Friday\nFall and Spring\nMonday to Friday, 8:30 a.m. to 4:30 p.m.',
   'https://www.ramapo.edu/publicsafety/id-cards/': 'In order to get a new identification card, please contact the ID room at publicsafety@ramapo.edu and make an appointment. The ID room is open Monday-Friday from 8:30am until 4:00pm.',
   'https://www.ramapo.edu/nursing/': 'Nursing Programs Contact Information:\nOffice: Adler Center for Nursing Excellence 215\nHours: Monday through Friday, 8:30 a.m.to 4:30 p.m.\nPhone: (201) 684-7749',
+  'https://www.ramapo.edu/crw/': 'ANNOUNCEMENTS - Fall 2026\nThe CRW will open on August 31 at 10 AM.\nHours\nMonday - Thursday, 10 AM - 8:00 PM\nFriday - 10:00 AM - 4:00 PM\nWeekends - by virtual appointment\nPeter P. Mercer Learning Commons | Room 420 (4th floor)\np: 201-684-7557 | Summer: 201-684-7561',
+  'https://www.ramapo.edu/csi/': "CSI Hours of Operation\nThe CSI main office is open Monday through Fridays 8:00am-midnight, Saturday from 4:00-10:00pm and Sunday from 3:00-8:00pm.\nJ. Lee's Hours\nMondays-Thursdays 9 am-10 pm, Fridays 9 am-9 pm",
+  'https://www.ramapo.edu/csi/roadrunner-central/': 'Hours of Operation:\nPlease visit the Center for Student Involvement Main Office, located in SC202, for assistance during the following hours during the semester:\nMonday-Friday: 8:00am-12:00am\nSaturday- 4:00pm-10:00pm\nSunday- 3:00pm-8:00pm\nDuring the Summer months, our hours are as follows:\nMonday-Thursday: 8:00am-5:15pm',
+  'https://www.ramapo.edu/photolab/hours/': "OPEN LAB HOURS\nThroughout the Fall and Spring semesters The Photography Suite (BC 135) is open six days a week.\nFALL 2026\nWe're open 6 days a week! No need to make reservations for the darkroom. We look forward to seeing you in the lab!\nSunday 6pm - 9pm\nMonday 10am - 6pm\nTuesday 10am - 6pm\nWednesday 10am - 8pm\nThursday 10am - 5pm\nFriday 10am - 6pm\nSaturday Closed",
 };
 
 test('the Counseling Center publishes its academic-year hours and leaves the undated summer ones out', () => {
@@ -390,4 +394,53 @@ test('offices that write "through" or "until", name no label or print a summer s
   assert.equal(parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am until 5 pm', at, fallTerms).hours.Monday, '9:00am-5:00pm');
   assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday and Friday, 9 am - 5 pm', at, fallTerms), /unrecognized/);
   assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am or 5 pm', at, fallTerms), /unrecognized/);
+});
+
+test('pages that print a different time for different days read as a weekly schedule, exactly as printed', () => {
+  const at = '2026-10-07T12:00:00Z';
+  const week = (name: string) => {
+    const entry = OFFICE_HOURS_PAGES.find((office) => office.name === name)!;
+    assert.equal(entry.kind, 'week');
+    return parseWeeklyHours(name, entry.label, newOfficePages[entry.url], at, fallTerms);
+  };
+  const days = (record: { hours: Record<string, string> }) => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    .map((day) => record.hours[day]);
+  const reading = week('Center for Reading and Writing');
+  assert.deepEqual(days(reading), Array(4).fill('10:00am-8:00pm').concat('10:00am-4:00pm', 'By virtual appointment', 'By virtual appointment'));
+  assert.equal(reading.notes, 'Hours Monday - Thursday, 10 AM - 8:00 PM Friday - 10:00 AM - 4:00 PM Weekends - by virtual appointment');
+  // One sentence with three segments, an "until midnight" end, and a start whose am/pm is the end's.
+  const involvement = week('Center for Student Involvement');
+  assert.deepEqual(days(involvement), Array(5).fill('8:00am-12:00am').concat('4:00pm-10:00pm', '3:00pm-8:00pm'));
+  assert.doesNotMatch(involvement.notes!, /Lee/); // The lounge's hours beside it are another place's.
+  const central = week('Roadrunner Central');
+  assert.deepEqual(days(central), days(involvement));
+  assert.doesNotMatch(central.notes!, /Summer|5:15/); // The undated summer schedule stays out.
+  const lab = week('Photography Lab');
+  assert.deepEqual(days(lab), ['10:00am-6:00pm', '10:00am-6:00pm', '10:00am-8:00pm', '10:00am-5:00pm', '10:00am-6:00pm', 'CLOSED', '6:00pm-9:00pm']);
+  for (const record of [reading, involvement, central, lab]) {
+    assert.deepEqual([record.validFrom, record.validUntil], ['2026-08-26', '2026-12-16']);
+  }
+});
+
+test('a weekly schedule the reader cannot fully account for stops the collector instead of being guessed', () => {
+  const at = '2026-10-07T12:00:00Z';
+  const read = (page: string) => parseWeeklyHours('Example', /^Hours$/i, page, at, fallTerms);
+  assert.throws(() => read('Hours\nMonday 9am - 5pm\nMonday 10am - 6pm'), /two schedules for Monday/);
+  assert.equal(read('Hours\nMonday 9am - 5pm\nMonday 9am - 5pm').hours.Monday, '9:00am-5:00pm');
+  assert.throws(() => read('Hours\nMonday 10pm - 2am'), /do not run forward/);
+  assert.throws(() => read('Hours\nSaturday 11 - 1pm'), /do not run forward/);
+  assert.throws(() => read('Hours\nSaturday 8 - midnight'), /Unable to read the time/);
+  assert.throws(() => read('Hours\nFriday - Monday 9am - 5pm'), /Unable to read the days/);
+  assert.throws(() => read('Hours\nOpen all week'), /unrecognized/);
+  assert.throws(() => read('Hours\none\ntwo\nthree\nfour\nMonday 9am - 5pm'), /unrecognized/);
+  assert.throws(() => read('Closed on weekends'), /line is unavailable/);
+  // The block ends at the first line that is not purely schedule, and prose-first blocks stop at once.
+  const ended = read('Hours\nMonday 9am - 5pm\nTuesday call us\nWednesday 9am - 5pm');
+  assert.deepEqual([ended.hours.Monday, ended.hours.Tuesday, ended.hours.Wednesday], ['9:00am-5:00pm', 'Hours unavailable', 'Hours unavailable']);
+  const mixed = read("Hours\nMonday 9am - 5pm\nThe lounge next door is open Tuesday 9am - 5pm");
+  assert.deepEqual([mixed.hours.Monday, mixed.hours.Tuesday], ['9:00am-5:00pm', 'Hours unavailable']);
+  const prose = read('Hours\nWe are open Monday 9am - 5pm. Questions? Ask.\nTuesday 9am - 5pm');
+  assert.deepEqual([prose.hours.Monday, prose.hours.Tuesday], ['9:00am-5:00pm', 'Hours unavailable']);
+  assert.equal(read('Hours\nWeekdays 9am - 5pm\nWeekends Closed').hours.Sunday, 'CLOSED');
+  assert.throws(() => parseWeeklyHours('Example', /^Hours$/i, 'Hours\nMonday 9am - 5pm', '2027-06-01T12:00:00Z', fallTerms), /No academic calendar semester/);
 });

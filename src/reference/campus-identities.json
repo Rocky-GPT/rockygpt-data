@@ -40,9 +40,10 @@
           "selector": {
             "field": "name",
             "values": [
-              "Center for Student Involvement (CSI)"
+              "Center for Student Involvement (CSI)",
+              "Center for Student Involvement"
             ],
-            "evidence": "Reviewed campus-hours record explicitly expands CSI to Center for Student Involvement. The scope is operating hours, not staff/phone availability."
+            "evidence": "Reviewed campus-hours record explicitly expands CSI to Center for Student Involvement. The scope is operating hours, not staff/phone availability. The office's own page, under the name without \"(CSI)\", (https://www.ramapo.edu/csi/) prints a schedule that differs by day; the academic calendar dates the semester it applies to."
           }
         }
       ]
@@ -11898,6 +11899,18 @@
             ],
             "evidence": "Office's own page (https://www.ramapo.edu/crw/, read 2026-09-28) publishes this phone; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Center for Reading and Writing"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/crw/) prints a schedule that differs by day; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -12047,6 +12060,18 @@
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/photolab/contact/, read 2026-09-28) states this contact; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Photography Lab"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/photolab/hours/) prints a schedule that differs by day; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -12141,6 +12166,18 @@
               "email:rrc@ramapo.edu"
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/csi/, read 2026-09-28) states this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Roadrunner Central"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/csi/roadrunner-central/) prints a schedule that differs by day; the academic calendar dates the semester it applies to."
           }
         }
       ]
