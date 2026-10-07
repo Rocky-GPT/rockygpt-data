@@ -15,6 +15,10 @@ import path from 'node:path';
 export type ContactField = 'phone' | 'email' | 'office';
 export const CONTACT_FIELDS: readonly ContactField[] = ['phone', 'email', 'office'];
 
+/** What an office's pages can be confirmed not to publish: its contact fields and its opening hours. */
+export type AbsenceField = ContactField | 'hours';
+export const ABSENCE_FIELDS: readonly AbsenceField[] = [...CONTACT_FIELDS, 'hours'];
+
 /** Where a reviewed contact value is stated: a page, one section heading on it, and optionally the text it follows. */
 export interface ContactEvidence {
   url: string;
@@ -237,4 +241,84 @@ export function findUnrecordedValues(values: ContactValues, evidence: readonly C
     }
   }
   return unrecorded;
+}
+
+/** A time range ("8:30 a.m. - 4:30 p.m.", "10 AM to 8 PM") or an every-hour statement ("24 hours"). */
+const TIME_RANGE = /\b\d{1,2}(?::\d{2})?\s*[ap]\.?\s*m\.?\s*(?:-|\u2013|\u2014|to|until)\s*(?:\d{1,2}(?::\d{2})?\s*[ap]\.?\s*m\.?|noon|midnight)|\b24\s*(?:hours|hrs|\/\s*7)/gi;
+
+function timeRangesIn(text: string): string[] {
+  return [...text.matchAll(TIME_RANGE)].map(match => match[0].replace(/\s+/g, ' ').trim());
+}
+
+/** Every value of this kind the text states (room codes only for an office: a place name can't be searched for). */
+function statedValues(field: AbsenceField, text: string): string[] {
+  const found = field === 'phone' ? phonesIn(text) : field === 'email' ? emailsIn(text)
+    : field === 'office' ? roomsIn(text) : timeRangesIn(text);
+  return [...new Set(found)];
+}
+
+/**
+ * A reviewed statement that an office's own pages do not publish a field, with the page
+ * sections that would state it (the office's contact, location or hours block). It is a
+ * claim to check, never a reason to leave a value out: an entry that has a value for the field
+ * cannot also say the field is not published.
+ */
+export interface AbsenceClaim {
+  field: AbsenceField;
+  evidence: Array<Pick<ContactEvidence, 'url' | 'section' | 'near'>>;
+}
+
+export interface ConfirmedAbsence {
+  field: AbsenceField;
+  /** The sections read, and when this run captured each page. */
+  checks: Array<{ url: string; section: string; checked_at: string }>;
+}
+
+export interface AbsenceIssue {
+  field: AbsenceField;
+  /** `contradicted`: a section states a value after all. `unconfirmed`: the sections could not be read. */
+  kind: 'contradicted' | 'unconfirmed';
+  reason: string;
+}
+
+export interface CheckedAbsences { confirmed: ConfirmedAbsence[]; issues: AbsenceIssue[] }
+
+/**
+ * Confirms each claim against this run's capture: every cited section must be present and
+ * state no value of the field. A section that states one contradicts the claim (the page
+ * started publishing it, or the claim was wrong); a page or section that was not captured
+ * leaves the claim unconfirmed. Only a confirmed absence is published, so a field nobody
+ * confirmed stays unknown, never "not published".
+ */
+export function checkAbsences(claims: readonly AbsenceClaim[], values: ContactValues,
+  pages: ReadonlyMap<string, CapturedPage>): CheckedAbsences {
+  const confirmed: ConfirmedAbsence[] = [];
+  const issues: AbsenceIssue[] = [];
+  for (const claim of claims) {
+    const own = claim.field === 'hours' ? undefined : values[claim.field]?.trim();
+    if (own) {
+      issues.push({ field: claim.field, kind: 'contradicted', reason: `The entry itself has the ${claim.field} "${own}".` });
+      continue;
+    }
+    if (!claim.evidence.length) {
+      issues.push({ field: claim.field, kind: 'unconfirmed', reason: 'No page section is cited.' });
+      continue;
+    }
+    const checks: ConfirmedAbsence['checks'] = [];
+    let ok = true;
+    for (const entry of claim.evidence) {
+      const found = evidenceText({ ...entry, fields: [] }, pages);
+      if ('reason' in found) { issues.push({ field: claim.field, kind: 'unconfirmed', reason: found.reason }); ok = false; continue; }
+      const stated = statedValues(claim.field, found.text);
+      if (stated.length) {
+        issues.push({ field: claim.field, kind: 'contradicted',
+          reason: `Section "${entry.section}" of ${entry.url} states ${stated.join(', ')}.` });
+        ok = false;
+        continue;
+      }
+      checks.push({ url: entry.url, section: entry.section, checked_at: pages.get(pageKey(entry.url))!.fetchedAt });
+    }
+    if (ok) confirmed.push({ field: claim.field, checks });
+  }
+  return { confirmed, issues };
 }

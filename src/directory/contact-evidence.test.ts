@@ -4,7 +4,9 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import {
+  ABSENCE_FIELDS,
   CONTACT_FIELDS,
+  checkAbsences,
   checkContactValues,
   findUnrecordedValues,
   loadCapturedPages,
@@ -127,4 +129,80 @@ test('a cited section that states a value the entry leaves out is reported, so "
   // It never changes what is published: the unrecorded value is not returned as a contact value.
   assert.deepEqual(checkContactValues({ phone: '(201) 684-6229', office: 'C-101' }, evidence, captured).values,
     { phone: '(201) 684-6229', office: 'C-101' });
+});
+
+const NURSING = 'https://www.ramapo.edu/nursing/';
+const contactBlock = (text: string) => pages(page(NURSING, [['Contact Us', text], ['News', 'Email news@ramapo.edu']]));
+
+test('an absence is confirmed when every cited section states nothing of that kind, and says when it was read', () => {
+  const captured = contactBlock('Phone: (201) 684-7749. Visit Adler Center for Nursing Excellence.');
+  const checked = checkAbsences([{ field: 'email', evidence: [{ url: NURSING, section: 'Contact Us' }] }], {}, captured);
+  assert.deepEqual(checked.issues, []);
+  assert.deepEqual(checked.confirmed, [{ field: 'email',
+    checks: [{ url: NURSING, section: 'Contact Us', checked_at: '2026-09-26T20:00:00.000Z' }] }]);
+  // Only the cited section counts: the News section's address is not this office's contact block.
+  assert.equal(checked.confirmed.length, 1);
+});
+
+test('a section that states a value contradicts the absence, for every kind of field', () => {
+  const claim = (field: 'phone' | 'email' | 'office' | 'hours') => [{ field, evidence: [{ url: NURSING, section: 'Contact Us' }] }];
+  const cases: Array<[Parameters<typeof claim>[0], string]> = [
+    ['email', 'Write to nursing@ramapo.edu'],
+    ['phone', 'Call (201) 684-7749'],
+    ['office', 'Room D-216'],
+    ['hours', 'Open Monday-Friday 8:30 a.m. - 4:30 p.m.'],
+    ['hours', 'Walk-in hours 10 AM to 8 PM'],
+    ['hours', 'The office is staffed 24 hours a day'],
+  ];
+  for (const [field, text] of cases) {
+    const checked = checkAbsences(claim(field), {}, contactBlock(text));
+    assert.deepEqual(checked.confirmed, [], text);
+    assert.equal(checked.issues[0]?.kind, 'contradicted', text);
+    assert.match(checked.issues[0].reason, /states/, text);
+  }
+});
+
+test('an absence nobody could read is unconfirmed, never confirmed', () => {
+  const claim = [{ field: 'email' as const, evidence: [{ url: NURSING, section: 'Contact Us' }] }];
+  const cases: Array<[ReturnType<typeof contactBlock>, RegExp]> = [
+    [pages(), /was not captured/],
+    [pages(page(NURSING, [['About', 'Nothing here']])), /no section "Contact Us"/],
+  ];
+  for (const [captured, reason] of cases) {
+    const checked = checkAbsences(claim, {}, captured);
+    assert.deepEqual(checked.confirmed, []);
+    assert.equal(checked.issues[0].kind, 'unconfirmed');
+    assert.match(checked.issues[0].reason, reason);
+  }
+  const near = [{ field: 'phone' as const, evidence: [{ url: NURSING, section: 'Contact Us', near: 'Nursing Office' }] }];
+  assert.equal(checkAbsences(near, {}, contactBlock('Other office (201) 684-7000')).issues[0].kind, 'unconfirmed');
+  assert.deepEqual(checkAbsences([{ field: 'email', evidence: [] }], {}, contactBlock('x')).issues.map(i => i.kind), ['unconfirmed']);
+});
+
+test('one clean section does not hide another that states the value, and an entry cannot hold a value it says is not published', () => {
+  const both = [{ field: 'email' as const, evidence: [{ url: NURSING, section: 'Contact Us' }, { url: NURSING, section: 'News' }] }];
+  const checked = checkAbsences(both, {}, contactBlock('Phone only'));
+  assert.deepEqual(checked.confirmed, []);
+  assert.equal(checked.issues.length, 1);
+  assert.equal(checked.issues[0].kind, 'contradicted');
+  const own = checkAbsences([{ field: 'email', evidence: [{ url: NURSING, section: 'Contact Us' }] }],
+    { email: 'nursing@ramapo.edu' }, contactBlock('Phone only'));
+  assert.deepEqual(own.confirmed, []);
+  assert.equal(own.issues[0].kind, 'contradicted');
+  // Hours are not a contact value: the entry's contact values never contradict an hours claim.
+  assert.equal(checkAbsences([{ field: 'hours', evidence: [{ url: NURSING, section: 'Contact Us' }] }],
+    { email: 'nursing@ramapo.edu' }, contactBlock('Phone only')).confirmed.length, 1);
+});
+
+test('the reference data makes only well-formed absence claims that no reviewed value contradicts', () => {
+  for (const entry of [...OFFICE_DIRECTORY_CONTACTS, ...OTHER_DIRECTORY_CONTACTS]) {
+    const seen = new Set<string>();
+    for (const claim of entry.notPublished ?? []) {
+      assert.ok(ABSENCE_FIELDS.includes(claim.field), `${entry.name}: ${claim.field}`);
+      assert.ok(!seen.has(claim.field), `${entry.name} claims ${claim.field} twice`);
+      seen.add(claim.field);
+      assert.ok(claim.evidence.length > 0, `${entry.name} ${claim.field} cites no section`);
+      if (claim.field !== 'hours') assert.ok(!entry[claim.field], `${entry.name} has a ${claim.field} and says it is not published`);
+    }
+  }
 });
