@@ -128,11 +128,12 @@ interface HoursRecord {
   notes?: unknown;
   validFrom?: unknown;
   validUntil?: unknown;
+  normalization_metadata?: { evidence?: { schedule?: { season?: unknown } } };
 }
 
 /**
- * A schedule's validity: its own dates when the collector set them (office hours are
- * dated by the academic calendar, which their pages never name), else what its note says.
+ * A schedule's explicit source dates, else an explicit range in its note.
+ * A season label alone does not establish a date window.
  */
 export function recordValidity(record: HoursRecord): NotesValidity {
   const { validFrom, validUntil } = record;
@@ -165,7 +166,7 @@ export function partitionHoursForPublication<T extends HoursRecord>(
     const { window, termWithoutDates } = recordValidity(record);
     if (window && isWindowExpired(window, now)) {
       omitted.push({ record, reason: 'expired' });
-    } else if (termWithoutDates) {
+    } else if (termWithoutDates && !record.normalization_metadata?.evidence?.schedule?.season) {
       omitted.push({ record, reason: 'unbounded-term' });
     } else {
       publishable.push(record);
@@ -201,10 +202,8 @@ export function hoursValidityErrors(
           'Refresh the source or remove the stale schedule before publishing.'
       );
     } else if (termWithoutDates) {
-      warnings.push(
-        `Hours for "${name}" cite "${termWithoutDates}" without dates, so their validity ` +
-          'cannot be checked or published. Add an explicit range to the note.'
-      );
+      warnings.push(`Hours for "${name}" cite "${termWithoutDates}" without a complete source date range. `
+        + 'Retain the published season; current-date applicability is unverified.');
     }
   }
 

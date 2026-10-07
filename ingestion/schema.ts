@@ -135,6 +135,16 @@ export interface LocationHours {
   /** How the collector read or dated the schedule; kept out of the published notes. */
   derivation?: string;
   availabilityIssue?: (typeof HOURS_AVAILABILITY_ISSUES)[number];
+  normalization_metadata?: {
+    evidence?: {
+      schedule?: {
+        season?: string;
+        status?: 'unknown' | 'conflicting';
+        reason?: string;
+        source_statements?: string[];
+      };
+    };
+  };
 }
 
 export interface CalendarEvent {
@@ -502,6 +512,19 @@ export function validateCampusHours(input: unknown): LocationHours[] {
     if (typeof location.availabilityIssue === 'string' &&
       (HOURS_AVAILABILITY_ISSUES as readonly string[]).includes(location.availabilityIssue)) {
       normalized.availabilityIssue = location.availabilityIssue as LocationHours['availabilityIssue'];
+    }
+    const metadata = location.normalization_metadata;
+    const evidence = isRecord(metadata) ? metadata.evidence : undefined;
+    const schedule = isRecord(evidence) ? evidence.schedule : undefined;
+    if (isRecord(schedule)) {
+      const value: NonNullable<NonNullable<NonNullable<LocationHours['normalization_metadata']>['evidence']>['schedule']> = {};
+      if (typeof schedule.season === 'string' && schedule.season.trim()) value.season = schedule.season;
+      if (schedule.status === 'unknown' || schedule.status === 'conflicting') value.status = schedule.status;
+      if (typeof schedule.reason === 'string') value.reason = schedule.reason;
+      if (Array.isArray(schedule.source_statements) && schedule.source_statements.every(item => typeof item === 'string')) {
+        value.source_statements = schedule.source_statements;
+      }
+      normalized.normalization_metadata = { evidence: { schedule: value } };
     }
     locations.push(normalized);
   });

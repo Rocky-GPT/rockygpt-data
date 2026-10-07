@@ -6,7 +6,7 @@
  * search-index shape consumed by the directory API and modal UI.
  */
 
-import type { AbsenceClaim, ContactEvidence } from './contact-evidence';
+import type { AbsenceClaim, ContactEvidence, ReviewedContactAddition, ReviewedContactNote } from './contact-evidence';
 
 /**
  * Top-level directory buckets shown in the directory modal and API response.
@@ -25,10 +25,13 @@ export interface OfficeDirectoryContact {
   office?: string;
   /**
    * The office's own page on ramapo.edu, reviewed by hand. Publication records it only when it is a
-   * ramapo.edu page and this run's capture loaded it. An office with no page of its own on
-   * ramapo.edu (Athletics lives on another site) has none.
+   * ramapo.edu page and this run's capture loaded it. The external Athletics site additionally
+   * requires the captured official catalog referral.
    */
   website?: string;
+  websiteEvidence?: Pick<ContactEvidence, 'url' | 'section'>;
+  additionalContacts?: ReviewedContactAddition[];
+  contactNotes?: ReviewedContactNote[];
   helpsWith: string[];
   /** The page sections that state this office's phone, email and office. */
   evidence: ContactEvidence[];

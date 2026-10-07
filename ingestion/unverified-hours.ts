@@ -23,5 +23,12 @@ export function withheldHoursRecord({ record, reason }: { record: LocationHours;
     sourceUrl: record.sourceUrl,
     collectedAt: record.collectedAt,
     availabilityIssue: 'unverified-hours',
+    normalization_metadata: { evidence: { schedule: {
+      ...record.normalization_metadata?.evidence?.schedule,
+      status: reason.startsWith('conflicting-') ? 'conflicting' : 'unknown',
+      reason: hoursUncertaintyReason(reason),
+      source_statements: record.normalization_metadata?.evidence?.schedule?.source_statements
+        ?? (record.notes ? [record.notes] : []),
+    } } },
   };
 }

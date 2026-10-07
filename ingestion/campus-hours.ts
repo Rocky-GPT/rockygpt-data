@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 import { load } from 'cheerio';
 import { fetchWithPolicy } from './http-client';
@@ -259,7 +258,9 @@ export function parseAthleticsFacilityHours(pageText: string): LocationHours[] {
             name: "Lodge Fitness Center (College Park Apartments)",
             hours: lodgeHours, notes: lodgeClosure || term
         }
-    ];
+    ].map((record) => ({ ...record,
+        ...(record.name === 'Lodge Fitness Center (College Park Apartments)' && lodgeClosure ? {}
+            : { normalization_metadata: { evidence: { schedule: { season: term } } } }) }));
 }
 
 export function hoursPageText(html: string): string {
@@ -293,20 +294,6 @@ function parsedWeek(section: string): Record<string, string> {
     return hours;
 }
 
-/** The days a repeated schedule lists, from its first day line to the next other line. */
-function listedDays(lines: string[]): Record<string, string> {
-    const listed: Record<string, string> = {};
-    for (const line of lines) {
-        const parsed = dayLine(line);
-        if (!parsed) {
-            if (Object.keys(listed).length) break;
-            continue;
-        }
-        assignDays(listed, parsed.days, parsed.schedule);
-    }
-    return listed;
-}
-
 export function parseLibraryHours(pageText: string): LocationHours[] {
     const text = normalizePageText(pageText);
     const circulation = sectionBetween(text, 'CIRCULATION DESK HOURS', 'RESEARCH HELP HOURS');
@@ -333,23 +320,17 @@ export function parseLibraryHours(pageText: string): LocationHours[] {
     // Repeated sidebar schedules can disagree with main content on the year.
     const researchSections = [...text.matchAll(/^RESEARCH HELP HOURS$/gim)];
     const repeats = researchSections.map((match) => {
-        const tail = text.slice(match.index! + match[0].length).split('\n').slice(1, 9);
-        return { window: readValidityFromNotes(tail.slice(0, 3).join(' ')).window, listed: listedDays(tail) };
+        const remainder = text.slice(match.index! + match[0].length).split('\n').slice(1);
+        const end = remainder.findIndex((line) => /^(GAME LAB HOURS|If we are offline|List All Hours)/i.test(line));
+        const tail = remainder.slice(0, end < 0 ? 8 : end);
+        return { window: readValidityFromNotes(tail.slice(0, 3).join(' ')).window,
+            statement: tail.join('\n') };
     });
     if (new Set(repeats.map((repeat) => JSON.stringify(repeat.window))).size > 1) {
-        // In September 2026 the sidebar kept "Fall 2025" above the same hours the main
-        // content lists for Fall 2026. Only a stale year label differs, so publish the main
-        // schedule when it carries the latest term and every repeated day agrees with it.
-        const latest = repeats.every((repeat) => (repeat.window?.validUntil ?? '')
-            <= (repeats[0].window?.validUntil ?? ''));
-        const sameHours = repeats.every((repeat) => Object.entries(repeat.listed)
-            .every(([day, schedule]) => help.hours[day] === schedule));
-        if (latest && sameHours) {
-            help.derivation = 'A repeated schedule on the page gives the same hours under an older year.';
-        } else {
-            help.availabilityIssue = 'conflicting-source-validity';
-            help.notes += '. Source repeats research-help hours with conflicting applicability dates; withheld.';
-        }
+        help.availabilityIssue = 'conflicting-source-validity';
+        help.normalization_metadata = { evidence: { schedule: { status: 'conflicting',
+            reason: 'Main content and sidebar publish different applicability years; neither is silently preferred.',
+            source_statements: repeats.map((repeat) => repeat.statement) } } };
     }
     return [library, help, lab];
 }
@@ -408,9 +389,8 @@ async function fetchHoursSource(sourceUrl: string): Promise<HoursSourceCapture> 
 /**
  * Offices whose own page publishes their hours. Each name is the office's campus identity.
  * Three kinds, each reviewed against the page:
- * - regular (no `kind`): a regular (Fall/Spring) schedule beside a separate summer one. The
- *   label is the line that starts the regular schedule (read 2026-09-28). Summer schedules
- *   stay out: no page dates them.
+ * - regular (no `kind`): a day range with one time range. A separate seasonal entry retains
+ *   any summer schedule. Only source-published date boundaries are attached.
  * - `always`: the page says the office is open every hour of every day. The label is the
  *   sentence that says so. Nothing in it is seasonal, so the record names no dates.
  * - `week`: the page prints its weekly schedule as day-and-time segments that differ by day
@@ -428,19 +408,22 @@ export interface OfficeHoursPage {
     kind?: 'always' | 'conflict' | 'week';
     /** For `conflict`: the other statement the label's line disagrees with. */
     against?: RegExp;
+    /** Source-published scope, retained even when its calendar boundaries are absent. */
+    season?: string;
+    /** Explicit date statement on the same source page; never the academic calendar. */
+    starts?: RegExp;
 }
 export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
-    { name: 'Registrar', url: 'https://www.ramapo.edu/registrar/', label: /^Fall\s*\/\s*Spring Hours:/i },
-    { name: 'Student Accounts', url: 'https://www.ramapo.edu/student-accounts/', label: /^Academic Year:/i },
-    { name: 'Financial Aid', url: 'https://www.ramapo.edu/finaid/', label: /^Academic Year:/i },
+    { name: 'Registrar', url: 'https://www.ramapo.edu/registrar/', label: /^Fall\s*\/\s*Spring Hours:/i, season: 'Fall/Spring' },
+    { name: 'Student Accounts', url: 'https://www.ramapo.edu/student-accounts/', label: /^Academic Year:/i, season: 'Academic Year' },
+    { name: 'Financial Aid', url: 'https://www.ramapo.edu/finaid/', label: /^Academic Year:/i, season: 'Academic Year' },
     { name: 'Cahill Career Development Center', url: 'https://www.ramapo.edu/careercenter/', label: /^Office Hours:/i },
     { name: 'Dean of Students', url: 'https://www.ramapo.edu/student-affairs/', label: /^Regular Office Hours:/i },
     { name: 'Educational Opportunity Fund (EOF) Program', url: 'https://www.ramapo.edu/eof-program/',
-        label: /^Academic Year Hours:/i },
+        label: /^Academic Year Hours:/i, season: 'Academic Year' },
     { name: 'Office of Student Conduct', url: 'https://www.ramapo.edu/student-conduct/',
-        label: /^Fall and Spring Semester Hours:/i },
-    // Read 2026-10-07. These pages name no season or print one schedule beside an undated summer
-    // one; the academic calendar dates the regular schedule, as for the offices above.
+        label: /^Fall and Spring Semester Hours:/i, season: 'Fall and Spring Semester' },
+    // An undated source remains undated; generic campus class dates do not date office hours.
     { name: 'Anisfield School of Business', url: 'https://www.ramapo.edu/asb/', label: /^Hours:/i },
     // The page prints the days on one line and the times on the next, under no label of its own:
     // the label is the day line, kept (zero width) so the parser still reads the days from it.
@@ -448,21 +431,45 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         label: /^(?=Monday-Friday$)/i },
     { name: 'Office of Specialized Services', url: 'https://www.ramapo.edu/oss/',
         label: /^MAIN OFFICE:.*?Office Hours Typically/i },
-    { name: 'Payroll', url: 'https://www.ramapo.edu/payroll/', label: /^Fall\s*\/\s*Spring,/i },
-    { name: 'Testing Center', url: 'https://www.ramapo.edu/testing/', label: /^Fall and Spring$/i },
+    { name: 'Payroll', url: 'https://www.ramapo.edu/payroll/', label: /^Fall\s*\/\s*Spring,/i, season: 'Fall/Spring' },
+    { name: 'Testing Center', url: 'https://www.ramapo.edu/testing/', label: /^Fall and Spring$/i, season: 'Fall and Spring' },
     // The schedule is one sentence in the middle of a paragraph, after the appointment sentence.
     { name: 'ID Card Room', url: 'https://www.ramapo.edu/publicsafety/id-cards/',
         label: /^In order to get a new identification card, please contact the ID room at publicsafety@ramapo\.edu and make an appointment\.\s*The ID room is open/i },
     { name: 'Nursing Programs Office', url: 'https://www.ramapo.edu/nursing/', label: /^Hours:/i },
     // Different times on different days (read 2026-10-07).
-    { name: 'Center for Reading and Writing', url: 'https://www.ramapo.edu/crw/', kind: 'week', label: /^Hours$/i },
+    { name: 'Center for Reading and Writing', url: 'https://www.ramapo.edu/crw/', kind: 'week', label: /^Hours$/i,
+        season: 'Fall 2026', starts: /The CRW will open on (August) (31) at 10 AM\./i },
     { name: 'Center for Student Involvement', url: 'https://www.ramapo.edu/csi/', kind: 'week',
         label: /^CSI Hours of Operation$/i },
     { name: 'Roadrunner Central', url: 'https://www.ramapo.edu/csi/roadrunner-central/', kind: 'week',
-        label: /^Please visit the Center for Student Involvement Main Office, located in SC202, for assistance during the following hours during the semester:$/i },
+        label: /^Please visit the Center for Student Involvement Main Office, located in SC202, for assistance during the following hours during the semester:$/i,
+        season: 'During the semester' },
     // The page's heading names the term, so the label does too: a new term's page stops the collector.
-    { name: 'Photography Lab', url: 'https://www.ramapo.edu/photolab/hours/', kind: 'week', label: /^FALL 2026$/i },
-    { name: 'Counseling Center', url: 'https://www.ramapo.edu/counseling/', label: /^Academic Year Hours:/i },
+    { name: 'Photography Lab', url: 'https://www.ramapo.edu/photolab/hours/', kind: 'week', label: /^FALL 2026$/i, season: 'Fall 2026' },
+    { name: 'Counseling Center', url: 'https://www.ramapo.edu/counseling/', label: /^Academic Year Hours:/i, season: 'Academic Year' },
+    { name: 'Registrar (Summer)', url: 'https://www.ramapo.edu/registrar/', label: /^Summer Hours:/i, season: 'Summer' },
+    { name: 'Student Accounts (Summer)', url: 'https://www.ramapo.edu/student-accounts/', label: /^Summer:/i, season: 'Summer' },
+    { name: 'Financial Aid (Summer)', url: 'https://www.ramapo.edu/finaid/', label: /^Summer:/i, season: 'Summer' },
+    { name: 'Cahill Career Development Center (Summer)', url: 'https://www.ramapo.edu/careercenter/', label: /^Summer Office Hours:/i, season: 'Summer' },
+    { name: 'Dean of Students (Summer)', url: 'https://www.ramapo.edu/student-affairs/', label: /^Summer Office Hours:/i, season: 'Summer' },
+    { name: 'Educational Opportunity Fund (EOF) Program (Summer)', url: 'https://www.ramapo.edu/eof-program/', label: /^Summer Hours:/i, season: 'Summer' },
+    { name: 'Office of Student Conduct (Summer)', url: 'https://www.ramapo.edu/student-conduct/', label: /^Summer Hours:/i, season: 'Summer' },
+    { name: 'Payroll (Summer)', url: 'https://www.ramapo.edu/payroll/', label: /^Summer,/i, season: 'Summer' },
+    { name: 'Testing Center (Summer)', url: 'https://www.ramapo.edu/testing/', label: /^Summer$/i, season: 'Summer' },
+    { name: 'Counseling Center (Summer)', url: 'https://www.ramapo.edu/counseling/', label: /^Summer Hours:/i, season: 'Summer' },
+    { name: 'Roadrunner Central (Summer)', url: 'https://www.ramapo.edu/csi/roadrunner-central/', kind: 'week',
+        label: /^During the Summer months, our hours are as follows:$/i, season: 'Summer' },
+    { name: 'IT Help Desk (Summer)', url: 'https://www.ramapo.edu/its/help-desk/', label: /^Summer:/i, season: 'Summer' },
+    { name: 'Berrie Center Box Office', url: 'https://www.ramapo.edu/berriecenter/tickets-seating/', kind: 'week',
+        label: /^As of August 26, 2026 the Box Office is open:$/i,
+        starts: /As of (August) (26), (2026) the Box Office is open:/i },
+    { name: 'Health Services (Fall)',
+        url: 'https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/',
+        label: /VMG will be open/i, season: 'Fall 2026' },
+    { name: 'Health Services (Summer)',
+        url: 'https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/',
+        label: /summer hours are/i, season: 'Summer 2026' },
     // One page states it for the whole department, so both Public Safety offices share the sentence.
     { name: 'Public Safety (Emergency)', url: 'https://www.ramapo.edu/publicsafety/get-support/', kind: 'always',
         label: /The Public Safety Department is available 24 hours a day, 7 days a week(?:, 365 days a year)?\./i },
@@ -476,8 +483,6 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
 
 /** A Fall or Spring semester, from its first class day to its last class or final exam. */
 export interface TermWindow { name: string; from: string; until: string }
-
-const CALENDAR_PATH = path.join(process.cwd(), 'data', 'normalized', 'calendar.json');
 
 /** Fall and Spring windows from the published academic calendar. */
 export function termWindows(calendar: unknown): TermWindow[] {
@@ -493,17 +498,9 @@ export function termWindows(calendar: unknown): TermWindow[] {
     });
 }
 
-function readTermWindows(): TermWindow[] {
-    return termWindows(JSON.parse(fs.readFileSync(CALENDAR_PATH, 'utf8')) as unknown);
-}
-
-const MONTH_ABBREVIATIONS = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'];
-const shortDate = (iso: string) => `${MONTH_ABBREVIATIONS[Number(iso.slice(5, 7)) - 1]} ${Number(iso.slice(8, 10))}`;
-
 /**
- * An office's regular schedule, dated by the semester the capture falls in (or
- * the next one): "Fall/Spring Hours" name no dates, and the academic calendar
- * does. Between semesters no schedule applies, so none is stated.
+ * An office's published schedule. A collection date or a classes-begin event
+ * cannot establish when an office opens; undated source schedules stay undated.
  */
 export function parseOfficeHours(name: string, label: RegExp, pageText: string, collectedAt: string,
     terms: TermWindow[]): LocationHours {
@@ -526,26 +523,10 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     const last = /^Fri/i.test(days[2]) ? 5 : 4;
     const hours = createUnknownWeek();
     DAYS.slice(0, last).forEach((day) => { hours[day] = schedule; });
-    // Notes carry only the page's own words; the dating is the collector's, so it stays apart.
-    return { name, hours, notes: `${lines[index].match(label)![0]} ${text}`.trim(),
-        ...datedByTerm(name, collectedAt, terms) };
-}
-
-/** The semester the capture falls in (or the next one). */
-function termFor(name: string, collectedAt: string, terms: TermWindow[]): TermWindow {
-    const captured = collectedAt.slice(0, 10);
-    const term = terms.filter((window) => window.until >= captured).sort((a, b) => a.from.localeCompare(b.from))[0];
-    if (!term) throw new Error(`No academic calendar semester dates the office hours for ${name}`);
-    return term;
-}
-
-/** The semester the capture falls in (or the next one) dates a schedule that names no dates. */
-function datedByTerm(name: string, collectedAt: string, terms: TermWindow[]):
-    { validFrom: string; validUntil: string; derivation: string } {
-    const term = termFor(name, collectedAt, terms);
-    return { validFrom: term.from, validUntil: term.until,
-        derivation: `Applies during ${term.name} per the academic calendar `
-            + `(${shortDate(term.from)} - ${shortDate(term.until)}, ${term.until.slice(0, 4)}).` };
+    const following = lines[index + (range.test(rest) ? 1 : 2)] ?? '';
+    const closure = `${text} ${following.match(/^(?:Closed (?:on )?Fridays?|Fridays?:? CLOSED)$/i)?.[0] ?? ''}`;
+    if (/\b(?:Closed (?:on )?Fridays?|Fridays?:? CLOSED)\b/i.test(closure)) hours.Friday = 'CLOSED';
+    return { name, hours, notes: `${lines[index].match(label)![0]} ${closure.trim()}`.trim() };
 }
 
 const DAY_WORD = String.raw`(?:mon(?:day)?|tue(?:s(?:day)?)?|wed(?:nesday)?|thu(?:rs?(?:day)?)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?|weekdays|weekends)s?`;
@@ -608,7 +589,7 @@ function segmentsIn(line: string): { found: RegExpMatchArray[]; pure: boolean } 
  * it, skipping at most three other lines) and ends at the first line that is not purely segments;
  * a first line that mixes prose and segments is the whole block. Anything it cannot account for
  * stops the collector: a day stated twice with different schedules, a time with no am/pm it cannot
- * place, a span that does not run forward within one day. Dated by the semester, like the others.
+ * place, a span that does not run forward within one day. Only source dates establish validity.
  */
 export function parseWeeklyHours(name: string, label: RegExp, pageText: string, collectedAt: string,
     terms: TermWindow[]): LocationHours {
@@ -616,12 +597,6 @@ export function parseWeeklyHours(name: string, label: RegExp, pageText: string, 
     const index = lines.findIndex((line) => label.test(line));
     if (index < 0) throw new Error(`Office hours line is unavailable for ${name}`);
     if (lines.filter((line) => label.test(line)).length > 1) throw new Error(`The hours label for ${name} matches more than one line`);
-    // A page that names its own term must name the one the calendar dates this capture to.
-    const term = termFor(name, collectedAt, terms);
-    const named = lines[index].match(/\b(fall|spring|winter|summer)\s+(20\d{2})\b/i);
-    if (named && `${named[1]} ${named[2]}`.toLowerCase() !== term.name.toLowerCase()) {
-        throw new Error(`The page for ${name} says "${named[0]}" but the academic calendar dates this schedule to ${term.name}`);
-    }
     const candidates = [lines[index].replace(label, '').trim(), ...lines.slice(index + 1)].filter(Boolean);
     const block: string[] = [];
     let skipped = 0;
@@ -663,10 +638,7 @@ export function parseWeeklyHours(name: string, label: RegExp, pageText: string, 
             assigned.add(day);
         }
     }
-    return { name, hours, notes: `${lines[index].match(label)![0]} ${block.join(' ')}`.trim(),
-        validFrom: term.from, validUntil: term.until,
-        derivation: `Applies during ${term.name} per the academic calendar `
-            + `(${shortDate(term.from)} - ${shortDate(term.until)}, ${term.until.slice(0, 4)}).` };
+    return { name, hours, notes: `${lines[index].match(label)![0]} ${block.join(' ')}`.trim() };
 }
 
 /** An office the page says is open every hour of every day. The page's sentence is the note. */
@@ -688,7 +660,49 @@ export function parseConflictingOfficeHours(name: string, label: RegExp, against
     const second = pageText.match(against)?.[0];
     if (!first || !second) throw new Error(`The reviewed conflict in the hours of ${name} is no longer on its page; review it`);
     return { name, hours: createUnknownWeek(), availabilityIssue: 'conflicting-source-schedules',
-        notes: `${first.replace(/\s+/g, ' ')}\n${second.replace(/\s+/g, ' ')}` };
+        notes: `${first.replace(/\s+/g, ' ')}\n${second.replace(/\s+/g, ' ')}`,
+        normalization_metadata: { evidence: { schedule: { status: 'conflicting',
+            reason: 'The source publishes incompatible Fall/Spring schedules.',
+            season: 'Fall/Spring', source_statements: [first, second] } } } };
+}
+
+function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedAt: string): LocationHours {
+    let scheduleText = text;
+    // This dated announcement prints both seasons in one paragraph. Bind each
+    // record to its own clause rather than accidentally reading both clocks as one.
+    if (office.name.startsWith('Health Services (')) {
+        const expression = office.name.endsWith('(Fall)')
+            ? /VMG will be open Monday through Friday from .*? in the Fall semester/i
+            : /summer hours are Monday through Thursday, [^)]+/i;
+        scheduleText = text.match(expression)?.[0] ?? '';
+        if (!/Date:.*Jul 14, 2026/.test(text) || !scheduleText) {
+            throw new Error(`Reviewed Health Services announcement changed: ${office.name}`);
+        }
+    }
+    const record = office.kind === 'always' ? parseAlwaysOpenHours(office.name, office.label, scheduleText)
+        : office.kind === 'week' ? parseWeeklyHours(office.name, office.label, scheduleText, collectedAt, [])
+        : office.kind === 'conflict' ? parseConflictingOfficeHours(office.name, office.label, office.against!, scheduleText)
+        : parseOfficeHours(office.name, office.label, scheduleText, collectedAt, []);
+    if (office.season) {
+        record.normalization_metadata = { evidence: { schedule: {
+            ...record.normalization_metadata?.evidence?.schedule, season: office.season,
+        } } };
+        record.notes = `${office.season}: ${record.notes}`;
+    }
+    if (office.starts) {
+        const statement = text.match(office.starts);
+        const year = statement?.[3] ?? text.match(/ANNOUNCEMENTS\s*-\s*Fall (20\d{2})/i)?.[1];
+        if (!statement || !year) throw new Error(`Explicit opening date unavailable for ${office.name}`);
+        const opened = new Date(`${statement[1]} ${statement[2]}, ${year} 12:00:00 GMT`);
+        if (!Number.isFinite(opened.getTime())) throw new Error(`Invalid opening date for ${office.name}`);
+        record.validFrom = opened.toISOString().slice(0, 10);
+        record.notes = `${statement[0]} ${record.notes}`;
+    }
+    if (office.name === 'Berrie Center Box Office') {
+        const performance = findLine(text, /^1 Hour Prior to All Performances$/i, 'box-office performance hours');
+        record.notes += `. ${performance}`;
+    }
+    return record;
 }
 
 export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireGeneralSource = false,
@@ -713,16 +727,11 @@ export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireG
     // collector checks that every office page was parsed.
     const offices = OFFICE_HOURS_PAGES.filter((office) =>
         captures.some((capture) => capture.sourceUrl === office.url));
-    const windows = offices.length ? terms ?? readTermWindows() : [];
     return [...source(ATHLETICS_HOURS_URL, parseAthleticsFacilityHours),
         ...source(LIBRARY_HOURS_URL, parseLibraryHours), ...general,
         ...offices.flatMap((office) => source(office.url, (text) => [
-            office.kind === 'always' ? parseAlwaysOpenHours(office.name, office.label, text)
-                : office.kind === 'week' ? parseWeeklyHours(office.name, office.label, text,
-                    captures.find((capture) => capture.sourceUrl === office.url)!.collectedAt, windows)
-                : office.kind === 'conflict' ? parseConflictingOfficeHours(office.name, office.label, office.against!, text)
-                    : parseOfficeHours(office.name, office.label, text,
-                        captures.find((capture) => capture.sourceUrl === office.url)!.collectedAt, windows)]))];
+            configuredOfficeHours(office, text,
+                captures.find((capture) => capture.sourceUrl === office.url)!.collectedAt)]))];
 }
 
 export function campusHoursPublication(records: LocationHours[], now = new Date()) {
