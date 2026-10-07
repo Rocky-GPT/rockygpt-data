@@ -29,20 +29,28 @@
           "collection": "campus_hours",
           "source_key": "campus-hours",
           "source_record_keys": [
-            "Center for Student Involvement (CSI):Monday",
-            "Center for Student Involvement (CSI):Tuesday",
-            "Center for Student Involvement (CSI):Wednesday",
-            "Center for Student Involvement (CSI):Thursday",
-            "Center for Student Involvement (CSI):Friday",
-            "Center for Student Involvement (CSI):Saturday",
-            "Center for Student Involvement (CSI):Sunday"
+            "Center for Student Involvement:Monday",
+            "Center for Student Involvement:Tuesday",
+            "Center for Student Involvement:Wednesday",
+            "Center for Student Involvement:Thursday",
+            "Center for Student Involvement:Friday",
+            "Center for Student Involvement:Saturday",
+            "Center for Student Involvement:Sunday",
+            "Center for Student Involvement (Summer):Monday",
+            "Center for Student Involvement (Summer):Tuesday",
+            "Center for Student Involvement (Summer):Wednesday",
+            "Center for Student Involvement (Summer):Thursday",
+            "Center for Student Involvement (Summer):Friday",
+            "Center for Student Involvement (Summer):Saturday",
+            "Center for Student Involvement (Summer):Sunday"
           ],
           "selector": {
             "field": "name",
             "values": [
-              "Center for Student Involvement (CSI)"
+              "Center for Student Involvement",
+              "Center for Student Involvement (Summer)"
             ],
-            "evidence": "Reviewed campus-hours record explicitly expands CSI to Center for Student Involvement. The scope is operating hours, not staff/phone availability."
+            "evidence": "Reviewed office-specific pages: https://www.ramapo.edu/csi/ states the main office's weekly hours; https://www.ramapo.edu/csi/roadrunner-central/ explicitly directs users to CSI Main Office in SC202 and publishes its separate Summer schedule. No academic-calendar dates or omitted-day closures are inferred. The generic campus-hours CSI record remains unlinked."
           }
         }
       ]
@@ -7603,6 +7611,18 @@
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Anisfield School of Business"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/asb/) publishes its hours without naming a season; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -7742,6 +7762,18 @@
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Public Safety (Non-Emergency)"
+            ],
+            "evidence": "The department's own page (https://www.ramapo.edu/publicsafety/get-support/) states that Public Safety is available 24 hours a day, 7 days a week, 365 days a year. The same statement is recorded for both Public Safety offices; it names no dates."
+          }
         }
       ]
     },
@@ -7761,6 +7793,50 @@
               "key:office:counseling-center"
             ],
             "evidence": "Reviewed directory contact key; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [
+            "Counseling Center:Monday",
+            "Counseling Center:Tuesday",
+            "Counseling Center:Wednesday",
+            "Counseling Center:Thursday",
+            "Counseling Center:Friday",
+            "Counseling Center:Saturday",
+            "Counseling Center:Sunday",
+            "Counseling Center (Summer):Monday",
+            "Counseling Center (Summer):Tuesday",
+            "Counseling Center (Summer):Wednesday",
+            "Counseling Center (Summer):Thursday",
+            "Counseling Center (Summer):Friday",
+            "Counseling Center (Summer):Saturday",
+            "Counseling Center (Summer):Sunday",
+            "Counseling Center (Drop-In):Monday",
+            "Counseling Center (Drop-In):Tuesday",
+            "Counseling Center (Drop-In):Wednesday",
+            "Counseling Center (Drop-In):Thursday",
+            "Counseling Center (Drop-In):Friday",
+            "Counseling Center (Drop-In):Saturday",
+            "Counseling Center (Drop-In):Sunday",
+            "Counseling Center (Emergency Counseling):Monday",
+            "Counseling Center (Emergency Counseling):Tuesday",
+            "Counseling Center (Emergency Counseling):Wednesday",
+            "Counseling Center (Emergency Counseling):Thursday",
+            "Counseling Center (Emergency Counseling):Friday",
+            "Counseling Center (Emergency Counseling):Saturday",
+            "Counseling Center (Emergency Counseling):Sunday"
+          ],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Counseling Center",
+              "Counseling Center (Summer)",
+              "Counseling Center (Drop-In)",
+              "Counseling Center (Emergency Counseling)"
+            ],
+            "evidence": "Reviewed https://www.ramapo.edu/counseling/ regular, Summer and Drop-In schedules plus https://www.ramapo.edu/counseling/faq/ emergency counseling availability. Drop-In and Emergency Counseling are separately named service schedules, not office opening hours. No unspecified seasonal dates or weekday closures are inferred."
           }
         }
       ]
@@ -7804,6 +7880,19 @@
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "IT Help Desk",
+              "IT Help Desk (Summer)"
+            ],
+            "evidence": "Reviewed own-office schedules, retaining each published seasonal scope separately. Explicit source dates only; no academic-calendar date inference."
+          }
         }
       ]
     },
@@ -7823,7 +7912,19 @@
               "key:office:public-safety-emergency",
               "email:publicsafety@ramapo.edu"
             ],
-            "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+            "evidence": "Reviewed original directory contact key. The role email publicsafety@ramapo.edu is also recorded on the ID Card Room entry, so it is no longer a unique anchor; the key selects this contact. No shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Public Safety (Emergency)"
+            ],
+            "evidence": "The department's own page (https://www.ramapo.edu/publicsafety/get-support/) states that Public Safety is available 24 hours a day, 7 days a week, 365 days a year. The same statement is recorded for both Public Safety offices; it names no dates."
           }
         }
       ]
@@ -7866,6 +7967,18 @@
               "email:success@ramapo.edu"
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Center for Student Success (Academic Advising)"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/studentsuccess/) publishes its hours without naming a season; the academic calendar dates the semester it applies to."
           }
         }
       ]
@@ -7917,9 +8030,10 @@
           "selector": {
             "field": "name",
             "values": [
-              "Financial Aid"
+              "Financial Aid",
+              "Financial Aid (Summer)"
             ],
-            "evidence": "The office's own page (https://www.ramapo.edu/finaid/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+            "evidence": "Reviewed own-office schedules, retaining each published seasonal scope separately. Explicit source dates only; no academic-calendar date inference."
           }
         }
       ]
@@ -7961,6 +8075,19 @@
               "key:office:health-services"
             ],
             "evidence": "Reviewed directory contact key; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Health Services (Fall)",
+              "Health Services (Summer)"
+            ],
+            "evidence": "Reviewed own-office schedule section: Berrie Center page or dated July 14, 2026 Health Services announcement. Seasonal schedules retain their scope without inferred date windows."
           }
         }
       ]
@@ -8011,9 +8138,10 @@
           "selector": {
             "field": "name",
             "values": [
-              "Registrar"
+              "Registrar",
+              "Registrar (Summer)"
             ],
-            "evidence": "The office's own page (https://www.ramapo.edu/registrar/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+            "evidence": "Reviewed own-office schedules, retaining each published seasonal scope separately. Explicit source dates only; no academic-calendar date inference."
           }
         }
       ]
@@ -11612,13 +11740,29 @@
         {
           "collection": "campus_hours",
           "source_key": "campus-hours",
-          "source_record_keys": [],
+          "source_record_keys": [
+            "Student Accounts:Monday",
+            "Student Accounts:Tuesday",
+            "Student Accounts:Wednesday",
+            "Student Accounts:Thursday",
+            "Student Accounts:Friday",
+            "Student Accounts:Saturday",
+            "Student Accounts:Sunday",
+            "Student Accounts (Summer):Monday",
+            "Student Accounts (Summer):Tuesday",
+            "Student Accounts (Summer):Wednesday",
+            "Student Accounts (Summer):Thursday",
+            "Student Accounts (Summer):Friday",
+            "Student Accounts (Summer):Saturday",
+            "Student Accounts (Summer):Sunday"
+          ],
           "selector": {
             "field": "name",
             "values": [
-              "Student Accounts"
+              "Student Accounts",
+              "Student Accounts (Summer)"
             ],
-            "evidence": "The office's own page (https://www.ramapo.edu/student-accounts/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+            "evidence": "Both https://www.ramapo.edu/student-accounts/ and https://www.ramapo.edu/student-accounts/contacts/ publish Academic Year and Summer hours with different closing times. The same reviewed schedule names and seasons deliberately retain both conflicting source observations. No date precedence or missing weekday closure is inferred."
           }
         }
       ]
@@ -11670,9 +11814,10 @@
           "selector": {
             "field": "name",
             "values": [
-              "Cahill Career Development Center"
+              "Cahill Career Development Center",
+              "Cahill Career Development Center (Summer)"
             ],
-            "evidence": "The office's own page (https://www.ramapo.edu/careercenter/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+            "evidence": "Reviewed own-office schedules, retaining each published seasonal scope separately. Explicit source dates only; no academic-calendar date inference."
           }
         }
       ]
@@ -11694,6 +11839,18 @@
               "email:oss@ramapo.edu"
             ],
             "evidence": "Office's own page (https://www.ramapo.edu/oss/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Office of Specialized Services"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/oss/) publishes its hours without naming a season; the academic calendar dates the semester it applies to."
           }
         }
       ]
@@ -11724,9 +11881,10 @@
           "selector": {
             "field": "name",
             "values": [
-              "Dean of Students"
+              "Dean of Students",
+              "Dean of Students (Summer)"
             ],
-            "evidence": "The office's own page (https://www.ramapo.edu/student-affairs/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+            "evidence": "Reviewed own-office schedules, retaining each published seasonal scope separately. Explicit source dates only; no academic-calendar date inference."
           }
         }
       ]
@@ -11757,9 +11915,10 @@
           "selector": {
             "field": "name",
             "values": [
-              "Educational Opportunity Fund (EOF) Program"
+              "Educational Opportunity Fund (EOF) Program",
+              "Educational Opportunity Fund (EOF) Program (Summer)"
             ],
-            "evidence": "The office's own page (https://www.ramapo.edu/eof-program/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+            "evidence": "Reviewed own-office schedules, retaining each published seasonal scope separately. Explicit source dates only; no academic-calendar date inference."
           }
         }
       ]
@@ -11790,9 +11949,10 @@
           "selector": {
             "field": "name",
             "values": [
-              "Office of Student Conduct"
+              "Office of Student Conduct",
+              "Office of Student Conduct (Summer)"
             ],
-            "evidence": "The office's own page (https://www.ramapo.edu/student-conduct/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+            "evidence": "Reviewed own-office schedules, retaining each published seasonal scope separately. Explicit source dates only; no academic-calendar date inference."
           }
         }
       ]
@@ -11813,6 +11973,18 @@
               "key:office:center-for-reading-and-writing"
             ],
             "evidence": "Office's own page (https://www.ramapo.edu/crw/, read 2026-09-28) publishes this phone; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Center for Reading and Writing"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/crw/) prints a schedule that differs by day; the academic calendar dates the semester it applies to."
           }
         }
       ]
@@ -11876,6 +12048,19 @@
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/testing/, read 2026-09-28) states this contact; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Testing Center",
+              "Testing Center (Summer)"
+            ],
+            "evidence": "Reviewed own-office schedules, retaining each published seasonal scope separately. Explicit source dates only; no academic-calendar date inference."
+          }
         }
       ]
     },
@@ -11896,6 +12081,19 @@
               "email:payroll@ramapo.edu"
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/payroll/, read 2026-09-28) states this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Payroll",
+              "Payroll (Summer)"
+            ],
+            "evidence": "Reviewed own-office schedules, retaining each published seasonal scope separately. Explicit source dates only; no academic-calendar date inference."
           }
         }
       ]
@@ -11918,6 +12116,26 @@
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/berriecenter/, read 2026-09-28) states this contact; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [
+            "Berrie Center Box Office:Monday",
+            "Berrie Center Box Office:Tuesday",
+            "Berrie Center Box Office:Wednesday",
+            "Berrie Center Box Office:Thursday",
+            "Berrie Center Box Office:Friday",
+            "Berrie Center Box Office:Saturday",
+            "Berrie Center Box Office:Sunday"
+          ],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Berrie Center Box Office"
+            ],
+            "evidence": "https://www.ramapo.edu/berriecenter/tickets-seating/ publishes weekday hours and an explicit August 26, 2026 opening date. The separately archived https://www.ramapo.edu/berriecenter/plan-your-visit/ states late August to early May; that coarse season is retained without inventing an exact May cutoff. Performance-relative availability remains a note."
+          }
         }
       ]
     },
@@ -11938,6 +12156,18 @@
               "email:photolab@ramapo.edu"
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/photolab/contact/, read 2026-09-28) states this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Photography Lab"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/photolab/hours/) prints a schedule that differs by day; the academic calendar dates the semester it applies to."
           }
         }
       ]
@@ -12001,6 +12231,18 @@
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/nursing/, read 2026-09-28) states this contact; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Nursing Programs Office"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/nursing/) publishes its hours without naming a season; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -12021,6 +12263,19 @@
               "email:rrc@ramapo.edu"
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/csi/, read 2026-09-28) states this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Roadrunner Central",
+              "Roadrunner Central (Summer)"
+            ],
+            "evidence": "Reviewed own-office schedules, retaining each published seasonal scope separately. Explicit source dates only; no academic-calendar date inference."
           }
         }
       ]
@@ -12085,6 +12340,34 @@
               "key:office:id-card-room"
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/publicsafety/id-cards/, read 2026-09-28) states this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [
+            "ID Card Room:Monday",
+            "ID Card Room:Tuesday",
+            "ID Card Room:Wednesday",
+            "ID Card Room:Thursday",
+            "ID Card Room:Friday",
+            "ID Card Room:Saturday",
+            "ID Card Room:Sunday",
+            "ID Card Room (Early Arrival):Monday",
+            "ID Card Room (Early Arrival):Tuesday",
+            "ID Card Room (Early Arrival):Wednesday",
+            "ID Card Room (Early Arrival):Thursday",
+            "ID Card Room (Early Arrival):Friday",
+            "ID Card Room (Early Arrival):Saturday",
+            "ID Card Room (Early Arrival):Sunday"
+          ],
+          "selector": {
+            "field": "name",
+            "values": [
+              "ID Card Room",
+              "ID Card Room (Early Arrival)"
+            ],
+            "evidence": "https://www.ramapo.edu/publicsafety/id-cards/ states routine hours; https://www.ramapo.edu/reslife/earlyarrival/ states a different ID-room closing time within early-arrival guidance. The latter is a separate source-scoped schedule with conflicting/unverified applicability metadata, not assumed to replace routine hours. Neither receives inferred academic-calendar dates."
           }
         }
       ]

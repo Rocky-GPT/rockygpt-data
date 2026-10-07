@@ -230,3 +230,58 @@ test('a program links the public program pages that link its catalog code as the
     .links.some(link => link.collection === 'major_pages'));
   assert.throws(() => compileCampusIdentities(seed, snapshot(), raw, { majorPages: { pages: [{ programCodes: [] }] } }), /no ID or program links/);
 });
+
+test('two offices that publish one role email each keep their own contact by their reviewed key', async () => {
+  // The ID Card Room's page lists publicsafety@ramapo.edu, the address Public Safety (Emergency) is known by.
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const contact = (key: string, name: string) => ({ source_key: 'campus-directory', source_record_key: key, name, email: 'publicsafety@ramapo.edu', phone: '(201) 684-6666' });
+  input.campus_contacts = [contact('office:public-safety-emergency', 'Public Safety (Emergency)'), contact('office:id-card-room', 'ID Card Room')];
+  const result = compileCampusIdentities(real, input);
+  const contactKeys = (name: string) => result.registry.entities.find(e => e.name === name)!
+    .links.find(l => l.collection === 'contacts')!.source_record_keys;
+  assert.deepEqual(contactKeys('Public Safety (Emergency)'), ['office:public-safety-emergency']);
+  assert.deepEqual(contactKeys('ID Card Room'), ['office:id-card-room']);
+  // The shared address is no longer a unique anchor for either, so neither claims the other's record.
+  assert.equal(result.report.unresolved.some(issue => issue.collection === 'contacts' && issue.kind === 'unlinked_record'
+    && /public-safety-emergency|id-card-room/.test(issue.record ?? '')), false);
+});
+
+test('every office whose own page prints hours links exactly those records, and no office links two schedules', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const { OFFICE_HOURS_PAGES } = await import('../../ingestion/campus-hours');
+  const input = snapshot();
+  const names = [...new Set(OFFICE_HOURS_PAGES.map(office => office.name))];
+  input.campus_hours = names.flatMap(name => ['Monday', 'Tuesday'].map(day =>
+    ({ source_key: 'campus-hours', source_record_key: `${name}:${day}`, name, day, schedule: '8:30am-4:30pm' })));
+  const result = compileCampusIdentities(real, input);
+  const owners = new Map<string, string[]>();
+  for (const entity of result.registry.entities) {
+    for (const link of entity.links.filter(l => l.collection === 'campus_hours')) {
+      for (const key of link.source_record_keys) owners.set(key, [...(owners.get(key) ?? []), entity.name]);
+    }
+  }
+  for (const name of names) {
+    for (const day of ['Monday', 'Tuesday']) assert.deepEqual(owners.get(`${name}:${day}`), [name], `${name} ${day}`);
+  }
+  assert.equal(result.report.unresolved.some(issue => issue.collection === 'campus_hours' && names.some(name => (issue.record ?? '').includes(name))), false);
+  // An office links the records of one name only (two names would show two schedules for one office).
+  for (const entity of real.entities) {
+    const hours = entity.links.filter(l => l.collection === 'campus_hours');
+    assert.ok(hours.length <= 1, `${entity.name} has two hours links`);
+    for (const link of hours) assert.equal(link.selector?.values?.length, 1, `${entity.name} selects more than one hours name`);
+  }
+});
+
+test('the Counseling Center, both Public Safety offices and the IT Help Desk link their own hours by name', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const names = ['Counseling Center', 'Public Safety (Emergency)', 'Public Safety (Non-Emergency)', 'IT Help Desk', 'Registrar'];
+  input.campus_hours = names.flatMap(name => ['Monday', 'Tuesday'].map(day =>
+    ({ source_key: 'campus-hours', source_record_key: `${name}:${day}`, name, day, schedule: '8:30am-4:30pm' })));
+  const result = compileCampusIdentities(real, input);
+  for (const name of names) {
+    const links = result.registry.entities.find(e => e.name === name)!.links.filter(l => l.collection === 'campus_hours');
+    assert.deepEqual(links.map(l => l.source_record_keys), [[`${name}:Monday`, `${name}:Tuesday`]], name);
+  }
+});

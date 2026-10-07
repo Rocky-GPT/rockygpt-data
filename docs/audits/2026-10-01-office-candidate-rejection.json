@@ -1,0 +1,10 @@
+{
+  "database": "rockygpt_profiles_dev_offices_20261001",
+  "version": "dev-offices-20261001",
+  "status": "failed",
+  "rejected": true,
+  "rejection_reason": "Coarse collected_at renewed unverified names, departments and titles; superseded by separately reviewed per-field observations candidate.",
+  "activeVersion": "dev-profiles-headings3-20260929",
+  "originalReportUnchanged": true,
+  "sourceDatabaseUnchanged": true
+}

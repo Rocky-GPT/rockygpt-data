@@ -1,0 +1,923 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-07",
+  "scope": "Manual review of every hours schedule linked to the 34 exposed offices, against captured sections and office-contact-review.json. Explicitly listed absences only; changed sections require review.",
+  "schedules": [
+    {
+      "schedule": "Registrar",
+      "source_url": "https://www.ramapo.edu/registrar/",
+      "scope": "Registrar source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/registrar/",
+          "section": "Contact Information:",
+          "section_sha256": "2c25bda86ded7ea875164dc5619063583db3ddb838236af16fb41359d55e2a61"
+        }
+      ]
+    },
+    {
+      "schedule": "Registrar (Summer)",
+      "source_url": "https://www.ramapo.edu/registrar/",
+      "scope": "Registrar (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/registrar/",
+          "section": "Contact Information:",
+          "section_sha256": "2c25bda86ded7ea875164dc5619063583db3ddb838236af16fb41359d55e2a61"
+        }
+      ]
+    },
+    {
+      "schedule": "Student Accounts",
+      "source_url": "https://www.ramapo.edu/student-accounts/",
+      "scope": "Student Accounts source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/student-accounts/",
+          "section": "To schedule a personal appointment, please email studentaccts@ramapo.edu (mailto:studentaccts@ramapo.edu) and include “Requesting Appointment” in the subject line.",
+          "section_sha256": "a15bcf2e3882086c2f91198979dcca4572055f3815bf296ac5169fab042e45da"
+        }
+      ]
+    },
+    {
+      "schedule": "Student Accounts",
+      "source_url": "https://www.ramapo.edu/student-accounts/contacts/",
+      "scope": "Student Accounts source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/student-accounts/contacts/",
+          "section": "Hours of Operation:",
+          "section_sha256": "5e9b8fce448e26373feac672da7ff0e7b019014625d4c76e5dac10ae5e3ae6ec"
+        }
+      ]
+    },
+    {
+      "schedule": "Student Accounts (Summer)",
+      "source_url": "https://www.ramapo.edu/student-accounts/",
+      "scope": "Student Accounts (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/student-accounts/",
+          "section": "To schedule a personal appointment, please email studentaccts@ramapo.edu (mailto:studentaccts@ramapo.edu) and include “Requesting Appointment” in the subject line.",
+          "section_sha256": "a15bcf2e3882086c2f91198979dcca4572055f3815bf296ac5169fab042e45da"
+        }
+      ]
+    },
+    {
+      "schedule": "Student Accounts (Summer)",
+      "source_url": "https://www.ramapo.edu/student-accounts/contacts/",
+      "scope": "Student Accounts (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/student-accounts/contacts/",
+          "section": "Hours of Operation:",
+          "section_sha256": "5e9b8fce448e26373feac672da7ff0e7b019014625d4c76e5dac10ae5e3ae6ec"
+        }
+      ]
+    },
+    {
+      "schedule": "Financial Aid",
+      "source_url": "https://www.ramapo.edu/finaid/",
+      "scope": "Financial Aid source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/finaid/",
+          "section": "Hours of Operation",
+          "section_sha256": "d633d7db953b6444ea012026197d448667bb01d81236757ad2ce7cb68adbaf7c"
+        }
+      ]
+    },
+    {
+      "schedule": "Financial Aid (Summer)",
+      "source_url": "https://www.ramapo.edu/finaid/",
+      "scope": "Financial Aid (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/finaid/",
+          "section": "Hours of Operation",
+          "section_sha256": "d633d7db953b6444ea012026197d448667bb01d81236757ad2ce7cb68adbaf7c"
+        }
+      ]
+    },
+    {
+      "schedule": "Cahill Career Development Center",
+      "source_url": "https://www.ramapo.edu/careercenter/",
+      "scope": "Cahill Career Development Center source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/careercenter/",
+          "section": "Contact and Hours of Operation",
+          "section_sha256": "c97907153a669e46e9ec00d6af8618829ec0b92d241feba63bd3967f5ca44355"
+        }
+      ]
+    },
+    {
+      "schedule": "Cahill Career Development Center (Summer)",
+      "source_url": "https://www.ramapo.edu/careercenter/",
+      "scope": "Cahill Career Development Center (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/careercenter/",
+          "section": "Contact and Hours of Operation",
+          "section_sha256": "c97907153a669e46e9ec00d6af8618829ec0b92d241feba63bd3967f5ca44355"
+        }
+      ]
+    },
+    {
+      "schedule": "Dean of Students",
+      "source_url": "https://www.ramapo.edu/student-affairs/",
+      "scope": "Dean of Students source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/student-affairs/",
+          "section": "Office Hours",
+          "section_sha256": "6a8aa6ca56ef30b2ccfc8f6a789db22ddb00c5093a47e0ccdba183bf08789086"
+        }
+      ]
+    },
+    {
+      "schedule": "Dean of Students (Summer)",
+      "source_url": "https://www.ramapo.edu/student-affairs/",
+      "scope": "Dean of Students (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The Dean of Students Office Hours section gives Monday–Thursday summer hours only, with no Friday/weekend opening schedule or exact seasonal dates. A separate interim-suspension process paragraph is not this office schedule.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/student-affairs/",
+          "section": "Office Hours",
+          "section_sha256": "6a8aa6ca56ef30b2ccfc8f6a789db22ddb00c5093a47e0ccdba183bf08789086"
+        }
+      ]
+    },
+    {
+      "schedule": "Educational Opportunity Fund (EOF) Program",
+      "source_url": "https://www.ramapo.edu/eof-program/",
+      "scope": "Educational Opportunity Fund (EOF) Program source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/eof-program/",
+          "section": "EOF Services",
+          "section_sha256": "93cab2d8ad790639994785b89362335f8f5ce7773391c9482da26feb02d9f605"
+        }
+      ]
+    },
+    {
+      "schedule": "Educational Opportunity Fund (EOF) Program (Summer)",
+      "source_url": "https://www.ramapo.edu/eof-program/",
+      "scope": "Educational Opportunity Fund (EOF) Program (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/eof-program/",
+          "section": "EOF Services",
+          "section_sha256": "93cab2d8ad790639994785b89362335f8f5ce7773391c9482da26feb02d9f605"
+        }
+      ]
+    },
+    {
+      "schedule": "Office of Student Conduct",
+      "source_url": "https://www.ramapo.edu/student-conduct/",
+      "scope": "Office of Student Conduct source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/student-conduct/",
+          "section": "Location and Hours",
+          "section_sha256": "b52b451e1854b9509123f15cff34fde3d93d7e8967800093ffe92f2b5e2a94e7"
+        }
+      ]
+    },
+    {
+      "schedule": "Office of Student Conduct (Summer)",
+      "source_url": "https://www.ramapo.edu/student-conduct/",
+      "scope": "Office of Student Conduct (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/student-conduct/",
+          "section": "Location and Hours",
+          "section_sha256": "b52b451e1854b9509123f15cff34fde3d93d7e8967800093ffe92f2b5e2a94e7"
+        }
+      ]
+    },
+    {
+      "schedule": "Anisfield School of Business",
+      "source_url": "https://www.ramapo.edu/asb/",
+      "scope": "Anisfield School of Business source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/asb/",
+          "section": "Contact Us",
+          "section_sha256": "c70fef97ee8d6a081ff0e775431939338c51ecac86d5b91c7fb665c352b5e2cc"
+        }
+      ]
+    },
+    {
+      "schedule": "Center for Student Success (Academic Advising)",
+      "source_url": "https://www.ramapo.edu/studentsuccess/",
+      "scope": "Center for Student Success (Academic Advising) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/studentsuccess/",
+          "section": "D-207 (Academic Building)",
+          "section_sha256": "3b8e19fd2f2a4c847759fae5eaca356177e2e3118f355b685b9834947f9aa61a"
+        }
+      ]
+    },
+    {
+      "schedule": "Office of Specialized Services",
+      "source_url": "https://www.ramapo.edu/oss/",
+      "scope": "Office of Specialized Services source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/oss/",
+          "section": "Welcome to the Office of Specialized Services",
+          "section_sha256": "ca7f115dd90461716b01929021a8cb1f867146835a45cd125412b780e6e3278a"
+        }
+      ]
+    },
+    {
+      "schedule": "Payroll",
+      "source_url": "https://www.ramapo.edu/payroll/",
+      "scope": "Payroll source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/payroll/",
+          "section": "Contacts:",
+          "section_sha256": "2043ad44b83e8158173a29266c84d7fe2af5a621b92048497232a3dc5916dde5"
+        }
+      ]
+    },
+    {
+      "schedule": "Payroll (Summer)",
+      "source_url": "https://www.ramapo.edu/payroll/",
+      "scope": "Payroll (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/payroll/",
+          "section": "Contacts:",
+          "section_sha256": "2043ad44b83e8158173a29266c84d7fe2af5a621b92048497232a3dc5916dde5"
+        }
+      ]
+    },
+    {
+      "schedule": "Testing Center",
+      "source_url": "https://www.ramapo.edu/testing/",
+      "scope": "Testing Center source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/testing/",
+          "section": "Fall and Spring",
+          "section_sha256": "83ccdf133ecc4c335f8fb44cfd2059890c8e64af7ecf4a5ab3b6e782dbe26714"
+        }
+      ]
+    },
+    {
+      "schedule": "Testing Center (Summer)",
+      "source_url": "https://www.ramapo.edu/testing/",
+      "scope": "Testing Center (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/testing/",
+          "section": "Summer",
+          "section_sha256": "362003e04694e133d051f8c2bddf039e077b63705e78069304b50030ce53e92b"
+        }
+      ]
+    },
+    {
+      "schedule": "ID Card Room",
+      "source_url": "https://www.ramapo.edu/publicsafety/id-cards/",
+      "scope": "ID Card Room source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/publicsafety/id-cards/",
+          "section": "New ID Cards",
+          "section_sha256": "10f6365636122dceaabdfa86d053aeea6bc00c110cfee1a6f2da3f5e928c4979"
+        }
+      ]
+    },
+    {
+      "schedule": "ID Card Room (Early Arrival)",
+      "source_url": "https://www.ramapo.edu/reslife/earlyarrival/",
+      "scope": "ID Card Room (Early Arrival) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The ID-room sentence in early-arrival guidance only states Monday–Friday hours. The source gives no weekend timetable or effective dates for that sentence. Residence check-in deadlines elsewhere on the page do not establish the ID timetable validity.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/earlyarrival/",
+          "section": "Policies, Expectations and Information",
+          "section_sha256": "3b254612c3042b06174c8c87f8643062b6b400659b4d7f64ae2fec41e36bb3d2"
+        }
+      ]
+    },
+    {
+      "schedule": "Nursing Programs Office",
+      "source_url": "https://www.ramapo.edu/nursing/",
+      "scope": "Nursing Programs Office source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/nursing/",
+          "section": "Nursing Programs Contact Information:",
+          "section_sha256": "030f807101b71b8f70d47962bb756e46111bac8715750d1338d2beff69acd712"
+        }
+      ]
+    },
+    {
+      "schedule": "Center for Reading and Writing",
+      "source_url": "https://www.ramapo.edu/crw/",
+      "scope": "Center for Reading and Writing source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_until"
+      ],
+      "reason": "The Fall 2026 announcement explicitly opens the CRW August 31, and the Hours section covers all weekdays/weekend appointments. Neither section gives an exact final day for the schedule.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/crw/",
+          "section": "Hours",
+          "section_sha256": "1d178524c097ea75bb1ad38624e69293637c4cd0ebed6479b2162040a3e39bd9"
+        },
+        {
+          "url": "https://www.ramapo.edu/crw/",
+          "section": "ANNOUNCEMENTS – Fall 2026",
+          "section_sha256": "08e0597eff43c121882619a36c197a0e126e0eee23fdb91c69360bb92a59d0c0"
+        }
+      ]
+    },
+    {
+      "schedule": "Center for Student Involvement",
+      "source_url": "https://www.ramapo.edu/csi/",
+      "scope": "Center for Student Involvement source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/csi/",
+          "section": "CSI Hours of Operation",
+          "section_sha256": "b01f5ab05039f3094782e7cf9abac300eb71ef6b06e96147d81c57715859d7a4"
+        }
+      ]
+    },
+    {
+      "schedule": "Center for Student Involvement (Summer)",
+      "source_url": "https://www.ramapo.edu/csi/roadrunner-central/",
+      "scope": "Center for Student Involvement (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/csi/roadrunner-central/",
+          "section": "Hours of Operation:",
+          "section_sha256": "19bb7d0c37c1b47ae06f1273becb3b11b98205f325c5f7e7701f219ad4856c2f"
+        }
+      ]
+    },
+    {
+      "schedule": "Roadrunner Central",
+      "source_url": "https://www.ramapo.edu/csi/roadrunner-central/",
+      "scope": "Roadrunner Central source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/csi/roadrunner-central/",
+          "section": "Hours of Operation:",
+          "section_sha256": "19bb7d0c37c1b47ae06f1273becb3b11b98205f325c5f7e7701f219ad4856c2f"
+        }
+      ]
+    },
+    {
+      "schedule": "Roadrunner Central (Summer)",
+      "source_url": "https://www.ramapo.edu/csi/roadrunner-central/",
+      "scope": "Roadrunner Central (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/csi/roadrunner-central/",
+          "section": "Hours of Operation:",
+          "section_sha256": "19bb7d0c37c1b47ae06f1273becb3b11b98205f325c5f7e7701f219ad4856c2f"
+        }
+      ]
+    },
+    {
+      "schedule": "Photography Lab",
+      "source_url": "https://www.ramapo.edu/photolab/hours/",
+      "scope": "Photography Lab source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "All seven weekdays are explicitly accounted for. The Fall 2026 section does not publish exact first/last dates; a photo credit year is not an applicability date.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/photolab/hours/",
+          "section": "FALL 2026",
+          "section_sha256": "378a140f79a79d5db115a1c730953739f33582fe80f315de2562fe9275a9cee5"
+        }
+      ]
+    },
+    {
+      "schedule": "Counseling Center",
+      "source_url": "https://www.ramapo.edu/counseling/",
+      "scope": "Counseling Center source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/counseling/",
+          "section": "Connect With Us",
+          "section_sha256": "877a3eed7783ae0a26619c9276380eb55e7494983be61a5f2f152a5a91e8f9d9"
+        }
+      ]
+    },
+    {
+      "schedule": "Counseling Center (Summer)",
+      "source_url": "https://www.ramapo.edu/counseling/",
+      "scope": "Counseling Center (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/counseling/",
+          "section": "Connect With Us",
+          "section_sha256": "877a3eed7783ae0a26619c9276380eb55e7494983be61a5f2f152a5a91e8f9d9"
+        }
+      ]
+    },
+    {
+      "schedule": "Counseling Center (Drop-In)",
+      "source_url": "https://www.ramapo.edu/counseling/",
+      "scope": "Counseling Center (Drop-In) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "Drop-in service is explicitly Monday–Friday, 1–3 pm with last meeting at 2:40 pm. No weekend drop-in window or exact effective date interval is stated; emergency availability does not fill these service fields.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/counseling/",
+          "section": "Our Services",
+          "section_sha256": "4791cfcb3aadc613a341e9a280b991a8544d6fbc3afc1df986b2e9d81e96787f"
+        }
+      ]
+    },
+    {
+      "schedule": "Counseling Center (Emergency Counseling)",
+      "source_url": "https://www.ramapo.edu/counseling/faq/",
+      "scope": "Counseling Center (Emergency Counseling) source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "Emergency counseling is explicitly available 24/7. The FAQ does not name exact start/end dates for that continuing availability; no day is marked missing.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/counseling/faq/",
+          "section": "Frequently Asked Questions",
+          "section_sha256": "a9415e9212a44e4f34808b2183f9daab64bdd786e5d4c52239b88bea5e9c3621"
+        }
+      ]
+    },
+    {
+      "schedule": "IT Help Desk (Summer)",
+      "source_url": "https://www.ramapo.edu/its/help-desk/",
+      "scope": "IT Help Desk (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/its/help-desk/",
+          "section": "Ways to submit a ticket",
+          "section_sha256": "18bfbf0314dc928fadf1b284145392b1c1154889d45faba2c5fa61c2365f5f4b"
+        }
+      ]
+    },
+    {
+      "schedule": "IT Help Desk",
+      "source_url": "https://www.ramapo.edu/its/help-desk/",
+      "scope": "IT Help Desk source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The two Fall/Spring statements conflict, but neither gives exact effective dates. No withheld weekday placeholder is classified as a published omission.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/its/help-desk/",
+          "section": "Fall / Spring",
+          "section_sha256": "f8264aed92b50b5725ecf02c409b3209edd892aa7e4b55380c658ff594ada108"
+        },
+        {
+          "url": "https://www.ramapo.edu/its/help-desk/",
+          "section": "Ways to submit a ticket",
+          "section_sha256": "18bfbf0314dc928fadf1b284145392b1c1154889d45faba2c5fa61c2365f5f4b"
+        }
+      ]
+    },
+    {
+      "schedule": "Berrie Center Box Office",
+      "source_url": "https://www.ramapo.edu/berriecenter/tickets-seating/",
+      "scope": "Berrie Center Box Office source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_until"
+      ],
+      "reason": "The ticket page gives the August 26, 2026 opening date and regular Monday–Friday hours. The FAQ gives only early May as its seasonal end. Neither states an exact final date or regular weekend counter timetable; opening one hour before performances is retained as conditional availability.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/berriecenter/tickets-seating/",
+          "section": "As of August 26, 2026 the Box Office is open:",
+          "section_sha256": "60f0c3be23939ce28c6672f03ef50b605562e3396aa5fc7a5a49524f21cee907"
+        },
+        {
+          "url": "https://www.ramapo.edu/berriecenter/plan-your-visit/",
+          "section": "When is the Box Office open?",
+          "section_sha256": "429635cad6595add43fd6eb4e8e4661f5960632a030a0bdda04d94a9cec072fb"
+        }
+      ]
+    },
+    {
+      "schedule": "Health Services (Fall)",
+      "source_url": "https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/",
+      "scope": "Health Services (Fall) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The July 14, 2026 announcement states seasonal weekday service hours without the listed days or exact seasonal first/last dates. The announcement timestamp is not a clinic opening date.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/",
+          "section": "Official Announcement: Health Services at Ramapo College",
+          "section_sha256": "e30f4bcd1ef76c9d2fc8aa337e843f1b26e2e7d392344b34410b136cacdead46"
+        }
+      ]
+    },
+    {
+      "schedule": "Health Services (Summer)",
+      "source_url": "https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/",
+      "scope": "Health Services (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The July 14, 2026 announcement states seasonal weekday service hours without the listed days or exact seasonal first/last dates. The announcement timestamp is not a clinic opening date.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/",
+          "section": "Official Announcement: Health Services at Ramapo College",
+          "section_sha256": "e30f4bcd1ef76c9d2fc8aa337e843f1b26e2e7d392344b34410b136cacdead46"
+        }
+      ]
+    },
+    {
+      "schedule": "Public Safety (Emergency)",
+      "source_url": "https://www.ramapo.edu/publicsafety/get-support/",
+      "scope": "Public Safety (Emergency) source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "Public Safety is explicitly available 24 hours every day, 365 days per year. The source does not give exact effective start/end dates for this continuing availability; no weekday is missing.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/publicsafety/get-support/",
+          "section": "(NON-Confidential Resource)",
+          "section_sha256": "95f48c715ab90774e8b7324a6d37d342da92449806c57fbe86d0ad19c0b9ed21"
+        }
+      ]
+    },
+    {
+      "schedule": "Public Safety (Non-Emergency)",
+      "source_url": "https://www.ramapo.edu/publicsafety/get-support/",
+      "scope": "Public Safety (Non-Emergency) source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "Public Safety is explicitly available 24 hours every day, 365 days per year. The source does not give exact effective start/end dates for this continuing availability; no weekday is missing.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/publicsafety/get-support/",
+          "section": "(NON-Confidential Resource)",
+          "section_sha256": "95f48c715ab90774e8b7324a6d37d342da92449806c57fbe86d0ad19c0b9ed21"
+        }
+      ]
+    },
+    {
+      "schedule": "Library (Main Building)",
+      "source_url": "https://www.ramapo.edu/library/library-hours/",
+      "scope": "Library (Main Building) source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [],
+      "reason": "All seven weekdays and the August 26–December 15, 2026 validity interval are explicitly published. No hours/date omission claim is needed.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/library/library-hours/",
+          "section": "Library Hours",
+          "section_sha256": "a66f1843895574df7cb705dbd02e579c2280a28ddd80bf994f9ab5a6e874878d"
+        }
+      ]
+    }
+  ]
+}

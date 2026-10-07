@@ -215,24 +215,27 @@ async function insertStructured(
   // library hours answered an August question.
   const campusHours = readJson<
     Array<{ name: string; hours: Record<string, string>; notes?: string;
-      collectedAt?: string; sourceUrl?: string; validFrom?: string; validUntil?: string }>
+      collectedAt?: string; sourceUrl?: string; validFrom?: string; validUntil?: string;
+      normalization_metadata?: { evidence?: { schedule?: { season?: string } } } }>
   >('data/normalized/hours.json');
   for (const location of campusHours) {
     const { window } = recordValidity(location);
-    const validFrom = window?.validFrom || null;
-    const validUntil = window?.validUntil || null;
+    const validFrom = location.validFrom || window?.validFrom || null;
+    const validUntil = location.validUntil || window?.validUntil || null;
     for (const [day, schedule] of Object.entries(location.hours || {})) {
       const recordKey = `${location.name}:${day}`;
       const hours = normalizeOpeningHours(schedule);
       await client.query(
         `INSERT INTO rockygpt_v2.campus_hours
          (dataset_version_id, source_id, source_record_key, name, day, schedule, collected_at,
-          valid_from, valid_until, content_hash, hours, notes, source_url)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12,$13)`,
+          valid_from, valid_until, content_hash, hours, notes, source_url, normalization_metadata)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12,$13,$14::jsonb)`,
         [datasetId, sources.get('campus-hours'), recordKey, location.name, day, schedule, location.collectedAt || collectedAtFor('campus-hours'),
           validFrom, validUntil,
-          sha256(JSON.stringify({ recordKey, schedule, validFrom, validUntil, notes: location.notes, sourceUrl: location.sourceUrl })),
-          hours === null ? null : JSON.stringify(hours), location.notes || null, location.sourceUrl || null]
+          sha256(JSON.stringify({ recordKey, schedule, validFrom, validUntil, notes: location.notes,
+            sourceUrl: location.sourceUrl, normalization_metadata: location.normalization_metadata })),
+          hours === null ? null : JSON.stringify(hours), location.notes || null, location.sourceUrl || null,
+          JSON.stringify(location.normalization_metadata ?? {})]
       );
       counts.campus_hours = (counts.campus_hours || 0) + 1;
     }
@@ -376,11 +379,54 @@ async function insertStructured(
     for (const withheld of contact.evidence.withheld) {
       console.warn(`Withheld ${contact.name} ${withheld.field} ${withheld.value}: ${withheld.reason}`);
     }
+    // A "not published" note this run could not confirm is left out (the field stays unknown), loudly.
+    if (contact.evidence.website_issue) {
+      console.warn(`Website not kept: ${contact.name} ${contact.evidence.website_issue.url}: ${contact.evidence.website_issue.reason}`);
+    }
+    for (const issue of contact.evidence.absence_issues) {
+      console.warn(`Not published, unconfirmed: ${contact.name} ${issue.field} (${issue.kind}): ${issue.reason}`);
+    }
+    for (const issue of contact.evidence.contact_note_issues ?? []) {
+      console.warn(`Contact instruction not kept: ${contact.name}: ${issue.reason}`);
+    }
+    const review = contact.evidence.contact_review;
+    if (review?.status === 'needs_review') {
+      const candidates = review.unrecorded.reduce((total, item) => total + item.found.length, 0);
+      console.warn(`Contact coverage needs review: ${contact.name}: ${candidates} unrecorded candidate(s), `
+        + `${review.unavailable_sections.length} unavailable section(s). See normalization_metadata.evidence.contact_review; candidates are not published facts.`);
+    }
   }
   // A page that changed withholds a value or two. Losing a quarter of them means the
   // captures themselves are missing, so stop rather than publish offices with no phones.
   if (withheldValues > Math.max(5, reviewedValues * 0.25)) {
     throw new Error(`${withheldValues} of ${reviewedValues} reviewed contact values have no supporting page in this run's captures.`);
+  }
+  // Completed manual office reviews must not silently degrade on a later refresh.
+  // Discovery candidates stay diagnostic; changed sections require another review.
+  const officeReview = readJson<{ schema_version: number; offices: Array<{ name: string }> }>('src/reference/office-contact-review.json');
+  if (officeReview.schema_version !== 1 || !Array.isArray(officeReview.offices)
+      || new Set(officeReview.offices.map(office => office.name)).size !== officeReview.offices.length) {
+    throw new Error('Invalid completed office review artifact.');
+  }
+  for (const office of officeReview.offices) {
+    const matches = directoryContacts.filter(contact => contact.name === office.name && contact.type === 'office');
+    const evidence = matches.length === 1 ? matches[0].evidence : undefined;
+    if (!evidence || evidence.withheld.length || evidence.absence_issues.length || evidence.website_issue
+        || evidence.contact_note_issues?.length || evidence.contact_review?.status !== 'no_unrecorded_values_in_scanned_sections') {
+      throw new Error(`Completed office review needs attention before publication: ${office.name}. Inspect contact evidence and coverage diagnostics.`);
+    }
+    const contact = matches[0];
+    const reviewedFields = { department: contact.department, email: contact.email,
+      phone: contact.phone || contact.phones?.length, office: contact.office || contact.offices?.length,
+      prefers_email: contact.prefers_email, preferred_contact: contact.preferred_contact,
+      contact_note: contact.contact_note };
+    for (const [field, value] of Object.entries(reviewedFields)) {
+      if ((value === undefined || value === null || value === '' || value === 0)
+          && !evidence.not_published.some(absence => absence.field === field)) {
+        throw new Error(`Completed office review has an unreviewed missing field: ${office.name} ${field}.`);
+      }
+    }
+    if (!evidence.website) throw new Error(`Completed office review needs a checked website: ${office.name}.`);
   }
   for (const contact of directoryContacts) {
     const name = cleanText(contact.name);

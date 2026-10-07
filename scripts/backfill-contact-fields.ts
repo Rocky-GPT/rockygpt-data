@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { Pool } from 'pg';
-import { normalizeContactFields, reviewContacts, splitPublishedFacultyDepartment } from '../src/directory/contact-normalizer';
+import { formatOffices, normalizeContactFields, reviewContacts, splitPublishedFacultyDepartment } from '../src/directory/contact-normalizer';
 import type { ContactFieldInput, NormalizedContactFields } from '../src/directory/contact-normalizer';
 
 interface Row extends ContactFieldInput {
@@ -90,7 +90,7 @@ async function main() {
         const contentHash = createHash('sha256').update(JSON.stringify({
           name: fields.name, type: fields.type, title: fields.title, status: fields.status, offices: fields.offices,
           department: fields.department ?? null, phone: row.phone ?? null, email: row.email ?? null,
-          office: fields.offices?.join(' / ') ?? null, phones: JSON.stringify(row.phones ?? []),
+          office: formatOffices(fields.offices) ?? null, phones: JSON.stringify(row.phones ?? []),
           preferred_contact: row.preferred_contact ?? null, contact_note: row.contact_note ?? null,
           raw_phone: row.raw_phone ?? null, aliases: row.aliases ?? [], search_text: searchText,
         })).digest('hex');
@@ -99,7 +99,7 @@ async function main() {
               office=$7, normalization_metadata=$8::jsonb, search_text=$9, content_hash=$12
           WHERE id=$10 AND dataset_version_id=$11`, [
           fields.name, fields.type ?? null, fields.title ?? null, fields.department ?? null,
-          fields.status ?? null, JSON.stringify(fields.offices ?? []), fields.offices?.join(' / ') ?? null,
+          fields.status ?? null, JSON.stringify(fields.offices ?? []), formatOffices(fields.offices) ?? null,
           JSON.stringify(metadata(row)), searchText,
           row.id, dataset.id, contentHash,
         ]);

@@ -3,7 +3,7 @@ import test from 'node:test';
 import {
   ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, campusHoursFromCaptures,
   campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
-  OFFICE_HOURS_PAGES, parseOfficeHours, termWindows,
+  OFFICE_HOURS_PAGES, hoursPageText, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, parseWeeklyHours, termWindows,
 } from './campus-hours';
 import { partitionHoursForPublication, recordValidity } from '../src/data-v2/validity';
 import { validateCampusHours } from './schema';
@@ -230,4 +230,240 @@ test('office pages give their regular hours for the semester the academic calend
     /line is unavailable/);
   assert.throws(() => parseOfficeHours('Registrar', registrar.label, page, '2027-06-01T13:00:00Z', terms),
     /No academic calendar semester/);
+});
+
+// Lines as the live pages printed them on 2026-10-06 (read in memory, not stored).
+const counselingPage = `Connect With Us
+To learn more about our services or to schedule an appointment, please visit us in the Academic Building D, Room 216, or call our office at (201) 684-7522.
+Academic Year Hours:
+Monday - Friday: 8:30 am - 4:30 pm
+Summer Hours:
+Monday - Thursday: 8:00 am - 5:15 pm
+Closed on Fridays`;
+const publicSafetyPage = `Public Safety (Non-Confidential Resource)
+(201) 684-6666
+Public Safety is open 24 hours. Please call Public Safety to speak with an emergency counselor after regular business hours.
+(NON-Confidential Resource)
+Office Location: C-102
+Phone: (201) 684-6666
+The Public Safety Department is available 24 hours a day, 7 days a week, 365 days a year. By contacting the Public Safety Department, you are not obligated to file an incident report.`;
+const helpDeskPage = `Hours of Support
+Fall / Spring
+Monday-Thursday
+Friday
+8:30 AM - 8:00 PM
+8:30 AM - 6:00 PM
+Call Us!
+201-684-7777
+By visiting the Help Desk office. We are located on the 4th floor of the Learning Commons and our hours are:
+Fall/Spring: Monday-Friday 8:00am-8:00pm
+Summer: Monday-Thursday 8:00am-5:15pm`;
+const fallTerms = [{ name: 'Fall 2026', from: '2026-08-26', until: '2026-12-16' }];
+// Lines as the live pages printed them on 2026-10-07 (read in memory, not stored).
+const newOfficePages: Record<string, string> = {
+  'https://www.ramapo.edu/asb/': 'Office: ASB-333\nHours: Monday - Friday, 8:30AM-4:30PM',
+  'https://www.ramapo.edu/studentsuccess/': 'Center for Student Success\nD-207 (Academic Building)\nMonday-Friday\n8:30 a.m.-4:30 p.m.',
+  'https://www.ramapo.edu/oss/': 'MAIN OFFICE: C-Wing, Room 205 - Meetings by appointment. | Office Hours Typically MON-FRI, 8:30 AM-4:30 PM | (201) 684-7514',
+  'https://www.ramapo.edu/payroll/': 'Hours:\nFall/Spring, Mon. - Fri.\n8:30 a.m. - 4:30 p.m.\nSummer, Mon. - Thurs.,\n8 a.m. - 5:15 p.m.',
+  'https://www.ramapo.edu/testing/': 'Hours\nSummer\nMonday to Thursday, 8:00 a.m. to 5:15 p.m.\nClosed Friday\nFall and Spring\nMonday to Friday, 8:30 a.m. to 4:30 p.m.',
+  'https://www.ramapo.edu/publicsafety/id-cards/': 'In order to get a new identification card, please contact the ID room at publicsafety@ramapo.edu and make an appointment. The ID room is open Monday-Friday from 8:30am until 4:00pm.',
+  'https://www.ramapo.edu/nursing/': 'Nursing Programs Contact Information:\nOffice: Adler Center for Nursing Excellence 215\nHours: Monday through Friday, 8:30 a.m.to 4:30 p.m.\nPhone: (201) 684-7749',
+  'https://www.ramapo.edu/crw/': 'ANNOUNCEMENTS - Fall 2026\nThe CRW will open on August 31 at 10 AM.\nHours\nMonday - Thursday, 10 AM - 8:00 PM\nFriday - 10:00 AM - 4:00 PM\nWeekends - by virtual appointment\nPeter P. Mercer Learning Commons | Room 420 (4th floor)\np: 201-684-7557 | Summer: 201-684-7561',
+  'https://www.ramapo.edu/csi/': "CSI Hours of Operation\nThe CSI main office is open Monday through Fridays 8:00am-midnight, Saturday from 4:00-10:00pm and Sunday from 3:00-8:00pm.\nJ. Lee's Hours\nMondays-Thursdays 9 am-10 pm, Fridays 9 am-9 pm",
+  'https://www.ramapo.edu/csi/roadrunner-central/': 'Hours of Operation:\nPlease visit the Center for Student Involvement Main Office, located in SC202, for assistance during the following hours during the semester:\nMonday-Friday: 8:00am-12:00am\nSaturday- 4:00pm-10:00pm\nSunday- 3:00pm-8:00pm\nDuring the Summer months, our hours are as follows:\nMonday-Thursday: 8:00am-5:15pm',
+  'https://www.ramapo.edu/photolab/hours/': "OPEN LAB HOURS\nThroughout the Fall and Spring semesters The Photography Suite (BC 135) is open six days a week.\nFALL 2026\nWe're open 6 days a week! No need to make reservations for the darkroom. We look forward to seeing you in the lab!\nSunday 6pm - 9pm\nMonday 10am - 6pm\nTuesday 10am - 6pm\nWednesday 10am - 8pm\nThursday 10am - 5pm\nFriday 10am - 6pm\nSaturday Closed",
+};
+
+test('the Counseling Center publishes its academic-year hours and leaves the undated summer ones out', () => {
+  const entry = OFFICE_HOURS_PAGES.find((office) => office.name === 'Counseling Center')!;
+  const row = parseOfficeHours(entry.name, entry.label, counselingPage, '2026-09-28T13:00:00Z', fallTerms);
+  assert.equal(row.hours.Monday, '8:30am-4:30pm');
+  assert.equal(row.hours.Friday, '8:30am-4:30pm');
+  assert.equal(row.hours.Saturday, 'Hours unavailable');
+  assert.equal(row.notes, 'Academic Year Hours: Monday - Friday: 8:30 am - 4:30 pm');
+  assert.deepEqual([row.validFrom, row.validUntil], ['2026-08-26', '2026-12-16']);
+  assert.doesNotMatch(JSON.stringify(row), /5:15|Summer/);
+});
+
+test('a page that says an office is open around the clock gives every day, in its own words and with no dates', () => {
+  for (const name of ['Public Safety (Emergency)', 'Public Safety (Non-Emergency)']) {
+    const entry = OFFICE_HOURS_PAGES.find((office) => office.name === name)!;
+    assert.equal(entry.kind, 'always');
+    assert.equal(entry.url, 'https://www.ramapo.edu/publicsafety/get-support/');
+    const row = parseAlwaysOpenHours(entry.name, entry.label, publicSafetyPage);
+    assert.deepEqual(Object.values(row.hours), Array(7).fill('24 hours'));
+    assert.equal(row.notes, 'The Public Safety Department is available 24 hours a day, 7 days a week, 365 days a year.');
+    // Nothing in it is seasonal: no window is made up, and the record is still publishable.
+    assert.equal(row.validFrom, undefined);
+    assert.equal(recordValidity(row).window, null);
+    assert.equal(partitionHoursForPublication([row], new Date('2027-06-01T12:00:00Z')).publishable.length, 1);
+    assert.deepEqual(validateCampusHours([{ ...row, sourceUrl: entry.url, collectedAt: '2026-10-06T12:00:00Z' }]).map((r) => r.name), [name]);
+  }
+  // A page that no longer says so is an error, never a guess.
+  const entry = OFFICE_HOURS_PAGES.find((office) => office.name === 'Public Safety (Emergency)')!;
+  assert.throws(() => parseAlwaysOpenHours(entry.name, entry.label,
+    publicSafetyPage.replace('is available 24 hours a day, 7 days a week, 365 days a year', 'is available weekdays')),
+    /Always-open statement is unavailable/);
+  // Two offices on one page are one capture, not two.
+  const urls = OFFICE_HOURS_PAGES.map((office) => office.url);
+  assert.equal(urls.filter((url) => url === entry.url).length, 2);
+});
+
+test('an office page that states two different schedules is withheld, keeping both statements', () => {
+  const entry = OFFICE_HOURS_PAGES.find((office) => office.name === 'IT Help Desk')!;
+  assert.equal(entry.kind, 'conflict');
+  const row = parseConflictingOfficeHours(entry.name, entry.label, entry.against!, helpDeskPage);
+  assert.equal(row.availabilityIssue, 'conflicting-source-schedules');
+  assert.ok(Object.values(row.hours).every((value) => value === 'Hours unavailable'));
+  assert.match(row.notes!, /Monday-Thursday Friday 8:30 AM - 8:00 PM 8:30 AM - 6:00 PM/);
+  assert.match(row.notes!, /Fall\/Spring: Monday-Friday 8:00am-8:00pm/);
+  // Published, it says only that the hours are unverified; neither schedule is stated.
+  const published = campusHoursPublication([{ ...row, sourceUrl: entry.url, collectedAt: '2026-10-06T12:00:00Z' }]).publishable[0];
+  assert.equal(published.availabilityIssue, 'unverified-hours');
+  assert.match(published.notes!, /two different schedules for the same hours/);
+  assert.doesNotMatch(JSON.stringify(published), /8:30 AM|8:00am/);
+  // When the page agrees with itself, the collector stops for a person to look.
+  assert.throws(() => parseConflictingOfficeHours(entry.name, entry.label, entry.against!,
+    helpDeskPage.replace('Fall/Spring: Monday-Friday 8:00am-8:00pm', 'Fall/Spring: see the table above')),
+    /no longer on its page/);
+});
+
+test('every reviewed office page replays from its archived capture, two offices sharing one capture', () => {
+  const collectedAt = '2026-09-28T13:00:00Z';
+  const pages: Record<string, string> = {
+    'https://www.ramapo.edu/registrar/': 'Fall/Spring Hours:\n8:30 A.M. - 4:30 P.M. Monday - Friday',
+    'https://www.ramapo.edu/student-accounts/': 'Academic Year: Monday-Friday, 8:30 a.m.-4:30 p.m.',
+    'https://www.ramapo.edu/finaid/': 'Academic Year: Monday- Friday; 8:30 AM - 4:30 PM',
+    'https://www.ramapo.edu/careercenter/': 'Office Hours: Monday to Friday, 8:30 am - 4:30 pm',
+    'https://www.ramapo.edu/student-affairs/': 'Regular Office Hours: Monday - Friday 8:30 AM - 4:30 PM',
+    'https://www.ramapo.edu/eof-program/': 'Academic Year Hours: Monday - Friday, 8:30 AM - 4:30 PM',
+    'https://www.ramapo.edu/student-conduct/': 'Fall and Spring Semester Hours: Monday - Friday 8:30 AM - 4:30 PM',
+    'https://www.ramapo.edu/counseling/': counselingPage,
+    'https://www.ramapo.edu/publicsafety/get-support/': publicSafetyPage,
+    'https://www.ramapo.edu/its/help-desk/': helpDeskPage,
+    ...newOfficePages,
+  };
+  const html = (text: string) => `<body>${text.split('\n').map((line) => `<p>${line}</p>`).join('')}</body>`;
+  const captures = [[ATHLETICS_HOURS_URL, athletics], [LIBRARY_HOURS_URL, library], [GENERAL_CAMPUS_HOURS_URL, general],
+    ...Object.entries(pages)].map(([sourceUrl, text]) => ({ sourceUrl, collectedAt, html: html(text) }));
+  assert.deepEqual([...new Set(OFFICE_HOURS_PAGES.map((office) => office.url))].sort(), Object.keys(pages).sort());
+  const raw = campusHoursFromCaptures(captures, true, fallTerms);
+  assert.equal(raw.length, 13 + OFFICE_HOURS_PAGES.length);
+  // Replaying the archived captures gives the same records (terms passed in, not read from disk).
+  assert.deepEqual(campusHoursFromCaptures(captures, true, fallTerms), raw);
+  const byName = new Map(raw.map((row) => [row.name, row]));
+  for (const office of OFFICE_HOURS_PAGES) assert.equal(byName.get(office.name)?.sourceUrl, office.url);
+  const safety = ['Public Safety (Emergency)', 'Public Safety (Non-Emergency)'].map((name) => byName.get(name)!);
+  assert.deepEqual(safety.map((row) => row.sourceUrl), Array(2).fill('https://www.ramapo.edu/publicsafety/get-support/'));
+  const result = campusHoursPublication(raw, new Date(collectedAt));
+  const published = new Map(result.publishable.map((row) => [row.name, row]));
+  assert.equal(published.get('Public Safety (Emergency)')!.hours.Sunday, '24 hours');
+  assert.equal(published.get('Counseling Center')!.hours.Monday, '8:30am-4:30pm');
+  assert.equal(published.get('IT Help Desk')!.availabilityIssue, 'unverified-hours');
+  assert.ok(result.omitted.some(({ record, reason }) => record.name === 'IT Help Desk' && reason === 'conflicting-source-schedules'));
+  assert.deepEqual(validateCampusHours(raw), raw);
+});
+
+test('offices that write "through" or "until", name no label or print a summer schedule beside theirs read the same way', () => {
+  const at = '2026-10-07T12:00:00Z';
+  const parsed = (name: string) => {
+    const entry = OFFICE_HOURS_PAGES.find((office) => office.name === name)!;
+    return parseOfficeHours(name, entry.label, newOfficePages[entry.url], at, fallTerms);
+  };
+  const weekdays = (record: { hours: Record<string, string> }, times: string) => {
+    for (const day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']) assert.equal(record.hours[day], times, day);
+    assert.equal(record.hours.Saturday, 'Hours unavailable');
+    assert.equal(record.hours.Sunday, 'Hours unavailable');
+  };
+  for (const name of ['Anisfield School of Business', 'Center for Student Success (Academic Advising)',
+    'Office of Specialized Services', 'Payroll', 'Testing Center', 'ID Card Room', 'Nursing Programs Office']) {
+    const record = parsed(name);
+    weekdays(record, name === 'ID Card Room' ? '8:30am-4:00pm' : '8:30am-4:30pm');
+    assert.deepEqual([record.validFrom, record.validUntil], ['2026-08-26', '2026-12-16'], name);
+    assert.equal(record.notes, record.notes!.trim(), name);
+  }
+  // The notes keep the page's own words, including what it says about appointments.
+  assert.match(parsed('ID Card Room').notes!, /make an appointment\. The ID room is open Monday-Friday from 8:30am until 4:00pm\.$/);
+  assert.match(parsed('Office of Specialized Services').notes!, /Meetings by appointment\..*Office Hours Typically MON-FRI/);
+  // Summer schedules beside the regular one stay out.
+  assert.doesNotMatch(parsed('Payroll').notes!, /Summer/);
+  assert.doesNotMatch(parsed('Testing Center').notes!, /Summer|5:15/);
+  // The two new wordings, and only those.
+  assert.equal(parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday through Thursday, 9 am - 5 pm', at, fallTerms).hours.Thursday, '9:00am-5:00pm');
+  assert.equal(parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday thru Friday, 9 am - 5 pm', at, fallTerms).hours.Friday, '9:00am-5:00pm');
+  assert.equal(parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am until 5 pm', at, fallTerms).hours.Monday, '9:00am-5:00pm');
+  assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday and Friday, 9 am - 5 pm', at, fallTerms), /unrecognized/);
+  assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am or 5 pm', at, fallTerms), /unrecognized/);
+});
+
+test('pages that print a different time for different days read as a weekly schedule, exactly as printed', () => {
+  const at = '2026-10-07T12:00:00Z';
+  const week = (name: string) => {
+    const entry = OFFICE_HOURS_PAGES.find((office) => office.name === name)!;
+    assert.equal(entry.kind, 'week');
+    return parseWeeklyHours(name, entry.label, newOfficePages[entry.url], at, fallTerms);
+  };
+  const days = (record: { hours: Record<string, string> }) => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    .map((day) => record.hours[day]);
+  const reading = week('Center for Reading and Writing');
+  assert.deepEqual(days(reading), Array(4).fill('10:00am-8:00pm').concat('10:00am-4:00pm', 'By virtual appointment', 'By virtual appointment'));
+  assert.equal(reading.notes, 'Hours Monday - Thursday, 10 AM - 8:00 PM Friday - 10:00 AM - 4:00 PM Weekends - by virtual appointment');
+  // One sentence with three segments, an "until midnight" end, and a start whose am/pm is the end's.
+  const involvement = week('Center for Student Involvement');
+  assert.deepEqual(days(involvement), Array(5).fill('8:00am-12:00am').concat('4:00pm-10:00pm', '3:00pm-8:00pm'));
+  assert.doesNotMatch(involvement.notes!, /Lee/); // The lounge's hours beside it are another place's.
+  const central = week('Roadrunner Central');
+  assert.deepEqual(days(central), days(involvement));
+  assert.doesNotMatch(central.notes!, /Summer|5:15/); // The undated summer schedule stays out.
+  const lab = week('Photography Lab');
+  assert.deepEqual(days(lab), ['10:00am-6:00pm', '10:00am-6:00pm', '10:00am-8:00pm', '10:00am-5:00pm', '10:00am-6:00pm', 'CLOSED', '6:00pm-9:00pm']);
+  for (const record of [reading, involvement, central, lab]) {
+    assert.deepEqual([record.validFrom, record.validUntil], ['2026-08-26', '2026-12-16']);
+  }
+});
+
+test('a weekly schedule the reader cannot fully account for stops the collector instead of being guessed', () => {
+  const at = '2026-10-07T12:00:00Z';
+  const read = (page: string) => parseWeeklyHours('Example', /^Hours$/i, page, at, fallTerms);
+  assert.throws(() => read('Hours\nMonday 9am - 5pm\nMonday 10am - 6pm'), /two schedules for Monday/);
+  assert.equal(read('Hours\nMonday 9am - 5pm\nMonday 9am - 5pm').hours.Monday, '9:00am-5:00pm');
+  assert.throws(() => read('Hours\nMonday 10pm - 2am'), /do not run forward/);
+  assert.throws(() => read('Hours\nSaturday 11 - 1pm'), /do not run forward/);
+  assert.throws(() => read('Hours\nSaturday 8 - midnight'), /Unable to read the time/);
+  assert.throws(() => read('Hours\nFriday - Monday 9am - 5pm'), /Unable to read the days/);
+  assert.throws(() => read('Hours\nOpen all week'), /unrecognized/);
+  assert.throws(() => read('Hours\none\ntwo\nthree\nfour\nMonday 9am - 5pm'), /unrecognized/);
+  assert.throws(() => read('Closed on weekends'), /line is unavailable/);
+  // The block ends at the first line that is not purely schedule, and that line must not mention a day:
+  // a day that was not understood is a schedule that was not read, so the collector stops.
+  assert.throws(() => read('Hours\nMonday 9am - 5pm\nTuesday call us\nWednesday 9am - 5pm'), /mentions a day/);
+  assert.throws(() => read('Hours\nMonday 9am - 5pm\nThe lounge next door is open Tuesday 9am - 5pm'), /mentions a day/);
+  assert.throws(() => read('Hours\nWe are open Monday 9am - 5pm. Questions? Ask.\nTuesday 9am - 5pm'), /mentions a day/);
+  const ended = read('Hours\nMonday 9am - 5pm\nTuesday 9am - 5pm\nRoom 420 | phone 201-684-7557');
+  assert.deepEqual([ended.hours.Monday, ended.hours.Tuesday, ended.hours.Wednesday], ['9:00am-5:00pm', '9:00am-5:00pm', 'Hours unavailable']);
+  const prose = read('Hours\nWe are open Monday 9am - 5pm. Questions? Ask.\nSee the room for details.');
+  assert.deepEqual([prose.hours.Monday, prose.hours.Tuesday], ['9:00am-5:00pm', 'Hours unavailable']);
+  // Whatever a line says beyond its segments must be plain prose: a split shift, an exception, a day list.
+  assert.throws(() => read('Hours\nMonday 9am - 12pm and 1pm - 5pm'), /cannot account for/);
+  assert.throws(() => read('Hours\nMonday - Friday 9am - 5pm except holidays'), /cannot account for/);
+  assert.throws(() => read('Hours\nMon, Wed, Fri 9am - 5pm'), /cannot account for/);
+  assert.throws(() => read('Hours\nMonday 9am - 5pm\nTuesday 9am - 5pm by appointment only'), /cannot account for|mentions a day/);
+  // Prose before the schedule may not be about another season or a closure.
+  assert.throws(() => read('Hours\nSummer hours are shorter.\nMonday 9am - 5pm'), /before its schedule/);
+  assert.throws(() => read('Hours\nThe office is closed over winter break.\nMonday 9am - 5pm'), /before its schedule/);
+  // A hyphen character other than "-" still joins the days of a range.
+  for (const dash of ['\u2010', '\u2011', '\u2012', '\u2212']) {
+    const text = hoursPageText(`<body><p>Hours: Monday ${dash} Friday, 9 am - 5 pm</p></body>`);
+    assert.equal(parseOfficeHours('Example', /^Hours:/i, text, at, fallTerms).hours.Friday, '9:00am-5:00pm', dash);
+  }
+  // A page that names its term must name the one the calendar dates the capture to, and a label that matches two lines is no label.
+  const named = (when: string) => parseWeeklyHours('Example', /^FALL 2026$/i, 'FALL 2026\nMonday 9am - 5pm', when, [
+    { name: 'Fall 2026', from: '2026-08-26', until: '2026-12-16' }, { name: 'Spring 2027', from: '2027-01-19', until: '2027-05-12' }]);
+  assert.equal(named('2026-10-07T12:00:00Z').hours.Monday, '9:00am-5:00pm');
+  assert.throws(() => named('2026-12-20T12:00:00Z'), /says "FALL 2026" but the academic calendar dates this schedule to Spring 2027/);
+  assert.throws(() => read('Hours\nMonday 9am - 5pm\nHours\nTuesday 9am - 5pm'), /matches more than one line/);
+  assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am - 5 pm\nHours: Monday - Friday, 10 am - 6 pm', at, fallTerms), /matches more than one line/);
+  assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am - 5 pm, closed until 10 am - 11 am', at, fallTerms), /more than one time range/);
+  assert.equal(read('Hours\nWeekdays 9am - 5pm\nWeekends Closed').hours.Sunday, 'CLOSED');
+  assert.throws(() => parseWeeklyHours('Example', /^Hours$/i, 'Hours\nMonday 9am - 5pm', '2027-06-01T12:00:00Z', fallTerms), /No academic calendar semester/);
 });

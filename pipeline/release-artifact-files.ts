@@ -6,6 +6,8 @@
  */
 export const RELEASE_ARTIFACT_FILES: Readonly<Record<string, string>> = {
   'search-vocabulary': 'src/reference/search-vocabulary.json',
+  'office-contact-review': 'src/reference/office-contact-review.json',
+  'office-hours-review': 'src/reference/office-hours-review.json',
   calendar: 'public/data/calendar.json',
   clubs: 'public/data/clubs.json',
   courses: 'public/data/courses.json',

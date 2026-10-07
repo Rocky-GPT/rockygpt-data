@@ -37,6 +37,9 @@
     "fetch:map:ids": "tsx ingestion/campus-map-ids.ts",
     "fetch:transportation:raw": "tsx ingestion/transportation-raw.ts",
     "fetch:directory:raw": "tsx ingestion/directory-raw.ts",
+    "fetch:reviewed-contacts": "tsx ingestion/reviewed-contacts-raw.ts",
+    "fetch:reviewed-contact-documents": "tsx ingestion/reviewed-contact-documents.ts",
+    "normalize:reviewed-contact-documents": "tsx ingestion/reviewed-contact-documents.ts --replay",
     "fetch:housing:raw": "tsx ingestion/housing-raw.ts",
     "fetch:health:raw": "tsx ingestion/health-raw.ts",
     "fetch:counseling:raw": "tsx ingestion/counseling-raw.ts",
@@ -51,7 +54,7 @@
     "normalize:campus-hours": "tsx scripts/backfill-campus-hours.ts",
     "normalize:contacts": "tsx scripts/backfill-contact-fields.ts",
     "check:contacts": "tsx scripts/check-contact-evidence.ts",
-    "normalize:raw": "tsx ingestion/normalize-raw.ts",
+    "normalize:raw": "npm run normalize:reviewed-contact-documents && tsx ingestion/normalize-raw.ts",
     "normalize:calendar:concepts": "tsx scripts/backfill-calendar-concepts.ts",
     "generate:menu:md": "tsx ingestion/generate-menu-md.ts",
     "generate:dining-hours:md": "tsx ingestion/generate-dining-hours-md.ts",
@@ -94,6 +97,7 @@
     "cheerio": "^1.2.0",
     "dotenv": "^17.2.3",
     "p-limit": "^7.3.0",
+    "pdf-parse": "2.4.5",
     "pg": "^8.17.1"
   },
   "devDependencies": {
