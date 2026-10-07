@@ -435,6 +435,21 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         label: /^Academic Year Hours:/i },
     { name: 'Office of Student Conduct', url: 'https://www.ramapo.edu/student-conduct/',
         label: /^Fall and Spring Semester Hours:/i },
+    // Read 2026-10-07. These pages name no season or print one schedule beside an undated summer
+    // one; the academic calendar dates the regular schedule, as for the offices above.
+    { name: 'Anisfield School of Business', url: 'https://www.ramapo.edu/asb/', label: /^Hours:/i },
+    // The page prints the days on one line and the times on the next, under no label of its own:
+    // the label is the day line, kept (zero width) so the parser still reads the days from it.
+    { name: 'Center for Student Success (Academic Advising)', url: 'https://www.ramapo.edu/studentsuccess/',
+        label: /^(?=Monday-Friday$)/i },
+    { name: 'Office of Specialized Services', url: 'https://www.ramapo.edu/oss/',
+        label: /^MAIN OFFICE:.*?Office Hours Typically/i },
+    { name: 'Payroll', url: 'https://www.ramapo.edu/payroll/', label: /^Fall\s*\/\s*Spring,/i },
+    { name: 'Testing Center', url: 'https://www.ramapo.edu/testing/', label: /^Fall and Spring$/i },
+    // The schedule is one sentence in the middle of a paragraph, after the appointment sentence.
+    { name: 'ID Card Room', url: 'https://www.ramapo.edu/publicsafety/id-cards/',
+        label: /^In order to get a new identification card, please contact the ID room at publicsafety@ramapo\.edu and make an appointment\.\s*The ID room is open/i },
+    { name: 'Nursing Programs Office', url: 'https://www.ramapo.edu/nursing/', label: /^Hours:/i },
     { name: 'Counseling Center', url: 'https://www.ramapo.edu/counseling/', label: /^Academic Year Hours:/i },
     // One page states it for the whole department, so both Public Safety offices share the sentence.
     { name: 'Public Safety (Emergency)', url: 'https://www.ramapo.edu/publicsafety/get-support/', kind: 'always',
@@ -483,11 +498,11 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     const lines = pageText.split('\n').map((line) => line.trim()).filter(Boolean);
     const index = lines.findIndex((line) => label.test(line));
     if (index < 0) throw new Error(`Office hours line is unavailable for ${name}`);
-    const range = /(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?\s*(?:-|to)\s*(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?/i;
+    const range = /(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?\s*(?:-|to|until)\s*(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?/i;
     // The schedule follows its label on the same line, or on the next line (Registrar).
     const rest = lines[index].replace(label, '').trim();
     const text = range.test(rest) ? rest : `${rest} ${lines[index + 1] ?? ''}`.trim();
-    const days = text.match(/\b(Monday|Mon\.?)\s*(?:-|to)\s*(Thursday|Thurs?\.?|Friday|Fri\.?)(?![a-z])/i);
+    const days = text.match(/\b(Monday|Mon\.?)\s*(?:-|to|through|thru)\s*(Thursday|Thurs?\.?|Friday|Fri\.?)(?![a-z])/i);
     const time = text.match(range);
     if (!days || !time) throw new Error(`Office hours are unrecognized for ${name}: "${text}"`);
     const clock = (hour: string, minute: string | undefined, half: string) => `${hour}:${minute ?? '00'} ${half}M`;
@@ -499,7 +514,7 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     const term = terms.filter((window) => window.until >= captured).sort((a, b) => a.from.localeCompare(b.from))[0];
     if (!term) throw new Error(`No academic calendar semester dates the office hours for ${name}`);
     // Notes carry only the page's own words; the dating is the collector's, so it stays apart.
-    return { name, hours, notes: `${lines[index].match(label)![0]} ${text}`,
+    return { name, hours, notes: `${lines[index].match(label)![0]} ${text}`.trim(),
         validFrom: term.from, validUntil: term.until,
         derivation: `Applies during ${term.name} per the academic calendar `
             + `(${shortDate(term.from)} - ${shortDate(term.until)}, ${term.until.slice(0, 4)}).` };

@@ -7603,6 +7603,18 @@
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Anisfield School of Business"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/asb/) publishes its hours without naming a season; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -7914,6 +7926,18 @@
               "email:success@ramapo.edu"
             ],
             "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Center for Student Success (Academic Advising)"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/studentsuccess/) publishes its hours without naming a season; the academic calendar dates the semester it applies to."
           }
         }
       ]
@@ -11743,6 +11767,18 @@
             ],
             "evidence": "Office's own page (https://www.ramapo.edu/oss/, read 2026-09-28) publishes this phone and role email; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Office of Specialized Services"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/oss/) publishes its hours without naming a season; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -11924,6 +11960,18 @@
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/testing/, read 2026-09-28) states this contact; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Testing Center"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/testing/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -11944,6 +11992,18 @@
               "email:payroll@ramapo.edu"
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/payroll/, read 2026-09-28) states this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Payroll"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/payroll/) publishes this regular schedule under the office's name; the academic calendar dates the semester it applies to."
           }
         }
       ]
@@ -12049,6 +12109,18 @@
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/nursing/, read 2026-09-28) states this contact; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Nursing Programs Office"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/nursing/) publishes its hours without naming a season; the academic calendar dates the semester it applies to."
+          }
         }
       ]
     },
@@ -12133,6 +12205,18 @@
               "key:office:id-card-room"
             ],
             "evidence": "The unit's own contact section (https://www.ramapo.edu/publicsafety/id-cards/, read 2026-09-28) states this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "ID Card Room"
+            ],
+            "evidence": "The office's own page (https://www.ramapo.edu/publicsafety/id-cards/) publishes its hours without naming a season; the academic calendar dates the semester it applies to."
           }
         }
       ]

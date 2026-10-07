@@ -259,6 +259,16 @@ By visiting the Help Desk office. We are located on the 4th floor of the Learnin
 Fall/Spring: Monday-Friday 8:00am-8:00pm
 Summer: Monday-Thursday 8:00am-5:15pm`;
 const fallTerms = [{ name: 'Fall 2026', from: '2026-08-26', until: '2026-12-16' }];
+// Lines as the live pages printed them on 2026-10-07 (read in memory, not stored).
+const newOfficePages: Record<string, string> = {
+  'https://www.ramapo.edu/asb/': 'Office: ASB-333\nHours: Monday - Friday, 8:30AM-4:30PM',
+  'https://www.ramapo.edu/studentsuccess/': 'Center for Student Success\nD-207 (Academic Building)\nMonday-Friday\n8:30 a.m.-4:30 p.m.',
+  'https://www.ramapo.edu/oss/': 'MAIN OFFICE: C-Wing, Room 205 - Meetings by appointment. | Office Hours Typically MON-FRI, 8:30 AM-4:30 PM | (201) 684-7514',
+  'https://www.ramapo.edu/payroll/': 'Hours:\nFall/Spring, Mon. - Fri.\n8:30 a.m. - 4:30 p.m.\nSummer, Mon. - Thurs.,\n8 a.m. - 5:15 p.m.',
+  'https://www.ramapo.edu/testing/': 'Hours\nSummer\nMonday to Thursday, 8:00 a.m. to 5:15 p.m.\nClosed Friday\nFall and Spring\nMonday to Friday, 8:30 a.m. to 4:30 p.m.',
+  'https://www.ramapo.edu/publicsafety/id-cards/': 'In order to get a new identification card, please contact the ID room at publicsafety@ramapo.edu and make an appointment. The ID room is open Monday-Friday from 8:30am until 4:00pm.',
+  'https://www.ramapo.edu/nursing/': 'Nursing Programs Contact Information:\nOffice: Adler Center for Nursing Excellence 215\nHours: Monday through Friday, 8:30 a.m.to 4:30 p.m.\nPhone: (201) 684-7749',
+};
 
 test('the Counseling Center publishes its academic-year hours and leaves the undated summer ones out', () => {
   const entry = OFFICE_HOURS_PAGES.find((office) => office.name === 'Counseling Center')!;
@@ -327,6 +337,7 @@ test('every reviewed office page replays from its archived capture, two offices 
     'https://www.ramapo.edu/counseling/': counselingPage,
     'https://www.ramapo.edu/publicsafety/get-support/': publicSafetyPage,
     'https://www.ramapo.edu/its/help-desk/': helpDeskPage,
+    ...newOfficePages,
   };
   const html = (text: string) => `<body>${text.split('\n').map((line) => `<p>${line}</p>`).join('')}</body>`;
   const captures = [[ATHLETICS_HOURS_URL, athletics], [LIBRARY_HOURS_URL, library], [GENERAL_CAMPUS_HOURS_URL, general],
@@ -347,4 +358,36 @@ test('every reviewed office page replays from its archived capture, two offices 
   assert.equal(published.get('IT Help Desk')!.availabilityIssue, 'unverified-hours');
   assert.ok(result.omitted.some(({ record, reason }) => record.name === 'IT Help Desk' && reason === 'conflicting-source-schedules'));
   assert.deepEqual(validateCampusHours(raw), raw);
+});
+
+test('offices that write "through" or "until", name no label or print a summer schedule beside theirs read the same way', () => {
+  const at = '2026-10-07T12:00:00Z';
+  const parsed = (name: string) => {
+    const entry = OFFICE_HOURS_PAGES.find((office) => office.name === name)!;
+    return parseOfficeHours(name, entry.label, newOfficePages[entry.url], at, fallTerms);
+  };
+  const weekdays = (record: { hours: Record<string, string> }, times: string) => {
+    for (const day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']) assert.equal(record.hours[day], times, day);
+    assert.equal(record.hours.Saturday, 'Hours unavailable');
+    assert.equal(record.hours.Sunday, 'Hours unavailable');
+  };
+  for (const name of ['Anisfield School of Business', 'Center for Student Success (Academic Advising)',
+    'Office of Specialized Services', 'Payroll', 'Testing Center', 'ID Card Room', 'Nursing Programs Office']) {
+    const record = parsed(name);
+    weekdays(record, name === 'ID Card Room' ? '8:30am-4:00pm' : '8:30am-4:30pm');
+    assert.deepEqual([record.validFrom, record.validUntil], ['2026-08-26', '2026-12-16'], name);
+    assert.equal(record.notes, record.notes!.trim(), name);
+  }
+  // The notes keep the page's own words, including what it says about appointments.
+  assert.match(parsed('ID Card Room').notes!, /make an appointment\. The ID room is open Monday-Friday from 8:30am until 4:00pm\.$/);
+  assert.match(parsed('Office of Specialized Services').notes!, /Meetings by appointment\..*Office Hours Typically MON-FRI/);
+  // Summer schedules beside the regular one stay out.
+  assert.doesNotMatch(parsed('Payroll').notes!, /Summer/);
+  assert.doesNotMatch(parsed('Testing Center').notes!, /Summer|5:15/);
+  // The two new wordings, and only those.
+  assert.equal(parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday through Thursday, 9 am - 5 pm', at, fallTerms).hours.Thursday, '9:00am-5:00pm');
+  assert.equal(parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday thru Friday, 9 am - 5 pm', at, fallTerms).hours.Friday, '9:00am-5:00pm');
+  assert.equal(parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am until 5 pm', at, fallTerms).hours.Monday, '9:00am-5:00pm');
+  assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday and Friday, 9 am - 5 pm', at, fallTerms), /unrecognized/);
+  assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am or 5 pm', at, fallTerms), /unrecognized/);
 });
