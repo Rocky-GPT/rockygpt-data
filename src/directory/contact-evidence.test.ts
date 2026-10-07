@@ -179,6 +179,21 @@ test('an absence nobody could read is unconfirmed, never confirmed', () => {
   assert.deepEqual(checkAbsences([{ field: 'email', evidence: [] }], {}, contactBlock('x')).issues.map(i => i.kind), ['unconfirmed']);
 });
 
+test('only ramapo.edu pages can confirm an absence; an office whose page lives elsewhere stays unknown', () => {
+  const ATHLETICS = 'https://ramapoathletics.com/staff/';
+  const captured = pages(page(ATHLETICS, [['Staff', 'Phone: (201) 684-7674']]));
+  const claim = [{ field: 'email' as const, evidence: [{ url: ATHLETICS, section: 'Staff' }] }];
+  const checked = checkAbsences(claim, {}, captured);
+  assert.deepEqual(checked.confirmed, []);
+  assert.equal(checked.issues[0].kind, 'unconfirmed');
+  assert.match(checked.issues[0].reason, /not a ramapo\.edu page/);
+  for (const url of ['https://ramapo.edu.example.com/x/', 'https://notramapo.edu/x/', 'not a url', 'http://www.ramapo.edu.evil.test/']) {
+    assert.equal(checkAbsences([{ field: 'email', evidence: [{ url, section: 'Contact Us' }] }], {}, pages(page(url, [['Contact Us', 'x']]))).confirmed.length, 0, url);
+  }
+  assert.equal(checkAbsences(claim.map(c => ({ ...c, evidence: [{ url: 'https://shop.ramapo.edu/a/', section: 'Staff' }] })), {},
+    pages(page('https://shop.ramapo.edu/a/', [['Staff', 'Phone only']]))).confirmed.length, 1);
+});
+
 test('one clean section does not hide another that states the value, and an entry cannot hold a value it says is not published', () => {
   const both = [{ field: 'email' as const, evidence: [{ url: NURSING, section: 'Contact Us' }, { url: NURSING, section: 'News' }] }];
   const checked = checkAbsences(both, {}, contactBlock('Phone only'));
@@ -202,6 +217,9 @@ test('the reference data makes only well-formed absence claims that no reviewed 
       assert.ok(!seen.has(claim.field), `${entry.name} claims ${claim.field} twice`);
       seen.add(claim.field);
       assert.ok(claim.evidence.length > 0, `${entry.name} ${claim.field} cites no section`);
+      for (const section of claim.evidence) {
+        assert.match(new URL(section.url).hostname, /(^|\.)ramapo\.edu$/, `${entry.name} ${claim.field} cites ${section.url}`);
+      }
       if (claim.field !== 'hours') assert.ok(!entry[claim.field], `${entry.name} has a ${claim.field} and says it is not published`);
     }
   }

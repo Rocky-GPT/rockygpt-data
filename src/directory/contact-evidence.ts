@@ -283,9 +283,20 @@ export interface AbsenceIssue {
 
 export interface CheckedAbsences { confirmed: ConfirmedAbsence[]; issues: AbsenceIssue[] }
 
+/** Only the college's own pages count as the record that a field is not published. */
+function isCollegePage(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return host === 'ramapo.edu' || host.endsWith('.ramapo.edu');
+  } catch {
+    return false;
+  }
+}
+
 /**
- * Confirms each claim against this run's capture: every cited section must be present and
- * state no value of the field. A section that states one contradicts the claim (the page
+ * Confirms each claim against this run's capture: every cited section must be on a ramapo.edu
+ * page (the office's own pages or the campus directory; an office whose page lives elsewhere
+ * stays unknown), be present, and state no value of the field. A section that states one contradicts the claim (the page
  * started publishing it, or the claim was wrong); a page or section that was not captured
  * leaves the claim unconfirmed. Only a confirmed absence is published, so a field nobody
  * confirmed stays unknown, never "not published".
@@ -307,6 +318,11 @@ export function checkAbsences(claims: readonly AbsenceClaim[], values: ContactVa
     const checks: ConfirmedAbsence['checks'] = [];
     let ok = true;
     for (const entry of claim.evidence) {
+      if (!isCollegePage(entry.url)) {
+        issues.push({ field: claim.field, kind: 'unconfirmed', reason: `${entry.url} is not a ramapo.edu page.` });
+        ok = false;
+        continue;
+      }
       const found = evidenceText({ ...entry, fields: [] }, pages);
       if ('reason' in found) { issues.push({ field: claim.field, kind: 'unconfirmed', reason: found.reason }); ok = false; continue; }
       const stated = statedValues(claim.field, found.text);
