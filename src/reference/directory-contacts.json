@@ -358,13 +358,6 @@
           "fields": [
             "office"
           ]
-        },
-        {
-          "url": "https://www.ramapo.edu/about/",
-          "section": "Ramapo Profile",
-          "fields": [
-            "office"
-          ]
         }
       ],
       "office": "Peter P. Mercer Learning Commons"
