@@ -413,6 +413,10 @@ async function fetchHoursSource(sourceUrl: string): Promise<HoursSourceCapture> 
  *   stay out: no page dates them.
  * - `always`: the page says the office is open every hour of every day. The label is the
  *   sentence that says so. Nothing in it is seasonal, so the record names no dates.
+ * - `week`: the page prints its weekly schedule as day-and-time segments that differ by day
+ *   ("Monday - Thursday, 10 AM - 8 PM", "Friday 10 AM - 4 PM", "Saturday Closed"). The label is
+ *   the line before the first segment (or the line the schedule starts on). Read by
+ *   parseWeeklyHours, which refuses anything it cannot fully account for.
  * - `conflict`: the page states two schedules that disagree (read 2026-10-06). Both
  *   statements must still be on the page, or the collector stops for a person to look: a
  *   fixed page must not stay withheld, and a changed one must not be guessed.
@@ -421,7 +425,7 @@ export interface OfficeHoursPage {
     name: string;
     url: string;
     label: RegExp;
-    kind?: 'always' | 'conflict';
+    kind?: 'always' | 'conflict' | 'week';
     /** For `conflict`: the other statement the label's line disagrees with. */
     against?: RegExp;
 }
@@ -450,6 +454,14 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'ID Card Room', url: 'https://www.ramapo.edu/publicsafety/id-cards/',
         label: /^In order to get a new identification card, please contact the ID room at publicsafety@ramapo\.edu and make an appointment\.\s*The ID room is open/i },
     { name: 'Nursing Programs Office', url: 'https://www.ramapo.edu/nursing/', label: /^Hours:/i },
+    // Different times on different days (read 2026-10-07).
+    { name: 'Center for Reading and Writing', url: 'https://www.ramapo.edu/crw/', kind: 'week', label: /^Hours$/i },
+    { name: 'Center for Student Involvement', url: 'https://www.ramapo.edu/csi/', kind: 'week',
+        label: /^CSI Hours of Operation$/i },
+    { name: 'Roadrunner Central', url: 'https://www.ramapo.edu/csi/roadrunner-central/', kind: 'week',
+        label: /^Please visit the Center for Student Involvement Main Office, located in SC202, for assistance during the following hours during the semester:$/i },
+    // The page's heading names the term, so the label does too: a new term's page stops the collector.
+    { name: 'Photography Lab', url: 'https://www.ramapo.edu/photolab/hours/', kind: 'week', label: /^FALL 2026$/i },
     { name: 'Counseling Center', url: 'https://www.ramapo.edu/counseling/', label: /^Academic Year Hours:/i },
     // One page states it for the whole department, so both Public Safety offices share the sentence.
     { name: 'Public Safety (Emergency)', url: 'https://www.ramapo.edu/publicsafety/get-support/', kind: 'always',
@@ -510,14 +522,113 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     const last = /^Fri/i.test(days[2]) ? 5 : 4;
     const hours = createUnknownWeek();
     DAYS.slice(0, last).forEach((day) => { hours[day] = schedule; });
+    // Notes carry only the page's own words; the dating is the collector's, so it stays apart.
+    return { name, hours, notes: `${lines[index].match(label)![0]} ${text}`.trim(),
+        ...datedByTerm(name, collectedAt, terms) };
+}
+
+/** The semester the capture falls in (or the next one) dates a schedule that names no dates. */
+function datedByTerm(name: string, collectedAt: string, terms: TermWindow[]):
+    { validFrom: string; validUntil: string; derivation: string } {
     const captured = collectedAt.slice(0, 10);
     const term = terms.filter((window) => window.until >= captured).sort((a, b) => a.from.localeCompare(b.from))[0];
     if (!term) throw new Error(`No academic calendar semester dates the office hours for ${name}`);
-    // Notes carry only the page's own words; the dating is the collector's, so it stays apart.
-    return { name, hours, notes: `${lines[index].match(label)![0]} ${text}`.trim(),
-        validFrom: term.from, validUntil: term.until,
+    return { validFrom: term.from, validUntil: term.until,
         derivation: `Applies during ${term.name} per the academic calendar `
             + `(${shortDate(term.from)} - ${shortDate(term.until)}, ${term.until.slice(0, 4)}).` };
+}
+
+const DAY_WORD = String.raw`(?:mon(?:day)?|tue(?:s(?:day)?)?|wed(?:nesday)?|thu(?:rs?(?:day)?)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?|weekdays|weekends)s?`;
+const CLOCK_WORD = String.raw`(?:noon|midnight|\d{1,2}(?::\d{2})?(?:\s*[ap]\.?\s*m\.?)?)`;
+// One day-and-time segment: days (one, a range, or weekdays/weekends), then a time range, "closed"
+// or "by (virtual) appointment".
+const SEGMENT = new RegExp(String.raw`\b(${DAY_WORD})\.?(?:\s*(?:-|to|through|thru)\s*(${DAY_WORD})\.?)?`
+    + String.raw`\s*[:,-]?\s*(?:from\s+)?(?:(${CLOCK_WORD})\s*(?:-|to|until)\s*(${CLOCK_WORD})`
+    + String.raw`|(closed)|(by\s+(?:virtual\s+)?appointment(?:\s+only)?))`, 'gi');
+
+/** A clock time in minutes after midnight, with its text; a missing am/pm is only filled in by `inherit`. */
+function clockTime(token: string, inherit?: string): { minutes: number; text: string } {
+    const word = token.trim().toLowerCase().replace(/\./g, '');
+    if (word === 'noon') return { minutes: 720, text: '12:00pm' };
+    if (word === 'midnight') return { minutes: 0, text: '12:00am' };
+    const match = word.match(/^(\d{1,2})(?::(\d{2}))?\s*(?:([ap])m)?$/);
+    const meridiem = match?.[3] ?? inherit;
+    if (!match || !meridiem || Number(match[1]) < 1 || Number(match[1]) > 12 || Number(match[2] ?? '0') > 59) {
+        throw new Error(`Unable to read the time "${token}"`);
+    }
+    const hour = Number(match[1]) % 12 + (meridiem === 'p' ? 12 : 0);
+    const minute = match[2] ?? '00';
+    return { minutes: hour * 60 + Number(minute), text: `${Number(match[1])}:${minute}${meridiem}m` };
+}
+
+function segmentSchedule(start: string, end: string): string {
+    const endMeridiem = end.trim().toLowerCase().replace(/\./g, '').match(/([ap])m$/)?.[1];
+    const last = clockTime(end);
+    // Only a start with no am/pm of its own borrows the end's, and only when that puts it first.
+    const first = clockTime(start, endMeridiem);
+    const closes = /midnight/i.test(end) || (last.minutes === 0) ? 1440 : last.minutes;
+    if (first.minutes >= closes) throw new Error(`The times "${start} - ${end}" do not run forward within one day`);
+    return `${first.text}-${last.text}`;
+}
+
+function weekdaySet(first: string, second?: string): DayName[] {
+    const key = (word: string) => word.toLowerCase().slice(0, 3);
+    if (/^weekdays/i.test(first)) return DAYS.slice(0, 5);
+    if (/^weekends/i.test(first)) return DAYS.slice(5);
+    const order = DAYS.map((day) => day.slice(0, 3).toLowerCase());
+    const from = order.indexOf(key(first));
+    const to = second ? order.indexOf(key(second)) : from;
+    if (from < 0 || to < from || (second && /^week/i.test(second))) throw new Error(`Unable to read the days "${first}${second ? ' - ' + second : ''}"`);
+    return DAYS.slice(from, to + 1);
+}
+
+/** The segments a line states, and whether the line states nothing but segments. */
+function segmentsIn(line: string): { found: RegExpMatchArray[]; pure: boolean } {
+    const found = [...line.matchAll(SEGMENT)];
+    const rest = found.reduce((text, match) => text.replace(match[0], ' '), line);
+    return { found, pure: found.length > 0 && !/[a-z0-9]/i.test(rest.replace(/\b(?:and)\b/gi, '')) };
+}
+
+/**
+ * An office's weekly schedule when its page prints a separate time (or "closed", or "by
+ * appointment") for different days. The block starts at the label line (or the first segment after
+ * it, skipping at most three other lines) and ends at the first line that is not purely segments;
+ * a first line that mixes prose and segments is the whole block. Anything it cannot account for
+ * stops the collector: a day stated twice with different schedules, a time with no am/pm it cannot
+ * place, a span that does not run forward within one day. Dated by the semester, like the others.
+ */
+export function parseWeeklyHours(name: string, label: RegExp, pageText: string, collectedAt: string,
+    terms: TermWindow[]): LocationHours {
+    const lines = pageText.split('\n').map((line) => line.trim()).filter(Boolean);
+    const index = lines.findIndex((line) => label.test(line));
+    if (index < 0) throw new Error(`Office hours line is unavailable for ${name}`);
+    const candidates = [lines[index].replace(label, '').trim(), ...lines.slice(index + 1)].filter(Boolean);
+    const block: string[] = [];
+    let skipped = 0;
+    for (const line of candidates) {
+        const { found, pure } = segmentsIn(line);
+        if (!block.length) {
+            if (!found.length) { if (++skipped > 3) break; continue; }
+            block.push(line);
+            if (!pure) break;
+        } else if (pure) block.push(line);
+        else break;
+    }
+    if (!block.length) throw new Error(`Office hours are unrecognized for ${name}: no day-and-time lines follow the label`);
+    const hours = createUnknownWeek();
+    const assigned = new Set<string>();
+    for (const match of block.flatMap((line) => [...line.matchAll(SEGMENT)])) {
+        const schedule = match[5] ? 'CLOSED'
+            : match[6] ? match[6].charAt(0).toUpperCase() + match[6].slice(1).toLowerCase().replace(/\s+/g, ' ')
+                : segmentSchedule(match[3], match[4]);
+        for (const day of weekdaySet(match[1], match[2])) {
+            if (assigned.has(day) && hours[day] !== schedule) throw new Error(`${name} states two schedules for ${day}`);
+            hours[day] = schedule;
+            assigned.add(day);
+        }
+    }
+    return { name, hours, notes: `${lines[index].match(label)![0]} ${block.join(' ')}`.trim(),
+        ...datedByTerm(name, collectedAt, terms) };
 }
 
 /** An office the page says is open every hour of every day. The page's sentence is the note. */
@@ -569,6 +680,8 @@ export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireG
         ...source(LIBRARY_HOURS_URL, parseLibraryHours), ...general,
         ...offices.flatMap((office) => source(office.url, (text) => [
             office.kind === 'always' ? parseAlwaysOpenHours(office.name, office.label, text)
+                : office.kind === 'week' ? parseWeeklyHours(office.name, office.label, text,
+                    captures.find((capture) => capture.sourceUrl === office.url)!.collectedAt, windows)
                 : office.kind === 'conflict' ? parseConflictingOfficeHours(office.name, office.label, office.against!, text)
                     : parseOfficeHours(office.name, office.label, text,
                         captures.find((capture) => capture.sourceUrl === office.url)!.collectedAt, windows)]))];
