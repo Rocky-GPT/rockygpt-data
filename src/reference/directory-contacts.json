@@ -183,8 +183,16 @@
             "phone",
             "email"
           ]
+        },
+        {
+          "url": "https://www.ramapo.edu/its/help-desk/",
+          "section": "Help Desk",
+          "fields": [
+            "office"
+          ]
         }
-      ]
+      ],
+      "office": "4th floor of the Learning Commons"
     },
     {
       "name": "Health Services",
@@ -216,10 +224,12 @@
           "url": "https://www.ramapo.edu/csw/",
           "section": "Valley Medical Group Health Services",
           "fields": [
-            "phone"
+            "phone",
+            "office"
           ]
         }
-      ]
+      ],
+      "office": "Near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road"
     },
     {
       "name": "Counseling Center",
@@ -341,8 +351,23 @@
           "fields": [
             "phone"
           ]
+        },
+        {
+          "url": "https://www.ramapo.edu/library/library-news/",
+          "section": "PETER P. MERCER LEARNING COMMONS",
+          "fields": [
+            "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/about/",
+          "section": "Ramapo Profile",
+          "fields": [
+            "office"
+          ]
         }
-      ]
+      ],
+      "office": "Peter P. Mercer Learning Commons"
     },
     {
       "name": "Student Accounts",
@@ -671,8 +696,17 @@
             "phone",
             "email"
           ]
+        },
+        {
+          "url": "https://www.ramapo.edu/berriecenter/tickets-seating/",
+          "section": "Three convenient ways to purchase tickets:",
+          "near": "Box Office located on",
+          "fields": [
+            "office"
+          ]
         }
-      ]
+      ],
+      "office": "first floor of the Berrie Center for Performing and Visual Arts"
     },
     {
       "name": "Photography Lab",
@@ -734,8 +768,16 @@
             "phone",
             "email"
           ]
+        },
+        {
+          "url": "https://www.ramapo.edu/ehs/",
+          "section": "Contacts",
+          "fields": [
+            "office"
+          ]
         }
-      ]
+      ],
+      "office": "CPA/EHS Garage"
     },
     {
       "name": "Nursing Programs Office",
