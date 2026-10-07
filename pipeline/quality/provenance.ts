@@ -40,7 +40,7 @@ export const SOURCE_RAW_DATASETS: Record<string, string[]> = {
   // Programs, requirements, and courses are collected together from the
   // official Coursedog API into one provenance-bound raw artifact.
   'academic-programs': ['catalog-programs'],
-  'campus-directory': ['directory', 'directory-sources', 'reviewed-contacts', 'reviewed-contacts-sources'],
+  'campus-directory': ['directory', 'directory-sources', 'reviewed-contacts', 'reviewed-contacts-sources', 'reviewed-contact-documents', 'reviewed-contact-documents-sources'],
   transportation: ['transportation', 'transportation-sources'],
   housing: ['housing', 'housing-sources'],
   health: ['health', 'health-sources'],
@@ -70,6 +70,8 @@ export const RAW_DATASET_FILES: Record<string, string> = {
   directory: 'directory.raw.json',
   'reviewed-contacts': 'reviewed-contacts.raw.json',
   'reviewed-contacts-sources': 'reviewed-contacts-sources.raw.json',
+  'reviewed-contact-documents': 'reviewed-contact-documents.raw.json',
+  'reviewed-contact-documents-sources': 'reviewed-contact-documents-sources.raw.json',
   transportation: 'transportation.raw.json',
   housing: 'housing.raw.json',
   health: 'health.raw.json',

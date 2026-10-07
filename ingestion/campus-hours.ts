@@ -11,6 +11,7 @@ import { validateCampusHours, type LocationHours } from './schema';
 import { publicPath } from '../src/paths';
 import { partitionHoursForPublication, readValidityFromNotes } from '../src/data-v2/validity';
 import { withheldHoursRecord } from './unverified-hours';
+import { attachReviewedHoursAbsences } from './reviewed-hours-absence';
 
 const RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'hours.raw.json');
 const PUBLIC_JSON_PATH = publicPath('data', 'hours.json');
@@ -20,6 +21,7 @@ export const ATHLETICS_HOURS_URL = 'https://ramapoathletics.com/sports/2008/1/21
 
 export const LIBRARY_HOURS_URL = 'https://www.ramapo.edu/library/library-hours/';
 export const GENERAL_CAMPUS_HOURS_URL = 'https://www.ramapo.edu/about/campus-hours/';
+export const BERRIE_SEASON_URL = 'https://www.ramapo.edu/berriecenter/plan-your-visit/';
 const SOURCE_CAPTURE_PATH = path.join(process.cwd(), 'data', 'raw', 'hours-sources.raw.json');
 const OMISSIONS_PATH = path.join(process.cwd(), 'data', 'normalized', 'hours-omissions.json');
 
@@ -412,10 +414,18 @@ export interface OfficeHoursPage {
     season?: string;
     /** Explicit date statement on the same source page; never the academic calendar. */
     starts?: RegExp;
+    /** A reviewed service clause inside a longer paragraph; never another service's clock. */
+    extract?: RegExp;
+    /** Same-page qualifiers that must remain attached to the service schedule. */
+    appendStatements?: RegExp[];
+    applicabilityIssue?: { status: 'unknown' | 'conflicting'; reason: string };
 }
 export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'Registrar', url: 'https://www.ramapo.edu/registrar/', label: /^Fall\s*\/\s*Spring Hours:/i, season: 'Fall/Spring' },
     { name: 'Student Accounts', url: 'https://www.ramapo.edu/student-accounts/', label: /^Academic Year:/i, season: 'Academic Year' },
+    // The contact page gives different hours for these same seasons. Identical schedule
+    // names retain both readings for the shared fact reader to expose their disagreement.
+    { name: 'Student Accounts', url: 'https://www.ramapo.edu/student-accounts/contacts/', label: /^Academic Year:/i, season: 'Academic Year' },
     { name: 'Financial Aid', url: 'https://www.ramapo.edu/finaid/', label: /^Academic Year:/i, season: 'Academic Year' },
     { name: 'Cahill Career Development Center', url: 'https://www.ramapo.edu/careercenter/', label: /^Office Hours:/i },
     { name: 'Dean of Students', url: 'https://www.ramapo.edu/student-affairs/', label: /^Regular Office Hours:/i },
@@ -436,6 +446,11 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     // The schedule is one sentence in the middle of a paragraph, after the appointment sentence.
     { name: 'ID Card Room', url: 'https://www.ramapo.edu/publicsafety/id-cards/',
         label: /^In order to get a new identification card, please contact the ID room at publicsafety@ramapo\.edu and make an appointment\.\s*The ID room is open/i },
+    { name: 'ID Card Room (Early Arrival)', url: 'https://www.ramapo.edu/reslife/earlyarrival/',
+        label: /^ID Room hours:/i,
+        extract: /ID Room hours: Monday to Friday, \d{1,2}:\d{2} AM to \d{1,2}:\d{2} PM\./i,
+        season: 'Early arrival period',
+        applicabilityIssue: { status: 'unknown', reason: 'Residence Life early-arrival guidance does not establish dates for this ID-room timetable; do not assume it is the routine schedule.' } },
     { name: 'Nursing Programs Office', url: 'https://www.ramapo.edu/nursing/', label: /^Hours:/i },
     // Different times on different days (read 2026-10-07).
     { name: 'Center for Reading and Writing', url: 'https://www.ramapo.edu/crw/', kind: 'week', label: /^Hours$/i,
@@ -448,8 +463,17 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     // The page's heading names the term, so the label does too: a new term's page stops the collector.
     { name: 'Photography Lab', url: 'https://www.ramapo.edu/photolab/hours/', kind: 'week', label: /^FALL 2026$/i, season: 'Fall 2026' },
     { name: 'Counseling Center', url: 'https://www.ramapo.edu/counseling/', label: /^Academic Year Hours:/i, season: 'Academic Year' },
+    { name: 'Counseling Center (Drop-In)', url: 'https://www.ramapo.edu/counseling/', kind: 'week',
+        label: /^(?=Monday-Friday)/i,
+        extract: /Monday-Friday, \d{1,2}-\d{1,2} pm(?=\* in Academic Building D, room 216)/i,
+        appendStatements: [/\*Last meeting begins at \d{1,2}:\d{2} pm\./i,
+            /Location: In person or via telehealth[^\n]*/i] },
+    { name: 'Counseling Center (Emergency Counseling)', url: 'https://www.ramapo.edu/counseling/faq/', kind: 'always',
+        label: /Emergency counseling is available 24\/7 at 201-684-7522\./i,
+        appendStatements: [/If you are experiencing a mental health emergency after hours, call the main number \(201-684-7522\) and press 2 for immediate assistance\./i] },
     { name: 'Registrar (Summer)', url: 'https://www.ramapo.edu/registrar/', label: /^Summer Hours:/i, season: 'Summer' },
     { name: 'Student Accounts (Summer)', url: 'https://www.ramapo.edu/student-accounts/', label: /^Summer:/i, season: 'Summer' },
+    { name: 'Student Accounts (Summer)', url: 'https://www.ramapo.edu/student-accounts/contacts/', label: /^Summer:/i, season: 'Summer' },
     { name: 'Financial Aid (Summer)', url: 'https://www.ramapo.edu/finaid/', label: /^Summer:/i, season: 'Summer' },
     { name: 'Cahill Career Development Center (Summer)', url: 'https://www.ramapo.edu/careercenter/', label: /^Summer Office Hours:/i, season: 'Summer' },
     { name: 'Dean of Students (Summer)', url: 'https://www.ramapo.edu/student-affairs/', label: /^Summer Office Hours:/i, season: 'Summer' },
@@ -459,6 +483,8 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'Testing Center (Summer)', url: 'https://www.ramapo.edu/testing/', label: /^Summer$/i, season: 'Summer' },
     { name: 'Counseling Center (Summer)', url: 'https://www.ramapo.edu/counseling/', label: /^Summer Hours:/i, season: 'Summer' },
     { name: 'Roadrunner Central (Summer)', url: 'https://www.ramapo.edu/csi/roadrunner-central/', kind: 'week',
+        label: /^During the Summer months, our hours are as follows:$/i, season: 'Summer' },
+    { name: 'Center for Student Involvement (Summer)', url: 'https://www.ramapo.edu/csi/roadrunner-central/', kind: 'week',
         label: /^During the Summer months, our hours are as follows:$/i, season: 'Summer' },
     { name: 'IT Help Desk (Summer)', url: 'https://www.ramapo.edu/its/help-desk/', label: /^Summer:/i, season: 'Summer' },
     { name: 'Berrie Center Box Office', url: 'https://www.ramapo.edu/berriecenter/tickets-seating/', kind: 'week',
@@ -668,6 +694,10 @@ export function parseConflictingOfficeHours(name: string, label: RegExp, against
 
 function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedAt: string): LocationHours {
     let scheduleText = text;
+    if (office.extract) {
+        scheduleText = text.match(office.extract)?.[0] ?? '';
+        if (!scheduleText) throw new Error(`Reviewed service hours clause changed: ${office.name}`);
+    }
     // This dated announcement prints both seasons in one paragraph. Bind each
     // record to its own clause rather than accidentally reading both clocks as one.
     if (office.name.startsWith('Health Services (')) {
@@ -688,6 +718,17 @@ function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedA
             ...record.normalization_metadata?.evidence?.schedule, season: office.season,
         } } };
         record.notes = `${office.season}: ${record.notes}`;
+    }
+    if (office.applicabilityIssue) {
+        record.normalization_metadata = { evidence: { schedule: {
+            ...record.normalization_metadata?.evidence?.schedule,
+            ...office.applicabilityIssue, source_statements: [scheduleText],
+        } } };
+    }
+    for (const expression of office.appendStatements ?? []) {
+        const statement = text.match(expression)?.[0];
+        if (!statement) throw new Error(`Reviewed service hours qualifier changed: ${office.name}`);
+        record.notes += `. ${statement}`;
     }
     if (office.starts) {
         const statement = text.match(office.starts);
@@ -727,11 +768,43 @@ export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireG
     // collector checks that every office page was parsed.
     const offices = OFFICE_HOURS_PAGES.filter((office) =>
         captures.some((capture) => capture.sourceUrl === office.url));
-    return [...source(ATHLETICS_HOURS_URL, parseAthleticsFacilityHours),
+    const records = [...source(ATHLETICS_HOURS_URL, parseAthleticsFacilityHours),
         ...source(LIBRARY_HOURS_URL, parseLibraryHours), ...general,
         ...offices.flatMap((office) => source(office.url, (text) => [
             configuredOfficeHours(office, text,
                 captures.find((capture) => capture.sourceUrl === office.url)!.collectedAt)]))];
+    const idRoom = records.find(record => record.name === 'ID Card Room');
+    const earlyArrival = records.find(record => record.name === 'ID Card Room (Early Arrival)');
+    if (idRoom && earlyArrival && DAYS.some(day => idRoom.hours[day] !== 'Hours unavailable'
+        && earlyArrival.hours[day] !== 'Hours unavailable' && idRoom.hours[day] !== earlyArrival.hours[day])) {
+        earlyArrival.normalization_metadata = { evidence: { schedule: {
+            ...earlyArrival.normalization_metadata?.evidence?.schedule,
+            status: 'conflicting',
+            reason: 'Residence Life early-arrival guidance differs from the routine ID Card Room timetable. The early-arrival source does not establish dates that resolve the different hours.',
+            source_statements: [
+                `${idRoom.sourceUrl}: ${idRoom.notes}`,
+                `${earlyArrival.sourceUrl}: ${earlyArrival.notes}`,
+            ],
+        } } };
+    }
+    const berrie = records.find(record => record.name === 'Berrie Center Box Office');
+    const seasonCaptures = captures.filter(capture => capture.sourceUrl === BERRIE_SEASON_URL);
+    if (berrie && (requireGeneralSource || seasonCaptures.length)) {
+        const [seasonCapture] = seasonCaptures;
+        if (seasonCaptures.length !== 1 || !Number.isFinite(Date.parse(seasonCapture.collectedAt))
+            || typeof seasonCapture.html !== 'string' || !seasonCapture.html.trim()) {
+            throw new Error(`Expected one valid Berrie seasonal source capture from ${BERRIE_SEASON_URL}`);
+        }
+        const statement = hoursPageText(seasonCapture.html).match(/The Box Office is open from (late August to early May)\./i);
+        if (!statement) throw new Error('Reviewed Berrie Box Office seasonal statement changed');
+        berrie.normalization_metadata = { evidence: { schedule: {
+            season: statement[1], source_statements: [`${BERRIE_SEASON_URL}: ${statement[0]}`],
+        } } };
+        berrie.notes += `. ${statement[0]} (${BERRIE_SEASON_URL})`;
+        // Keep the primary record's actual capture time. The FAQ retains its
+        // own check time/hash; dataset freshness still uses the oldest capture.
+    }
+    return attachReviewedHoursAbsences(records, captures);
 }
 
 export function campusHoursPublication(records: LocationHours[], now = new Date()) {
@@ -754,7 +827,9 @@ async function fetchCampusHours() {
         fetchHoursSource(GENERAL_CAMPUS_HOURS_URL),
     ]);
     // Two offices can share one page; it is fetched and archived once.
-    for (const url of new Set(OFFICE_HOURS_PAGES.map((office) => office.url))) captures.push(await fetchHoursSource(url));
+    for (const url of new Set([...OFFICE_HOURS_PAGES.map((office) => office.url), BERRIE_SEASON_URL])) {
+        captures.push(await fetchHoursSource(url));
+    }
     const fetchedAt = new Date(Math.min(...captures.map((capture) => Date.parse(capture.collectedAt)))).toISOString();
     const capturedSources = { version: 1, captures };
     const locations = campusHoursFromCaptures(captures, true);

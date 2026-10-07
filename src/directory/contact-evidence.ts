@@ -11,13 +11,15 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 
 export type ContactField = 'phone' | 'email' | 'office';
 export const CONTACT_FIELDS: readonly ContactField[] = ['phone', 'email', 'office'];
 
 /** What an office's pages can be confirmed not to publish: its contact fields and its opening hours. */
-export type AbsenceField = ContactField | 'hours';
-export const ABSENCE_FIELDS: readonly AbsenceField[] = [...CONTACT_FIELDS, 'hours'];
+export type AbsenceField = ContactField | 'hours' | 'prefers_email' | 'preferred_contact' | 'contact_note' | 'department';
+export const ABSENCE_FIELDS: readonly AbsenceField[] = [...CONTACT_FIELDS, 'hours', 'prefers_email', 'preferred_contact', 'contact_note', 'department'];
+export type AbsenceValues = Partial<Record<AbsenceField, string | boolean | null>>;
 
 /** Where a reviewed contact value is stated: a page, one section heading on it, and optionally the text it follows. */
 export interface ContactEvidence {
@@ -53,6 +55,16 @@ export interface ConfirmedContactAddition {
 }
 export interface ConfirmedContactNote {
   text: string; url: string; section: string; checked_at: string;
+}
+
+/** A source-scoped exclusion must be re-reviewed when its captured section changes. */
+export interface ReviewedContactExclusion {
+  field: ContactField; value: string; reason: string;
+  evidence: Pick<ContactEvidence, 'url' | 'section' | 'near'> & { text_sha256: string };
+}
+
+export function contactSectionHash(text: string): string {
+  return createHash('sha256').update(text).digest('hex');
 }
 
 export type ContactValues = Partial<Record<ContactField, string>>;
@@ -260,7 +272,8 @@ export function checkContactAdditions(entries: readonly ReviewedContactAddition[
       const section = evidenceText({ ...item, near: undefined }, pages);
       return item.fields.includes(entry.field) && 'text' in found
         && statesValue(entry.field, entry.value, found.text, Boolean(item.near))
-        && 'text' in section && collapse(section.text).toLowerCase().includes(collapse(entry.label).toLowerCase());
+        && 'text' in section && (collapse(section.text).toLowerCase().includes(collapse(entry.label).toLowerCase())
+          || entry.field === 'phone' && entry.label.toLowerCase() === 'fax' && /\bf\s*:/i.test(found.text));
     });
     if (!support || !entry.label.trim()) {
       withheld.push({ field: entry.field, value: entry.value, reason: 'The cited section does not state this contact with its reviewed label.' });
@@ -333,7 +346,7 @@ export function findUnrecordedValues(values: ContactValues, evidence: readonly C
 const CLOCK = String.raw`\d{1,2}(?::\d{2})?\s*(?:[ap]\.?\s*m\.?)`;
 const HOURS_CUES: RegExp[] = [
   new RegExp(CLOCK, 'gi'),
-  /\b\d{1,2}(?::\d{2})?\s*(?:-|\u2010|\u2011|\u2012|\u2013|\u2014|\u2212|to|until|till|through|thru)\s*\d{1,2}(?::\d{2})?\b/gi,
+  /\b(?:[0-9]|1[0-9]|2[0-3])(?::[0-5][0-9])?\s*(?:-|\u2010|\u2011|\u2012|\u2013|\u2014|\u2212|to|until|till|through|thru)\s*(?:[0-9]|1[0-9]|2[0-3])(?::[0-5][0-9])?\b/gi,
   /\b\d{2}:\d{2}\b/g,
   /\b(?:noon|midnight)\b/gi,
   /\b24\s*[-/x]?\s*(?:hours?|hrs?|7)\b/gi,
@@ -351,6 +364,11 @@ const PHONE_CUES: RegExp[] = [
   /\btel:/gi,
   /\b(?:phone|telephone|call us|call or text|text us|fax)\b/gi,
 ];
+const PREFERENCE_CUES = [/\bprefer(?:red|s|ence)?\b/gi,
+  /\b(?:best|recommended)\s+(?:way|method|contact|to\s+(?:use|contact|reach))\b/gi];
+const CONTACT_INSTRUCTION_CUES = [/\b(?:appointments?|walk[- ]?ins?|requests?|contact|call|email|e-mail|text|visit|submit)\b/gi];
+const EXPLICIT_PREFERENCE = /\b(?:prefer(?:red|s|ence)?|best|recommended)\b[^.\n]{0,100}\b(?:e-?mail|phone|telephone|call|text|sms|in[- ]person|visit)\b|\b(?:e-?mail|phone|telephone|call|text|sms|in[- ]person)\b[^.\n]{0,60}\bprefer(?:red|s|ence)?\b/gi;
+const EXPLICIT_INSTRUCTION = /\bplease\s+(?:contact|call|e-?mail|text|visit|submit|make|schedule)|\b(?:appointments?|walk[- ]?ins?)\b[^.\n]{0,100}\b(?:call|e-?mail|visit|available|required|schedule|must|only)\b|\b(?:call|e-?mail|text|submit|contact)\b[^.\n]{0,120}\b(?:questions?|requests?|appointments?|concerns?|assistance|before|after|only)\b/gi;
 
 const cuesIn = (patterns: RegExp[], text: string): string[] =>
   patterns.flatMap(pattern => [...text.matchAll(pattern)].map(match => match[0].replace(/\s+/g, ' ').trim()));
@@ -360,7 +378,9 @@ function statedValues(field: AbsenceField, text: string): string[] {
   const found = field === 'phone' ? [...phonesIn(text), ...cuesIn(PHONE_CUES, text)]
     : field === 'email' ? [...emailsIn(text), ...cuesIn(EMAIL_CUES, text)]
       : field === 'office' ? [...roomsIn(text), ...cuesIn(PLACE_CUES, text)]
-        : cuesIn(HOURS_CUES, text);
+        : field === 'hours' ? cuesIn(HOURS_CUES, text)
+          : field === 'prefers_email' || field === 'preferred_contact' ? cuesIn(PREFERENCE_CUES, text)
+            : field === 'contact_note' ? cuesIn(CONTACT_INSTRUCTION_CUES, text) : [];
   return [...new Set(found)];
 }
 
@@ -372,13 +392,22 @@ function statedValues(field: AbsenceField, text: string): string[] {
  */
 export interface AbsenceClaim {
   field: AbsenceField;
-  evidence: Array<Pick<ContactEvidence, 'url' | 'section' | 'near'>>;
+  /** What was looked for; for example a ranked preference or a shared general-office mailbox. */
+  scope?: string;
+  reason?: string;
+  evidence: Array<Pick<ContactEvidence, 'url' | 'section' | 'near'> & {
+    /** Explicit review of this exact captured text, required to distinguish benign cue words. */
+    reviewed?: { text_sha256: string; reason: string };
+  }>;
 }
 
 export interface ConfirmedAbsence {
   field: AbsenceField;
   /** The sections read, and when this run captured each page. */
-  checks: Array<{ url: string; section: string; checked_at: string }>;
+  checks: Array<{ url: string; section: string; checked_at: string; text_sha256?: string;
+    official_link?: { url: string; section: string; checked_at: string } }>;
+  scope?: string;
+  reason?: string;
 }
 
 export interface AbsenceIssue {
@@ -408,8 +437,9 @@ function isCollegePage(url: string): boolean {
  * leaves the claim unconfirmed. Only a confirmed absence is published, so a field nobody
  * confirmed stays unknown, never "not published".
  */
-export function checkAbsences(claims: readonly AbsenceClaim[], values: ContactValues,
-  pages: ReadonlyMap<string, CapturedPage>): CheckedAbsences {
+export function checkAbsences(claims: readonly AbsenceClaim[], values: AbsenceValues,
+  pages: ReadonlyMap<string, CapturedPage>, officialWebsite?: ConfirmedWebsite,
+  scopedContacts: readonly ConfirmedContactAddition[] = []): CheckedAbsences {
   const confirmed: ConfirmedAbsence[] = [];
   const issues: AbsenceIssue[] = [];
   for (const claim of claims) {
@@ -417,8 +447,9 @@ export function checkAbsences(claims: readonly AbsenceClaim[], values: ContactVa
       issues.push({ field: claim.field, kind: 'unconfirmed', reason: `"${String(claim.field)}" is not a field an absence can be claimed for.` });
       continue;
     }
-    const own = claim.field === 'hours' ? undefined : values[claim.field]?.trim();
-    if (own) {
+    const raw = claim.field === 'hours' ? undefined : values[claim.field];
+    const own = typeof raw === 'string' ? raw.trim() : raw;
+    if (own !== undefined && own !== null && own !== '') {
       issues.push({ field: claim.field, kind: 'contradicted', reason: `The entry itself has the ${claim.field} "${own}".` });
       continue;
     }
@@ -429,23 +460,60 @@ export function checkAbsences(claims: readonly AbsenceClaim[], values: ContactVa
     const checks: ConfirmedAbsence['checks'] = [];
     let ok = true;
     for (const entry of claim.evidence) {
-      if (!isCollegePage(entry.url)) {
-        issues.push({ field: claim.field, kind: 'unconfirmed', reason: `${entry.url} is not a ramapo.edu page.` });
+      const athleticsPage = officialWebsite?.official_link && officialWebsite.url
+        && new URL(officialWebsite.url).hostname.replace(/^www\./, '') === 'ramapoathletics.com'
+        && (() => { try { return new URL(entry.url).protocol === 'https:'
+          && new URL(entry.url).hostname.replace(/^www\./, '') === 'ramapoathletics.com'; } catch { return false; } })();
+      // The college explicitly delegates this clinic to Valley. This exact clinic
+      // page is eligible only while the captured Health Services page links to it.
+      const healthHome = 'https://www.valleyhealth.com/ramapo-college-health-services';
+      const healthReferral = entry.url === 'https://www.valleyhealth.com/save-your-spot-ramapo-college-health-services'
+        && pages.get(pageKey('https://www.ramapo.edu/health/'));
+      const referralSection = healthReferral && healthReferral.sections.find(section => section.text.includes(healthHome));
+      const delegatedPage = referralSection && pages.get(pageKey(healthHome));
+      const delegatedSection = delegatedPage && delegatedPage.sections.find(section => section.text.includes(entry.url));
+      if (!isCollegePage(entry.url) && !athleticsPage && !delegatedSection) {
+        issues.push({ field: claim.field, kind: 'unconfirmed', reason: `${entry.url} is not a verified official office page.` });
         ok = false;
         continue;
       }
       const found = evidenceText({ ...entry, fields: [] }, pages, { wholeSection: true });
       if ('reason' in found) { issues.push({ field: claim.field, kind: 'unconfirmed', reason: found.reason }); ok = false; continue; }
       const stated = statedValues(claim.field, found.text);
-      if (stated.length) {
+      const reviewed = entry.reviewed?.reason.trim() && entry.reviewed.text_sha256 === contactSectionHash(found.text);
+      if (entry.reviewed && !reviewed) {
+        issues.push({ field: claim.field, kind: 'unconfirmed', reason: `The reviewed section "${entry.section}" of ${entry.url} changed; review this absence again.` });
+        ok = false;
+        continue;
+      }
+      // A human review can explain a cue such as "meeting locations vary" or "call us"
+      // without digits. It cannot override an actual number, address or room in the section.
+      const actual = claim.field === 'phone' ? phonesIn(found.text)
+        : claim.field === 'email' ? emailsIn(found.text)
+          : claim.field === 'office' ? roomsIn(found.text)
+            : claim.field === 'preferred_contact' || claim.field === 'prefers_email' ? cuesIn([EXPLICIT_PREFERENCE], found.text)
+              : claim.field === 'contact_note' ? cuesIn([EXPLICIT_INSTRUCTION], found.text) : stated;
+      // A reviewed missing shared mailbox can coexist with checked, labelled staff
+      // addresses. Every address must be accounted for on this exact source section.
+      const scopedEmail = claim.field === 'email' && /(?:shared|general)[\s\S]*mailbox/i.test(claim.scope ?? '')
+        && actual.length > 0 && actual.every(value => scopedContacts.some(contact => contact.field === 'email'
+          && contact.value.toLowerCase() === value.toLowerCase()
+          && pageKey(contact.url) === pageKey(entry.url) && sameHeading(contact.section, entry.section)));
+      if (stated.length && (!reviewed || actual.length && !scopedEmail)) {
         issues.push({ field: claim.field, kind: 'contradicted',
           reason: `Section "${entry.section}" of ${entry.url} states ${stated.join(', ')}.` });
         ok = false;
         continue;
       }
-      checks.push({ url: entry.url, section: entry.section, checked_at: pages.get(pageKey(entry.url))!.fetchedAt });
+      checks.push({ url: entry.url, section: entry.section, checked_at: pages.get(pageKey(entry.url))!.fetchedAt,
+        ...(reviewed ? { text_sha256: entry.reviewed!.text_sha256 } : {}),
+        ...(referralSection && healthReferral ? { official_link: { url: healthReferral.url, section: referralSection.heading,
+          checked_at: healthReferral.fetchedAt } } : {}) });
+      if (delegatedSection && delegatedPage) checks.push({ url: delegatedPage.url, section: delegatedSection.heading,
+        checked_at: delegatedPage.fetchedAt, text_sha256: contactSectionHash(`${delegatedSection.heading}\n${delegatedSection.text}`) });
     }
-    if (ok) confirmed.push({ field: claim.field, checks });
+    if (ok) confirmed.push({ field: claim.field, checks,
+      ...(claim.scope ? { scope: claim.scope } : {}), ...(claim.reason ? { reason: claim.reason } : {}) });
   }
   // One field, one answer: a claim that could not be confirmed (or a duplicate that disagrees)
   // cancels a confirmation of the same field, so a contradiction is never published beside a note.
