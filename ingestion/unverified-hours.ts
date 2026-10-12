@@ -12,7 +12,10 @@ export function hoursUncertaintyReason(reason: string): string {
 
 /** A verified place remains discoverable even when its schedule is withheld.
  * Never copy rejected clocks, closures, qualifiers or old validity into the
- * current-hours projection. The complete source record stays in the manifest.
+ * hours or notes of the current-hours projection. The page's own statements stay
+ * only as cited `source_statements` in `normalization_metadata`, so the Brain can
+ * say what the page printed and that it is unverified. The complete source record
+ * stays in the manifest.
  */
 export function withheldHoursRecord({ record, reason }: { record: LocationHours; reason: string }): LocationHours {
   return {

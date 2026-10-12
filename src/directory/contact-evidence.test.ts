@@ -108,8 +108,13 @@ test('publication records where each value came from and what it withheld', () =
   const contacts = buildStructuredDirectoryContacts([], pages());
   const registrar = contacts.find(contact => contact.name === 'Registrar');
   assert.equal(registrar?.phone, undefined);
-  const metadata = registrar?.normalization_metadata as { evidence?: { withheld: unknown[]; source_urls: string[] } };
-  assert.equal(metadata.evidence?.withheld.length, 3);
+  const metadata = registrar?.normalization_metadata as { evidence?: { withheld: Array<{ reason: string }>; source_urls: string[] } };
+  // Every reviewed value the entry holds (its own phone, email and office, and each additional contact) is withheld.
+  const reviewed = OFFICE_DIRECTORY_CONTACTS.find(entry => entry.name === 'Registrar')!;
+  const held = CONTACT_FIELDS.filter(field => reviewed[field]).length + (reviewed.additionalContacts?.length ?? 0);
+  assert.ok(held > 3);
+  assert.equal(metadata.evidence?.withheld.length, held);
+  assert.ok(metadata.evidence?.withheld.every(value => /was not captured/.test(value.reason)));
   assert.deepEqual(metadata.evidence?.source_urls, []);
   // File mode (no captures) keeps the reviewed values as before.
   assert.equal(buildStructuredDirectoryContacts([]).find(contact => contact.name === 'Registrar')?.phone, '(201) 684-7695');
@@ -265,7 +270,9 @@ test('the reference data makes only well-formed absence claims that no reviewed 
       for (const section of claim.evidence) {
         assert.match(new URL(section.url).hostname, /(^|\.)ramapo\.edu$/, `${entry.name} ${claim.field} cites ${section.url}`);
       }
-      if (claim.field !== 'hours') assert.ok(!entry[claim.field], `${entry.name} has a ${claim.field} and says it is not published`);
+      if (claim.field !== 'hours') {
+        assert.ok(!(entry as unknown as Record<string, unknown>)[claim.field], `${entry.name} has a ${claim.field} and says it is not published`);
+      }
     }
   }
 });
