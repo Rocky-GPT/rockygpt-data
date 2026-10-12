@@ -6140,7 +6140,6 @@
       ],
       "office": "D-104",
       "website": "https://www.ramapo.edu/titleix/",
-      "email": "titleix@ramapo.edu",
       "evidence": [
         {
           "url": "https://www.ramapo.edu/titleix/",
@@ -6148,13 +6147,6 @@
           "fields": [
             "phone",
             "office"
-          ]
-        },
-        {
-          "url": "https://www.ramapo.edu/oabc/complaint-processing-forms/",
-          "section": "Discrimination/Bias/Title IX Complaints and Resources",
-          "fields": [
-            "email"
           ]
         }
       ],
@@ -6251,18 +6243,62 @@
           ],
           "scope": "current_unit_office_opening_timetable",
           "reason": "The reviewed current unit contact/service pages give no opening timetable for this office. Other offices\u2019 schedules and historical availability reports do not establish its current opening hours."
+        },
+        {
+          "field": "email",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/titleix/",
+              "section": "Who is the College\u2019s Director of Title IX/Title IX Coordinator?",
+              "reviewed": {
+                "text_sha256": "a8aba110f572763ceda32c1d039ae1c7c32b158ed9351a30cc6980cb784cdfc0",
+                "reason": "The reviewed Title IX contact block and Office of Title IX block publish no shared office mailbox; the only address there is the Director and Title IX Coordinator's named address kmcgee@ramapo.edu, kept as a labelled contact and not promoted to a general mailbox. titleix@ramapo.edu is published on the Office of Access, Belonging and Community complaints page as an address for an EDIC staff member and is kept as a scoped complaint-route contact, not as a Title IX office mailbox."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/titleix/dating-violence-resources/",
+              "section": "The Office of Title IX (NON-Confidential Resource)",
+              "reviewed": {
+                "text_sha256": "18fe47702429b6963ce73873c6c0e819003961f9788b8094feb17bfc2eb93801",
+                "reason": "The reviewed Title IX contact block and Office of Title IX block publish no shared office mailbox; the only address there is the Director and Title IX Coordinator's named address kmcgee@ramapo.edu, kept as a labelled contact and not promoted to a general mailbox. titleix@ramapo.edu is published on the Office of Access, Belonging and Community complaints page as an address for an EDIC staff member and is kept as a scoped complaint-route contact, not as a Title IX office mailbox."
+              }
+            }
+          ],
+          "scope": "shared general Title IX office mailbox",
+          "reason": "The reviewed Title IX contact block and Office of Title IX block publish no shared office mailbox; the only address there is the Director and Title IX Coordinator's named address kmcgee@ramapo.edu, kept as a labelled contact and not promoted to a general mailbox. titleix@ramapo.edu is published on the Office of Access, Belonging and Community complaints page as an address for an EDIC staff member and is kept as a scoped complaint-route contact, not as a Title IX office mailbox."
         }
       ],
       "additionalContacts": [
         {
           "field": "email",
           "value": "kmcgee@ramapo.edu",
-          "label": "Kat McGee, Director of Title IX and Institutional Compliance",
+          "label": "Kat McGee, J.D. Director of Title IX and Institutional Compliance",
           "evidence": [
+            {
+              "url": "https://www.ramapo.edu/titleix/",
+              "section": "Who is the College\u2019s Director of Title IX/Title IX Coordinator?",
+              "fields": [
+                "email"
+              ]
+            },
             {
               "url": "https://www.ramapo.edu/titleix/",
               "section": "Reporting an Incident of Discrimination",
               "near": "Kat McGee",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "email",
+          "value": "titleix@ramapo.edu",
+          "label": "To file a complaint at the College about an incident of discrimination and/or sexual misconduct",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/oabc/complaint-processing-forms/",
+              "section": "Discrimination/Bias/Title IX Complaints and Resources",
               "fields": [
                 "email"
               ]
