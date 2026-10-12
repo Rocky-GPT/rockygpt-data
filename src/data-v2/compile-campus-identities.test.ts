@@ -261,16 +261,23 @@ test('every office whose own page prints hours links exactly those records, and 
       for (const key of link.source_record_keys) owners.set(key, [...(owners.get(key) ?? []), entity.name]);
     }
   }
+  // Each schedule name (an office's regular, Summer, early-arrival or service schedule) belongs to exactly one office.
+  const selectedBy = new Map<string, string[]>();
+  for (const entity of real.entities) {
+    for (const link of entity.links.filter(l => l.collection === 'campus_hours')) {
+      for (const value of link.selector?.values ?? []) selectedBy.set(value, [...(selectedBy.get(value) ?? []), entity.name]);
+    }
+  }
   for (const name of names) {
-    for (const day of ['Monday', 'Tuesday']) assert.deepEqual(owners.get(`${name}:${day}`), [name], `${name} ${day}`);
+    assert.equal(selectedBy.get(name)?.length, 1, `${name} is selected by exactly one office`);
+    for (const day of ['Monday', 'Tuesday']) assert.deepEqual(owners.get(`${name}:${day}`), selectedBy.get(name), `${name} ${day}`);
   }
   assert.equal(result.report.unresolved.some(issue => issue.collection === 'campus_hours' && names.some(name => (issue.record ?? '').includes(name))), false);
-  // An office links the records of one name only (two names would show two schedules for one office).
+  // An office has one hours link. It may select several named, season-scoped schedules; no name is shared by two offices.
   for (const entity of real.entities) {
-    const hours = entity.links.filter(l => l.collection === 'campus_hours');
-    assert.ok(hours.length <= 1, `${entity.name} has two hours links`);
-    for (const link of hours) assert.equal(link.selector?.values?.length, 1, `${entity.name} selects more than one hours name`);
+    assert.ok(entity.links.filter(l => l.collection === 'campus_hours').length <= 1, `${entity.name} has two hours links`);
   }
+  for (const [name, offices] of selectedBy) assert.equal(offices.length, 1, `${name} is selected by ${offices.join(' and ')}`);
 });
 
 test('the Counseling Center, both Public Safety offices and the IT Help Desk link their own hours by name', async () => {
