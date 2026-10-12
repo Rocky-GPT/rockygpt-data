@@ -264,7 +264,7 @@
       "name": "Public Safety (Non-Emergency)",
       "phone": "(201) 684-7432",
       "category": "Emergency",
-      "email": "secdesk@ramapo.edu",
+      "email": "publicsafety@ramapo.edu",
       "department": "Public Safety",
       "office": "C-102",
       "website": "https://www.ramapo.edu/publicsafety/",
@@ -294,7 +294,7 @@
       "additionalContacts": [
         {
           "field": "email",
-          "value": "publicsafety@ramapo.edu",
+          "value": "secdesk@ramapo.edu",
           "label": "Public Safety Contact Information",
           "evidence": [
             {

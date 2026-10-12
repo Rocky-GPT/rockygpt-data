@@ -10614,7 +10614,7 @@
               ]
             }
           ],
-          "value": "secdesk@ramapo.edu"
+          "value": "publicsafety@ramapo.edu"
         },
         "phones": {
           "status": "verified",
@@ -10864,7 +10864,7 @@
           "url": "https://www.ramapo.edu/publicsafety/",
           "field": "email",
           "section": "Public Safety Contact Information",
-          "value": "publicsafety@ramapo.edu",
+          "value": "secdesk@ramapo.edu",
           "captured_at": "2026-10-07T17:57:39.521Z",
           "decision": "saved",
           "reason": "Published as a labeled additional contact: Public Safety Contact Information.",

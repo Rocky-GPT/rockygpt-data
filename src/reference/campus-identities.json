@@ -7757,10 +7757,9 @@
           "selector": {
             "field": "contact_identity",
             "values": [
-              "key:office:public-safety-non-emergency",
-              "email:secdesk@ramapo.edu"
+              "key:office:public-safety-non-emergency"
             ],
-            "evidence": "Reviewed original directory contact key and unique role email; no shared-phone matching."
+            "evidence": "Reviewed original directory contact key. The role emails are shared by both Public Safety offices and the ID Card Room, so they are not anchors; the key selects this contact. No shared-phone matching."
           }
         },
         {
