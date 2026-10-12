@@ -7156,8 +7156,82 @@
         },
         "hours": {
           "status": "conflicting",
-          "decision": "Current Help Desk page conflicts: top Fall/Spring support hours Mon\u2013Thu 8:30am\u20138pm and Fri 8:30am\u20136pm versus lower Ways to submit a ticket Fall/Spring Mon\u2013Fri 8am\u20138pm. Preserve conflicting metadata; Summer Mon\u2013Thu 8am\u20135:15pm is separately published. No exact semester dates or weekend closure are inferred.",
+          "decision": "The Hours of Support table and the list under Ways to submit a ticket give different Fall/Spring hours (Mon-Thu 8:30am-8pm and Fri 8:30am-6pm versus Mon-Fri 8am-8pm); neither gives dates. Both are stored as readings of one Fall/Spring schedule and neither is preferred. Summer Mon-Thu 8am-5:15pm is separately published. No exact semester dates or weekend closure are inferred.",
           "published_schedules": [
+            {
+              "schedule": "IT Help Desk",
+              "days": [
+                {
+                  "day": "Monday",
+                  "hours": "8:30am-8:00pm"
+                },
+                {
+                  "day": "Tuesday",
+                  "hours": "8:30am-8:00pm"
+                },
+                {
+                  "day": "Wednesday",
+                  "hours": "8:30am-8:00pm"
+                },
+                {
+                  "day": "Thursday",
+                  "hours": "8:30am-8:00pm"
+                },
+                {
+                  "day": "Friday",
+                  "hours": "8:30am-6:00pm"
+                },
+                {
+                  "day": "Saturday",
+                  "hours": null
+                },
+                {
+                  "day": "Sunday",
+                  "hours": null
+                }
+              ],
+              "notes": [
+                "Fall/Spring: Monday-Thursday 8:30 AM - 8:00 PM; Friday 8:30 AM - 6:00 PM. Hours of Support"
+              ],
+              "season": "Fall/Spring"
+            },
+            {
+              "schedule": "IT Help Desk",
+              "days": [
+                {
+                  "day": "Monday",
+                  "hours": "8:00am-8:00pm"
+                },
+                {
+                  "day": "Tuesday",
+                  "hours": "8:00am-8:00pm"
+                },
+                {
+                  "day": "Wednesday",
+                  "hours": "8:00am-8:00pm"
+                },
+                {
+                  "day": "Thursday",
+                  "hours": "8:00am-8:00pm"
+                },
+                {
+                  "day": "Friday",
+                  "hours": "8:00am-8:00pm"
+                },
+                {
+                  "day": "Saturday",
+                  "hours": null
+                },
+                {
+                  "day": "Sunday",
+                  "hours": null
+                }
+              ],
+              "notes": [
+                "Fall/Spring: Fall/Spring: Monday-Friday 8:00am-8:00pm. By visiting the Help Desk office. We are located on the 4th floor of the Learning Commons and our hours are:"
+              ],
+              "season": "Fall/Spring"
+            },
             {
               "schedule": "IT Help Desk (Summer)",
               "days": [
@@ -7199,7 +7273,7 @@
           "evidence": [
             {
               "url": "https://www.ramapo.edu/its/help-desk/",
-              "section": "Hours of Support"
+              "section": "Fall / Spring"
             },
             {
               "url": "https://www.ramapo.edu/its/help-desk/",

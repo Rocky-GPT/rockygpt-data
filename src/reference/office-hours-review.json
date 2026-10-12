@@ -781,12 +781,15 @@
       "schedule": "IT Help Desk",
       "source_url": "https://www.ramapo.edu/its/help-desk/",
       "scope": "IT Help Desk source-specific timetable",
-      "missing_weekdays": [],
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
       "missing_validity": [
         "valid_from",
         "valid_until"
       ],
-      "reason": "The two Fall/Spring statements conflict, but neither gives exact effective dates. No withheld weekday placeholder is classified as a published omission.",
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
       "checks": [
         {
           "url": "https://www.ramapo.edu/its/help-desk/",

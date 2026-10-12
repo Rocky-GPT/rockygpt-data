@@ -4,7 +4,7 @@ import {
   ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, campusHoursFromCaptures,
   campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
   OFFICE_HOURS_PAGES, hoursPageText, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, parseWeeklyHours,
-  BERRIE_SEASON_URL,
+  parseColumnHours, BERRIE_SEASON_URL,
 } from './campus-hours';
 import { attachReviewedHoursAbsences } from './reviewed-hours-absence';
 import { createHash } from 'node:crypto';
@@ -327,9 +327,14 @@ test('a page that says an office is open around the clock gives every day, in it
   assert.equal(urls.filter((url) => url === entry.url).length, 2);
 });
 
-test('an office page that states two different schedules is withheld, keeping both statements', () => {
-  const entry = OFFICE_HOURS_PAGES.find((office) => office.name === 'IT Help Desk')!;
-  assert.equal(entry.kind, 'conflict');
+test('an office page that states two different schedules can be withheld, keeping both statements', () => {
+  // The `conflict` kind is no entry's today (the IT Help Desk's two statements are stored as readings), but it
+  // remains for a page whose statements cannot be stored as schedules; here it reads the same page as before.
+  const entry = {
+    name: 'IT Help Desk', url: 'https://www.ramapo.edu/its/help-desk/',
+    label: /Fall \/ Spring\nMonday-Thursday\nFriday\n8:30 AM - 8:00 PM\n8:30 AM - 6:00 PM/,
+    against: /Fall\/Spring: Monday-Friday 8:00am-8:00pm/i,
+  };
   const row = parseConflictingOfficeHours(entry.name, entry.label, entry.against!, helpDeskPage);
   assert.equal(row.availabilityIssue, 'conflicting-source-schedules');
   assert.ok(Object.values(row.hours).every((value) => value === 'Hours unavailable'));
@@ -351,6 +356,27 @@ test('an office page that states two different schedules is withheld, keeping bo
   assert.throws(() => parseConflictingOfficeHours(entry.name, entry.label, entry.against!,
     helpDeskPage.replace('Fall/Spring: Monday-Friday 8:00am-8:00pm', 'Fall/Spring: see the table above')),
     /no longer on its page/);
+});
+
+test('the IT Help Desk page prints two different Fall/Spring schedules; both are kept, neither chosen', () => {
+  const [table, list] = OFFICE_HOURS_PAGES.filter((office) => office.name === 'IT Help Desk');
+  assert.equal(table.kind, 'columns');
+  assert.equal(table.season, 'Fall/Spring');
+  assert.equal(list.season, 'Fall/Spring');
+  // The "Hours of Support" table: one row of day ranges over one row of times, paired by position.
+  const a = parseColumnHours(table.name, table.label, helpDeskPage);
+  assert.deepEqual(Object.values(a.hours), ['8:30am-8:00pm', '8:30am-8:00pm', '8:30am-8:00pm', '8:30am-8:00pm',
+    '8:30am-6:00pm', 'Hours unavailable', 'Hours unavailable']);
+  assert.equal(a.notes, 'Monday-Thursday 8:30 AM - 8:00 PM; Friday 8:30 AM - 6:00 PM');
+  // The list under "Ways to submit a ticket": one line, Monday-Friday.
+  const b = parseOfficeHours(list.name, list.label, helpDeskPage, '2026-10-12T12:00:00Z', []);
+  assert.deepEqual(Object.values(b.hours), [...Array(5).fill('8:00am-8:00pm'), 'Hours unavailable', 'Hours unavailable']);
+  // A table that loses a cell stops the collector instead of being guessed at.
+  assert.throws(() => parseColumnHours(table.name, table.label, helpDeskPage.replace('8:30 AM - 6:00 PM\n', '')),
+    /row of days over a row of times/);
+  assert.throws(() => parseColumnHours(table.name, table.label, helpDeskPage.replace('Monday-Thursday\nFriday', 'Monday-Thursday\nThursday')),
+    /states two schedules for Thursday/);
+  assert.throws(() => parseColumnHours(table.name, /^Missing label$/i, helpDeskPage), /line is unavailable/);
 });
 
 test('every reviewed office page replays from its archived capture, two offices sharing one capture', () => withoutReviewedOmissions(() => {
@@ -396,8 +422,9 @@ test('every reviewed office page replays from its archived capture, two offices 
   const published = new Map(result.publishable.map((row) => [row.name, row]));
   assert.equal(published.get('Public Safety (Emergency)')!.hours.Sunday, '24 hours');
   assert.equal(published.get('Counseling Center')!.hours.Monday, '8:30am-4:30pm');
-  assert.equal(published.get('IT Help Desk')!.availabilityIssue, 'unverified-hours');
-  assert.ok(result.omitted.some(({ record, reason }) => record.name === 'IT Help Desk' && reason === 'conflicting-source-schedules'));
+  // Both Fall/Spring statements are kept as their own records under one name; neither is withheld.
+  assert.equal(raw.filter((row) => row.name === 'IT Help Desk').length, 2);
+  assert.ok(!result.omitted.some(({ record }) => record.name === 'IT Help Desk'));
   // No office is dated by the academic calendar: only a date its own page prints becomes a boundary.
   assert.equal(byName.get('Center for Reading and Writing')?.validFrom, '2026-08-31');
   assert.equal(byName.get('Berrie Center Box Office')?.validFrom, '2026-08-26');
