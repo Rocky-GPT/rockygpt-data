@@ -420,6 +420,14 @@
       "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Heading 'CURRENT STUDENT HOUSING WITHDRAWAL FORM': 'All students who wish to withdraw from housing must complete this form.' Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
     },
     {
+      "entity_id": "c8fe1166-f8e7-4684-923a-164591b4b4dd",
+      "entity": "Housing & Residence Life",
+      "alias": "Res Life",
+      "reviewed_at": "2026-10-12",
+      "source_url": "https://www.ramapo.edu/reslife/reappointment/",
+      "note": "Added 2026-10-12 after Dan said yes to adding it when asked in chat, because a student's message 'res life hrs' found no office. It is the short name the college uses itself: the office's own page captions '2026-2027 Res Life Staff Photos' (the cited page), and the link bar on the college's Athletics site labels its link to /reslife/ 'Res Life'. Checked by script on 2026-10-12: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+    },
+    {
       "entity_id": "f761977e-9e04-4155-a0ba-6f1229545bb6",
       "entity": "ID Card Room",
       "alias": "ID Room",
