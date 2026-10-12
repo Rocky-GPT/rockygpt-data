@@ -12659,26 +12659,19 @@
           "source_statement": "The Office of Title IX supports Ramapo College\u2019s mission"
         },
         "email": {
-          "status": "verified",
-          "reason": "Primary value retained; supported scoped additions are separate labeled observations.",
+          "status": "reviewed_not_published",
+          "scope": "shared general Title IX office mailbox",
+          "reason": "The reviewed Title IX contact block and Office of Title IX block publish no shared office mailbox; the only address there is the Director and Title IX Coordinator's named address kmcgee@ramapo.edu, kept as a labelled contact and not promoted to a general mailbox. titleix@ramapo.edu is published on the Office of Access, Belonging and Community complaints page as an address for an EDIC staff member and is kept as a scoped complaint-route contact, not as a Title IX office mailbox.",
           "evidence": [
             {
               "url": "https://www.ramapo.edu/titleix/",
-              "section": "Who is the College\u2019s Director of Title IX/Title IX Coordinator?",
-              "fields": [
-                "phone",
-                "office"
-              ]
+              "section": "Who is the College\u2019s Director of Title IX/Title IX Coordinator?"
             },
             {
-              "url": "https://www.ramapo.edu/oabc/complaint-processing-forms/",
-              "section": "Discrimination/Bias/Title IX Complaints and Resources",
-              "fields": [
-                "email"
-              ]
+              "url": "https://www.ramapo.edu/titleix/dating-violence-resources/",
+              "section": "The Office of Title IX (NON-Confidential Resource)"
             }
-          ],
-          "value": "titleix@ramapo.edu"
+          ]
         },
         "phones": {
           "status": "verified",
@@ -12690,13 +12683,6 @@
               "fields": [
                 "phone",
                 "office"
-              ]
-            },
-            {
-              "url": "https://www.ramapo.edu/oabc/complaint-processing-forms/",
-              "section": "Discrimination/Bias/Title IX Complaints and Resources",
-              "fields": [
-                "email"
               ]
             }
           ],
@@ -12713,13 +12699,6 @@
                 "phone",
                 "office"
               ]
-            },
-            {
-              "url": "https://www.ramapo.edu/oabc/complaint-processing-forms/",
-              "section": "Discrimination/Bias/Title IX Complaints and Resources",
-              "fields": [
-                "email"
-              ]
             }
           ],
           "value": "D-104"
@@ -12732,6 +12711,13 @@
               "url": "https://www.ramapo.edu/titleix/",
               "section": "Reporting an Incident of Discrimination",
               "near": "Kat McGee",
+              "fields": [
+                "email"
+              ]
+            },
+            {
+              "url": "https://www.ramapo.edu/oabc/complaint-processing-forms/",
+              "section": "Discrimination/Bias/Title IX Complaints and Resources",
               "fields": [
                 "email"
               ]
@@ -13027,7 +13013,7 @@
       ],
       "notes": [
         "Coordinator kmcgee@ramapo.edu is already preserved with the full published role. EDIC/diversity contacts, Ombuds contacts and federal/state complaint agencies are referrals and must not become Title IX office fields.",
-        "The oabc complaints page could not be opened by the web connector; today\u2019s HTTP200 capture was reviewed for the generic Title IX email and EDIC ownership context.",
+        "Among the reviewed pages, titleix@ramapo.edu appears on the Office of Access, Belonging and Community complaints page, assigned there to an EDIC staff member beside diversity@ramapo.edu, and in a March 2023 Dean of Students letter. It does not appear on the captured Title IX unit pages, whose only office-level address is kmcgee@ramapo.edu. It is kept as a scoped complaint-route contact, not as a Title IX office mailbox. This is a finding about the reviewed pages, not a claim that no other page publishes it.",
         "Home coordinator block, the Title IX block of Dating Violence Resources and Reporting Options contact block publish no Title IX opening timetable.24/7 support on the page refers to Public Safety or outside services, not Title IX.",
         "Absence decisions cover the explicitly listed current unit pages. They are not claims that the information can never appear elsewhere, and unknown weekdays or seasonal applicability remain explicit."
       ],
@@ -13099,6 +13085,17 @@
           "text_sha256": "73c7b426f3b2d2924e9382df1848012cd0cdae64621742865b2a82a006f37f36",
           "captured_at": "2026-10-07T18:53:11.282Z",
           "reason": "Canonical entity name remains unchanged; department uses its own published unit label."
+        },
+        {
+          "reviewed_at": "2026-10-12T14:40:39.000Z",
+          "kind": "primary_value_demoted_to_labelled_contact",
+          "field": "email",
+          "previous_value": "titleix@ramapo.edu",
+          "value": "titleix@ramapo.edu",
+          "url": "https://www.ramapo.edu/oabc/complaint-processing-forms/",
+          "section": "Discrimination/Bias/Title IX Complaints and Resources",
+          "reason": "The reviewed Title IX contact block and Office of Title IX block publish no shared office mailbox; the only address there is the Director and Title IX Coordinator's named address kmcgee@ramapo.edu, kept as a labelled contact and not promoted to a general mailbox. titleix@ramapo.edu is published on the Office of Access, Belonging and Community complaints page as an address for an EDIC staff member and is kept as a scoped complaint-route contact, not as a Title IX office mailbox.",
+          "review_basis": "Reread the captured Title IX unit pages and the complaints page. The address is published only on another unit's complaints page, so it is a scoped contact, not the office mailbox."
         }
       ]
     }
