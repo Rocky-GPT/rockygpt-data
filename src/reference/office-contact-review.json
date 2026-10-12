@@ -3762,7 +3762,8 @@
       "notes": [
         "Telephone and visiting are explicit routes; neither is ranked over the other. A personal Tal Yonai address in another campus resource listing is not a shared Counseling mailbox.",
         "Emergency availability 24/7 and drop-in triage Monday\u2013Friday 1\u20133pm (last appointment 2:40pm) are distinct services, not regular office opening hours.",
-        "Named external helplines are preserved as source resources, not campus office phone attributes."
+        "Named external helplines are preserved as source resources, not campus office phone attributes.",
+        "Department stays the unit's own published name, Counseling Services (page title 'Welcome! - Counseling Services'; contact block heading 'Counseling Services'; phone directory 'Counseling Services - (201) 684-7522'). The college's pages also place it under the Center for Student Wellness (breadcrumb 'Student Life \u00bb Center for Student Wellness \u00bb Counseling Services'; the About the Staff section lists 'Judith Green, Psy.D., Director, Center for Student Wellness' with the counseling staff; the /csw/ page lists it among the Center's services). That parent is not stored as the department; surfacing it needs its own part_of fact with a Center for Student Wellness identity."
       ]
     },
     {
@@ -4246,7 +4247,8 @@
       ],
       "notes": [
         "Parents\u2019 email instruction is purpose-specific and should retain its parent/guardian evidence context; it does not establish a universal email preference.",
-        "Fixed program opening hours are not published in reviewed program-specific contact, admissions and FAQ sections. Individual sessions and Counseling Services co-location must not be used to invent ENHANCE opening hours."
+        "Fixed program opening hours are not published in reviewed program-specific contact, admissions and FAQ sections. Individual sessions and Counseling Services co-location must not be used to invent ENHANCE opening hours.",
+        "Department stays the unit's own published name. Its breadcrumb places it under the Center for Student Wellness, which is a parent unit and is not stored as the department; surfacing it needs its own part_of fact."
       ],
       "review_updates": [
         {
@@ -5581,7 +5583,8 @@
       ],
       "notes": [
         "Current provider FAQ dated May 18, 2026 publishes immunize@ramapo.edu for Medicat portal questions. Capture PDF text with provenance before using new scoped email. The general clinical mailbox remains reviewed not-published.",
-        "The PDF heading/question must be preserved as a source section; HTML-only collectors cannot substantiate this addition yet."
+        "The PDF heading/question must be preserved as a source section; HTML-only collectors cannot substantiate this addition yet.",
+        "Department is the unit's own published name (page title 'Home - Health Services'; heading 'Health Services'; phone directory 'Health Services - (201) 684-7536'). The page lists it under the Center for Student Wellness and says Valley Medical Group manages the on-campus Health Services Center; neither is stored as the department."
       ]
     },
     {
@@ -7072,7 +7075,9 @@
           "reason": "Saved with source-bound scope label Parking Permits. It is not promoted to the general office contact."
         }
       ],
-      "notes": [],
+      "notes": [
+        "Department stays the label the ID card page prints ('ID Room, C-Wing, C-101'). Pages describe its relation to Public Safety in different words: the ID card page sits on the Public Safety site (title 'Identification Card Information - Public Safety', breadcrumb 'About \u00bb Public Safety') and the Residence Life guide says 'Public Safety ID Room (C-101)'; the Public Safety parking page says the ID Card and Parking Office is 'located next door to Public Safety, in Room C-101'. No page states the ID room's department, so Public Safety is not stored. Public Safety's lost-and-found page also calls it the 'ID Card Room' and gives (201) 684-7789, which the Public Safety home page lists as the Director of Public Safety; that conflict is not resolved here."
+      ],
       "review_updates": [
         {
           "reviewed_at": "2026-10-07T18:59:20.378Z",
