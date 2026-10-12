@@ -3,7 +3,9 @@
  * Holds each reviewed contact value to the captured page section it came from.
  *
  * A reviewed contact names, for every phone, email and office it publishes, the
- * ramapo.edu page and section heading that state it. At publication the value is
+ * ramapo.edu page and section heading that state it (an external page counts only
+ * through the two narrow college referrals described at `checkAbsences` and
+ * `checkWebsite`). At publication the value is
  * looked up in that section of the page as this run captured it. A value the
  * section doesn't state (the page changed, the section moved, the page wasn't
  * captured) is withheld and recorded with its reason, never published on the
@@ -431,8 +433,11 @@ function isCollegePage(url: string): boolean {
 
 /**
  * Confirms each claim against this run's capture: every cited section must be on a ramapo.edu
- * page (the office's own pages or the campus directory; an office whose page lives elsewhere
- * stays unknown), be present, and state no value of the field. A section that states one contradicts the claim (the page
+ * page (the office's own pages or the campus directory), or on one of two reviewed external
+ * pages (the Athletics site while the college's catalog link to its root is captured, and the
+ * Valley clinic page while the captured Health Services page links to it); an office whose page
+ * lives anywhere else stays unknown. The section must be present and state no value of the
+ * field. A section that states one contradicts the claim (the page
  * started publishing it, or the claim was wrong); a page or section that was not captured
  * leaves the claim unconfirmed. Only a confirmed absence is published, so a field nobody
  * confirmed stays unknown, never "not published".

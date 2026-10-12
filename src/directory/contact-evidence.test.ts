@@ -229,19 +229,36 @@ test('a claim is read through the whole section after its "near" phrase, and one
   assert.equal(checkAbsences(odd, {}, contactBlock('Phone only')).issues[0].kind, 'unconfirmed');
 });
 
-test('only ramapo.edu pages can confirm an absence; an office whose page lives elsewhere stays unknown', () => {
+test('only ramapo.edu pages, and the two external pages the college itself links, can confirm an absence', () => {
   const ATHLETICS = 'https://ramapoathletics.com/staff/';
   const captured = pages(page(ATHLETICS, [['Staff', 'Phone: (201) 684-7674']]));
   const claim = [{ field: 'email' as const, evidence: [{ url: ATHLETICS, section: 'Staff' }] }];
   const checked = checkAbsences(claim, {}, captured);
   assert.deepEqual(checked.confirmed, []);
   assert.equal(checked.issues[0].kind, 'unconfirmed');
-  assert.match(checked.issues[0].reason, /not a ramapo\.edu page/);
+  assert.match(checked.issues[0].reason, /not a verified official office page/);
   for (const url of ['https://ramapo.edu.example.com/x/', 'https://notramapo.edu/x/', 'not a url', 'http://www.ramapo.edu.evil.test/']) {
     assert.equal(checkAbsences([{ field: 'email', evidence: [{ url, section: 'Contact Us' }] }], {}, pages(page(url, [['Contact Us', 'x']]))).confirmed.length, 0, url);
   }
   assert.equal(checkAbsences(claim.map(c => ({ ...c, evidence: [{ url: 'https://shop.ramapo.edu/a/', section: 'Staff' }] })), {},
     pages(page('https://shop.ramapo.edu/a/', [['Staff', 'Phone only']]))).confirmed.length, 1);
+  // The Athletics site counts only when the college's own captured catalog page links to it.
+  const referral = { url: 'https://ramapoathletics.com/', checked_at: '2026-09-26T20:00:00.000Z',
+    official_link: { url: 'https://catalog.ramapo.edu/quicklinks/studentservices', section: 'Directory of Student Services',
+      checked_at: '2026-09-26T20:00:00.000Z' } };
+  assert.equal(checkAbsences(claim, {}, captured, referral).confirmed.length, 1);
+  assert.equal(checkAbsences(claim, {}, captured, { url: referral.url, checked_at: referral.checked_at }).confirmed.length, 0);
+  assert.equal(checkAbsences(claim, {}, pages(page('https://ramapoathletics.com.evil.test/staff/', [['Staff', 'x']])), referral).confirmed.length, 0);
+  // The Valley clinic page counts only while the captured Health Services page links to the clinic's home.
+  const VALLEY = 'https://www.valleyhealth.com/save-your-spot-ramapo-college-health-services';
+  const valley = [{ field: 'email' as const, evidence: [{ url: VALLEY, section: 'Save Your Spot' }] }];
+  const clinic = page(VALLEY, [['Save Your Spot', 'Call to book.']]);
+  const home = page('https://www.valleyhealth.com/ramapo-college-health-services', [['Clinic', `Book at ${VALLEY}`]]);
+  const health = page('https://www.ramapo.edu/health/', [['Valley Medical Group', 'See https://www.valleyhealth.com/ramapo-college-health-services']]);
+  assert.equal(checkAbsences(valley, {}, pages(clinic)).confirmed.length, 0);
+  assert.equal(checkAbsences(valley, {}, pages(clinic, home, health)).confirmed.length, 1);
+  assert.equal(checkAbsences([{ field: 'email', evidence: [{ url: 'https://www.valleyhealth.com/other', section: 'x' }] }], {},
+    pages(clinic, home, health, page('https://www.valleyhealth.com/other', [['x', 'y']]))).confirmed.length, 0);
 });
 
 test('one clean section does not hide another that states the value, and an entry cannot hold a value it says is not published', () => {
@@ -268,7 +285,10 @@ test('the reference data makes only well-formed absence claims that no reviewed 
       seen.add(claim.field);
       assert.ok(claim.evidence.length > 0, `${entry.name} ${claim.field} cites no section`);
       for (const section of claim.evidence) {
-        assert.match(new URL(section.url).hostname, /(^|\.)ramapo\.edu$/, `${entry.name} ${claim.field} cites ${section.url}`);
+        // ramapo.edu, plus exactly the two external pages the college links for its Athletics and Health Services offices.
+        const external = (entry.name === 'Athletics' && new URL(section.url).hostname === 'ramapoathletics.com')
+          || (entry.name === 'Health Services' && section.url === 'https://www.valleyhealth.com/save-your-spot-ramapo-college-health-services');
+        assert.ok(external || /(^|\.)ramapo\.edu$/.test(new URL(section.url).hostname), `${entry.name} ${claim.field} cites ${section.url}`);
       }
       if (claim.field !== 'hours') {
         assert.ok(!(entry as unknown as Record<string, unknown>)[claim.field], `${entry.name} has a ${claim.field} and says it is not published`);
@@ -295,13 +315,15 @@ test('a reviewed website is kept only when it is a plain ramapo.edu page this ru
   assert.match(checkWebsite('https://www.ramapo.edu/oss/', captured).issue?.reason ?? '', /did not capture/);
 });
 
-test('every reviewed website is a plain ramapo.edu page, and only offices with one of their own have one', () => {
+test('every reviewed website is a plain ramapo.edu page, except the one Athletics site the college links', () => {
   const sites = OFFICE_DIRECTORY_CONTACTS.filter(entry => entry.website !== undefined);
-  assert.equal(sites.length, 33);
-  const all = pages(...sites.map(entry => page(entry.website as string, [['x', 'y']])));
-  for (const entry of sites) assert.equal(checkWebsite(entry.website, all).issue, undefined, entry.name);
-  // An office whose pages live on another site has none to claim.
-  assert.equal(OFFICE_DIRECTORY_CONTACTS.find(entry => entry.name === 'Athletics')?.website, undefined);
+  assert.equal(sites.length, 34);
+  const catalog = page('https://catalog.ramapo.edu/quicklinks/studentservices', [['Directory of Student Services', 'Athletics https://ramapoathletics.com/']]);
+  const all = pages(catalog, ...sites.map(entry => page(entry.website as string, [['x', 'y']])));
+  for (const entry of sites) assert.equal(checkWebsite(entry.website, all, entry.websiteEvidence).issue, undefined, entry.name);
+  // Only Athletics has a site outside ramapo.edu, and it is kept through the college's own catalog link.
+  assert.deepEqual(sites.filter(entry => !/(^|\.)ramapo\.edu$/.test(new URL(entry.website as string).hostname)).map(entry => entry.name),
+    ['Athletics']);
   assert.equal(OTHER_DIRECTORY_CONTACTS.some(entry => 'website' in entry), false);
 });
 
@@ -321,8 +343,12 @@ test('publication records a confirmed website and a website it could not keep, i
     .find(contact => contact.name === 'Photography Lab')!;
   assert.equal(without.evidence?.website, undefined);
   assert.match(without.evidence?.website_issue?.reason ?? '', /did not capture/);
-  // An office with no claim has neither.
-  const athletics = buildStructuredDirectoryContacts([], captured).find(contact => contact.name === 'Athletics')!;
-  assert.equal(athletics.evidence?.website, undefined);
-  assert.equal(athletics.evidence?.website_issue, undefined);
+  // The Athletics site is kept only with the college's captured catalog link and its own captured page.
+  const athleticsEntry = OFFICE_DIRECTORY_CONTACTS.find(entry => entry.name === 'Athletics')!;
+  const referral = page(athleticsEntry.websiteEvidence!.url, [[athleticsEntry.websiteEvidence!.section, 'Athletics https://ramapoathletics.com/']]);
+  const own = page('https://ramapoathletics.com/', [['Home', 'x']]);
+  const athleticsRow = (...list: CapturedPage[]) => buildStructuredDirectoryContacts([], pages(...list)).find(contact => contact.name === 'Athletics')!;
+  assert.deepEqual(athleticsRow(referral, own).evidence?.website?.official_link?.url, athleticsEntry.websiteEvidence!.url);
+  assert.match(athleticsRow(own).evidence?.website_issue?.reason ?? '', /needs the official catalog referral|does not link/);
+  assert.match(athleticsRow(referral).evidence?.website_issue?.reason ?? '', /did not capture/);
 });
