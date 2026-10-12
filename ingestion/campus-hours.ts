@@ -402,12 +402,16 @@ async function fetchHoursSource(sourceUrl: string): Promise<HoursSourceCapture> 
  * - `conflict`: the page states two schedules that disagree (read 2026-10-06). Both
  *   statements must still be on the page, or the collector stops for a person to look: a
  *   fixed page must not stay withheld, and a changed one must not be guessed.
+ * - `columns`: the page prints a table, one row of day ranges with a row of time ranges
+ *   directly beneath it ("Monday-Thursday | Friday" over "8:30 AM - 8:00 PM | 8:30 AM - 6:00 PM").
+ *   The label is the line above the table. Read by parseColumnHours, which pairs the cells by
+ *   position and refuses anything it cannot pair.
  */
 export interface OfficeHoursPage {
     name: string;
     url: string;
     label: RegExp;
-    kind?: 'always' | 'conflict' | 'week';
+    kind?: 'always' | 'conflict' | 'week' | 'columns';
     /** For `conflict`: the other statement the label's line disagrees with. */
     against?: RegExp;
     /** Source-published scope, retained even when its calendar boundaries are absent. */
@@ -501,10 +505,15 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         label: /The Public Safety Department is available 24 hours a day, 7 days a week(?:, 365 days a year)?\./i },
     { name: 'Public Safety (Non-Emergency)', url: 'https://www.ramapo.edu/publicsafety/get-support/', kind: 'always',
         label: /The Public Safety Department is available 24 hours a day, 7 days a week(?:, 365 days a year)?\./i },
-    // The hours table and the paragraph beneath it give different Fall/Spring hours.
-    { name: 'IT Help Desk', url: 'https://www.ramapo.edu/its/help-desk/', kind: 'conflict',
-        label: /Fall \/ Spring\nMonday-Thursday\nFriday\n8:30 AM - 8:00 PM\n8:30 AM - 6:00 PM/,
-        against: /Fall\/Spring: Monday-Friday 8:00am-8:00pm/i },
+    // The "Hours of Support" table and the list under "Ways to submit a ticket" both print Fall/Spring
+    // hours and they differ; neither prints dates (read 2026-10-12). Both stay under one schedule name
+    // and season, so the shared fact reader keeps them as two conflicting readings, as it does for
+    // Student Accounts, and neither is chosen. A statement that disappears stops the collector.
+    { name: 'IT Help Desk', url: 'https://www.ramapo.edu/its/help-desk/', kind: 'columns',
+        label: /^Fall \/ Spring$/i, season: 'Fall/Spring', appendStatements: [/^Hours of Support$/im] },
+    { name: 'IT Help Desk', url: 'https://www.ramapo.edu/its/help-desk/',
+        label: /^Fall\/Spring:/i, season: 'Fall/Spring',
+        appendStatements: [/By visiting the Help Desk office\. We are located on the 4th floor of the Learning Commons and our hours are:/i] },
 ];
 
 /** A Fall or Spring semester, from its first class day to its last class or final exam. */
@@ -667,6 +676,44 @@ export function parseWeeklyHours(name: string, label: RegExp, pageText: string, 
     return { name, hours, notes: `${lines[index].match(label)![0]} ${block.join(' ')}`.trim() };
 }
 
+/**
+ * A schedule the page prints as a table: one row of day ranges, then one row of time ranges
+ * directly under it. The page text lists the first row's cells, then the second row's, so the
+ * reader pairs them by position and refuses anything else: unequal rows, a cell that is not a
+ * day range or a time range, or a day listed twice. The label is the line above the table.
+ */
+export function parseColumnHours(name: string, label: RegExp, pageText: string): LocationHours {
+    const lines = pageText.split('\n').map((line) => line.trim()).filter(Boolean);
+    const index = lines.findIndex((line) => label.test(line));
+    if (index < 0) throw new Error(`Office hours line is unavailable for ${name}`);
+    if (lines.filter((line) => label.test(line)).length > 1) {
+        throw new Error(`The hours label for ${name} matches more than one line`);
+    }
+    const dayCell = new RegExp(String.raw`^(${DAY_WORD})\.?(?:\s*(?:-|to|through|thru)\s*(${DAY_WORD})\.?)?$`, 'i');
+    const timeCell = new RegExp(String.raw`^(${CLOCK_WORD})\s*(?:-|to|until)\s*(${CLOCK_WORD})$`, 'i');
+    const days: string[] = [];
+    const times: string[] = [];
+    let at = index + 1;
+    while (at < lines.length && dayCell.test(lines[at])) days.push(lines[at++]);
+    while (at < lines.length && times.length < days.length && timeCell.test(lines[at])) times.push(lines[at++]);
+    if (!days.length || days.length !== times.length) {
+        throw new Error(`Table hours are unrecognized for ${name}: expected a row of days over a row of times`);
+    }
+    const hours = createUnknownWeek();
+    const assigned = new Set<string>();
+    days.forEach((cell, column) => {
+        const [, first, second] = cell.match(dayCell)!;
+        const [, start, end] = times[column].match(timeCell)!;
+        const schedule = segmentSchedule(start, end);
+        for (const day of weekdaySet(first, second)) {
+            if (assigned.has(day)) throw new Error(`${name} states two schedules for ${day}`);
+            hours[day] = schedule;
+            assigned.add(day);
+        }
+    });
+    return { name, hours, notes: days.map((cell, column) => `${cell} ${times[column]}`).join('; ') };
+}
+
 /** An office the page says is open every hour of every day. The page's sentence is the note. */
 export function parseAlwaysOpenHours(name: string, label: RegExp, pageText: string): LocationHours {
     const sentence = pageText.match(label)?.[0];
@@ -711,6 +758,7 @@ function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedA
     }
     const record = office.kind === 'always' ? parseAlwaysOpenHours(office.name, office.label, scheduleText)
         : office.kind === 'week' ? parseWeeklyHours(office.name, office.label, scheduleText, collectedAt, [])
+        : office.kind === 'columns' ? parseColumnHours(office.name, office.label, scheduleText)
         : office.kind === 'conflict' ? parseConflictingOfficeHours(office.name, office.label, office.against!, scheduleText)
         : parseOfficeHours(office.name, office.label, scheduleText, collectedAt, []);
     if (office.season) {
