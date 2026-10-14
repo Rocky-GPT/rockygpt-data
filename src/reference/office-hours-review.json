@@ -921,6 +921,174 @@
           "section_sha256": "a66f1843895574df7cb705dbd02e579c2280a28ddd80bf994f9ab5a6e874878d"
         }
       ]
+    },
+    {
+      "schedule": "Roukema Center for International Education",
+      "source_url": "https://www.ramapo.edu/international/",
+      "scope": "Roukema Center for International Education source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/international/",
+          "section": "Location & Hours",
+          "section_sha256": "03e73d6e6a7745cf7a8ed5b1230fd53b8c70e3ed5b608b14d1b232186ab6fc14"
+        }
+      ]
+    },
+    {
+      "schedule": "Roukema Center for International Education (Summer)",
+      "source_url": "https://www.ramapo.edu/international/",
+      "scope": "Roukema Center for International Education (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/international/",
+          "section": "Location & Hours",
+          "section_sha256": "03e73d6e6a7745cf7a8ed5b1230fd53b8c70e3ed5b608b14d1b232186ab6fc14"
+        }
+      ]
+    },
+    {
+      "schedule": "Civic and Community Engagement Center",
+      "source_url": "https://www.ramapo.edu/ccec/",
+      "scope": "Civic and Community Engagement Center source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/ccec/",
+          "section": "Location/ Hours",
+          "section_sha256": "fc33c2b62350a70d0e9942aaee08067e02bc1c38c6abab2f65a6232c5415543f"
+        }
+      ]
+    },
+    {
+      "schedule": "Commuter Affairs",
+      "source_url": "https://www.ramapo.edu/csi/commuter-affairs/",
+      "scope": "Commuter Affairs source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/csi/commuter-affairs/",
+          "section": "Location/ Hours",
+          "section_sha256": "a98a6f2843115f9cc64266612532b676046c26c1c507b0b992e2628d8d011037"
+        }
+      ]
+    },
+    {
+      "schedule": "Women's Center & LGBTQ+ Services",
+      "source_url": "https://www.ramapo.edu/womenscenter/",
+      "scope": "Women's Center & LGBTQ+ Services source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/womenscenter/",
+          "section": "Fall 2026",
+          "section_sha256": "bb99f74862742b6c6e6a5618e2993d75765317436002b25b27bcc798d6ed935c"
+        }
+      ]
+    },
+    {
+      "schedule": "The Multicultural Center",
+      "source_url": "https://www.ramapo.edu/multicultural-center/",
+      "scope": "The Multicultural Center source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/multicultural-center/",
+          "section": "Hours of Operation",
+          "section_sha256": "58defc86c4d1ab4097a7a97b7aa213635bae66599c49476a118e5d7cd9116f7f"
+        }
+      ]
+    },
+    {
+      "schedule": "Office of Access, Belonging and Community",
+      "source_url": "https://www.ramapo.edu/oabc/contact-us/",
+      "scope": "Office of Access, Belonging and Community source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/oabc/contact-us/",
+          "section": "Contact Us",
+          "section_sha256": "4b0ca4810a441fca717a7cfd2e69edcfd7b734c19abaa6bab85f43b89946da74"
+        }
+      ]
+    },
+    {
+      "schedule": "Office of Access, Belonging and Community (Summer)",
+      "source_url": "https://www.ramapo.edu/oabc/contact-us/",
+      "scope": "Office of Access, Belonging and Community (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/oabc/contact-us/",
+          "section": "Contact Us",
+          "section_sha256": "4b0ca4810a441fca717a7cfd2e69edcfd7b734c19abaa6bab85f43b89946da74"
+        }
+      ]
     }
   ]
 }
