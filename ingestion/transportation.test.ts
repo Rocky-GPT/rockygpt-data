@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseShuttleTable, parseTransportationSchedules } from './transportation-schedule';
+import { parseShuttleTable, parseSpecialSchedules, parseTransportationSchedules } from './transportation-schedule';
 import { generateTransportationMarkdown } from './generate-transportation-md';
 import type { RawDatasetV1 } from './raw-types';
 
@@ -77,4 +77,22 @@ test('a row keeps the NJ Transit trains it lists beside the trip', () => {
   assert.deepEqual(trips[1].trains, { arrives_from_nyc: [], leaves_for_nyc: [], see_express: true });
   assert.deepEqual(trips[2].trains, { arrives_from_nyc: [], leaves_for_nyc: [] });
   assert.throws(() => parseShuttleTable({ headers: ['Leave Ramapo', 'Arrive on Campus', 'Train Arrives from NYC'], rows: [['9:00 AM', '9:30 AM', 'soon']] }), /Unsupported published train time/);
+});
+
+test('a special-schedule table is its own timetable, named by its heading and never a regular day', () => {
+  const special = (tables: RawDatasetV1['pages'][number]['tables'], sections: RawDatasetV1['pages'][number]['sections']): RawDatasetV1 => ({
+    version: '1.0', dataset: 'transportation', collectedAt: '2026-10-14T00:00:00Z', seedUrls: [],
+    stats: { pagesFetched: 1, pagesFailed: 0, externalLinksSeen: 0 },
+    pages: [{ url: 'https://www.ramapo.edu/about/transportation-services/special-shuttle-schedule/', title: 'Special Shuttle Schedule Labor Day 9/7',
+      sourceType: 'detail', fetchedAt: '2026-10-14T00:00:00Z', statusCode: 200, links: [], externalLinks: [], lists: [], contacts: [], documents: [],
+      tables, sections }],
+  });
+  const table = { headers: ['Leave Ramapo', 'Ramsey Rt 17 Train', 'Arrive on Campus'], rows: [['9:00 AM', '9:10 AM', '9:40 AM']] };
+  const [route] = parseSpecialSchedules(special([table], [{ heading: 'Follow Ramapo', text: 'Facebook' },
+    { heading: 'September 7th (Labor Day)', text: 'Leave Ramapo | Ramsey Rt 17 Train | Arrive on Campus; 9:00 AM | 9:10 AM | 9:40 AM' }]));
+  assert.equal(route.name, 'Special Shuttle Schedule: September 7th (Labor Day)');
+  assert.equal(route.serviceDay, 'special');
+  assert.equal(route.trips[0].departure, '9:00 AM');
+  assert.deepEqual(parseSpecialSchedules(special([], [])), []);
+  assert.throws(() => parseSpecialSchedules(special([table], [])), /exactly one heading/);
 });

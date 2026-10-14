@@ -3,7 +3,8 @@ import type { RawDatasetV1, RawPageV1 } from './raw-types';
 
 export interface PublishedShuttleSchedule {
   name: string;
-  serviceDay: 'weekday' | 'saturday' | 'sunday';
+  /** `special`: a holiday or event timetable, named by the day its page heading gives. */
+  serviceDay: 'weekday' | 'saturday' | 'sunday' | 'special';
   sourceUrl: string;
   collectedAt: string;
   sourceTitle: string | null;
@@ -83,6 +84,33 @@ export function parseShuttleTable(table: RawPageV1['tables'][number]): ShuttleRo
   return trips;
 }
 
+const SPECIAL_SLUG = 'special-shuttle-schedule';
+
+/**
+ * The special-schedule page's timetables, each named by the heading it sits under ("September 7th
+ * (Labor Day)"). The page prints no year, so none is assigned: a special timetable is never read as
+ * a weekday, Saturday or Sunday schedule, only offered as the one its heading names.
+ */
+export function parseSpecialSchedules(dataset: RawDatasetV1): PublishedShuttleSchedule[] {
+  const page = dataset.pages.find(candidate => {
+    const url = new URL(candidate.url);
+    return candidate.statusCode !== null && candidate.statusCode >= 200 && candidate.statusCode < 300
+      && url.hostname === 'www.ramapo.edu' && url.pathname.replace(/\/+$/, '') === `/about/transportation-services/${SPECIAL_SLUG}`;
+  });
+  if (!page) return [];
+  const tables = page.tables.filter(table => table.headers.some(header => /^leave ramapo$/i.test(text(header))));
+  return tables.map(table => {
+    // The heading whose section text holds this table's first trip.
+    // Sections print a table as "cell | cell; row | ..."; compare letters and digits only.
+    const squash = (value: string) => value.replace(/[^a-z0-9]/gi, '').toLowerCase();
+    const firstRow = squash((table.rows.find(row => /^\d/.test(text(row[0]))) ?? []).slice(0, 3).join(''));
+    const owners = page.sections.filter(section => firstRow && squash(section.text).includes(firstRow));
+    if (owners.length !== 1) throw new Error(`A special shuttle timetable must sit under exactly one heading; found ${owners.length}.`);
+    return { name: `Special Shuttle Schedule: ${text(owners[0].heading)}`, serviceDay: 'special' as const, sourceUrl: page.url,
+      collectedAt: page.fetchedAt, sourceTitle: page.title, trips: parseShuttleTable(table) };
+  });
+}
+
 /** Use the captured official columns, including repeated stops on outbound/return legs. */
 export function parseTransportationSchedules(dataset: RawDatasetV1): PublishedShuttleSchedule[] {
   if (dataset.dataset !== 'transportation') throw new Error('Expected the transportation raw dataset.');
@@ -114,5 +142,9 @@ export function parseTransportationSchedules(dataset: RawDatasetV1): PublishedSh
   const canonical = (location: string) => [...spellings.get(location.toLowerCase())!]
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0];
   for (const stop of schedules.flatMap(route => route.trips.flatMap(trip => trip.stops))) stop.location = canonical(stop.location);
+  for (const special of parseSpecialSchedules(dataset)) {
+    for (const stop of special.trips.flatMap(trip => trip.stops)) if (spellings.has(stop.location.toLowerCase())) stop.location = canonical(stop.location);
+    schedules.push(special);
+  }
   return schedules;
 }
