@@ -4,7 +4,7 @@ import {
   ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, campusHoursFromCaptures,
   campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
   OFFICE_HOURS_PAGES, hoursPageText, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, parseWeeklyHours,
-  parseColumnHours, BERRIE_SEASON_URL,
+  parseColumnHours, BERRIE_SEASON_URL, joinAdjacentDays,
 } from './campus-hours';
 import { attachReviewedHoursAbsences } from './reviewed-hours-absence';
 import { createHash } from 'node:crypto';
@@ -282,6 +282,13 @@ const newOfficePages: Record<string, string> = {
   'https://www.ramapo.edu/womenscenter/': 'Open Hours\nFall 2026\nMondays, 10 am - 8 pm\nTuesdays, 10 am - 6 pm\nWednesdays, 10 am - 8 pm\nThursdays, 10 am - 8 pm\nFridays, 10 am - 5 pm',
   'https://www.ramapo.edu/multicultural-center/': 'Hours of Operation\nMonday-Friday:\n1:00 p.m. to 4:30 p.m.',
   'https://www.ramapo.edu/oabc/contact-us/': 'Regular Office Hours: Monday - Friday 8:30 a.m. - 4:30 p.m.\nSummer Office Hours: Monday - Thursday 8:00 a.m. - 5:15 p.m. Closed Fridays',
+  'https://www.ramapo.edu/reslife/bischoff-hall/': 'Office Hours:\nFall & Spring Semester Hours:\nMonday - Friday: 12 PM - Midnight\nSaturday & Sunday: 8 PM - Midnight\nSummer Hours:\nMonday - Thursday: 8 AM - 5:15 PM',
+  'https://www.ramapo.edu/reslife/college-park-apartments-cpa/': 'Office Hours:\nFall & Spring Semester Hours:\nMonday - Friday: 12 PM - Midnight\nSaturday & Sunday: 8 PM - Midnight\nSummer Hours:\nMonday - Thursday: 8 AM - 5:15 PM',
+  'https://www.ramapo.edu/reslife/laurel-hall/': 'Office Hours:\nFall & Spring Semester Hours:\nMonday - Friday: 12 PM - Midnight\nSaturday & Sunday: 8 PM - Midnight\nSummer Hours:\nMonday - Thursday: 8 AM - 5:15 PM',
+  'https://www.ramapo.edu/reslife/mackin-hall/': 'Office Hours:\nFall & Spring Semester Hours:\nMonday - Friday: 12 PM - Midnight\nSaturday & Sunday: 8 PM - Midnight\nSummer Hours:\nMonday - Thursday: 8 AM - 5:15 PM',
+  'https://www.ramapo.edu/reslife/pine-hall/': 'Office Hours:\nFall & Spring Semester Hours:\nMonday - Friday: 12 PM - Midnight\nSaturday & Sunday: 8 PM - Midnight\nSummer Hours:\nMonday - Thursday: 8 AM - 5:15 PM',
+  'https://www.ramapo.edu/reslife/the-overlook/': 'Office Hours:\nFall & Spring Semester Hours:\nMonday - Friday: 12 PM - Midnight\nSaturday & Sunday: 8 PM - Midnight\nSummer Hours:\nMonday - Thursday: 8 AM - 5:15 PM',
+  'https://www.ramapo.edu/reslife/village/': 'Office Hours:\nFall & Spring Semester Hours:\nMonday - Friday: 12 PM - Midnight\nSaturday and Sunday: 8 PM - Midnight\nSummer Hours:\nMonday - Thursday: 8 AM - 5:15 PM\nFriday: Closed',
   'https://www.ramapo.edu/studentsuccess/': 'Center for Student Success\nD-207 (Academic Building)\nMonday-Friday\n8:30 a.m.-4:30 p.m.',
   'https://www.ramapo.edu/oss/': 'MAIN OFFICE: C-Wing, Room 205 - Meetings by appointment. | Office Hours Typically MON-FRI, 8:30 AM-4:30 PM | (201) 684-7514',
   'https://www.ramapo.edu/payroll/': 'Hours:\nFall/Spring, Mon. - Fri.\n8:30 a.m. - 4:30 p.m.\nSummer, Mon. - Thurs.,\n8 a.m. - 5:15 p.m.',
@@ -593,4 +600,11 @@ test('a weekly schedule the reader cannot fully account for stops the collector 
   assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am - 5 pm\nHours: Monday - Friday, 10 am - 6 pm', at, fallTerms), /matches more than one line/);
   assert.throws(() => parseOfficeHours('Example', /^Hours:/i, 'Hours: Monday - Friday, 9 am - 5 pm, closed until 10 am - 11 am', at, fallTerms), /more than one time range/);
   assert.equal(read('Hours\nWeekdays 9am - 5pm\nWeekends Closed').hours.Sunday, 'CLOSED');
+});
+
+test('two adjacent days joined by & or "and" are those two days; any other pair stops the reader', () => {
+  assert.equal(joinAdjacentDays('Saturday & Sunday: 8 PM - Midnight'), 'Saturday - Sunday: 8 PM - Midnight');
+  assert.equal(joinAdjacentDays('Saturday and Sunday: 8 PM - Midnight'), 'Saturday - Sunday: 8 PM - Midnight');
+  assert.equal(joinAdjacentDays('Fall & Spring Semester Hours:'), 'Fall & Spring Semester Hours:');
+  assert.throws(() => joinAdjacentDays('Monday & Wednesday: 1 PM - 3 PM'), /two adjacent days/);
 });

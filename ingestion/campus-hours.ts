@@ -508,6 +508,28 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         label: /^Regular Office Hours:/i },
     { name: 'Office of Access, Belonging and Community (Summer)', url: 'https://www.ramapo.edu/oabc/contact-us/',
         label: /^Summer Office Hours:/i, season: 'Summer' },
+    // Each residence hall's own page prints its Hall Office hours (read 2026-10-14).
+    { name: 'Bischoff Hall', url: 'https://www.ramapo.edu/reslife/bischoff-hall/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
+        season: 'Fall & Spring Semester' },
+    { name: 'Bischoff Hall (Summer)', url: 'https://www.ramapo.edu/reslife/bischoff-hall/', kind: 'week', label: /^Summer Hours:$/i, season: 'Summer' },
+    { name: 'College Park Apartments', url: 'https://www.ramapo.edu/reslife/college-park-apartments-cpa/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
+        season: 'Fall & Spring Semester' },
+    { name: 'College Park Apartments (Summer)', url: 'https://www.ramapo.edu/reslife/college-park-apartments-cpa/', kind: 'week', label: /^Summer Hours:$/i, season: 'Summer' },
+    { name: 'Laurel Hall', url: 'https://www.ramapo.edu/reslife/laurel-hall/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
+        season: 'Fall & Spring Semester' },
+    { name: 'Laurel Hall (Summer)', url: 'https://www.ramapo.edu/reslife/laurel-hall/', kind: 'week', label: /^Summer Hours:$/i, season: 'Summer' },
+    { name: 'Mackin Hall', url: 'https://www.ramapo.edu/reslife/mackin-hall/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
+        season: 'Fall & Spring Semester' },
+    { name: 'Mackin Hall (Summer)', url: 'https://www.ramapo.edu/reslife/mackin-hall/', kind: 'week', label: /^Summer Hours:$/i, season: 'Summer' },
+    { name: 'Pine Hall', url: 'https://www.ramapo.edu/reslife/pine-hall/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
+        season: 'Fall & Spring Semester' },
+    { name: 'Pine Hall (Summer)', url: 'https://www.ramapo.edu/reslife/pine-hall/', kind: 'week', label: /^Summer Hours:$/i, season: 'Summer' },
+    { name: 'The Overlook', url: 'https://www.ramapo.edu/reslife/the-overlook/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
+        season: 'Fall & Spring Semester' },
+    { name: 'The Overlook (Summer)', url: 'https://www.ramapo.edu/reslife/the-overlook/', kind: 'week', label: /^Summer Hours:$/i, season: 'Summer' },
+    { name: 'The Village', url: 'https://www.ramapo.edu/reslife/village/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
+        season: 'Fall & Spring Semester' },
+    { name: 'The Village (Summer)', url: 'https://www.ramapo.edu/reslife/village/', kind: 'week', label: /^Summer Hours:$/i, season: 'Summer' },
     { name: 'Berrie Center Box Office', url: 'https://www.ramapo.edu/berriecenter/tickets-seating/', kind: 'week',
         label: /^As of August 26, 2026 the Box Office is open:$/i,
         starts: /As of (August) (26), (2026) the Box Office is open:/i },
@@ -643,9 +665,21 @@ function segmentsIn(line: string): { found: RegExpMatchArray[]; pure: boolean } 
  * stops the collector: a day stated twice with different schedules, a time with no am/pm it cannot
  * place, a span that does not run forward within one day. Only source dates establish validity.
  */
+/**
+ * "Saturday & Sunday" names exactly those two days. Two days next to each other are written as the
+ * span the segment reader already knows; any other pair stops the collector rather than becoming a span.
+ */
+export function joinAdjacentDays(line: string): string {
+    return line.replace(new RegExp(String.raw`\b(${DAY_WORD})\s*(?:&|\band\b)\s*(${DAY_WORD})\b`, 'gi'), (whole, first: string, second: string) => {
+        const days = weekdaySet(first, second);
+        if (days.length !== 2) throw new Error(`Unable to read the days "${whole}" as two adjacent days`);
+        return `${first} - ${second}`;
+    });
+}
+
 export function parseWeeklyHours(name: string, label: RegExp, pageText: string, collectedAt: string,
     terms: TermWindow[]): LocationHours {
-    const lines = pageText.split('\n').map((line) => line.trim()).filter(Boolean);
+    const lines = pageText.split('\n').map((line) => joinAdjacentDays(line.trim())).filter(Boolean);
     const index = lines.findIndex((line) => label.test(line));
     if (index < 0) throw new Error(`Office hours line is unavailable for ${name}`);
     if (lines.filter((line) => label.test(line)).length > 1) throw new Error(`The hours label for ${name} matches more than one line`);
