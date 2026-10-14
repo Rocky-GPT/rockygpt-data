@@ -260,7 +260,7 @@ async function insertStructured(
 
   // PROB-010: publish each seasonal exception as dated rows so PostgreSQL
   // answers honor closures and altered schedules for their exact interval.
-  for (const document of menuDocuments(readJson<JsonRecord>('data/raw/dining-hours.raw.json'))) {
+  for (const document of menuDocuments(readJson<JsonRecord>('data/raw/dining-hours.raw.json'), new Date(collectedAtFor('dining')))) {
     const recordKey = `${document.name}:menu-document:${document.title}`;
     await client.query(
       `INSERT INTO rockygpt_v2.menu_documents

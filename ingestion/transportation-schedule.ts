@@ -99,7 +99,8 @@ export function parseSpecialSchedules(dataset: RawDatasetV1): PublishedShuttleSc
   });
   if (!page) return [];
   const tables = page.tables.filter(table => table.headers.some(header => /^leave ramapo$/i.test(text(header))));
-  return tables.map(table => {
+  const captured = new Date(page.fetchedAt);
+  const schedules = tables.map(table => {
     // The heading whose section text holds this table's first trip.
     // Sections print a table as "cell | cell; row | ..."; compare letters and digits only.
     const squash = (value: string) => value.replace(/[^a-z0-9]/gi, '').toLowerCase();
@@ -109,6 +110,21 @@ export function parseSpecialSchedules(dataset: RawDatasetV1): PublishedShuttleSc
     return { name: `Special Shuttle Schedule: ${text(owners[0].heading)}`, serviceDay: 'special' as const, sourceUrl: page.url,
       collectedAt: page.fetchedAt, sourceTitle: page.title, trips: parseShuttleTable(table) };
   });
+  // A special day already past when the page was read is a leftover ("September 7th (Labor Day)"
+  // still listed in October): it is left out. A heading with no readable day is kept.
+  return schedules.filter(schedule => !isPastSpecialDay(schedule.name, captured));
+}
+
+const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+
+/** "September 7th (Labor Day)" read on October 14 names a day already past that year. */
+export function isPastSpecialDay(heading: string, captured: Date): boolean {
+  const match = heading.match(new RegExp(String.raw`\b(${MONTHS.join('|')})\s+(\d{1,2})(?:st|nd|rd|th)?\b`, 'i'));
+  if (!match || Number.isNaN(captured.getTime())) return false;
+  const month = MONTHS.indexOf(match[1].toLowerCase());
+  const day = Number(match[2]);
+  const campus = new Date(captured.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  return month < campus.getMonth() || (month === campus.getMonth() && day < campus.getDate());
 }
 
 /** Use the captured official columns, including repeated stops on outbound/return legs. */

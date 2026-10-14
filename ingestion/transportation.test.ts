@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseShuttleTable, parseSpecialSchedules, parseTransportationSchedules } from './transportation-schedule';
+import { isPastSpecialDay, parseShuttleTable, parseSpecialSchedules, parseTransportationSchedules } from './transportation-schedule';
 import { generateTransportationMarkdown } from './generate-transportation-md';
 import type { RawDatasetV1 } from './raw-types';
 
@@ -84,7 +84,8 @@ test('a special-schedule table is its own timetable, named by its heading and ne
     version: '1.0', dataset: 'transportation', collectedAt: '2026-10-14T00:00:00Z', seedUrls: [],
     stats: { pagesFetched: 1, pagesFailed: 0, externalLinksSeen: 0 },
     pages: [{ url: 'https://www.ramapo.edu/about/transportation-services/special-shuttle-schedule/', title: 'Special Shuttle Schedule Labor Day 9/7',
-      sourceType: 'detail', fetchedAt: '2026-10-14T00:00:00Z', statusCode: 200, links: [], externalLinks: [], lists: [], contacts: [], documents: [],
+      // Read before the day it names, so the timetable is still upcoming.
+      sourceType: 'detail', fetchedAt: '2026-09-01T00:00:00Z', statusCode: 200, links: [], externalLinks: [], lists: [], contacts: [], documents: [],
       tables, sections }],
   });
   const table = { headers: ['Leave Ramapo', 'Ramsey Rt 17 Train', 'Arrive on Campus'], rows: [['9:00 AM', '9:10 AM', '9:40 AM']] };
@@ -95,4 +96,10 @@ test('a special-schedule table is its own timetable, named by its heading and ne
   assert.equal(route.trips[0].departure, '9:00 AM');
   assert.deepEqual(parseSpecialSchedules(special([], [])), []);
   assert.throws(() => parseSpecialSchedules(special([table], [])), /exactly one heading/);
+});
+
+test('a special day already past when its page was read is left out', () => {
+  assert.equal(isPastSpecialDay('Special Shuttle Schedule: September 7th (Labor Day)', new Date('2026-10-14T18:00:00Z')), true);
+  assert.equal(isPastSpecialDay('Special Shuttle Schedule: November 26th (Thanksgiving)', new Date('2026-10-14T18:00:00Z')), false);
+  assert.equal(isPastSpecialDay('Special Shuttle Schedule: Homecoming', new Date('2026-10-14T18:00:00Z')), false);
 });
