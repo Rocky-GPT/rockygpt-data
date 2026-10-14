@@ -5,6 +5,7 @@ import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import { compileArchwayIdentities, linkReviewedArchwayContacts, linkReviewedArchwayGroups, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact, type ReviewedArchwayContact, type ReviewedArchwayGroup } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
+import { compileRouteIdentities } from './campus-routes';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
 import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, type AliasLedger, type AliasRecord, type ReviewedAlias } from './identity-aliases';
 import type { ReviewedBuilding, ReviewedLocation, ReviewedRoom } from './campus-buildings';
@@ -19,6 +20,8 @@ type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
   campus_contacts: Row[]; campus_hours: Row[]; dining_hours: Row[]; menu_items: Row[]; programs: Row[];
   clubs?: Row[]; events?: Row[];
+  /** The published shuttle timetables and their trips; a release without them has no route identities. */
+  shuttle_routes?: Row[]; shuttle_trips?: Row[];
   artifacts: Record<string, unknown>;
 }
 /** What a coverage issue means for lookups: `unlinked_record`, an original record no identity
@@ -320,6 +323,9 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const places = compileBuildingIdentities(campusBuildings, entities, contactRows);
   entities.push(...places.buildings);
   unresolved.push(...places.unresolved);
+  const shuttle = compileRouteIdentities(snapshot.shuttle_routes ?? [], snapshot.shuttle_trips ?? []);
+  entities.push(...shuttle.routes);
+  unresolved.push(...shuttle.unresolved);
   const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects);
   entities.push(...compileSubjectIdentities(subjects.artifact, snapshot.artifacts.courses, ledger));
   unresolved.push(...subjects.unresolved);
@@ -343,8 +349,12 @@ function listStrings(value: unknown): string[] { return Array.isArray(value) ? v
 
 /** Use inside the publisher transaction after original rows/artifacts exist. */
 export async function loadIdentitySnapshot(client: Pick<PoolClient, 'query'>, datasetId: string): Promise<IdentitySnapshot> {
-  const snapshot: IdentitySnapshot = { campus_contacts: [], campus_hours: [], dining_hours: [], menu_items: [], programs: [], clubs: [], events: [], artifacts: {} };
+  const snapshot: IdentitySnapshot = { campus_contacts: [], campus_hours: [], dining_hours: [], menu_items: [], programs: [], clubs: [], events: [], shuttle_routes: [], shuttle_trips: [], artifacts: {} };
   for (const table of ['campus_contacts', 'campus_hours', 'dining_hours', 'menu_items', 'programs'] as const) {
+    const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
+    snapshot[table] = result.rows;
+  }
+  for (const table of ['shuttle_routes', 'shuttle_trips'] as const) {
     const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
     snapshot[table] = result.rows;
   }
