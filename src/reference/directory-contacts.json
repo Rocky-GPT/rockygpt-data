@@ -19034,6 +19034,1292 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Facilities Management",
+      "category": "Services",
+      "department": "Facilities Management",
+      "phone": "(201) 684-7660",
+      "office": "P-FAC",
+      "website": "https://www.ramapo.edu/facilities/",
+      "helpsWith": [
+        "Facilities work requests (repairs, maintenance, building services)",
+        "Emergency building problems such as no power, plumbing leaks, no heat/AC or lock problems",
+        "Keys and locks",
+        "College vehicle requests"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/facilities/",
+          "section": "General Unit Contact",
+          "near": "Service Desk",
+          "fields": [
+            "phone"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/facilities/service-request-portal/",
+          "section": "How to Submit a Facilities Work Request",
+          "fields": [
+            "phone"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+          "section": "Facilities Management Contacts",
+          "fields": [
+            "office"
+          ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-7670",
+          "label": "Receiving / Storeroom",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/facilities/",
+              "section": "General Unit Contact",
+              "near": "Receiving / Storeroom",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "You can submit a request using any of the following methods: Using the TMA iService Desk: Online Service Request Portal By Telephone: 201-684-7660 For Media, ITS and Telecomm requests please visit https://helpdesk.ramapo.edu/",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/service-request-portal/",
+            "section": "How to Submit a Facilities Work Request"
+          }
+        },
+        {
+          "text": "If you require immediate assistance, problems such as no power, elevator malfunctions, plumbing leaks/clogs, no heat/AC any lock related problem, or health safety concerns please call the Service Desk at extension 7660.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/service-guide/",
+            "section": "Building Maintenance \u2013 Repairs & Trades"
+          }
+        },
+        {
+          "text": "Any emergencies that occur between 4:30 p.m. and 7:30 a.m. OR on weekends should be reported to Public Safety at extension 6666.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/service-guide/",
+            "section": "Building Maintenance \u2013 Repairs & Trades"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "email",
+          "scope": "shared general mailbox of Facilities Management",
+          "reason": "The Facilities Management pages publish no shared unit mailbox. The General Unit Contact block gives only Service Desk and Receiving / Storeroom phone numbers, work requests go through the Service Request Portal or the Service Desk phone, and the only addresses are eight named staff members' own (excluded).",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/facilities/",
+              "section": "General Unit Contact",
+              "reviewed": {
+                "text_sha256": "179f651e8d3593cea84e0e265266264621cd883369bd2d19b7b05c2b23b9825c",
+                "reason": "Lists the Service Desk and Receiving / Storeroom phones and a PDF link; states no email address."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/facilities/service-request-portal/",
+              "section": "How to Submit a Facilities Work Request",
+              "reviewed": {
+                "text_sha256": "c0de6044be0a829d1c431a21e0e0b476a9262da799095b32070066291a7fc14a",
+                "reason": "Lists the online portal and the Service Desk phone; states no email address."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Facilities Management pages list the Service Desk phone and the online Service Request Portal as ways to submit a work request; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/facilities/",
+              "section": "General Unit Contact",
+              "reviewed": {
+                "text_sha256": "179f651e8d3593cea84e0e265266264621cd883369bd2d19b7b05c2b23b9825c",
+                "reason": "The Facilities Management pages list the Service Desk phone and the online Service Request Portal as ways to submit a work request; no section ranks one contact method above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/facilities/service-request-portal/",
+              "section": "How to Submit a Facilities Work Request",
+              "reviewed": {
+                "text_sha256": "c0de6044be0a829d1c431a21e0e0b476a9262da799095b32070066291a7fc14a",
+                "reason": "The Facilities Management pages list the Service Desk phone and the online Service Request Portal as ways to submit a work request; no section ranks one contact method above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Facilities Management pages list the Service Desk phone and the online Service Request Portal as ways to submit a work request; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/facilities/",
+              "section": "General Unit Contact",
+              "reviewed": {
+                "text_sha256": "179f651e8d3593cea84e0e265266264621cd883369bd2d19b7b05c2b23b9825c",
+                "reason": "The Facilities Management pages list the Service Desk phone and the online Service Request Portal as ways to submit a work request; no section ranks one contact method above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/facilities/service-request-portal/",
+              "section": "How to Submit a Facilities Work Request",
+              "reviewed": {
+                "text_sha256": "c0de6044be0a829d1c431a21e0e0b476a9262da799095b32070066291a7fc14a",
+                "reason": "The Facilities Management pages list the Service Desk phone and the online Service Request Portal as ways to submit a work request; no section ranks one contact method above another."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "email",
+          "value": "akashian@ramapo.edu",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Alan Kashian, Director of Facilities); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "email",
+          "value": "adalessa@ramapo.edu",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Andrew D'Alessandro, Associate Director of Facilities); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "email",
+          "value": "crigolos@ramapo.edu",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Charles Rigoloso, Building Manager - Building Maintenance); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "email",
+          "value": "rbowlby@ramapo.edu",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Ryan Bowlby, Building Manager - Electrical & HVAC Services); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "email",
+          "value": "eroessle@ramapo.edu",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Edward Roessler, Building Manager - Grounds); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "email",
+          "value": "dsimpson@ramapo.edu",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Donald Simpson, Building Manager - Plumbing); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "email",
+          "value": "njones@ramapo.edu",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Nicole Jones, Supervisor - Building Services); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "email",
+          "value": "srosko@ramapo.edu",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Sonia Rosko, Associate Supervisor - Facilities); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847665",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Alan Kashian, Director of Facilities); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847669",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Andrew D'Alessandro, Associate Director of Facilities); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847338",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Charles Rigoloso, Building Manager - Building Maintenance); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847331",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Ryan Bowlby, Building Manager - Electrical & HVAC Services); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847114",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Edward Roessler, Building Manager - Grounds); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847064",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Donald Simpson, Building Manager - Plumbing); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847667",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Nicole Jones, Supervisor - Building Services); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847595",
+          "reason": "Facilities Management Contacts lists this for a named staff member (Sonia Rosko, Associate Supervisor - Facilities); it is that person's own contact, not the unit's Service Desk line or a shared mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/facilities-contacts/",
+            "section": "Facilities Management Contacts",
+            "text_sha256": "2bfadbe2b46e295dc3044b031c9ddb280a42d6c8b634a14f1818c2c9a564d12b"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847777",
+          "reason": "The Facilities service guide routes phone service requests to Telecommunications; it is that office's contact, not a Facilities Management contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/service-guide/",
+            "section": "Building Maintenance \u2013 Repairs & Trades",
+            "text_sha256": "f98423a4cafbcd575eb979143e60cedd2a770157171c2c7ebe73a9214c3c4c3c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "telecomm@ramapo.edu",
+          "reason": "The Facilities service guide routes phone service requests to Telecommunications; it is that office's contact, not a Facilities Management contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/service-guide/",
+            "section": "Building Maintenance \u2013 Repairs & Trades",
+            "text_sha256": "f98423a4cafbcd575eb979143e60cedd2a770157171c2c7ebe73a9214c3c4c3c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847604",
+          "reason": "The Facilities service guide routes cable TV problems to Media Services; it is that office's contact, not a Facilities Management contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/service-guide/",
+            "section": "Building Maintenance \u2013 Repairs & Trades",
+            "text_sha256": "f98423a4cafbcd575eb979143e60cedd2a770157171c2c7ebe73a9214c3c4c3c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "media@ramapo.edu",
+          "reason": "The Facilities service guide routes cable TV problems to Media Services; it is that office's contact, not a Facilities Management contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/facilities/service-guide/",
+            "section": "Building Maintenance \u2013 Repairs & Trades",
+            "text_sha256": "f98423a4cafbcd575eb979143e60cedd2a770157171c2c7ebe73a9214c3c4c3c"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Office of the Provost",
+      "category": "Academic",
+      "department": "Office of the Provost",
+      "phone": "(201) 684-7330",
+      "email": "provost@ramapo.edu",
+      "office": "first floor of the Birch Mansion",
+      "website": "https://www.ramapo.edu/provost/",
+      "helpsWith": [
+        "Leadership and administration of the College's academic programs and faculty",
+        "Academic assessment, policies and operations",
+        "Provost's open office hours for faculty, staff and students"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/provost/",
+          "section": "Office of the Provost Leadership",
+          "near": "Michael Middleton",
+          "fields": [
+            "phone"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/provost/",
+          "section": "Office of the Provost Leadership",
+          "fields": [
+            "email"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/provost/",
+          "section": "Provost\u2019s Open Office Hours",
+          "fields": [
+            "office"
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "These office hours are open to all Ramapo faculty, staff, and students. No appointments are needed, and you can come with questions or ideas, or just come to say hello. All sessions will be in the Provost\u2019s office suite on the first floor of the Birch Mansion.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Provost\u2019s Open Office Hours"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Office of the Provost home page lists the Provost's phone and provost@ramapo.edu and in-person open office hours; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/provost/",
+              "section": "Office of the Provost Leadership",
+              "reviewed": {
+                "text_sha256": "8ca3473f0d55545214d812e0b266bc1a31d30c8301a63a8922c487644449ed0c",
+                "reason": "The Office of the Provost home page lists the Provost's phone and provost@ramapo.edu and in-person open office hours; no section ranks one contact method above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/provost/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "ccb9fbe4229c2a09372ffcbd10473650d7155795aefcc961cbf90af92fc0f9b1",
+                "reason": "The Office of the Provost home page lists the Provost's phone and provost@ramapo.edu and in-person open office hours; no section ranks one contact method above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Office of the Provost home page lists the Provost's phone and provost@ramapo.edu and in-person open office hours; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/provost/",
+              "section": "Office of the Provost Leadership",
+              "reviewed": {
+                "text_sha256": "8ca3473f0d55545214d812e0b266bc1a31d30c8301a63a8922c487644449ed0c",
+                "reason": "The Office of the Provost home page lists the Provost's phone and provost@ramapo.edu and in-person open office hours; no section ranks one contact method above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/provost/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "ccb9fbe4229c2a09372ffcbd10473650d7155795aefcc961cbf90af92fc0f9b1",
+                "reason": "The Office of the Provost home page lists the Provost's phone and provost@ramapo.edu and in-person open office hours; no section ranks one contact method above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Office of the Provost",
+          "reason": "The Office of the Provost pages publish no recurring office schedule. The only times are four dated Provost's open office hour sessions for 2026-2027 (Provost's Open Office Hours), which are single events, not a weekly schedule.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/provost/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "ccb9fbe4229c2a09372ffcbd10473650d7155795aefcc961cbf90af92fc0f9b1",
+                "reason": "Office description; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/provost/",
+              "section": "Office of the Provost Leadership",
+              "reviewed": {
+                "text_sha256": "8ca3473f0d55545214d812e0b266bc1a31d30c8301a63a8922c487644449ed0c",
+                "reason": "Names, titles, phones and addresses only; no times or days."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "email",
+          "value": "684-7330provost@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7330provost@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; provost@ramapo.edu itself is the recorded office email.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Leadership",
+            "text_sha256": "8ca3473f0d55545214d812e0b266bc1a31d30c8301a63a8922c487644449ed0c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847585",
+          "reason": "The Provost home page lists this for Joyce Shim, Vice Provost for Academic and Faculty Affairs; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Leadership",
+            "text_sha256": "8ca3473f0d55545214d812e0b266bc1a31d30c8301a63a8922c487644449ed0c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "viceprovost@ramapo.edu",
+          "reason": "The Provost home page lists this for Joyce Shim, Vice Provost for Academic and Faculty Affairs; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Leadership",
+            "text_sha256": "8ca3473f0d55545214d812e0b266bc1a31d30c8301a63a8922c487644449ed0c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7585viceprovost@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7585viceprovost@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; viceprovost@ramapo.edu itself is excluded above as Joyce Shim, Vice Provost for Academic and Faculty Affairs's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Leadership",
+            "text_sha256": "8ca3473f0d55545214d812e0b266bc1a31d30c8301a63a8922c487644449ed0c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847532",
+          "reason": "The Provost home page lists this for Vanessa Arriola, Assistant Vice President of Academic Operations/Associate Provost; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Leadership",
+            "text_sha256": "8ca3473f0d55545214d812e0b266bc1a31d30c8301a63a8922c487644449ed0c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "varriola@ramapo.edu",
+          "reason": "The Provost home page lists this for Vanessa Arriola, Assistant Vice President of Academic Operations/Associate Provost; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Leadership",
+            "text_sha256": "8ca3473f0d55545214d812e0b266bc1a31d30c8301a63a8922c487644449ed0c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7532varriola@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7532varriola@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; varriola@ramapo.edu itself is excluded above as Vanessa Arriola, Assistant Vice President of Academic Operations/Associate Provost's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Leadership",
+            "text_sha256": "8ca3473f0d55545214d812e0b266bc1a31d30c8301a63a8922c487644449ed0c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847377",
+          "reason": "The Provost home page lists this for Ed Petkus, Dean of the Anisfield School of Business; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "epetkus@ramapo.edu",
+          "reason": "The Provost home page lists this for Ed Petkus, Dean of the Anisfield School of Business; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7377epetkus@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7377epetkus@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; epetkus@ramapo.edu itself is excluded above as Ed Petkus, Dean of the Anisfield School of Business's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847363",
+          "reason": "The Provost home page lists this for Ken Goldstein, Dean of the School of Arts, Humanities, and Education; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "kgoldst2@ramapo.edu",
+          "reason": "The Provost home page lists this for Ken Goldstein, Dean of the School of Arts, Humanities, and Education; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7363kgoldst2@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7363kgoldst2@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; kgoldst2@ramapo.edu itself is excluded above as Ken Goldstein, Dean of the School of Arts, Humanities, and Education's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847406",
+          "reason": "The Provost home page lists this for Susan Hangen, Dean of the School of Social Sciences and Social Work; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "shangen@ramapo.edu",
+          "reason": "The Provost home page lists this for Susan Hangen, Dean of the School of Social Sciences and Social Work; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7406shangen@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7406shangen@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; shangen@ramapo.edu itself is excluded above as Susan Hangen, Dean of the School of Social Sciences and Social Work's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847734",
+          "reason": "The Provost home page lists this for Benny C. Chan, Dean of the School of Science, Nursing, and Health; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "bchan2@ramapo.edu",
+          "reason": "The Provost home page lists this for Benny C. Chan, Dean of the School of Science, Nursing, and Health; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7734bchan2@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7734bchan2@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; bchan2@ramapo.edu itself is excluded above as Benny C. Chan, Dean of the School of Science, Nursing, and Health's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847316",
+          "reason": "The Provost home page lists this for Leigh Keller, Dean of the Library and Learning Commons; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "lkeller1@ramapo.edu",
+          "reason": "The Provost home page lists this for Leigh Keller, Dean of the Library and Learning Commons; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7316lkeller1@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7316lkeller1@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; lkeller1@ramapo.edu itself is excluded above as Leigh Keller, Dean of the Library and Learning Commons's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847761",
+          "reason": "The Provost home page lists this for Michael Unger, Interim Dean of Undergraduate Studies and Honors; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "unger@ramapo.edu",
+          "reason": "The Provost home page lists this for Michael Unger, Interim Dean of Undergraduate Studies and Honors; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7761unger@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7761unger@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; unger@ramapo.edu itself is excluded above as Michael Unger, Interim Dean of Undergraduate Studies and Honors's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Academic Deans",
+            "text_sha256": "4b0faf6f6f564d6946d15d8867ea526420fca888c16779766585a2ea8bfa3f1e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "jweinkau@ramapo.edu",
+          "reason": "The Provost home page lists this for Jennifer Weinkauff, Executive Specialist to the Provost (her phone is the recorded office line); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Staff",
+            "text_sha256": "6c64aa02303e4c63765838de4d9195fb612f04883714db03c99298ef04b56871"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7330jweinkau@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7330jweinkau@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; jweinkau@ramapo.edu itself is excluded above as Jennifer Weinkauff, Executive Specialist to the Provost's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Staff",
+            "text_sha256": "6c64aa02303e4c63765838de4d9195fb612f04883714db03c99298ef04b56871"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847515",
+          "reason": "The Provost home page lists this for Christine Dilts, Administrative Specialist; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Staff",
+            "text_sha256": "6c64aa02303e4c63765838de4d9195fb612f04883714db03c99298ef04b56871"
+          }
+        },
+        {
+          "field": "email",
+          "value": "cdilts@ramapo.edu",
+          "reason": "The Provost home page lists this for Christine Dilts, Administrative Specialist; it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Staff",
+            "text_sha256": "6c64aa02303e4c63765838de4d9195fb612f04883714db03c99298ef04b56871"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7515cdilts@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7515cdilts@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; cdilts@ramapo.edu itself is excluded above as Christine Dilts, Administrative Specialist's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Staff",
+            "text_sha256": "6c64aa02303e4c63765838de4d9195fb612f04883714db03c99298ef04b56871"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847210",
+          "reason": "The Provost home page lists this for Donna Lee Schweizer, Academic Affairs, Special Programs Coordinator (College Honors Program); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Staff",
+            "text_sha256": "6c64aa02303e4c63765838de4d9195fb612f04883714db03c99298ef04b56871"
+          }
+        },
+        {
+          "field": "email",
+          "value": "dschwei1@ramapo.edu",
+          "reason": "The Provost home page lists this for Donna Lee Schweizer, Academic Affairs, Special Programs Coordinator (College Honors Program); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Staff",
+            "text_sha256": "6c64aa02303e4c63765838de4d9195fb612f04883714db03c99298ef04b56871"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7210dschwei1@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7210dschwei1@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; dschwei1@ramapo.edu itself is excluded above as Donna Lee Schweizer, Academic Affairs, Special Programs Coordinator's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Provost Staff",
+            "text_sha256": "6c64aa02303e4c63765838de4d9195fb612f04883714db03c99298ef04b56871"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847385",
+          "reason": "The Provost home page lists this for Patricia Laprey, Director, Degree Completion Program (a separate program); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Degree Completion Program",
+            "text_sha256": "5dd4fc9f0a4b0d3bc8a699746e6d743c19a4c475c6e6462550faf2215c22db9e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "plaprey@ramapo.edu",
+          "reason": "The Provost home page lists this for Patricia Laprey, Director, Degree Completion Program (a separate program); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Degree Completion Program",
+            "text_sha256": "5dd4fc9f0a4b0d3bc8a699746e6d743c19a4c475c6e6462550faf2215c22db9e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7385plaprey@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7385plaprey@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; plaprey@ramapo.edu itself is excluded above as Patricia Laprey, Director, Degree Completion Program's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Degree Completion Program",
+            "text_sha256": "5dd4fc9f0a4b0d3bc8a699746e6d743c19a4c475c6e6462550faf2215c22db9e"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847566",
+          "reason": "The Provost home page lists this for Jennifer K. Hicks McGowan, Executive Director of the Office of Employee Relations (a separate office); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Employee Relations",
+            "text_sha256": "594c1d6d58352ae60f2a90f56277a6e30fa03e841baedbdbf1529d2dbd40948d"
+          }
+        },
+        {
+          "field": "email",
+          "value": "jhicksmc@ramapo.edu",
+          "reason": "The Provost home page lists this for Jennifer K. Hicks McGowan, Executive Director of the Office of Employee Relations (a separate office); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Employee Relations",
+            "text_sha256": "594c1d6d58352ae60f2a90f56277a6e30fa03e841baedbdbf1529d2dbd40948d"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7566jhicksmc@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7566jhicksmc@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; jhicksmc@ramapo.edu itself is excluded above as Jennifer K. Hicks McGowan, Executive Director of the Office of Employee Relations's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Employee Relations",
+            "text_sha256": "594c1d6d58352ae60f2a90f56277a6e30fa03e841baedbdbf1529d2dbd40948d"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847616",
+          "reason": "The Provost home page lists this for Bernadette Connors, Director of Grants & Sponsored Programs (a separate office); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Grants & Sponsored Programs",
+            "text_sha256": "99f52ee626ecfe76b41fffe657206a61cc7f5c24831107003af31ace50dc3ce2"
+          }
+        },
+        {
+          "field": "email",
+          "value": "bconnors@ramapo.edu",
+          "reason": "The Provost home page lists this for Bernadette Connors, Director of Grants & Sponsored Programs (a separate office); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Grants & Sponsored Programs",
+            "text_sha256": "99f52ee626ecfe76b41fffe657206a61cc7f5c24831107003af31ace50dc3ce2"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847385",
+          "reason": "The Provost home page lists this for Jeneen Kelly, Registrar (the Office of the Registrar is a separate existing office); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Registrar",
+            "text_sha256": "d126b1b32e143dc10d19ae9bab1d2212b950c954ee9fc921a450c2e0fadecfc0"
+          }
+        },
+        {
+          "field": "email",
+          "value": "jkelly20@ramapo.edu",
+          "reason": "The Provost home page lists this for Jeneen Kelly, Registrar (the Office of the Registrar is a separate existing office); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Registrar",
+            "text_sha256": "d126b1b32e143dc10d19ae9bab1d2212b950c954ee9fc921a450c2e0fadecfc0"
+          }
+        },
+        {
+          "field": "email",
+          "value": "684-7385jkelly20@ramapo.edu",
+          "reason": "Scanner artifact: the page prints the phone number directly against the address (\"(201) 684-7385jkelly20@ramapo.edu\"), so the digits are read as part of the address. It is not a real address; jkelly20@ramapo.edu itself is excluded above as Jeneen Kelly, Registrar's own address.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Office of the Registrar",
+            "text_sha256": "d126b1b32e143dc10d19ae9bab1d2212b950c954ee9fc921a450c2e0fadecfc0"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847533",
+          "reason": "The Provost home page lists this for Paul Currant, Director of Study Abroad (Ramapo International is a separate office); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Ramapo International",
+            "text_sha256": "dc7d899ed7b928507db66ab1805705eb98dd48783fc5a222780822d245da0dba"
+          }
+        },
+        {
+          "field": "email",
+          "value": "pcurrant@ramapo.edu",
+          "reason": "The Provost home page lists this for Paul Currant, Director of Study Abroad (Ramapo International is a separate office); it is that person's or unit's own contact, not the Office of the Provost line (201) 684-7330 or provost@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/provost/",
+            "section": "Ramapo International",
+            "text_sha256": "dc7d899ed7b928507db66ab1805705eb98dd48783fc5a222780822d245da0dba"
+          }
+        }
+      ]
+    },
+    {
+      "name": "People Operations and Employee Resources Department",
+      "category": "Services",
+      "department": "People Operations and Employee Resources Department",
+      "phone": "(201) 684-7506",
+      "email": "poer@ramapo.edu",
+      "office": "D-wing",
+      "website": "https://www.ramapo.edu/poerd/",
+      "helpsWith": [
+        "Ramapo College job openings and applications",
+        "Employee benefits, policies and forms",
+        "Student Employment Coordinator"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/poerd/certification-procedures-for-classified-civil-service-staff-governed-by-n-j-a-c-title-4a/",
+          "section": "(Staff Governed by N.J.A.C. Title 4A)",
+          "near": "please contact the People Operations and Employee Resources Department at extension",
+          "fields": [
+            "phone"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/poerd/jobs/",
+          "section": "Careers",
+          "near": "are located in the",
+          "fields": [
+            "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/poerd/calendar/",
+          "section": "Calendars",
+          "fields": [
+            "email"
+          ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-7498",
+          "label": "For questions about positions",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/poerd/jobs/",
+              "section": "Careers",
+              "near": "For questions about positions",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 684-7654",
+          "label": "Student Employment Coordinator",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/poerd/",
+              "section": "People Operations and Employee Resources Department (POERD) Staff",
+              "near": "Student Employment Coordinator",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "email",
+          "value": "cmeakem@ramapo.edu",
+          "label": "Student Employment Coordinator",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/poerd/",
+              "section": "People Operations and Employee Resources Department (POERD) Staff",
+              "near": "Student Employment Coordinator",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "Students employed under the Student Aide or College Work Study programs are limited in the number of hours they are permitted to work and should be guided by policies and procedures administered by the Cahill Center for Experiential Learning and Career Services",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/employee-handbook/",
+            "section": "STUDENT EMPLOYMENT"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The People Operations and Employee Resources pages give a phone for applicants and position questions, a staff list and the poer@ramapo.edu mailbox for specific submissions; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/poerd/",
+              "section": "People Operations and Employee Resources Department (POERD) Staff",
+              "reviewed": {
+                "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c",
+                "reason": "The People Operations and Employee Resources pages give a phone for applicants and position questions, a staff list and the poer@ramapo.edu mailbox for specific submissions; no section ranks one contact method above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/poerd/jobs/",
+              "section": "Careers",
+              "reviewed": {
+                "text_sha256": "e18ee57186f12e032c08b2e612eb1fb73f47df6afb55d660f25e77a446b9d013",
+                "reason": "The People Operations and Employee Resources pages give a phone for applicants and position questions, a staff list and the poer@ramapo.edu mailbox for specific submissions; no section ranks one contact method above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The People Operations and Employee Resources pages give a phone for applicants and position questions, a staff list and the poer@ramapo.edu mailbox for specific submissions; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/poerd/",
+              "section": "People Operations and Employee Resources Department (POERD) Staff",
+              "reviewed": {
+                "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c",
+                "reason": "The People Operations and Employee Resources pages give a phone for applicants and position questions, a staff list and the poer@ramapo.edu mailbox for specific submissions; no section ranks one contact method above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/poerd/jobs/",
+              "section": "Careers",
+              "reviewed": {
+                "text_sha256": "e18ee57186f12e032c08b2e612eb1fb73f47df6afb55d660f25e77a446b9d013",
+                "reason": "The People Operations and Employee Resources pages give a phone for applicants and position questions, a staff list and the poer@ramapo.edu mailbox for specific submissions; no section ranks one contact method above another."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "email",
+          "value": "vgaldier@ramapo.edu",
+          "reason": "The POERD Staff list gives this for a named staff member (Virginia Galdieri, Vice President for People Operations & Employee Resources (her phone is the recorded department line)); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847507",
+          "reason": "The POERD Staff list gives this for a named staff member (the Director of People Operations (listed as vacant)); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847231",
+          "reason": "The POERD Staff list gives this for a named staff member (Lauren Cioffi, Associate Director of Professional Development, Training & Compensation); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847502",
+          "reason": "The POERD Staff list gives this for a named staff member (Cindy Robles, Associate Director of Payroll, Benefits & Operations); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "crobles2@ramapo.edu",
+          "reason": "The POERD Staff list gives this for a named staff member (Cindy Robles, Associate Director of Payroll, Benefits & Operations); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847782",
+          "reason": "The POERD Staff list gives this for a named staff member (Joanne Ehlermann, Talent Acq. & Onboarding Manager); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "jehlerma@ramapo.edu",
+          "reason": "The POERD Staff list gives this for a named staff member (Joanne Ehlermann, Talent Acq. & Onboarding Manager); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847617",
+          "reason": "The POERD Staff list gives this for a named staff member (Ivy Payne, Benefits Specialist/HR Business Partner); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "ipayne@ramapo.edu",
+          "reason": "The POERD Staff list gives this for a named staff member (Ivy Payne, Benefits Specialist/HR Business Partner); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "lzuccola@ramapo.edu",
+          "reason": "The POERD Staff list gives this for a named staff member (Lori Zuccola, HR Specialist (her phone is the recorded department line)); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847065",
+          "reason": "The POERD Staff list gives this for a named staff member (Michele Bachmann, HR Operations Associate); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "mbachma3@ramapo.edu",
+          "reason": "The POERD Staff list gives this for a named staff member (Michele Bachmann, HR Operations Associate); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847770",
+          "reason": "The POERD Staff list gives this for a named staff member (Elizabeth Dobson (Betty Ann), Payroll Specialist (the address is also the link target under the Student Employment Coordinator, whose displayed address cmeakem@ramapo.edu is recorded)); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "edobson@ramapo.edu",
+          "reason": "The POERD Staff list gives this for a named staff member (Elizabeth Dobson (Betty Ann), Payroll Specialist (the address is also the link target under the Student Employment Coordinator, whose displayed address cmeakem@ramapo.edu is recorded)); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "lchisari@ramapo.edu",
+          "reason": "The POERD Staff list gives this for a named staff member (Lisa Chisari, Human Resources Generalist (the phone is recorded with the Careers page label)); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847641",
+          "reason": "The POERD Staff list gives this for a named staff member (Franklin Jaime, Benefits Coordinator); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "fjaime@ramapo.edu",
+          "reason": "The POERD Staff list gives this for a named staff member (Franklin Jaime, Benefits Coordinator); it is that person's own contact, not the department line (201) 684-7498 or the poer@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/",
+            "section": "People Operations and Employee Resources Department (POERD) Staff",
+            "text_sha256": "80410fc4ee0700aebf553dd84bc83a0c55b0c9cea09874c4fb0d238a5920c94c"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "8008527897",
+          "reason": "The Careers page gives this as the New Jersey Relay Service (Voice or TDD), a state relay service, not a People Operations and Employee Resources contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/jobs/",
+            "section": "Careers",
+            "text_sha256": "e18ee57186f12e032c08b2e612eb1fb73f47df6afb55d660f25e77a446b9d013"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847231",
+          "reason": "Hiring procedure for classified staff: \"please see Roger Jans X7231 regarding the Staffing Requisition Form\". It is a named person's extension for hiring managers (the staff list now gives 7231 to the Associate Director of Professional Development, Training & Compensation), not a student or general department contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/policies-procedures-2/hiring-procedures-classified-staff/",
+            "section": "(Staff Governed by N.J.A.C. Title 4A)",
+            "text_sha256": "7775a7ceef5c3b30a901044a1c44ff64b7bc35aa5737f9068c0a62f24abd4816"
+          }
+        },
+        {
+          "field": "office",
+          "value": "DPF44",
+          "reason": "Scanner false positive: \"DPF-44\" is the Position Classification Questionnaire form number, not a room.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/policies-procedures-2/reclassification-procedures-classified-staff/",
+            "section": "RECLASSIFICATION PROCESS",
+            "text_sha256": "9effaa73c45c0d5a029c998725e341f01d617ab072b36325bf42f23a231a91ca"
+          }
+        },
+        {
+          "field": "office",
+          "value": "DPF44",
+          "reason": "Scanner false positive: \"DPF-44\" is the Position Classification Questionnaire form number, not a room.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/poerd/policies-procedures-2/reclassification-procedures-unclassified-staff/",
+            "section": "Reclassification Procedures",
+            "text_sha256": "a6f706485761d00798684e898df3c803141a6129ad28019c8ce4bea952298026"
+          }
+        }
+      ]
     }
   ],
   "other": [
