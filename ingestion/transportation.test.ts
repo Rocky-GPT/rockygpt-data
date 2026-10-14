@@ -14,6 +14,8 @@ test('clock formatting is normalized but malformed times fail instead of being p
   assert.equal(parseShuttleTable(table)[0].departure, '7:25 AM');
   assert.equal(parseShuttleTable(table)[0].arrival, '7:45 AM');
   assert.equal(parseShuttleTable(table)[1].arrival, 'N/A');
+  // The mid-day table's Arrive/Depart columns are two visits to one stop.
+  assert.deepEqual(parseShuttleTable(table)[0].stops, [{ location: 'Ramsey Rt 17 Train', time: '7:35 AM' }, { location: 'Ramsey Rt 17 Train', time: '7:35 AM' }]);
   table.rows[0][0] = '25:99 AM';
   assert.throws(() => parseShuttleTable(table), /Unsupported published shuttle time/);
 });
@@ -44,4 +46,21 @@ test('missing source pages do not manufacture periods, stops, service notes, or 
   const markdown = generateTransportationMarkdown(dataset, dataset.collectedAt);
   assert.doesNotMatch(markdown, /Spring 2026|Bradley Center|Garden State Plaza|RCNJShuttle|Commuter Affairs email/);
   assert.match(markdown, /departures are not available/);
+});
+
+test('each stop has one spelling across routes and the mid-day timetable is named as its page is', () => {
+  const header = (slug: string) => slug === 'saturday-shuttle-schedule' ? 'CITY MD Ramsey' : 'City MD Ramsey';
+  const dataset: RawDatasetV1 = {
+    version: '1.0', dataset: 'transportation', collectedAt: '2026-09-23T00:00:00Z', seedUrls: [],
+    stats: { pagesFetched: 4, pagesFailed: 0, externalLinksSeen: 0 },
+    pages: ['ramapo-roadrunner-express-shuttle', 'saturday-shuttle-schedule', 'sunday-shuttle-schedule', 'shuttle-mid-day-weekday-express-train-schedule'].map(slug => ({
+      url: `https://www.ramapo.edu/about/transportation-services/${slug}/`, title: 'Fall 2026 Shuttle Schedule',
+      sourceType: 'detail', fetchedAt: '2026-09-23T00:00:00Z', statusCode: 200,
+      links: [], externalLinks: [], sections: [], lists: [], contacts: [], documents: [],
+      tables: [{ headers: ['Leave Ramapo', header(slug), 'Arrive on Campus'], rows: [['9:00 AM', '9:10 AM', '9:30 AM']] }],
+    })),
+  };
+  const schedules = parseTransportationSchedules(dataset);
+  assert.deepEqual(new Set(schedules.flatMap(route => route.trips.flatMap(trip => trip.stops.map(stop => stop.location)))), new Set(['City MD Ramsey']));
+  assert.ok(schedules.some(route => route.name === 'Mid-Day Weekday Express Train'));
 });
