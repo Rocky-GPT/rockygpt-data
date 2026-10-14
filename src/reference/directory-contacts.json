@@ -625,7 +625,106 @@
         "Meal service info",
         "Dining questions"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/tours/dining-shopping/",
+          "section": "Birch Tree Inn",
+          "fields": [
+            "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "Dining Services -",
+          "fields": [
+            "phone"
+          ]
+        }
+      ],
+      "phone": "(201) 684-7773",
+      "office": "Robert A. Scott Student Center"
+    },
+    {
+      "name": "The Atrium",
+      "phone": "(201) 684-7773",
+      "category": "Dining",
+      "office": "Robert A. Scott Student Center",
+      "helpsWith": [
+        "Meal service info",
+        "Dining questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/tours/dining-shopping/",
+          "section": "The Atrium",
+          "fields": [
+            "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "Dining Services -",
+          "fields": [
+            "phone"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dunkin'",
+      "phone": "(201) 684-7773",
+      "category": "Dining",
+      "office": "Adler Center for Nursing Excellence",
+      "helpsWith": [
+        "Meal service info",
+        "Dining questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/tours/dining-shopping/",
+          "section": "Dunkin",
+          "fields": [
+            "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "Dining Services -",
+          "fields": [
+            "phone"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "We Proudly Serve Starbucks at Common Grounds",
+      "phone": "(201) 684-7773",
+      "category": "Dining",
+      "office": "Peter P. Mercer Learning Commons",
+      "helpsWith": [
+        "Meal service info",
+        "Dining questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/reslife/gtcl/",
+          "section": "Dining Plan Commonly Used Terms",
+          "fields": [
+            "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "Dining Services -",
+          "fields": [
+            "phone"
+          ]
+        }
+      ]
     },
     {
       "name": "Registrar",

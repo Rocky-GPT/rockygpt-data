@@ -8376,6 +8376,18 @@
       "aliases": [],
       "links": [
         {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:the-atrium"
+            ],
+            "evidence": "Reviewed directory contact key (2026-10-14): location from Ramapo's dining tour page or Residence Life's Guide to Community Living, phone from the college phone listing's Dining Services line; no shared-phone matching."
+          }
+        },
+        {
           "collection": "dining_hours",
           "source_key": "dining",
           "source_record_keys": [],
@@ -8396,6 +8408,18 @@
       "aliases": [],
       "links": [
         {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:dunkin"
+            ],
+            "evidence": "Reviewed directory contact key (2026-10-14): location from Ramapo's dining tour page or Residence Life's Guide to Community Living, phone from the college phone listing's Dining Services line; no shared-phone matching."
+          }
+        },
+        {
           "collection": "dining_hours",
           "source_key": "dining",
           "source_record_keys": [],
@@ -8415,6 +8439,18 @@
       "name": "We Proudly Serve Starbucks at Common Grounds",
       "aliases": [],
       "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:we-proudly-serve-starbucks-at-common-grounds"
+            ],
+            "evidence": "Reviewed directory contact key (2026-10-14): location from Ramapo's dining tour page or Residence Life's Guide to Community Living, phone from the college phone listing's Dining Services line; no shared-phone matching."
+          }
+        },
         {
           "collection": "dining_hours",
           "source_key": "dining",

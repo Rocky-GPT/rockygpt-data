@@ -4,7 +4,10 @@ import { activeSeasonSchedule, campusLocalDate, DINING_HOURS_UNKNOWN, formatDini
 const period = (label: string, h1: string, p1: string, h2: string, p2: string) => ({ label, startTime: { hour: h1, minute: '00', period: p1 }, finishTime: { hour: h2, minute: '00', period: p2 } });
 
 test('dining blank/malformed ranges remain unknown and explicit Closed is preserved', () => {
-  assert.equal(formatDiningRange({ allDay: false }), DINING_HOURS_UNKNOWN);
+  // Sodexo stores a closed day as a range with no times, no label and allDay false, and shows it as Closed.
+  assert.equal(formatDiningRange({ allDay: false }), 'Closed');
+  assert.equal(formatDiningRange({ allDay: 'false' }), 'Closed');
+  assert.equal(formatDiningRange({ allDay: false, startTime: { hour: '07', minute: '30', period: 'AM' } }), DINING_HOURS_UNKNOWN);
   assert.equal(formatDiningRange({ allDay: true }), DINING_HOURS_UNKNOWN);
   assert.equal(formatDiningRange({ label: 'Summer Break', allDay: true }), `Summer Break: ${DINING_HOURS_UNKNOWN}`);
   assert.equal(formatDiningRange({ label: 'Closed', allDay: true }), 'Closed');
