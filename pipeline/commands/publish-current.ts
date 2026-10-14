@@ -511,10 +511,11 @@ async function insertStructured(
       await client.query(
         `INSERT INTO rockygpt_v2.shuttle_trips
          (dataset_version_id, source_id, route_id, source_record_key, sequence, departure, arrival,
-          stops, collected_at, content_hash)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10)`,
+          stops, trains, collected_at, content_hash)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9::jsonb,$10,$11)`,
         [datasetId, sources.get('transportation'), route.rows[0].id, recordKey, index, trip.departure,
-          trip.arrival, JSON.stringify(trip.stops), collectedAt, sha256(JSON.stringify({ recordKey, trip }))]
+          trip.arrival, JSON.stringify(trip.stops), JSON.stringify(trip.trains ?? {}), collectedAt,
+          sha256(JSON.stringify({ recordKey, trip }))]
       );
       counts.shuttle_trips = (counts.shuttle_trips || 0) + 1;
     }

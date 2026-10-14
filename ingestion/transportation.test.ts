@@ -6,7 +6,8 @@ import type { RawDatasetV1 } from './raw-types';
 
 test('timetable columns retain both outbound and return visits to the same stop', () => {
   const trips = parseShuttleTable({ headers: ['Leave Ramapo', 'Ramsey Rt 17 Train', 'Interstate Plaza', 'Ramsey Rt 17 Train', 'Arrive on Campus', 'Train Arrives from NYC'], rows: [['9:00 AM', '9:10 AM', '9:15 AM', '9:25 AM', '9:35 AM', '9:00 AM']] });
-  assert.deepEqual(trips[0], { departure: '9:00 AM', stops: [{ location: 'Ramsey Rt 17 Train', time: '9:10 AM' }, { location: 'Interstate Plaza', time: '9:15 AM' }, { location: 'Ramsey Rt 17 Train', time: '9:25 AM' }], arrival: '9:35 AM' });
+  assert.deepEqual(trips[0], { departure: '9:00 AM', stops: [{ location: 'Ramsey Rt 17 Train', time: '9:10 AM' }, { location: 'Interstate Plaza', time: '9:15 AM' }, { location: 'Ramsey Rt 17 Train', time: '9:25 AM' }], arrival: '9:35 AM',
+    trains: { arrives_from_nyc: ['9:00 AM'], leaves_for_nyc: [] } });
 });
 
 test('clock formatting is normalized but malformed times fail instead of being published', () => {
@@ -66,4 +67,14 @@ test('each stop has one spelling across routes and the mid-day timetable is name
   const schedules = parseTransportationSchedules(dataset);
   assert.deepEqual(new Set(schedules.flatMap(route => route.trips.flatMap(trip => trip.stops.map(stop => stop.location)))), new Set(['City MD Ramsey']));
   assert.ok(schedules.some(route => route.name === 'Mid-Day Weekday Express Train'));
+});
+
+test('a row keeps the NJ Transit trains it lists beside the trip', () => {
+  const trips = parseShuttleTable({ headers: ['Leave Ramapo', 'Ramsey Rt 17 Train', 'Arrive on Campus', 'Train Arrives from NYC', 'Train Leaves for NYC'],
+    rows: [['6:10 PM', '6:20 PM', '7:35 PM', '6:44 PM 7:07 PM 7:14 PM', '6:31 PM'], ['8:25 AM', '–', '9:25 AM', 'See express', 'See express'],
+      ['9:00 AM', '9:10 AM', '9:30 AM', '–', '–']] });
+  assert.deepEqual(trips[0].trains, { arrives_from_nyc: ['6:44 PM', '7:07 PM', '7:14 PM'], leaves_for_nyc: ['6:31 PM'] });
+  assert.deepEqual(trips[1].trains, { arrives_from_nyc: [], leaves_for_nyc: [], see_express: true });
+  assert.deepEqual(trips[2].trains, { arrives_from_nyc: [], leaves_for_nyc: [] });
+  assert.throws(() => parseShuttleTable({ headers: ['Leave Ramapo', 'Arrive on Campus', 'Train Arrives from NYC'], rows: [['9:00 AM', '9:30 AM', 'soon']] }), /Unsupported published train time/);
 });

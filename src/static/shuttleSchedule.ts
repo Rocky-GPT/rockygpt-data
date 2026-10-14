@@ -25,6 +25,16 @@ export interface ShuttleRoute {
   departure: string;
   stops: ShuttleStop[];
   arrival: string;
+  /** The NJ Transit trains a timetable row lists beside the trip, as published. */
+  trains?: ShuttleTrains;
+}
+
+/** A timetable row's "Train Arrives from NYC" and "Train Leaves for NYC" cells. */
+export interface ShuttleTrains {
+  arrives_from_nyc: string[];
+  leaves_for_nyc: string[];
+  /** The row says "See express": its trains are listed on the mid-day express timetable. */
+  see_express?: true;
 }
 
 /** Shortline departure times, as plain clock strings, per service day. */

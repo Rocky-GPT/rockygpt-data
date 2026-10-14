@@ -225,6 +225,10 @@ CREATE TABLE IF NOT EXISTS rockygpt_v2.shuttle_trips (
   content_hash TEXT NOT NULL
 );
 
+-- The NJ Transit trains a timetable row lists beside the trip (migration 027).
+ALTER TABLE rockygpt_v2.shuttle_trips
+  ADD COLUMN IF NOT EXISTS trains JSONB NOT NULL DEFAULT '{}'::jsonb;
+
 CREATE TABLE IF NOT EXISTS rockygpt_v2.academic_dates (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   dataset_version_id UUID NOT NULL REFERENCES rockygpt_v2.dataset_versions(id) ON DELETE CASCADE,

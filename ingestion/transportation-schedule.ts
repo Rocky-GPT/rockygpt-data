@@ -1,4 +1,4 @@
-import type { ShuttleRoute } from '../src/static/shuttleSchedule';
+import type { ShuttleRoute, ShuttleTrains } from '../src/static/shuttleSchedule';
 import type { RawDatasetV1, RawPageV1 } from './raw-types';
 
 export interface PublishedShuttleSchedule {
@@ -36,10 +36,22 @@ function clock(value: string | undefined): string | undefined {
   return `${Number(match[1])}:${match[2]} ${match[3].toUpperCase()}`;
 }
 
+/** Every clock a train cell lists ("6:44 PM 7:07 PM 7:14 PM"), or none for "–", "See express" or "N/A". */
+function clocks(value: string | undefined): string[] {
+  const cell = text(value);
+  if (/^(?:[-–—]*|N\/A|see express)$/i.test(cell)) return [];
+  const found = [...cell.matchAll(/(0?[1-9]|1[0-2])\s*:\s*([0-5]\d)\s*([AP]M)/gi)];
+  const rest = cell.replace(/(0?[1-9]|1[0-2])\s*:\s*([0-5]\d)\s*([AP]M)/gi, '').replace(/[\s,;-]+/g, '');
+  if (!found.length || rest) throw new Error(`Unsupported published train time: ${JSON.stringify(value)}`);
+  return found.map(match => `${Number(match[1])}:${match[2]} ${match[3].toUpperCase()}`);
+}
+
 export function parseShuttleTable(table: RawPageV1['tables'][number]): ShuttleRoute[] {
   const departure = table.headers.findIndex(header => /^leave ramapo$/i.test(text(header)));
   const arrival = table.headers.findIndex(header => /^arrive on campus$/i.test(text(header)));
   if (departure < 0 || arrival <= departure) throw new Error('Shuttle table needs Leave Ramapo and Arrive on Campus columns.');
+  const fromNyc = table.headers.findIndex(header => /^train arrives from nyc$/i.test(text(header)));
+  const toNyc = table.headers.findIndex(header => /^train leaves for nyc$/i.test(text(header)));
   const trips: ShuttleRoute[] = [];
   for (const row of table.rows) {
     const first = text(row[departure]);
@@ -56,7 +68,16 @@ export function parseShuttleTable(table: RawPageV1['tables'][number]): ShuttleRo
       const time = clock(row[column]);
       if (time) stops.push({ location: stopName(table.headers[column]), time });
     }
-    trips.push({ departure: departureTime, stops, arrival: clock(row[arrival]) ?? 'N/A' });
+    const trip: ShuttleRoute = { departure: departureTime, stops, arrival: clock(row[arrival]) ?? 'N/A' };
+    if (fromNyc > arrival || toNyc > arrival) {
+      const trains: ShuttleTrains = {
+        arrives_from_nyc: fromNyc > arrival ? clocks(row[fromNyc]) : [],
+        leaves_for_nyc: toNyc > arrival ? clocks(row[toNyc]) : [],
+      };
+      if ([row[fromNyc], row[toNyc]].some(cell => /^see express$/i.test(text(cell)))) trains.see_express = true;
+      trip.trains = trains;
+    }
+    trips.push(trip);
   }
   if (!trips.length) throw new Error('Published shuttle timetable contains no trips.');
   return trips;
