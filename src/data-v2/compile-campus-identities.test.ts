@@ -251,7 +251,12 @@ test('every office whose own page prints hours links exactly those records, and 
   const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
   const { OFFICE_HOURS_PAGES } = await import('../../ingestion/campus-hours');
   const input = snapshot();
-  const names = [...new Set(OFFICE_HOURS_PAGES.map(office => office.name))];
+  // A unit that is an Archway group links its schedules through its reviewed desk contact, once.
+  const { archway_contacts: desks } = (await import('../reference/campus-identity-reviews.json')).default as { archway_contacts: Array<{ hours?: string[] }> };
+  const deskHours = desks.flatMap(desk => desk.hours ?? []);
+  assert.equal(new Set(deskHours).size, deskHours.length);
+  for (const name of deskHours) assert.ok(OFFICE_HOURS_PAGES.some(office => office.name === name), name);
+  const names = [...new Set(OFFICE_HOURS_PAGES.map(office => office.name))].filter(name => !deskHours.includes(name));
   input.campus_hours = names.flatMap(name => ['Monday', 'Tuesday'].map(day =>
     ({ source_key: 'campus-hours', source_record_key: `${name}:${day}`, name, day, schedule: '8:30am-4:30pm' })));
   const result = compileCampusIdentities(real, input);

@@ -275,6 +275,13 @@ const fallTerms = [{ name: 'Fall 2026', from: '2026-08-26', until: '2026-12-16' 
 // Lines as the live pages printed them on 2026-10-07 (read in memory, not stored).
 const newOfficePages: Record<string, string> = {
   'https://www.ramapo.edu/asb/': 'Office: ASB-333\nHours: Monday - Friday, 8:30AM-4:30PM',
+  // Lines as the live pages printed them on 2026-10-14.
+  'https://www.ramapo.edu/international/': 'Location & Hours\nC-wing, Suite 213\nMonday - Friday: 8:30 AM - 4:30 PM\nSummer Hours\nMonday - Thursday: 8:00 AM to 5:15 PM; Friday: CLOSED',
+  'https://www.ramapo.edu/ccec/': 'Location/ Hours\nPlease visit us in SC-213\nMonday through Friday: 9 a.m. - 4 p.m.\nccec@ramapo.edu',
+  'https://www.ramapo.edu/csi/commuter-affairs/': 'Location/ Hours\nCenter For Student Involvement (CSI) SC-202\nMonday-Friday: 8:30am-4:30pm\nEmail: commuters@ramapo.edu',
+  'https://www.ramapo.edu/womenscenter/': 'Open Hours\nFall 2026\nMondays, 10 am - 8 pm\nTuesdays, 10 am - 6 pm\nWednesdays, 10 am - 8 pm\nThursdays, 10 am - 8 pm\nFridays, 10 am - 5 pm',
+  'https://www.ramapo.edu/multicultural-center/': 'Hours of Operation\nMonday-Friday:\n1:00 p.m. to 4:30 p.m.',
+  'https://www.ramapo.edu/oabc/contact-us/': 'Regular Office Hours: Monday - Friday 8:30 a.m. - 4:30 p.m.\nSummer Office Hours: Monday - Thursday 8:00 a.m. - 5:15 p.m. Closed Fridays',
   'https://www.ramapo.edu/studentsuccess/': 'Center for Student Success\nD-207 (Academic Building)\nMonday-Friday\n8:30 a.m.-4:30 p.m.',
   'https://www.ramapo.edu/oss/': 'MAIN OFFICE: C-Wing, Room 205 - Meetings by appointment. | Office Hours Typically MON-FRI, 8:30 AM-4:30 PM | (201) 684-7514',
   'https://www.ramapo.edu/payroll/': 'Hours:\nFall/Spring, Mon. - Fri.\n8:30 a.m. - 4:30 p.m.\nSummer, Mon. - Thurs.,\n8 a.m. - 5:15 p.m.',

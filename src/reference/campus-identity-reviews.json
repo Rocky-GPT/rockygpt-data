@@ -922,7 +922,10 @@
       "group": "Women's Center & LGBTQ+ Services",
       "contact": "office:women-s-center-lgbtq-services",
       "reviewed_at": "2026-09-28",
-      "note": "Approved: the unit's own site publishes this contact, and the Archway department page is the same unit."
+      "note": "Approved: the unit's own site publishes this contact, and the Archway department page is the same unit.",
+      "hours": [
+        "Women's Center & LGBTQ+ Services"
+      ]
     },
     {
       "group": "RCNJ Center for Holocaust and Genocide Studies",
@@ -934,7 +937,58 @@
       "group": "The Multicultural Center and the Office of Access, Belonging and Community (ABC)",
       "contact": "office:the-multicultural-center-and-the-office-of-access-belonging-and-community-abc",
       "reviewed_at": "2026-09-28",
-      "note": "Approved: the unit's own site publishes this contact, and the Archway department page is the same unit."
+      "note": "Approved: the unit's own site publishes this contact, and the Archway department page is the same unit.",
+      "hours": [
+        "The Multicultural Center",
+        "Office of Access, Belonging and Community",
+        "Office of Access, Belonging and Community (Summer)"
+      ]
+    },
+    {
+      "group": "Roukema Center for International Education",
+      "contact": "office:roukema-center-for-international-education",
+      "reviewed_at": "2026-10-14",
+      "note": "Approved by Dan's 2026-10-14 request to complete the offices: the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit.",
+      "hours": [
+        "Roukema Center for International Education",
+        "Roukema Center for International Education (Summer)"
+      ]
+    },
+    {
+      "group": "Military and Veterans Success",
+      "contact": "office:military-and-veterans-success",
+      "reviewed_at": "2026-10-14",
+      "note": "Approved by Dan's 2026-10-14 request to complete the offices: the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
+    },
+    {
+      "group": "First Generation Student Center",
+      "contact": "office:first-generation-student-center",
+      "reviewed_at": "2026-10-14",
+      "note": "Approved by Dan's 2026-10-14 request to complete the offices: the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
+    },
+    {
+      "group": "Civic and Community Engagement Center",
+      "contact": "office:civic-and-community-engagement-center",
+      "reviewed_at": "2026-10-14",
+      "note": "Approved by Dan's 2026-10-14 request to complete the offices: the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit.",
+      "hours": [
+        "Civic and Community Engagement Center"
+      ]
+    },
+    {
+      "group": "Commuter Affairs",
+      "contact": "office:commuter-affairs",
+      "reviewed_at": "2026-10-14",
+      "note": "Approved by Dan's 2026-10-14 request to complete the offices: the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit.",
+      "hours": [
+        "Commuter Affairs"
+      ]
+    },
+    {
+      "group": "Student Government Association",
+      "contact": "office:student-government-association",
+      "reviewed_at": "2026-10-14",
+      "note": "Approved by Dan's 2026-10-14 request to complete the offices: the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
     }
   ]
 }
