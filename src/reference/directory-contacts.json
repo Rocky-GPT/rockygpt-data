@@ -17059,6 +17059,315 @@
           }
         }
       ]
+    },
+    {
+      "name": "Behavioral Intervention Team",
+      "email": "bit@ramapo.edu",
+      "category": "Student Life",
+      "website": "https://www.ramapo.edu/bit/",
+      "helpsWith": [
+        "Referring a student of concern (BIT Referral)",
+        "Reporting concerning, harmful or disruptive student behavior",
+        "Anonymous referrals about a student of concern"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/bit/",
+          "section": "Mission Statement",
+          "fields": [
+            "email"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/bit/",
+          "section": "BIT Referral Process",
+          "fields": [
+            "email"
+          ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-7869",
+          "label": "Chairperson",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/bit/",
+              "section": "BIT Referral Process",
+              "fields": [
+                "phone"
+              ],
+              "near": "chairperson"
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "If you wish to submit a BIT Referral, you may click on the below link, fill out the form and submit. You can reach the Behavioral Intervention Team via e-mail, bit@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/bit/",
+            "section": "Mission Statement"
+          }
+        },
+        {
+          "text": "Members of the community may also contact the Team by calling or e-mailing the chairperson (Kathleen Hallissey) at 201.684.7869 or bit@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/bit/",
+            "section": "BIT Referral Process"
+          }
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "phone",
+          "value": "2016846666",
+          "reason": "Department of Public Safety emergency line (\"Emergencies must be reported to the Department of Public Safety at 201.684.6666\"); the page states the Team is not a crisis response unit, so this is Public Safety's contact, not a way to reach the BIT.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/bit/",
+            "section": "Purpose",
+            "text_sha256": "d2ae28056e8d5c7353f5039abc6ea5c7a9a3e34a21b75d37df589150d383706b"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016846666",
+          "reason": "Department of Public Safety emergency line for immediate danger; another office's contact, not a way to reach the BIT.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/bit/",
+            "section": "Anonymous Reporting",
+            "text_sha256": "f6d46aeb24866d4e5f12be186e26840b839fbad91bc671edec454ebf5ec173c5"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "office",
+          "scope": "BIT office location or room",
+          "reason": "The BIT page (read 2026-10-14) is a single page; its contact sections give the mailbox, referral form and chairperson phone but no room or building for the Team.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/bit/",
+              "section": "Mission Statement",
+              "reviewed": {
+                "text_sha256": "068ec91e8e98d52506eb2ec31c43a3a7e393b441a1acb5e523dedf84a03694c9",
+                "reason": "States no room or building."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/bit/",
+              "section": "BIT Referral Process",
+              "reviewed": {
+                "text_sha256": "74c62d0747284cd03a19ccec927d7ba06c108bd3d864160beddd53d19c9ef117",
+                "reason": "Gives the chairperson phone and team mailbox; states no room or building."
+              }
+            }
+          ]
+        },
+        {
+          "field": "department",
+          "scope": "named administering department of the Team",
+          "reason": "The BIT page (read 2026-10-14) lists team members from several offices, with the Director of Student Conduct as chairperson, but names no single department that administers the Team.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/bit/",
+              "section": "Mission Statement",
+              "reviewed": {
+                "text_sha256": "068ec91e8e98d52506eb2ec31c43a3a7e393b441a1acb5e523dedf84a03694c9",
+                "reason": "States no administering department."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/bit/",
+              "section": "BIT Referral Process",
+              "reviewed": {
+                "text_sha256": "74c62d0747284cd03a19ccec927d7ba06c108bd3d864160beddd53d19c9ef117",
+                "reason": "Names the chairperson, not an administering department."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The BIT page offers the online BIT Referral form, the team mailbox and calling or e-mailing the chairperson as parallel routes; no section ranks one general contact method above the others.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/bit/",
+              "section": "Mission Statement",
+              "reviewed": {
+                "text_sha256": "068ec91e8e98d52506eb2ec31c43a3a7e393b441a1acb5e523dedf84a03694c9",
+                "reason": "The BIT page offers the online BIT Referral form, the team mailbox and calling or e-mailing the chairperson as parallel routes; no section ranks one general contact method above the others."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/bit/",
+              "section": "BIT Referral Process",
+              "reviewed": {
+                "text_sha256": "74c62d0747284cd03a19ccec927d7ba06c108bd3d864160beddd53d19c9ef117",
+                "reason": "The BIT page offers the online BIT Referral form, the team mailbox and calling or e-mailing the chairperson as parallel routes; no section ranks one general contact method above the others."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The BIT page offers the online BIT Referral form, the team mailbox and calling or e-mailing the chairperson as parallel routes; no section ranks one general contact method above the others.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/bit/",
+              "section": "Mission Statement",
+              "reviewed": {
+                "text_sha256": "068ec91e8e98d52506eb2ec31c43a3a7e393b441a1acb5e523dedf84a03694c9",
+                "reason": "The BIT page offers the online BIT Referral form, the team mailbox and calling or e-mailing the chairperson as parallel routes; no section ranks one general contact method above the others."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/bit/",
+              "section": "BIT Referral Process",
+              "reviewed": {
+                "text_sha256": "74c62d0747284cd03a19ccec927d7ba06c108bd3d864160beddd53d19c9ef117",
+                "reason": "The BIT page offers the online BIT Referral form, the team mailbox and calling or e-mailing the chairperson as parallel routes; no section ranks one general contact method above the others."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine Behavioral Intervention Team opening hours",
+          "reason": "The BIT page (read 2026-10-14, its only captured page) publishes referral and contact routes but no recurring opening schedule.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/bit/",
+              "section": "Mission Statement",
+              "reviewed": {
+                "text_sha256": "068ec91e8e98d52506eb2ec31c43a3a7e393b441a1acb5e523dedf84a03694c9",
+                "reason": "The BIT page (read 2026-10-14, its only captured page) publishes referral and contact routes but no recurring opening schedule."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Media Services",
+      "phone": "(201) 684-7777",
+      "email": "mediahelpdesk@ramapo.edu",
+      "office": "H-205",
+      "category": "Services",
+      "website": "https://www.ramapo.edu/ams/",
+      "helpsWith": [
+        "Audio-visual assistance for classrooms and campus events",
+        "Classroom and meeting-room A/V instructions",
+        "Campus cable TV system"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/ams/",
+          "section": "Overview",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "Please feel free to visit us in H-205 or send an email to mediahelpdesk@ramapo.edu with any inquiries.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/ams/",
+            "section": "Overview"
+          }
+        },
+        {
+          "text": "For emergencies, please phone the helpdesk at 201-684-7777.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/ams/",
+            "section": "Overview"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "department",
+          "scope": "named administering department",
+          "reason": "The Media Services pages (read 2026-10-14) link Information Technology Services as a related resource but do not state that Media Services belongs to a named department.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ams/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "e8b17a725059d4331f0507aee89ac5b91d3a2172d54500e9f0007a5a97400850",
+                "reason": "States no administering department."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/ams/",
+              "section": "Related Resources",
+              "reviewed": {
+                "text_sha256": "05cc9b11d3c79da6683643f243575cb5eaaf034da32558f4181a5ecec4cf49f0",
+                "reason": "A link to Information Technology Services, not a statement that Media Services is part of it."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Overview invites visits to H-205 or email with any inquiries, and the helpdesk phone for emergencies; it does not rank one general contact method above the others.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ams/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "e8b17a725059d4331f0507aee89ac5b91d3a2172d54500e9f0007a5a97400850",
+                "reason": "The Overview invites visits to H-205 or email with any inquiries, and the helpdesk phone for emergencies; it does not rank one general contact method above the others."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Overview invites visits to H-205 or email with any inquiries, and the helpdesk phone for emergencies; it does not rank one general contact method above the others.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ams/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "e8b17a725059d4331f0507aee89ac5b91d3a2172d54500e9f0007a5a97400850",
+                "reason": "The Overview invites visits to H-205 or email with any inquiries, and the helpdesk phone for emergencies; it does not rank one general contact method above the others."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine Media Services opening hours",
+          "reason": "The Media Services home and A/V instruction pages (read 2026-10-14) publish no recurring opening schedule.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ams/",
+              "section": "A/V Instructions",
+              "reviewed": {
+                "text_sha256": "b46b8a01f11220f4e82851209bfec8964346706da73e698b0aca5f6e7793e8d9",
+                "reason": "The Media Services home and A/V instruction pages (read 2026-10-14) publish no recurring opening schedule."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/ams/",
+              "section": "Related Resources",
+              "reviewed": {
+                "text_sha256": "05cc9b11d3c79da6683643f243575cb5eaaf034da32558f4181a5ecec4cf49f0",
+                "reason": "The Media Services home and A/V instruction pages (read 2026-10-14) publish no recurring opening schedule."
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "other": [
