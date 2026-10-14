@@ -511,6 +511,14 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         label: /^Regular Office Hours:/i },
     { name: 'Office of Access, Belonging and Community (Summer)', url: 'https://www.ramapo.edu/oabc/contact-us/',
         label: /^Summer Office Hours:/i, season: 'Summer' },
+    // School offices (read 2026-10-14). SNH prints both seasons on one line pair: the semester
+    // clause is read on its own so the summer line after it is not taken for part of it.
+    { name: 'School of Science, Nursing, and Health Office', url: 'https://www.ramapo.edu/snh/', kind: 'week',
+        label: /^Hours: Fall\/Spring Semester:/i, extract: /Hours: Fall\/Spring Semester: Mon\.,[^\n]*/i,
+        season: 'Fall/Spring Semester' },
+    { name: 'School of Science, Nursing, and Health Office (Summer)', url: 'https://www.ramapo.edu/snh/',
+        label: /^Summer:/i, season: 'Summer' },
+    { name: 'School of Social Sciences and Social Work Office', url: 'https://www.ramapo.edu/sssw/', label: /^Hours:/i },
     // Each residence hall's own page prints its Hall Office hours (read 2026-10-14).
     { name: 'Bischoff Hall', url: 'https://www.ramapo.edu/reslife/bischoff-hall/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
         season: 'Fall & Spring Semester' },

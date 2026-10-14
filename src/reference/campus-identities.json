@@ -12533,6 +12533,121 @@
           }
         }
       ]
+    },
+    {
+      "id": "2feaee5a-22ab-42a9-a5b8-6160b36bed20",
+      "kind": "office",
+      "name": "Dining Services",
+      "aliases": [
+        "Dining Office",
+        "Ramapo Dining Office",
+        "Dining Services Office"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:dining-services"
+            ],
+            "evidence": "The unit's own ramapo.edu contact sections (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "5df98a7e-38c9-41dd-b36b-c286a4dfabf0",
+      "kind": "office",
+      "name": "School of Arts, Humanities, and Education Office",
+      "aliases": [
+        "AHE Office"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:school-of-arts-humanities-and-education-office"
+            ],
+            "evidence": "The unit's own ramapo.edu contact sections (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "f0ae7925-8c43-457f-a687-9989020e77d2",
+      "kind": "office",
+      "name": "School of Science, Nursing, and Health Office",
+      "aliases": [
+        "SNH Office"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:school-of-science-nursing-and-health-office"
+            ],
+            "evidence": "The unit's own ramapo.edu contact sections (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "School of Science, Nursing, and Health Office",
+              "School of Science, Nursing, and Health Office (Summer)"
+            ],
+            "evidence": "Reviewed own-office schedules on the school's own home page, each published season kept separately. Explicit source dates only."
+          }
+        }
+      ]
+    },
+    {
+      "id": "396a2278-1adf-4436-b12e-41e6a3ae6148",
+      "kind": "office",
+      "name": "School of Social Sciences and Social Work Office",
+      "aliases": [
+        "SSSW Office"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:school-of-social-sciences-and-social-work-office"
+            ],
+            "evidence": "The unit's own ramapo.edu contact sections (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "School of Social Sciences and Social Work Office"
+            ],
+            "evidence": "Reviewed own-office schedules on the school's own home page, each published season kept separately. Explicit source dates only."
+          }
+        }
+      ]
     }
   ]
 }

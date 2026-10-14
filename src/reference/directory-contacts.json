@@ -16136,6 +16136,919 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Dining Services",
+      "phone": "(201) 684-7773",
+      "category": "Dining",
+      "department": "Dining Services",
+      "office": "Student Center, 1st Floor",
+      "website": "https://www.ramapo.edu/tours/dining-shopping/",
+      "helpsWith": [
+        "Meal plans and dining plan changes",
+        "Ramapo Dollars",
+        "Boxed meals and special diets",
+        "Dining questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/reslife/gtcl/",
+          "section": "Dining Services Information",
+          "fields": [
+            "phone"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/csi/",
+          "section": "Business Hours:",
+          "near": "Dining Services Location",
+          "fields": [
+            "phone",
+            "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "Dining Services -",
+          "fields": [
+            "phone"
+          ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "email",
+          "value": "mealplan@ramapo.edu",
+          "label": "Meal plans",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Meal Plans for CPA/Village Residents or Commuter Students:",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "email",
+          "value": "ramapodollars@ramapo.edu",
+          "label": "Ramapo Dollars",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Dining Plan Commonly Used Terms",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "email",
+          "value": "rkuan@ramapo.edu",
+          "label": "Director",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csi/",
+              "section": "Business Hours:",
+              "near": "Dining Services Location",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "For questions, contact the Dining Services Office at (201) 684-7773.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/reslife/gtcl/",
+            "section": "Dining Services Information"
+          }
+        },
+        {
+          "text": "Students who are ill, injured, or unable to visit a campus dining location due to a disability may request a boxed meal through Dining Services. To make arrangements, please call Dining Services at (201) 684-7773.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/reslife/gtcl/",
+            "section": "Boxed Meals"
+          }
+        },
+        {
+          "text": "There is a specific process for making special requests for medical, religious, cultural or other reasons. Students with such requests should inquire at the Dining Services Office, located across from the Atrium dining room.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/reslife/gtcl/",
+            "section": "Special Diets"
+          }
+        },
+        {
+          "text": "If you do not live in a residence hall that requires a meal plan or are a commuter interested in purchasing one, please email mealplan@ramapo.edu from your Ramapo email account. Include your full name, R number, and the meal plan you want to select.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/reslife/gtcl/",
+            "section": "Meal Plans for CPA/Village Residents or Commuter Students:"
+          }
+        },
+        {
+          "text": "To request a change, email mealplan@ramapo.edu from your Ramapo College email account. Be sure to include your full name, R number, and the new dining plan selection.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/reslife/gtcl/",
+            "section": "Changing Dining Plans"
+          }
+        },
+        {
+          "text": "Ramapo Dollars may be purchased at the Ramapo Dining Office or by emailing ramapodollars@ramapo.edu. Please include your name, R# and amount of Ramapo Dollars you would like to add.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/reslife/gtcl/",
+            "section": "Dining Plan Commonly Used Terms"
+          }
+        },
+        {
+          "text": "If an I.D. card is lost, student\u2019s must notify Dining Services immediately to ensure that their account is protected until a replacement card can be obtained through Public Safety.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/reslife/gtcl/",
+            "section": "Dining Rules and Regulations"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "email",
+          "scope": "Shared general Dining Services mailbox",
+          "reason": "Reviewed the Dining Services sections of the Residence Life Guide to Community Living (Dining Services Information, Boxed Meals, Special Diets). They publish the Dining Services Office phone, its location and service-specific instructions, but no shared general Dining Services mailbox. mealplan@ (meal plan sign-up and changes) and ramapodollars@ (Ramapo Dollars purchases) are kept as labelled service mailboxes and the Director's personal address as a labelled Director contact; none of them is the general mailbox.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Dining Services Information",
+              "reviewed": {
+                "text_sha256": "dd63e21f90d5870d9e6c41efc2f03a2135ce501eab7ae38ca68660d91a618b96",
+                "reason": "The section gives the Dining Services Office phone and a link to the Sodexo dining site; it states no email address."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Boxed Meals",
+              "reviewed": {
+                "text_sha256": "f3e48fff733ed6ae8485918f6ab197b474420716788f90c84e26196f33f250fe",
+                "reason": "Boxed meals are arranged by phone; the section states no email address."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Special Diets",
+              "reviewed": {
+                "text_sha256": "2ae64029ad0fdae91ecd5c869b133fe2a4686e069e9a14e46e567e6a9f91a18c",
+                "reason": "Special-diet requests go to the Dining Services Office in person; the section states no email address."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The reviewed Dining Services sections give a phone line for questions, phone for boxed meals, in-person inquiry for special diets and email for meal-plan and Ramapo Dollars requests. These are task-specific routes; no section ranks one general contact method above the others.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Dining Services Information",
+              "reviewed": {
+                "text_sha256": "dd63e21f90d5870d9e6c41efc2f03a2135ce501eab7ae38ca68660d91a618b96",
+                "reason": "Names the phone line for questions without ranking it over other methods."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Boxed Meals",
+              "reviewed": {
+                "text_sha256": "f3e48fff733ed6ae8485918f6ab197b474420716788f90c84e26196f33f250fe",
+                "reason": "A task-specific phone instruction, not a ranked general preference."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Special Diets",
+              "reviewed": {
+                "text_sha256": "2ae64029ad0fdae91ecd5c869b133fe2a4686e069e9a14e46e567e6a9f91a18c",
+                "reason": "A task-specific in-person instruction, not a ranked general preference."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The reviewed Dining Services sections give a phone line for questions, phone for boxed meals, in-person inquiry for special diets and email for meal-plan and Ramapo Dollars requests. These are task-specific routes; no section ranks one general contact method above the others.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Dining Services Information",
+              "reviewed": {
+                "text_sha256": "dd63e21f90d5870d9e6c41efc2f03a2135ce501eab7ae38ca68660d91a618b96",
+                "reason": "Names the phone line for questions without ranking it over other methods."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Boxed Meals",
+              "reviewed": {
+                "text_sha256": "f3e48fff733ed6ae8485918f6ab197b474420716788f90c84e26196f33f250fe",
+                "reason": "A task-specific phone instruction, not a ranked general preference."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Special Diets",
+              "reviewed": {
+                "text_sha256": "2ae64029ad0fdae91ecd5c869b133fe2a4686e069e9a14e46e567e6a9f91a18c",
+                "reason": "A task-specific in-person instruction, not a ranked general preference."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "phone",
+          "value": "2016847796",
+          "reason": "The CSI Services block labels this the J. Lee's phone; a separate facility, not a Dining Services contact. It falls inside the text window after \"Dining Services Location\" only because J. Lee's is listed next.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csi/",
+            "section": "Business Hours:",
+            "text_sha256": "69b796e5b9d9c432d5a39eb49d45dc770d52a1d2fa0b18f90db9c5bf5a080980"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847593",
+          "reason": "The CSI Services block lists this under Roadrunner Central; not a Dining Services contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csi/",
+            "section": "Business Hours:",
+            "text_sha256": "69b796e5b9d9c432d5a39eb49d45dc770d52a1d2fa0b18f90db9c5bf5a080980"
+          }
+        },
+        {
+          "field": "email",
+          "value": "rrc@ramapo.edu",
+          "reason": "The CSI Services block gives this as Roadrunner Central's address; not a Dining Services contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csi/",
+            "section": "Business Hours:",
+            "text_sha256": "69b796e5b9d9c432d5a39eb49d45dc770d52a1d2fa0b18f90db9c5bf5a080980"
+          }
+        },
+        {
+          "field": "office",
+          "value": "SC202",
+          "reason": "The CSI Services block gives SC202 as Roadrunner Central's location; Dining Services is listed at Student Center, 1st Floor.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csi/",
+            "section": "Business Hours:",
+            "text_sha256": "69b796e5b9d9c432d5a39eb49d45dc770d52a1d2fa0b18f90db9c5bf5a080980"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847541",
+          "reason": "The full directory row labels this Educational Opportunity Fund Program; a broad neighboring text window after \"Dining Services -\" does not make it a Dining Services contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2012362902",
+          "reason": "The full directory row labels this Emergency Closings / Emergency Snow Closing; a broad neighboring text window after \"Dining Services -\" does not make it a Dining Services contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847873",
+          "reason": "The full directory row labels this Emergency Medical Services; a broad neighboring text window after \"Dining Services -\" does not make it a Dining Services contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847504",
+          "reason": "The full directory row labels this Employee Relations; a broad neighboring text window after \"Dining Services -\" does not make it a Dining Services contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847531",
+          "reason": "The full directory row labels this Environmental Health and Safety; a broad neighboring text window after \"Dining Services -\" does not make it a Dining Services contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847742",
+          "reason": "The full directory row labels this Environmental Institute; a broad neighboring text window after \"Dining Services -\" does not make it a Dining Services contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016846693",
+          "reason": "The full directory row labels this Equity, Diversity, Inclusion and Compliance; a broad neighboring text window after \"Dining Services -\" does not make it a Dining Services contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        }
+      ]
+    },
+    {
+      "name": "School of Arts, Humanities, and Education Office",
+      "phone": "(201) 684-7365",
+      "category": "Academic",
+      "email": "AHEOffice@ramapo.edu",
+      "office": "B-224",
+      "website": "https://www.ramapo.edu/ahe/",
+      "helpsWith": [
+        "School of Arts, Humanities, and Education office",
+        "School contacts",
+        "Academic questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/ahe/",
+          "section": "Contact Us",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general-office contact preference",
+          "reason": "Reviewed the School of Arts, Humanities, and Education office contact block. They list email, office room, hours and phone without ranking one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ahe/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "324ca8b4f165b6c47105137566f3127e06f2977ba388f78c33b490accb9e3e38",
+                "reason": "Lists contact methods under labels (Email, Office, Hours, Phone) without ranking one above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general-office contact preference",
+          "reason": "Reviewed the School of Arts, Humanities, and Education office contact block. They list email, office room, hours and phone without ranking one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ahe/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "324ca8b4f165b6c47105137566f3127e06f2977ba388f78c33b490accb9e3e38",
+                "reason": "Lists contact methods under labels (Email, Office, Hours, Phone) without ranking one above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "contact_note",
+          "scope": "general school-office contact instructions beyond the listed contact details",
+          "reason": "Reviewed the School of Arts, Humanities, and Education office contact block. They list the office's email, room, hours and phone but give no instruction about how or when to contact the office (appointments, walk-ins, response times or what to send). The Dean's welcome message ends with a general invitation to reach out to the Dean or a faculty member with the AHEOffice address, which is recorded as the office email; it is not an office contact procedure.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ahe/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "324ca8b4f165b6c47105137566f3127e06f2977ba388f78c33b490accb9e3e38",
+                "reason": "A labelled list of contact details and hours; no instruction for contacting the office."
+              }
+            }
+          ]
+        },
+        {
+          "field": "department",
+          "scope": "named department or unit, other than the school itself, that administers this office",
+          "reason": "The office is the School of Arts, Humanities, and Education's own school office. Its contact block names no separate department or unit that administers it; the parent school is the office's name, not a separate department value.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ahe/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "324ca8b4f165b6c47105137566f3127e06f2977ba388f78c33b490accb9e3e38",
+                "reason": "The contact block names no administering department."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": []
+    },
+    {
+      "name": "School of Science, Nursing, and Health Office",
+      "phone": "(201) 684-7734",
+      "category": "Academic",
+      "email": "SNHOffice@ramapo.edu",
+      "office": "ASB-422",
+      "website": "https://www.ramapo.edu/snh/",
+      "helpsWith": [
+        "School of Science, Nursing, and Health office",
+        "School contacts",
+        "Academic questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/snh/",
+          "section": "Contact Us",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/snh/staff/",
+          "section": "SNH OFFICE",
+          "fields": [
+            "phone",
+            "office"
+          ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-7637",
+          "label": "Fax",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/snh/",
+              "section": "Contact Us",
+              "near": "Fax:",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general-office contact preference",
+          "reason": "Reviewed the School of Science, Nursing, and Health office contact blocks. They list email, office room, hours and phone without ranking one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/snh/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "7000a62c30ca1506039534dc8f130cd738e72143857f1eb736b0051d96a3325b",
+                "reason": "Lists contact methods under labels (Email, Office, Hours, Phone) without ranking one above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/snh/staff/",
+              "section": "SNH OFFICE",
+              "reviewed": {
+                "text_sha256": "2ed56276efee479e049e7e2608bb0f7562a5d9e7a7d401eb716fafe2097bd3cf",
+                "reason": "Lists contact methods under labels (Email, Office, Hours, Phone) without ranking one above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general-office contact preference",
+          "reason": "Reviewed the School of Science, Nursing, and Health office contact blocks. They list email, office room, hours and phone without ranking one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/snh/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "7000a62c30ca1506039534dc8f130cd738e72143857f1eb736b0051d96a3325b",
+                "reason": "Lists contact methods under labels (Email, Office, Hours, Phone) without ranking one above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/snh/staff/",
+              "section": "SNH OFFICE",
+              "reviewed": {
+                "text_sha256": "2ed56276efee479e049e7e2608bb0f7562a5d9e7a7d401eb716fafe2097bd3cf",
+                "reason": "Lists contact methods under labels (Email, Office, Hours, Phone) without ranking one above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "contact_note",
+          "scope": "general school-office contact instructions beyond the listed contact details",
+          "reason": "Reviewed the School of Science, Nursing, and Health office contact blocks. They list the office's email, room, hours and phone but give no instruction about how or when to contact the office (appointments, walk-ins, response times or what to send).",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/snh/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "7000a62c30ca1506039534dc8f130cd738e72143857f1eb736b0051d96a3325b",
+                "reason": "A labelled list of contact details and hours; no instruction for contacting the office."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/snh/staff/",
+              "section": "SNH OFFICE",
+              "reviewed": {
+                "text_sha256": "2ed56276efee479e049e7e2608bb0f7562a5d9e7a7d401eb716fafe2097bd3cf",
+                "reason": "A labelled list of contact details and hours; no instruction for contacting the office."
+              }
+            }
+          ]
+        },
+        {
+          "field": "department",
+          "scope": "named department or unit, other than the school itself, that administers this office",
+          "reason": "The office is the School of Science, Nursing, and Health's own school office. Its contact block names no separate department or unit that administers it; the parent school is the office's name, not a separate department value.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/snh/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "7000a62c30ca1506039534dc8f130cd738e72143857f1eb736b0051d96a3325b",
+                "reason": "The contact block names no administering department."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/snh/staff/",
+              "section": "SNH OFFICE",
+              "reviewed": {
+                "text_sha256": "2ed56276efee479e049e7e2608bb0f7562a5d9e7a7d401eb716fafe2097bd3cf",
+                "reason": "The contact block names no administering department."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "email",
+          "value": "vbonnett@ramapo.edu",
+          "reason": "The SNH staff list gives this as Virginia Bonnett (listed under SNH Office)'s own email address. A named staff member's email address is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847797",
+          "reason": "The SNH staff list gives this as Virginia Bonnett (listed under SNH Office)'s own direct phone. A named staff member's direct phone is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "email",
+          "value": "jbutryn@ramapo.edu",
+          "reason": "The SNH staff list gives this as John Butryn, Biology Lab Technician's own email address. A named staff member's email address is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016846284",
+          "reason": "The SNH staff list gives this as John Butryn, Biology Lab Technician's own direct phone. A named staff member's direct phone is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "office",
+          "value": "G311",
+          "reason": "The SNH staff list gives this as John Butryn, Biology Lab Technician's own office room (a lab or faculty-wing room). A named staff member's office room (a lab or faculty-wing room) is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "email",
+          "value": "ady@ramapo.edu",
+          "reason": "The SNH staff list gives this as Alexa Dy, Chemistry Lab Coordinator's own email address. A named staff member's email address is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016846615",
+          "reason": "The SNH staff list gives this as Alexa Dy, Chemistry Lab Coordinator's own direct phone. A named staff member's direct phone is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "office",
+          "value": "G327",
+          "reason": "The SNH staff list gives this as Alexa Dy, Chemistry Lab Coordinator's own office room (a lab or faculty-wing room). A named staff member's office room (a lab or faculty-wing room) is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "email",
+          "value": "spetro@ramapo.edu",
+          "reason": "The SNH staff list gives this as Susan Petro, Biology/Professional Services Specialist's own email address. A named staff member's email address is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847038",
+          "reason": "The SNH staff list gives this as Susan Petro, Biology/Professional Services Specialist's own direct phone. A named staff member's direct phone is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "office",
+          "value": "G326",
+          "reason": "The SNH staff list gives this as Susan Petro, Biology/Professional Services Specialist's own office room (a lab or faculty-wing room). A named staff member's office room (a lab or faculty-wing room) is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "email",
+          "value": "kstarcza@ramapo.edu",
+          "reason": "The SNH staff list gives this as Kamil Starczak, Biology Lab Coordinator's own email address. A named staff member's email address is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016846287",
+          "reason": "The SNH staff list gives this as Kamil Starczak, Biology Lab Coordinator's own direct phone. A named staff member's direct phone is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "office",
+          "value": "G325",
+          "reason": "The SNH staff list gives this as Kamil Starczak, Biology Lab Coordinator's own office room (a lab or faculty-wing room). A named staff member's office room (a lab or faculty-wing room) is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "email",
+          "value": "isydoryk@ramapo.edu",
+          "reason": "The SNH staff list gives this as Ihor Sydoryk, Engineering Physics Lab Coordinator's own email address. A named staff member's email address is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847639",
+          "reason": "The SNH staff list gives this as Ihor Sydoryk, Engineering Physics Lab Coordinator's own direct phone. A named staff member's direct phone is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        },
+        {
+          "field": "office",
+          "value": "G117",
+          "reason": "The SNH staff list gives this as Ihor Sydoryk, Engineering Physics Lab Coordinator's own office room (a lab or faculty-wing room). A named staff member's office room (a lab or faculty-wing room) is not the school office's general contact; the office's shared contact is SNHOffice@ramapo.edu, (201) 684-7734, ASB-422.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/snh/staff/",
+            "section": "Staff / Administrators",
+            "text_sha256": "ca3e013bd516eda5490d5ba9b3d1fbf6b9e9a744b07060c1009d0876918c0eda"
+          }
+        }
+      ]
+    },
+    {
+      "name": "School of Social Sciences and Social Work Office",
+      "phone": "(201) 684-7625 or (201) 684-7562",
+      "category": "Academic",
+      "email": "SSSWOffice@ramapo.edu",
+      "office": "ASB-431",
+      "website": "https://www.ramapo.edu/sssw/",
+      "helpsWith": [
+        "School of Social Sciences and Social Work office",
+        "School contacts",
+        "Academic questions"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/sssw/",
+          "section": "Contact Us",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general-office contact preference",
+          "reason": "Reviewed the School of Social Sciences and Social Work office contact block. They list email, office room, hours and phone without ranking one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/sssw/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "6d3364acdd2b328990e6300dca376f6be197707f54cd8980276df9163628b4c0",
+                "reason": "Lists contact methods under labels (Email, Office, Hours, Phone) without ranking one above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general-office contact preference",
+          "reason": "Reviewed the School of Social Sciences and Social Work office contact block. They list email, office room, hours and phone without ranking one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/sssw/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "6d3364acdd2b328990e6300dca376f6be197707f54cd8980276df9163628b4c0",
+                "reason": "Lists contact methods under labels (Email, Office, Hours, Phone) without ranking one above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "contact_note",
+          "scope": "general school-office contact instructions beyond the listed contact details",
+          "reason": "Reviewed the School of Social Sciences and Social Work office contact block. They list the office's email, room, hours and phone but give no instruction about how or when to contact the office (appointments, walk-ins, response times or what to send).",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/sssw/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "6d3364acdd2b328990e6300dca376f6be197707f54cd8980276df9163628b4c0",
+                "reason": "A labelled list of contact details and hours; no instruction for contacting the office."
+              }
+            }
+          ]
+        },
+        {
+          "field": "department",
+          "scope": "named department or unit, other than the school itself, that administers this office",
+          "reason": "The office is the School of Social Sciences and Social Work's own school office. Its contact block names no separate department or unit that administers it; the parent school is the office's name, not a separate department value.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/sssw/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "6d3364acdd2b328990e6300dca376f6be197707f54cd8980276df9163628b4c0",
+                "reason": "The contact block names no administering department."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "email",
+          "value": "nbernet@ramapo.eduphone",
+          "reason": "Personal address of Nancy Bernet, SSSW Administrative School Coordinator, listed after the office block (the capture runs \"Phone\" into the address). A named staff member's address is not the shared SSSWOffice@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/sssw/",
+            "section": "Contact Us",
+            "text_sha256": "6d3364acdd2b328990e6300dca376f6be197707f54cd8980276df9163628b4c0"
+          }
+        },
+        {
+          "field": "email",
+          "value": "zpetros@ramapo.eduphone",
+          "reason": "Personal address of Zewde Petros, Secretarial Assistant 2, listed after the office block (the capture runs \"Phone\" into the address). A named staff member's address is not the shared SSSWOffice@ramapo.edu mailbox.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/sssw/",
+            "section": "Contact Us",
+            "text_sha256": "6d3364acdd2b328990e6300dca376f6be197707f54cd8980276df9163628b4c0"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847051",
+          "reason": "Direct line of Zewde Petros, Secretarial Assistant 2. The office block publishes (201) 684-7625 or (201) 684-7562 as the office phones; a staff member's own extension is not the office line.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/sssw/",
+            "section": "Contact Us",
+            "text_sha256": "6d3364acdd2b328990e6300dca376f6be197707f54cd8980276df9163628b4c0"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847733",
+          "reason": "The Child Development Lab FAQ gives this as the research lab's sign-up phone for child study participants; the lab is a separate research unit, not the school office.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/sssw/childlab/faq/",
+            "section": "FAQ",
+            "text_sha256": "e9c90f20c565424ba689817123fbd1cb547d81799218e2834de517bce47e522c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "ramapochildlab@gmail.com",
+          "reason": "The Child Development Lab's external sign-up mailbox for child study participants; not a school-office contact (and not a ramapo.edu address).",
+          "evidence": {
+            "url": "https://www.ramapo.edu/sssw/childlab/faq/",
+            "section": "FAQ",
+            "text_sha256": "e9c90f20c565424ba689817123fbd1cb547d81799218e2834de517bce47e522c"
+          }
+        },
+        {
+          "field": "email",
+          "value": "nchoudhu@ramapo.edu",
+          "reason": "Address of Dr. Naseem Choudhury, the Psychology convener, for declaring a Psychology major or minor; a faculty contact, not the school office.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/sssw/psychology/faqs/",
+            "section": "How do I declare myself as a Psychology major or minor?",
+            "text_sha256": "0c99b6fd6787f2741cc048455beb3e0609881ce91395d9130b5a0a9d34464f56"
+          }
+        },
+        {
+          "field": "office",
+          "value": "G273",
+          "reason": "Office room of the Psychology convener, Dr. Naseem Choudhury; a faculty office, not the school office (ASB-431).",
+          "evidence": {
+            "url": "https://www.ramapo.edu/sssw/psychology/faqs/",
+            "section": "How do I declare myself as a Psychology major or minor?",
+            "text_sha256": "0c99b6fd6787f2741cc048455beb3e0609881ce91395d9130b5a0a9d34464f56"
+          }
+        },
+        {
+          "field": "email",
+          "value": "lwarner@ramapo.edu",
+          "reason": "Address of Dr. Warner, the Psychology subject pool coordinator; a faculty contact, not the school office.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/sssw/psychology/faqs/",
+            "section": "How can I get involved in research?",
+            "text_sha256": "4068bf1570eddefc38d6e7a7faf11685a024814027e102d3db17f2178ffa302f"
+          }
+        }
+      ]
     }
   ],
   "other": [
