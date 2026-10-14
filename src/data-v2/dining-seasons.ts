@@ -36,9 +36,6 @@ export function formatDiningRange(range: JsonRecord, includeLabel = true): strin
     ? (range.allDay as JsonRecord).value : range.allDay;
   if (range.closed === true || (typeof allDayValue === 'string'
     && allDayValue.trim().toLowerCase() === 'closed') || /^(closed|no service)\b/i.test(label)) return 'Closed';
-  // A range with no times and no label at all is how Sodexo stores a closed day; its own hours
-  // page shows it as "Closed" (The Atrium's weekends, 2026-10-14). A range with any time is read below.
-  if (start === undefined && finish === undefined && !label && String(allDayValue ?? 'false').toLowerCase() === 'false') return 'Closed';
   const valid = (time: SeasonTime | undefined): boolean => Boolean(time &&
     /^(0?[1-9]|1[0-2])$/.test(String(time.hour)) &&
     /^[0-5]\d$/.test(String(time.minute)) && /^(AM|PM)$/i.test(String(time.period)));
