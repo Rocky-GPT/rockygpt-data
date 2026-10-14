@@ -8222,7 +8222,8 @@
           "selector": {
             "field": "name",
             "values": [
-              "Ramapo Bookstore"
+              "Ramapo Bookstore",
+              "Ramapo Bookstore (Summer)"
             ],
             "evidence": "Reviewed schedule subject, kept separate from departments, desks, and containing buildings. Source exposes no durable facility ID; a rename requires a reviewed selector update."
           }
@@ -12576,6 +12577,18 @@
               "key:office:school-of-arts-humanities-and-education-office"
             ],
             "evidence": "The unit's own ramapo.edu contact sections (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "School of Arts, Humanities, and Education Office"
+            ],
+            "evidence": "Reviewed own-office schedule on the school's own home page. Explicit source dates only."
           }
         }
       ]
