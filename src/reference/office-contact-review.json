@@ -10150,6 +10150,14 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "text_sha256": "c157e9ce84d72c62cc80ba3752742ed7cabb50779c8221b4cd2daa2d8feb49b0",
           "reason": "The staff list gained a vacant Career Development/Transition Experiences Coordinator line (C203); every previously excluded staff value is still stated in the section, so the existing exclusions are re-bound to the new text and C203 is excluded as a named staff office."
+        },
+        {
+          "reviewed_at": "2026-10-14T21:00:00.000Z",
+          "kind": "exclusions_rebound",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "text_sha256": "2753afec383874001831eca7b074f3763f824259e73f81e98b47f83d1a7a28ab",
+          "reason": "The staff section text changed again between two crawls the same day with every excluded staff value still stated; the exclusions are re-bound to the new text. This section changes often."
         }
       ]
     },
