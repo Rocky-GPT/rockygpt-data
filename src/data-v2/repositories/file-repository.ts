@@ -321,10 +321,11 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
 
   async getCriticalFact(key: string): Promise<CriticalFactRecord | null> {
     if (key === 'shuttle.ramsey_route17.express.first_departure' || key === 'shuttle.ramsey_route17.express.last_dropoff') {
-      const route = this.shuttleTimetables().find(route => route.name === 'Ramsey Route 17');
+      const route = this.shuttleTimetables().find(route => route.name === 'Mid-Day Weekday Express Train');
       if (!route) return null;
+      // The last trip's drop-off is its first visit to the train (its arrival there).
       const value = key.endsWith('first_departure') ? route.trips[0]?.departure
-        : route.trips.at(-1)?.stops.find(stop => /^arrive ramsey rt 17 train$/i.test(stop.location))?.time;
+        : route.trips.at(-1)?.stops.find(stop => /^ramsey rt 17 train$/i.test(stop.location))?.time;
       return value ? { key, value, source: { ...V2_SOURCES.transportation, url: route.sourceUrl,
         title: route.sourceTitle ?? V2_SOURCES.transportation.title, collectedAt: route.collectedAt }, verifiedAt: route.collectedAt } : null;
     }
@@ -745,7 +746,7 @@ export class FileRepositoryV2 implements RockyRepositoryV2 {
 
   async listShuttleTrips(serviceDay: ShuttleServiceDay): Promise<ShuttleTripRecord[]> {
     return this.shuttleTimetables().filter(route => route.serviceDay === serviceDay).flatMap(route =>
-      route.trips.map(trip => ({ route: route.name === 'Ramsey Route 17' ? 'Ramsey Route 17 Express' : route.name,
+      route.trips.map(trip => ({ route: route.name === 'Mid-Day Weekday Express Train' ? 'Ramsey Route 17 Express' : route.name,
         ...trip, source: { ...V2_SOURCES.transportation, url: route.sourceUrl,
           title: route.sourceTitle ?? V2_SOURCES.transportation.title, collectedAt: route.collectedAt } })));
   }

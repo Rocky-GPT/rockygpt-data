@@ -31,6 +31,7 @@ test('file shuttle reads and exact facts use captured rows, stop columns, URLs, 
     assert.equal(saturday[0].source.collectedAt, capturedAt);
     assert.match(saturday[0].source.url, /saturday-shuttle-schedule/);
     assert.equal((await repository.getShuttleTrips('Ramsey Route 17', 'sunday')).length, 0);
+    assert.ok(saturday[0].stops.every(stop => stop.location === 'Ramsey Rt 17 Train'));
     const first = await repository.getCriticalFact('shuttle.ramsey_route17.express.first_departure');
     const last = await repository.getCriticalFact('shuttle.ramsey_route17.express.last_dropoff');
     assert.equal(first?.value, '6:10 AM');

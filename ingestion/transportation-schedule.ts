@@ -11,7 +11,8 @@ export interface PublishedShuttleSchedule {
 }
 
 const ROUTES = [
-  ['Ramsey Route 17', 'weekday', 'shuttle-mid-day-weekday-express-train-schedule'],
+  // The page's own title, "Fall 2026 Shuttle Mid-Day Weekday Express Train Schedule".
+  ['Mid-Day Weekday Express Train', 'weekday', 'shuttle-mid-day-weekday-express-train-schedule'],
   ['Weekday Roadrunner Express', 'weekday', 'ramapo-roadrunner-express-shuttle'],
   ['Saturday Roadrunner Express', 'saturday', 'saturday-shuttle-schedule'],
   ['Sunday Roadrunner Express', 'sunday', 'sunday-shuttle-schedule'],
@@ -19,6 +20,12 @@ const ROUTES = [
 
 function text(value: string | undefined): string {
   return (value ?? '').replace(/\s+/g, ' ').trim();
+}
+
+/** A stop as a place: the mid-day table's "Arrive Ramsey Rt 17 Train" and "Depart Ramsey Rt 17 Train"
+ * columns are two visits to one stop, like the full routes' outbound and return train columns. */
+function stopName(header: string | undefined): string {
+  return text(header).replace(/^(?:arrive|depart)\s+/i, '');
 }
 
 function clock(value: string | undefined): string | undefined {
@@ -47,7 +54,7 @@ export function parseShuttleTable(table: RawPageV1['tables'][number]): ShuttleRo
     const stops = [];
     for (let column = departure + 1; column < arrival; column++) {
       const time = clock(row[column]);
-      if (time) stops.push({ location: text(table.headers[column]), time });
+      if (time) stops.push({ location: stopName(table.headers[column]), time });
     }
     trips.push({ departure: departureTime, stops, arrival: clock(row[arrival]) ?? 'N/A' });
   }
@@ -58,7 +65,7 @@ export function parseShuttleTable(table: RawPageV1['tables'][number]): ShuttleRo
 /** Use the captured official columns, including repeated stops on outbound/return legs. */
 export function parseTransportationSchedules(dataset: RawDatasetV1): PublishedShuttleSchedule[] {
   if (dataset.dataset !== 'transportation') throw new Error('Expected the transportation raw dataset.');
-  return ROUTES.map(([name, serviceDay, slug]) => {
+  const schedules = ROUTES.map(([name, serviceDay, slug]): PublishedShuttleSchedule => {
     const candidates = dataset.pages.filter(page => {
       const url = new URL(page.url);
       return page.statusCode !== null && page.statusCode >= 200 && page.statusCode < 300
@@ -74,4 +81,14 @@ export function parseTransportationSchedules(dataset: RawDatasetV1): PublishedSh
     }
     return { name, serviceDay, sourceUrl: page.url, collectedAt: page.fetchedAt, sourceTitle: page.title, trips: parseShuttleTable(tables[0]) };
   });
+  // One spelling per stop: the Saturday page heads a column "CITY MD Ramsey", the others "City MD Ramsey".
+  const spellings = new Map<string, Map<string, number>>();
+  for (const stop of schedules.flatMap(route => route.trips.flatMap(trip => trip.stops))) {
+    const seen = spellings.get(stop.location.toLowerCase()) ?? new Map<string, number>();
+    spellings.set(stop.location.toLowerCase(), seen.set(stop.location, (seen.get(stop.location) ?? 0) + 1));
+  }
+  const canonical = (location: string) => [...spellings.get(location.toLowerCase())!]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0];
+  for (const stop of schedules.flatMap(route => route.trips.flatMap(trip => trip.stops))) stop.location = canonical(stop.location);
+  return schedules;
 }
