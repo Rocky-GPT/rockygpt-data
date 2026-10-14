@@ -45,8 +45,8 @@ export function compileRouteIdentities(routes: Row[], trips: Row[], stops: Row[]
     }
     // The stops this route's trips name, and the campus stop every trip leaves from, as the
     // stop-descriptions page explains them.
-    const visited = new Set(own.flatMap(trip => (Array.isArray(trip.stops) ? trip.stops : []).map(stop => text((stop as Row).location))));
-    const described = stops.filter(stop => text(stop.name) === 'Ramapo College (Bradley Center)' || visited.has(text(stop.name)));
+    // Stop records are written once per route that visits the stop, keyed "<route>:stop:<stop>".
+    const described = stops.filter(stop => text(stop.source_record_key).startsWith(`${name}:stop:`));
     const stopSources = new Set(described.map(stop => text(stop.source_key)));
     identities.push({ id: routeIdentityId(name), kind: 'route', name, aliases: [], links: [
       { collection: 'shuttle_trips', source_key: [...sources][0], source_record_keys: keys },
