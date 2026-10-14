@@ -46,3 +46,29 @@ export function menuDocuments(state: JsonRecord, capturedAt?: Date): MenuDocumen
   }
   return found;
 }
+
+/** What one venue's Sodexo listing names as its menus. `dated` is true when one of them links to
+ * a menu page (Birch Tree Inn's dated menus); a venue listing only files, or nothing, publishes no
+ * dated menu. `menus` keeps each listed menu's name and what it links to, as the page states it. */
+export interface MenuListing { name: string; dated: boolean; menus: Array<{ name: string; kind: 'page' | 'file' | 'none'; uri: string }> }
+
+export function menuListings(state: JsonRecord): MenuListing[] {
+  const regions = (((state.composition as JsonRecord)?.subject as JsonRecord)?.regions ?? []) as JsonRecord[];
+  const listings: MenuListing[] = [];
+  for (const fragment of regions.flatMap(region => (region.fragments ?? []) as JsonRecord[])) {
+    const main = ((fragment.content as JsonRecord)?.main ?? {}) as JsonRecord;
+    const name = typeof main.name === 'string' ? main.name.trim() : '';
+    if (!name || !Array.isArray(main.menus)) continue;
+    const menus = (main.menus as JsonRecord[]).map(menu => {
+      const content = ((menu.content as JsonRecord)?.main ?? {}) as JsonRecord;
+      const link = (content.link ?? {}) as JsonRecord;
+      const media = ((((link.media as JsonRecord)?.content as JsonRecord)?.main) ?? {}) as JsonRecord;
+      const kind: 'page' | 'file' | 'none' = typeof link.uri === 'string' && link.uri ? 'page'
+        : media.type === 'Download' && typeof media.uri === 'string' && media.uri ? 'file' : 'none';
+      const uri = kind === 'page' ? String(link.uri) : kind === 'file' ? String(media.uri) : '';
+      return { name: typeof content.name === 'string' ? content.name.trim() : '', kind, uri };
+    });
+    listings.push({ name, dated: menus.some(menu => menu.kind === 'page'), menus });
+  }
+  return listings;
+}

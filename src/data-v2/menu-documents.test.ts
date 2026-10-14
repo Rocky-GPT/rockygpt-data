@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { documentTitle, isOutdatedTitle, menuDocuments } from './menu-documents';
+import { documentTitle, isOutdatedTitle, menuDocuments, menuListings } from './menu-documents';
 
 const venue = (name: string, uri?: string, type = 'Download') => ({ content: { main: { name, menus: uri ? [{ content: { main: {
   name: `${name} Menu`, link: { media: { content: { main: { type, uri, mimeType: 'application/pdf' } } } } } } }] : [] } } });
@@ -22,4 +22,16 @@ test('a menu file titled only with an earlier year is an old file and left out',
   assert.equal(isOutdatedTitle('Starbucks FallMenu2024', now), true);
   assert.equal(isOutdatedTitle('Atrium Menu Boards 2026', now), false);
   assert.equal(isOutdatedTitle('The Atrium Menu', now), false);
+});
+
+test('a venue publishes dated menus only when its listing links a menu page', () => {
+  const birch = { content: { main: { name: 'Birch Tree Inn', menus: [{ content: { main: { name: 'Birch Tree Inn Menu',
+    link: { uri: '/en-us/locations/birch-tree-inn' } } } }] } } };
+  const noMenus = { content: { main: { name: 'Hours Only' } } };
+  assert.deepEqual(menuListings(state([birch, venue('The Atrium', '/web/en-us/media/A.pdf'), venue("Dunkin'"), noMenus])), [
+    { name: 'Birch Tree Inn', dated: true, menus: [{ name: 'Birch Tree Inn Menu', kind: 'page', uri: '/en-us/locations/birch-tree-inn' }] },
+    { name: 'The Atrium', dated: false, menus: [{ name: 'The Atrium Menu', kind: 'file', uri: '/web/en-us/media/A.pdf' }] },
+    // An empty list is the page saying it names no menu; a fragment with no list at all is not a venue listing.
+    { name: "Dunkin'", dated: false, menus: [] },
+  ]);
 });

@@ -24,6 +24,8 @@ export interface IdentitySnapshot {
   shuttle_routes?: Row[]; shuttle_trips?: Row[];
   /** Menu files a dining venue publishes (a PDF menu board), one row per file, named by the venue. */
   menu_documents?: Row[];
+  /** Which menus each venue's listing names, one row per venue. */
+  menu_listings?: Row[];
   /** What each shuttle stop is and where to wait, by the stop name timetables use. */
   shuttle_stops?: Row[];
   artifacts: Record<string, unknown>;
@@ -84,7 +86,7 @@ export function identityCandidates(snapshot: IdentitySnapshot): Candidate[] {
         ...(email(row.email) && snapshot.campus_contacts.filter(c => c.source_key === source && email(c.email) === email(row.email)).length === 1 ? [`email:${email(row.email)}`] : []),
       ] });
   }
-  for (const [collection, rows] of [['campus_hours', snapshot.campus_hours], ['dining_hours', snapshot.dining_hours], ['menu', snapshot.menu_items], ['menu_documents', snapshot.menu_documents ?? []], ['programs', snapshot.programs]] as const) {
+  for (const [collection, rows] of [['campus_hours', snapshot.campus_hours], ['dining_hours', snapshot.dining_hours], ['menu', snapshot.menu_items], ['menu_documents', snapshot.menu_documents ?? []], ['menu_listings', snapshot.menu_listings ?? []], ['programs', snapshot.programs]] as const) {
     for (const row of rows) result.push({ collection, source: string(row.source_key), key: string(row.source_record_key), row, anchors: [] });
   }
   const programs = programArtifactRows(snapshot.artifacts.programs);
@@ -360,7 +362,7 @@ export async function loadIdentitySnapshot(client: Pick<PoolClient, 'query'>, da
     const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
     snapshot[table] = result.rows;
   }
-  for (const table of ['shuttle_routes', 'shuttle_trips', 'menu_documents', 'shuttle_stops'] as const) {
+  for (const table of ['shuttle_routes', 'shuttle_trips', 'menu_documents', 'menu_listings', 'shuttle_stops'] as const) {
     const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
     snapshot[table] = result.rows;
   }

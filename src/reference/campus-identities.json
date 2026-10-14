@@ -7720,6 +7720,18 @@
             ],
             "evidence": "The existing birch-menu collector and CURRENT_MENU_VENUE_NAME declare the upstream menu feed belongs to Birch Tree Inn. Each dated meal item is an offering at this venue."
           }
+        },
+        {
+          "collection": "menu_listings",
+          "source_key": "dining",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Birch Tree Inn"
+            ],
+            "evidence": "The official dining feed lists this venue's menus under the same venue name (reviewed 2026-10-14): a menu page, menu files, or none."
+          }
         }
       ]
     },
@@ -8411,6 +8423,18 @@
             ],
             "evidence": "The official dining feed lists this menu file under the same venue name (reviewed 2026-10-14); the file is the venue's own menu, not another venue's."
           }
+        },
+        {
+          "collection": "menu_listings",
+          "source_key": "dining",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "The Atrium"
+            ],
+            "evidence": "The official dining feed lists this venue's menus under the same venue name (reviewed 2026-10-14): a menu page, menu files, or none."
+          }
         }
       ]
     },
@@ -8442,6 +8466,18 @@
               "Dunkin'"
             ],
             "evidence": "Reviewed official dining location name; no menu or contact is borrowed from another venue."
+          }
+        },
+        {
+          "collection": "menu_listings",
+          "source_key": "dining",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Dunkin'"
+            ],
+            "evidence": "The official dining feed lists this venue's menus under the same venue name (reviewed 2026-10-14): a menu page, menu files, or none."
           }
         }
       ]
@@ -8486,6 +8522,18 @@
               "We Proudly Serve Starbucks at Common Grounds"
             ],
             "evidence": "The official dining feed lists this menu file under the same venue name (reviewed 2026-10-14); the file is the venue's own menu, not another venue's."
+          }
+        },
+        {
+          "collection": "menu_listings",
+          "source_key": "dining",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "We Proudly Serve Starbucks at Common Grounds"
+            ],
+            "evidence": "The official dining feed lists this venue's menus under the same venue name (reviewed 2026-10-14): a menu page, menu files, or none."
           }
         }
       ]

@@ -18,7 +18,7 @@ import { validateCampusIdentities, type CampusIdentities } from '../../src/data-
 import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
-import { menuDocuments } from '../../src/data-v2/menu-documents';
+import { menuDocuments, menuListings } from '../../src/data-v2/menu-documents';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 import { assertQualityV2, validateCurrentDatasetV2 } from '../quality/validate';
 import { CRITICAL_FACT_VALIDITY_V2, CRITICAL_FACT_VALUES_V2 } from './check-quality';
@@ -270,6 +270,17 @@ async function insertStructured(
         collectedAtFor('dining'), sha256(JSON.stringify(document))]
     );
     counts.menu_documents = (counts.menu_documents || 0) + 1;
+  }
+  // Which menus each venue's listing names: a venue naming no menu page publishes no dated menu.
+  for (const listing of menuListings(readJson<JsonRecord>('data/raw/dining-hours.raw.json'))) {
+    await client.query(
+      `INSERT INTO rockygpt_v2.menu_listings
+       (dataset_version_id, source_id, source_record_key, name, dated, menus, collected_at, content_hash)
+       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8)`,
+      [datasetId, sources.get('dining'), `${listing.name}:menu-listing`, listing.name, listing.dated,
+        JSON.stringify(listing.menus), collectedAtFor('dining'), sha256(JSON.stringify(listing))]
+    );
+    counts.menu_listings = (counts.menu_listings || 0) + 1;
   }
 
   const diningRaw = readJson<JsonRecord>('data/normalized/dining-hours.json');
