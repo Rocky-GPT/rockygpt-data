@@ -24,6 +24,8 @@ export interface IdentitySnapshot {
   shuttle_routes?: Row[]; shuttle_trips?: Row[];
   /** Menu files a dining venue publishes (a PDF menu board), one row per file, named by the venue. */
   menu_documents?: Row[];
+  /** What each shuttle stop is and where to wait, by the stop name timetables use. */
+  shuttle_stops?: Row[];
   artifacts: Record<string, unknown>;
 }
 /** What a coverage issue means for lookups: `unlinked_record`, an original record no identity
@@ -327,7 +329,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const places = compileBuildingIdentities(campusBuildings, entities, contactRows);
   entities.push(...places.buildings);
   unresolved.push(...places.unresolved);
-  const shuttle = compileRouteIdentities(snapshot.shuttle_routes ?? [], snapshot.shuttle_trips ?? []);
+  const shuttle = compileRouteIdentities(snapshot.shuttle_routes ?? [], snapshot.shuttle_trips ?? [], snapshot.shuttle_stops ?? []);
   entities.push(...shuttle.routes);
   unresolved.push(...shuttle.unresolved);
   const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects);
@@ -358,7 +360,7 @@ export async function loadIdentitySnapshot(client: Pick<PoolClient, 'query'>, da
     const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
     snapshot[table] = result.rows;
   }
-  for (const table of ['shuttle_routes', 'shuttle_trips', 'menu_documents'] as const) {
+  for (const table of ['shuttle_routes', 'shuttle_trips', 'menu_documents', 'shuttle_stops'] as const) {
     const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
     snapshot[table] = result.rows;
   }

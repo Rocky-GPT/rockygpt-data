@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { isPastSpecialDay, parseShuttleTable, parseSpecialSchedules, parseTransportationSchedules } from './transportation-schedule';
+import { isPastSpecialDay, parseShuttleTable, parseSpecialSchedules, parseStopDescriptions, parseTransportationSchedules } from './transportation-schedule';
 import { generateTransportationMarkdown } from './generate-transportation-md';
 import type { RawDatasetV1 } from './raw-types';
 
@@ -102,4 +102,26 @@ test('a special day already past when its page was read is left out', () => {
   assert.equal(isPastSpecialDay('Special Shuttle Schedule: September 7th (Labor Day)', new Date('2026-10-14T18:00:00Z')), true);
   assert.equal(isPastSpecialDay('Special Shuttle Schedule: November 26th (Thanksgiving)', new Date('2026-10-14T18:00:00Z')), false);
   assert.equal(isPastSpecialDay('Special Shuttle Schedule: Homecoming', new Date('2026-10-14T18:00:00Z')), false);
+});
+
+test('each shuttle stop description is kept under the stop name the timetables use, with where to wait', () => {
+  const body = 'Intro text: Ramapo College: The bus stop on campus is located outside the Bradley Center. '
+    + 'Ramsey Route 17 Train Station: Located less than 4 miles from campus. Interstate: A shopping center. At this location, the pick up and drop off is in front of the Macy’s. '
+    + 'Ramsey Square: A center. CityMD Ramsey Urgent Care: Urgent care. Ramsey Farmer’s Market: A market. '
+    + 'Garden State Plaza: A mall. At this location, the pick up and drop off are the Bus Shelters across from Neiman Marcus (Closer to Route 4 and Paramus Road). '
+    + 'Barnes & Noble/Fashion Center: A store.';
+  const dataset: RawDatasetV1 = { version: '1.0', dataset: 'transportation', collectedAt: '2026-10-14T00:00:00Z', seedUrls: [],
+    stats: { pagesFetched: 1, pagesFailed: 0, externalLinksSeen: 0 },
+    pages: [{ url: 'https://www.ramapo.edu/about/transportation-services/shuttle-stop-descriptions/', title: 'Shuttle Stop Descriptions',
+      sourceType: 'detail', fetchedAt: '2026-10-14T00:00:00Z', statusCode: 200, links: [], externalLinks: [], lists: [], contacts: [], documents: [],
+      tables: [], sections: [{ heading: 'Shuttle Stop Descriptions', text: body }] }] };
+  const stops = parseStopDescriptions(dataset);
+  assert.equal(stops.length, 8);
+  const interstate = stops.find(stop => stop.stop === 'Interstate Plaza')!;
+  assert.equal(interstate.label, 'Interstate');
+  assert.equal(interstate.pickup, 'in front of the Macy’s');
+  assert.equal(stops.find(stop => stop.stop === 'Garden State Plaza')!.pickup, 'the Bus Shelters across from Neiman Marcus (Closer to Route 4 and Paramus Road)');
+  assert.ok(stops.find(stop => stop.stop === 'Ramapo College (Bradley Center)')!.description.includes('Bradley Center'));
+  dataset.pages[0].sections[0].text = body.replace('Interstate: ', 'Somewhere: ');
+  assert.throws(() => parseStopDescriptions(dataset), /no longer describe "Interstate"/);
 });

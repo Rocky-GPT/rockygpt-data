@@ -7,7 +7,7 @@ import 'dotenv/config';
 import { Pool, type PoolClient } from 'pg';
 import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
 import { loadCapturedPages } from '../../src/directory/contact-evidence';
-import { parseTransportationSchedules } from '../../ingestion/transportation-schedule';
+import { parseStopDescriptions, parseTransportationSchedules } from '../../ingestion/transportation-schedule';
 import { validateRawDatasetV1 } from '../../ingestion/raw-types';
 import { normalizeMenuWeek } from '../../ingestion/menu-data';
 import { parseEventStart } from '../../src/data-v2/event-time';
@@ -532,6 +532,16 @@ async function insertStructured(
       );
       counts.shuttle_trips = (counts.shuttle_trips || 0) + 1;
     }
+  }
+  for (const stop of parseStopDescriptions(validateRawDatasetV1(readJson('data/raw/transportation.raw.json')))) {
+    await client.query(
+      `INSERT INTO rockygpt_v2.shuttle_stops
+       (dataset_version_id, source_id, source_record_key, name, label, description, pickup, collected_at, content_hash)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      [datasetId, sources.get('transportation'), `stop:${stop.stop}`, stop.stop, stop.label, stop.description, stop.pickup,
+        stop.collectedAt, sha256(JSON.stringify(stop))]
+    );
+    counts.shuttle_stops = (counts.shuttle_stops || 0) + 1;
   }
 
   return counts;
