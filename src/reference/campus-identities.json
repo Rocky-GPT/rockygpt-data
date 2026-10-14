@@ -8398,6 +8398,18 @@
             ],
             "evidence": "Reviewed official dining location name; no menu or contact is borrowed from another venue."
           }
+        },
+        {
+          "collection": "menu_documents",
+          "source_key": "dining",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "The Atrium"
+            ],
+            "evidence": "The official dining feed lists this menu file under the same venue name (reviewed 2026-10-14); the file is the venue's own menu, not another venue's."
+          }
         }
       ]
     },
@@ -8461,6 +8473,18 @@
               "We Proudly Serve Starbucks at Common Grounds"
             ],
             "evidence": "Reviewed official dining location name; no menu or contact is borrowed from another venue."
+          }
+        },
+        {
+          "collection": "menu_documents",
+          "source_key": "dining",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "We Proudly Serve Starbucks at Common Grounds"
+            ],
+            "evidence": "The official dining feed lists this menu file under the same venue name (reviewed 2026-10-14); the file is the venue's own menu, not another venue's."
           }
         }
       ]
