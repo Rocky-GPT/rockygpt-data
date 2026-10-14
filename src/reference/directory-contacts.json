@@ -13257,6 +13257,21 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine RCNJ Center for Holocaust and Genocide Studies opening hours",
+          "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for RCNJ Center for Holocaust and Genocide Studies; event, meeting, tutoring-session and shuttle-departure times are not office hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/holocaust/contact-us/",
+              "section": "Connect & Contact Us",
+              "reviewed": {
+                "text_sha256": "2de7f6d8a248eb8067ef946fb652eea60ef1c8ba57d01d09f734603c3f51382a",
+                "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for RCNJ Center for Holocaust and Genocide Studies; event, meeting, tutoring-session and shuttle-departure times are not office hours."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": [
@@ -13949,6 +13964,21 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine Student Government Association opening hours",
+          "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for Student Government Association; event, meeting, tutoring-session and shuttle-departure times are not office hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/sga/",
+              "section": "Student Center, Room SC-225",
+              "reviewed": {
+                "text_sha256": "262084f76548fac6f54606b5ffb4af1e2490adc06fc63890c408402353618bd8",
+                "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for Student Government Association; event, meeting, tutoring-session and shuttle-departure times are not office hours."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": [
@@ -14145,6 +14175,21 @@
               "reviewed": {
                 "text_sha256": "d246d668dc877881e7a9102673cb3d57b2306ec2deb9f329e2e645d5499e6d88",
                 "reason": "Reviewed the unit's own home/contact sections and its student contact instructions. They list contact channels (and task-specific directions kept as contact notes) without ranking one general contact method above the others. Listing a method or directing a particular task to it is not a ranked preference."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine Transportation Services opening hours",
+          "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for Transportation Services; event, meeting, tutoring-session and shuttle-departure times are not office hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/about/transportation-services/",
+              "section": "Getting Around:",
+              "reviewed": {
+                "text_sha256": "935838e20e68826e206145337c87de2af0baf43b75198ed36ad9e5771c965319",
+                "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for Transportation Services; event, meeting, tutoring-session and shuttle-departure times are not office hours."
               }
             }
           ]
@@ -15349,6 +15394,21 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine First Generation Student Center opening hours",
+          "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for First Generation Student Center; event, meeting, tutoring-session and shuttle-departure times are not office hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/first-gen/",
+              "section": "Contact Information",
+              "reviewed": {
+                "text_sha256": "20f731f70c12de12a3514c2054a7d389900cf3e2eccc93917121ef0ed7fd4cce",
+                "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for First Generation Student Center; event, meeting, tutoring-session and shuttle-departure times are not office hours."
+              }
+            }
+          ]
         }
       ]
     },
@@ -15567,6 +15627,21 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine STEM Center opening hours",
+          "reason": "The STEM Center's own staff section (read 2026-10-14) publishes its coordinator and director contacts but no recurring opening schedule; per-subject tutoring sessions and walk-in tutoring are not the Center's opening hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/stem-center/",
+              "section": "STEM Center Staff",
+              "reviewed": {
+                "text_sha256": "f1bb38cd5b237c103c7cd39dc291e7c150745ae71e089487eaf5983b6476fe9c",
+                "reason": "The STEM Center's own staff section (read 2026-10-14) publishes its coordinator and director contacts but no recurring opening schedule; per-subject tutoring sessions and walk-in tutoring are not the Center's opening hours."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": [
@@ -15696,6 +15771,29 @@
               "reviewed": {
                 "text_sha256": "e98a825d6909553e5d1ea42b7b61bc8ab116c94fd82eaae70f578e03c65ac9ca",
                 "reason": "The reviewed current unit pages do not explicitly favor one general contact method over the alternatives. Merely listing a method or directing a particular task to it is not a ranked preference."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine Orientation Programs opening hours",
+          "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for Orientation Programs; event, meeting, tutoring-session and shuttle-departure times are not office hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/orientation/",
+              "section": "New Student Experience",
+              "reviewed": {
+                "text_sha256": "973cf228aba832c605899327cb7d918d2774ed452b64a7d619656d9cf9a6cc0a",
+                "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for Orientation Programs; event, meeting, tutoring-session and shuttle-departure times are not office hours."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/orientation/checklist-2/",
+              "section": "Checklist",
+              "reviewed": {
+                "text_sha256": "e98a825d6909553e5d1ea42b7b61bc8ab116c94fd82eaae70f578e03c65ac9ca",
+                "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for Orientation Programs; event, meeting, tutoring-session and shuttle-departure times are not office hours."
               }
             }
           ]
@@ -16018,6 +16116,21 @@
               "reviewed": {
                 "text_sha256": "731e4eacac7b20d8977ed3888a6934406ebbe9e770fed4bf21f0d788dd2fa7b7",
                 "reason": "The reviewed current unit pages do not explicitly favor one general contact method over the alternatives. Merely listing a method or directing a particular task to it is not a ranked preference."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine Degree Completion Program opening hours",
+          "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for Degree Completion Program; event, meeting, tutoring-session and shuttle-departure times are not office hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/adult-students/faqs/",
+              "section": "FAQs",
+              "reviewed": {
+                "text_sha256": "7e57a51d1d77849dc3799e5a16267766f1e7d356c150033f51344d0fe14ba749",
+                "reason": "The unit's own contact and home sections (read 2026-10-14) publish contact routes but no recurring opening schedule for Degree Completion Program; event, meeting, tutoring-session and shuttle-departure times are not office hours."
               }
             }
           ]

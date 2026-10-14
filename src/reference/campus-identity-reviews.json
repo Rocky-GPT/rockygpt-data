@@ -880,43 +880,71 @@
       "group": "Bischoff Hall",
       "contact": "office:bischoff-hall",
       "reviewed_at": "2026-09-28",
-      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group.",
+      "hours": [
+        "Bischoff Hall",
+        "Bischoff Hall (Summer)"
+      ]
     },
     {
       "group": "College Park Apartments",
       "contact": "office:college-park-apartments",
       "reviewed_at": "2026-09-28",
-      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group.",
+      "hours": [
+        "College Park Apartments",
+        "College Park Apartments (Summer)"
+      ]
     },
     {
       "group": "Laurel Hall",
       "contact": "office:laurel-hall",
       "reviewed_at": "2026-09-28",
-      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group.",
+      "hours": [
+        "Laurel Hall",
+        "Laurel Hall (Summer)"
+      ]
     },
     {
       "group": "Mackin Hall",
       "contact": "office:mackin-hall",
       "reviewed_at": "2026-09-28",
-      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group.",
+      "hours": [
+        "Mackin Hall",
+        "Mackin Hall (Summer)"
+      ]
     },
     {
       "group": "Pine Hall",
       "contact": "office:pine-hall",
       "reviewed_at": "2026-09-28",
-      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group.",
+      "hours": [
+        "Pine Hall",
+        "Pine Hall (Summer)"
+      ]
     },
     {
       "group": "The Overlook",
       "contact": "office:the-overlook",
       "reviewed_at": "2026-09-28",
-      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group.",
+      "hours": [
+        "The Overlook",
+        "The Overlook (Summer)"
+      ]
     },
     {
       "group": "The Village",
       "contact": "office:the-village",
       "reviewed_at": "2026-09-28",
-      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group."
+      "note": "Approved: the hall's own Residence Life page publishes this desk's phone and email, and the Archway page for the same hall is its group.",
+      "hours": [
+        "The Village",
+        "The Village (Summer)"
+      ]
     },
     {
       "group": "Women's Center & LGBTQ+ Services",
