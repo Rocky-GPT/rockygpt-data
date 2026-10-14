@@ -313,7 +313,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   // were reported unlinked above only because no seed identity claims them.
   const directoryContacts = new Map(candidates.filter(c => c.collection === 'contacts' && c.source === 'campus-directory').map(c => [c.key, c.row]));
   const archwayContacts = linkReviewedArchwayContacts(archway.entities, directoryContacts, inputs.identityReviews?.archway_contacts ?? [],
-    new Set([...owners.keys()].filter(key => key.startsWith('contacts:campus-directory:')).map(key => key.slice('contacts:campus-directory:'.length))));
+    new Set([...owners.keys()].filter(key => key.startsWith('contacts:campus-directory:')).map(key => key.slice('contacts:campus-directory:'.length))),
+    snapshot.campus_hours);
   for (let index = unresolved.length - 1; index >= 0; index--) {
     const issue = unresolved[index];
     if (issue.kind === 'unlinked_record' && issue.collection === 'contacts' && archwayContacts.linked.has(issue.record ?? '')) unresolved.splice(index, 1);
