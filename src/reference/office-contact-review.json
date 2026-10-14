@@ -1321,6 +1321,425 @@
         "Main Athletic Phone is 201-684-7674; Main Athletic Fax is 201-684-7958. Campus address 505 Ramapo Valley Road is a mailing address, not a specific administrative office.",
         "Verified profiles name Director Marie Curran mcurran3@ramapo.edu / 201-684-7091 and Athletics Program Coordinator/Compliance Joan Schofield jschofie@ramapo.edu / 201-684-7087. Saved with exact captured profile sections and role labels. These do not fill a shared mailbox.",
         "Bradley Center facilities and membership schedules were reviewed for context but are not the Athletics administrative office schedule."
+      ],
+      "review_updates": [
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "absence_reaffirmed",
+          "field": "prefers_email",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "scope": "explicit ranked general-office contact preference",
+          "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference.",
+          "previous_evidence": {
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb",
+            "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference."
+          },
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "captured_at": "2026-10-14T01:14:09.363Z"
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "absence_reaffirmed",
+          "field": "preferred_contact",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "scope": "explicit ranked general-office contact preference",
+          "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference.",
+          "previous_evidence": {
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb",
+            "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference."
+          },
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "captured_at": "2026-10-14T01:14:09.363Z"
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "absence_reaffirmed",
+          "field": "email",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "scope": "shared general-office mailbox",
+          "reason": "The official Athletics administrative staff directory provides named staff routes and a Main Athletic Phone/Fax, but no shared general-office mailbox. Named director/coordinator emails are not a shared office mailbox.",
+          "previous_evidence": {
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb",
+            "reason": "The official Athletics administrative staff directory provides named staff routes and a Main Athletic Phone/Fax, but no shared general-office mailbox. Named director/coordinator emails are not a shared office mailbox."
+          },
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "captured_at": "2026-10-14T01:14:09.363Z"
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "absence_reaffirmed",
+          "field": "office",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "scope": "fixed administrative office or public walk-in room",
+          "reason": "The administrative contact block gives the campus mailing address, not an Athletics administrative office/room. Bradley Center activity facilities and membership reception are separate purposes.",
+          "previous_evidence": {
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb",
+            "reason": "The administrative contact block gives the campus mailing address, not an Athletics administrative office/room. Bradley Center activity facilities and membership reception are separate purposes."
+          },
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "captured_at": "2026-10-14T01:14:09.363Z"
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "absence_reaffirmed",
+          "field": "hours",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "scope": "routine Athletics administrative office opening hours",
+          "reason": "The official staff contact directory and college Athletics contact/report information do not state fixed administrative office hours. Bradley Center recreation and membership-processing schedules do not establish Athletics administrative office hours.",
+          "previous_evidence": {
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb",
+            "reason": "The official staff contact directory and college Athletics contact/report information do not state fixed administrative office hours. Bradley Center recreation and membership-processing schedules do not establish Athletics administrative office hours."
+          },
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "captured_at": "2026-10-14T01:14:09.363Z"
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847958",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Explicit Main Athletic Fax, not voice/text.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847073",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Chuck McBreen, facilities/game contracts and head coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847679",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Rachel L. Pinton, communications/marketing/branding, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847680",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Bridgette Quimpo, senior woman administrator/head softball coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847734",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Matthew Jobrack, Faculty Athletics Representative, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847346",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Alexandre Olbrecht, Faculty Athletics Representative, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847913",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Jesse Boyland, Head Athletic Trainer, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847676",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Luis Pomales, Assistant Athletic Trainer, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847049",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Joe Valentino, strength and conditioning coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016846293",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Kate Levin, Sports Information contact, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847111",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for PJ Bartolotto, Bradley Center facilities/equipment, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847198",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for DJ Pinton, coach/facilities/budget, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847076",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Nicole Barbella, transportation/head coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847066",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Ryan Rinsky, Intramurals/baseball, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847678",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Abby Shiffler, Intramurals/soccer, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847795",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Justina Cassavell, cross country/track and field, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847938",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Rachel McHale, field hockey, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847646",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Gary Orr, swimming, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016846292",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "decision": "excluded",
+          "reason": "Published for Tyler Kwinta, volleyball, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "captured_at": "2026-10-14T01:14:09.363Z",
+          "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
+          "previous_evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        }
       ]
     },
     {
@@ -7653,6 +8072,142 @@
           "section": "Library News",
           "decision": "saved",
           "reason": "Retained or newly saved scoped contact: Research Help Services."
+        },
+        {
+          "field": "phone",
+          "value": "2016847316",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Leigh Cregan Keller",
+          "decision": "excluded",
+          "reason": "Published for Leigh Cregan Keller, Dean; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847569",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Linda Reppert",
+          "decision": "excluded",
+          "reason": "Published for Linda Reppert, Unit Secretary; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847584",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Tibor Csokasi",
+          "decision": "excluded",
+          "reason": "Published for Tibor Csokasi, Systems and Special Projects Administrator; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847577",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Katie Cohen",
+          "decision": "excluded",
+          "reason": "Published for Katie Cohen, Interlibrary Loan, Reference & Instruction Librarian; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847581",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Christina Connor",
+          "decision": "excluded",
+          "reason": "Published for Christina Connor, Assessment and Instruction Librarian; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847315",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Shirley Knight",
+          "decision": "excluded",
+          "reason": "Published for Shirley Knight, Reference/Instruction & Government Documents Librarian; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847199",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Susan Kurzmann",
+          "decision": "excluded",
+          "reason": "Published for Susan Kurzmann, College Archivist, Reference & Instruction Librarian; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847264",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Victoria Sciancalepore",
+          "decision": "excluded",
+          "reason": "Published for Victoria Sciancalepore, Digital Scholarship Librarian; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847362",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Marcia M. Sexton",
+          "decision": "excluded",
+          "reason": "Published for Marcia M. Sexton, Technical Services Librarian; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847318",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Elizabeth Siecke",
+          "decision": "excluded",
+          "reason": "Published for Elizabeth Siecke, Serials and Electronic Resources Librarian, Reference and Instruction; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847510",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Madel Tisi",
+          "decision": "excluded",
+          "reason": "Published for Madel Tisi, Circulation, Reference & Instruction Librarian; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016846236",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Samantha Wittenberg",
+          "decision": "excluded",
+          "reason": "Published for Samantha Wittenberg, System and Web Development Librarian; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847838",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Robert JP Graham",
+          "decision": "excluded",
+          "reason": "Published for Robert JP Graham, Circulation Desk Supervisor/Interim Course Reserves Coordinator; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847313",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Stephanie Jones",
+          "decision": "excluded",
+          "reason": "Published for Stephanie Jones, Circulation Desk Supervisor; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847822",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Lili Pasaporte",
+          "decision": "excluded",
+          "reason": "Published for Lili Pasaporte, Circulation Desk Supervisor; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847314",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Anita Cappello",
+          "decision": "excluded",
+          "reason": "Published for Anita Cappello, Monograph Purchasing; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
+        },
+        {
+          "field": "phone",
+          "value": "2016847582",
+          "url": "https://www.ramapo.edu/library/staff-directory/",
+          "section": "Vito Savino",
+          "decision": "excluded",
+          "reason": "Published for Vito Savino, Budget Supervisor/Serials & Series Purchasing; named staff contacts are not alternate general Library contacts. The office's own published contacts remain primary."
         }
       ],
       "notes": [
@@ -8372,8 +8927,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Dr. David C. Nast, Director, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "phone",
@@ -8382,8 +8937,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Barbara Stienstra, Specialized Services Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "phone",
@@ -8392,8 +8947,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for the currently vacant Assistant Director for Assistive Technology and Accommodation Services position, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "phone",
@@ -8402,8 +8957,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Ramona Kopacz, Learning Disabilities Specialist, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "phone",
@@ -8412,8 +8967,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Abbe Benowitz, Disability Counselor, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "phone",
@@ -8422,8 +8977,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Sonia Wadhwani Doyle, Career Development/Transition Experiences Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "phone",
@@ -8432,8 +8987,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Nicolette Col\u00f3n, Learning Specialist/Alternative Testing Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "phone",
@@ -8449,9 +9004,9 @@
           "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
-          "reason": "Published for Andrea Oliver, Graduate Assistant, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "reason": "Published for Emily Morra, Graduate Assistant, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "email",
@@ -8460,8 +9015,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Dr. David C. Nast, Director, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "email",
@@ -8470,8 +9025,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Barbara Stienstra, Specialized Services Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "email",
@@ -8496,8 +9051,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Ramona Kopacz, Learning Disabilities Specialist, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "email",
@@ -8506,8 +9061,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Abbe Benowitz, Disability Counselor, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "email",
@@ -8516,8 +9071,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Sonia Wadhwani Doyle, Career Development/Transition Experiences Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "email",
@@ -8534,8 +9089,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Nicolette Col\u00f3n, Learning Specialist/Alternative Testing Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "email",
@@ -8560,8 +9115,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Dr. David C. Nast, Director, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "office",
@@ -8570,8 +9125,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Barbara Stienstra, Specialized Services Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "office",
@@ -8580,8 +9135,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Ramona Kopacz, Learning Disabilities Specialist, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "office",
@@ -8590,8 +9145,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Abbe Benowitz, Disability Counselor, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "office",
@@ -8600,8 +9155,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Sonia Wadhwani Doyle, Career Development/Transition Experiences Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "office",
@@ -8610,8 +9165,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "Published for Nicolette Col\u00f3n, Learning Specialist/Alternative Testing Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "office",
@@ -8620,8 +9175,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "C211 is explicitly the Computer Lab Aides / Assistive Technology location, not the main OSS office. Its service phone/email remain saved with their assistive-technology label.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         },
         {
           "field": "office",
@@ -8630,8 +9185,8 @@
           "section": "Office of Specialized Services (OSS) Staff & Contact Information",
           "decision": "excluded",
           "reason": "C205 is the already recorded main office C-Wing, Room 205, also shared by Office Aides and the Graduate Assistant. This spelling does not create a second office destination.",
-          "captured_at": "2026-10-07T18:53:05.759Z",
-          "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c"
         }
       ],
       "notes": [],
@@ -9091,6 +9646,402 @@
           },
           "text_sha256": "e8f5145d73f5b29b1a4b63ebc0bb835eff1bc8fed2cb313aa7192337084df304",
           "captured_at": "2026-10-07T18:53:05.759Z"
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847513",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Dr. David C. Nast, Director, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847655",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Barbara Stienstra, Specialized Services Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847511",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for the currently vacant Assistant Director for Assistive Technology and Accommodation Services position, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847512",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Ramona Kopacz, Learning Disabilities Specialist, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847693",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Abbe Benowitz, Disability Counselor, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847686",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Sonia Wadhwani Doyle, Career Development/Transition Experiences Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847689",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Nicolette Colón, Learning Specialist/Alternative Testing Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847635",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Emily Morra, Graduate Assistant, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "email",
+          "value": "dnast@ramapo.edu",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Dr. David C. Nast, Director, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "email",
+          "value": "bstienst@ramapo.edu",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Barbara Stienstra, Specialized Services Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "email",
+          "value": "rkopacz@ramapo.edu",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Ramona Kopacz, Learning Disabilities Specialist, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "email",
+          "value": "abenowit@ramapo.edu",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Abbe Benowitz, Disability Counselor, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "email",
+          "value": "sdoyle3@ramapo.edu",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Sonia Wadhwani Doyle, Career Development/Transition Experiences Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "email",
+          "value": "ncolon3@ramapo.edu",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Nicolette Colón, Learning Specialist/Alternative Testing Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "office",
+          "value": "C207",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Dr. David C. Nast, Director, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "office",
+          "value": "C206",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Barbara Stienstra, Specialized Services Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "office",
+          "value": "C204",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Ramona Kopacz, Learning Disabilities Specialist, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "office",
+          "value": "C208",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Abbe Benowitz, Disability Counselor, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "office",
+          "value": "C202A",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Sonia Wadhwani Doyle, Career Development/Transition Experiences Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "office",
+          "value": "C202",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "Published for Nicolette Colón, Learning Specialist/Alternative Testing Coordinator, not the general OSS front desk. Existing named service mailboxes for testing, scholarships, assistive technology and housing remain saved separately.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "office",
+          "value": "C211",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "C211 is explicitly the Computer Lab Aides / Assistive Technology location, not the main OSS office. Its service phone/email remain saved with their assistive-technology label.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T03:00:52.620Z",
+          "kind": "candidate",
+          "field": "office",
+          "value": "C205",
+          "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+          "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+          "decision": "excluded",
+          "reason": "C205 is the already recorded main office C-Wing, Room 205, also shared by Office Aides and the Graduate Assistant. This spelling does not create a second office destination.",
+          "captured_at": "2026-10-14T02:06:11.616Z",
+          "text_sha256": "b5002b41f4140553977e60d8ede1893a5e3029358b3e674a0896378d730c2f2c",
+          "previous_evidence": {
+            "url": "https://www.ramapo.edu/oss/oss-staff-contact-information/",
+            "section": "Office of Specialized Services (OSS) Staff & Contact Information",
+            "text_sha256": "7bac4b2b7d017b76b248223c87e16a18619f932ec91873c9da844e5bf7864e3b"
+          },
+          "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
         }
       ]
     },
