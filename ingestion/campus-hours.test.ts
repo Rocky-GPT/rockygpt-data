@@ -280,6 +280,8 @@ const newOfficePages: Record<string, string> = {
   'https://www.ramapo.edu/ccec/': 'Location/ Hours\nPlease visit us in SC-213\nMonday through Friday: 9 a.m. - 4 p.m.\nccec@ramapo.edu',
   'https://www.ramapo.edu/csi/commuter-affairs/': 'Location/ Hours\nCenter For Student Involvement (CSI) SC-202\nMonday-Friday: 8:30am-4:30pm\nEmail: commuters@ramapo.edu',
   'https://www.ramapo.edu/military/veterans-lounge-advisement/': 'Veterans Lounge & Transfer Center\nHours of Operation: Daily, 8:30 a.m. - 4:30 p.m.',
+  'https://www.ramapo.edu/snh/': 'Hours: Fall/Spring Semester: Mon., 8:30 a.m.-4:30 p.m. | Tues.- Fri., 8:30 a.m.-4:30 p.m.\nSummer: Mon.-Thur., 8:00 a.m.-5:15 p.m.',
+  'https://www.ramapo.edu/sssw/': 'Email: SSSWOffice@ramapo.edu\nHours: Mon. - Fri., 8:30 a.m. - 4:30 p.m.',
   'https://www.ramapo.edu/womenscenter/': 'Open Hours\nFall 2026\nMondays, 10 am - 8 pm\nTuesdays, 10 am - 6 pm\nWednesdays, 10 am - 8 pm\nThursdays, 10 am - 8 pm\nFridays, 10 am - 5 pm',
   'https://www.ramapo.edu/multicultural-center/': 'Hours of Operation\nMonday-Friday:\n1:00 p.m. to 4:30 p.m.',
   'https://www.ramapo.edu/oabc/contact-us/': 'Regular Office Hours: Monday - Friday 8:30 a.m. - 4:30 p.m.\nSummer Office Hours: Monday - Thursday 8:00 a.m. - 5:15 p.m. Closed Fridays',
