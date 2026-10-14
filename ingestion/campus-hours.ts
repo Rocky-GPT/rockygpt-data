@@ -530,6 +530,14 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'School of Social Sciences and Social Work Office', url: 'https://www.ramapo.edu/sssw/', label: /^Hours:/i },
     // AHE prints "Monday-Friday 8:30-4:30 pm": only a morning opening runs forward to 4:30 pm.
     { name: 'School of Arts, Humanities, and Education Office', url: 'https://www.ramapo.edu/ahe/', label: /^Hours:/i },
+    // Staff offices (read 2026-10-14). Facilities lists five crews' hours under "Hours": only the
+    // Administrative Offices clause is the office's own; the crews' shifts are not its opening hours.
+    { name: 'Facilities Management', url: 'https://www.ramapo.edu/facilities/', label: /^Administrative Offices$/i,
+        extract: /Hours\nAdministrative Offices\nMonday - Friday, [^\n]*/i },
+    { name: 'People Operations and Employee Resources Department', url: 'https://www.ramapo.edu/poerd/',
+        label: /^(?=Fall\/Spring, Mon)/i, season: 'Fall/Spring' },
+    { name: 'People Operations and Employee Resources Department (Summer)', url: 'https://www.ramapo.edu/poerd/',
+        label: /^(?=Summer, Mon)/i, season: 'Summer' },
     // Each residence hall's own page prints its Hall Office hours (read 2026-10-14).
     { name: 'Bischoff Hall', url: 'https://www.ramapo.edu/reslife/bischoff-hall/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
         season: 'Fall & Spring Semester' },

@@ -1491,6 +1491,70 @@
           "section_sha256": "7e7038df1226818037180e6938a2aab6b9722e48aef633f366ffab733a47fc34"
         }
       ]
+    },
+    {
+      "schedule": "Facilities Management",
+      "source_url": "https://www.ramapo.edu/facilities/",
+      "scope": "Facilities Management source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The Administrative Offices clause lists Monday - Friday only and no validity bounds. The weekend times in the same section belong to the building maintenance, building services and grounds crews, not to the office.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/facilities/",
+          "section": "Hours",
+          "section_sha256": "158b6b78fa975585da312efc68a9926c93095a415e19d115e8525d661596101b"
+        }
+      ]
+    },
+    {
+      "schedule": "People Operations and Employee Resources Department",
+      "source_url": "https://www.ramapo.edu/poerd/",
+      "scope": "People Operations and Employee Resources Department source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/poerd/",
+          "section": "Hours:",
+          "section_sha256": "d2c99a37223465a83bf23d0dbcdbefabdde787b37667b8d0ca6e932e174ef5d7"
+        }
+      ]
+    },
+    {
+      "schedule": "People Operations and Employee Resources Department (Summer)",
+      "source_url": "https://www.ramapo.edu/poerd/",
+      "scope": "People Operations and Employee Resources Department (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/poerd/",
+          "section": "Hours:",
+          "section_sha256": "d2c99a37223465a83bf23d0dbcdbefabdde787b37667b8d0ca6e932e174ef5d7"
+        }
+      ]
     }
   ]
 }

@@ -12812,6 +12812,100 @@
           }
         }
       ]
+    },
+    {
+      "id": "8f53974e-4b24-4655-9dbb-cc097a405dfe",
+      "kind": "office",
+      "name": "Facilities Management",
+      "aliases": [
+        "Facilities",
+        "Office of Facilities"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:facilities-management"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Facilities Management"
+            ],
+            "evidence": "Reviewed Administrative Offices clause of the Hours section on the unit's own home page. Explicit source dates only."
+          }
+        }
+      ]
+    },
+    {
+      "id": "03ecd429-c7d5-4bd5-8f3b-f099b1014a0c",
+      "kind": "office",
+      "name": "Office of the Provost",
+      "aliases": [
+        "Provost's Office"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:office-of-the-provost"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "1a1c7d51-bba4-4e70-be1b-82821896d4b0",
+      "kind": "office",
+      "name": "People Operations and Employee Resources Department",
+      "aliases": [
+        "POERD",
+        "Human Resources",
+        "HR"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:people-operations-and-employee-resources-department"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "People Operations and Employee Resources Department",
+              "People Operations and Employee Resources Department (Summer)"
+            ],
+            "evidence": "Reviewed own-office schedules on the unit's own home page, each published season kept separately. Explicit source dates only."
+          }
+        }
+      ]
     }
   ]
 }

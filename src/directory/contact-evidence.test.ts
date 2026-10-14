@@ -319,7 +319,7 @@ test('every reviewed website is a plain ramapo.edu page, except the one Athletic
   const sites = OFFICE_DIRECTORY_CONTACTS.filter(entry => entry.website !== undefined);
   // The 34 reviewed offices, the four dining venues, the Bookstore, and the units, centers,
   // residence hall desks, Dining Services, school offices and smaller units added or reviewed 2026-10-14.
-  assert.equal(sites.length, 73);
+  assert.equal(sites.length, 76);
   const catalog = page('https://catalog.ramapo.edu/quicklinks/studentservices', [['Directory of Student Services', 'Athletics https://ramapoathletics.com/']]);
   const all = pages(catalog, ...sites.map(entry => page(entry.website as string, [['x', 'y']])));
   for (const entry of sites) assert.equal(checkWebsite(entry.website, all, entry.websiteEvidence).issue, undefined, entry.name);
