@@ -292,3 +292,14 @@ test('the Counseling Center, both Public Safety offices and the IT Help Desk lin
     assert.deepEqual(links.map(l => l.source_record_keys), [[`${name}:Monday`, `${name}:Tuesday`]], name);
   }
 });
+
+test("a schedule's name is not an alias of the office whose hours it is", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  input.campus_hours = ['Counseling Center', 'Counseling Center (Summer)'].flatMap(name => ['Monday', 'Tuesday'].map(day =>
+    ({ source_key: 'campus-hours', source_record_key: `${name}:${day}`, name, day, schedule: '8:30am-4:30pm' })));
+  const result = compileCampusIdentities(real, input);
+  const counseling = result.registry.entities.find(e => e.name === 'Counseling Center')!;
+  assert.deepEqual(counseling.links.find(l => l.collection === 'campus_hours')!.source_record_keys.length, 4);
+  assert.equal(counseling.aliases.includes('Counseling Center (Summer)'), false);
+});
