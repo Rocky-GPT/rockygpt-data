@@ -352,8 +352,7 @@ export function parseGeneralCampusHours(pageText: string): LocationHours[] {
     const csiHours = findLine(csi, /^The CSI main office is open/i, 'CSI hours');
     const csiUpdate = findLine(csi, /^\*?Updated as of/i, 'CSI source update');
     const jLee = sectionBetween(content, "J. LEE'S", "Women's Center");
-    const assistance = findLine(jLee, /^Please visit the Center for Student Involvement for assistance\.?$/i,
-        "J. Lee's assistance notice");
+    findLine(jLee, /^Please visit the Center for Student Involvement for assistance\.?$/i, "J. Lee's assistance notice");
     const bookstore = sectionBetween(content, 'Bookstore', 'Bookstore FAQ:');
     if (!/Summer Store Hours:/i.test(bookstore) || !/Normal Store Hours:/i.test(bookstore)) {
         throw new Error('Bookstore source seasonal schedules are unavailable');
@@ -365,12 +364,19 @@ export function parseGeneralCampusHours(pageText: string): LocationHours[] {
         { name: 'Center for Student Involvement (CSI)', hours: createUnknownWeek(),
             availabilityIssue: 'source-update-only',
             notes: `${csiHours}\n${csiUpdate}\nThis is a source update date, not a current schedule validity period.` },
-        { name: "J. Lee's (Student Lounge & Game Room)", hours: createUnknownWeek(),
-            availabilityIssue: 'missing-schedule',
-            notes: `${assistance}\nThe source does not publish a schedule or a closure for J. Lee's.` },
-        { name: 'Ramapo Bookstore', hours: createUnknownWeek(),
-            availabilityIssue: 'ambiguous-source-season',
-            notes: `${bookstore}\nThe source lists Summer and Normal schedules without a complete applicability period.` },
+        // J. Lee's own schedule is on the CSI page (an office hours entry); this page only says
+        // to ask CSI, which is checked above and is no schedule.
+        // The Bookstore prints two labelled schedules. Each is kept with its own label, as every
+        // office's undated summer schedule is: "Normal" is the store's regular week, and the summer
+        // one says when it starts but names no year, so neither carries dates.
+        ...([['Ramapo Bookstore', /^Normal Store Hours:$/i, 'Normal'],
+            ['Ramapo Bookstore (Summer)', /^Summer Store Hours:$/i, 'Summer']] as const).map(([name, label, season]) => {
+            // "Starting May 14th we will be switching to our Summer Hours" names no year: it stays a note.
+            const starts = bookstore.match(/^Starting [^\n]*$/im)?.[0];
+            const record = parseWeeklyHours(name, label, bookstore.replace(/^Starting [^\n]*\n?/im, ''), '', []);
+            return { ...record, notes: [record.notes, season === 'Summer' ? starts : undefined].filter(Boolean).join('\n'),
+                normalization_metadata: { evidence: { schedule: { season } } } };
+        }),
     ];
 }
 
@@ -491,6 +497,9 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'Center for Student Involvement (Summer)', url: 'https://www.ramapo.edu/csi/roadrunner-central/', kind: 'week',
         label: /^During the Summer months, our hours are as follows:$/i, season: 'Summer' },
     { name: 'IT Help Desk (Summer)', url: 'https://www.ramapo.edu/its/help-desk/', label: /^Summer:/i, season: 'Summer' },
+    // J. Lee's own schedule, in the J. Lee's section of the CSI page (read 2026-10-14); it names no Saturday.
+    { name: "J. Lee's (Student Lounge & Game Room)", url: 'https://www.ramapo.edu/csi/', kind: 'week',
+        label: /^J\. ?Lee['’]s is open during the following hours:$/i },
     // Units that are Archway groups (read 2026-10-14); their reviewed desk contacts link these by name.
     // The day line carries no label of its own, so the label is the day line, kept zero width.
     { name: 'Roukema Center for International Education', url: 'https://www.ramapo.edu/international/',
@@ -519,6 +528,8 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'School of Science, Nursing, and Health Office (Summer)', url: 'https://www.ramapo.edu/snh/',
         label: /^Summer:/i, season: 'Summer' },
     { name: 'School of Social Sciences and Social Work Office', url: 'https://www.ramapo.edu/sssw/', label: /^Hours:/i },
+    // AHE prints "Monday-Friday 8:30-4:30 pm": only a morning opening runs forward to 4:30 pm.
+    { name: 'School of Arts, Humanities, and Education Office', url: 'https://www.ramapo.edu/ahe/', label: /^Hours:/i },
     // Each residence hall's own page prints its Hall Office hours (read 2026-10-14).
     { name: 'Bischoff Hall', url: 'https://www.ramapo.edu/reslife/bischoff-hall/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
         season: 'Fall & Spring Semester' },
@@ -593,7 +604,9 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     const index = lines.findIndex((line) => label.test(line));
     if (index < 0) throw new Error(`Office hours line is unavailable for ${name}`);
     if (lines.filter((line) => label.test(line)).length > 1) throw new Error(`The hours label for ${name} matches more than one line`);
-    const range = /(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?\s*(?:-|to|until)\s*(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?/i;
+    // The opening time may omit its am/pm ("8:30-4:30 pm"); it is then read below only when one half
+    // of the day is the only reading that runs forward.
+    const range = /(\d{1,2})(?::(\d{2}))?\s*(?:([ap])\.?\s*m\.?)?\s*(?:-|to|until)\s*(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?/i;
     // The schedule follows its label on the same line, or on the next line (Registrar).
     const rest = lines[index].replace(label, '').trim();
     const text = range.test(rest) ? rest : `${rest} ${lines[index + 1] ?? ''}`.trim();
@@ -606,7 +619,12 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     }
     if ((!days && !daily) || !time) throw new Error(`Office hours are unrecognized for ${name}: "${text}"`);
     const clock = (hour: string, minute: string | undefined, half: string) => `${hour}:${minute ?? '00'} ${half}M`;
-    const schedule = scheduleFromLine(`${clock(time[1], time[2], time[3])} - ${clock(time[4], time[5], time[6])}`);
+    const minutes = (hour: string, minute: string | undefined, half: string) =>
+        (Number(hour) % 12 + (/p/i.test(half) ? 12 : 0)) * 60 + Number(minute ?? 0);
+    const closes = minutes(time[4], time[5], time[6]);
+    const opening = time[3] ? [time[3]] : ['a', 'p'].filter((half) => minutes(time[1], time[2], half) < closes);
+    if (opening.length !== 1) throw new Error(`Office hours do not say whether ${time[1]} is am or pm for ${name}: "${text}"`);
+    const schedule = scheduleFromLine(`${clock(time[1], time[2], opening[0])} - ${clock(time[4], time[5], time[6])}`);
     const last = daily ? 7 : /^Fri/i.test(days![2]) ? 5 : 4;
     const hours = createUnknownWeek();
     DAYS.slice(0, last).forEach((day) => { hours[day] = schedule; });

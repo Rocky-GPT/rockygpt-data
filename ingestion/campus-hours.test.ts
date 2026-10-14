@@ -163,12 +163,12 @@ test('every published hour has its own capture provenance and every omission is 
   assert.deepEqual(result.publishable.filter(row => !row.availabilityIssue).map((row) => row.name), [
     'Bradley Center (Student & Recreation Lounge)', 'Sharp Fitness Center (Weight Room)', 'Swimming Pool',
     'Auxiliary Gym', 'Rock Climbing Wall', 'Lodge Fitness Center (College Park Apartments)',
-    'Library (Main Building)', 'Game Lab',
+    'Library (Main Building)', 'Game Lab', 'Ramapo Bookstore', 'Ramapo Bookstore (Summer)',
   ]);
   assert.equal(result.publishable.length, 13);
-  assert.equal(result.omitted.length, 5);
-  assert.deepEqual(result.omitted.map((row) => row.reason).sort(), ['ambiguous-source-season', 'ambiguous-source-season',
-    'conflicting-source-validity', 'missing-schedule', 'source-update-only']);
+  assert.equal(result.omitted.length, 3);
+  assert.deepEqual(result.omitted.map((row) => row.reason).sort(), ['ambiguous-source-season',
+    'conflicting-source-validity', 'source-update-only']);
   const lounge = result.publishable.find((row) => row.name.startsWith('Bradley Center'))!;
   assert.deepEqual([lounge.validFrom, lounge.validUntil], [undefined, undefined]);
   assert.equal(lounge.normalization_metadata?.evidence?.schedule?.season, '2026 Fall Semester Hours');
@@ -196,19 +196,24 @@ test('every published hour has its own capture provenance and every omission is 
 
 test('parent page preserves facility evidence without selecting ambiguous hours or inventing a closure', () => {
   const records = parseGeneralCampusHours(general);
+  // J. Lee's own schedule is read from the CSI page; this page only says to ask CSI. The Bookstore's
+  // two labelled schedules are each kept with their label, as an office's undated summer schedule is.
   assert.deepEqual(records.map(row => [row.name, row.availabilityIssue]), [
     ['Administrative Offices (Normal Hours)', 'ambiguous-source-season'],
     ['Center for Student Involvement (CSI)', 'source-update-only'],
-    ["J. Lee's (Student Lounge & Game Room)", 'missing-schedule'],
-    ['Ramapo Bookstore', 'ambiguous-source-season'],
+    ['Ramapo Bookstore', undefined],
+    ['Ramapo Bookstore (Summer)', undefined],
   ]);
   assert.match(records[0].notes!, /Fall \/ Spring Hours/);
   assert.match(records[0].notes!, /Summer Hours/);
   assert.match(records[1].notes!, /September 23rd, 2022/);
-  assert.match(records[2].notes!, /Please visit the Center for Student Involvement/);
-  assert.doesNotMatch(records[2].notes!, /Roadrunner Central is currently closed/);
-  assert.doesNotMatch(records[3].notes!, /January 30, 2026/);
-  assert.ok(records.every(row => Object.values(row.hours).every(value => value === 'Hours unavailable')));
+  assert.ok(records.slice(0, 2).every(row => Object.values(row.hours).every(value => value === 'Hours unavailable')));
+  assert.equal(records[2].hours.Monday, '9:00am-5:00pm');
+  assert.equal(records[2].hours.Friday, '9:00am-4:00pm');
+  assert.equal(records[3].hours.Monday, '10:00am-3:00pm');
+  assert.match(records[3].notes!, /Starting May 14th/);
+  assert.equal(records[2].normalization_metadata?.evidence?.schedule?.season, 'Normal');
+  assert.equal(records[3].normalization_metadata?.evidence?.schedule?.season, 'Summer');
   assert.deepEqual(validateCampusHours(records), records);
   assert.deepEqual(parseGeneralCampusHours(`Bookstore\nUnrelated navigation\n${general}`), records);
   assert.throws(() => parseGeneralCampusHours(general.replace('J. LEE’S', 'Other facility')), /Could not find heading/);
@@ -281,6 +286,7 @@ const newOfficePages: Record<string, string> = {
   'https://www.ramapo.edu/csi/commuter-affairs/': 'Location/ Hours\nCenter For Student Involvement (CSI) SC-202\nMonday-Friday: 8:30am-4:30pm\nEmail: commuters@ramapo.edu',
   'https://www.ramapo.edu/military/veterans-lounge-advisement/': 'Veterans Lounge & Transfer Center\nHours of Operation: Daily, 8:30 a.m. - 4:30 p.m.',
   'https://www.ramapo.edu/snh/': 'Hours: Fall/Spring Semester: Mon., 8:30 a.m.-4:30 p.m. | Tues.- Fri., 8:30 a.m.-4:30 p.m.\nSummer: Mon.-Thur., 8:00 a.m.-5:15 p.m.',
+  'https://www.ramapo.edu/ahe/': 'Email: AHEOffice@Ramapo.edu Office: B224\nHours: Monday-Friday 8:30-4:30 pm Phone: (201) 684-7365',
   'https://www.ramapo.edu/sssw/': 'Email: SSSWOffice@ramapo.edu\nHours: Mon. - Fri., 8:30 a.m. - 4:30 p.m.',
   'https://www.ramapo.edu/womenscenter/': 'Open Hours\nFall 2026\nMondays, 10 am - 8 pm\nTuesdays, 10 am - 6 pm\nWednesdays, 10 am - 8 pm\nThursdays, 10 am - 8 pm\nFridays, 10 am - 5 pm',
   'https://www.ramapo.edu/multicultural-center/': 'Hours of Operation\nMonday-Friday:\n1:00 p.m. to 4:30 p.m.',
@@ -299,7 +305,7 @@ const newOfficePages: Record<string, string> = {
   'https://www.ramapo.edu/publicsafety/id-cards/': 'In order to get a new identification card, please contact the ID room at publicsafety@ramapo.edu and make an appointment. The ID room is open Monday-Friday from 8:30am until 4:00pm.',
   'https://www.ramapo.edu/nursing/': 'Nursing Programs Contact Information:\nOffice: Adler Center for Nursing Excellence 215\nHours: Monday through Friday, 8:30 a.m.to 4:30 p.m.\nPhone: (201) 684-7749',
   'https://www.ramapo.edu/crw/': 'ANNOUNCEMENTS - Fall 2026\nThe CRW will open on August 31 at 10 AM.\nHours\nMonday - Thursday, 10 AM - 8:00 PM\nFriday - 10:00 AM - 4:00 PM\nWeekends - by virtual appointment\nPeter P. Mercer Learning Commons | Room 420 (4th floor)\np: 201-684-7557 | Summer: 201-684-7561',
-  'https://www.ramapo.edu/csi/': "CSI Hours of Operation\nThe CSI main office is open Monday through Fridays 8:00am-midnight, Saturday from 4:00-10:00pm and Sunday from 3:00-8:00pm.\nJ. Lee's Hours\nMondays-Thursdays 9 am-10 pm, Fridays 9 am-9 pm",
+  'https://www.ramapo.edu/csi/': "CSI Hours of Operation\nThe CSI main office is open Monday through Fridays 8:00am-midnight, Saturday from 4:00-10:00pm and Sunday from 3:00-8:00pm.\nJ.Lee's is open during the following hours:\nMondays-Thursdays 9 am-10 pm\nFridays: 9 am-9 pm\nSundays: 1 pm-6 pm\nCampus Hours",
   'https://www.ramapo.edu/csi/roadrunner-central/': 'Hours of Operation:\nPlease visit the Center for Student Involvement Main Office, located in SC202, for assistance during the following hours during the semester:\nMonday-Friday: 8:00am-12:00am\nSaturday- 4:00pm-10:00pm\nSunday- 3:00pm-8:00pm\nDuring the Summer months, our hours are as follows:\nMonday-Thursday: 8:00am-5:15pm',
   'https://www.ramapo.edu/photolab/hours/': "OPEN LAB HOURS\nThroughout the Fall and Spring semesters The Photography Suite (BC 135) is open six days a week.\nFALL 2026\nWe're open 6 days a week! No need to make reservations for the darkroom. We look forward to seeing you in the lab!\nSunday 6pm - 9pm\nMonday 10am - 6pm\nTuesday 10am - 6pm\nWednesday 10am - 8pm\nThursday 10am - 5pm\nFriday 10am - 6pm\nSaturday Closed",
 };
@@ -615,4 +621,11 @@ test('two adjacent days joined by & or "and" are those two days; any other pair 
 test('"Daily" office hours are every day of the week', () => {
   const read = parseOfficeHours('Lounge', /^Hours of Operation:/i, 'Hours of Operation: Daily, 8:30 a.m. - 4:30 p.m.', '2026-10-14T00:00:00Z', []);
   assert.deepEqual(Object.values(read.hours), Array(7).fill('8:30am-4:30pm'));
+});
+
+test('an opening time without am/pm is read only when one half of the day runs forward', () => {
+  const read = (line: string) => parseOfficeHours('AHE', /^Hours:/i, `Hours: ${line}`, '2026-10-14T00:00:00Z', []);
+  assert.equal(read('Monday-Friday 8:30-4:30 pm').hours.Monday, '8:30am-4:30pm');
+  assert.throws(() => read('Monday-Friday 1-3 pm'), /am or pm/);
+  assert.equal(read('Mon. - Fri., 8:30 a.m. - 4:30 p.m.').hours.Friday, '8:30am-4:30pm');
 });

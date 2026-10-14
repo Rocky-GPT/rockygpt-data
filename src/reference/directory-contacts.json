@@ -9993,6 +9993,21 @@
               }
             }
           ]
+        },
+        {
+          "field": "website",
+          "scope": "a page of J. Lee's own",
+          "reason": "J. Lee's has no page of its own (read 2026-10-14): its details are the \"J. Lee\u2019s\" section of the Center for Student Involvement page, which runs it.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csi/",
+              "section": "J. Lee\u2019s",
+              "reviewed": {
+                "text_sha256": "457e0661b414ecb10dee46efb69a103264e7d24908db90a4f7425d9459adba37",
+                "reason": "J. Lee's has no page of its own (read 2026-10-14): its details are the \"J. Lee\u2019s\" section of the Center for Student Involvement page, which runs it."
+              }
+            }
+          ]
         }
       ]
     },
@@ -16372,6 +16387,29 @@
               "reviewed": {
                 "text_sha256": "2ae64029ad0fdae91ecd5c869b133fe2a4686e069e9a14e46e567e6a9f91a18c",
                 "reason": "A task-specific in-person instruction, not a ranked general preference."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine Dining Services office opening hours",
+          "reason": "Dining Services' own sections (read 2026-10-14) publish its line, room, mailboxes and instructions but no opening schedule for the Dining Services office; the venues' and late-night dining times are not office hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Dining Services Information",
+              "reviewed": {
+                "text_sha256": "dd63e21f90d5870d9e6c41efc2f03a2135ce501eab7ae38ca68660d91a618b96",
+                "reason": "Dining Services' own sections (read 2026-10-14) publish its line, room, mailboxes and instructions but no opening schedule for the Dining Services office; the venues' and late-night dining times are not office hours."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/reslife/gtcl/",
+              "section": "Special Diets",
+              "reviewed": {
+                "text_sha256": "2ae64029ad0fdae91ecd5c869b133fe2a4686e069e9a14e46e567e6a9f91a18c",
+                "reason": "Dining Services' own sections (read 2026-10-14) publish its line, room, mailboxes and instructions but no opening schedule for the Dining Services office; the venues' and late-night dining times are not office hours."
               }
             }
           ]

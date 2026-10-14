@@ -216,6 +216,8 @@ function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; no
   allReviewedValues.preferred_contact = normalized.preferred_contact;
   allReviewedValues.contact_note = [normalized.contact_note, ...notes.confirmed.map(note => note.text),
     ...additions.confirmed.filter(item => item.field === 'email').map(item => `${item.label}: ${item.value}`)].filter(Boolean).join('\n');
+  // A website claim is contradicted by the entry naming one, confirmed or not.
+  allReviewedValues.website = entry.website ?? null;
   const absences = checkAbsences(entry.notPublished ?? [], allReviewedValues, capturedPages, site.confirmed, additions.confirmed);
   return {
     values: checked.values,

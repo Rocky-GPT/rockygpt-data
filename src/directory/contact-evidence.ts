@@ -19,8 +19,9 @@ export type ContactField = 'phone' | 'email' | 'office';
 export const CONTACT_FIELDS: readonly ContactField[] = ['phone', 'email', 'office'];
 
 /** What an office's pages can be confirmed not to publish: its contact fields and its opening hours. */
-export type AbsenceField = ContactField | 'hours' | 'prefers_email' | 'preferred_contact' | 'contact_note' | 'department';
-export const ABSENCE_FIELDS: readonly AbsenceField[] = [...CONTACT_FIELDS, 'hours', 'prefers_email', 'preferred_contact', 'contact_note', 'department'];
+export type AbsenceField = ContactField | 'hours' | 'prefers_email' | 'preferred_contact' | 'contact_note' | 'department' | 'website';
+/** `website`: the unit has no page of its own; its details are a section of another unit's page. */
+export const ABSENCE_FIELDS: readonly AbsenceField[] = [...CONTACT_FIELDS, 'hours', 'prefers_email', 'preferred_contact', 'contact_note', 'department', 'website'];
 export type AbsenceValues = Partial<Record<AbsenceField, string | boolean | null>>;
 
 /** Where a reviewed contact value is stated: a page, one section heading on it, and optionally the text it follows. */
