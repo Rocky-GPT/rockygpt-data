@@ -192,7 +192,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
         const key = `${row.collection}:${row.source}:${row.key}`;
         if (owners.has(key) && owners.get(key) !== entity.id) throw new Error(`Conflicting identity ownership of ${key}.`);
         owners.set(key, entity.id);
-        if (row.collection !== 'menu' && string(row.row.name) !== entity.name && string(row.row.name)) {
+        // A schedule's name ("Counseling Center (Summer)") names a timetable, not the place.
+        if (!['menu', 'campus_hours'].includes(row.collection) && string(row.row.name) !== entity.name && string(row.row.name)) {
           displayNames.add(string(row.row.name));
           noteAlias(ledger, entity.id, string(row.row.name), { basis: 'record_name', evidence: { collection: row.collection, source_key: row.source, source_record_key: row.key, field: 'name' } });
         }
