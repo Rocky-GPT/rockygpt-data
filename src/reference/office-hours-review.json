@@ -1089,6 +1089,285 @@
           "section_sha256": "4b0ca4810a441fca717a7cfd2e69edcfd7b734c19abaa6bab85f43b89946da74"
         }
       ]
+    },
+    {
+      "schedule": "Bischoff Hall",
+      "source_url": "https://www.ramapo.edu/reslife/bischoff-hall/",
+      "scope": "Bischoff Hall source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/bischoff-hall/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "Bischoff Hall (Summer)",
+      "source_url": "https://www.ramapo.edu/reslife/bischoff-hall/",
+      "scope": "Bischoff Hall (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/bischoff-hall/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "College Park Apartments",
+      "source_url": "https://www.ramapo.edu/reslife/college-park-apartments-cpa/",
+      "scope": "College Park Apartments source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/college-park-apartments-cpa/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "College Park Apartments (Summer)",
+      "source_url": "https://www.ramapo.edu/reslife/college-park-apartments-cpa/",
+      "scope": "College Park Apartments (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/college-park-apartments-cpa/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "Laurel Hall",
+      "source_url": "https://www.ramapo.edu/reslife/laurel-hall/",
+      "scope": "Laurel Hall source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/laurel-hall/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "Laurel Hall (Summer)",
+      "source_url": "https://www.ramapo.edu/reslife/laurel-hall/",
+      "scope": "Laurel Hall (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/laurel-hall/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "Mackin Hall",
+      "source_url": "https://www.ramapo.edu/reslife/mackin-hall/",
+      "scope": "Mackin Hall source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/mackin-hall/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "Mackin Hall (Summer)",
+      "source_url": "https://www.ramapo.edu/reslife/mackin-hall/",
+      "scope": "Mackin Hall (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/mackin-hall/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "Pine Hall",
+      "source_url": "https://www.ramapo.edu/reslife/pine-hall/",
+      "scope": "Pine Hall source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/pine-hall/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "Pine Hall (Summer)",
+      "source_url": "https://www.ramapo.edu/reslife/pine-hall/",
+      "scope": "Pine Hall (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/pine-hall/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "The Overlook",
+      "source_url": "https://www.ramapo.edu/reslife/the-overlook/",
+      "scope": "The Overlook source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/the-overlook/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "The Overlook (Summer)",
+      "source_url": "https://www.ramapo.edu/reslife/the-overlook/",
+      "scope": "The Overlook (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/the-overlook/",
+          "section": "Office Hours:",
+          "section_sha256": "919954eb5ac8e0a16f6af11d1f015744cb48a537c90504fb1c9813e7a2c36a52"
+        }
+      ]
+    },
+    {
+      "schedule": "The Village",
+      "source_url": "https://www.ramapo.edu/reslife/village/",
+      "scope": "The Village source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/village/",
+          "section": "Office Hours:",
+          "section_sha256": "7059b3dce6af620a0aa993e52e38685c449d6e0a34a307109fca035466782679"
+        }
+      ]
+    },
+    {
+      "schedule": "The Village (Summer)",
+      "source_url": "https://www.ramapo.edu/reslife/village/",
+      "scope": "The Village (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/reslife/village/",
+          "section": "Office Hours:",
+          "section_sha256": "7059b3dce6af620a0aa993e52e38685c449d6e0a34a307109fca035466782679"
+        }
+      ]
     }
   ]
 }
