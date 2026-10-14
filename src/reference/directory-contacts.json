@@ -1022,16 +1022,6 @@
       "contactReviewExclusions": [
         {
           "field": "phone",
-          "value": "2016847599",
-          "reason": "Explicit f: fax in the general contact block, not another voice/text number.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/studentsuccess/",
-            "section": "D-207 (Academic Building)",
-            "text_sha256": "3b8e19fd2f2a4c847759fae5eaca356177e2e3118f355b685b9834947f9aa61a"
-          }
-        },
-        {
-          "field": "phone",
           "value": "2016847462",
           "reason": "Published for Joseph Connell, Associate VP; D-202 is shared with Student Success Coordinator; named staff contacts are not alternate general front-desk contacts. Main D-207, 7441 and success@ remain primary.",
           "evidence": {
@@ -1261,16 +1251,6 @@
           }
         },
         {
-          "field": "phone",
-          "value": "2016847599",
-          "reason": "The current sidebar labels 201-684-7599 f: (fax), while 7441 remains p: and success@ is the office mailbox. It is not an additional voice or text line.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/studentsuccess/faq/",
-            "section": "D-207 (Academic Building)",
-            "text_sha256": "3b8e19fd2f2a4c847759fae5eaca356177e2e3118f355b685b9834947f9aa61a"
-          }
-        },
-        {
           "field": "office",
           "value": "D212C",
           "reason": "The graduation FAQ identifies the Graduation Office destination D212C, not a second general Student Success office.",
@@ -1279,6 +1259,23 @@
             "section": "What are the requirements for graduation?",
             "text_sha256": "51036bfd4fb4f5505140efbff02f6ed5ec6e94913eaa959c494b28cb3e5655c5"
           }
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-7599",
+          "label": "Fax",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/studentsuccess/",
+              "section": "D-207 (Academic Building)",
+              "near": "f:",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1310,7 +1307,7 @@
         {
           "field": "phone",
           "value": "(201) 684-7379",
-          "label": "Contact Us",
+          "label": "Phone",
           "evidence": [
             {
               "url": "https://www.ramapo.edu/asb/",
@@ -1324,7 +1321,7 @@
         {
           "field": "phone",
           "value": "(201) 684-7380",
-          "label": "Contact Us",
+          "label": "Phone",
           "evidence": [
             {
               "url": "https://www.ramapo.edu/asb/",
@@ -1344,6 +1341,21 @@
               "url": "https://www.ramapo.edu/about/phone/",
               "section": "General Phone Number Listing",
               "near": "Anisfield School of Business - ",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 684-7957",
+          "label": "Fax",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/asb/",
+              "section": "Contact Us",
+              "near": "Fax:",
               "fields": [
                 "phone"
               ]
@@ -1423,16 +1435,6 @@
         }
       ],
       "contactReviewExclusions": [
-        {
-          "field": "phone",
-          "value": "2016847957",
-          "reason": "Explicitly labelled Fax in the ASB contact block; not an additional voice or text number.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/asb/",
-            "section": "Contact Us",
-            "text_sha256": "c70fef97ee8d6a081ff0e775431939338c51ecac86d5b91c7fb665c352b5e2cc"
-          }
-        },
         {
           "field": "phone",
           "value": "2016847179",
@@ -1877,10 +1879,10 @@
       "website": "https://www.ramapo.edu/its/help-desk/",
       "contactNotes": [
         {
-          "text": "For this reason, we ask all help desk requests are assigned a Web Help Desk ticket.",
+          "text": "You can submit a Web Help Desk ticket using any of the following methods: By Telephone: 201-684-7777 By Email: helpdesk@ramapo.edu Using the Web Help Desk web console: http://helpdesk.ramapo.edu",
           "evidence": {
             "url": "https://www.ramapo.edu/its/help-desk/",
-            "section": "Click here"
+            "section": "Ways to submit a ticket"
           }
         }
       ],
@@ -2368,22 +2370,6 @@
         }
       ],
       "website": "https://www.ramapo.edu/reslife/",
-      "contactConflicts": [
-        {
-          "field": "phone",
-          "value": "(201) 684-7641",
-          "label": "Central office",
-          "evidence": [
-            {
-              "url": "https://archway.ramapo.edu/reslife/contact-us/",
-              "section": "Contacting the Central Office",
-              "fields": [
-                "phone"
-              ]
-            }
-          ]
-        }
-      ],
       "additionalContacts": [
         {
           "field": "phone",
@@ -2648,20 +2634,6 @@
             "url": "https://www.ramapo.edu/reslife/gtcl/",
             "section": "Building/Area Hall Offices"
           }
-        },
-        {
-          "text": "Supervisors should utilize the Early Arrival Roster Sample below and submit it via email to erlyariv@ramapo.edu and aeke@ramapo.edu prior to the deadline.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/reslife/earlyarrival/",
-            "section": "Roster Sample:"
-          }
-        },
-        {
-          "text": "SALTO door locks are battery-powered and will alert residents when the battery is running low. Residents may notice an audible beeping or flashing red lights on the door lock. These indicators mean the battery is nearing the end of its life. Residents should not ignore these alerts. As soon as beeping or flashing red lights occur, residents should contact their Hall RA Office, preferably via email, to report the issue.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/reslife/gtcl/",
-            "section": "Troubleshooting: \u201cDoor Beeping? Read This.\u201d"
-          }
         }
       ],
       "notPublished": [
@@ -2823,6 +2795,26 @@
             "url": "https://www.ramapo.edu/reslife/gtcl/",
             "section": "Building/Area Hall Offices",
             "text_sha256": "ccb7f109a6bc0bc4298c33714e98140e6927458bfe2afe12cc6623106e21df8f"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847641",
+          "reason": "The Archway Residence Life group page transposes the office line; the Residence Life home page and Public Safety page both give (201) 684-7461, and 684-7641 is a faculty extension. Reviewed 2026-10-14.",
+          "evidence": {
+            "url": "https://archway.ramapo.edu/reslife/contact-us/",
+            "section": "Contacting the Central Office",
+            "text_sha256": "842ef87bd782decca98c5827a8370dd928ed72d4307f8f9f74d7687ea1c5e724"
+          }
+        },
+        {
+          "field": "email",
+          "value": "aeke@ramapo.edu",
+          "reason": "Named staff address on the faculty/staff supervisors' Early Arrival roster instructions; the Early Arrival mailbox erlyariv@ramapo.edu is saved separately. Reviewed 2026-10-14.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/reslife/earlyarrival/",
+            "section": "Roster Sample:",
+            "text_sha256": "798755011207dafdde05ee66aefc08632d319a3a95b0ab4f447528ef4921603b"
           }
         }
       ]
@@ -3594,6 +3586,21 @@
               ]
             }
           ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 684-7958",
+          "label": "Fax",
+          "evidence": [
+            {
+              "url": "https://ramapoathletics.com/staff-directory",
+              "section": "Staff Directory",
+              "near": "Main Athletic Fax",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
         }
       ],
       "contactReviewExclusions": [
@@ -3705,16 +3712,6 @@
             "url": "https://www.ramapo.edu/about/phone/",
             "section": "General Phone Number Listing",
             "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847958",
-          "reason": "Explicit Main Athletic Fax, not voice/text.",
-          "evidence": {
-            "url": "https://ramapoathletics.com/staff-directory",
-            "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
           }
         },
         {
@@ -4695,6 +4692,21 @@
               "near": "Text:"
             }
           ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 684-7964",
+          "label": "Fax",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/undergraduate/",
+              "section": "Ramapo College Office of Admissions",
+              "near": "f:",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
         }
       ],
       "contactNotes": [
@@ -4714,66 +4726,6 @@
         }
       ],
       "contactReviewExclusions": [
-        {
-          "field": "phone",
-          "value": "2016847964",
-          "reason": "The office contact block labels this f: (fax), not a voice or text contact. Existing voice and newly reviewed text numbers are preserved.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/undergraduate/",
-            "section": "Ramapo College Office of Admissions",
-            "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847964",
-          "reason": "The current Admissions sidebar explicitly labels 201-684-7964 f: (fax), with 7300 as p:. It is not an additional voice or text contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/undergraduate/educational-opportunity-fund/faqs/",
-            "section": "Ramapo College Office of Admissions",
-            "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847964",
-          "reason": "The current Admissions sidebar explicitly labels 201-684-7964 f: (fax), with 7300 as p:. It is not an additional voice or text contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/undergraduate/freshmen/faqs/",
-            "section": "Ramapo College Office of Admissions",
-            "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847964",
-          "reason": "The current Admissions sidebar explicitly labels 201-684-7964 f: (fax), with 7300 as p:. It is not an additional voice or text contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/undergraduate/international/faqs/",
-            "section": "Ramapo College Office of Admissions",
-            "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847964",
-          "reason": "The current Admissions sidebar explicitly labels 201-684-7964 f: (fax), with 7300 as p:. It is not an additional voice or text contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/undergraduate/non-degree-visiting-students/faqs/",
-            "section": "Ramapo College Office of Admissions",
-            "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847964",
-          "reason": "The current Admissions sidebar explicitly labels 201-684-7964 f: (fax), with 7300 as p:. It is not an additional voice or text contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/undergraduate/transfer/faqs/",
-            "section": "Ramapo College Office of Admissions",
-            "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
-          }
-        },
         {
           "field": "office",
           "value": "DD214",
@@ -5046,22 +4998,16 @@
             "section": "Career Center Administration",
             "text_sha256": "8fc8791ef8ddd32e211d0b28bfff314e87e402c1ab871347e60ec13551031ae0"
           }
-        }
-      ],
-      "contactConflicts": [
+        },
         {
           "field": "email",
           "value": "careercenter@ramap.edu",
-          "label": "Request Classroom Presentations",
-          "evidence": [
-            {
-              "url": "https://www.ramapo.edu/careercenter/faculty-staff/",
-              "section": "Request Classroom Presentations",
-              "fields": [
-                "email"
-              ]
-            }
-          ]
+          "reason": "Misspelled domain (ramap.edu) on the classroom-presentations page; the office mailbox is careercenter@ramapo.edu on the Career Center home page. Reviewed 2026-10-14.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/careercenter/faculty-staff/",
+            "section": "Request Classroom Presentations",
+            "text_sha256": "48f2020546421ff3c6a3871374777e1cca4af0e7792ee849afa1c45ff32e5f34"
+          }
         }
       ]
     },
@@ -5621,6 +5567,21 @@
               "near": "Melissa Van Der Wall"
             }
           ]
+        },
+        {
+          "field": "phone",
+          "value": "(201) 684-7963",
+          "label": "Fax",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-affairs/",
+              "section": "C-212",
+              "near": "f:",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
         }
       ],
       "contactNotes": [
@@ -5640,16 +5601,6 @@
         }
       ],
       "contactReviewExclusions": [
-        {
-          "field": "phone",
-          "value": "2016847963",
-          "reason": "Explicit f: fax in the Dean office contact block, not a voice/text number.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/student-affairs/",
-            "section": "C-212",
-            "text_sha256": "d62b5b9d6ffe68fc7c13f28763997e8a18d9dc312fc9bc30a34b08d44daf3245"
-          }
-        },
         {
           "field": "phone",
           "value": "2016847432",
@@ -7876,22 +7827,16 @@
           }
         }
       ],
-      "contactReviewExclusions": [],
-      "contactConflicts": [
+      "contactReviewExclusions": [
         {
           "field": "phone",
-          "value": "(973) 477-4304",
-          "label": "The Ombudsperson",
-          "evidence": [
-            {
-              "url": "https://www.ramapo.edu/titleix/sexual-harassment-resources/whom-to-contact/",
-              "section": "At Ramapo College:",
-              "fields": [
-                "phone"
-              ],
-              "near": "Cell:"
-            }
-          ]
+          "value": "9734774304",
+          "reason": "A Title IX resource page repeats an older Ombuds cell number; the Ombuds Office's own page lists Cell: (202) 421-1881. Reviewed 2026-10-14.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/titleix/sexual-harassment-resources/whom-to-contact/",
+            "section": "At Ramapo College:",
+            "text_sha256": "742ab6f894182c8fee3463eca2123aee3419ebc3c41befc42829bcb82706347e"
+          }
         }
       ]
     },
@@ -8286,9 +8231,7 @@
               ]
             }
           ]
-        }
-      ],
-      "contactConflicts": [
+        },
         {
           "field": "phone",
           "value": "(201) 684-6768",
@@ -8587,23 +8530,6 @@
           }
         }
       ],
-      "contactConflicts": [
-        {
-          "field": "phone",
-          "value": "(201) 684-7933",
-          "label": "Roadrunner Central",
-          "evidence": [
-            {
-              "url": "https://www.ramapo.edu/about/phone/",
-              "section": "General Phone Number Listing",
-              "near": "Roadrunner Central -",
-              "fields": [
-                "phone"
-              ]
-            }
-          ]
-        }
-      ],
       "notPublished": [
         {
           "field": "prefers_email",
@@ -8729,6 +8655,16 @@
           "field": "phone",
           "value": "2016847457",
           "reason": "The adjacent directory entry is Student Affairs Office, not Roadrunner Central. The scope window must not assign a neighbour\u2019s contact.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847933",
+          "reason": "The college phone listing keeps an old Roadrunner Central line; Roadrunner Central's own page says its functions are provided by CSI at 201-684-7593. Reviewed 2026-10-14.",
           "evidence": {
             "url": "https://www.ramapo.edu/about/phone/",
             "section": "General Phone Number Listing",
@@ -8949,7 +8885,7 @@
         {
           "field": "email",
           "value": "iggcm@ramapo.edu",
-          "label": "How to upload to GEDmatch:",
+          "label": "How to upload to GEDmatch",
           "evidence": [
             {
               "url": "https://www.ramapo.edu/igg/outreach/",

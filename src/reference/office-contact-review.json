@@ -178,18 +178,20 @@
           "value": "2016847964",
           "url": "https://www.ramapo.edu/undergraduate/",
           "section": "Ramapo College Office of Admissions",
-          "decision": "excluded",
-          "reason": "The office contact block labels this f: (fax), not a voice or text contact. Existing voice and newly reviewed text numbers are preserved."
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "phone",
           "value": "2016847964",
           "url": "https://www.ramapo.edu/undergraduate/educational-opportunity-fund/faqs/",
           "section": "Ramapo College Office of Admissions",
-          "decision": "excluded",
-          "reason": "The current Admissions sidebar explicitly labels 201-684-7964 f: (fax), with 7300 as p:. It is not an additional voice or text contact.",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
           "captured_at": "2026-10-07T18:53:12.031Z",
-          "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
+          "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "email",
@@ -204,40 +206,44 @@
           "value": "2016847964",
           "url": "https://www.ramapo.edu/undergraduate/freshmen/faqs/",
           "section": "Ramapo College Office of Admissions",
-          "decision": "excluded",
-          "reason": "The current Admissions sidebar explicitly labels 201-684-7964 f: (fax), with 7300 as p:. It is not an additional voice or text contact.",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
           "captured_at": "2026-10-07T18:53:12.202Z",
-          "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
+          "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "phone",
           "value": "2016847964",
           "url": "https://www.ramapo.edu/undergraduate/international/faqs/",
           "section": "Ramapo College Office of Admissions",
-          "decision": "excluded",
-          "reason": "The current Admissions sidebar explicitly labels 201-684-7964 f: (fax), with 7300 as p:. It is not an additional voice or text contact.",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
           "captured_at": "2026-10-07T18:53:12.382Z",
-          "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
+          "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "phone",
           "value": "2016847964",
           "url": "https://www.ramapo.edu/undergraduate/non-degree-visiting-students/faqs/",
           "section": "Ramapo College Office of Admissions",
-          "decision": "excluded",
-          "reason": "The current Admissions sidebar explicitly labels 201-684-7964 f: (fax), with 7300 as p:. It is not an additional voice or text contact.",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
           "captured_at": "2026-10-07T18:53:12.490Z",
-          "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
+          "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "phone",
           "value": "2016847964",
           "url": "https://www.ramapo.edu/undergraduate/transfer/faqs/",
           "section": "Ramapo College Office of Admissions",
-          "decision": "excluded",
-          "reason": "The current Admissions sidebar explicitly labels 201-684-7964 f: (fax), with 7300 as p:. It is not an additional voice or text contact.",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
           "captured_at": "2026-10-07T18:53:12.643Z",
-          "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a"
+          "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "email",
@@ -540,6 +546,15 @@
           },
           "text_sha256": "e6471b1a02c5694c468cc410aa61bbf17b840670945ee79a3cc17d8f6c2ccd7a",
           "captured_at": "2026-10-07T18:53:12.202Z"
+        },
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847964",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
+          "saved_as": "additionalContacts"
         }
       ]
     },
@@ -733,8 +748,9 @@
           "value": "2016847957",
           "url": "https://www.ramapo.edu/asb/",
           "section": "Contact Us",
-          "decision": "excluded",
-          "reason": "Explicitly labelled Fax in the ASB contact block; not an additional voice or text number."
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "phone",
@@ -828,6 +844,17 @@
       "notes": [
         "Own ASB Contact Us publishes 7379/7380; college phone directory publishes 7378. Preserve both evidence-scoped published variants. No reason was found to declare either number invalid.",
         "Department is the officially named school; a broader parent unit was not inferred."
+      ],
+      "review_updates": [
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847957",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
+          "saved_as": "additionalContacts"
+        }
       ]
     },
     {
@@ -1120,8 +1147,9 @@
           "value": "2016847958",
           "url": "https://ramapoathletics.com/staff-directory",
           "section": "Staff Directory",
-          "decision": "excluded",
-          "reason": "Explicit Main Athletic Fax, not voice/text."
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "email",
@@ -1739,6 +1767,15 @@
             "text_sha256": "53bacdec5db53abf72b6733b2c4f86dee245ad05a0395e57c8d14f70e95372fb"
           },
           "review_basis": "Re-read the 2026-10-14 capture of this section after its text changed. The value is still stated there with the same scope, so the decision is re-bound to the new text hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847958",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
+          "saved_as": "additionalContacts"
         }
       ]
     },
@@ -2456,11 +2493,11 @@
           "value": "careercenter@ramap.edu",
           "url": "https://www.ramapo.edu/careercenter/faculty-staff/",
           "section": "Request Classroom Presentations",
-          "decision": "conflicting",
-          "reason": "The classroom-presentation request page explicitly publishes careercenter@ramap.edu, while the office home publishes careercenter@ramapo.edu. Preserve the literal source discrepancy as a contact conflict; do not infer a correction.",
+          "decision": "excluded",
+          "reason": "Dan (2026-10-14): drop values that are nonsense next to the office's own current page. Misspelled domain on the classroom-presentations page; the home page mailbox is careercenter@ramapo.edu.",
           "captured_at": "2026-10-07T02:24:52.315Z",
           "text_sha256": "2f450170bd9384e29931abf7212048feb93c8296fdeb35d4231a07dff0faf627",
-          "saved_as": "contactConflicts"
+          "saved_as": "contactReviewExclusions"
         }
       ],
       "notes": [
@@ -2627,6 +2664,15 @@
           "captured_at": "2026-10-07T02:24:52.315Z",
           "text_sha256": "2f450170bd9384e29931abf7212048feb93c8296fdeb35d4231a07dff0faf627",
           "saved_as": "contactConflicts"
+        },
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "candidate",
+          "field": "email",
+          "value": "careercenter@ramap.edu",
+          "decision": "excluded",
+          "reason": "Dan (2026-10-14): drop values that are nonsense next to the office's own current page. Misspelled domain on the classroom-presentations page; the home page mailbox is careercenter@ramapo.edu.",
+          "saved_as": "contactReviewExclusions"
         }
       ]
     },
@@ -3682,8 +3728,9 @@
           "value": "2016847599",
           "url": "https://www.ramapo.edu/studentsuccess/",
           "section": "D-207 (Academic Building)",
-          "decision": "excluded",
-          "reason": "Explicit f: fax in the general contact block, not another voice/text number."
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "phone",
@@ -3874,10 +3921,11 @@
           "value": "2016847599",
           "url": "https://www.ramapo.edu/studentsuccess/faq/",
           "section": "D-207 (Academic Building)",
-          "decision": "excluded",
-          "reason": "The current sidebar labels 201-684-7599 f: (fax), while 7441 remains p: and success@ is the office mailbox. It is not an additional voice or text line.",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
           "captured_at": "2026-10-07T18:53:10.674Z",
-          "text_sha256": "3b8e19fd2f2a4c847759fae5eaca356177e2e3118f355b685b9834947f9aa61a"
+          "text_sha256": "3b8e19fd2f2a4c847759fae5eaca356177e2e3118f355b685b9834947f9aa61a",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "office",
@@ -3910,6 +3958,15 @@
             "text_sha256": "289502bc5955ff8bf56a0e7477ed1387a5481165c1af6cf49294c2b5d3c77fc2"
           },
           "review_basis": "Individually reread the current captured source section and confirmed the stated ownership/scope before binding its hash."
+        },
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847599",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
+          "saved_as": "additionalContacts"
         }
       ]
     },
@@ -4417,8 +4474,9 @@
           "value": "2016847963",
           "url": "https://www.ramapo.edu/student-affairs/",
           "section": "C-212",
-          "decision": "excluded",
-          "reason": "Explicit f: fax in the Dean office contact block, not a voice/text number."
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
+          "saved_as": "additionalContacts"
         },
         {
           "field": "email",
@@ -4464,6 +4522,17 @@
       "notes": [
         "Keep Student Affairs as the published office/unit label used on its own page; Student Well-Being Core is the broader organizational context, not grounds to fabricate a department fix.",
         "Interim Suspension hearing times Monday\u2013Friday 9\u20133 are process-specific, not regular office hours. Existing regular and summer office schedules remain separate."
+      ],
+      "review_updates": [
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847963",
+          "decision": "saved",
+          "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
+          "saved_as": "additionalContacts"
+        }
       ]
     },
     {
@@ -6305,8 +6374,9 @@
           "value": "2016847641",
           "url": "https://archway.ramapo.edu/reslife/contact-us/",
           "section": "Contacting the Central Office",
-          "decision": "conflicting",
-          "reason": "Official source supplies another number for the same office without a published scope distinction or validity dates. Preserve it as a conflict, not an interchangeable alternative."
+          "decision": "excluded",
+          "reason": "Dan (2026-10-14): drop values that are nonsense next to the office's own current page. The Archway group page transposes 684-7461, which the Residence Life home page and Public Safety page both publish; 684-7641 is a faculty extension.",
+          "saved_as": "contactReviewExclusions"
         },
         {
           "field": "email",
@@ -7330,6 +7400,20 @@
           "previous_near": "College Park Apartments",
           "near": "College Park Apartments (http://web.ramapo.edu/reslife/residence-areas/college-park-apartments-cpa/)",
           "reason": "The first prose mention describes the Lodge location and precedes other halls. Anchor the actual College Park Apartments contact row so the first phone/email after the anchor belongs to CPA."
+        },
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847641",
+          "decision": "excluded",
+          "reason": "Dan (2026-10-14): drop values that are nonsense next to the office's own current page. The Archway group page transposes 684-7461, which the Residence Life home page and Public Safety page both publish; 684-7641 is a faculty extension.",
+          "saved_as": "contactReviewExclusions"
+        },
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "contact_notes_removed",
+          "reason": "Dan (2026-10-14): drop values that are nonsense next to the office's own current page. The Early Arrival roster instruction is for faculty/staff supervisors and the SALTO door-lock battery text is troubleshooting, not a contact instruction; aeke@ramapo.edu (named staff on that roster) is excluded."
         }
       ]
     },
@@ -7707,7 +7791,14 @@
         }
       },
       "candidate_decisions": [],
-      "notes": []
+      "notes": [],
+      "review_updates": [
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "contact_note_replaced",
+          "reason": "The saved note \"For this reason, we ask all help desk requests are assigned a Web Help Desk ticket.\" referred to text it did not include; replaced with the page's \"Ways to submit a ticket\" methods."
+        }
+      ]
     },
     {
       "name": "Investigative Genetic Genealogy Center",
@@ -8570,9 +8661,9 @@
           "value": "2016846768",
           "url": "https://www.ramapo.edu/about/phone/",
           "section": "General Phone Number Listing",
-          "decision": "conflicting",
-          "reason": "The general directory publishes 6768 or 7749 under the literal label Nursing Program, while the own office page identifies 7749. Preserve the additional published number with its source instead of inventing a role.",
-          "saved_as": "contactConflicts",
+          "decision": "saved",
+          "reason": "The college phone listing gives the Nursing Program \"(201) 684-6768 or (201) 684-7749\": two published lines, not a conflict (2026-10-14).",
+          "saved_as": "additionalContacts",
           "label": "Nursing Program"
         }
       ],
@@ -8766,6 +8857,15 @@
           "text_sha256": "030f807101b71b8f70d47962bb756e46111bac8715750d1338d2beff69acd712",
           "captured_at": "2026-10-07T18:53:04.279Z",
           "reason": "Canonical entity name remains unchanged; department uses its own published unit label."
+        },
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016846768",
+          "decision": "saved",
+          "reason": "The college phone listing gives the Nursing Program \"6768 or 7749\": two published lines, not a conflict.",
+          "saved_as": "additionalContacts"
         }
       ]
     },
@@ -10509,9 +10609,9 @@
           "value": "9734774304",
           "url": "https://www.ramapo.edu/titleix/sexual-harassment-resources/whom-to-contact/",
           "section": "At Ramapo College:",
-          "decision": "conflicting",
-          "reason": "The official Title IX resource page lists this Ombuds cell, while the current Ombuds home lists 202-421-1881. Retain both with provenance; the page\u2019s 2007 revision footer is a caveat, not conclusive evidence the cell is obsolete.",
-          "saved_as": "contactConflicts"
+          "decision": "excluded",
+          "reason": "Dan (2026-10-14): drop values that are nonsense next to the office's own current page. A Title IX resource page (2007 revision footer) repeats an older cell; the Ombuds Office's own page lists (202) 421-1881.",
+          "saved_as": "contactReviewExclusions"
         },
         {
           "field": "office",
@@ -10582,6 +10682,15 @@
           "decision": "conflicting",
           "reason": "The official Title IX resource page lists this Ombuds cell, while the current Ombuds home lists 202-421-1881. Retain both with provenance; the page\u2019s 2007 revision footer is a caveat, not conclusive evidence the cell is obsolete.",
           "saved_as": "contactConflicts"
+        },
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "9734774304",
+          "decision": "excluded",
+          "reason": "Dan (2026-10-14): drop values that are nonsense next to the office's own current page. A Title IX resource page (2007 revision footer) repeats an older cell; the Ombuds Office's own page lists (202) 421-1881.",
+          "saved_as": "contactReviewExclusions"
         }
       ]
     },
@@ -12738,9 +12847,9 @@
           "value": "2016847933",
           "url": "https://www.ramapo.edu/about/phone/",
           "section": "General Phone Number Listing",
-          "decision": "conflicting",
-          "saved_as": "contactConflicts",
-          "reason": "Same Roadrunner Central label disagrees with current service-page phone; no dates authorize choosing one as the sole truth."
+          "decision": "excluded",
+          "saved_as": "contactReviewExclusions",
+          "reason": "Dan (2026-10-14): drop values that are nonsense next to the office's own current page. The college phone listing keeps an old line; Roadrunner Central's own page routes to CSI at 201-684-7593."
         },
         {
           "field": "phone",
@@ -12812,7 +12921,18 @@
         "The Campus Hours page says the separate Roadrunner Central site is closed/functions provided by CSI and includes a2022 CSI-hours update. Current Roadrunner service-page assistance hours are retained with their stated season.",
         "Absence decisions cover the explicitly listed current unit pages. They are not claims that the information can never appear elsewhere, and unknown weekdays or seasonal applicability remain explicit."
       ],
-      "checked_on": "2026-10-07"
+      "checked_on": "2026-10-07",
+      "review_updates": [
+        {
+          "reviewed_at": "2026-10-14T18:30:00.000Z",
+          "kind": "candidate",
+          "field": "phone",
+          "value": "2016847933",
+          "decision": "excluded",
+          "reason": "Dan (2026-10-14): drop values that are nonsense next to the office's own current page. The college phone listing keeps an old line; Roadrunner Central's own page routes to CSI at 201-684-7593.",
+          "saved_as": "contactReviewExclusions"
+        }
+      ]
     },
     {
       "name": "Student Accounts",
