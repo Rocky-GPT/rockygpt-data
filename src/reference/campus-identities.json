@@ -12706,6 +12706,112 @@
           }
         }
       ]
+    },
+    {
+      "id": "6e495dcf-c224-4a01-86eb-1f9bc91df6cb",
+      "kind": "office",
+      "name": "First-Year Seminar",
+      "aliases": [
+        "FYS"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:first-year-seminar"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "4e44f253-9c4c-4c85-85dc-0bfa41d6a156",
+      "kind": "office",
+      "name": "Center for Student Wellness",
+      "aliases": [
+        "Student Wellness"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:center-for-student-wellness"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "bdc3983c-a896-4178-a4bc-6873ebfdeec8",
+      "kind": "office",
+      "name": "Substance Use Disorder Services",
+      "aliases": [
+        "SUD"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:substance-use-disorder-services"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "3da52da7-2bd8-4404-b175-402a1acc6681",
+      "kind": "office",
+      "name": "International Travel",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:international-travel"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "fdec87e9-7a52-43db-b68d-7d45c53b7781",
+      "kind": "office",
+      "name": "Faith and Spirituality Services",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:faith-and-spirituality-services"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        }
+      ]
     }
   ]
 }

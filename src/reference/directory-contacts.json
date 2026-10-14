@@ -335,6 +335,21 @@
               ]
             }
           ]
+        },
+        {
+          "field": "email",
+          "value": "parkingpermits@ramapo.edu",
+          "label": "Parking Permits",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/publicsafety/parking-permits/",
+              "section": "PLEASE NOTE THE POLICY CHANGE BELOW",
+              "near": "direct questions regarding parking",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
         }
       ],
       "contactNotes": [
@@ -17401,6 +17416,1619 @@
               "reviewed": {
                 "text_sha256": "05cc9b11d3c79da6683643f243575cb5eaaf034da32558f4181a5ecec4cf49f0",
                 "reason": "The Media Services home and A/V instruction pages (read 2026-10-14) publish no recurring opening schedule."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "First-Year Seminar",
+      "category": "Academic",
+      "department": "First-Year Seminar",
+      "website": "https://www.ramapo.edu/first-year/",
+      "helpsWith": [
+        "First-Year Seminar (FYS) courses for first-semester, first-year students",
+        "Ramapo College Summer Reading Program"
+      ],
+      "evidence": [],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-6254",
+          "label": "Director of First-Year Seminar",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Contacts",
+              "fields": [
+                "phone"
+              ]
+            }
+          ]
+        },
+        {
+          "field": "email",
+          "value": "pcampbel@ramapo.edu",
+          "label": "Director of First-Year Seminar",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Contacts",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "email",
+          "scope": "shared general mailbox of First-Year Seminar",
+          "reason": "The only address on the First-Year Seminar pages is the named Director's own (pcampbel@ramapo.edu, Dr. Peter A. Campbell), recorded as a labelled additional contact. No shared program mailbox is published.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "622bb056765edf64cd8bcc7b42eaa4242fb25cbb0f63cbb07e67d77e96789377",
+                "reason": "Lists only the Director of First-Year Seminar with his own phone and address; no shared mailbox."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "318740366dbe210a877c0aa2a3639c041ad62c77fa1c65a167024bb8707af073",
+                "reason": "Program description; states no email address."
+              }
+            }
+          ]
+        },
+        {
+          "field": "office",
+          "scope": "First-Year Seminar office location or room",
+          "reason": "The First-Year Seminar home page states no room or building for the program or its Director.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "622bb056765edf64cd8bcc7b42eaa4242fb25cbb0f63cbb07e67d77e96789377",
+                "reason": "Gives the Director's phone and email only; the photo caption describing \"an office or classroom\" is not a location."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "318740366dbe210a877c0aa2a3639c041ad62c77fa1c65a167024bb8707af073",
+                "reason": "States no room or building."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The First-Year Seminar home page (read 2026-10-14) gives only the Director's phone and email in Contacts; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "622bb056765edf64cd8bcc7b42eaa4242fb25cbb0f63cbb07e67d77e96789377",
+                "reason": "The First-Year Seminar home page (read 2026-10-14) gives only the Director's phone and email in Contacts; no section ranks one contact method above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "318740366dbe210a877c0aa2a3639c041ad62c77fa1c65a167024bb8707af073",
+                "reason": "The First-Year Seminar home page (read 2026-10-14) gives only the Director's phone and email in Contacts; no section ranks one contact method above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The First-Year Seminar home page (read 2026-10-14) gives only the Director's phone and email in Contacts; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "622bb056765edf64cd8bcc7b42eaa4242fb25cbb0f63cbb07e67d77e96789377",
+                "reason": "The First-Year Seminar home page (read 2026-10-14) gives only the Director's phone and email in Contacts; no section ranks one contact method above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "318740366dbe210a877c0aa2a3639c041ad62c77fa1c65a167024bb8707af073",
+                "reason": "The First-Year Seminar home page (read 2026-10-14) gives only the Director's phone and email in Contacts; no section ranks one contact method above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring First-Year Seminar office hours",
+          "reason": "The First-Year Seminar pages publish no office or walk-in schedule; FYS is a course program.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "318740366dbe210a877c0aa2a3639c041ad62c77fa1c65a167024bb8707af073",
+                "reason": "Course description; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/first-year/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "622bb056765edf64cd8bcc7b42eaa4242fb25cbb0f63cbb07e67d77e96789377",
+                "reason": "Director's phone and email only; no times or days."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Center for Student Wellness",
+      "category": "Health",
+      "department": "Center for Student Wellness",
+      "website": "https://www.ramapo.edu/csw/",
+      "helpsWith": [
+        "Counseling, Health Services, Substance Use Disorder Services, ENHANCE and Health Promotion",
+        "Requesting a wellness outreach event or co-sponsorship",
+        "Ask.Listen.Refer suicide-prevention training",
+        "Medical Leave of Absence (MLOA) forms"
+      ],
+      "evidence": [],
+      "additionalContacts": [
+        {
+          "field": "email",
+          "value": "studentwellness@ramapo.edu",
+          "label": "Health Promotion",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Health Promotion",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "*For after-hours emergencies, call 201-684-7522 and press 2 for immediate assistance.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "Health Promotion"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "email",
+          "scope": "shared general mailbox of the Center for Student Wellness itself",
+          "reason": "The Center page lists studentwellness@ramapo.edu only in the Health Promotion block (recorded with that label); the other addresses belong to the ENHANCE program and the SUD coordinator. No address is stated as the Center's own.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Helping You Reach Your Potential",
+              "reviewed": {
+                "text_sha256": "c467589093428f3e519473b5293fb802d4d115730ed81b17bc67ba14f45412ff",
+                "reason": "Mission statement; states no email address."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Health Promotion",
+              "reviewed": {
+                "text_sha256": "bd4dd06fc5addd977d987a5aefbf5db6c6e7f76bfb5517a7a55c493f14b3e0bb",
+                "reason": "The only address is studentwellness@ramapo.edu, labelled under Health Promotion and recorded as such."
+              }
+            }
+          ]
+        },
+        {
+          "field": "phone",
+          "scope": "general phone line of the Center for Student Wellness itself",
+          "reason": "The Center page gives phones only per service: (201) 684-7536 for Valley Medical Group Health Services and (201) 684-7522 for Counseling Services, SUD and ENHANCE. It states no phone as the Center's own.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Helping You Reach Your Potential",
+              "reviewed": {
+                "text_sha256": "c467589093428f3e519473b5293fb802d4d115730ed81b17bc67ba14f45412ff",
+                "reason": "Mission statement; states no phone."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Outreach Events",
+              "reviewed": {
+                "text_sha256": "700d4a1e9518e2b8a181e8ed2f8ccaef21ad63bb060df127d6b9b25aa5c9c3ba",
+                "reason": "Points to the outreach request form; states no phone."
+              }
+            }
+          ]
+        },
+        {
+          "field": "office",
+          "scope": "location of the Center for Student Wellness itself",
+          "reason": "The Center page gives a location only per service (Health Services near the South Gate; D-216 for Counseling, SUD and ENHANCE; E-Wing for Health Promotion). It states no location as the Center's own.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Helping You Reach Your Potential",
+              "reviewed": {
+                "text_sha256": "c467589093428f3e519473b5293fb802d4d115730ed81b17bc67ba14f45412ff",
+                "reason": "Mission statement; states no location."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Outreach Events",
+              "reviewed": {
+                "text_sha256": "700d4a1e9518e2b8a181e8ed2f8ccaef21ad63bb060df127d6b9b25aa5c9c3ba",
+                "reason": "Outreach request link; states no location."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Center for Student Wellness home page lists each service's own location, phone or email and an outreach request form; no section ranks one contact method for the Center.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Helping You Reach Your Potential",
+              "reviewed": {
+                "text_sha256": "c467589093428f3e519473b5293fb802d4d115730ed81b17bc67ba14f45412ff",
+                "reason": "The Center for Student Wellness home page lists each service's own location, phone or email and an outreach request form; no section ranks one contact method for the Center."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Outreach Events",
+              "reviewed": {
+                "text_sha256": "700d4a1e9518e2b8a181e8ed2f8ccaef21ad63bb060df127d6b9b25aa5c9c3ba",
+                "reason": "The Center for Student Wellness home page lists each service's own location, phone or email and an outreach request form; no section ranks one contact method for the Center."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Center for Student Wellness home page lists each service's own location, phone or email and an outreach request form; no section ranks one contact method for the Center.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Helping You Reach Your Potential",
+              "reviewed": {
+                "text_sha256": "c467589093428f3e519473b5293fb802d4d115730ed81b17bc67ba14f45412ff",
+                "reason": "The Center for Student Wellness home page lists each service's own location, phone or email and an outreach request form; no section ranks one contact method for the Center."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Outreach Events",
+              "reviewed": {
+                "text_sha256": "700d4a1e9518e2b8a181e8ed2f8ccaef21ad63bb060df127d6b9b25aa5c9c3ba",
+                "reason": "The Center for Student Wellness home page lists each service's own location, phone or email and an outreach request form; no section ranks one contact method for the Center."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Center for Student Wellness",
+          "reason": "The Center page publishes no opening schedule for the Center; the only time wording is the after-hours emergency instruction for Counseling's line.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Helping You Reach Your Potential",
+              "reviewed": {
+                "text_sha256": "c467589093428f3e519473b5293fb802d4d115730ed81b17bc67ba14f45412ff",
+                "reason": "Mission statement; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Outreach Events",
+              "reviewed": {
+                "text_sha256": "700d4a1e9518e2b8a181e8ed2f8ccaef21ad63bb060df127d6b9b25aa5c9c3ba",
+                "reason": "Outreach request link; no times, days or walk-in wording."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "phone",
+          "value": "2016847536",
+          "reason": "The Center for Student Wellness page lists this under Valley Medical Group Health Services (the existing Health Services office); it is that service's own contact, not a Center-wide line. The Center page publishes no contact of its own other than the studentwellness@ramapo.edu mailbox it lists under Health Promotion.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "Valley Medical Group Health Services",
+            "text_sha256": "6fad321e0e5d4ada96abf0319517c4e127335a0317f6bdd3f5893367314b89f9"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847522",
+          "reason": "The Center for Student Wellness page lists this under Counseling Services (the existing Counseling Center); it is that service's own contact, not a Center-wide line. The Center page publishes no contact of its own other than the studentwellness@ramapo.edu mailbox it lists under Health Promotion.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "Counseling Services",
+            "text_sha256": "6c27d041bf9128d5a8d0a673ae75a0faf92df066c5a93c90a499a54bf799d928"
+          }
+        },
+        {
+          "field": "office",
+          "value": "D216",
+          "reason": "The Center for Student Wellness page lists this under Counseling Services (the existing Counseling Center); it is that service's own contact, not a Center-wide line. The Center page publishes no contact of its own other than the studentwellness@ramapo.edu mailbox it lists under Health Promotion.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "Counseling Services",
+            "text_sha256": "6c27d041bf9128d5a8d0a673ae75a0faf92df066c5a93c90a499a54bf799d928"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847522",
+          "reason": "The Center for Student Wellness page lists this under Substance Use Disorder Prevention, Intervention, and Recovery (shared with Counseling); it is that service's own contact, not a Center-wide line. The Center page publishes no contact of its own other than the studentwellness@ramapo.edu mailbox it lists under Health Promotion.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "Substance Use Disorder Prevention, Intervention, and Recovery",
+            "text_sha256": "f625f8e4d24dffd3c33311f532c77d090ad0f50ad9bde5ac248cde88906fbfb8"
+          }
+        },
+        {
+          "field": "office",
+          "value": "D216",
+          "reason": "The Center for Student Wellness page lists this under Substance Use Disorder Prevention, Intervention, and Recovery (shared with Counseling); it is that service's own contact, not a Center-wide line. The Center page publishes no contact of its own other than the studentwellness@ramapo.edu mailbox it lists under Health Promotion.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "Substance Use Disorder Prevention, Intervention, and Recovery",
+            "text_sha256": "f625f8e4d24dffd3c33311f532c77d090ad0f50ad9bde5ac248cde88906fbfb8"
+          }
+        },
+        {
+          "field": "email",
+          "value": "crosenkr@ramapo.edu",
+          "reason": "Named personal address of Corliss (Cory) Rosenkranz, Program Coordinator of Substance Use Disorder services; a named staff address belongs to SUD, not to the Center as a whole.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "Substance Use Disorder Prevention, Intervention, and Recovery",
+            "text_sha256": "f625f8e4d24dffd3c33311f532c77d090ad0f50ad9bde5ac248cde88906fbfb8"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847522",
+          "reason": "The Center for Student Wellness page lists this under ENHANCE (an existing office entry, shared with Counseling); it is that service's own contact, not a Center-wide line. The Center page publishes no contact of its own other than the studentwellness@ramapo.edu mailbox it lists under Health Promotion.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "ENHANCE",
+            "text_sha256": "a71e20fcb3cc95b017b42ff3f7db15169d72a0d710174ee6b8a859caa12cf0d1"
+          }
+        },
+        {
+          "field": "office",
+          "value": "D216",
+          "reason": "The Center for Student Wellness page lists this under ENHANCE (an existing office entry, shared with Counseling); it is that service's own contact, not a Center-wide line. The Center page publishes no contact of its own other than the studentwellness@ramapo.edu mailbox it lists under Health Promotion.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "ENHANCE",
+            "text_sha256": "a71e20fcb3cc95b017b42ff3f7db15169d72a0d710174ee6b8a859caa12cf0d1"
+          }
+        },
+        {
+          "field": "email",
+          "value": "enhance@ramapo.edu",
+          "reason": "The Center for Student Wellness page lists this under ENHANCE (the ENHANCE Program's own mailbox, already its existing entry's email); it is that service's own contact, not a Center-wide line. The Center page publishes no contact of its own other than the studentwellness@ramapo.edu mailbox it lists under Health Promotion.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "ENHANCE",
+            "text_sha256": "a71e20fcb3cc95b017b42ff3f7db15169d72a0d710174ee6b8a859caa12cf0d1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Substance Use Disorder Services",
+      "category": "Health",
+      "department": "Substance Use Disorder (SUD) Services",
+      "phone": "(201) 684-7522",
+      "office": "D-216",
+      "website": "https://www.ramapo.edu/sud/",
+      "helpsWith": [
+        "Alcohol and other drug education and prevention",
+        "BASICS/CASICS alcohol and cannabis screening",
+        "Roadrunner Collegiate Recovery Program and Recovery Housing"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/sud/",
+          "section": "Contact Us",
+          "fields": [
+            "phone",
+            "office"
+          ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "email",
+          "value": "crosenkr@ramapo.edu",
+          "label": "Coordinator Substance Use Disorder Prevention/Recovery Programs",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/sud/",
+              "section": "Contact Us",
+              "fields": [
+                "email"
+              ]
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "If this seems to be happening to you, come and see us at the Center for Health and Counseling Services.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/sud/",
+            "section": "Substance Use Disorder (SUD) Services"
+          }
+        },
+        {
+          "text": "*For after-hours emergencies, call 201-684-7522 and press 2 for immediate assistance.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/sud/",
+            "section": "Contact Us"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "email",
+          "scope": "shared general mailbox of Substance Use Disorder Services",
+          "reason": "The SUD Contact Us block gives only the Coordinator's own address (crosenkr@ramapo.edu, Cory Rosenkranz), recorded as a labelled additional contact. No shared SUD mailbox is published.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/sud/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "6ef8fa17ceca06be06381c271f11734bb4b6aa1b26612c6552eaf28589f88b2f",
+                "reason": "The only address is the named Coordinator's, recorded with his published title."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/sud/",
+              "section": "Substance Use Disorder (SUD) Services",
+              "reviewed": {
+                "text_sha256": "eb4aa761cf312585b71227530fab49fe8549d51c14c9cba1eb5ee5837ed15a98",
+                "reason": "Introduction; states no email address."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The SUD Contact Us block lists the Center for Health and Counseling location, the (201) 684-7522 line and the Coordinator's email side by side; no section ranks one method.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/sud/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "6ef8fa17ceca06be06381c271f11734bb4b6aa1b26612c6552eaf28589f88b2f",
+                "reason": "The SUD Contact Us block lists the Center for Health and Counseling location, the (201) 684-7522 line and the Coordinator's email side by side; no section ranks one method."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/sud/",
+              "section": "Substance Use Disorder (SUD) Services",
+              "reviewed": {
+                "text_sha256": "eb4aa761cf312585b71227530fab49fe8549d51c14c9cba1eb5ee5837ed15a98",
+                "reason": "The SUD Contact Us block lists the Center for Health and Counseling location, the (201) 684-7522 line and the Coordinator's email side by side; no section ranks one method."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The SUD Contact Us block lists the Center for Health and Counseling location, the (201) 684-7522 line and the Coordinator's email side by side; no section ranks one method.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/sud/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "6ef8fa17ceca06be06381c271f11734bb4b6aa1b26612c6552eaf28589f88b2f",
+                "reason": "The SUD Contact Us block lists the Center for Health and Counseling location, the (201) 684-7522 line and the Coordinator's email side by side; no section ranks one method."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/sud/",
+              "section": "Substance Use Disorder (SUD) Services",
+              "reviewed": {
+                "text_sha256": "eb4aa761cf312585b71227530fab49fe8549d51c14c9cba1eb5ee5837ed15a98",
+                "reason": "The SUD Contact Us block lists the Center for Health and Counseling location, the (201) 684-7522 line and the Coordinator's email side by side; no section ranks one method."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring SUD Services office hours",
+          "reason": "The SUD home page publishes no opening schedule; it points students to the Center for Health and Counseling.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/sud/",
+              "section": "Substance Use Disorder (SUD) Services",
+              "reviewed": {
+                "text_sha256": "eb4aa761cf312585b71227530fab49fe8549d51c14c9cba1eb5ee5837ed15a98",
+                "reason": "Introduction; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/sud/",
+              "section": "Staff",
+              "reviewed": {
+                "text_sha256": "4ff93f40a13644395a03426dd5fbf1732d1169cfd62073081b9ac3dea6622eb0",
+                "reason": "Staff names and titles; no times, days or walk-in wording."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "International Travel",
+      "category": "Academic",
+      "department": "International Travel",
+      "website": "https://www.ramapo.edu/international-travel/",
+      "helpsWith": [
+        "International Travel Registry (registering official college travel abroad)",
+        "International location risk guidance and travel appeals",
+        "Reporting an incident while abroad"
+      ],
+      "evidence": [],
+      "additionalContacts": [
+        {
+          "field": "phone",
+          "value": "(201) 684-7533",
+          "label": "Director of International Education/SIO",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/international-travel/contacts/",
+              "section": "Contacts",
+              "fields": [
+                "phone"
+              ],
+              "near": "Director of International Education"
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "If you were involved in, witnessed, or were made aware of a serious incident which occurred while abroad (illness, theft, assault, arrest, etc.) that affected you or someone else in the Ramapo College community, please submit the following report: REPORT AN INCIDENT",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/reporting-an-incident-abroad/",
+            "section": "REPORT AN INCIDENT WHILE ABROAD"
+          }
+        },
+        {
+          "text": "The \u201cIncident Report\u201d button should not be used to get immediate assistance; it is a way to report an incident for future follow-up by the International Programs Office at Ramapo College of New Jersey.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/reporting-an-incident-abroad/",
+            "section": "REPORT AN INCIDENT WHILE ABROAD"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "email",
+          "scope": "shared general mailbox of International Travel",
+          "reason": "The International Travel site publishes no shared mailbox; its Contacts page lists only named staff addresses for Accounts Payable, the Controller and General Counsel, which are excluded as other offices' roles.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/international-travel/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "14f9c3df7387e0680ceb2ce7ebcb5e0591cb5ce90d3dc50a15967bba4077bd28",
+                "reason": "Policy overview; states no email address."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/international-travel/faculty-and-staff/travel-registration/",
+              "section": "Registering International Travel",
+              "reviewed": {
+                "text_sha256": "510e394ad4a96dbcafeb8664b23a31a8ed2aeb4c475e182831dd922e67f4a71c",
+                "reason": "Mentions a confirmation e-mail sent by the registry; states no address to write to."
+              }
+            }
+          ]
+        },
+        {
+          "field": "office",
+          "scope": "International Travel office location or room",
+          "reason": "The International Travel site states no office, room or building.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/international-travel/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "14f9c3df7387e0680ceb2ce7ebcb5e0591cb5ce90d3dc50a15967bba4077bd28",
+                "reason": "Policy overview; states no location."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/international-travel/faculty-and-staff/travel-registration/",
+              "section": "Registering International Travel",
+              "reviewed": {
+                "text_sha256": "510e394ad4a96dbcafeb8664b23a31a8ed2aeb4c475e182831dd922e67f4a71c",
+                "reason": "Online registry steps; states no room or building."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The International Travel pages direct travelers to the online International Travel Registry and incident report and list role contacts; no section ranks one contact method.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/international-travel/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "14f9c3df7387e0680ceb2ce7ebcb5e0591cb5ce90d3dc50a15967bba4077bd28",
+                "reason": "The International Travel pages direct travelers to the online International Travel Registry and incident report and list role contacts; no section ranks one contact method."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/international-travel/contacts/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e",
+                "reason": "The International Travel pages direct travelers to the online International Travel Registry and incident report and list role contacts; no section ranks one contact method."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The International Travel pages direct travelers to the online International Travel Registry and incident report and list role contacts; no section ranks one contact method.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/international-travel/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "14f9c3df7387e0680ceb2ce7ebcb5e0591cb5ce90d3dc50a15967bba4077bd28",
+                "reason": "The International Travel pages direct travelers to the online International Travel Registry and incident report and list role contacts; no section ranks one contact method."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/international-travel/contacts/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e",
+                "reason": "The International Travel pages direct travelers to the online International Travel Registry and incident report and list role contacts; no section ranks one contact method."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring International Travel office hours",
+          "reason": "The International Travel site publishes no office schedule; registration and incident reports are online.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/international-travel/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "14f9c3df7387e0680ceb2ce7ebcb5e0591cb5ce90d3dc50a15967bba4077bd28",
+                "reason": "Policy overview; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/international-travel/contacts/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e",
+                "reason": "Role contacts; no times, days or walk-in wording."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "office",
+          "value": "ELO201",
+          "reason": "Not a room: the scanner joined the role abbreviation \"Deputy ELO\" with the area code of the following phone \"201- 684-7504\". The Contacts page states no room.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/contacts/",
+            "section": "Contacts",
+            "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e"
+          }
+        },
+        {
+          "field": "office",
+          "value": "SIO201",
+          "reason": "Not a room: the scanner joined the role abbreviation \"SIO\" (Senior International Officer) with the area code of the following phone \"201-684-7533\". The Contacts page states no room.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/contacts/",
+            "section": "Contacts",
+            "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847504",
+          "reason": "The International Travel Contacts page lists this for the Assistant Director of Employee Relations / Deputy ELO (listed as vacant), a college administrative role for employee travel matters (finance, employment or legal). It is not a contact of the International Travel unit and is not of general use to a student traveler.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/contacts/",
+            "section": "Contacts",
+            "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847488",
+          "reason": "The International Travel Contacts page lists this for the Accounts Payable Supervisor (Kimberly Hawkins), a college administrative role for employee travel matters (finance, employment or legal). It is not a contact of the International Travel unit and is not of general use to a student traveler.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/contacts/",
+            "section": "Contacts",
+            "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "khawkins@ramapo.edu",
+          "reason": "The International Travel Contacts page lists this for the Accounts Payable Supervisor (Kimberly Hawkins), a college administrative role for employee travel matters (finance, employment or legal). It is not a contact of the International Travel unit and is not of general use to a student traveler.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/contacts/",
+            "section": "Contacts",
+            "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847494",
+          "reason": "The International Travel Contacts page lists this for the Controller & AVP, Business Services (Colleen O\u2019Keefe), a college administrative role for employee travel matters (finance, employment or legal). It is not a contact of the International Travel unit and is not of general use to a student traveler.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/contacts/",
+            "section": "Contacts",
+            "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "cokeefe3@ramapo.edu",
+          "reason": "The International Travel Contacts page lists this for the Controller & AVP, Business Services (Colleen O\u2019Keefe), a college administrative role for employee travel matters (finance, employment or legal). It is not a contact of the International Travel unit and is not of general use to a student traveler.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/contacts/",
+            "section": "Contacts",
+            "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016846975",
+          "reason": "The International Travel Contacts page lists this for the Vice President & General Counsel (Nicole Morgan-Agard), a college administrative role for employee travel matters (finance, employment or legal). It is not a contact of the International Travel unit and is not of general use to a student traveler.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/contacts/",
+            "section": "Contacts",
+            "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e"
+          }
+        },
+        {
+          "field": "email",
+          "value": "nmagard@ramapo.edu",
+          "reason": "The International Travel Contacts page lists this for the Vice President & General Counsel (Nicole Morgan-Agard), a college administrative role for employee travel matters (finance, employment or legal). It is not a contact of the International Travel unit and is not of general use to a student traveler.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/international-travel/contacts/",
+            "section": "Contacts",
+            "text_sha256": "8e0b15f781916f9155eef521066328d6c10f1d5656731986fd7d4504254ae69e"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Faith and Spirituality Services",
+      "category": "Student Life",
+      "department": "Faith and Spirituality Services",
+      "email": "abc@ramapo.edu",
+      "phone": "(201) 684-7593",
+      "website": "https://www.ramapo.edu/ministries/",
+      "helpsWith": [
+        "Faith and spirituality support and opportunities",
+        "On-campus worship services and campus religious groups",
+        "Referrals to local houses of worship",
+        "Starting a religious student organization"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/ministries/",
+          "section": "Faith and Spirituality Services",
+          "fields": [
+            "email",
+            "phone"
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "For information regarding the Faith and Spirituality Services or other questions regarding faith and spirituality support and opportunities at Ramapo, please email abc@ramapo.edu or call (201) 684-7593.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/ministries/",
+            "section": "Faith and Spirituality Services"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "office",
+          "scope": "Faith and Spirituality Services office location or room",
+          "reason": "The Faith and Spirituality Services home page gives an email and phone for information but no room or building.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ministries/",
+              "section": "Faith and Spirituality Services",
+              "reviewed": {
+                "text_sha256": "99c89914dcb6734c87955d7c048f987707b2362eef1ec183fb80d5228a6caaa9",
+                "reason": "Mission list and the email/phone sentence; no room or building."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The page says to \"email abc@ramapo.edu or call (201) 684-7593\" for information, offering both without ranking either.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ministries/",
+              "section": "Faith and Spirituality Services",
+              "reviewed": {
+                "text_sha256": "99c89914dcb6734c87955d7c048f987707b2362eef1ec183fb80d5228a6caaa9",
+                "reason": "The page says to \"email abc@ramapo.edu or call (201) 684-7593\" for information, offering both without ranking either."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The page says to \"email abc@ramapo.edu or call (201) 684-7593\" for information, offering both without ranking either.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ministries/",
+              "section": "Faith and Spirituality Services",
+              "reviewed": {
+                "text_sha256": "99c89914dcb6734c87955d7c048f987707b2362eef1ec183fb80d5228a6caaa9",
+                "reason": "The page says to \"email abc@ramapo.edu or call (201) 684-7593\" for information, offering both without ranking either."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring Faith and Spirituality Services office hours",
+          "reason": "The home page publishes no office schedule; worship times on the Houses of Worship page belong to individual congregations and the on-campus Mass, not to this unit's office.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ministries/",
+              "section": "Faith and Spirituality Services",
+              "reviewed": {
+                "text_sha256": "99c89914dcb6734c87955d7c048f987707b2362eef1ec183fb80d5228a6caaa9",
+                "reason": "Mission list (\"on a regular basis\") and contact sentence; no times, days or walk-in wording."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Peer Facilitators",
+      "phone": "(201) 684-7441",
+      "category": "Academic",
+      "email": "peers@ramapo.edu",
+      "website": "https://www.ramapo.edu/peer-facilitators/",
+      "helpsWith": [
+        "Upper-class peer mentors in First-Year Seminar classes",
+        "Applying to become a Peer Facilitator"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/peer-facilitators/",
+          "section": "Peer Facilitators General Contact Information",
+          "fields": [
+            "phone",
+            "email"
+          ]
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "office",
+          "scope": "Peer Facilitators office location or room",
+          "reason": "The program home page (the only captured content page besides a 2019 fundraiser and a 2013 roster) gives an e-mail and phone in its general contact block but no room or building.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators General Contact Information",
+              "reviewed": {
+                "text_sha256": "5a557b9a984696c8b0e19740d62c2b33d8111a4a48665200c565235fbc30b75a",
+                "reason": "Lists only E-mail and Phone; no room or building."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators",
+              "reviewed": {
+                "text_sha256": "5bc502ef9d62caf19e5988bfacff95424e58da6ff3570817aa770918cf1d0081",
+                "reason": "Describes the program and links the application; no room or building."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Meet the Peers",
+              "reviewed": {
+                "text_sha256": "206bb5fdc44e1ee50270d64a968dcc2e7ba92328c4181ae7ffd2cc5105d98c7f",
+                "reason": "Describes peer selection and links a /peers/ page (not captured); no room or building."
+              }
+            }
+          ]
+        },
+        {
+          "field": "department",
+          "scope": "named administering department of the Peer Facilitation program",
+          "reason": "The captured program pages describe work with First-Year Seminar faculty and list First-Year Seminar and the Center for Student Success under Related Links, but no section states which department runs the program.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators General Contact Information",
+              "reviewed": {
+                "text_sha256": "5a557b9a984696c8b0e19740d62c2b33d8111a4a48665200c565235fbc30b75a",
+                "reason": "Contact block names no department."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators",
+              "reviewed": {
+                "text_sha256": "5bc502ef9d62caf19e5988bfacff95424e58da6ff3570817aa770918cf1d0081",
+                "reason": "Describes the program without naming an administering department."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Peer Facilitators General Contact Information block lists E-mail and Phone side by side without ranking either; no other captured section of the program site states a contact preference.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators General Contact Information",
+              "reviewed": {
+                "text_sha256": "5a557b9a984696c8b0e19740d62c2b33d8111a4a48665200c565235fbc30b75a",
+                "reason": "The Peer Facilitators General Contact Information block lists E-mail and Phone side by side without ranking either; no other captured section of the program site states a contact preference."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators",
+              "reviewed": {
+                "text_sha256": "5bc502ef9d62caf19e5988bfacff95424e58da6ff3570817aa770918cf1d0081",
+                "reason": "The Peer Facilitators General Contact Information block lists E-mail and Phone side by side without ranking either; no other captured section of the program site states a contact preference."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Peer Facilitators General Contact Information block lists E-mail and Phone side by side without ranking either; no other captured section of the program site states a contact preference.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators General Contact Information",
+              "reviewed": {
+                "text_sha256": "5a557b9a984696c8b0e19740d62c2b33d8111a4a48665200c565235fbc30b75a",
+                "reason": "The Peer Facilitators General Contact Information block lists E-mail and Phone side by side without ranking either; no other captured section of the program site states a contact preference."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators",
+              "reviewed": {
+                "text_sha256": "5bc502ef9d62caf19e5988bfacff95424e58da6ff3570817aa770918cf1d0081",
+                "reason": "The Peer Facilitators General Contact Information block lists E-mail and Phone side by side without ranking either; no other captured section of the program site states a contact preference."
+              }
+            }
+          ]
+        },
+        {
+          "field": "contact_note",
+          "scope": "student-facing contact instruction (how or when to reach the program)",
+          "reason": "The captured program pages give the e-mail and phone without any instruction on how or when to use them (no appointment, walk-in or question-routing direction). The application link is an application, not a contact instruction.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators General Contact Information",
+              "reviewed": {
+                "text_sha256": "5a557b9a984696c8b0e19740d62c2b33d8111a4a48665200c565235fbc30b75a",
+                "reason": "Lists E-mail and Phone only, with no instruction."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators",
+              "reviewed": {
+                "text_sha256": "5bc502ef9d62caf19e5988bfacff95424e58da6ff3570817aa770918cf1d0081",
+                "reason": "Links the Qualtrics application; gives no contact instruction."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Meet the Peers",
+              "reviewed": {
+                "text_sha256": "206bb5fdc44e1ee50270d64a968dcc2e7ba92328c4181ae7ffd2cc5105d98c7f",
+                "reason": "Links a page to learn about the peers; gives no contact instruction."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine Peer Facilitators office or contact hours",
+          "reason": "The captured program pages publish no recurring opening or contact schedule.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Peer Facilitators General Contact Information",
+              "reviewed": {
+                "text_sha256": "5a557b9a984696c8b0e19740d62c2b33d8111a4a48665200c565235fbc30b75a",
+                "reason": "Lists E-mail and Phone only; no days or times."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/peer-facilitators/",
+              "section": "Meet the Peers",
+              "reviewed": {
+                "text_sha256": "206bb5fdc44e1ee50270d64a968dcc2e7ba92328c4181ae7ffd2cc5105d98c7f",
+                "reason": "Describes peer selection and training; no days or times."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Health Promotion",
+      "category": "Health",
+      "email": "studentwellness@ramapo.edu",
+      "department": "Health Promotion",
+      "website": "https://www.ramapo.edu/health-promotion/",
+      "helpsWith": [
+        "Wellness Is Now (W.I.N.) peer education",
+        "Mindfulness Ambassadors",
+        "Ramapo Wellness Room (E-216) reservations",
+        "Therapy animal visits",
+        "Wellness outreach presentations for clubs and classes"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/csw/",
+          "section": "Health Promotion",
+          "near": "Contact: Megan Johnston",
+          "fields": [
+            "email"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/health-promotion/mindfulness-ambassador/",
+          "section": "Application",
+          "near": "For any questions",
+          "fields": [
+            "email"
+          ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "email",
+          "value": "mjohnst2@ramapo.edu",
+          "label": "Coordinator for Health Promotion",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+              "section": "WIN Outreach Presentation Request Form (https://www.ramapo.edu/health-promotion/outreach-request-form/)",
+              "fields": [
+                "email"
+              ],
+              "near": "Coordinator for Health Promotion"
+            }
+          ]
+        },
+        {
+          "field": "email",
+          "value": "win@ramapo.edu",
+          "label": "WIN Peer Education",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+              "section": "Welcome to Wellness Is Now (W.I.N.)",
+              "fields": [
+                "email"
+              ],
+              "near": "Please e-mail"
+            }
+          ]
+        },
+        {
+          "field": "office",
+          "value": "E-211A",
+          "label": "Wellness Is Now office",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+              "section": "WIN Outreach Presentation Request Form (https://www.ramapo.edu/health-promotion/outreach-request-form/)",
+              "fields": [
+                "office"
+              ],
+              "near": "The Wellness Is Now office"
+            }
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "Please e-mail win@ramapo.edu with any questions regarding WIN Peer Education and the program application.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+            "section": "Welcome to Wellness Is Now (W.I.N.)"
+          }
+        },
+        {
+          "text": "If you have any questions about requesting a WIN event for your club or organization, please email win@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+            "section": "WIN Outreach Presentation Request Form (https://www.ramapo.edu/health-promotion/outreach-request-form/)"
+          }
+        },
+        {
+          "text": "For any questions, please email studentwellness@ramapo.edu",
+          "evidence": {
+            "url": "https://www.ramapo.edu/health-promotion/mindfulness-ambassador/",
+            "section": "Application"
+          }
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "phone",
+          "value": "2016847522",
+          "reason": "Counseling Services line given in the Health Promotion block only for after-hours emergencies (\"call 201-684-7522 and press 2\"); the same page lists it as the Counseling Services phone. It is not a Health Promotion number.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csw/",
+            "section": "Health Promotion",
+            "text_sha256": "bd4dd06fc5addd977d987a5aefbf5db6c6e7f76bfb5517a7a55c493f14b3e0bb"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "phone",
+          "scope": "Health Promotion telephone number",
+          "reason": "The Health Promotion pages and the Center for Student Wellness block for Health Promotion give e-mail addresses and the WIN room but no Health Promotion telephone number. The only number in that block is the Counseling Services line for after-hours emergencies, and the Health Services and Counseling numbers on other Health Promotion pages belong to those offices.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/health-promotion/",
+              "section": "Helping You be a Healthier You",
+              "reviewed": {
+                "text_sha256": "8784fcd97bf21018ed8a4eccf72ea47051a3a676f8feef3593d3ae73b9aca877",
+                "reason": "States no telephone number."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/health-promotion/",
+              "section": "Staff",
+              "reviewed": {
+                "text_sha256": "5ad64609088ea426e98ab8add702a1302bd7b27c0d6a8b08da91e783a959e307",
+                "reason": "Links the Coordinator's profile; states no telephone number."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+              "section": "Welcome to Wellness Is Now (W.I.N.)",
+              "reviewed": {
+                "text_sha256": "b573a3a5064293fbacc11e8529aa77ade5045ec835e8691f61cb1778f6669cfb",
+                "reason": "Gives win@ramapo.edu; states no telephone number."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+              "section": "WIN Outreach Presentation Request Form (https://www.ramapo.edu/health-promotion/outreach-request-form/)",
+              "reviewed": {
+                "text_sha256": "2461d0588c670037fa79a9c01da0e0666fdb974aad1660a4e331a84a42d3765a",
+                "reason": "Gives the Coordinator's e-mail, win@ramapo.edu and room E-211A; states no telephone number."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Center for Student Wellness block for Health Promotion lists only an e-mail address; the Health Promotion pages add a mailbox for Wellness Is Now questions and the Coordinator's address for questions about becoming a peer educator, each for its own purpose. No section ranks one general contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+              "section": "Welcome to Wellness Is Now (W.I.N.)",
+              "reviewed": {
+                "text_sha256": "b573a3a5064293fbacc11e8529aa77ade5045ec835e8691f61cb1778f6669cfb",
+                "reason": "The Center for Student Wellness block for Health Promotion lists only an e-mail address; the Health Promotion pages add a mailbox for Wellness Is Now questions and the Coordinator's address for questions about becoming a peer educator, each for its own purpose. No section ranks one general contact method above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+              "section": "WIN Outreach Presentation Request Form (https://www.ramapo.edu/health-promotion/outreach-request-form/)",
+              "reviewed": {
+                "text_sha256": "2461d0588c670037fa79a9c01da0e0666fdb974aad1660a4e331a84a42d3765a",
+                "reason": "The Center for Student Wellness block for Health Promotion lists only an e-mail address; the Health Promotion pages add a mailbox for Wellness Is Now questions and the Coordinator's address for questions about becoming a peer educator, each for its own purpose. No section ranks one general contact method above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Center for Student Wellness block for Health Promotion lists only an e-mail address; the Health Promotion pages add a mailbox for Wellness Is Now questions and the Coordinator's address for questions about becoming a peer educator, each for its own purpose. No section ranks one general contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+              "section": "Welcome to Wellness Is Now (W.I.N.)",
+              "reviewed": {
+                "text_sha256": "b573a3a5064293fbacc11e8529aa77ade5045ec835e8691f61cb1778f6669cfb",
+                "reason": "The Center for Student Wellness block for Health Promotion lists only an e-mail address; the Health Promotion pages add a mailbox for Wellness Is Now questions and the Coordinator's address for questions about becoming a peer educator, each for its own purpose. No section ranks one general contact method above another."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+              "section": "WIN Outreach Presentation Request Form (https://www.ramapo.edu/health-promotion/outreach-request-form/)",
+              "reviewed": {
+                "text_sha256": "2461d0588c670037fa79a9c01da0e0666fdb974aad1660a4e331a84a42d3765a",
+                "reason": "The Center for Student Wellness block for Health Promotion lists only an e-mail address; the Health Promotion pages add a mailbox for Wellness Is Now questions and the Coordinator's address for questions about becoming a peer educator, each for its own purpose. No section ranks one general contact method above another."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine Health Promotion office opening hours",
+          "reason": "Health Promotion's own contact sections (read 2026-10-14) publish its mailbox, coordinator and peer-education routes but no opening schedule for the Health Promotion office; the Wellness Room's reservation hours are a room's, not the office's.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/csw/",
+              "section": "Health Promotion",
+              "reviewed": {
+                "text_sha256": "bd4dd06fc5addd977d987a5aefbf5db6c6e7f76bfb5517a7a55c493f14b3e0bb",
+                "reason": "Health Promotion's own contact sections (read 2026-10-14) publish its mailbox, coordinator and peer-education routes but no opening schedule for the Health Promotion office; the Wellness Room's reservation hours are a room's, not the office's."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+              "section": "WIN Outreach Presentation Request Form (https://www.ramapo.edu/health-promotion/outreach-request-form/)",
+              "reviewed": {
+                "text_sha256": "2461d0588c670037fa79a9c01da0e0666fdb974aad1660a4e331a84a42d3765a",
+                "reason": "Health Promotion's own contact sections (read 2026-10-14) publish its mailbox, coordinator and peer-education routes but no opening schedule for the Health Promotion office; the Wellness Room's reservation hours are a room's, not the office's."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ramapo Honors Program",
+      "phone": "(201) 684-7669",
+      "category": "Academic",
+      "email": "honors@ramapo.edu",
+      "department": "College Honors Program",
+      "website": "https://www.ramapo.edu/honors/",
+      "helpsWith": [
+        "Applying to the College Honors Program (incoming, current and transfer students)",
+        "Honors curriculum, senior project and co-curricular requirements",
+        "Honors scholarships, conferences and study abroad"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/about/phone/",
+          "section": "General Phone Number Listing",
+          "near": "Honors Program - ",
+          "fields": [
+            "phone"
+          ]
+        },
+        {
+          "url": "https://archway.ramapo.edu/rhp/contact-us/",
+          "section": "Overview",
+          "fields": [
+            "email"
+          ]
+        }
+      ],
+      "additionalContacts": [
+        {
+          "field": "email",
+          "value": "eaugis@ramapo.edu",
+          "label": "Honors Director",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/honors/",
+              "section": "Contacts",
+              "fields": [
+                "email"
+              ],
+              "near": "Erin Augis, Ph.D."
+            }
+          ]
+        },
+        {
+          "field": "email",
+          "value": "dschwei1@ramapo.edu",
+          "label": "Honors Program Coordinator",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/honors/",
+              "section": "Contacts",
+              "fields": [
+                "email"
+              ],
+              "near": "Honors Program Coordinator"
+            }
+          ]
+        },
+        {
+          "field": "email",
+          "value": "kdoran@ramapo.edu",
+          "label": "Admission Counselor for Honors Program",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/honors/",
+              "section": "Contacts",
+              "fields": [
+                "email"
+              ],
+              "near": "Admission Counselor for Honors Program"
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "phone",
+          "value": "2016847498",
+          "reason": "Source identifies Human Resources, a distinct office, role outside this office, or external referral; it is not a contact owned by Ramapo Honors Program.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847777",
+          "reason": "Source identifies Information Technology Services (ITS) and the ITS Help Desk, a distinct office, role outside this office, or external referral; it is not a contact owned by Ramapo Honors Program.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847035",
+          "reason": "Source identifies Institutional Research, a distinct office, role outside this office, or external referral; it is not a contact owned by Ramapo Honors Program.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847103",
+          "reason": "Source identifies Instructional Design Center, a distinct office, role outside this office, or external referral; it is not a contact owned by Ramapo Honors Program.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847533",
+          "reason": "Source identifies International Education, a distinct office, role outside this office, or external referral; it is not a contact owned by Ramapo Honors Program.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847472",
+          "reason": "Source identifies International Students Organization, a distinct office, role outside this office, or external referral; it is not a contact owned by Ramapo Honors Program.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847971",
+          "reason": "Source identifies Intramurals Office, a distinct office, role outside this office, or external referral; it is not a contact owned by Ramapo Honors Program.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016847796",
+          "reason": "Source identifies J. Lee's, a distinct office, role outside this office, or external referral; it is not a contact owned by Ramapo Honors Program.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/about/phone/",
+            "section": "General Phone Number Listing",
+            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+          }
+        },
+        {
+          "field": "office",
+          "value": "F44B",
+          "reason": "Not a room: \"F44B\" is part of the image file name AA2CE8F5-F44B-478F-9EC6-5C45821A0743.jpeg in the Director's photo link.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/honors/",
+            "section": "Contacts",
+            "text_sha256": "07b33feb2eab72b7ce68e570f1021b01187b9a01cdeea8d73ee980d358dd9b1f"
+          }
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "Eligibility and requirements are determined on a case-by-case basis. Please contact Professor Augis at eaugis@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/honors/applications/transfer-students/",
+            "section": "Transfer Students"
+          }
+        },
+        {
+          "text": "Students must email PDFs of the admission essay, one faculty recommendation, and a sample of work to eaugis@ramapo.edu with the headline \u201cHonors Application.\u201d",
+          "evidence": {
+            "url": "https://www.ramapo.edu/honors/applications/current-ramapo-students/",
+            "section": "How to Apply \u2013 Current Ramapo Freshmen"
+          }
+        },
+        {
+          "text": "If you are student with a challenging major or courses, see the Director as soon as possible to plan a strategy for completing Program requirements.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/honors/faq/",
+            "section": "Is it possible to complete College Honors requirements if I am a Nursing major, Social Work major, double-major, or in a three-year professional program?"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "office",
+          "scope": "College Honors Program office location or room",
+          "reason": "The Honors home page Contacts block and Mission Statement give staff e-mail addresses but no room or building for the program office; the Archway contact page gives only the college street address. The page linked as the contact page (/honors/contact/) was not captured.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/honors/",
+              "section": "Mission StatementRamapo College Honors Program logo (https://www.ramapo.edu/honors/wp-content/uploads/sites/55/2025/09/College-Honors-Program-Circle-Logo-White-background.jpg)",
+              "reviewed": {
+                "text_sha256": "363b84b41decd9b11bd375f1083b5fc0348533fc76d05b164c4deef005ed6f91",
+                "reason": "Describes the program; no room or building."
+              }
+            },
+            {
+              "url": "https://archway.ramapo.edu/rhp/contact-us/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "2543b1a2726a4014bde3061ff1d5a5f21ebd1192d93a427fb6fbf213a3dfe2cf",
+                "reason": "Gives honors@ramapo.edu and the college street address (505 Ramapo Valley Road); no room or building for the program office."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Honors home Contacts block lists three named staff e-mail addresses and the Archway contact page lists honors@ramapo.edu; neither ranks a contact method. Applications and transfer questions go to the Director, which are task-specific instructions kept as contact notes.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/honors/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "07b33feb2eab72b7ce68e570f1021b01187b9a01cdeea8d73ee980d358dd9b1f",
+                "reason": "The Honors home Contacts block lists three named staff e-mail addresses and the Archway contact page lists honors@ramapo.edu; neither ranks a contact method. Applications and transfer questions go to the Director, which are task-specific instructions kept as contact notes."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/honors/",
+              "section": "Mission StatementRamapo College Honors Program logo (https://www.ramapo.edu/honors/wp-content/uploads/sites/55/2025/09/College-Honors-Program-Circle-Logo-White-background.jpg)",
+              "reviewed": {
+                "text_sha256": "363b84b41decd9b11bd375f1083b5fc0348533fc76d05b164c4deef005ed6f91",
+                "reason": "The Honors home Contacts block lists three named staff e-mail addresses and the Archway contact page lists honors@ramapo.edu; neither ranks a contact method. Applications and transfer questions go to the Director, which are task-specific instructions kept as contact notes."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Honors home Contacts block lists three named staff e-mail addresses and the Archway contact page lists honors@ramapo.edu; neither ranks a contact method. Applications and transfer questions go to the Director, which are task-specific instructions kept as contact notes.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/honors/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "07b33feb2eab72b7ce68e570f1021b01187b9a01cdeea8d73ee980d358dd9b1f",
+                "reason": "The Honors home Contacts block lists three named staff e-mail addresses and the Archway contact page lists honors@ramapo.edu; neither ranks a contact method. Applications and transfer questions go to the Director, which are task-specific instructions kept as contact notes."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/honors/",
+              "section": "Mission StatementRamapo College Honors Program logo (https://www.ramapo.edu/honors/wp-content/uploads/sites/55/2025/09/College-Honors-Program-Circle-Logo-White-background.jpg)",
+              "reviewed": {
+                "text_sha256": "363b84b41decd9b11bd375f1083b5fc0348533fc76d05b164c4deef005ed6f91",
+                "reason": "The Honors home Contacts block lists three named staff e-mail addresses and the Archway contact page lists honors@ramapo.edu; neither ranks a contact method. Applications and transfer questions go to the Director, which are task-specific instructions kept as contact notes."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "routine College Honors Program office hours",
+          "reason": "The Honors home page Contacts block and Mission Statement publish no recurring office schedule. The Benefits list mentions 24/7 access to the Honors Lounge for Honors students, which is a member benefit for the lounge, not office hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/honors/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "07b33feb2eab72b7ce68e570f1021b01187b9a01cdeea8d73ee980d358dd9b1f",
+                "reason": "Staff names, titles and e-mail addresses only; no days or times."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/honors/",
+              "section": "Mission StatementRamapo College Honors Program logo (https://www.ramapo.edu/honors/wp-content/uploads/sites/55/2025/09/College-Honors-Program-Circle-Logo-White-background.jpg)",
+              "reviewed": {
+                "text_sha256": "363b84b41decd9b11bd375f1083b5fc0348533fc76d05b164c4deef005ed6f91",
+                "reason": "Program description; no days or times."
               }
             }
           ]
