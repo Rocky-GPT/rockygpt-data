@@ -34,4 +34,6 @@ test('a venue publishes dated menus only when its listing links a menu page', ()
     // An empty list is the page saying it names no menu; a fragment with no list at all is not a venue listing.
     { name: "Dunkin'", dated: false, menus: [] },
   ]);
+  const old = venue('Common Grounds', '/web/en-us/media/Starbucks%20FallMenu2024_tcm17-6098.pdf');
+  assert.deepEqual(menuListings(state([old]), new Date('2026-10-14T00:00:00Z')), [{ name: 'Common Grounds', dated: false, menus: [] }]);
 });

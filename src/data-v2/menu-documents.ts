@@ -49,10 +49,11 @@ export function menuDocuments(state: JsonRecord, capturedAt?: Date): MenuDocumen
 
 /** What one venue's Sodexo listing names as its menus. `dated` is true when one of them links to
  * a menu page (Birch Tree Inn's dated menus); a venue listing only files, or nothing, publishes no
- * dated menu. `menus` keeps each listed menu's name and what it links to, as the page states it. */
+ * dated menu. `menus` keeps each listed menu's name and what it links to, as the page states it; a
+ * file titled only with an earlier year is an old file and left out, as in menuDocuments. */
 export interface MenuListing { name: string; dated: boolean; menus: Array<{ name: string; kind: 'page' | 'file' | 'none'; uri: string }> }
 
-export function menuListings(state: JsonRecord): MenuListing[] {
+export function menuListings(state: JsonRecord, capturedAt?: Date): MenuListing[] {
   const regions = (((state.composition as JsonRecord)?.subject as JsonRecord)?.regions ?? []) as JsonRecord[];
   const listings: MenuListing[] = [];
   for (const fragment of regions.flatMap(region => (region.fragments ?? []) as JsonRecord[])) {
@@ -67,7 +68,7 @@ export function menuListings(state: JsonRecord): MenuListing[] {
         : media.type === 'Download' && typeof media.uri === 'string' && media.uri ? 'file' : 'none';
       const uri = kind === 'page' ? String(link.uri) : kind === 'file' ? String(media.uri) : '';
       return { name: typeof content.name === 'string' ? content.name.trim() : '', kind, uri };
-    });
+    }).filter(menu => !(menu.kind === 'file' && capturedAt && isOutdatedTitle(documentTitle(menu.uri), capturedAt)));
     listings.push({ name, dated: menus.some(menu => menu.kind === 'page'), menus });
   }
   return listings;
