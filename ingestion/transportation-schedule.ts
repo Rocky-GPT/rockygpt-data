@@ -81,11 +81,14 @@ export function parseTransportationSchedules(dataset: RawDatasetV1): PublishedSh
     }
     return { name, serviceDay, sourceUrl: page.url, collectedAt: page.fetchedAt, sourceTitle: page.title, trips: parseShuttleTable(tables[0]) };
   });
-  // One spelling per stop: the Saturday page heads a column "CITY MD Ramsey", the others "City MD Ramsey".
+  // One spelling per stop, the one most timetable pages use: the Saturday page heads a column
+  // "CITY MD Ramsey", the weekday and Sunday pages "City MD Ramsey".
   const spellings = new Map<string, Map<string, number>>();
-  for (const stop of schedules.flatMap(route => route.trips.flatMap(trip => trip.stops))) {
-    const seen = spellings.get(stop.location.toLowerCase()) ?? new Map<string, number>();
-    spellings.set(stop.location.toLowerCase(), seen.set(stop.location, (seen.get(stop.location) ?? 0) + 1));
+  for (const route of schedules) {
+    for (const location of new Set(route.trips.flatMap(trip => trip.stops.map(stop => stop.location)))) {
+      const seen = spellings.get(location.toLowerCase()) ?? new Map<string, number>();
+      spellings.set(location.toLowerCase(), seen.set(location, (seen.get(location) ?? 0) + 1));
+    }
   }
   const canonical = (location: string) => [...spellings.get(location.toLowerCase())!]
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0];
