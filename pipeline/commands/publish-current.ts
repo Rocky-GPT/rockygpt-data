@@ -272,7 +272,7 @@ async function insertStructured(
     counts.menu_documents = (counts.menu_documents || 0) + 1;
   }
   // Which menus each venue's listing names: a venue naming no menu page publishes no dated menu.
-  for (const listing of menuListings(readJson<JsonRecord>('data/raw/dining-hours.raw.json'))) {
+  for (const listing of menuListings(readJson<JsonRecord>('data/raw/dining-hours.raw.json'), new Date(collectedAtFor('dining')))) {
     await client.query(
       `INSERT INTO rockygpt_v2.menu_listings
        (dataset_version_id, source_id, source_record_key, name, dated, menus, collected_at, content_hash)
