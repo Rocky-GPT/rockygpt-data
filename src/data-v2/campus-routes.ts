@@ -19,7 +19,7 @@ const text = (value: unknown): string => typeof value === 'string' ? value.trim(
  * Stops are not identities. A stop is a place a trip's `stops` list names, so a reader that
  * wants "the train station" matches the published stop names, not a registry entry.
  */
-export function compileRouteIdentities(routes: Row[], trips: Row[]): { routes: CampusIdentity[]; unresolved: IdentityCoverageIssue[] } {
+export function compileRouteIdentities(routes: Row[], trips: Row[], stops: Row[] = []): { routes: CampusIdentity[]; unresolved: IdentityCoverageIssue[] } {
   const unresolved: IdentityCoverageIssue[] = [];
   const identities: CampusIdentity[] = [];
   const tripsByRoute = new Map<string, Row[]>();
@@ -43,8 +43,15 @@ export function compileRouteIdentities(routes: Row[], trips: Row[]): { routes: C
       unresolved.push({ entity: name, collection: 'shuttle_trips', reason: keys.length ? 'The timetable\'s trips come from more than one source.' : 'The timetable has no trips in this release.', kind: 'no_records' });
       continue;
     }
+    // The stops this route's trips name, and the campus stop every trip leaves from, as the
+    // stop-descriptions page explains them.
+    const visited = new Set(own.flatMap(trip => (Array.isArray(trip.stops) ? trip.stops : []).map(stop => text((stop as Row).location))));
+    const described = stops.filter(stop => text(stop.name) === 'Ramapo College (Bradley Center)' || visited.has(text(stop.name)));
+    const stopSources = new Set(described.map(stop => text(stop.source_key)));
     identities.push({ id: routeIdentityId(name), kind: 'route', name, aliases: [], links: [
       { collection: 'shuttle_trips', source_key: [...sources][0], source_record_keys: keys },
+      ...(described.length && stopSources.size === 1 ? [{ collection: 'shuttle_stops' as const, source_key: [...stopSources][0],
+        source_record_keys: described.map(stop => text(stop.source_record_key)).sort() }] : []),
     ] });
   }
   return { routes: identities, unresolved };

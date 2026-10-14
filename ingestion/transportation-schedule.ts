@@ -164,3 +164,44 @@ export function parseTransportationSchedules(dataset: RawDatasetV1): PublishedSh
   }
   return schedules;
 }
+
+/** A shuttle stop as the stop-descriptions page explains it, under the name the timetables use. */
+export interface ShuttleStopDescription { stop: string; label: string; description: string; pickup: string | null; sourceUrl: string; collectedAt: string }
+
+/**
+ * The page's own label for each stop, and the stop name the timetables use for it (reviewed
+ * 2026-10-14). "Ramapo College" is the campus stop, which timetables write as leaving Ramapo and
+ * arriving on campus. A label missing from the page stops the collector; a new one is ignored
+ * until it is added here, so no stop is matched by a guess.
+ */
+export const STOP_LABELS: ReadonlyArray<readonly [label: string, stop: string]> = [
+  ['Ramapo College', 'Ramapo College (Bradley Center)'],
+  ['Ramsey Route 17 Train Station', 'Ramsey Rt 17 Train'],
+  ['Interstate', 'Interstate Plaza'],
+  ['Ramsey Square', 'Ramsey Square'],
+  ['CityMD Ramsey Urgent Care', 'City MD Ramsey'],
+  ['Ramsey Farmer’s Market', 'Ramsey Farmers Market'],
+  ['Garden State Plaza', 'Garden State Plaza'],
+  ['Barnes & Noble/Fashion Center', 'Barnes & Noble/ Fashion Center'],
+];
+
+export function parseStopDescriptions(dataset: RawDatasetV1): ShuttleStopDescription[] {
+  const page = dataset.pages.find(candidate => new URL(candidate.url).pathname.replace(/\/+$/, '') === '/about/transportation-services/shuttle-stop-descriptions'
+    && candidate.statusCode !== null && candidate.statusCode >= 200 && candidate.statusCode < 300);
+  if (!page) return [];
+  const section = page.sections.find(item => text(item.heading) === 'Shuttle Stop Descriptions');
+  if (!section) throw new Error('The shuttle stop descriptions section is missing.');
+  const body = text(section.text);
+  const starts = STOP_LABELS.map(([label, stop]) => {
+    const at = body.indexOf(`${label}: `);
+    if (at < 0) throw new Error(`The stop descriptions no longer describe "${label}".`);
+    return { label, stop, at };
+  }).sort((a, b) => a.at - b.at);
+  return starts.map((entry, index) => {
+    const end = index + 1 < starts.length ? starts[index + 1].at : body.length;
+    const description = text(body.slice(entry.at + entry.label.length + 2, end));
+    const pickup = description.match(/At this location, the pick up and drop off (?:is|are) ([^.]+(?:\.[^.]+)?)\.(?:\s|$)/i)?.[1] ?? null;
+    return { stop: entry.stop, label: entry.label, description, pickup: pickup ? text(pickup) : null,
+      sourceUrl: page.url, collectedAt: page.fetchedAt };
+  });
+}
