@@ -533,15 +533,21 @@ async function insertStructured(
       counts.shuttle_trips = (counts.shuttle_trips || 0) + 1;
     }
   }
-  for (const stop of parseStopDescriptions(validateRawDatasetV1(readJson('data/raw/transportation.raw.json')))) {
-    await client.query(
-      `INSERT INTO rockygpt_v2.shuttle_stops
-       (dataset_version_id, source_id, source_record_key, name, label, description, pickup, collected_at, content_hash)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-      [datasetId, sources.get('transportation'), `stop:${stop.stop}`, stop.stop, stop.label, stop.description, stop.pickup,
-        stop.collectedAt, sha256(JSON.stringify(stop))]
-    );
-    counts.shuttle_stops = (counts.shuttle_stops || 0) + 1;
+  // One record per route and stop it visits (and the campus stop every trip leaves from): a
+  // record has exactly one identity, so a stop several routes share is written for each route.
+  const described = parseStopDescriptions(validateRawDatasetV1(readJson('data/raw/transportation.raw.json')));
+  for (const { name, trips } of routes) {
+    const visited = new Set(['Ramapo College (Bradley Center)', ...trips.flatMap(trip => trip.stops.map(stop => stop.location))]);
+    for (const stop of described.filter(item => visited.has(item.stop))) {
+      await client.query(
+        `INSERT INTO rockygpt_v2.shuttle_stops
+         (dataset_version_id, source_id, source_record_key, name, label, description, pickup, collected_at, content_hash)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+        [datasetId, sources.get('transportation'), `${name}:stop:${stop.stop}`, stop.stop, stop.label, stop.description, stop.pickup,
+          stop.collectedAt, sha256(JSON.stringify({ route: name, stop }))]
+      );
+      counts.shuttle_stops = (counts.shuttle_stops || 0) + 1;
+    }
   }
 
   return counts;
