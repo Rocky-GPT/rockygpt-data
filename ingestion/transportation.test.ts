@@ -57,7 +57,10 @@ test('each stop has one spelling across routes and the mid-day timetable is name
       url: `https://www.ramapo.edu/about/transportation-services/${slug}/`, title: 'Fall 2026 Shuttle Schedule',
       sourceType: 'detail', fetchedAt: '2026-09-23T00:00:00Z', statusCode: 200,
       links: [], externalLinks: [], sections: [], lists: [], contacts: [], documents: [],
-      tables: [{ headers: ['Leave Ramapo', header(slug), 'Arrive on Campus'], rows: [['9:00 AM', '9:10 AM', '9:30 AM']] }],
+      // Saturday's page has more trips than the others: the spelling most pages use still wins.
+      tables: [{ headers: ['Leave Ramapo', header(slug), 'Arrive on Campus'], rows: slug === 'saturday-shuttle-schedule'
+        ? [['9:00 AM', '9:10 AM', '9:30 AM'], ['10:00 AM', '10:10 AM', '10:30 AM'], ['11:00 AM', '11:10 AM', '11:30 AM']]
+        : [['9:00 AM', '9:10 AM', '9:30 AM']] }],
     })),
   };
   const schedules = parseTransportationSchedules(dataset);
