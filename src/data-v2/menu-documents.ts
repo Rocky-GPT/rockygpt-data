@@ -16,7 +16,14 @@ export function documentTitle(uri: string): string {
   return file.replace(/(?:_tcm[\d-]+)+$/i, '').replace(/\s+/g, ' ').trim();
 }
 
-export function menuDocuments(state: JsonRecord): MenuDocument[] {
+/** A file whose title names only years before the capture's ("Starbucks FallMenu2024" in 2026) is
+ * an old menu the feed still links; it is left out. A title naming no year is kept. */
+export function isOutdatedTitle(title: string, capturedAt: Date): boolean {
+  const years = [...title.matchAll(/(?<!\d)(20\d{2})(?!\d)/g)].map(match => Number(match[1]));
+  return years.length > 0 && years.every(year => year < capturedAt.getUTCFullYear());
+}
+
+export function menuDocuments(state: JsonRecord, capturedAt?: Date): MenuDocument[] {
   const text = JSON.stringify(state);
   const absolute = [...text.matchAll(/https:\/\/[a-z0-9.-]+\/web\/en-us\/media\/[^"]+/gi)].map(match => new URL(match[0]).origin);
   const origins = new Set(absolute);
@@ -32,7 +39,9 @@ export function menuDocuments(state: JsonRecord): MenuDocument[] {
       if (!name || media?.type !== 'Download' || !uri) continue;
       const url = /^https:\/\//i.test(uri) ? uri : uri.startsWith(MEDIA_PATH) && origin ? `${origin}${uri}` : '';
       if (!url) continue;
-      found.push({ name, title: documentTitle(uri), url, mimeType: typeof media.mimeType === 'string' ? media.mimeType : '' });
+      const title = documentTitle(uri);
+      if (capturedAt && isOutdatedTitle(title, capturedAt)) continue;
+      found.push({ name, title, url, mimeType: typeof media.mimeType === 'string' ? media.mimeType : '' });
     }
   }
   return found;
