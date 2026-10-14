@@ -986,7 +986,10 @@
       "group": "Military and Veterans Success",
       "contact": "office:military-and-veterans-success",
       "reviewed_at": "2026-10-14",
-      "note": "Approved by Dan's 2026-10-14 request to complete the offices: the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
+      "note": "Approved by Dan's 2026-10-14 request to complete the offices: the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit.",
+      "hours": [
+        "Military and Veterans Success"
+      ]
     },
     {
       "group": "First Generation Student Center",
