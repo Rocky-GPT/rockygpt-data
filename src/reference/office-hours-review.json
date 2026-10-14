@@ -1368,6 +1368,129 @@
           "section_sha256": "7059b3dce6af620a0aa993e52e38685c449d6e0a34a307109fca035466782679"
         }
       ]
+    },
+    {
+      "schedule": "J. Lee's (Student Lounge & Game Room)",
+      "source_url": "https://www.ramapo.edu/csi/",
+      "scope": "J. Lee's (Student Lounge & Game Room) source-specific timetable",
+      "missing_weekdays": [
+        "Saturday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/csi/",
+          "section": "J. Lee’s",
+          "section_sha256": "457e0661b414ecb10dee46efb69a103264e7d24908db90a4f7425d9459adba37"
+        }
+      ]
+    },
+    {
+      "schedule": "School of Arts, Humanities, and Education Office",
+      "source_url": "https://www.ramapo.edu/ahe/",
+      "scope": "School of Arts, Humanities, and Education Office source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/ahe/",
+          "section": "Contact Us",
+          "section_sha256": "933ae7d1e3424ea2f685eab37e617d48cf0b3f5099aaff9ae818bb43ed8ee22e"
+        }
+      ]
+    },
+    {
+      "schedule": "School of Science, Nursing, and Health Office",
+      "source_url": "https://www.ramapo.edu/snh/",
+      "scope": "School of Science, Nursing, and Health Office source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/snh/",
+          "section": "Contact Us",
+          "section_sha256": "dc6e5ec20b14f0d8e4ba87e9e01efbb1b1261bf4f44d627b6d0dbfe6f7bd9567"
+        }
+      ]
+    },
+    {
+      "schedule": "School of Science, Nursing, and Health Office (Summer)",
+      "source_url": "https://www.ramapo.edu/snh/",
+      "scope": "School of Science, Nursing, and Health Office (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/snh/",
+          "section": "Contact Us",
+          "section_sha256": "dc6e5ec20b14f0d8e4ba87e9e01efbb1b1261bf4f44d627b6d0dbfe6f7bd9567"
+        }
+      ]
+    },
+    {
+      "schedule": "School of Social Sciences and Social Work Office",
+      "source_url": "https://www.ramapo.edu/sssw/",
+      "scope": "School of Social Sciences and Social Work Office source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/sssw/",
+          "section": "Contact Us",
+          "section_sha256": "e0b04ac443bea2844091dcb573b9cfe3571e6c58c0064bc54d2f6d0907a4ad1f"
+        }
+      ]
+    },
+    {
+      "schedule": "Military and Veterans Success",
+      "source_url": "https://www.ramapo.edu/military/veterans-lounge-advisement/",
+      "scope": "Military and Veterans Success source-specific timetable",
+      "missing_weekdays": [],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/military/veterans-lounge-advisement/",
+          "section": "Veterans Lounge & Transfer Center",
+          "section_sha256": "7e7038df1226818037180e6938a2aab6b9722e48aef633f366ffab733a47fc34"
+        }
+      ]
     }
   ]
 }
