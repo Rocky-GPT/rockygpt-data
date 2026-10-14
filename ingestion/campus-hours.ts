@@ -500,6 +500,9 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'Civic and Community Engagement Center', url: 'https://www.ramapo.edu/ccec/',
         label: /^(?=Monday through Friday:)/i },
     { name: 'Commuter Affairs', url: 'https://www.ramapo.edu/csi/commuter-affairs/', label: /^(?=Monday-Friday:)/i },
+    // The Veterans Lounge & Transfer Center is the unit's only stated place; its page says "Daily".
+    { name: 'Military and Veterans Success', url: 'https://www.ramapo.edu/military/veterans-lounge-advisement/',
+        label: /^Hours of Operation:/i },
     { name: "Women's Center & LGBTQ+ Services", url: 'https://www.ramapo.edu/womenscenter/', kind: 'week',
         label: /^Fall 2026$/i, season: 'Fall 2026' },
     // One unit, two published schedules: the Multicultural Center room and the ABC office.
@@ -587,14 +590,16 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     const rest = lines[index].replace(label, '').trim();
     const text = range.test(rest) ? rest : `${rest} ${lines[index + 1] ?? ''}`.trim();
     const days = text.match(/\b(Monday|Mon\.?)\s*(?:-|to|through|thru)\s*(Thursday|Thurs?\.?|Friday|Fri\.?)(?![a-z])/i);
+    // "Daily" is every day of the week, as written; nothing narrower is assumed.
+    const daily = !days && /^(?:[^a-z]*\bdaily\b)/i.test(text);
     const time = text.match(range);
     if ([...text.matchAll(new RegExp(range.source, 'gi'))].length > 1) {
         throw new Error(`Office hours state more than one time range for ${name}: "${text}"`);
     }
-    if (!days || !time) throw new Error(`Office hours are unrecognized for ${name}: "${text}"`);
+    if ((!days && !daily) || !time) throw new Error(`Office hours are unrecognized for ${name}: "${text}"`);
     const clock = (hour: string, minute: string | undefined, half: string) => `${hour}:${minute ?? '00'} ${half}M`;
     const schedule = scheduleFromLine(`${clock(time[1], time[2], time[3])} - ${clock(time[4], time[5], time[6])}`);
-    const last = /^Fri/i.test(days[2]) ? 5 : 4;
+    const last = daily ? 7 : /^Fri/i.test(days![2]) ? 5 : 4;
     const hours = createUnknownWeek();
     DAYS.slice(0, last).forEach((day) => { hours[day] = schedule; });
     const following = lines[index + (range.test(rest) ? 1 : 2)] ?? '';

@@ -279,6 +279,7 @@ const newOfficePages: Record<string, string> = {
   'https://www.ramapo.edu/international/': 'Location & Hours\nC-wing, Suite 213\nMonday - Friday: 8:30 AM - 4:30 PM\nSummer Hours\nMonday - Thursday: 8:00 AM to 5:15 PM; Friday: CLOSED',
   'https://www.ramapo.edu/ccec/': 'Location/ Hours\nPlease visit us in SC-213\nMonday through Friday: 9 a.m. - 4 p.m.\nccec@ramapo.edu',
   'https://www.ramapo.edu/csi/commuter-affairs/': 'Location/ Hours\nCenter For Student Involvement (CSI) SC-202\nMonday-Friday: 8:30am-4:30pm\nEmail: commuters@ramapo.edu',
+  'https://www.ramapo.edu/military/veterans-lounge-advisement/': 'Veterans Lounge & Transfer Center\nHours of Operation: Daily, 8:30 a.m. - 4:30 p.m.',
   'https://www.ramapo.edu/womenscenter/': 'Open Hours\nFall 2026\nMondays, 10 am - 8 pm\nTuesdays, 10 am - 6 pm\nWednesdays, 10 am - 8 pm\nThursdays, 10 am - 8 pm\nFridays, 10 am - 5 pm',
   'https://www.ramapo.edu/multicultural-center/': 'Hours of Operation\nMonday-Friday:\n1:00 p.m. to 4:30 p.m.',
   'https://www.ramapo.edu/oabc/contact-us/': 'Regular Office Hours: Monday - Friday 8:30 a.m. - 4:30 p.m.\nSummer Office Hours: Monday - Thursday 8:00 a.m. - 5:15 p.m. Closed Fridays',
@@ -607,4 +608,9 @@ test('two adjacent days joined by & or "and" are those two days; any other pair 
   assert.equal(joinAdjacentDays('Saturday and Sunday: 8 PM - Midnight'), 'Saturday - Sunday: 8 PM - Midnight');
   assert.equal(joinAdjacentDays('Fall & Spring Semester Hours:'), 'Fall & Spring Semester Hours:');
   assert.throws(() => joinAdjacentDays('Monday & Wednesday: 1 PM - 3 PM'), /two adjacent days/);
+});
+
+test('"Daily" office hours are every day of the week', () => {
+  const read = parseOfficeHours('Lounge', /^Hours of Operation:/i, 'Hours of Operation: Daily, 8:30 a.m. - 4:30 p.m.', '2026-10-14T00:00:00Z', []);
+  assert.deepEqual(Object.values(read.hours), Array(7).fill('8:30am-4:30pm'));
 });
