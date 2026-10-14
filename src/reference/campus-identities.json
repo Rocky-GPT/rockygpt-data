@@ -12429,6 +12429,86 @@
           }
         }
       ]
+    },
+    {
+      "id": "deb9002c-7d29-42a6-8003-391d3683c037",
+      "kind": "office",
+      "name": "Transportation Services",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:transportation-services"
+            ],
+            "evidence": "The Transportation Services page's own contact block (https://www.ramapo.edu/about/transportation-services/, read 2026-10-14) states this shuttle contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "3e15f6cb-de35-45f2-a8b2-82edeb167d1c",
+      "kind": "office",
+      "name": "STEM Center",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:stem-center"
+            ],
+            "evidence": "The STEM Center's own pages (https://www.ramapo.edu/stem-center/, read 2026-10-14) state these contacts; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "55a57085-67ba-4c34-92fe-bb4b7748d6ef",
+      "kind": "office",
+      "name": "Orientation Programs",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:orientation-programs"
+            ],
+            "evidence": "The Orientation Programs pages (https://www.ramapo.edu/orientation/, read 2026-10-14) state this contact; its phone and room are the Center for Student Success's, so no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "881ae0cd-10b8-4d91-a992-12bc40af0c40",
+      "kind": "office",
+      "name": "Degree Completion Program",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:degree-completion-program"
+            ],
+            "evidence": "The Degree Completion Program and adult-student pages (https://www.ramapo.edu/dcp/, https://www.ramapo.edu/adult-students/, read 2026-10-14) state this contact; no shared-phone matching."
+          }
+        }
+      ]
     }
   ]
 }

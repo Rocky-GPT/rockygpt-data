@@ -491,6 +491,23 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'Center for Student Involvement (Summer)', url: 'https://www.ramapo.edu/csi/roadrunner-central/', kind: 'week',
         label: /^During the Summer months, our hours are as follows:$/i, season: 'Summer' },
     { name: 'IT Help Desk (Summer)', url: 'https://www.ramapo.edu/its/help-desk/', label: /^Summer:/i, season: 'Summer' },
+    // Units that are Archway groups (read 2026-10-14); their reviewed desk contacts link these by name.
+    // The day line carries no label of its own, so the label is the day line, kept zero width.
+    { name: 'Roukema Center for International Education', url: 'https://www.ramapo.edu/international/',
+        label: /^(?=Monday - Friday:)/i },
+    { name: 'Roukema Center for International Education (Summer)', url: 'https://www.ramapo.edu/international/',
+        label: /^Summer Hours$/i, season: 'Summer' },
+    { name: 'Civic and Community Engagement Center', url: 'https://www.ramapo.edu/ccec/',
+        label: /^(?=Monday through Friday:)/i },
+    { name: 'Commuter Affairs', url: 'https://www.ramapo.edu/csi/commuter-affairs/', label: /^(?=Monday-Friday:)/i },
+    { name: "Women's Center & LGBTQ+ Services", url: 'https://www.ramapo.edu/womenscenter/', kind: 'week',
+        label: /^Fall 2026$/i, season: 'Fall 2026' },
+    // One unit, two published schedules: the Multicultural Center room and the ABC office.
+    { name: 'The Multicultural Center', url: 'https://www.ramapo.edu/multicultural-center/', label: /^(?=Monday-Friday:$)/i },
+    { name: 'Office of Access, Belonging and Community', url: 'https://www.ramapo.edu/oabc/contact-us/',
+        label: /^Regular Office Hours:/i },
+    { name: 'Office of Access, Belonging and Community (Summer)', url: 'https://www.ramapo.edu/oabc/contact-us/',
+        label: /^Summer Office Hours:/i, season: 'Summer' },
     { name: 'Berrie Center Box Office', url: 'https://www.ramapo.edu/berriecenter/tickets-seating/', kind: 'week',
         label: /^As of August 26, 2026 the Box Office is open:$/i,
         starts: /As of (August) (26), (2026) the Box Office is open:/i },
