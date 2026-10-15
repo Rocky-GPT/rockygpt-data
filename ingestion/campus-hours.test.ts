@@ -3,7 +3,7 @@ import test from 'node:test';
 import {
   ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, campusHoursFromCaptures,
   campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
-  OFFICE_HOURS_PAGES, hoursPageText, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, parseWeeklyHours,
+  OFFICE_HOURS_PAGES, hoursPageText, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, parseUnstatedDayHours, parseWeeklyHours,
   parseColumnHours, BERRIE_SEASON_URL, joinAdjacentDays,
 } from './campus-hours';
 import { attachReviewedHoursAbsences } from './reviewed-hours-absence';
@@ -291,6 +291,7 @@ const newOfficePages: Record<string, string> = {
   'https://www.ramapo.edu/facilities/': 'Administrative Offices\nGrounds Maintenance\nHours\nAdministrative Offices\nMonday - Friday, 7:30 a.m. to 4:30 p.m.\n'
     + 'Building Maintenance\nMonday - Friday, 7:00a.m. to 10:30 p.m.\nSaturday & Sunday, 2:00 p.m. to 10:30 p.m.',
   'https://www.ramapo.edu/poerd/': 'Hours:\nFall/Spring, Mon. - Fri.\n8:30 a.m. - 4:30 p.m.\nSummer, Mon. - Thurs.,\n8 a.m. - 5:15 p.m.',
+  'https://www.ramapo.edu/purchasing/': 'Hours of Operation\nNormal: 8:30 a.m. to 4:30 p.m.\nSummer: M. - Th. 8 a.m. to 5:15 p.m.',
   'https://www.ramapo.edu/idc/': 'Instructional Design Center Hours\nMonday-Friday | 8:30 a.m.-4:30 p.m.\n'
     + 'In-person support (LC201): Monday, Wednesday & Thursday\nRemote support: Tuesday & Friday',
   'https://www.ramapo.edu/opra/': 'RECORD ACCESS: The College is opened:\n'
@@ -636,4 +637,16 @@ test('an opening time without am/pm is read only when one half of the day runs f
   assert.equal(read('Monday-Friday 8:30-4:30 pm').hours.Monday, '8:30am-4:30pm');
   assert.throws(() => read('Monday-Friday 1-3 pm'), /am or pm/);
   assert.equal(read('Mon. - Fri., 8:30 a.m. - 4:30 p.m.').hours.Friday, '8:30am-4:30pm');
+});
+
+test('hours a page states with no weekdays keep every day unpublished, and "M. - Th." is a day range', () => {
+  const text = 'Hours of Operation\nNormal: 8:30 a.m. to 4:30 p.m.\nSummer: M. - Th. 8 a.m. to 5:15 p.m.';
+  const normal = parseUnstatedDayHours('Purchasing Department', /^Normal:/i, text);
+  assert.ok(Object.values(normal.hours).every((hours) => hours === 'Hours unavailable'));
+  assert.equal(normal.notes, 'Normal: 8:30 a.m. to 4:30 p.m.');
+  assert.throws(() => parseUnstatedDayHours('X', /^Normal:/i, 'Normal: Monday - Friday 8:30 a.m. to 4:30 p.m.'), /now names its days/);
+  const summer = parseOfficeHours('Purchasing Department (Summer)', /^(?=Summer: M\.)/i, text, '2026-10-15T12:00:00Z', []);
+  assert.deepEqual([summer.hours.Monday, summer.hours.Thursday, summer.hours.Friday], ['8:00am-5:15pm', '8:00am-5:15pm', 'Hours unavailable']);
+  // "a.m. to" is not "M. to": a time is never read as a day.
+  assert.throws(() => parseOfficeHours('Y', /^Open:/i, 'Open: 8 a.m. to 4 p.m.', '2026-10-15T12:00:00Z', []), /unrecognized/);
 });

@@ -22020,7 +22020,15 @@
             "text_sha256": "2933e77705381fbeb5a442202be68bab1143ee50d8cc52662a754c41de029e1a"
           }
         }
-      ]
+      ],
+      "contactPreference": {
+        "method": "email",
+        "quote": "to ensure all inquiries are promptly addressed, the best form of contact at this time is through email",
+        "evidence": {
+          "url": "https://www.ramapo.edu/budget/adaptive-insights/",
+          "section": "Workday Adaptive Planning"
+        }
+      }
     },
     {
       "name": "Controller",

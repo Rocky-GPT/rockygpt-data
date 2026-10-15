@@ -13150,6 +13150,19 @@
             ],
             "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
           }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Purchasing Department",
+              "Purchasing Department (Summer)"
+            ],
+            "evidence": "Reviewed own-office schedules on the unit's own home page, each published season kept separately; the Normal line names no weekdays, so its days stay unpublished. Explicit source dates only."
+          }
         }
       ]
     },

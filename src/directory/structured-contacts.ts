@@ -12,8 +12,10 @@ import {
   checkContactValues,
   checkContactAdditions,
   checkContactNotes,
+  checkContactPreference,
   checkWebsite,
   type AbsenceClaim,
+  type ReviewedContactPreference,
   type AbsenceIssue,
   type CapturedPage,
   type ConfirmedAbsence,
@@ -65,6 +67,8 @@ export interface StructuredDirectoryContact extends ContactRecord {
     additional_contacts?: ConfirmedContactAddition[];
     contact_notes?: ConfirmedContactNote[];
     contact_note_issues?: Array<{ text: string; reason: string }>;
+    /** Why a reviewed contact preference was not published this run. */
+    contact_preference_issue?: string;
     /** Unreviewed discoveries are diagnostic metadata, never attribute evidence. */
     contact_review?: ContactCoverageReport;
     contact_conflicts?: ConfirmedContactAddition[];
@@ -194,13 +198,17 @@ export function normalizePhoneNumber(phone: string | undefined | null): string |
  */
 function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; notPublished?: AbsenceClaim[]; website?: string;
   websiteEvidence?: Pick<ContactEvidence, 'url' | 'section'>; additionalContacts?: ReviewedContactAddition[]; contactNotes?: ReviewedContactNote[];
+  contactPreference?: ReviewedContactPreference;
   contactConflicts?: ReviewedContactAddition[]; contactReviewExclusions?: ReviewedContactExclusion[]; department?: string },
   capturedPages: ReadonlyMap<string, CapturedPage> | undefined): {
   values: ContactValues; evidence?: StructuredDirectoryContact['evidence'];
   additions: Array<Pick<ConfirmedContactAddition, 'field' | 'value' | 'label'>>; notes: string[];
+  /** The contact method the office's page ranks first, when confirmed. */
+  preference?: 'email';
 } {
   const values = { phone: entry.phone, email: entry.email, office: entry.office };
-  if (!capturedPages) return { values, additions: entry.additionalContacts ?? [], notes: (entry.contactNotes ?? []).map(note => note.text) };
+  if (!capturedPages) return { values, additions: entry.additionalContacts ?? [], notes: (entry.contactNotes ?? []).map(note => note.text),
+    preference: entry.contactPreference?.method };
   const checked = checkContactValues(values, entry.evidence, capturedPages);
   // Against the reviewed values, not the published ones: a value withheld this run is still a value.
   const site = checkWebsite(entry.website, capturedPages, entry.websiteEvidence);
@@ -212,8 +220,10 @@ function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; no
   // arrays, so their additional values do contradict a claim that no value is published.
   for (const item of entry.additionalContacts ?? []) if (item.field !== 'email') allReviewedValues[item.field] ||= item.value;
   const normalized = parseAndNormalizePhone(values.phone);
-  allReviewedValues.prefers_email = normalized.prefers_email;
-  allReviewedValues.preferred_contact = normalized.preferred_contact;
+  const preference = checkContactPreference(entry.contactPreference, capturedPages);
+  // A reviewed preference contradicts a claim that none is published, confirmed or not.
+  allReviewedValues.prefers_email = entry.contactPreference ? true : normalized.prefers_email;
+  allReviewedValues.preferred_contact = entry.contactPreference?.method ?? normalized.preferred_contact;
   allReviewedValues.contact_note = [normalized.contact_note, ...notes.confirmed.map(note => note.text),
     ...additions.confirmed.filter(item => item.field === 'email').map(item => `${item.label}: ${item.value}`)].filter(Boolean).join('\n');
   // A website claim is contradicted by the entry naming one, confirmed or not.
@@ -222,7 +232,10 @@ function reviewedValues(entry: ContactValues & { evidence: ContactEvidence[]; no
   return {
     values: checked.values,
     additions: additions.confirmed, notes: notes.confirmed.map(note => note.text),
-    evidence: { source_urls: [...new Set([...checked.sourceUrls, ...additions.confirmed.map(item => item.url), ...conflicts.confirmed.map(item => item.url), ...notes.confirmed.map(item => item.url)])],
+    preference: preference.confirmed?.method,
+    evidence: { source_urls: [...new Set([...checked.sourceUrls, ...additions.confirmed.map(item => item.url), ...conflicts.confirmed.map(item => item.url), ...notes.confirmed.map(item => item.url),
+      ...(preference.confirmed ? [preference.confirmed.url] : [])])],
+      ...(preference.issue ? { contact_preference_issue: preference.issue } : {}),
       withheld: [...checked.withheld, ...additions.withheld, ...conflicts.withheld],
       not_published: absences.confirmed, absence_issues: absences.issues,
       additional_contacts: additions.confirmed, contact_notes: notes.confirmed, contact_note_issues: notes.issues,
@@ -243,7 +256,7 @@ export function buildStructuredDirectoryContacts(
   capturedPages?: ReadonlyMap<string, CapturedPage>
 ): StructuredDirectoryContact[] {
   const offices: StructuredDirectoryContact[] = OFFICE_DIRECTORY_CONTACTS.map((entry) => {
-    const { values, evidence, additions, notes } = reviewedValues(entry, capturedPages);
+    const { values, evidence, additions, notes, preference } = reviewedValues(entry, capturedPages);
     const normalized = parseAndNormalizePhone(values.phone);
     const phones = [...normalized.phones];
     const locations: NonNullable<ContactRecord['offices']> = values.office ? [values.office] : [];
@@ -268,9 +281,9 @@ export function buildStructuredDirectoryContacts(
       department: entry.department,
       phone: normalized.phone || undefined,
       phones,
-      preferred_contact: normalized.preferred_contact || undefined,
+      preferred_contact: preference ?? (normalized.preferred_contact || undefined),
       contact_note: [normalized.contact_note, ...notes].filter(Boolean).join('\n') || undefined,
-      prefers_email: normalized.prefers_email,
+      prefers_email: preference === 'email' ? true : normalized.prefers_email,
       raw_phone: normalized.raw_phone || undefined,
       phone_normalization_status: phones.length > 1 ? 'multi_phone' : normalized.phone_normalization_status,
       email: values.email,

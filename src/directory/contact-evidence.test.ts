@@ -7,6 +7,7 @@ import {
   ABSENCE_FIELDS,
   CONTACT_FIELDS,
   checkAbsences,
+  checkContactPreference,
   checkContactValues,
   checkWebsite,
   findUnrecordedValues,
@@ -353,4 +354,18 @@ test('publication records a confirmed website and a website it could not keep, i
   assert.deepEqual(athleticsRow(referral, own).evidence?.website?.official_link?.url, athleticsEntry.websiteEvidence!.url);
   assert.match(athleticsRow(own).evidence?.website_issue?.reason ?? '', /needs the official catalog referral|does not link/);
   assert.match(athleticsRow(referral).evidence?.website_issue?.reason ?? '', /did not capture/);
+});
+
+test('a reviewed contact preference publishes only while its section still ranks that method', () => {
+  const url = 'https://www.ramapo.edu/budget/adaptive-insights/';
+  const page = { url, fetchedAt: '2026-10-15T14:00:00.000Z', sections: [{ heading: 'Workday Adaptive Planning',
+    text: 'to ensure all inquiries are promptly addressed, the best form of contact at this time is through email.' }] };
+  const pages = new Map([[pageKey(url), page]]);
+  const preference = { method: 'email' as const, quote: 'the best form of contact at this time is through email',
+    evidence: { url, section: 'Workday Adaptive Planning' } };
+  assert.deepEqual(checkContactPreference(preference, pages), { confirmed: { method: 'email', url } });
+  assert.match(checkContactPreference({ ...preference, quote: 'call us anytime' }, pages).issue!, /does not state/);
+  const plain = new Map([[pageKey(url), { ...page, sections: [{ heading: 'Workday Adaptive Planning', text: 'You can email us.' }] }]]);
+  assert.match(checkContactPreference({ ...preference, quote: 'You can email us' }, plain).issue!, /does not rank email first/);
+  assert.deepEqual(checkContactPreference(undefined, pages), {});
 });
