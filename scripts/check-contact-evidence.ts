@@ -15,6 +15,8 @@ for (const contact of buildStructuredDirectoryContacts([], pages)) {
     console.log(`    ${item.label}: ${item.field} ${item.value} (${item.url})`);
   for (const note of evidence.contact_note_issues ?? []) console.log(`    withheld contact instruction ${note.text}: ${note.reason}`);
   contactNoteIssues += evidence.contact_note_issues?.length ?? 0;
+  if (contact.preferred_contact && evidence.source_urls) console.log(`    preferred contact: ${contact.preferred_contact}`);
+  if (evidence.contact_preference_issue) { console.log(`    ✗ contact preference: ${evidence.contact_preference_issue}`); contactNoteIssues += 1; }
   for (const absence of evidence.not_published) {
     console.log(`    not published: ${absence.field} (${absence.checks.length} source sections; ${absence.scope ?? 'reviewed field'})`);
     confirmedAbsences += 1;

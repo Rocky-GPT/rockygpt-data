@@ -1619,6 +1619,54 @@
           "section_sha256": "1ea9e4eb695accb02744b1b44164861c8d4487a6c0796c998b422886efa34267"
         }
       ]
+    },
+    {
+      "schedule": "Purchasing Department",
+      "source_url": "https://www.ramapo.edu/purchasing/",
+      "scope": "Purchasing Department source-specific timetable",
+      "missing_weekdays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The Hours of Operation section gives Normal hours of 8:30 a.m. to 4:30 p.m. but names no weekdays and no dates; no day is assumed. The line itself is kept with the schedule.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/purchasing/",
+          "section": "Hours of Operation",
+          "section_sha256": "0c6944b3268448348d90ca41675ae34f487467f823f629e2c398e93e66f2e3df"
+        }
+      ]
+    },
+    {
+      "schedule": "Purchasing Department (Summer)",
+      "source_url": "https://www.ramapo.edu/purchasing/",
+      "scope": "Purchasing Department (Summer) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The Hours of Operation section gives Summer hours for M. - Th. only and no dates for the summer season.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/purchasing/",
+          "section": "Hours of Operation",
+          "section_sha256": "0c6944b3268448348d90ca41675ae34f487467f823f629e2c398e93e66f2e3df"
+        }
+      ]
     }
   ]
 }

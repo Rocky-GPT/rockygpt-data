@@ -417,7 +417,7 @@ export interface OfficeHoursPage {
     name: string;
     url: string;
     label: RegExp;
-    kind?: 'always' | 'conflict' | 'week' | 'columns';
+    kind?: 'always' | 'conflict' | 'week' | 'columns' | 'days-unstated';
     /** For `conflict`: the other statement the label's line disagrees with. */
     against?: RegExp;
     /** Source-published scope, retained even when its calendar boundaries are absent. */
@@ -538,6 +538,11 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         label: /^(?=Fall\/Spring, Mon)/i, season: 'Fall/Spring' },
     { name: 'People Operations and Employee Resources Department (Summer)', url: 'https://www.ramapo.edu/poerd/',
         label: /^(?=Summer, Mon)/i, season: 'Summer' },
+    // Purchasing's "Normal" line names no weekdays: its days stay unpublished, the line is kept.
+    { name: 'Purchasing Department', url: 'https://www.ramapo.edu/purchasing/', label: /^Normal:/i,
+        kind: 'days-unstated', season: 'Normal' },
+    { name: 'Purchasing Department (Summer)', url: 'https://www.ramapo.edu/purchasing/', label: /^(?=Summer: M\.)/i,
+        season: 'Summer' },
     // Offices added 2026-10-15. The IDC prints its support days under its hours; both stay with them.
     { name: 'Instructional Design Center', url: 'https://www.ramapo.edu/idc/', label: /^Instructional Design Center Hours$/i,
         extract: /Instructional Design Center Hours\nMonday-Friday \| [^\n]*/i,
@@ -628,7 +633,8 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     // The schedule follows its label on the same line, or on the next line (Registrar).
     const rest = lines[index].replace(label, '').trim();
     const text = range.test(rest) ? rest : `${rest} ${lines[index + 1] ?? ''}`.trim();
-    const days = text.match(/\b(Monday|Mon\.?)\s*(?:-|to|through|thru)\s*(Thursday|Thurs?\.?|Friday|Fri\.?)(?![a-z])/i);
+    // "M. - Th." (Purchasing) is a day range only as a range: a lone "M." or "Th." is not read as a day.
+    const days = text.match(/\b(Monday|Mon\.?|M\.)\s*(?:-|–|to|through|thru)\s*(Thursday|Thurs?\.?|Th\.|Friday|Fri\.?|F\.)(?![a-z])/i);
     // "Daily" is every day of the week, as written; nothing narrower is assumed.
     const daily = !days && /^(?:[^a-z]*\bdaily\b)/i.test(text);
     const time = text.match(range);
@@ -643,7 +649,7 @@ export function parseOfficeHours(name: string, label: RegExp, pageText: string, 
     const opening = time[3] ? [time[3]] : ['a', 'p'].filter((half) => minutes(time[1], time[2], half) < closes);
     if (opening.length !== 1) throw new Error(`Office hours do not say whether ${time[1]} is am or pm for ${name}: "${text}"`);
     const schedule = scheduleFromLine(`${clock(time[1], time[2], opening[0])} - ${clock(time[4], time[5], time[6])}`);
-    const last = daily ? 7 : /^Fri/i.test(days![2]) ? 5 : 4;
+    const last = daily ? 7 : /^F/i.test(days![2]) ? 5 : 4;
     const hours = createUnknownWeek();
     DAYS.slice(0, last).forEach((day) => { hours[day] = schedule; });
     const following = lines[index + (range.test(rest) ? 1 : 2)] ?? '';
@@ -828,6 +834,23 @@ export function parseAlwaysOpenHours(name: string, label: RegExp, pageText: stri
  * is withheld, and its note keeps both statements as written so a person can compare them.
  * It fails when either statement is gone, so a corrected page is noticed, not ignored.
  */
+/**
+ * Hours a page states with no weekdays ("Normal: 8:30 a.m. to 4:30 p.m."). No day is assumed: every
+ * weekday stays unpublished and the line is kept as written, so it can be said as the page says it.
+ * It fails when the line names its days, so a page that adds them is read properly instead.
+ */
+export function parseUnstatedDayHours(name: string, label: RegExp, pageText: string): LocationHours {
+    const line = pageText.split('\n').map((text) => text.trim()).find((text) => label.test(text));
+    if (!line) throw new Error(`Office hours line is unavailable for ${name}`);
+    if (new RegExp(`\\b${DAY_WORD}\\b|\\bdaily\\b`, 'i').test(line.replace(label, ''))) {
+        throw new Error(`The hours line of ${name} now names its days; review it: "${line}"`);
+    }
+    if (!/\d{1,2}(?::\d{2})?\s*[ap]\.?\s*m\.?\s*(?:-|to|until)\s*\d{1,2}(?::\d{2})?\s*[ap]\.?\s*m\.?/i.test(line)) {
+        throw new Error(`The hours line of ${name} no longer states a time range: "${line}"`);
+    }
+    return { name, hours: createUnknownWeek(), notes: line };
+}
+
 export function parseConflictingOfficeHours(name: string, label: RegExp, against: RegExp, pageText: string): LocationHours {
     const first = pageText.match(label)?.[0];
     const second = pageText.match(against)?.[0];
@@ -860,6 +883,7 @@ function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedA
         : office.kind === 'week' ? parseWeeklyHours(office.name, office.label, scheduleText, collectedAt, [])
         : office.kind === 'columns' ? parseColumnHours(office.name, office.label, scheduleText)
         : office.kind === 'conflict' ? parseConflictingOfficeHours(office.name, office.label, office.against!, scheduleText)
+        : office.kind === 'days-unstated' ? parseUnstatedDayHours(office.name, office.label, scheduleText)
         : parseOfficeHours(office.name, office.label, scheduleText, collectedAt, []);
     if (office.season) {
         record.normalization_metadata = { evidence: { schedule: {

@@ -53,6 +53,17 @@ export interface ReviewedContactNote {
   evidence: Pick<ContactEvidence, 'url' | 'section' | 'near'>;
 }
 
+/**
+ * A contact method the office's own page ranks first ("the best form of contact ... is through
+ * email"), quoted verbatim from the cited section. It publishes only when that section still says
+ * it in this run's capture and the quote ranks that method.
+ */
+export interface ReviewedContactPreference {
+  method: 'email';
+  quote: string;
+  evidence: Pick<ContactEvidence, 'url' | 'section'>;
+}
+
 export interface ConfirmedContactAddition {
   field: ContactField; value: string; label: string; url: string; section: string; checked_at: string;
 }
@@ -302,6 +313,19 @@ export function checkContactNotes(entries: readonly ReviewedContactNote[],
       checked_at: pages.get(pageKey(entry.evidence.url))!.fetchedAt });
   }
   return { confirmed, issues };
+}
+
+export function checkContactPreference(preference: ReviewedContactPreference | undefined,
+  pages: ReadonlyMap<string, CapturedPage>): { confirmed?: { method: 'email'; url: string }; issue?: string } {
+  if (!preference) return {};
+  const found = evidenceText({ ...preference.evidence, fields: [] }, pages);
+  if ('reason' in found) return { issue: found.reason };
+  if (!visibleText(found.text).includes(visibleText(preference.quote))) {
+    return { issue: 'The cited section does not state this contact preference.' };
+  }
+  const ranks = cuesIn([EXPLICIT_PREFERENCE], preference.quote).length > 0 && /\be-?mail\b/i.test(preference.quote);
+  if (!ranks) return { issue: 'The quote does not rank email first.' };
+  return { confirmed: { method: preference.method, url: preference.evidence.url } };
 }
 
 /** Contact values found in a section but absent from the reviewed primary and additional contacts. */
