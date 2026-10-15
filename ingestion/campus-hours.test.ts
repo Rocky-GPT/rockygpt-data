@@ -291,6 +291,11 @@ const newOfficePages: Record<string, string> = {
   'https://www.ramapo.edu/facilities/': 'Administrative Offices\nGrounds Maintenance\nHours\nAdministrative Offices\nMonday - Friday, 7:30 a.m. to 4:30 p.m.\n'
     + 'Building Maintenance\nMonday - Friday, 7:00a.m. to 10:30 p.m.\nSaturday & Sunday, 2:00 p.m. to 10:30 p.m.',
   'https://www.ramapo.edu/poerd/': 'Hours:\nFall/Spring, Mon. - Fri.\n8:30 a.m. - 4:30 p.m.\nSummer, Mon. - Thurs.,\n8 a.m. - 5:15 p.m.',
+  'https://www.ramapo.edu/idc/': 'Instructional Design Center Hours\nMonday-Friday | 8:30 a.m.-4:30 p.m.\n'
+    + 'In-person support (LC201): Monday, Wednesday & Thursday\nRemote support: Tuesday & Friday',
+  'https://www.ramapo.edu/opra/': 'RECORD ACCESS: The College is opened:\n'
+    + 'Monday through Friday, 8:30 a.m. to 4:30 p.m. from the week before Labor Day to the week of Commencement,\n'
+    + 'Monday through Thursday 8:00am to 5:15pm week after Commencement until the week before Labor Day.',
   'https://www.ramapo.edu/womenscenter/': 'Open Hours\nFall 2026\nMondays, 10 am - 8 pm\nTuesdays, 10 am - 6 pm\nWednesdays, 10 am - 8 pm\nThursdays, 10 am - 8 pm\nFridays, 10 am - 5 pm',
   'https://www.ramapo.edu/multicultural-center/': 'Hours of Operation\nMonday-Friday:\n1:00 p.m. to 4:30 p.m.',
   'https://www.ramapo.edu/oabc/contact-us/': 'Regular Office Hours: Monday - Friday 8:30 a.m. - 4:30 p.m.\nSummer Office Hours: Monday - Thursday 8:00 a.m. - 5:15 p.m. Closed Fridays',

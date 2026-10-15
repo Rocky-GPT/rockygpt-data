@@ -770,6 +770,86 @@
       "reviewed_at": "2026-10-06",
       "source_url": "https://www.ramapo.edu/titleix/pregnant-parenting-students/",
       "note": "Kept 2026-10-06 on Dan's batch approval (\"yes do that scope\", which included keeping the service labels); proposed by Claude from the office's own page and not reviewed alias by alias by him. It is a service label the office's own page uses, so a student who types the service finds the office. Evidence: Title 'Pregnant and Parenting Students - Title IX'; the OSS pregnancy accommodations page says most pregnancy-related accommodations are addressed through the Title IX Office. Checked by script on 2026-10-06: the cited page is in the captured data and contains these words, and no other entity or alias in the registry uses this name."
+    },
+    {
+      "entity_id": "daff4c3c-8c84-5351-b62d-ca766ba25495",
+      "entity": "Office of the President",
+      "alias": "President's Office",
+      "reviewed_at": "2026-10-15",
+      "source_url": "https://www.ramapo.edu/about/phone/",
+      "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The college's General Phone Number Listing labels the office's line \"President's Office\"."
+    },
+    {
+      "entity_id": "e5245093-43b8-5d4e-9c33-60a5b710a169",
+      "entity": "Events and Conferences",
+      "alias": "Events & Conferences",
+      "reviewed_at": "2026-10-15",
+      "source_url": "https://www.ramapo.edu/conferences/",
+      "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The unit's home page heading."
+    },
+    {
+      "entity_id": "e5245093-43b8-5d4e-9c33-60a5b710a169",
+      "entity": "Events and Conferences",
+      "alias": "Office of Events and Conferences",
+      "reviewed_at": "2026-10-15",
+      "source_url": "https://www.ramapo.edu/conferences/required-documents/",
+      "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The unit's Required Documents page."
+    },
+    {
+      "entity_id": "47e28198-0464-59e2-888e-935643234140",
+      "entity": "Student Leadership Programs",
+      "alias": "Student Leadership",
+      "reviewed_at": "2026-10-15",
+      "source_url": "https://www.ramapo.edu/leadership/student-leadership-awards/",
+      "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The unit's awards page: \"please email Student Leadership at leaders@ramapo.edu\"."
+    },
+    {
+      "entity_id": "817ae654-3a2d-53f6-9c7b-8de0634c9574",
+      "entity": "Office of Fraternity and Sorority Life",
+      "alias": "Fraternity and Sorority Life",
+      "reviewed_at": "2026-10-15",
+      "source_url": "https://www.ramapo.edu/greek/",
+      "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The unit's home page section \"A Look into Fraternity and Sorority Life at Ramapo:\"."
+    },
+    {
+      "entity_id": "31c61af7-50a8-53c8-907e-800b2b83274e",
+      "entity": "Ramapo Broadcasting Club",
+      "alias": "WRPR-FM",
+      "reviewed_at": "2026-10-15",
+      "source_url": "https://www.ramapo.edu/wrpr-fm/",
+      "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The station's home page heading; the club operates the station."
+    },
+    {
+      "entity_id": "31c61af7-50a8-53c8-907e-800b2b83274e",
+      "entity": "Ramapo Broadcasting Club",
+      "alias": "WRPR 90.3 FM",
+      "reviewed_at": "2026-10-15",
+      "source_url": "https://www.ramapo.edu/wrpr-fm/about-wrpr-fm/",
+      "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The station's History section."
+    },
+    {
+      "entity_id": "31c61af7-50a8-53c8-907e-800b2b83274e",
+      "entity": "Ramapo Broadcasting Club",
+      "alias": "Ramapo Radio",
+      "reviewed_at": "2026-10-15",
+      "source_url": "https://www.ramapo.edu/wrpr-fm/about-wrpr-fm/",
+      "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The station's History section: \"now simply Ramapo Radio\"."
+    },
+    {
+      "entity_id": "717fdaa4-25ac-5211-a852-a09ba7ece8ed",
+      "entity": "Ramapo Green",
+      "alias": "Campus Sustainability Hub",
+      "reviewed_at": "2026-10-15",
+      "source_url": "https://www.ramapo.edu/ramapo-green/",
+      "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The unit's home page section \"Welcome to the Campus Sustainability Hub!\"."
+    },
+    {
+      "entity_id": "99f5c3dc-ab98-520f-88d9-6780f43cb7f7",
+      "entity": "Roukema Center for International Education",
+      "alias": "Ramapo International",
+      "reviewed_at": "2026-10-15",
+      "source_url": "https://www.ramapo.edu/study-abroad/",
+      "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The Study Abroad pages head their links \"Follow Ramapo International\" and send students to the Roukema Center's contacts."
     }
   ],
   "buildings": [
@@ -1038,6 +1118,42 @@
       "contact": "office:ramapo-honors-program",
       "reviewed_at": "2026-10-14",
       "note": "Approved by Dan's 2026-10-14 request to complete the smaller offices: the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
+    },
+    {
+      "group": "Office of the President",
+      "contact": "office:office-of-the-president",
+      "reviewed_at": "2026-10-15",
+      "note": "Approved by Dan's 2026-10-15 request to add every office (the bot serves students, staff, guests and parents): the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
+    },
+    {
+      "group": "Events and Conferences",
+      "contact": "office:events-and-conferences",
+      "reviewed_at": "2026-10-15",
+      "note": "Approved by Dan's 2026-10-15 request to add every office (the bot serves students, staff, guests and parents): the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
+    },
+    {
+      "group": "Student Leadership Programs",
+      "contact": "office:student-leadership-programs",
+      "reviewed_at": "2026-10-15",
+      "note": "Approved by Dan's 2026-10-15 request to add every office (the bot serves students, staff, guests and parents): the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
+    },
+    {
+      "group": "Office of Fraternity and Sorority Life",
+      "contact": "office:office-of-fraternity-and-sorority-life",
+      "reviewed_at": "2026-10-15",
+      "note": "Approved by Dan's 2026-10-15 request to add every office (the bot serves students, staff, guests and parents): the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
+    },
+    {
+      "group": "Ramapo Broadcasting Club",
+      "contact": "office:ramapo-broadcasting-club",
+      "reviewed_at": "2026-10-15",
+      "note": "Approved by Dan's 2026-10-15 request to add every office (the bot serves students, staff, guests and parents): the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
+    },
+    {
+      "group": "Ramapo Green",
+      "contact": "office:ramapo-green",
+      "reviewed_at": "2026-10-15",
+      "note": "Approved by Dan's 2026-10-15 request to add every office (the bot serves students, staff, guests and parents): the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
     }
   ]
 }
