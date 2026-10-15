@@ -18958,7 +18958,7 @@
               "url": "https://archway.ramapo.edu/rhp/contact-us/",
               "section": "Overview",
               "reviewed": {
-                "text_sha256": "2543b1a2726a4014bde3061ff1d5a5f21ebd1192d93a427fb6fbf213a3dfe2cf",
+                "text_sha256": "2474d48990028c984a377f4498f0759fade39707c6f75896bd47110524d75c85",
                 "reason": "Gives honors@ramapo.edu and the college street address (505 Ramapo Valley Road); no room or building for the program office."
               }
             }
@@ -20489,6 +20489,37 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Office of the President",
+          "reason": "The Office of the President pages publish no recurring office schedule. The only times are dated events (the Presidential Speaker Series, the State of the College Address on October 21, 2026 at noon) and request turnaround times (replies generally within 5-7 business days), not opening hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/president/",
+              "section": "Office of the President",
+              "reviewed": {
+                "text_sha256": "53762fca0fe63ba14e640d655c9658a719e1eab5a6a8bc03ddf08f9b584dc831",
+                "reason": "Names, titles and phones only; no days or times."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/president/",
+              "section": "Senior Leadership: Mission Element Team",
+              "reviewed": {
+                "text_sha256": "acb5ee74737150abc15210235a5126e1174fb3372cb1154d309e7578193fd5ec",
+                "reason": "Names, titles and phones only; no days or times."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/president/advancing-requests-to-the-office-of-the-president/",
+              "section": "Meeting Time with the President",
+              "reviewed": {
+                "text_sha256": "d20db6186a859156ae3b13b4acffa6b1effe630cbe494fba2dcd0f22a69f2238",
+                "reason": "Meeting-request contacts and a note that the calendar is scheduled up to three months ahead; no opening days or times."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": [
@@ -20867,6 +20898,29 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Board of Trustees",
+          "reason": "The Board of Trustees pages publish no office schedule; the Board has no office of its own. The only times are meeting times (3:30pm work sessions and 6:00pm public sessions, dated meetings) and the Public Comment sign-up deadline (noon on the business day before a meeting).",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/board/",
+              "section": "Board of Trustees",
+              "reviewed": {
+                "text_sha256": "6fe317fd2b908366e046732dd8038161eb9af245a3bfa336125b14d84d4ffb6c",
+                "reason": "Links to meeting recaps and the campus calendar only; no days or times."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/board/contact-us/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "a80b31990be0bb6052b5cd6b3a77b18b99e3fea76e6ab62324488e2ba64f685c",
+                "reason": "Contains only an empty form marker; no days or times."
+              }
+            }
+          ]
         }
       ]
     },
@@ -20980,6 +21034,29 @@
               "reviewed": {
                 "text_sha256": "f7d33c53be929d3f916b452d722099419b34a3a89338f7bda2853b2200d6e729",
                 "reason": "The reviewed unit pages list contact methods without ranking one general contact method above the others; directing a particular request to a method is not a ranked preference."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Office of the General Counsel & Institutional Compliance",
+          "reason": "The Office of the General Counsel & Institutional Compliance pages publish no office schedule; they give the office description, staff contacts and complaint forms only.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/general-counsel/",
+              "section": "Contact",
+              "reviewed": {
+                "text_sha256": "034a6029b550f583a44c1a724083f55c1ab7cc736d4c650c59901c13b1a80b59",
+                "reason": "Names, titles, phones, addresses and one room only; no days or times."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/general-counsel/",
+              "section": "Who We Are",
+              "reviewed": {
+                "text_sha256": "830975254a8c1f1c749434bfcbe21918cb4f0486334c8c6f298c212d21020e50",
+                "reason": "Description of the office\u2019s services; no days or times."
               }
             }
           ]
@@ -21369,6 +21446,29 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Ethics Liaison Officer",
+          "reason": "The Ethics Liaison Officer page publishes no office schedule; it gives the contacts, resources, policies and forms only. Newsletter dates are publication dates, not hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ethics-officer/",
+              "section": "Contacts:",
+              "reviewed": {
+                "text_sha256": "31e2621ddcdc81c4fbe3feaa9e5562a40763517f988141e9e6daf28e3d1f229b",
+                "reason": "Mailbox and the two officers\u2019 phones and addresses only; no days or times."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/ethics-officer/",
+              "section": "Ethics Liaison Officer Stone pediment of a classical building with decorative architectural details and a blue relief panel beneath the triangular roofline, set against a clear blue sky. (https://www.ramapo.edu/ethics-officer/wp-content/uploads/sites/83/2023/03/ethics_image_300.jpg)",
+              "reviewed": {
+                "text_sha256": "c6e9567005ccf9333efabf03b3515d1f24a9fcaa8613d2519765a35feecbc611",
+                "reason": "Introductory text only; no days or times."
+              }
+            }
+          ]
         }
       ]
     },
@@ -21673,6 +21773,29 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Office of Internal Audit",
+          "reason": "The Office of Internal Audit pages publish no office schedule; they give the mission, charter, policies and the Director\u2019s contact block only.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/internal-audit/",
+              "section": "Contact The Auditor",
+              "reviewed": {
+                "text_sha256": "8006815c85fb948e4bb6e033d09398d3aa9826cb5c73b3f82c75db7dfb3cafd6",
+                "reason": "Address, phone, fax and email only; no days or times."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/internal-audit/",
+              "section": "Mission Statement",
+              "reviewed": {
+                "text_sha256": "2dbb6db197405eb5950025dbb002e360d491512983b89d144d6292d8a4fea1fb",
+                "reason": "Mission text only; no days or times."
+              }
+            }
+          ]
         }
       ]
     },
@@ -21748,6 +21871,29 @@
               "reviewed": {
                 "text_sha256": "2c1bfa8a58550e6bd2df0fbc7942b772ff03ac3ca8170a072a466e1dc525bac0",
                 "reason": "Mentions that staff can be reached via their own college telephone extensions and refers to the contacts page; states no phone number."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of Budget and Fiscal Planning",
+          "reason": "The Budget and Fiscal Planning pages publish no office schedule. The only dates and times are budget-cycle deadlines (the FY27/FY28 budget calendars) and a transfer turnaround (\"within 24 hours\"), not opening hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/budget/",
+              "section": "Mission",
+              "reviewed": {
+                "text_sha256": "8876e6fdf82901c6f5b57d6fee19c25592e4fa9807a24d227701a110ffb14f14",
+                "reason": "Office mission; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/budget/contacts/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "4831a578b102efc37c4b1e943b737f9d19052a92b1855173ea22a8b31c6f4bdc",
+                "reason": "Names, titles, rooms, phones and addresses only; no times or days."
               }
             }
           ]
@@ -21985,6 +22131,29 @@
               "reviewed": {
                 "text_sha256": "ebd878828ee3306327ab35790e60b27fd5dac45cd77cca1ec0256980507639c2",
                 "reason": "Lists named staff with their own numbers and addresses, plus the Accounts Payable line (recorded as an additional contact) and two other offices (Student Accounts, Purchasing); it ranks no contact method."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Controller / Office of Business Services",
+          "reason": "The Controller pages publish no office schedule. The only dates are fiscal year-end closing documents and travel reimbursement deadlines, not opening hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/controller/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "bdb697821627197a6f7b7ad165f56634862910ba662615c5e59842083ba77d28",
+                "reason": "Office description; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/controller/accounts-payable-forms-policies/",
+              "section": "Contact",
+              "reviewed": {
+                "text_sha256": "6b2177ff0767cb1c8bcfd05e15db2233b9a8e35620c858789b868ac6106840a8",
+                "reason": "Name, email and phone only; no times or days."
               }
             }
           ]
@@ -22514,6 +22683,29 @@
           ]
         },
         {
+          "field": "hours",
+          "scope": "recurring opening hours of the Office of Grants & Sponsored Programs",
+          "reason": "The Office of Grants & Sponsored Programs pages publish no office schedule. The only time limits are proposal deadlines (one month before seeking funding, 7 working days before the agency deadline, 30 days before the project end date), not opening hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/grants/",
+              "section": "Office of Grants & Sponsored Programs",
+              "reviewed": {
+                "text_sha256": "e2f9574843dd2d7682040a6c7b5c190ae14a939f45c313162cdaeb65c3e91659",
+                "reason": "Office description and service list; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/grants/",
+              "section": "Contact Information",
+              "reviewed": {
+                "text_sha256": "efbaf4cad2846909cee71804421f1b685f3d43a9fc213dc9461a728397b49c39",
+                "reason": "Names, titles, phones, addresses and rooms only; no times or days."
+              }
+            }
+          ]
+        },
+        {
           "field": "prefers_email",
           "scope": "explicit ranked general contact preference",
           "reason": "The Grants pages send proposal documents to grantsdesk@ramapo.edu and list two named staff with their own phone and email; no section ranks one contact method above another.",
@@ -22603,6 +22795,29 @@
         }
       ],
       "notPublished": [
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Office of Employee Relations",
+          "reason": "The Employee Relations page publishes no office schedule; \"Office Hours for Student Consultation\" appears only as a Faculty Handbook chapter title, not as the office's hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/er/",
+              "section": "Employee Relations",
+              "reviewed": {
+                "text_sha256": "3be6b2712d28c4cb91389623971992d6e5535bc0dc92d6c329c0c8cf186c4212",
+                "reason": "Office description; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/er/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "b05db7847f3b24937250b46f13b0bb764b836128e89dfb300357c87846fb8798",
+                "reason": "Names, titles, rooms, phones and addresses only; no times or days."
+              }
+            }
+          ]
+        },
         {
           "field": "prefers_email",
           "scope": "explicit ranked general contact preference",
@@ -22892,6 +23107,37 @@
               "reviewed": {
                 "text_sha256": "2b376649c4a7e1b9fc683cb74e34f7b3d2ff08fb52c7b5e3ebac27f77afeaa52",
                 "reason": "Description of the unit's duties; no building or room."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Office of Institutional Research",
+          "reason": "The Office of Institutional Research pages publish no office schedule, days or times. They publish report and survey links and the instruction to email rcnj-ir@ramapo.edu for report passwords instead. The IR Team and Office of Institutional Research staff pages were captured without their body text.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ir/",
+              "section": "Institutional Reports",
+              "reviewed": {
+                "text_sha256": "2e719c80248435b7c9f9abdfb4acd7c40bd36ade4564bfbd719c816887f98de0",
+                "reason": "Report links and the password email instruction; no days, times or hours."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/ir/",
+              "section": "Mission",
+              "reviewed": {
+                "text_sha256": "19841d75db86fd91e513eadd0f3aff23acde9fec8aab027cdad5d3cfe69c6a1a",
+                "reason": "Mission statement; no days, times or hours."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/ir/",
+              "section": "Overview",
+              "reviewed": {
+                "text_sha256": "2b376649c4a7e1b9fc683cb74e34f7b3d2ff08fb52c7b5e3ebac27f77afeaa52",
+                "reason": "Description of the unit's duties; no days, times or hours."
               }
             }
           ]
@@ -23285,6 +23531,45 @@
           ]
         },
         {
+          "field": "hours",
+          "scope": "recurring opening hours of the Faculty Resource Center",
+          "reason": "The Faculty Resource Center pages publish no recurring office schedule. They publish the Center's room (Mercer Learning Commons LC-202), the Director's email, and dated single events (teaching circles, book club, talks) with their own dates and times instead; those are events, not opening hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/frc/",
+              "section": "Faculty Resource Center",
+              "reviewed": {
+                "text_sha256": "ff4cb322f75f641e0b27091d3c7b981ce6a055add3009a9e69c7ac91d34cc7bc",
+                "reason": "Welcome text and the instruction to contact the Director; no recurring days or times (it says only that the page is updated on a weekly basis)."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/frc/about-us/",
+              "section": "Staff and Facilities",
+              "reviewed": {
+                "text_sha256": "f446e70e496a63969682d101a4181ac3b13d60a709085fd2d19144139dc92b78",
+                "reason": "The Director's biography and the Center's room and furnishings; no days, times or hours."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/frc/about-us/",
+              "section": "Contact:",
+              "reviewed": {
+                "text_sha256": "e4f7df507aa16c3c3c1abc2ae7105140042ea6a798efd21885bd96f2ef59f0ee",
+                "reason": "Only the Director with an email link; no days, times or hours."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/frc/about-us/",
+              "section": "About the Faculty Resource Center",
+              "reviewed": {
+                "text_sha256": "c25f085072256ce40a95b90af2c1dfefb23e152eda69dcb7e5a584b258d565d6",
+                "reason": "Description of the Center; no days, times or hours."
+              }
+            }
+          ]
+        },
+        {
           "field": "prefers_email",
           "scope": "explicit ranked general contact preference",
           "reason": "The Faculty Resource Center pages name only the Director's email as a contact; they do not rank one general contact method above another.",
@@ -23566,6 +23851,29 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Ramapo College Foundation",
+          "reason": "The Ramapo College Foundation and giving pages publish no recurring office schedule. The only times are dated events (Bridge to Ready on October 8, the December 12, 2025 donor reception) and Friends of Ramapo board meeting dates, which are single events, not a weekly schedule.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/foundation/",
+              "section": "Contacts",
+              "reviewed": {
+                "text_sha256": "8fb2560c28797122ad0258a365e142896228871443ce677419213dbe3f69a2cd",
+                "reason": "Names the Executive Director and Board Chair with email addresses; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/foundation/matching-gifts/",
+              "section": "Matching Gifts",
+              "reviewed": {
+                "text_sha256": "d9b3fa5e1017e6c9a8f2bfa4d3291f463286fc837d1c9e94035759316c373998",
+                "reason": "Mailing address, phone and fax for matching-gift forms; no times, days or walk-in wording."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": [
@@ -23744,6 +24052,37 @@
               "reviewed": {
                 "text_sha256": "4034ec34cac5560ae01d39b07693e75f7529bfe51648347ca3179fb0f2e209f9",
                 "reason": "Mailing-list text; ranks no contact method."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Office of Alumni Relations",
+          "reason": "The Alumni Relations pages publish no recurring office schedule. The only times are dated alumni events (a virtual meeting on August 5, 2026 at 6pm and Homecoming on October 3, 2026), which are single events, not a weekly schedule.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/alumni/benefits/",
+              "section": "Check out some of them below:",
+              "reviewed": {
+                "text_sha256": "22203051fd7b8960ea4e3b0cfbbf84205574f0bd44105daa3dd70b648dac3a6b",
+                "reason": "Lists alumni benefits with the office phone and email; no office times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/alumni/",
+              "section": "Ramapo Alumni",
+              "reviewed": {
+                "text_sha256": "2e8d81436e60da51f0103c2a1f8faffab102486da61ca1018ae34808b2ba8668",
+                "reason": "Mission text; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/alumni/",
+              "section": "Update Your Alumni Profile and Join Our Mailing List",
+              "reviewed": {
+                "text_sha256": "4034ec34cac5560ae01d39b07693e75f7529bfe51648347ca3179fb0f2e209f9",
+                "reason": "Mailing-list text; no times, days or walk-in wording."
               }
             }
           ]
@@ -23963,6 +24302,29 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of Events and Conferences",
+          "reason": "The Events and Conferences pages publish no recurring office schedule. The only weekly schedule on the site is the Padovano Commons \"Academic Year Hours of Operation\", which belongs to that venue, not to the office; other times are event-specific.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/conferences/about/",
+              "section": "Inquiry Form/Contact Us",
+              "reviewed": {
+                "text_sha256": "1980a54683073db7b9bbaf8f09f43adc43256177e8ac97c63f3aab968f6057e3",
+                "reason": "Inquiry Form, mailing address, phone and email; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/conferences/",
+              "section": "RCNJ Departments & Student Organizations:",
+              "reviewed": {
+                "text_sha256": "a5165f421bf7729272a638822253286fc6e8afa6cad7e313d89d275f2172977b",
+                "reason": "Community request form link, mailing address, phone and email; no times, days or walk-in wording."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": [
@@ -24176,6 +24538,29 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Office of Marketing and Branding",
+          "reason": "The Marketing and Branding and Press Center pages publish no recurring office schedule. The only time is a photography lead-time rule (requests needing work past 5 p.m. or on a weekend need two weeks notice), which is not office hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/marketing-communications/",
+              "section": "Marketing and Branding",
+              "reviewed": {
+                "text_sha256": "d277a079590f80d7cc0516183bd1e25f6b450115fce1a257ed5f4a9ff62f48c5",
+                "reason": "Office description and main office number; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/marketing-communications/general-event-photography-and-video-policy/",
+              "section": "General Event Photography and Video Policy",
+              "reviewed": {
+                "text_sha256": "9b55ede192aab74821a79165c9d70d5b444a47f3b569f854ff559fafb81cd6fe",
+                "reason": "Suite, phone and email for image concerns; no office times, days or walk-in wording."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": [
@@ -24333,6 +24718,37 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of Prestigious Fellowships and Scholarships",
+          "reason": "The Prestigious Fellowships and Scholarships pages publish no office schedule, days or walk-in times; students are asked to email Professor Rebecca Root for questions or to make an appointment.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/prestigious-fellowships-and-scholarships/",
+              "section": "Contact Our Office",
+              "reviewed": {
+                "text_sha256": "7ca6505b9af23df254aee34a700151d762d90dc110b4a1948198882eb3e4eaff",
+                "reason": "Email contact for questions or appointments; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/prestigious-fellowships-and-scholarships/",
+              "section": "About the Office",
+              "reviewed": {
+                "text_sha256": "900eb8980504cca96183342d7581848201a3e7c3d7c20b36501f34bbf4b63c1f",
+                "reason": "Office description; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/prestigious-fellowships-and-scholarships/",
+              "section": "How We Help Students",
+              "reviewed": {
+                "text_sha256": "de043f1088e6f0a48e7e72ed0d385d298ac3ae7228b0ee8440112270eccc68ce",
+                "reason": "Describes individual counseling and a questionnaire; no times, days or walk-in wording."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": []
@@ -24486,6 +24902,45 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Office of Fraternity and Sorority Life",
+          "reason": "The Office of Fraternity and Sorority Life pages publish no office schedule. The only 'hours' wording is members' chapter study hours and service hours, and a Public Safety note that hazing reports are read during business hours; none is a time the office is open.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/greek/",
+              "section": "Office of Fraternity and Sorority Life",
+              "reviewed": {
+                "text_sha256": "ef45655a163d40283166a4f9188520cccf02ea57d6105bb0aaf2edb0d4358e3c",
+                "reason": "Office description; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/greek/",
+              "section": "A Look into Fraternity and Sorority Life at Ramapo:",
+              "reviewed": {
+                "text_sha256": "d46d69412f6c753e8f8a4ade0e160b1757cc831c5bbd8592fe2334fb8edaed5d",
+                "reason": "The Coordinator's room, phone and email and a description of Greek life; 'study hours' refers to members' academic requirements, not office opening times; no days or times."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/greek/frequently-asked-questions-faq/",
+              "section": "Frequently Asked Questions",
+              "reviewed": {
+                "text_sha256": "5a6f012807ec634ea1f9a32a83b38b20149a6f3a96440a45f8906db53edc1331",
+                "reason": "Answers about membership; 'weekly chapter meetings' and 'study hours' describe chapter obligations, not office opening times; no office days or times."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/greek/chapters-councils/",
+              "section": "Contact",
+              "reviewed": {
+                "text_sha256": "2527dfa141d9f3ea3758585f2d2a0079af5de3ca139b28ac37dcdc886ad8ea4c",
+                "reason": "Email referral to the Coordinator; no times, days or walk-in wording."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": []
@@ -24628,6 +25083,29 @@
           ]
         },
         {
+          "field": "hours",
+          "scope": "recurring opening hours of Student Leadership Programs",
+          "reason": "The Student Leadership Programs pages publish no recurring office schedule and no office. The only times are Project L.E.A.D. session times (1pm-2pm in A-101 on three dated Spring 2026 Thursdays), which are events, not opening hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/leadership/",
+              "section": "Overview:",
+              "reviewed": {
+                "text_sha256": "ab1ac1cb011cf544361d92cec36cf74c12160ba3b28e058772c1e74f4b227497",
+                "reason": "Committee description; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/leadership/",
+              "section": "Student Leadership Awards:",
+              "reviewed": {
+                "text_sha256": "ebf40e1311c601ed18e87beb80bdf573f55202d13fe6efd2ca30e92f653a297f",
+                "reason": "Says applications reopen in Spring 2027; a season for applications, not opening hours, and no times or days."
+              }
+            }
+          ]
+        },
+        {
           "field": "prefers_email",
           "scope": "explicit ranked general contact preference",
           "reason": "The Student Leadership Programs pages give only the leaders@ramapo.edu mailbox for awards and program questions and name the Coordinator of Student Activities as adviser of SAIL and JUMP; no section ranks one contact method above another.",
@@ -24755,6 +25233,29 @@
           ]
         },
         {
+          "field": "hours",
+          "scope": "recurring opening hours of ResNET",
+          "reason": "The ResNET pages publish no recurring office or support schedule. \"During peak hours\" refers to network load, the 24-hour limit is for guest WiFi access, and appointments are mentioned only as ResNET bringing test equipment when one is made, with no days or times.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/resnet/",
+              "section": "What is ResNET?",
+              "reviewed": {
+                "text_sha256": "9751d2c59d82c4d9c4a947a3f894396ac61574aaa6eb62f093810ebaf15ebc0f",
+                "reason": "Mentions appointments and \"peak hours\" of network use; states no days, times or opening schedule."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/resnet/",
+              "section": "ResNET Mission",
+              "reviewed": {
+                "text_sha256": "2a67e3217312891553db6844c31ca8412bff25bf81f961789627f0ddd6a00263",
+                "reason": "Mission text; no times, days or walk-in wording."
+              }
+            }
+          ]
+        },
+        {
           "field": "prefers_email",
           "scope": "explicit ranked general contact preference",
           "reason": "The ResNET pages list the resnet@ramapo.edu mailbox and the 201-684-6831 line side by side and send broken-jack reports to a Helpdesk Ticket; no section ranks one contact method above another.",
@@ -24873,6 +25374,37 @@
         }
       ],
       "notPublished": [
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of On-Campus Employment for Students",
+          "reason": "The On-Campus Employment pages publish no recurring office schedule for the Student Assistant Program office in D-119. New hires book an appointment through an online calendar link; the only hour figures are student work limits (15, 20 and 29 hours a week), not opening hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/on-campus-employment/",
+              "section": "Christine Meakem",
+              "reviewed": {
+                "text_sha256": "16c88f67e349053002770f7c3eb6909b599a9c5f28e91b9c9935f8c80bbd8767",
+                "reason": "Phone and email only; no times or days."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/on-campus-employment/",
+              "section": "On-Campus Employment for Students",
+              "reviewed": {
+                "text_sha256": "de334ca3826b1242f58c214173087a22b2587b2037a74324c83abded83fd2260",
+                "reason": "Describes Handshake postings and work-study; no times, days or opening schedule."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/on-campus-employment/new-hire-packet/",
+              "section": "Download the I-9 Form (https://www.uscis.gov/sites/default/files/document/forms/i-9.pdf)",
+              "reviewed": {
+                "text_sha256": "1f0acb7a966aec9d44cd36be342338361a0782378c93e919c3e05e25ae2d7e74",
+                "reason": "Asks new hires to schedule a mandatory appointment in D-119 through a calendar link; states no days, times or opening schedule."
+              }
+            }
+          ]
+        },
         {
           "field": "prefers_email",
           "scope": "explicit ranked general contact preference",
@@ -25033,6 +25565,29 @@
               "reviewed": {
                 "text_sha256": "896f8594ad82c3aaa287b01af7117d93669680e3445c82f925293f11cf953a34",
                 "reason": "Tells students how to reach Connect through web.ramapo.edu; states no office or room."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the Connect Resource Center",
+          "reason": "The Connect Resource Center pages publish no recurring schedule; the center is a website with the connect@ramapo.edu mailbox and no office. The only dates are Fall 2019 progress-report survey dates on the Important Dates page.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/connect/",
+              "section": "Connect",
+              "reviewed": {
+                "text_sha256": "6727df1775d1c24f6aba1c6e50fab9cf1eef0951b9780028b7e0eb99a91c3425",
+                "reason": "Describes the resource pages and gives connect@ramapo.edu; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/connect/students/",
+              "section": "Connect for Students",
+              "reviewed": {
+                "text_sha256": "896f8594ad82c3aaa287b01af7117d93669680e3445c82f925293f11cf953a34",
+                "reason": "Explains how to log in to Connect and schedule time with advisors online; no times, days or opening schedule for the center."
               }
             }
           ]
@@ -25264,6 +25819,37 @@
               "reviewed": {
                 "text_sha256": "45e1545255588e236275f47bcf51c688b05c6c650bfe29c7d881f751f8bc0031",
                 "reason": "Ranks no contact method."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of Commencement",
+          "reason": "The Commencement pages publish no recurring office schedule. The only times are dated ceremony times (2026 Commencement doors 7:30 a.m., ceremony 8:40 a.m. on May 14, 2026, on Celebrating Together; Arching Ceremony 4:45 p.m. and Farewell Reception 5:15 p.m. on the Arching Day Rain Plan), which are single events, not opening hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/commencement/contact-us/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "4211d672932e2014f41bf6fb5d409954fc674e55df52509aaa7278c333a0e779",
+                "reason": "Email routing by topic only; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/commencement/",
+              "section": "Ramapo College\u2019s 2027 Arching and Commencement information will be available in late Fall. Please check back for updates.",
+              "reviewed": {
+                "text_sha256": "63aaed964a3278639a7dc4f41b28c6ff59ffa3e4f91228728461ae7c9cdaddf4",
+                "reason": "Season announcement (2027 information in late Fall) and 2026 video/photo links; no times of day or weekly schedule."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/commencement/",
+              "section": "Graduation vs. Commencement",
+              "reviewed": {
+                "text_sha256": "45e1545255588e236275f47bcf51c688b05c6c650bfe29c7d881f751f8bc0031",
+                "reason": "Explains graduation versus Commencement; no times, days or walk-in wording."
               }
             }
           ]
@@ -25499,6 +26085,37 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of Laptop Upcycle @ Ramapo",
+          "reason": "The Laptop Upcycle @ Ramapo pages publish no recurring office schedule. Questions, requests and pick-ups go by email or online form, and the only dates are the tablet program application deadline and delivery month, which are not opening hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/upcycle/contact/",
+              "section": "Thank you for your interest in the Laptop Upcycle Program!",
+              "reviewed": {
+                "text_sha256": "7455b2a4f9d1fd18d72366f4682c001d9b4fc8c9729a78117fff2fd38cd87d5b",
+                "reason": "Email instruction only; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/upcycle/",
+              "section": "Laptop Upcycle @ Ramapo",
+              "reviewed": {
+                "text_sha256": "73c51fc13df765f1ce7c3a0ea6a4738e6e8db08851b41e053ed6f2c09ec74b5c",
+                "reason": "Program description and request link; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/upcycle/donatealaptop/",
+              "section": "Coordinating Pick-up/Drop-off",
+              "reviewed": {
+                "text_sha256": "39c889f2b25ff8bcb444e8ea37186002e5eac7d813afbdd018779c6ab46c952a",
+                "reason": "Drop-off point and pick-up by email; no times, days or walk-in wording."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": [
@@ -25669,6 +26286,37 @@
               }
             }
           ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of the WRPR-FM station office",
+          "reason": "The WRPR-FM pages publish no station office hours. They give the DJ line, the station management email and office phone, the room and the station address; no broadcast schedule is published either, and a broadcast schedule would not be office hours.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/wrpr-fm/about-wrpr-fm/",
+              "section": "Contact",
+              "reviewed": {
+                "text_sha256": "350a9262e41722ac1b2ecca62f5029f6862368630f9b7659a536343aceb5fcad",
+                "reason": "Contact methods only; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/wrpr-fm/",
+              "section": "WRPR-FM",
+              "reviewed": {
+                "text_sha256": "191cf01affd97080d4aa0f8aa2d9cb09e9c4cb837607aa15991c793343781804",
+                "reason": "Location and station description; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/wrpr-fm/",
+              "section": "Contact Us",
+              "reviewed": {
+                "text_sha256": "f58208ff72b2438d3d676302add978a0854c45b7d65159cb13994d7a4b030389",
+                "reason": "Station address and phone; no times, days or walk-in wording."
+              }
+            }
+          ]
         }
       ],
       "contactReviewExclusions": [
@@ -25817,6 +26465,29 @@
               "reviewed": {
                 "text_sha256": "c47f7261b90689770ce0648727267155e5d4e0519659120a30df1bba62812b14",
                 "reason": "Introduction and history; no contact method is ranked."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring opening hours of Ramapo Green",
+          "reason": "The Ramapo Green pages (captured 2026-10-15) publish no recurring office or opening schedule. The only times are dated composting-workshop sessions on the Village Composting Pilot pages (Spring Backyard Composting Workshops; First Spring Composting Workshop), which are single events, not a weekly schedule.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/ramapo-green/",
+              "section": "Contact",
+              "reviewed": {
+                "text_sha256": "904e53aa77fbe1db554d1f6ef4553555e3517bebf359fb2603db69cabb8045e5",
+                "reason": "States only the email address; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/ramapo-green/",
+              "section": "Welcome to the Campus Sustainability Hub!",
+              "reviewed": {
+                "text_sha256": "c47f7261b90689770ce0648727267155e5d4e0519659120a30df1bba62812b14",
+                "reason": "Introduction and history of Ramapo Green and the PCCS; its only dates are founding/committee years (1969, November 2007, 2010), not opening days or times."
               }
             }
           ]
