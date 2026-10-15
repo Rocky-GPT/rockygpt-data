@@ -13468,6 +13468,223 @@
           }
         }
       ]
+    },
+    {
+      "id": "0a535596-747c-4082-9229-97e916479b9e",
+      "kind": "topic",
+      "name": "Scholarships",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "campus_topics",
+          "source_key": "office-pages",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Scholarships"
+            ],
+            "evidence": "The reviewed topic of the same name (src/reference/campus-topics.json), checked against its own captured page at publish."
+          }
+        }
+      ]
+    },
+    {
+      "id": "80e64dfc-d6db-4fec-8d9e-93bab2f6da5c",
+      "kind": "topic",
+      "name": "Summer Session",
+      "aliases": [
+        "Ramapo Summer Session"
+      ],
+      "links": [
+        {
+          "collection": "campus_topics",
+          "source_key": "office-pages",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Summer Session"
+            ],
+            "evidence": "The reviewed topic of the same name (src/reference/campus-topics.json), checked against its own captured page at publish."
+          }
+        }
+      ]
+    },
+    {
+      "id": "80563607-7ae3-41a1-9c09-0f581be34c97",
+      "kind": "topic",
+      "name": "Parents, Guardians & Families",
+      "aliases": [
+        "Parents/Guardians",
+        "Parents & Families"
+      ],
+      "links": [
+        {
+          "collection": "campus_topics",
+          "source_key": "office-pages",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Parents, Guardians & Families"
+            ],
+            "evidence": "The reviewed topic of the same name (src/reference/campus-topics.json), checked against its own captured page at publish."
+          }
+        }
+      ]
+    },
+    {
+      "id": "b9523294-3d96-436d-8f8e-7d11d697f27a",
+      "kind": "topic",
+      "name": "Student Media",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "campus_topics",
+          "source_key": "office-pages",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Student Media"
+            ],
+            "evidence": "The reviewed topic of the same name (src/reference/campus-topics.json), checked against its own captured page at publish."
+          }
+        }
+      ]
+    },
+    {
+      "id": "7fdeb2cb-67d2-490f-a85e-1909c3bfc3aa",
+      "kind": "topic",
+      "name": "Emergency Preparedness",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "campus_topics",
+          "source_key": "office-pages",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Emergency Preparedness"
+            ],
+            "evidence": "The reviewed topic of the same name (src/reference/campus-topics.json), checked against its own captured page at publish."
+          }
+        }
+      ]
+    },
+    {
+      "id": "0852aa0f-614c-4e17-81b7-90b5e981ef31",
+      "kind": "topic",
+      "name": "Student Research",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "campus_topics",
+          "source_key": "office-pages",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Student Research"
+            ],
+            "evidence": "The reviewed topic of the same name (src/reference/campus-topics.json), checked against its own captured page at publish."
+          }
+        }
+      ]
+    },
+    {
+      "id": "21f84243-fdce-41dd-89c2-876b42327cac",
+      "kind": "topic",
+      "name": "Digital Accessibility at Ramapo College",
+      "aliases": [
+        "Digital Accessibility"
+      ],
+      "links": [
+        {
+          "collection": "campus_topics",
+          "source_key": "office-pages",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Digital Accessibility at Ramapo College"
+            ],
+            "evidence": "The reviewed topic of the same name (src/reference/campus-topics.json), checked against its own captured page at publish."
+          }
+        }
+      ]
+    },
+    {
+      "id": "1f54bcaf-c863-40c9-ad48-ce50a853e45b",
+      "kind": "topic",
+      "name": "Sustainability at Ramapo College",
+      "aliases": [
+        "Sustainability"
+      ],
+      "links": [
+        {
+          "collection": "campus_topics",
+          "source_key": "office-pages",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Sustainability at Ramapo College"
+            ],
+            "evidence": "The reviewed topic of the same name (src/reference/campus-topics.json), checked against its own captured page at publish."
+          }
+        }
+      ]
+    },
+    {
+      "id": "8286e05b-ade5-4103-86a6-d76436dd073f",
+      "kind": "topic",
+      "name": "Small Business Development Center at Ramapo College",
+      "aliases": [
+        "Bergen County SBDC",
+        "NJSBDC",
+        "Small Business Development Center",
+        "SBDC"
+      ],
+      "links": [
+        {
+          "collection": "campus_topics",
+          "source_key": "office-pages",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Small Business Development Center at Ramapo College"
+            ],
+            "evidence": "The reviewed topic of the same name (src/reference/campus-topics.json), checked against its own captured page at publish."
+          }
+        }
+      ]
+    },
+    {
+      "id": "95bc26da-e0c5-49c6-8502-b4c765c1dbce",
+      "kind": "topic",
+      "name": "Provisional Teacher Program",
+      "aliases": [
+        "Ramapo College Provisional Teacher Program",
+        "PTP"
+      ],
+      "links": [
+        {
+          "collection": "campus_topics",
+          "source_key": "office-pages",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Provisional Teacher Program"
+            ],
+            "evidence": "The reviewed topic of the same name (src/reference/campus-topics.json), checked against its own captured page at publish."
+          }
+        }
+      ]
     }
   ]
 }
