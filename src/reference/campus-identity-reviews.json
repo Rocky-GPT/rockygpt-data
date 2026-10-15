@@ -1154,6 +1154,18 @@
       "contact": "office:ramapo-green",
       "reviewed_at": "2026-10-15",
       "note": "Approved by Dan's 2026-10-15 request to add every office (the bot serves students, staff, guests and parents): the unit's own ramapo.edu pages publish this contact (checked against the captured sections), and the Archway page of the same name is the same unit."
+    },
+    {
+      "group": "Ramapo News",
+      "contact": "office:ramapo-news",
+      "reviewed_at": "2026-10-15",
+      "note": "Approved by Dan's 2026-10-15 yes to the topic plan: Student Media sends students to this group, and the group's own contact is published on the college's Student Media pages (checked against the captured sections)."
+    },
+    {
+      "group": "Yearbook",
+      "contact": "office:yearbook",
+      "reviewed_at": "2026-10-15",
+      "note": "Approved by Dan's 2026-10-15 yes to the topic plan: Student Media sends students to this group, and the group's own contact is published on the college's Student Media pages (checked against the captured sections)."
     }
   ]
 }

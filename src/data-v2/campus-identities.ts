@@ -1,5 +1,5 @@
 /** Curated identity links. Names locate identities; they never generate their IDs. */
-export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages';
+export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages';
 export interface IdentityRecordReference {
   collection: IdentityCollection;
   source_key: string;
@@ -21,7 +21,7 @@ export type CampusIdentityRelationship =
   | { type: 'profile_course' | 'includes_course'; target_record: IdentityRecordReference; evidence: IdentityEvidence[] };
 export interface CampusIdentity {
   id: string;
-  kind: 'office' | 'person' | 'facility' | 'venue' | 'program' | 'club' | 'organization' | 'event' | 'building' | 'school' | 'subject' | 'route';
+  kind: 'office' | 'person' | 'facility' | 'venue' | 'program' | 'club' | 'organization' | 'event' | 'building' | 'school' | 'subject' | 'route' | 'topic';
   name: string;
   aliases: string[];
   links: CampusIdentityLink[];
@@ -31,7 +31,7 @@ export interface CampusIdentity {
 }
 export interface CampusIdentities { schema_version: 1; entities: CampusIdentity[] }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-const COLLECTIONS = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages'];
+const COLLECTIONS = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'campus_topics', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages'];
 // Relationships whose target is a catalog record, not an identity.
 const RECORD_TARGETS = ['profile_course', 'includes_course'];
 function object(value: unknown, keys: string[], label: string, optional: string[] = []): Record<string, unknown> {
@@ -69,7 +69,7 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
     text(entity.id, 'Identity id');
     if (!UUID.test(entity.id) || ids.has(entity.id)) throw new Error('Identity IDs must be unique, persistent lowercase UUIDs.');
     ids.add(entity.id);
-    if (!['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route'].includes(entity.kind as string)) throw new Error('Unsupported identity kind.');
+    if (!['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic'].includes(entity.kind as string)) throw new Error('Unsupported identity kind.');
     text(entity.name, 'Identity name', 240); array(entity.aliases, 32, 'aliases');
     for (const alias of entity.aliases) text(alias, 'Identity alias', 240);
     array(entity.links, 32, 'links');

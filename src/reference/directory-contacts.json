@@ -26493,6 +26493,329 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Ramapo News",
+      "category": "Student Life",
+      "email": "rcnjnews@ramapo.edu",
+      "office": "SC-218",
+      "website": "https://www.ramapo.edu/student-media/",
+      "helpsWith": [
+        "The Ramapo News, the student-run campus newspaper",
+        "Student reporting, editing, photography, editorial writing, management, marketing and graphic design for the paper"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/student-media/",
+          "section": "Ramapo News",
+          "fields": [
+            "email",
+            "office"
+          ]
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "phone",
+          "scope": "general phone number of the Ramapo News",
+          "reason": "The Ramapo News block on the Student Media page (captured 2026-10-15) gives only its room (SC-218) and email address; it publishes no phone number.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Ramapo News",
+              "reviewed": {
+                "text_sha256": "37b4158adb18577dfd753494871985899c1b59847f2eb5725ce47ce0d5037aab",
+                "reason": "States the location and email only; no phone number."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Student Media page (captured 2026-10-15) gives the Ramapo News one email address and its room; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Ramapo News",
+              "reviewed": {
+                "text_sha256": "37b4158adb18577dfd753494871985899c1b59847f2eb5725ce47ce0d5037aab",
+                "reason": "Lists the room and one email address; nothing is ranked."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Student Media page (captured 2026-10-15) gives the Ramapo News one email address and its room; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Ramapo News",
+              "reviewed": {
+                "text_sha256": "37b4158adb18577dfd753494871985899c1b59847f2eb5725ce47ce0d5037aab",
+                "reason": "Lists the room and one email address; nothing is ranked."
+              }
+            }
+          ]
+        },
+        {
+          "field": "contact_note",
+          "scope": "instructions for reaching the Ramapo News",
+          "reason": "The Ramapo News block (captured 2026-10-15) gives a location and an email address followed by a description of the paper; it gives no instruction on when or how to reach it.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Ramapo News",
+              "reviewed": {
+                "text_sha256": "37b4158adb18577dfd753494871985899c1b59847f2eb5725ce47ce0d5037aab",
+                "reason": "\"Email:\" labels the address; the rest describes the paper and links its website. No appointment, walk-in or request instruction."
+              }
+            }
+          ]
+        },
+        {
+          "field": "department",
+          "scope": "named college office that advises or administers the Ramapo News",
+          "reason": "The Student Media page (captured 2026-10-15) calls the Ramapo News the student-run publication of Ramapo College and names no college office or department that advises it.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Ramapo News",
+              "reviewed": {
+                "text_sha256": "37b4158adb18577dfd753494871985899c1b59847f2eb5725ce47ce0d5037aab",
+                "reason": "Describes the student-run paper; names no college department."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring office hours of the Ramapo News",
+          "reason": "The Ramapo News block on the Student Media page (captured 2026-10-15) publishes no office or opening hours; it gives only the room and email address.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Ramapo News",
+              "reviewed": {
+                "text_sha256": "37b4158adb18577dfd753494871985899c1b59847f2eb5725ce47ce0d5037aab",
+                "reason": "Location, email and description only; no times, days or walk-in wording."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "email",
+          "value": "yearbook@ramapo.edu",
+          "reason": "The Yearbook committee\u2019s address, in the Student Media page\u2019s Yearbook block; it belongs to the separate Yearbook desk, not the Ramapo News.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/student-media/",
+            "section": "Yearbook",
+            "text_sha256": "46bfe615ef1c96aaafca2ebca7c18b9664f649e4e17307882e1ec2dddaf8647c"
+          }
+        },
+        {
+          "field": "office",
+          "value": "SC216",
+          "reason": "The room of the radio station WRPR-FM (Ramapo Broadcasting Club), in the Student Media page\u2019s WRPR-FM block; the Ramapo News is in SC-218.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/student-media/",
+            "section": "Radio Station WRPR-FM",
+            "text_sha256": "3e147154d2879bd0b77b0b526f714f0b27598a51fb8c36d6c714b05e1a8d5db1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Yearbook",
+      "category": "Student Life",
+      "email": "yearbook@ramapo.edu",
+      "website": "https://www.ramapo.edu/student-media/yearbook/",
+      "helpsWith": [
+        "The Arch, Ramapo\u2019s annual yearbook, and joining the yearbook team",
+        "Senior portraits and senior photo submissions for the yearbook",
+        "Graduate Send-Off Ads in the yearbook"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/student-media/yearbook/",
+          "section": "The Arch Yearbook",
+          "fields": [
+            "email"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/student-media/",
+          "section": "Yearbook",
+          "fields": [
+            "email"
+          ]
+        }
+      ],
+      "contactNotes": [
+        {
+          "text": "If you are interested in joining the yearbook team please email yearbook@ramapo.edu.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/student-media/yearbook/",
+            "section": "The Arch Yearbook"
+          }
+        }
+      ],
+      "notPublished": [
+        {
+          "field": "phone",
+          "scope": "general phone number of the Yearbook",
+          "reason": "The Yearbook pages (captured 2026-10-15) give only the email address yearbook@ramapo.edu; they publish no phone number for the Yearbook.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/yearbook/",
+              "section": "The Arch Yearbook",
+              "reviewed": {
+                "text_sha256": "fc30f31412c426ec0bdd34bac5eec7a57c599da499f9b6127488241991901943",
+                "reason": "Gives only the email address; no phone number."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Yearbook",
+              "reviewed": {
+                "text_sha256": "46bfe615ef1c96aaafca2ebca7c18b9664f649e4e17307882e1ec2dddaf8647c",
+                "reason": "Gives only the email address; no phone number."
+              }
+            }
+          ]
+        },
+        {
+          "field": "office",
+          "scope": "Yearbook office location or room",
+          "reason": "The Yearbook pages (captured 2026-10-15) state no room or building for the Yearbook. SC-217 is where LORS takes senior portraits on dated sessions, and the Peter P. Mercer Learning Commons holds the yearbook archive; neither is the Yearbook\u2019s office.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/yearbook/",
+              "section": "The Arch Yearbook",
+              "reviewed": {
+                "text_sha256": "fc30f31412c426ec0bdd34bac5eec7a57c599da499f9b6127488241991901943",
+                "reason": "Describes the yearbook and gives the email address; no room or building."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Yearbook",
+              "reviewed": {
+                "text_sha256": "46bfe615ef1c96aaafca2ebca7c18b9664f649e4e17307882e1ec2dddaf8647c",
+                "reason": "Describes the committee and gives the email address; no room or building."
+              }
+            }
+          ]
+        },
+        {
+          "field": "prefers_email",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Yearbook pages (captured 2026-10-15) publish a single contact, yearbook@ramapo.edu, as the way to join the yearbook team; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/yearbook/",
+              "section": "The Arch Yearbook",
+              "reviewed": {
+                "text_sha256": "fc30f31412c426ec0bdd34bac5eec7a57c599da499f9b6127488241991901943",
+                "reason": "One email address; nothing is ranked."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Yearbook",
+              "reviewed": {
+                "text_sha256": "46bfe615ef1c96aaafca2ebca7c18b9664f649e4e17307882e1ec2dddaf8647c",
+                "reason": "One email address; nothing is ranked."
+              }
+            }
+          ]
+        },
+        {
+          "field": "preferred_contact",
+          "scope": "explicit ranked general contact preference",
+          "reason": "The Yearbook pages (captured 2026-10-15) publish a single contact, yearbook@ramapo.edu, as the way to join the yearbook team; no section ranks one contact method above another.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/yearbook/",
+              "section": "The Arch Yearbook",
+              "reviewed": {
+                "text_sha256": "fc30f31412c426ec0bdd34bac5eec7a57c599da499f9b6127488241991901943",
+                "reason": "One email address; nothing is ranked."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Yearbook",
+              "reviewed": {
+                "text_sha256": "46bfe615ef1c96aaafca2ebca7c18b9664f649e4e17307882e1ec2dddaf8647c",
+                "reason": "One email address; nothing is ranked."
+              }
+            }
+          ]
+        },
+        {
+          "field": "department",
+          "scope": "named college office that advises or administers the Yearbook",
+          "reason": "The Yearbook pages (captured 2026-10-15) call it the Ramapo yearbook committee or Yearbook Club and name no college office or department that advises it.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/yearbook/",
+              "section": "The Arch Yearbook",
+              "reviewed": {
+                "text_sha256": "fc30f31412c426ec0bdd34bac5eec7a57c599da499f9b6127488241991901943",
+                "reason": "Names the Ramapo Yearbook Club only; no college department."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Yearbook",
+              "reviewed": {
+                "text_sha256": "46bfe615ef1c96aaafca2ebca7c18b9664f649e4e17307882e1ec2dddaf8647c",
+                "reason": "Names the yearbook committee only; no college department."
+              }
+            }
+          ]
+        },
+        {
+          "field": "hours",
+          "scope": "recurring office hours of the Yearbook",
+          "reason": "The Yearbook pages (captured 2026-10-15) publish no office or opening hours. The only times are dated LORS senior-portrait sessions (November 2-6, 2026, in SC-217) and form deadlines, which are single events, not a weekly schedule.",
+          "evidence": [
+            {
+              "url": "https://www.ramapo.edu/student-media/yearbook/",
+              "section": "The Arch Yearbook",
+              "reviewed": {
+                "text_sha256": "fc30f31412c426ec0bdd34bac5eec7a57c599da499f9b6127488241991901943",
+                "reason": "Describes the yearbook and gives the email address; no times, days or walk-in wording."
+              }
+            },
+            {
+              "url": "https://www.ramapo.edu/student-media/",
+              "section": "Yearbook",
+              "reviewed": {
+                "text_sha256": "46bfe615ef1c96aaafca2ebca7c18b9664f649e4e17307882e1ec2dddaf8647c",
+                "reason": "Describes the committee and gives the email address; no times, days or walk-in wording."
+              }
+            }
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "office",
+          "value": "SC217",
+          "reason": "The room where the outside studio LORS takes senior portraits on dated November 2026 sessions; it is not the Yearbook\u2019s office.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/student-media/yearbook/",
+            "section": "It\u2019s your time to shine, or you know, smile for the camera!",
+            "text_sha256": "3215934845cb6a9b4162c1151300534c2d78fee79c0468e714d77fdaaaeab202"
+          }
+        }
+      ]
     }
   ],
   "other": [
