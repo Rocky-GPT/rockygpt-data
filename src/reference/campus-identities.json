@@ -11879,7 +11879,9 @@
       "id": "5ab938ac-bc5c-4fce-9771-db49be4fd2ef",
       "kind": "office",
       "name": "Admissions",
-      "aliases": [],
+      "aliases": [
+        "Campus Tours"
+      ],
       "links": [
         {
           "collection": "contacts",
@@ -12567,7 +12569,10 @@
       "id": "881ae0cd-10b8-4d91-a992-12bc40af0c40",
       "kind": "office",
       "name": "Degree Completion Program",
-      "aliases": [],
+      "aliases": [
+        "Accelerated Degree Completion Program",
+        "Adult Degree Completion Program"
+      ],
       "links": [
         {
           "collection": "contacts",
@@ -12901,7 +12906,8 @@
       "kind": "office",
       "name": "Office of the Provost",
       "aliases": [
-        "Provost's Office"
+        "Provost's Office",
+        "Assessment of Student Learning"
       ],
       "links": [
         {
@@ -12951,6 +12957,514 @@
               "People Operations and Employee Resources Department (Summer)"
             ],
             "evidence": "Reviewed own-office schedules on the unit's own home page, each published season kept separately. Explicit source dates only."
+          }
+        }
+      ]
+    },
+    {
+      "id": "623e8082-dfc0-4ed3-99d7-71d80f1b152d",
+      "kind": "office",
+      "name": "Board of Trustees",
+      "aliases": [
+        "Ramapo College Board of Trustees"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:board-of-trustees"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "705adbe9-3bd7-4433-954a-b051c9b14f3e",
+      "kind": "office",
+      "name": "Office of the General Counsel & Institutional Compliance",
+      "aliases": [
+        "Office of the General Counsel",
+        "General Counsel"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:office-of-the-general-counsel-institutional-compliance"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "f1e0ad89-65b5-4599-b91f-b271d041e731",
+      "kind": "office",
+      "name": "Ethics Liaison Officer",
+      "aliases": [
+        "Ethics Officer"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:ethics-liaison-officer"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "39eeb1f7-fd73-4d3c-ba53-a88f866a380d",
+      "kind": "office",
+      "name": "Open Public Records Act",
+      "aliases": [
+        "OPRA"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:open-public-records-act"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Open Public Records Act",
+              "Open Public Records Act (After Commencement)"
+            ],
+            "evidence": "Reviewed record-access schedules on the unit's own page, each published season kept separately. Explicit source dates only."
+          }
+        }
+      ]
+    },
+    {
+      "id": "57cea0c2-1c16-45c9-b94c-637a6e563785",
+      "kind": "office",
+      "name": "Office of Internal Audit",
+      "aliases": [
+        "Internal Audit",
+        "Internal Audit Department"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:office-of-internal-audit"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "1a7a8804-db10-4861-9ce1-49e1de5cb72d",
+      "kind": "office",
+      "name": "Budget and Fiscal Planning",
+      "aliases": [
+        "Office of Budget and Fiscal Planning",
+        "Budget Office"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:budget-and-fiscal-planning"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "0ff04527-77d1-4da7-b09d-78b5417934fb",
+      "kind": "office",
+      "name": "Controller",
+      "aliases": [
+        "Business Services",
+        "Office of Business Services",
+        "Accounts Payable"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:controller"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "d2c1633c-efee-4851-9227-1e63f98c533f",
+      "kind": "office",
+      "name": "Purchasing Department",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:purchasing-department"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "0fb2cf32-f2e5-4ae7-b910-8dad7bc50029",
+      "kind": "office",
+      "name": "Office of Grants & Sponsored Programs",
+      "aliases": [
+        "Office of Grants and Sponsored Programs",
+        "OGSP"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:office-of-grants-sponsored-programs"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "6f500f5b-80c8-4183-8b59-0665459a109b",
+      "kind": "office",
+      "name": "Employee Relations",
+      "aliases": [
+        "Office of Employee Relations"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:employee-relations"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "8aaaee98-6e4c-41e0-8561-2efcd30b0dfc",
+      "kind": "office",
+      "name": "Office of Institutional Research",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:office-of-institutional-research"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "a094d880-d0cf-4130-9906-614332ec8cde",
+      "kind": "office",
+      "name": "Instructional Design Center",
+      "aliases": [
+        "IDC"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:instructional-design-center"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        },
+        {
+          "collection": "campus_hours",
+          "source_key": "campus-hours",
+          "source_record_keys": [],
+          "selector": {
+            "field": "name",
+            "values": [
+              "Instructional Design Center"
+            ],
+            "evidence": "Reviewed own-office schedule on the unit's own home page. Explicit source dates only."
+          }
+        }
+      ]
+    },
+    {
+      "id": "2e065354-56a1-4b92-80ad-64b4957cc2df",
+      "kind": "office",
+      "name": "Faculty Resource Center",
+      "aliases": [
+        "FRC"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:faculty-resource-center"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "e160aff5-4f76-42a5-8a0c-6683dd8ab19f",
+      "kind": "office",
+      "name": "Ramapo College Foundation",
+      "aliases": [
+        "Foundation"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:ramapo-college-foundation"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "bdef91fb-0589-48b5-9f45-39d258e0becc",
+      "kind": "office",
+      "name": "Office of Alumni Relations",
+      "aliases": [
+        "Alumni Office",
+        "Alumni Relations"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:office-of-alumni-relations"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "11b4fbad-5bc3-4648-8a6d-ba0eba663aaf",
+      "kind": "office",
+      "name": "Marketing and Branding",
+      "aliases": [
+        "Office of Marketing and Communications",
+        "Marketing and Communications"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:marketing-and-branding"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "e0ad5f65-1abd-4cbd-99da-1cc239d4aab2",
+      "kind": "office",
+      "name": "Prestigious Fellowships and Scholarships",
+      "aliases": [
+        "Office of Prestigious Fellowships & Scholarships"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:prestigious-fellowships-and-scholarships"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "29987fa2-51a9-4b4a-9122-9b079ded9bc3",
+      "kind": "office",
+      "name": "ResNET",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:resnet"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "3f81dcff-21ef-45d4-a3f8-8d5e4b4770d0",
+      "kind": "office",
+      "name": "On-Campus Employment for Students",
+      "aliases": [
+        "Student Employment Office"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:on-campus-employment-for-students"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "c160b3dc-cd0b-4482-8ccd-62cc8ca76f8a",
+      "kind": "office",
+      "name": "Connect Resource Center",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:connect-resource-center"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "eb5ae73b-e0c3-4ced-a851-35c3c5f3356e",
+      "kind": "office",
+      "name": "Commencement",
+      "aliases": [],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:commencement"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
+          }
+        }
+      ]
+    },
+    {
+      "id": "b1824b04-2b52-4e0e-87f3-9bdcbd9416ab",
+      "kind": "office",
+      "name": "Laptop Upcycle @ Ramapo",
+      "aliases": [
+        "Laptop Upcycle Program",
+        "Laptop Upcycle"
+      ],
+      "links": [
+        {
+          "collection": "contacts",
+          "source_key": "campus-directory",
+          "source_record_keys": [],
+          "selector": {
+            "field": "contact_identity",
+            "values": [
+              "key:office:laptop-upcycle-ramapo"
+            ],
+            "evidence": "The unit's own ramapo.edu pages (read 2026-10-15) state this contact; no shared-phone matching."
           }
         }
       ]

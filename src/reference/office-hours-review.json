@@ -1555,6 +1555,70 @@
           "section_sha256": "d2c99a37223465a83bf23d0dbcdbefabdde787b37667b8d0ca6e932e174ef5d7"
         }
       ]
+    },
+    {
+      "schedule": "Instructional Design Center",
+      "source_url": "https://www.ramapo.edu/idc/",
+      "scope": "Instructional Design Center source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The reviewed office/service section does not publish the listed weekday opening hours or exact validity bounds. A seasonal label, source update, publication date, event date, or college academic calendar does not supply those missing facts.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/idc/",
+          "section": "Instructional Design Center",
+          "section_sha256": "dc6bec0a046fc559b240d90d697179e50b0c5d8ff935cabdb956e64ad83111d6"
+        }
+      ]
+    },
+    {
+      "schedule": "Open Public Records Act",
+      "source_url": "https://www.ramapo.edu/opra/",
+      "scope": "Open Public Records Act source-specific timetable",
+      "missing_weekdays": [
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The record-access statement gives Monday through Friday for this season and bounds it only by the week before Labor Day and the week of Commencement, not by dates; the academic calendar does not supply them.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/opra/",
+          "section": "Open Public Records Act",
+          "section_sha256": "1ea9e4eb695accb02744b1b44164861c8d4487a6c0796c998b422886efa34267"
+        }
+      ]
+    },
+    {
+      "schedule": "Open Public Records Act (After Commencement)",
+      "source_url": "https://www.ramapo.edu/opra/",
+      "scope": "Open Public Records Act (After Commencement) source-specific timetable",
+      "missing_weekdays": [
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "missing_validity": [
+        "valid_from",
+        "valid_until"
+      ],
+      "reason": "The record-access statement gives Monday through Thursday for this season and bounds it only by the week after Commencement and the week before Labor Day, not by dates; the academic calendar does not supply them.",
+      "checks": [
+        {
+          "url": "https://www.ramapo.edu/opra/",
+          "section": "Open Public Records Act",
+          "section_sha256": "1ea9e4eb695accb02744b1b44164861c8d4487a6c0796c998b422886efa34267"
+        }
+      ]
     }
   ]
 }

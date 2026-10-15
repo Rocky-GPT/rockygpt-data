@@ -538,6 +538,16 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         label: /^(?=Fall\/Spring, Mon)/i, season: 'Fall/Spring' },
     { name: 'People Operations and Employee Resources Department (Summer)', url: 'https://www.ramapo.edu/poerd/',
         label: /^(?=Summer, Mon)/i, season: 'Summer' },
+    // Offices added 2026-10-15. The IDC prints its support days under its hours; both stay with them.
+    { name: 'Instructional Design Center', url: 'https://www.ramapo.edu/idc/', label: /^Instructional Design Center Hours$/i,
+        extract: /Instructional Design Center Hours\nMonday-Friday \| [^\n]*/i,
+        appendStatements: [/In-person support \(LC201\): Monday, Wednesday & Thursday/i, /Remote support: Tuesday & Friday/i] },
+    // OPRA's record access follows the college's two published opening schedules, each bounded by
+    // the page's own words (Labor Day and Commencement weeks), not by calendar dates.
+    { name: 'Open Public Records Act', url: 'https://www.ramapo.edu/opra/', label: /^(?=Monday through Friday, 8:30)/i,
+        season: 'Week before Labor Day to the week of Commencement' },
+    { name: 'Open Public Records Act (After Commencement)', url: 'https://www.ramapo.edu/opra/', label: /^(?=Monday through Thursday 8:00am)/i,
+        season: 'Week after Commencement until the week before Labor Day' },
     // Each residence hall's own page prints its Hall Office hours (read 2026-10-14).
     { name: 'Bischoff Hall', url: 'https://www.ramapo.edu/reslife/bischoff-hall/', kind: 'week', label: /^Fall & Spring Semester Hours:$/i,
         season: 'Fall & Spring Semester' },
