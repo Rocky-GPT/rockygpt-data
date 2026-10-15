@@ -3,7 +3,7 @@
  */
 import { load, type CheerioAPI } from 'cheerio';
 import { chunkDocumentText } from '../src/data-v2/document-text';
-import { ATHLETICS_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, LIBRARY_HOURS_URL, OFFICE_HOURS_PAGES,
+import { ATHLETICS_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, LIBRARY_HOURS_URL, OFFICE_HOURS_PAGES, BERRIE_SEASON_URL,
   type HoursSourceCapture } from './campus-hours';
 
 interface Section { heading: string; text: string }
@@ -90,7 +90,8 @@ export function renderHoursSourceContext(captures: HoursSourceCapture[]): string
   let markdown = '# Campus service policies and notices from hours sources\n\n';
   const seen = new Set<string>();
   for (const capture of captures) {
-    const office = OFFICE_HOURS_PAGES.some((page) => page.url === capture.sourceUrl);
+    const office = capture.sourceUrl === BERRIE_SEASON_URL
+      || OFFICE_HOURS_PAGES.some((page) => page.url === capture.sourceUrl);
     const parse = parsers[capture.sourceUrl];
     if ((!parse && !office) || seen.has(capture.sourceUrl) || !Number.isFinite(Date.parse(capture.collectedAt))) {
       throw new Error('Invalid or duplicate campus-hours source capture');

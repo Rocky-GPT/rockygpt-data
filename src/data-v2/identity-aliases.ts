@@ -117,6 +117,9 @@ export function degreeField(degree: string): string | null {
  * `${collection}:${source_key}:${source_record_key}` to the original record.
  */
 export function applyPublishedAliases(entities: CampusIdentity[], rows: Map<string, Row>, ledger: AliasLedger = new Map()): void {
+  // A department that is another identity's own name ("Center for Student Involvement" on
+  // Roadrunner Central) is that identity, not a second name for this one.
+  const owners = new Map(entities.map(entity => [entity.name, entity.id]));
   for (const entity of entities) {
     const found: [string, AliasSource][] = [];
     const abbreviated = ABBREVIATED.exec(entity.name);
@@ -139,7 +142,7 @@ export function applyPublishedAliases(entities: CampusIdentity[], rows: Map<stri
         const row = rows.get(`contacts:${link.source_key}:${key}`);
         if (['office', 'facility', 'venue'].includes(entity.kind) && key.startsWith('office:')) {
           const department = text(row?.department);
-          if (department) found.push([department, { basis: 'department', evidence: { collection: 'contacts', source_key: link.source_key, source_record_key: key, field: 'department' } }]);
+          if (department && (owners.get(department) ?? entity.id) === entity.id) found.push([department, { basis: 'department', evidence: { collection: 'contacts', source_key: link.source_key, source_record_key: key, field: 'department' } }]);
         }
         if (entity.kind === 'person' && text(row?.status).toLowerCase() === 'retired') {
           retired.push({ collection: 'contacts', source_key: link.source_key, source_record_key: key, field: 'status' });

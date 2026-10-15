@@ -191,6 +191,70 @@ CREATE TABLE IF NOT EXISTS rockygpt_v2.menu_items (
   content_hash TEXT NOT NULL
 );
 
+-- A menu file a dining venue publishes instead of dated menus (a PDF menu board), by the
+-- venue's name, with the file's own title and address (migration 028).
+CREATE TABLE IF NOT EXISTS rockygpt_v2.menu_documents (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  dataset_version_id UUID NOT NULL REFERENCES rockygpt_v2.dataset_versions(id) ON DELETE CASCADE,
+  source_id UUID NOT NULL REFERENCES rockygpt_v2.sources(id),
+  source_record_key TEXT NOT NULL,
+  name TEXT NOT NULL,
+  title TEXT NOT NULL,
+  url TEXT NOT NULL,
+  mime_type TEXT NOT NULL,
+  collected_at TIMESTAMPTZ NOT NULL,
+  content_hash TEXT NOT NULL
+);
+
+-- What each shuttle stop is and where to wait there, from the stop-descriptions page, under the
+-- stop name the timetables use (migration 029).
+CREATE TABLE IF NOT EXISTS rockygpt_v2.shuttle_stops (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  dataset_version_id UUID NOT NULL REFERENCES rockygpt_v2.dataset_versions(id) ON DELETE CASCADE,
+  source_id UUID NOT NULL REFERENCES rockygpt_v2.sources(id),
+  source_record_key TEXT NOT NULL,
+  name TEXT NOT NULL,
+  label TEXT NOT NULL,
+  description TEXT NOT NULL,
+  pickup TEXT,
+  collected_at TIMESTAMPTZ NOT NULL,
+  content_hash TEXT NOT NULL
+);
+
+-- Which menus each dining venue's Sodexo listing names: a menu page (dated menus) or only files,
+-- or none. A venue whose listing names no menu page publishes no dated menu (migration 030).
+CREATE TABLE IF NOT EXISTS rockygpt_v2.menu_listings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  dataset_version_id UUID NOT NULL REFERENCES rockygpt_v2.dataset_versions(id) ON DELETE CASCADE,
+  source_id UUID NOT NULL REFERENCES rockygpt_v2.sources(id),
+  source_record_key TEXT NOT NULL,
+  name TEXT NOT NULL,
+  dated BOOLEAN NOT NULL,
+  menus JSONB NOT NULL,
+  collected_at TIMESTAMPTZ NOT NULL,
+  content_hash TEXT NOT NULL
+);
+
+-- A topic: a ramapo.edu site with no office behind it (Scholarships, Summer Session), with the
+-- offices its own page names (exact graph names) and the quoted words that name them; a retired
+-- topic says in its page's words that it ended (migration 031).
+CREATE TABLE IF NOT EXISTS rockygpt_v2.campus_topics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  dataset_version_id UUID NOT NULL REFERENCES rockygpt_v2.dataset_versions(id) ON DELETE CASCADE,
+  source_id UUID NOT NULL REFERENCES rockygpt_v2.sources(id),
+  source_record_key TEXT NOT NULL,
+  name TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('current', 'retired')),
+  handled_by JSONB NOT NULL,
+  url TEXT NOT NULL,
+  section TEXT NOT NULL,
+  quote TEXT NOT NULL,
+  refer_url TEXT,
+  checked_at TIMESTAMPTZ NOT NULL,
+  collected_at TIMESTAMPTZ NOT NULL,
+  content_hash TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS rockygpt_v2.shuttle_routes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   dataset_version_id UUID NOT NULL REFERENCES rockygpt_v2.dataset_versions(id) ON DELETE CASCADE,
@@ -224,6 +288,10 @@ CREATE TABLE IF NOT EXISTS rockygpt_v2.shuttle_trips (
   valid_until DATE,
   content_hash TEXT NOT NULL
 );
+
+-- The NJ Transit trains a timetable row lists beside the trip (migration 027).
+ALTER TABLE rockygpt_v2.shuttle_trips
+  ADD COLUMN IF NOT EXISTS trains JSONB NOT NULL DEFAULT '{}'::jsonb;
 
 CREATE TABLE IF NOT EXISTS rockygpt_v2.academic_dates (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

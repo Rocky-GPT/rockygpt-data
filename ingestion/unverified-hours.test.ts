@@ -13,7 +13,10 @@ test('withholding a schedule retains the place and provenance without claiming h
   assert.equal(result.collectedAt, record.collectedAt);
   assert.equal(result.validFrom, undefined);
   assert.equal(result.validUntil, undefined);
-  assert.ok(!JSON.stringify(result).includes('8am-10pm'));
+  // The student-facing projection carries no rejected clock; the page's own statement is kept as evidence.
+  assert.ok(!JSON.stringify({ hours: result.hours, notes: result.notes }).includes('8am-10pm'));
+  assert.deepEqual(result.normalization_metadata?.evidence?.schedule?.source_statements, ['Old schedule 8am-10pm']);
+  assert.equal(result.normalization_metadata?.evidence?.schedule?.status, 'unknown');
   assert.equal(Object.keys(result.hours).length, 7);
   assert.ok(Object.values(result.hours).every(value => normalizeOpeningHours(value) === null));
   assert.match(result.notes!, /unverified/);

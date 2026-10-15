@@ -5,6 +5,7 @@ import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import { compileArchwayIdentities, linkReviewedArchwayContacts, linkReviewedArchwayGroups, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact, type ReviewedArchwayContact, type ReviewedArchwayGroup } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
+import { compileRouteIdentities } from './campus-routes';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
 import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, type AliasLedger, type AliasRecord, type ReviewedAlias } from './identity-aliases';
 import type { ReviewedBuilding, ReviewedLocation, ReviewedRoom } from './campus-buildings';
@@ -19,6 +20,16 @@ type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
   campus_contacts: Row[]; campus_hours: Row[]; dining_hours: Row[]; menu_items: Row[]; programs: Row[];
   clubs?: Row[]; events?: Row[];
+  /** The published shuttle timetables and their trips; a release without them has no route identities. */
+  shuttle_routes?: Row[]; shuttle_trips?: Row[];
+  /** Menu files a dining venue publishes (a PDF menu board), one row per file, named by the venue. */
+  menu_documents?: Row[];
+  /** Which menus each venue's listing names, one row per venue. */
+  menu_listings?: Row[];
+  /** Reviewed topics (sites with no office behind them), one row per topic, by name. */
+  campus_topics?: Row[];
+  /** What each shuttle stop is and where to wait, by the stop name timetables use. */
+  shuttle_stops?: Row[];
   artifacts: Record<string, unknown>;
 }
 /** What a coverage issue means for lookups: `unlinked_record`, an original record no identity
@@ -77,7 +88,7 @@ export function identityCandidates(snapshot: IdentitySnapshot): Candidate[] {
         ...(email(row.email) && snapshot.campus_contacts.filter(c => c.source_key === source && email(c.email) === email(row.email)).length === 1 ? [`email:${email(row.email)}`] : []),
       ] });
   }
-  for (const [collection, rows] of [['campus_hours', snapshot.campus_hours], ['dining_hours', snapshot.dining_hours], ['menu', snapshot.menu_items], ['programs', snapshot.programs]] as const) {
+  for (const [collection, rows] of [['campus_hours', snapshot.campus_hours], ['dining_hours', snapshot.dining_hours], ['menu', snapshot.menu_items], ['menu_documents', snapshot.menu_documents ?? []], ['menu_listings', snapshot.menu_listings ?? []], ['campus_topics', snapshot.campus_topics ?? []], ['programs', snapshot.programs]] as const) {
     for (const row of rows) result.push({ collection, source: string(row.source_key), key: string(row.source_record_key), row, anchors: [] });
   }
   const programs = programArtifactRows(snapshot.artifacts.programs);
@@ -189,7 +200,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
         const key = `${row.collection}:${row.source}:${row.key}`;
         if (owners.has(key) && owners.get(key) !== entity.id) throw new Error(`Conflicting identity ownership of ${key}.`);
         owners.set(key, entity.id);
-        if (row.collection !== 'menu' && string(row.row.name) !== entity.name && string(row.row.name)) {
+        // A schedule's name ("Counseling Center (Summer)") names a timetable, not the place.
+        if (!['menu', 'campus_hours'].includes(row.collection) && string(row.row.name) !== entity.name && string(row.row.name)) {
           displayNames.add(string(row.row.name));
           noteAlias(ledger, entity.id, string(row.row.name), { basis: 'record_name', evidence: { collection: row.collection, source_key: row.source, source_record_key: row.key, field: 'name' } });
         }
@@ -309,7 +321,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   // were reported unlinked above only because no seed identity claims them.
   const directoryContacts = new Map(candidates.filter(c => c.collection === 'contacts' && c.source === 'campus-directory').map(c => [c.key, c.row]));
   const archwayContacts = linkReviewedArchwayContacts(archway.entities, directoryContacts, inputs.identityReviews?.archway_contacts ?? [],
-    new Set([...owners.keys()].filter(key => key.startsWith('contacts:campus-directory:')).map(key => key.slice('contacts:campus-directory:'.length))));
+    new Set([...owners.keys()].filter(key => key.startsWith('contacts:campus-directory:')).map(key => key.slice('contacts:campus-directory:'.length))),
+    snapshot.campus_hours);
   for (let index = unresolved.length - 1; index >= 0; index--) {
     const issue = unresolved[index];
     if (issue.kind === 'unlinked_record' && issue.collection === 'contacts' && archwayContacts.linked.has(issue.record ?? '')) unresolved.splice(index, 1);
@@ -320,6 +333,9 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const places = compileBuildingIdentities(campusBuildings, entities, contactRows);
   entities.push(...places.buildings);
   unresolved.push(...places.unresolved);
+  const shuttle = compileRouteIdentities(snapshot.shuttle_routes ?? [], snapshot.shuttle_trips ?? [], snapshot.shuttle_stops ?? []);
+  entities.push(...shuttle.routes);
+  unresolved.push(...shuttle.unresolved);
   const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects);
   entities.push(...compileSubjectIdentities(subjects.artifact, snapshot.artifacts.courses, ledger));
   unresolved.push(...subjects.unresolved);
@@ -343,8 +359,12 @@ function listStrings(value: unknown): string[] { return Array.isArray(value) ? v
 
 /** Use inside the publisher transaction after original rows/artifacts exist. */
 export async function loadIdentitySnapshot(client: Pick<PoolClient, 'query'>, datasetId: string): Promise<IdentitySnapshot> {
-  const snapshot: IdentitySnapshot = { campus_contacts: [], campus_hours: [], dining_hours: [], menu_items: [], programs: [], clubs: [], events: [], artifacts: {} };
+  const snapshot: IdentitySnapshot = { campus_contacts: [], campus_hours: [], dining_hours: [], menu_items: [], programs: [], clubs: [], events: [], shuttle_routes: [], shuttle_trips: [], artifacts: {} };
   for (const table of ['campus_contacts', 'campus_hours', 'dining_hours', 'menu_items', 'programs'] as const) {
+    const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
+    snapshot[table] = result.rows;
+  }
+  for (const table of ['shuttle_routes', 'shuttle_trips', 'menu_documents', 'menu_listings', 'campus_topics', 'shuttle_stops'] as const) {
     const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
     snapshot[table] = result.rows;
   }

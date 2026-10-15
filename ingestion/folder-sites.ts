@@ -333,12 +333,12 @@ export function pagesCollectedElsewhere(collectors: readonly CollectedPages[], r
 }
 
 /**
- * A sitemap's XML from the answer to its request, or null when there is none: a 404, or a page that
- * is not a sitemap. Any other failure stops the collection, so a passing server error cannot quietly
- * change what is collected.
+ * A sitemap's XML from the answer to its request, or null when there is none: a 404 or a 410 (the
+ * college has taken the site down), or a page that is not a sitemap. Any other failure stops the
+ * collection, so a passing server error cannot quietly change what is collected.
  */
 export function sitemapXml(url: string, response: { ok: boolean; status: number; text(): string }): string | null {
-  if (response.status === 404) return null;
+  if (response.status === 404 || response.status === 410) return null;
   if (!response.ok) throw new Error(`The sitemap ${url} answered ${response.status}.`);
   const text = response.text();
   return /<(?:urlset|sitemapindex)[\s>]/.test(text) ? text : null;

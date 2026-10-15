@@ -26,7 +26,7 @@ export const SOURCE_REFRESH_SCRIPTS: Record<string, string[]> = {
   'archway-events': ['fetch:events:live'],
   'archway-clubs': ['fetch:clubs'],
   'academic-programs': ['fetch:programs:catalog'],
-  'campus-directory': ['fetch:directory:raw'],
+  'campus-directory': ['fetch:directory:raw', 'fetch:reviewed-contacts', 'fetch:reviewed-contact-documents'],
   transportation: ['fetch:transportation:raw'],
   housing: ['fetch:housing:raw'],
   health: ['fetch:health:raw'],

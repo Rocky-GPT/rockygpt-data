@@ -2,6 +2,7 @@ import type { LocationHours } from './schema';
 
 export function hoursUncertaintyReason(reason: string): string {
   if (reason === 'conflicting-source-validity') return 'The official source contains conflicting applicability dates.';
+  if (reason === 'conflicting-source-schedules') return 'The official page states two different schedules for the same hours.';
   if (reason === 'unbounded-term') return 'The official source gives a semester label without explicit start and end dates.';
   if (reason === 'missing-schedule') return 'The official source does not publish a schedule for this facility.';
   if (reason === 'source-update-only') return 'The source supplies an update date but no current applicability period.';
@@ -11,7 +12,10 @@ export function hoursUncertaintyReason(reason: string): string {
 
 /** A verified place remains discoverable even when its schedule is withheld.
  * Never copy rejected clocks, closures, qualifiers or old validity into the
- * current-hours projection. The complete source record stays in the manifest.
+ * hours or notes of the current-hours projection. The page's own statements stay
+ * only as cited `source_statements` in `normalization_metadata`, so the Brain can
+ * say what the page printed and that it is unverified. The complete source record
+ * stays in the manifest.
  */
 export function withheldHoursRecord({ record, reason }: { record: LocationHours; reason: string }): LocationHours {
   return {
@@ -22,5 +26,12 @@ export function withheldHoursRecord({ record, reason }: { record: LocationHours;
     sourceUrl: record.sourceUrl,
     collectedAt: record.collectedAt,
     availabilityIssue: 'unverified-hours',
+    normalization_metadata: { evidence: { schedule: {
+      ...record.normalization_metadata?.evidence?.schedule,
+      status: reason.startsWith('conflicting-') ? 'conflicting' : 'unknown',
+      reason: hoursUncertaintyReason(reason),
+      source_statements: record.normalization_metadata?.evidence?.schedule?.source_statements
+        ?? (record.notes ? [record.notes] : []),
+    } } },
   };
 }

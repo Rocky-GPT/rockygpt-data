@@ -17,7 +17,7 @@ export const SOURCE_RAW_ARTIFACT_FILES: Record<string, string[]> = {
   ],
   'archway-clubs': ['clubs.raw.json', 'clubs-detail.raw.json'],
   'academic-programs': ['catalog-programs-api.raw.json'],
-  'campus-directory': ['directory.raw.json', 'directory-sources.raw.json'],
+  'campus-directory': ['directory.raw.json', 'directory-sources.raw.json', 'reviewed-contacts.raw.json', 'reviewed-contacts-sources.raw.json', 'reviewed-contact-documents.raw.json', 'reviewed-contact-documents-sources.raw.json'],
   transportation: ['transportation.raw.json', 'transportation-sources.raw.json'],
   housing: ['housing.raw.json', 'housing-sources.raw.json'],
   health: ['health.raw.json', 'health-sources.raw.json'],

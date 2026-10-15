@@ -230,3 +230,81 @@ test('a program links the public program pages that link its catalog code as the
     .links.some(link => link.collection === 'major_pages'));
   assert.throws(() => compileCampusIdentities(seed, snapshot(), raw, { majorPages: { pages: [{ programCodes: [] }] } }), /no ID or program links/);
 });
+
+test('two offices that publish one role email each keep their own contact by their reviewed key', async () => {
+  // The ID Card Room's page lists publicsafety@ramapo.edu, the address Public Safety (Emergency) is known by.
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const contact = (key: string, name: string) => ({ source_key: 'campus-directory', source_record_key: key, name, email: 'publicsafety@ramapo.edu', phone: '(201) 684-6666' });
+  input.campus_contacts = [contact('office:public-safety-emergency', 'Public Safety (Emergency)'), contact('office:id-card-room', 'ID Card Room')];
+  const result = compileCampusIdentities(real, input);
+  const contactKeys = (name: string) => result.registry.entities.find(e => e.name === name)!
+    .links.find(l => l.collection === 'contacts')!.source_record_keys;
+  assert.deepEqual(contactKeys('Public Safety (Emergency)'), ['office:public-safety-emergency']);
+  assert.deepEqual(contactKeys('ID Card Room'), ['office:id-card-room']);
+  // The shared address is no longer a unique anchor for either, so neither claims the other's record.
+  assert.equal(result.report.unresolved.some(issue => issue.collection === 'contacts' && issue.kind === 'unlinked_record'
+    && /public-safety-emergency|id-card-room/.test(issue.record ?? '')), false);
+});
+
+test('every office whose own page prints hours links exactly those records, and no office links two schedules', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const { OFFICE_HOURS_PAGES } = await import('../../ingestion/campus-hours');
+  const input = snapshot();
+  // A unit that is an Archway group links its schedules through its reviewed desk contact, once.
+  const { archway_contacts: desks } = (await import('../reference/campus-identity-reviews.json')).default as { archway_contacts: Array<{ hours?: string[] }> };
+  const deskHours = desks.flatMap(desk => desk.hours ?? []);
+  assert.equal(new Set(deskHours).size, deskHours.length);
+  for (const name of deskHours) assert.ok(OFFICE_HOURS_PAGES.some(office => office.name === name), name);
+  const names = [...new Set(OFFICE_HOURS_PAGES.map(office => office.name))].filter(name => !deskHours.includes(name));
+  input.campus_hours = names.flatMap(name => ['Monday', 'Tuesday'].map(day =>
+    ({ source_key: 'campus-hours', source_record_key: `${name}:${day}`, name, day, schedule: '8:30am-4:30pm' })));
+  const result = compileCampusIdentities(real, input);
+  const owners = new Map<string, string[]>();
+  for (const entity of result.registry.entities) {
+    for (const link of entity.links.filter(l => l.collection === 'campus_hours')) {
+      for (const key of link.source_record_keys) owners.set(key, [...(owners.get(key) ?? []), entity.name]);
+    }
+  }
+  // Each schedule name (an office's regular, Summer, early-arrival or service schedule) belongs to exactly one office.
+  const selectedBy = new Map<string, string[]>();
+  for (const entity of real.entities) {
+    for (const link of entity.links.filter(l => l.collection === 'campus_hours')) {
+      for (const value of link.selector?.values ?? []) selectedBy.set(value, [...(selectedBy.get(value) ?? []), entity.name]);
+    }
+  }
+  for (const name of names) {
+    assert.equal(selectedBy.get(name)?.length, 1, `${name} is selected by exactly one office`);
+    for (const day of ['Monday', 'Tuesday']) assert.deepEqual(owners.get(`${name}:${day}`), selectedBy.get(name), `${name} ${day}`);
+  }
+  assert.equal(result.report.unresolved.some(issue => issue.collection === 'campus_hours' && names.some(name => (issue.record ?? '').includes(name))), false);
+  // An office has one hours link. It may select several named, season-scoped schedules; no name is shared by two offices.
+  for (const entity of real.entities) {
+    assert.ok(entity.links.filter(l => l.collection === 'campus_hours').length <= 1, `${entity.name} has two hours links`);
+  }
+  for (const [name, offices] of selectedBy) assert.equal(offices.length, 1, `${name} is selected by ${offices.join(' and ')}`);
+});
+
+test('the Counseling Center, both Public Safety offices and the IT Help Desk link their own hours by name', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const names = ['Counseling Center', 'Public Safety (Emergency)', 'Public Safety (Non-Emergency)', 'IT Help Desk', 'Registrar'];
+  input.campus_hours = names.flatMap(name => ['Monday', 'Tuesday'].map(day =>
+    ({ source_key: 'campus-hours', source_record_key: `${name}:${day}`, name, day, schedule: '8:30am-4:30pm' })));
+  const result = compileCampusIdentities(real, input);
+  for (const name of names) {
+    const links = result.registry.entities.find(e => e.name === name)!.links.filter(l => l.collection === 'campus_hours');
+    assert.deepEqual(links.map(l => l.source_record_keys), [[`${name}:Monday`, `${name}:Tuesday`]], name);
+  }
+});
+
+test("a schedule's name is not an alias of the office whose hours it is", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  input.campus_hours = ['Counseling Center', 'Counseling Center (Summer)'].flatMap(name => ['Monday', 'Tuesday'].map(day =>
+    ({ source_key: 'campus-hours', source_record_key: `${name}:${day}`, name, day, schedule: '8:30am-4:30pm' })));
+  const result = compileCampusIdentities(real, input);
+  const counseling = result.registry.entities.find(e => e.name === 'Counseling Center')!;
+  assert.deepEqual(counseling.links.find(l => l.collection === 'campus_hours')!.source_record_keys.length, 4);
+  assert.equal(counseling.aliases.includes('Counseling Center (Summer)'), false);
+});

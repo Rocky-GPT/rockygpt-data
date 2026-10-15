@@ -7,7 +7,7 @@ import 'dotenv/config';
 import { Pool, type PoolClient } from 'pg';
 import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
 import { loadCapturedPages } from '../../src/directory/contact-evidence';
-import { parseTransportationSchedules } from '../../ingestion/transportation-schedule';
+import { parseStopDescriptions, parseTransportationSchedules } from '../../ingestion/transportation-schedule';
 import { validateRawDatasetV1 } from '../../ingestion/raw-types';
 import { normalizeMenuWeek } from '../../ingestion/menu-data';
 import { parseEventStart } from '../../src/data-v2/event-time';
@@ -18,6 +18,8 @@ import { validateCampusIdentities, type CampusIdentities } from '../../src/data-
 import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
+import { menuDocuments, menuListings } from '../../src/data-v2/menu-documents';
+import { checkTopics, type ReviewedTopics } from '../../src/data-v2/campus-topics';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 import { assertQualityV2, validateCurrentDatasetV2 } from '../quality/validate';
 import { CRITICAL_FACT_VALIDITY_V2, CRITICAL_FACT_VALUES_V2 } from './check-quality';
@@ -215,24 +217,27 @@ async function insertStructured(
   // library hours answered an August question.
   const campusHours = readJson<
     Array<{ name: string; hours: Record<string, string>; notes?: string;
-      collectedAt?: string; sourceUrl?: string; validFrom?: string; validUntil?: string }>
+      collectedAt?: string; sourceUrl?: string; validFrom?: string; validUntil?: string;
+      normalization_metadata?: { evidence?: { schedule?: { season?: string } } } }>
   >('data/normalized/hours.json');
   for (const location of campusHours) {
     const { window } = recordValidity(location);
-    const validFrom = window?.validFrom || null;
-    const validUntil = window?.validUntil || null;
+    const validFrom = location.validFrom || window?.validFrom || null;
+    const validUntil = location.validUntil || window?.validUntil || null;
     for (const [day, schedule] of Object.entries(location.hours || {})) {
       const recordKey = `${location.name}:${day}`;
       const hours = normalizeOpeningHours(schedule);
       await client.query(
         `INSERT INTO rockygpt_v2.campus_hours
          (dataset_version_id, source_id, source_record_key, name, day, schedule, collected_at,
-          valid_from, valid_until, content_hash, hours, notes, source_url)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12,$13)`,
+          valid_from, valid_until, content_hash, hours, notes, source_url, normalization_metadata)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb,$12,$13,$14::jsonb)`,
         [datasetId, sources.get('campus-hours'), recordKey, location.name, day, schedule, location.collectedAt || collectedAtFor('campus-hours'),
           validFrom, validUntil,
-          sha256(JSON.stringify({ recordKey, schedule, validFrom, validUntil, notes: location.notes, sourceUrl: location.sourceUrl })),
-          hours === null ? null : JSON.stringify(hours), location.notes || null, location.sourceUrl || null]
+          sha256(JSON.stringify({ recordKey, schedule, validFrom, validUntil, notes: location.notes,
+            sourceUrl: location.sourceUrl, normalization_metadata: location.normalization_metadata })),
+          hours === null ? null : JSON.stringify(hours), location.notes || null, location.sourceUrl || null,
+          JSON.stringify(location.normalization_metadata ?? {})]
       );
       counts.campus_hours = (counts.campus_hours || 0) + 1;
     }
@@ -256,6 +261,48 @@ async function insertStructured(
 
   // PROB-010: publish each seasonal exception as dated rows so PostgreSQL
   // answers honor closures and altered schedules for their exact interval.
+  for (const document of menuDocuments(readJson<JsonRecord>('data/raw/dining-hours.raw.json'), new Date(collectedAtFor('dining')))) {
+    const recordKey = `${document.name}:menu-document:${document.title}`;
+    await client.query(
+      `INSERT INTO rockygpt_v2.menu_documents
+       (dataset_version_id, source_id, source_record_key, name, title, url, mime_type, collected_at, content_hash)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      [datasetId, sources.get('dining'), recordKey, document.name, document.title, document.url, document.mimeType,
+        collectedAtFor('dining'), sha256(JSON.stringify(document))]
+    );
+    counts.menu_documents = (counts.menu_documents || 0) + 1;
+  }
+  // Which menus each venue's listing names: a venue naming no menu page publishes no dated menu.
+  for (const listing of menuListings(readJson<JsonRecord>('data/raw/dining-hours.raw.json'), new Date(collectedAtFor('dining')))) {
+    await client.query(
+      `INSERT INTO rockygpt_v2.menu_listings
+       (dataset_version_id, source_id, source_record_key, name, dated, menus, collected_at, content_hash)
+       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8)`,
+      [datasetId, sources.get('dining'), `${listing.name}:menu-listing`, listing.name, listing.dated,
+        JSON.stringify(listing.menus), collectedAtFor('dining'), sha256(JSON.stringify(listing))]
+    );
+    counts.menu_listings = (counts.menu_listings || 0) + 1;
+  }
+  // Reviewed topics: sites with no office behind them, each pointing to the offices its own page
+  // names. A topic whose cited section changed, or that names an office the graph lacks, stops
+  // the publish: it must be reviewed again, never published from an older reading.
+  const seeded = readJson<{ entities: Array<{ kind: string; name: string }> }>('src/reference/campus-identities.json').entities;
+  const desks = readJson<{ archway_contacts: Array<{ group: string }> }>('src/reference/campus-identity-reviews.json').archway_contacts;
+  const named = new Set([...seeded.filter(entity => ['office', 'venue', 'facility'].includes(entity.kind)).map(entity => entity.name),
+    ...desks.map(desk => desk.group)]);
+  for (const topic of checkTopics(readJson<ReviewedTopics>('src/reference/campus-topics.json'), loadCapturedPages(), named)) {
+    await client.query(
+      `INSERT INTO rockygpt_v2.campus_topics
+       (dataset_version_id, source_id, source_record_key, name, status, handled_by, url, section, quote, refer_url,
+        checked_at, collected_at, content_hash)
+       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9,$10,$11,$11,$12)`,
+      [datasetId, sources.get('office-pages'), topic.name, topic.name, topic.status, JSON.stringify(topic.handled_by),
+        topic.evidence.url, topic.evidence.section, topic.evidence.quote, topic.refer_url ?? null, topic.checked_at,
+        sha256(JSON.stringify(topic))]
+    );
+    counts.campus_topics = (counts.campus_topics || 0) + 1;
+  }
+
   const diningRaw = readJson<JsonRecord>('data/normalized/dining-hours.json');
   const diningRegions = (((diningRaw.composition as JsonRecord)?.subject as JsonRecord)?.regions || []) as JsonRecord[];
   for (const region of diningRegions) {
@@ -376,11 +423,54 @@ async function insertStructured(
     for (const withheld of contact.evidence.withheld) {
       console.warn(`Withheld ${contact.name} ${withheld.field} ${withheld.value}: ${withheld.reason}`);
     }
+    // A "not published" note this run could not confirm is left out (the field stays unknown), loudly.
+    if (contact.evidence.website_issue) {
+      console.warn(`Website not kept: ${contact.name} ${contact.evidence.website_issue.url}: ${contact.evidence.website_issue.reason}`);
+    }
+    for (const issue of contact.evidence.absence_issues) {
+      console.warn(`Not published, unconfirmed: ${contact.name} ${issue.field} (${issue.kind}): ${issue.reason}`);
+    }
+    for (const issue of contact.evidence.contact_note_issues ?? []) {
+      console.warn(`Contact instruction not kept: ${contact.name}: ${issue.reason}`);
+    }
+    const review = contact.evidence.contact_review;
+    if (review?.status === 'needs_review') {
+      const candidates = review.unrecorded.reduce((total, item) => total + item.found.length, 0);
+      console.warn(`Contact coverage needs review: ${contact.name}: ${candidates} unrecorded candidate(s), `
+        + `${review.unavailable_sections.length} unavailable section(s). See normalization_metadata.evidence.contact_review; candidates are not published facts.`);
+    }
   }
   // A page that changed withholds a value or two. Losing a quarter of them means the
   // captures themselves are missing, so stop rather than publish offices with no phones.
   if (withheldValues > Math.max(5, reviewedValues * 0.25)) {
     throw new Error(`${withheldValues} of ${reviewedValues} reviewed contact values have no supporting page in this run's captures.`);
+  }
+  // Completed manual office reviews must not silently degrade on a later refresh.
+  // Discovery candidates stay diagnostic; changed sections require another review.
+  const officeReview = readJson<{ schema_version: number; offices: Array<{ name: string }> }>('src/reference/office-contact-review.json');
+  if (officeReview.schema_version !== 1 || !Array.isArray(officeReview.offices)
+      || new Set(officeReview.offices.map(office => office.name)).size !== officeReview.offices.length) {
+    throw new Error('Invalid completed office review artifact.');
+  }
+  for (const office of officeReview.offices) {
+    const matches = directoryContacts.filter(contact => contact.name === office.name && contact.type === 'office');
+    const evidence = matches.length === 1 ? matches[0].evidence : undefined;
+    if (!evidence || evidence.withheld.length || evidence.absence_issues.length || evidence.website_issue
+        || evidence.contact_note_issues?.length || evidence.contact_review?.status !== 'no_unrecorded_values_in_scanned_sections') {
+      throw new Error(`Completed office review needs attention before publication: ${office.name}. Inspect contact evidence and coverage diagnostics.`);
+    }
+    const contact = matches[0];
+    const reviewedFields = { department: contact.department, email: contact.email,
+      phone: contact.phone || contact.phones?.length, office: contact.office || contact.offices?.length,
+      prefers_email: contact.prefers_email, preferred_contact: contact.preferred_contact,
+      contact_note: contact.contact_note };
+    for (const [field, value] of Object.entries(reviewedFields)) {
+      if ((value === undefined || value === null || value === '' || value === 0)
+          && !evidence.not_published.some(absence => absence.field === field)) {
+        throw new Error(`Completed office review has an unreviewed missing field: ${office.name} ${field}.`);
+      }
+    }
+    if (!evidence.website) throw new Error(`Completed office review needs a checked website: ${office.name}.`);
   }
   for (const contact of directoryContacts) {
     const name = cleanText(contact.name);
@@ -465,12 +555,29 @@ async function insertStructured(
       await client.query(
         `INSERT INTO rockygpt_v2.shuttle_trips
          (dataset_version_id, source_id, route_id, source_record_key, sequence, departure, arrival,
-          stops, collected_at, content_hash)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10)`,
+          stops, trains, collected_at, content_hash)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9::jsonb,$10,$11)`,
         [datasetId, sources.get('transportation'), route.rows[0].id, recordKey, index, trip.departure,
-          trip.arrival, JSON.stringify(trip.stops), collectedAt, sha256(JSON.stringify({ recordKey, trip }))]
+          trip.arrival, JSON.stringify(trip.stops), JSON.stringify(trip.trains ?? {}), collectedAt,
+          sha256(JSON.stringify({ recordKey, trip }))]
       );
       counts.shuttle_trips = (counts.shuttle_trips || 0) + 1;
+    }
+  }
+  // One record per route and stop it visits (and the campus stop every trip leaves from): a
+  // record has exactly one identity, so a stop several routes share is written for each route.
+  const described = parseStopDescriptions(validateRawDatasetV1(readJson('data/raw/transportation.raw.json')));
+  for (const { name, trips } of routes) {
+    const visited = new Set(['Ramapo College (Bradley Center)', ...trips.flatMap(trip => trip.stops.map(stop => stop.location))]);
+    for (const stop of described.filter(item => visited.has(item.stop))) {
+      await client.query(
+        `INSERT INTO rockygpt_v2.shuttle_stops
+         (dataset_version_id, source_id, source_record_key, name, label, description, pickup, collected_at, content_hash)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+        [datasetId, sources.get('transportation'), `${name}:stop:${stop.stop}`, stop.stop, stop.label, stop.description, stop.pickup,
+          stop.collectedAt, sha256(JSON.stringify({ route: name, stop }))]
+      );
+      counts.shuttle_stops = (counts.shuttle_stops || 0) + 1;
     }
   }
 
