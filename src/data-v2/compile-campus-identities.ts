@@ -215,29 +215,6 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     }
     if (links.length) entities.push({ id: entity.id, kind: entity.kind, name: entity.name, aliases: [...displayNames].slice(0, 32), links });
   }
-  // What each office's own site says: an office, venue or facility links every captured page of
-  // the folder its reviewed website names (its contact's evidence.website.url on www.ramapo.edu).
-  // Two offices that share a site both link its pages; a site no office names links to none.
-  const siteContactRows = new Map(candidates.filter(candidate => candidate.collection === 'contacts')
-    .map(candidate => [`${candidate.source}:${candidate.key}`, candidate.row]));
-  const pagesByFolder = new Map<string, string[]>();
-  for (const row of snapshot.office_sections ?? []) {
-    const folder = string(row.site_folder);
-    pagesByFolder.set(folder, [...pagesByFolder.get(folder) ?? [], string(row.source_record_key)]);
-  }
-  // A site no website claim names is linked to the office its own pages name (office-site-owners.json).
-  const ownedFolders = new Map<string, string[]>();
-  for (const site of (siteOwners as { sites: Array<{ folder: string; owner: string }> }).sites) {
-    ownedFolders.set(site.owner, [...ownedFolders.get(site.owner) ?? [], site.folder]);
-  }
-  for (const entity of entities.filter(candidate => ['office', 'venue', 'facility'].includes(candidate.kind))) {
-    const folders = new Set([...entity.links.filter(link => link.collection === 'contacts')
-      .flatMap(link => link.source_record_keys.map(key => siteContactRows.get(`${link.source_key}:${key}`)))
-      .map(row => reviewedSiteFolder(row)).filter((folder): folder is string => Boolean(folder)),
-    ...ownedFolders.get(entity.name) ?? []]);
-    const keys = [...new Set([...folders].flatMap(folder => pagesByFolder.get(folder) ?? []))].sort();
-    if (keys.length) entity.links.push({ collection: 'office_sections', source_key: 'office-pages', source_record_keys: keys });
-  }
   // Records that name their programs by catalog code: a recommended graduation plan names its
   // major's code, and a public program page the codes it links as its own. A program links
   // every record that names one of its own catalog codes, and a record no program takes is
@@ -369,6 +346,30 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   applyPublishedAliases(entities, recordRows, ledger);
   const reviewedAliases = applyReviewedAliases(entities, inputs.identityReviews?.aliases ?? [], ledger);
   unresolved.push(...reviewedAliases.unresolved);
+  // What each office's own site says: an office, venue, facility or Archway group (a center, a
+  // club run as an office) links every captured page of the folder its reviewed website names (its
+  // contact's evidence.website.url on www.ramapo.edu). Run once every identity is in the registry.
+  // Two offices that share a site both link its pages; a site no office names links to none.
+  const siteContactRows = new Map(candidates.filter(candidate => candidate.collection === 'contacts')
+    .map(candidate => [`${candidate.source}:${candidate.key}`, candidate.row]));
+  const pagesByFolder = new Map<string, string[]>();
+  for (const row of snapshot.office_sections ?? []) {
+    const folder = string(row.site_folder);
+    pagesByFolder.set(folder, [...pagesByFolder.get(folder) ?? [], string(row.source_record_key)]);
+  }
+  // A site no website claim names is linked to the office its own pages name (office-site-owners.json).
+  const ownedFolders = new Map<string, string[]>();
+  for (const site of (siteOwners as { sites: Array<{ folder: string; owner: string }> }).sites) {
+    ownedFolders.set(site.owner, [...ownedFolders.get(site.owner) ?? [], site.folder]);
+  }
+  for (const entity of entities.filter(candidate => ['office', 'venue', 'facility', 'organization', 'club'].includes(candidate.kind))) {
+    const folders = new Set([...entity.links.filter(link => link.collection === 'contacts')
+      .flatMap(link => link.source_record_keys.map(key => siteContactRows.get(`${link.source_key}:${key}`)))
+      .map(row => reviewedSiteFolder(row)).filter((folder): folder is string => Boolean(folder)),
+    ...ownedFolders.get(entity.name) ?? []]);
+    const keys = [...new Set([...folders].flatMap(folder => pagesByFolder.get(folder) ?? []))].sort();
+    if (keys.length) entity.links.push({ collection: 'office_sections', source_key: 'office-pages', source_record_keys: keys });
+  }
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved, alias_sources: aliasRecords(entities, ledger) };
