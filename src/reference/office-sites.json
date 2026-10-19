@@ -25,6 +25,7 @@
     "named students' testimonials; a cut whose heading is no longer on the page",
     "leaves the whole page out.",
     "",
+    "Added October 19, 2026 for how-to answers: academic-calendars, the term dates and the add/drop and withdrawal deadlines the Registrar's pages point to.",
     "keptPages are pages the page check (npm run check:pages) flagged that a person",
     "reviewed and kept, each with the reason; the check does not ask about them again."
   ],
@@ -77,6 +78,7 @@
   "keptPages": [],
   "sites": [
     {"folder": "about", "name": "About / Information"},
+    {"folder": "academic-calendars", "name": "Academic Calendars"},
     {"folder": "academics", "name": "Academics"},
     {"folder": "admissions", "name": "Admissions & Aid"},
     {"folder": "admitted-students", "name": "Admitted Students"},

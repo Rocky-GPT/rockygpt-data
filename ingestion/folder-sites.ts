@@ -67,7 +67,9 @@ const SITE_HOST = 'www.ramapo.edu';
 const SITE_WIDE_SITEMAP = `${SITE}/sitemap.xml`;
 export const RAW_DIR = path.join(process.cwd(), 'data', 'raw');
 const REQUEST_INTERVAL_MS = 1_000;
-const MAX_UNLISTED_PAGES = 500;
+// Pages a listed page links to that no sitemap lists (a site's policy pages): 500 left the
+// Provost's policy pages uncollected (October 19, 2026).
+const MAX_UNLISTED_PAGES = 1500;
 const DOCUMENT = /\.(pdf|docx?|xlsx?|pptx?|csv|txt|jpe?g|png|gif|zip|mp3|mp4)$/i;
 // Listings WordPress builds from posts (archives, feeds) and its own endpoints, not pages.
 const WORDPRESS_LISTING =
