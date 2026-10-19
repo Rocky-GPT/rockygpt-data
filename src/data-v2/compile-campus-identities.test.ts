@@ -350,3 +350,23 @@ test('an office also links the pages of a site the reviewed site owners give it'
   assert.deepEqual(owner!.links.find(l => l.collection === 'office_sections')?.source_record_keys,
     ['www.ramapo.edu/myadvisor/']);
 });
+
+test('a college policy page links to the office its Responsible Unit names', async () => {
+  const { responsibleUnit } = await import('./compile-campus-identities');
+  const header = [{ heading: 'Graduate Assistants', text: 'Policy Number: | 481; Responsible Unit: | Payroll; Approval Authority: | President' }];
+  assert.equal(responsibleUnit(header), 'Payroll');
+  assert.equal(responsibleUnit([{ heading: 'x', text: 'no header here' }]), null);
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const seeded = real.entities.find(entity => entity.name === 'Payroll')!;
+  const contact = seeded.links.find(link => link.collection === 'contacts')!;
+  input.campus_contacts = [{ source_key: contact.source_key, source_record_key: String(contact.selector!.values[0]).replace(/^key:/, ''), name: 'Payroll' }];
+  input.office_sections = [
+    { source_key: 'office-pages', source_record_key: 'www.ramapo.edu/policies/policy/481/', site_folder: 'policies', sections: header },
+    { source_key: 'office-pages', source_record_key: 'www.ramapo.edu/policies/policy/1/', site_folder: 'policies',
+      sections: [{ heading: 'x', text: 'Responsible Unit: | Administration and Finance;' }] }];
+  const result = compileCampusIdentities(real, input);
+  const payroll = result.registry.entities.find(e => e.name === 'Payroll')!;
+  assert.deepEqual(payroll.links.find(l => l.collection === 'office_sections')?.source_record_keys,
+    ['www.ramapo.edu/policies/policy/481/']);
+});
