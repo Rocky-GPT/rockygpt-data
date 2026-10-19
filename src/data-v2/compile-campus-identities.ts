@@ -3,6 +3,7 @@ import type { PoolClient } from 'pg';
 import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import siteOwners from '../reference/office-site-owners.json';
+import policyUnitOwners from '../reference/policy-unit-owners.json';
 import { compileArchwayIdentities, linkReviewedArchwayContacts, linkReviewedArchwayGroups, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact, type ReviewedArchwayContact, type ReviewedArchwayGroup } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
@@ -353,9 +354,14 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const siteContactRows = new Map(candidates.filter(candidate => candidate.collection === 'contacts')
     .map(candidate => [`${candidate.source}:${candidate.key}`, candidate.row]));
   const pagesByFolder = new Map<string, string[]>();
+  // A college policy page links to the office its Responsible Unit names (policy-unit-owners.json).
+  const policyPages = new Map<string, string[]>();
+  const unitOwners = (policyUnitOwners as { units: Record<string, string> }).units;
   for (const row of snapshot.office_sections ?? []) {
     const folder = string(row.site_folder);
     pagesByFolder.set(folder, [...pagesByFolder.get(folder) ?? [], string(row.source_record_key)]);
+    const owner = folder === 'policies' ? unitOwners[responsibleUnit(row.sections) ?? ''] : undefined;
+    if (owner) policyPages.set(owner, [...policyPages.get(owner) ?? [], string(row.source_record_key)]);
   }
   // A site no website claim names is linked to the office its own pages name (office-site-owners.json).
   const ownedFolders = new Map<string, string[]>();
@@ -367,7 +373,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
       .flatMap(link => link.source_record_keys.map(key => siteContactRows.get(`${link.source_key}:${key}`)))
       .map(row => reviewedSiteFolder(row)).filter((folder): folder is string => Boolean(folder)),
     ...ownedFolders.get(entity.name) ?? []]);
-    const keys = [...new Set([...folders].flatMap(folder => pagesByFolder.get(folder) ?? []))].sort();
+    const keys = [...new Set([...[...folders].flatMap(folder => pagesByFolder.get(folder) ?? []),
+      ...policyPages.get(entity.name) ?? []])].sort();
     if (keys.length) entity.links.push({ collection: 'office_sections', source_key: 'office-pages', source_record_keys: keys });
   }
   validateCampusIdentities(registry);
@@ -382,6 +389,14 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const courseIdentities = compileCourseIdentities(snapshot.artifacts.courses);
   const requirementGroups = compileRequirementGroups(snapshot.artifacts.programs, registry, courseIdentities);
   return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact };
+}
+/** The Responsible Unit a college policy page names in its header ("Responsible Unit: | Payroll;"). */
+export function responsibleUnit(sections: unknown): string | null {
+  const text = (Array.isArray(sections) ? sections : [])
+    .map(section => (section && typeof section === 'object' ? String((section as { text?: unknown }).text ?? '') : ''))
+    .join(' ').replace(/\s+/g, ' ');
+  const found = /Responsible Unit:\s*\|?\s*([^;|]+)/.exec(text);
+  return found ? found[1].trim() : null;
 }
 /** The site folder of a contact's reviewed website on www.ramapo.edu, or null. */
 function reviewedSiteFolder(row: Row | undefined): string | null {
