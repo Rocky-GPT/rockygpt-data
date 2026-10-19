@@ -35,3 +35,16 @@ test('a page whose reviewed cut is no longer on it is left out rather than publi
   const cuts = new Map([[pageKey('https://www.ramapo.edu/registrar/'), [{ heading: 'Gone heading' }]]]);
   assert.deepEqual(officeSectionPages(pages, new Set(['registrar']), cuts), []);
 });
+
+test('a reviewed site owner holds only while its quote is on its own page in this capture', async () => {
+  const { checkSiteOwners } = await import('./office-sections');
+  const url = 'https://www.ramapo.edu/myadvisor/contact/';
+  const pages = new Map([page(url, [{ heading: 'Contact', text: 'The Center for Student Success  advises every student.' }])]);
+  const site = { folder: 'myadvisor', owner: 'Center for Student Success (Academic Advising)', evidence_url: url,
+    evidence_quote: 'the Center for Student Success advises', note: '' };
+  assert.equal(checkSiteOwners({ reviewed_on: '2026-10-19', sites: [site] }, pages, new Set(['myadvisor'])).length, 1);
+  assert.throws(() => checkSiteOwners({ reviewed_on: '', sites: [{ ...site, evidence_quote: 'gone words' }] },
+    pages, new Set(['myadvisor'])), /no longer on/);
+  assert.throws(() => checkSiteOwners({ reviewed_on: '', sites: [site] }, pages, new Set(['registrar'])),
+    /not a reviewed office site/);
+});
