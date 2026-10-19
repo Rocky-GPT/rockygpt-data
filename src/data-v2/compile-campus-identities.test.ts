@@ -332,3 +332,21 @@ test("an office links the captured pages of the folder its reviewed website name
   assert.equal(result.registry.entities.some(e => e.links.some(l => l.collection === 'office_sections'
     && l.source_record_keys.includes('www.ramapo.edu/policies/'))), false);
 });
+
+test('an office also links the pages of a site the reviewed site owners give it', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const owners = (await import('../reference/office-site-owners.json')).default as { sites: Array<{ folder: string; owner: string }> };
+  const site = owners.sites.find(entry => entry.folder === 'myadvisor')!;
+  const input = snapshot();
+  // The office's own directory contact, by the key its reviewed selector names.
+  const seeded = real.entities.find(entity => entity.name === site.owner)!;
+  const contact = seeded.links.find(link => link.collection === 'contacts')!;
+  const key = String(contact.selector!.values[0]).replace(/^key:/, '');
+  input.campus_contacts = [{ source_key: contact.source_key, source_record_key: key, name: site.owner }];
+  input.office_sections = [{ source_key: 'office-pages', source_record_key: 'www.ramapo.edu/myadvisor/', site_folder: 'myadvisor' }];
+  const result = compileCampusIdentities(real, input);
+  const owner = result.registry.entities.find(e => e.name === site.owner);
+  assert.ok(owner, `${site.owner} is an identity`);
+  assert.deepEqual(owner!.links.find(l => l.collection === 'office_sections')?.source_record_keys,
+    ['www.ramapo.edu/myadvisor/']);
+});

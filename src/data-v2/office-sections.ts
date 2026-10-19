@@ -59,3 +59,33 @@ export function officeSectionPages(pages: ReadonlyMap<string, CapturedPage>, fol
   }
   return rows.sort((a, b) => a.key.localeCompare(b.key));
 }
+
+/** A reviewed owner of an office site whose website claim names another folder or none. */
+export interface SiteOwner { folder: string; owner: string; evidence_url: string; evidence_quote: string; note: string }
+export interface SiteOwners { reviewed_on: string; sites: SiteOwner[] }
+
+const folded = (text: string) => text.replace(/\s+/g, ' ').trim().toLowerCase();
+
+/**
+ * The reviewed site owners whose evidence still holds: the quote is on its page in this run's
+ * capture, the page is in the owned folder, and the folder is a reviewed office site. Anything
+ * else stops the publish, so an owner is never linked from an older reading.
+ */
+export function checkSiteOwners(reviewed: SiteOwners, pages: ReadonlyMap<string, CapturedPage>,
+  folders: ReadonlySet<string>): SiteOwner[] {
+  const problems: string[] = [];
+  const seen = new Set<string>();
+  for (const site of reviewed.sites) {
+    const fail = (why: string) => problems.push(`${site.folder}: ${why}`);
+    if (seen.has(site.folder)) { fail('listed twice'); continue; }
+    seen.add(site.folder);
+    if (!folders.has(site.folder)) { fail('is not a reviewed office site'); continue; }
+    if (siteFolder(site.evidence_url) !== site.folder) { fail('its evidence page is in another folder'); continue; }
+    const page = pages.get(pageKey(site.evidence_url));
+    if (!page) { fail(`${site.evidence_url} is not in this capture`); continue; }
+    const text = folded(page.sections.map(section => `${section.heading} ${section.text}`).join(' '));
+    if (!text.includes(folded(site.evidence_quote))) fail(`the quote is no longer on ${site.evidence_url}`);
+  }
+  if (problems.length) throw new Error(`Reviewed office site owners need review:\n${problems.join('\n')}`);
+  return reviewed.sites;
+}

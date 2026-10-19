@@ -2,6 +2,7 @@ import { load } from 'cheerio';
 import type { PoolClient } from 'pg';
 import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
+import siteOwners from '../reference/office-site-owners.json';
 import { compileArchwayIdentities, linkReviewedArchwayContacts, linkReviewedArchwayGroups, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact, type ReviewedArchwayContact, type ReviewedArchwayGroup } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
@@ -224,10 +225,16 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     const folder = string(row.site_folder);
     pagesByFolder.set(folder, [...pagesByFolder.get(folder) ?? [], string(row.source_record_key)]);
   }
+  // A site no website claim names is linked to the office its own pages name (office-site-owners.json).
+  const ownedFolders = new Map<string, string[]>();
+  for (const site of (siteOwners as { sites: Array<{ folder: string; owner: string }> }).sites) {
+    ownedFolders.set(site.owner, [...ownedFolders.get(site.owner) ?? [], site.folder]);
+  }
   for (const entity of entities.filter(candidate => ['office', 'venue', 'facility'].includes(candidate.kind))) {
-    const folders = new Set(entity.links.filter(link => link.collection === 'contacts')
+    const folders = new Set([...entity.links.filter(link => link.collection === 'contacts')
       .flatMap(link => link.source_record_keys.map(key => siteContactRows.get(`${link.source_key}:${key}`)))
-      .map(row => reviewedSiteFolder(row)).filter((folder): folder is string => Boolean(folder)));
+      .map(row => reviewedSiteFolder(row)).filter((folder): folder is string => Boolean(folder)),
+    ...ownedFolders.get(entity.name) ?? []]);
     const keys = [...new Set([...folders].flatMap(folder => pagesByFolder.get(folder) ?? []))].sort();
     if (keys.length) entity.links.push({ collection: 'office_sections', source_key: 'office-pages', source_record_keys: keys });
   }

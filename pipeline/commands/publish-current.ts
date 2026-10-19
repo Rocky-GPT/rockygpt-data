@@ -16,7 +16,7 @@ import { calendarConcept } from '../../src/data-v2/calendar-concepts';
 import { courseSubjectsInput } from '../../src/data-v2/course-subjects';
 import { validateCampusIdentities, type CampusIdentities } from '../../src/data-v2/campus-identities';
 import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
-import { officeSectionPages } from '../../src/data-v2/office-sections';
+import { checkSiteOwners, officeSectionPages, type SiteOwners } from '../../src/data-v2/office-sections';
 import { readSkippedSections } from '../../ingestion/folder-sites';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
@@ -307,7 +307,11 @@ async function insertStructured(
   // What each office's own site says, page by page, for "how do I" questions. The compile links
   // an office to the pages of the folder its reviewed website names.
   const officeSites = readJson<{ sites: Array<{ folder: string }> }>('src/reference/office-sites.json').sites;
-  for (const page of officeSectionPages(loadCapturedPages(), new Set(officeSites.map(site => site.folder)),
+  const officeFolders = new Set(officeSites.map(site => site.folder));
+  const capturedPages = loadCapturedPages();
+  // Reviewed owners of sites no website claim names: their quotes must still be on the pages.
+  checkSiteOwners(readJson<SiteOwners>('src/reference/office-site-owners.json'), capturedPages, officeFolders);
+  for (const page of officeSectionPages(capturedPages, officeFolders,
     readSkippedSections('src/reference/office-sites.json'))) {
     await client.query(
       `INSERT INTO rockygpt_v2.office_sections
