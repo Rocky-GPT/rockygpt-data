@@ -308,3 +308,27 @@ test("a schedule's name is not an alias of the office whose hours it is", async 
   assert.deepEqual(counseling.links.find(l => l.collection === 'campus_hours')!.source_record_keys.length, 4);
   assert.equal(counseling.aliases.includes('Counseling Center (Summer)'), false);
 });
+
+test("an office links the captured pages of the folder its reviewed website names, and two offices sharing one site both do", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const site = (url: string) => ({ evidence: { website: { url } } });
+  const contact = (key: string, name: string, url: string) => ({ source_key: 'campus-directory', source_record_key: key, name,
+    email: `${key.replace(/\W/g, '')}@ramapo.edu`, normalization_metadata: site(url) });
+  input.campus_contacts = [
+    contact('office:public-safety-emergency', 'Public Safety (Emergency)', 'https://www.ramapo.edu/publicsafety/'),
+    contact('office:public-safety-non-emergency', 'Public Safety (Non-Emergency)', 'https://www.ramapo.edu/publicsafety/'),
+    contact('office:counseling-center', 'Counseling Center', 'https://www.ramapo.edu/counseling/')];
+  const page = (key: string, folder: string) => ({ source_key: 'office-pages', source_record_key: key, site_folder: folder });
+  input.office_sections = [page('www.ramapo.edu/publicsafety/parking/', 'publicsafety'),
+    page('www.ramapo.edu/counseling/faq/', 'counseling'), page('www.ramapo.edu/policies/', 'policies')];
+  const result = compileCampusIdentities(real, input);
+  const pages = (name: string) => result.registry.entities.find(e => e.name === name)
+    ?.links.find(l => l.collection === 'office_sections')?.source_record_keys;
+  assert.deepEqual(pages('Counseling Center'), ['www.ramapo.edu/counseling/faq/']);
+  assert.deepEqual(pages('Public Safety (Emergency)'), ['www.ramapo.edu/publicsafety/parking/']);
+  assert.deepEqual(pages('Public Safety (Non-Emergency)'), ['www.ramapo.edu/publicsafety/parking/']);
+  // A site no office names (the college-wide policies folder) links to no office.
+  assert.equal(result.registry.entities.some(e => e.links.some(l => l.collection === 'office_sections'
+    && l.source_record_keys.includes('www.ramapo.edu/policies/'))), false);
+});
