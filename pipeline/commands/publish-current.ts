@@ -16,6 +16,8 @@ import { calendarConcept } from '../../src/data-v2/calendar-concepts';
 import { courseSubjectsInput } from '../../src/data-v2/course-subjects';
 import { validateCampusIdentities, type CampusIdentities } from '../../src/data-v2/campus-identities';
 import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
+import { officeSectionPages } from '../../src/data-v2/office-sections';
+import { readSkippedSections } from '../../ingestion/folder-sites';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
 import { menuDocuments, menuListings } from '../../src/data-v2/menu-documents';
@@ -301,6 +303,20 @@ async function insertStructured(
         sha256(JSON.stringify(topic))]
     );
     counts.campus_topics = (counts.campus_topics || 0) + 1;
+  }
+  // What each office's own site says, page by page, for "how do I" questions. The compile links
+  // an office to the pages of the folder its reviewed website names.
+  const officeSites = readJson<{ sites: Array<{ folder: string }> }>('src/reference/office-sites.json').sites;
+  for (const page of officeSectionPages(loadCapturedPages(), new Set(officeSites.map(site => site.folder)),
+    readSkippedSections('src/reference/office-sites.json'))) {
+    await client.query(
+      `INSERT INTO rockygpt_v2.office_sections
+       (dataset_version_id, source_id, source_record_key, site_folder, url, sections, collected_at, content_hash)
+       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8)`,
+      [datasetId, sources.get('office-pages'), page.key, page.folder, page.url, JSON.stringify(page.sections),
+        page.fetchedAt || collectedAtFor('office-pages'), page.contentHash]
+    );
+    counts.office_sections = (counts.office_sections || 0) + 1;
   }
 
   const diningRaw = readJson<JsonRecord>('data/normalized/dining-hours.json');

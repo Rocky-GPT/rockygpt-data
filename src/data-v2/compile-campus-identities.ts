@@ -6,6 +6,7 @@ import { compileArchwayIdentities, linkReviewedArchwayContacts, linkReviewedArch
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
 import { compileRouteIdentities } from './campus-routes';
+import { siteFolder } from './office-sections';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
 import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, type AliasLedger, type AliasRecord, type ReviewedAlias } from './identity-aliases';
 import type { ReviewedBuilding, ReviewedLocation, ReviewedRoom } from './campus-buildings';
@@ -30,6 +31,8 @@ export interface IdentitySnapshot {
   campus_topics?: Row[];
   /** What each shuttle stop is and where to wait, by the stop name timetables use. */
   shuttle_stops?: Row[];
+  /** Each captured page of a reviewed office site, by page key, with its site folder. */
+  office_sections?: Row[];
   artifacts: Record<string, unknown>;
 }
 /** What a coverage issue means for lookups: `unlinked_record`, an original record no identity
@@ -211,6 +214,23 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     }
     if (links.length) entities.push({ id: entity.id, kind: entity.kind, name: entity.name, aliases: [...displayNames].slice(0, 32), links });
   }
+  // What each office's own site says: an office, venue or facility links every captured page of
+  // the folder its reviewed website names (its contact's evidence.website.url on www.ramapo.edu).
+  // Two offices that share a site both link its pages; a site no office names links to none.
+  const siteContactRows = new Map(candidates.filter(candidate => candidate.collection === 'contacts')
+    .map(candidate => [`${candidate.source}:${candidate.key}`, candidate.row]));
+  const pagesByFolder = new Map<string, string[]>();
+  for (const row of snapshot.office_sections ?? []) {
+    const folder = string(row.site_folder);
+    pagesByFolder.set(folder, [...pagesByFolder.get(folder) ?? [], string(row.source_record_key)]);
+  }
+  for (const entity of entities.filter(candidate => ['office', 'venue', 'facility'].includes(candidate.kind))) {
+    const folders = new Set(entity.links.filter(link => link.collection === 'contacts')
+      .flatMap(link => link.source_record_keys.map(key => siteContactRows.get(`${link.source_key}:${key}`)))
+      .map(row => reviewedSiteFolder(row)).filter((folder): folder is string => Boolean(folder)));
+    const keys = [...new Set([...folders].flatMap(folder => pagesByFolder.get(folder) ?? []))].sort();
+    if (keys.length) entity.links.push({ collection: 'office_sections', source_key: 'office-pages', source_record_keys: keys });
+  }
   // Records that name their programs by catalog code: a recommended graduation plan names its
   // major's code, and a public program page the codes it links as its own. A program links
   // every record that names one of its own catalog codes, and a record no program takes is
@@ -355,6 +375,12 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const requirementGroups = compileRequirementGroups(snapshot.artifacts.programs, registry, courseIdentities);
   return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact };
 }
+/** The site folder of a contact's reviewed website on www.ramapo.edu, or null. */
+function reviewedSiteFolder(row: Row | undefined): string | null {
+  const metadata = row?.normalization_metadata as { evidence?: { website?: { url?: unknown } } } | undefined;
+  const url = metadata?.evidence?.website?.url;
+  return typeof url === 'string' ? siteFolder(url) : null;
+}
 function listStrings(value: unknown): string[] { return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []; }
 
 /** Use inside the publisher transaction after original rows/artifacts exist. */
@@ -364,7 +390,7 @@ export async function loadIdentitySnapshot(client: Pick<PoolClient, 'query'>, da
     const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
     snapshot[table] = result.rows;
   }
-  for (const table of ['shuttle_routes', 'shuttle_trips', 'menu_documents', 'menu_listings', 'campus_topics', 'shuttle_stops'] as const) {
+  for (const table of ['shuttle_routes', 'shuttle_trips', 'menu_documents', 'menu_listings', 'campus_topics', 'shuttle_stops', 'office_sections'] as const) {
     const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
     snapshot[table] = result.rows;
   }
