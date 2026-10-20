@@ -75,6 +75,33 @@ export function officeSectionPages(pages: ReadonlyMap<string, CapturedPage>, fol
   return rows.sort((a, b) => a.key.localeCompare(b.key));
 }
 
+/** A section said word for word on this many captured pages or more is the site's own frame (its
+ * social links, menus, footer contacts, "page not found" text), not what a page says: on 2,114
+ * office pages the 81 such sections were "Follow Ramapo" 656 times, "Virtual Tour" 700 and the
+ * like, a quarter of all sections, crowding a how-to read out of the pages' own words. */
+export const SITE_FRAME_PAGES = 10;
+
+/** The pages less the sections said word for word on SITE_FRAME_PAGES pages or more; a page left
+ * with none (a "page not found" page is only frame) is not published. */
+export function withoutSiteFrame(pages: readonly OfficeSectionsPage[]): OfficeSectionsPage[] {
+  const said = (section: OfficeSection) =>
+    JSON.stringify([section.heading, section.text].map(part => part.replace(/\s+/g, ' ').trim().toLowerCase()));
+  const on = new Map<string, Set<string>>();
+  for (const page of pages) {
+    for (const section of page.sections) {
+      const key = said(section);
+      on.set(key, (on.get(key) ?? new Set()).add(page.key));
+    }
+  }
+  return pages.flatMap(page => {
+    const sections = page.sections.filter(section => (on.get(said(section))?.size ?? 0) < SITE_FRAME_PAGES);
+    if (!sections.length) return [];
+    if (sections.length === page.sections.length) return [page];
+    const contentHash = createHash('sha256').update(JSON.stringify(sections)).digest('hex');
+    return [{ ...page, sections, contentHash }];
+  });
+}
+
 /** A reviewed owner of an office site whose website claim names another folder or none. */
 export interface SiteOwner { folder: string; owner: string; evidence_url: string; evidence_quote: string; note: string }
 export interface SiteOwners { reviewed_on: string; sites: SiteOwner[] }

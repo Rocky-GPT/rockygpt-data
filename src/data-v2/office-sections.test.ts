@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { pageKey, type CapturedPage } from '../directory/contact-evidence';
-import { officeSectionPages, siteFolder } from './office-sections';
+import { SITE_FRAME_PAGES, officeSectionPages, siteFolder, withoutSiteFrame } from './office-sections';
 
 const page = (url: string, sections: CapturedPage['sections']): [string, CapturedPage] =>
   [pageKey(url), { url, fetchedAt: '2026-10-15T14:00:00.000Z', sections }];
@@ -58,4 +58,25 @@ test('a section holding FAQ items is its own opening text and then one section p
     { heading: 'FAQs', text: 'Below are questions.' },
     { heading: 'Can I transfer credits?', text: 'Up to 65 credits.' },
     { heading: 'Is there a fee?', text: '$65.' }]);
+});
+
+test('a section said word for word on many pages is the site frame and is not published', () => {
+  const frame = { heading: 'Follow Ramapo', text: 'Ramapo College Facebook (https://facebook.com/x)' };
+  const pages = new Map(Array.from({ length: SITE_FRAME_PAGES }, (_, n) =>
+    page(`https://www.ramapo.edu/registrar/p${n}/`, [{ heading: `Step ${n}`, text: `Do thing ${n}.` },
+      { ...frame, text: n % 2 ? frame.text : `  ${frame.text.toUpperCase()} ` }])));
+  pages.set(...page('https://www.ramapo.edu/registrar/missing/', [frame]));
+  pages.set(...page('https://www.ramapo.edu/registrar/forms/', [
+    { heading: 'Refund deadlines', text: '100% refund: September 1.' }]));
+  pages.set(...page('https://www.ramapo.edu/registrar/forms2/', [
+    { heading: 'Refund deadlines', text: '100% refund: September 1.' }]));
+  const rows = officeSectionPages(pages, new Set(['registrar']), new Map());
+  const kept = withoutSiteFrame(rows);
+  // The frame is gone from every page; a page that was only frame is gone; a few repeats stay.
+  assert.equal(kept.length, rows.length - 1);
+  assert.ok(kept.every(row => row.sections.every(section => section.heading !== 'Follow Ramapo')));
+  assert.equal(kept.filter(row => row.sections[0].heading === 'Refund deadlines').length, 2);
+  const changed = kept.find(row => row.url.endsWith('/p0/'))!;
+  assert.deepEqual(changed.sections, [{ heading: 'Step 0', text: 'Do thing 0.' }]);
+  assert.notEqual(changed.contentHash, rows.find(row => row.url.endsWith('/p0/'))!.contentHash);
 });
