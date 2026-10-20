@@ -375,12 +375,21 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   // The catalog's academic policies belong to the office its index names (catalog-policies-owner.json).
   const catalog = catalogPoliciesOwner as { owner: string; folder: string };
   ownedFolders.set(catalog.owner, [...ownedFolders.get(catalog.owner) ?? [], catalog.folder]);
-  for (const entity of entities.filter(candidate => ['office', 'venue', 'facility', 'organization', 'club'].includes(candidate.kind))) {
-    const folders = new Set([...entity.links.filter(link => link.collection === 'contacts')
-      .flatMap(link => link.source_record_keys.map(key => siteContactRows.get(`${link.source_key}:${key}`)))
-      .map(row => reviewedSiteFolder(row)).filter((folder): folder is string => Boolean(folder)),
-    ...ownedFolders.get(entity.name) ?? []]);
-    const keys = [...new Set([...[...folders].flatMap(folder => pagesByFolder.get(folder) ?? []),
+  const linkable = entities.filter(candidate => ['office', 'venue', 'facility', 'organization', 'club'].includes(candidate.kind));
+  const websites = new Map(linkable.map(entity => [entity.id, entity.links.filter(link => link.collection === 'contacts')
+    .flatMap(link => link.source_record_keys.map(key => siteContactRows.get(`${link.source_key}:${key}`)))
+    .map(row => reviewedWebsite(row)).filter((site): site is { folder: string; path: string } => Boolean(site))]));
+  // An office whose website is a page inside another office's site (the ID Card Room's
+  // /publicsafety/id-cards/ in Public Safety's /publicsafety/) links only the pages under its own
+  // address; with no office at the folder itself, it keeps the whole folder.
+  const folderRoots = new Set([...websites.values()].flat().filter(site => site.path === `/${site.folder}/`)
+    .map(site => site.folder));
+  for (const entity of linkable) {
+    const scoped = (websites.get(entity.id) ?? []).flatMap(site =>
+      (pagesByFolder.get(site.folder) ?? []).filter(key => site.path === `/${site.folder}/` || !folderRoots.has(site.folder)
+        || key.slice(key.indexOf('/')).toLowerCase().startsWith(site.path)));
+    const keys = [...new Set([...scoped,
+      ...(ownedFolders.get(entity.name) ?? []).flatMap(folder => pagesByFolder.get(folder) ?? []),
       ...policyPages.get(entity.name) ?? []])].sort();
     for (const source of [...new Set(keys.map(key => pageSource.get(key) ?? 'office-pages'))].sort()) {
       entity.links.push({ collection: 'office_sections', source_key: source,
@@ -409,10 +418,14 @@ export function responsibleUnit(sections: unknown): string | null {
   return found ? found[1].trim() : null;
 }
 /** The site folder of a contact's reviewed website on www.ramapo.edu, or null. */
-function reviewedSiteFolder(row: Row | undefined): string | null {
+/** A contact's reviewed website on www.ramapo.edu: its site folder and its own path ("/publicsafety/id-cards/"). */
+function reviewedWebsite(row: Row | undefined): { folder: string; path: string } | null {
   const metadata = row?.normalization_metadata as { evidence?: { website?: { url?: unknown } } } | undefined;
   const url = metadata?.evidence?.website?.url;
-  return typeof url === 'string' ? siteFolder(url) : null;
+  const folder = typeof url === 'string' ? siteFolder(url) : null;
+  if (!folder || typeof url !== 'string') return null;
+  const path = new URL(url).pathname.toLowerCase().replace(/\/{2,}/g, '/');
+  return { folder, path: path.endsWith('/') ? path : `${path}/` };
 }
 function listStrings(value: unknown): string[] { return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []; }
 

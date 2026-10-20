@@ -333,6 +333,24 @@ test("an office links the captured pages of the folder its reviewed website name
     && l.source_record_keys.includes('www.ramapo.edu/policies/'))), false);
 });
 
+test("an office whose website is a page in another office's site links only the pages under its own address", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const contact = (key: string, name: string, url: string) => ({ source_key: 'campus-directory', source_record_key: key, name,
+    email: `${key.replace(/\W/g, '')}@ramapo.edu`, normalization_metadata: { evidence: { website: { url } } } });
+  input.campus_contacts = [
+    contact('office:public-safety-non-emergency', 'Public Safety (Non-Emergency)', 'https://www.ramapo.edu/publicsafety/'),
+    contact('office:id-card-room', 'ID Card Room', 'https://www.ramapo.edu/publicsafety/id-cards/')];
+  const page = (key: string) => ({ source_key: 'office-pages', source_record_key: key, site_folder: 'publicsafety' });
+  input.office_sections = [page('www.ramapo.edu/publicsafety/parking/'), page('www.ramapo.edu/publicsafety/id-cards/'),
+    page('www.ramapo.edu/publicsafety/id-cards/lost/')];
+  const result = compileCampusIdentities(real, input);
+  const pages = (name: string) => result.registry.entities.find(e => e.name === name)
+    ?.links.find(l => l.collection === 'office_sections')?.source_record_keys;
+  assert.deepEqual(pages('ID Card Room'), ['www.ramapo.edu/publicsafety/id-cards/', 'www.ramapo.edu/publicsafety/id-cards/lost/']);
+  assert.equal(pages('Public Safety (Non-Emergency)')?.length, 3);
+});
+
 test('an office also links the pages of a site the reviewed site owners give it', async () => {
   const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
   const owners = (await import('../reference/office-site-owners.json')).default as { sites: Array<{ folder: string; owner: string }> };
