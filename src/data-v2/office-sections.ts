@@ -21,8 +21,9 @@ export interface OfficeSectionsPage {
   contentHash: string;
 }
 
-/** A section longer than this is kept to its start; a page is read for its how-to steps. */
-export const MAX_SECTION_CHARS = 6000;
+/** A section longer than this is kept to its start. 6,000 cut 124 sections of rules students ask
+ * about (Residence Life's prohibited items); the Brain says the part of a long section that matches. */
+export const MAX_SECTION_CHARS = 20000;
 /** A page with more sections than this keeps its first ones. */
 export const MAX_PAGE_SECTIONS = 60;
 
