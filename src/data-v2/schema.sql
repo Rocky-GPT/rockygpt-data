@@ -270,6 +270,10 @@ CREATE TABLE IF NOT EXISTS rockygpt_v2.office_sections (
   content_hash TEXT NOT NULL
 );
 
+-- How-to entries listed from each office page, each step held to a quote on it (migration 033).
+ALTER TABLE rockygpt_v2.office_sections
+  ADD COLUMN IF NOT EXISTS howto_entries JSONB NOT NULL DEFAULT '[]'::jsonb;
+
 CREATE TABLE IF NOT EXISTS rockygpt_v2.shuttle_routes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   dataset_version_id UUID NOT NULL REFERENCES rockygpt_v2.dataset_versions(id) ON DELETE CASCADE,
