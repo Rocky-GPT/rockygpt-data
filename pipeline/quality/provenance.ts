@@ -50,6 +50,7 @@ export const SOURCE_RAW_DATASETS: Record<string, string[]> = {
   'major-pages': ['major-pages'],
   'major-page-links': ['major-page-links', 'major-page-links-sources'],
   'office-pages': ['office-pages', 'office-pages-sources'],
+  'catalog-policies': ['catalog-policies', 'catalog-policies-sources'],
   'academic-sites': ['academic-sites', 'academic-sites-sources'],
 };
 
@@ -84,6 +85,8 @@ export const RAW_DATASET_FILES: Record<string, string> = {
   'major-page-links-sources': 'major-page-links-sources.raw.json',
   'office-pages': 'office-pages.raw.json',
   'office-pages-sources': 'office-pages-sources.raw.json',
+  'catalog-policies': 'catalog-policies.raw.json',
+  'catalog-policies-sources': 'catalog-policies-sources.raw.json',
   'academic-sites': 'academic-sites.raw.json',
   'academic-sites-sources': 'academic-sites-sources.raw.json',
   'safety-sources': 'safety-sources.raw.json',

@@ -51,6 +51,7 @@
     "fetch:major-page-links": "tsx ingestion/major-page-links.ts",
     "fetch:office-pages": "tsx ingestion/office-pages.ts",
     "replay:raw": "tsx ingestion/replay-raw.ts",
+    "fetch:catalog-policies": "tsx ingestion/catalog-policies.ts",
     "fetch:academic-sites": "tsx ingestion/academic-sites.ts",
     "normalize:campus-hours": "tsx scripts/backfill-campus-hours.ts",
     "normalize:contacts": "tsx scripts/backfill-contact-fields.ts",

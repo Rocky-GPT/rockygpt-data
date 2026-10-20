@@ -370,3 +370,21 @@ test('a college policy page links to the office its Responsible Unit names', asy
   assert.deepEqual(payroll.links.find(l => l.collection === 'office_sections')?.source_record_keys,
     ['www.ramapo.edu/policies/policy/481/']);
 });
+
+test("the catalog's academic policies link to the office its index names, under their own source", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const owner = (await import('../reference/catalog-policies-owner.json')).default as { owner: string; folder: string };
+  const input = snapshot();
+  const seeded = real.entities.find(entity => entity.name === owner.owner)!;
+  const contact = seeded.links.find(link => link.collection === 'contacts')!;
+  input.campus_contacts = [{ source_key: contact.source_key, source_record_key: String(contact.selector!.values[0]).replace(/^key:/, ''), name: owner.owner }];
+  input.office_sections = [
+    { source_key: 'catalog-policies', source_record_key: 'catalog.ramapo.edu/pages/ABC/#used-name', site_folder: owner.folder },
+    { source_key: 'office-pages', source_record_key: 'www.ramapo.edu/provost/', site_folder: 'provost' }];
+  const result = compileCampusIdentities(real, input);
+  const provost = result.registry.entities.find(e => e.name === owner.owner)!;
+  const links = provost.links.filter(l => l.collection === 'office_sections');
+  assert.deepEqual(links.find(l => l.source_key === 'catalog-policies')?.source_record_keys,
+    ['catalog.ramapo.edu/pages/ABC/#used-name']);
+  assert.ok(links.every(l => l.source_record_keys.every(key => l.source_key === 'catalog-policies' ? key.startsWith('catalog.') : !key.startsWith('catalog.'))));
+});
