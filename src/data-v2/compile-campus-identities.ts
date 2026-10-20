@@ -364,7 +364,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     const folder = string(row.site_folder);
     pagesByFolder.set(folder, [...pagesByFolder.get(folder) ?? [], string(row.source_record_key)]);
     pageSource.set(string(row.source_record_key), string(row.source_key) || 'office-pages');
-    const owner = folder === 'policies' ? unitOwners[responsibleUnit(row.sections) ?? ''] : undefined;
+    const unit = folder === 'policies' ? responsibleUnit(row.sections) ?? '' : '';
+    const owner = unit ? unitOwners[unit] ?? unitOwners[unit.replace(/\s+Department$/, '')] : undefined;
     if (owner) policyPages.set(owner, [...policyPages.get(owner) ?? [], string(row.source_record_key)]);
   }
   // A site no website claim names is linked to the office its own pages name (office-site-owners.json).
@@ -410,11 +411,17 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
 }
 /** The Responsible Unit a college policy page names in its header ("Responsible Unit: | Payroll;"). */
 export function responsibleUnit(sections: unknown): string | null {
-  const text = (Array.isArray(sections) ? sections : [])
-    .map(section => (section && typeof section === 'object' ? String((section as { text?: unknown }).text ?? '') : ''))
-    .join(' ').replace(/\s+/g, ' ');
+  const list = (Array.isArray(sections) ? sections : [])
+    .filter((section): section is { heading?: unknown; text?: unknown } => Boolean(section) && typeof section === 'object');
+  const text = list.map(section => String(section.text ?? '')).join(' ').replace(/\s+/g, ' ');
   const found = /Responsible Unit:\s*\|?\s*([^;|]+)/.exec(text);
-  return found ? found[1].trim() : null;
+  if (found) return found[1].trim();
+  // A page with no Responsible Unit header can name its office in a section headed Contacts
+  // ("Office of the General Counsel"): the name, up to its phone, address or the next heading.
+  const contacts = list.find(section => String(section.heading ?? '').trim().toLowerCase() === 'contacts');
+  const named = String(contacts?.text ?? '').split(/\s*(?:\(\d|\d{3}-|\||;|\n|mailto:)/)[0]
+    .replace(/\s+Procedure$/, '').trim();
+  return named || null;
 }
 /** The site folder of a contact's reviewed website on www.ramapo.edu, or null. */
 /** A contact's reviewed website on www.ramapo.edu: its site folder and its own path ("/publicsafety/id-cards/"). */

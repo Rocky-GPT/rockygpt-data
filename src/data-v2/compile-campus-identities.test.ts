@@ -383,6 +383,12 @@ test('a college policy page links to the office its Responsible Unit names', asy
   const header = [{ heading: 'Graduate Assistants', text: 'Policy Number: | 481; Responsible Unit: | Payroll; Approval Authority: | President' }];
   assert.equal(responsibleUnit(header), 'Payroll');
   assert.equal(responsibleUnit([{ heading: 'x', text: 'no header here' }]), null);
+  // Without a Responsible Unit header, the office a Contacts section names.
+  assert.equal(responsibleUnit([{ heading: 'Policy', text: 'Students may file a complaint.' },
+    { heading: 'Contacts', text: 'Office of the General Counsel' },
+    { heading: 'Procedure', text: 'The amendment moved the responsibility for this policy.' }]), 'Office of the General Counsel');
+  assert.equal(responsibleUnit([{ heading: 'Contacts', text: 'Office of the Controller (201) 684-7500' }]),
+    'Office of the Controller');
   const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
   const input = snapshot();
   const seeded = real.entities.find(entity => entity.name === 'Payroll')!;

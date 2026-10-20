@@ -217,6 +217,13 @@
       "evidence_url": "https://www.ramapo.edu/womenscenter/gender-inclusive-housing/",
       "evidence_quote": "Please email the Women’s Center & LGBTQ+ Services at women@ramapo.edu",
       "note": "The site name is the office name. The home page has the office's location (C-220), hours and women@ramapo.edu."
+    },
+    {
+      "folder": "adult-students",
+      "owner": "Admissions",
+      "evidence_url": "https://www.ramapo.edu/adult-students/contacts/",
+      "evidence_quote": "Ramapo College Office of Admissions Nora McCarthy Adult Transfer Specialist",
+      "note": "Added 2026-10-20 by Claude under Dan's standing goal (how-to answers solid), not reviewed by him: every captured Adult Students page carries the Office of Admissions block, and its Contacts page lists the Admissions adult transfer specialist first. The site's FAQ (attendance set by each instructor; who to contact) was unreachable because the folder linked to no office. Caveat: the FAQ also names other offices (Student Success, Reading and Writing, Degree Completion Program); those are said as that page says them."
     }
   ]
 }
