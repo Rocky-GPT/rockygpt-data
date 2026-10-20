@@ -74,6 +74,9 @@ export function entriesKey(url: string, sections: readonly OfficeSection[]): str
 
 const folded = (text: string) => text.normalize('NFKC').replace(/[‘’]/g, "'").replace(/[“”]/g, '"')
   .replace(/\s+/g, ' ').trim().toLowerCase();
+/** A capture writes a link as its words and its address in brackets ("publicsafety@ramapo.edu
+ * (mailto:publicsafety@ramapo.edu)"); a reader quotes the words. Quotes are matched without them. */
+const unlinked = (text: string) => text.replace(/\s*\((?:mailto:|https?:\/\/)[^)]*\)/g, '');
 const STATED = /(?:https?:\/\/\S+|[\w.+-]+@[\w-]+(?:\.[\w-]+)+|\$?\d[\d,.:/-]*)/g;
 const clean = (value: unknown, max: number) => (typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, max) : '');
 
@@ -85,7 +88,7 @@ const clean = (value: unknown, max: number) => (typeof value === 'string' ? valu
 export function verifiedEntries(raw: unknown, sections: readonly OfficeSection[]): HowtoEntry[] {
   const list = (raw as { entries?: unknown })?.entries;
   if (!Array.isArray(list)) return [];
-  const texts = sections.map(section => folded(`${section.heading} ${section.text}`));
+  const texts = sections.map(section => folded(unlinked(`${section.heading} ${section.text}`)));
   const page = texts.join(' ');
   const kept: HowtoEntry[] = [];
   for (const item of list) {
@@ -95,7 +98,7 @@ export function verifiedEntries(raw: unknown, sections: readonly OfficeSection[]
     const steps: HowtoStep[] = [];
     for (const step of entry.steps as Array<Record<string, unknown>>) {
       const text = clean(step?.text, 600), quote = clean(step?.quote, 400);
-      if (!text || quote.length < 12 || !page.includes(folded(quote))) continue;
+      if (!text || quote.length < 12 || !page.includes(folded(unlinked(quote)))) continue;
       const said = folded(quote);
       if ((text.match(STATED) ?? []).some(value => !said.includes(folded(value).replace(/[.,:;]+$/, '')))) continue;
       steps.push({ text, quote });
@@ -103,7 +106,7 @@ export function verifiedEntries(raw: unknown, sections: readonly OfficeSection[]
     if (!steps.length) continue;
     const named = clean(entry.section, 200);
     const section = sections.find(candidate => candidate.heading === named)?.heading
-      ?? sections[texts.findIndex(text => text.includes(folded(steps[0].quote)))]?.heading ?? '';
+      ?? sections[texts.findIndex(text => text.includes(folded(unlinked(steps[0].quote))))]?.heading ?? '';
     kept.push({ task, applies_to: clean(entry.applies_to, 200), handled_by: clean(entry.handled_by, 120),
       term: clean(entry.term, 60), section, steps });
   }
