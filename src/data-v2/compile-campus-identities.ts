@@ -379,14 +379,13 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const websites = new Map(linkable.map(entity => [entity.id, entity.links.filter(link => link.collection === 'contacts')
     .flatMap(link => link.source_record_keys.map(key => siteContactRows.get(`${link.source_key}:${key}`)))
     .map(row => reviewedWebsite(row)).filter((site): site is { folder: string; path: string } => Boolean(site))]));
-  // An office whose website is a page inside another office's site (the ID Card Room's
-  // /publicsafety/id-cards/ in Public Safety's /publicsafety/) links only the pages under its own
-  // address; with no office at the folder itself, it keeps the whole folder.
-  const folderRoots = new Set([...websites.values()].flat().filter(site => site.path === `/${site.folder}/`)
-    .map(site => site.folder));
+  // An office whose website is a page inside a site (the ID Card Room's /publicsafety/id-cards/,
+  // Transportation Services' /about/transportation-services/) links only the pages under its own
+  // address; a whole site is an office's only when its website is the site itself or a reviewed
+  // site owner says so (office-site-owners.json).
   for (const entity of linkable) {
     const scoped = (websites.get(entity.id) ?? []).flatMap(site =>
-      (pagesByFolder.get(site.folder) ?? []).filter(key => site.path === `/${site.folder}/` || !folderRoots.has(site.folder)
+      (pagesByFolder.get(site.folder) ?? []).filter(key => site.path === `/${site.folder}/`
         || key.slice(key.indexOf('/')).toLowerCase().startsWith(site.path)));
     const keys = [...new Set([...scoped,
       ...(ownedFolders.get(entity.name) ?? []).flatMap(folder => pagesByFolder.get(folder) ?? []),
