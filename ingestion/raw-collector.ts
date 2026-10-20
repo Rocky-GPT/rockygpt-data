@@ -12,7 +12,9 @@ import { type RawDatasetV1, type RawPageV1, validateRawDatasetV1 } from './raw-t
 const DEFAULT_TIMEOUT_MS = 15000;
 const DEFAULT_ATTEMPTS = 2;
 const DEFAULT_DETAIL_CONCURRENCY = 8;
-const SECTION_HEADINGS = 'h1, h2, h3, h4, h5, h6, summary, [role="heading"], .collapsableTitle';
+// An accordion's title (.collapsableTitle; the question line of an FAQ item in .accordions) names
+// its own answer, so each FAQ answer is its own section rather than one run of text.
+const SECTION_HEADINGS = 'h1, h2, h3, h4, h5, h6, summary, [role="heading"], .collapsableTitle, .accordions .item > .question';
 
 const DOCUMENT_EXTENSIONS = new Set([
   '.pdf',
