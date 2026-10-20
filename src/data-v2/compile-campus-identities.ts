@@ -4,6 +4,7 @@ import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import siteOwners from '../reference/office-site-owners.json';
 import policyUnitOwners from '../reference/policy-unit-owners.json';
+import catalogPoliciesOwner from '../reference/catalog-policies-owner.json';
 import { compileArchwayIdentities, linkReviewedArchwayContacts, linkReviewedArchwayGroups, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact, type ReviewedArchwayContact, type ReviewedArchwayGroup } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
@@ -353,13 +354,16 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   // Two offices that share a site both link its pages; a site no office names links to none.
   const siteContactRows = new Map(candidates.filter(candidate => candidate.collection === 'contacts')
     .map(candidate => [`${candidate.source}:${candidate.key}`, candidate.row]));
+  // A page is named by its source and record key: office pages and catalog policies share the table.
   const pagesByFolder = new Map<string, string[]>();
+  const pageSource = new Map<string, string>();
   // A college policy page links to the office its Responsible Unit names (policy-unit-owners.json).
   const policyPages = new Map<string, string[]>();
   const unitOwners = (policyUnitOwners as { units: Record<string, string> }).units;
   for (const row of snapshot.office_sections ?? []) {
     const folder = string(row.site_folder);
     pagesByFolder.set(folder, [...pagesByFolder.get(folder) ?? [], string(row.source_record_key)]);
+    pageSource.set(string(row.source_record_key), string(row.source_key) || 'office-pages');
     const owner = folder === 'policies' ? unitOwners[responsibleUnit(row.sections) ?? ''] : undefined;
     if (owner) policyPages.set(owner, [...policyPages.get(owner) ?? [], string(row.source_record_key)]);
   }
@@ -368,6 +372,9 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   for (const site of (siteOwners as { sites: Array<{ folder: string; owner: string }> }).sites) {
     ownedFolders.set(site.owner, [...ownedFolders.get(site.owner) ?? [], site.folder]);
   }
+  // The catalog's academic policies belong to the office its index names (catalog-policies-owner.json).
+  const catalog = catalogPoliciesOwner as { owner: string; folder: string };
+  ownedFolders.set(catalog.owner, [...ownedFolders.get(catalog.owner) ?? [], catalog.folder]);
   for (const entity of entities.filter(candidate => ['office', 'venue', 'facility', 'organization', 'club'].includes(candidate.kind))) {
     const folders = new Set([...entity.links.filter(link => link.collection === 'contacts')
       .flatMap(link => link.source_record_keys.map(key => siteContactRows.get(`${link.source_key}:${key}`)))
@@ -375,7 +382,10 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     ...ownedFolders.get(entity.name) ?? []]);
     const keys = [...new Set([...[...folders].flatMap(folder => pagesByFolder.get(folder) ?? []),
       ...policyPages.get(entity.name) ?? []])].sort();
-    if (keys.length) entity.links.push({ collection: 'office_sections', source_key: 'office-pages', source_record_keys: keys });
+    for (const source of [...new Set(keys.map(key => pageSource.get(key) ?? 'office-pages'))].sort()) {
+      entity.links.push({ collection: 'office_sections', source_key: source,
+        source_record_keys: keys.filter(key => (pageSource.get(key) ?? 'office-pages') === source) });
+    }
   }
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));

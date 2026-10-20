@@ -17,6 +17,8 @@ import { courseSubjectsInput } from '../../src/data-v2/course-subjects';
 import { validateCampusIdentities, type CampusIdentities } from '../../src/data-v2/campus-identities';
 import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
 import { checkSiteOwners, officeSectionPages, type SiteOwners } from '../../src/data-v2/office-sections';
+import { catalogPolicyPages, checkCatalogPoliciesOwner, type CatalogPoliciesCapture,
+  type CatalogPoliciesOwner } from '../../src/data-v2/catalog-policies';
 import { readSkippedSections } from '../../ingestion/folder-sites';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
@@ -319,6 +321,20 @@ async function insertStructured(
        VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8)`,
       [datasetId, sources.get('office-pages'), page.key, page.folder, page.url, JSON.stringify(page.sections),
         page.fetchedAt || collectedAtFor('office-pages'), page.contentHash]
+    );
+    counts.office_sections = (counts.office_sections || 0) + 1;
+  }
+  // The academic policies, from the course catalog: one row per policy, linked by the compile to
+  // the reviewed owner while its quote is still on the captured index page.
+  const catalogPolicies = readJson<CatalogPoliciesCapture>('data/raw/catalog-policies.raw.json');
+  checkCatalogPoliciesOwner(readJson<CatalogPoliciesOwner>('src/reference/catalog-policies-owner.json'), catalogPolicies);
+  for (const page of catalogPolicyPages(catalogPolicies)) {
+    await client.query(
+      `INSERT INTO rockygpt_v2.office_sections
+       (dataset_version_id, source_id, source_record_key, site_folder, url, sections, collected_at, content_hash)
+       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8)`,
+      [datasetId, sources.get('catalog-policies'), page.key, page.folder, page.url, JSON.stringify(page.sections),
+        page.fetchedAt || collectedAtFor('catalog-policies'), page.contentHash]
     );
     counts.office_sections = (counts.office_sections || 0) + 1;
   }
