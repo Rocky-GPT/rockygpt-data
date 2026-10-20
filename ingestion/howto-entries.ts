@@ -79,7 +79,7 @@ async function main(): Promise<void> {
   const due = pages.filter(page => capture.pages[page.key]?.key !== entriesKey(page.url, page.sections)).slice(0, limit);
   console.log(`${pages.length} pages; ${due.length} to read (${pages.length - due.length} unchanged).`);
   let input = 0, output = 0, done = 0, entries = 0;
-  const queue = pLimit(4);
+  const queue = pLimit(Number(process.env.HOWTO_CONCURRENCY) || 4);
   await Promise.all(due.map(page => queue(async () => {
     const read = await ask(page, model);
     capture.pages[page.key] = { key: entriesKey(page.url, page.sections), url: page.url, model, read_at: new Date().toISOString(), reply: read.reply };
