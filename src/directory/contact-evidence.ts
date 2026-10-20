@@ -36,7 +36,7 @@ export interface ContactEvidence {
   fields: ContactField[];
 }
 
-export interface CapturedSection { heading: string; text: string }
+export interface CapturedSection { heading: string; text: string; questions?: Array<{ question: string; answer: string }> }
 export interface CapturedPage { url: string; fetchedAt: string; sections: CapturedSection[] }
 
 /** A second contact stays tied to its published service or staff role. */

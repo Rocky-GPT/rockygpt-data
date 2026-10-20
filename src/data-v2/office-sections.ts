@@ -8,7 +8,7 @@
  */
 import { createHash } from 'crypto';
 import { cutSections, type SkippedSection } from '../../ingestion/folder-sites';
-import { type CapturedPage, pageKey } from '../directory/contact-evidence';
+import { type CapturedPage, type CapturedSection, pageKey } from '../directory/contact-evidence';
 
 export interface OfficeSection { heading: string; text: string }
 export interface OfficeSectionsPage {
@@ -38,6 +38,20 @@ export function siteFolder(url: string): string | null {
   }
 }
 
+/**
+ * A section holding FAQ items, as its own text before the first question and then one section per
+ * question with its answer, so "what is the transfer credit limit" is one small section rather
+ * than the tenth question of a long one.
+ */
+function faqItems(section: CapturedSection): OfficeSection[] {
+  const asked = section.questions ?? [];
+  if (!asked.length) return [{ heading: section.heading, text: section.text }];
+  const first = section.text.indexOf(asked[0].question);
+  const intro = first > 0 ? section.text.slice(0, first).trim() : '';
+  return [...intro ? [{ heading: section.heading, text: intro }] : [],
+    ...asked.map(entry => ({ heading: entry.question, text: entry.answer }))];
+}
+
 /** The captured pages of the reviewed office sites, each with its sections less the cuts. */
 export function officeSectionPages(pages: ReadonlyMap<string, CapturedPage>, folders: ReadonlySet<string>,
   cuts: ReadonlyMap<string, readonly SkippedSection[]>): OfficeSectionsPage[] {
@@ -48,7 +62,7 @@ export function officeSectionPages(pages: ReadonlyMap<string, CapturedPage>, fol
     const key = pageKey(page.url);
     const kept = cutSections(page.sections, cuts.get(key) ?? []);
     if (!kept) continue;
-    const sections = kept
+    const sections = kept.flatMap(faqItems)
       .map(section => ({ heading: section.heading.replace(/\s+/g, ' ').trim(),
         text: section.text.trim().slice(0, MAX_SECTION_CHARS) }))
       .filter(section => section.text)
