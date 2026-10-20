@@ -25,6 +25,16 @@ test('a step is kept only while its quote is on the page and its numbers and add
   ]);
 });
 
+test('a quote matches a page that writes its links with their addresses in brackets', () => {
+  const linked = [{ heading: 'Lost/Damaged ID Cards', text: 'If your lost your ID card please contact the ID room at '
+    + 'publicsafety@ramapo.edu (mailto:publicsafety@ramapo.edu). The ID room will reprint the ID card.' }];
+  const entries = verifiedEntries({ entries: [{ task: 'Replace a lost ID card', applies_to: '', handled_by: '', term: '',
+    section: 'Lost/Damaged ID Cards', steps: [{ text: 'Contact the ID room at publicsafety@ramapo.edu.',
+      quote: 'If your lost your ID card please contact the ID room at publicsafety@ramapo.edu.' }] }] }, linked);
+  assert.deepEqual(entries.map(entry => entry.steps.map(step => step.text)),
+    [['Contact the ID room at publicsafety@ramapo.edu.']]);
+});
+
 test('a page is read again when its sections or the instructions change', () => {
   assert.equal(entriesKey('u', sections), entriesKey('u', sections));
   assert.notEqual(entriesKey('u', sections), entriesKey('u', [sections[0]]));
