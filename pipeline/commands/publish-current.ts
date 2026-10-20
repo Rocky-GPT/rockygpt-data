@@ -17,6 +17,7 @@ import { courseSubjectsInput } from '../../src/data-v2/course-subjects';
 import { validateCampusIdentities, type CampusIdentities } from '../../src/data-v2/campus-identities';
 import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
 import { checkSiteOwners, officeSectionPages, type SiteOwners } from '../../src/data-v2/office-sections';
+import { pageEntries, readHowtoCapture } from '../../ingestion/howto-entries';
 import { catalogPolicyPages, checkCatalogPoliciesOwner, type CatalogPoliciesCapture,
   type CatalogPoliciesOwner } from '../../src/data-v2/catalog-policies';
 import { readSkippedSections } from '../../ingestion/folder-sites';
@@ -313,14 +314,16 @@ async function insertStructured(
   const capturedPages = loadCapturedPages();
   // Reviewed owners of sites no website claim names: their quotes must still be on the pages.
   checkSiteOwners(readJson<SiteOwners>('src/reference/office-site-owners.json'), capturedPages, officeFolders);
+  // The how-to entries a model listed from each page, used only when read from this very content.
+  const howto = readHowtoCapture();
   for (const page of officeSectionPages(capturedPages, officeFolders,
     readSkippedSections('src/reference/office-sites.json'))) {
     await client.query(
       `INSERT INTO rockygpt_v2.office_sections
-       (dataset_version_id, source_id, source_record_key, site_folder, url, sections, collected_at, content_hash)
-       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8)`,
+       (dataset_version_id, source_id, source_record_key, site_folder, url, sections, collected_at, content_hash, howto_entries)
+       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9::jsonb)`,
       [datasetId, sources.get('office-pages'), page.key, page.folder, page.url, JSON.stringify(page.sections),
-        page.fetchedAt || collectedAtFor('office-pages'), page.contentHash]
+        page.fetchedAt || collectedAtFor('office-pages'), page.contentHash, JSON.stringify(pageEntries(howto, page))]
     );
     counts.office_sections = (counts.office_sections || 0) + 1;
   }
@@ -331,10 +334,10 @@ async function insertStructured(
   for (const page of catalogPolicyPages(catalogPolicies)) {
     await client.query(
       `INSERT INTO rockygpt_v2.office_sections
-       (dataset_version_id, source_id, source_record_key, site_folder, url, sections, collected_at, content_hash)
-       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8)`,
+       (dataset_version_id, source_id, source_record_key, site_folder, url, sections, collected_at, content_hash, howto_entries)
+       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9::jsonb)`,
       [datasetId, sources.get('catalog-policies'), page.key, page.folder, page.url, JSON.stringify(page.sections),
-        page.fetchedAt || collectedAtFor('catalog-policies'), page.contentHash]
+        page.fetchedAt || collectedAtFor('catalog-policies'), page.contentHash, JSON.stringify(pageEntries(howto, page))]
     );
     counts.office_sections = (counts.office_sections || 0) + 1;
   }
