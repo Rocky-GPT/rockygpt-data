@@ -358,3 +358,17 @@ test('a capture replayed through validation keeps its sections\' parents', () =>
   assert.throws(() => validateRawDatasetV1({ ...checked, pages: [{ ...page, sections: [{ heading: 'Students', text: 'x', parents: [1] }] }] }),
     /parents\[0\] must be a string/);
 });
+
+test('each question of a WordPress FAQ accordion is its own section under the heading above it', () => {
+  const result = buildRawPageFromHtml({url:'https://example.edu/transfer/faqs/',sourceType:'seed',allowedHost:'example.edu',
+    html:`<main><h1>Transfer</h1><h2>FAQs</h2><p>Below are some questions.</p><div class="accordions">
+      <div class="item"><p class="question" tabindex="0"><span class="fa-stack"></span> Will my credits be accepted?</p>
+        <div><p>We accept up to 65 credits from a two-year school.</p></div></div>
+      <div class="item"><p class="question">Is there an application fee?</p><div><p>The fee is $65.</p></div></div>
+      </div></main>`});
+  assert.deepEqual(result.sections.map(section => [section.heading, section.text]), [
+    ['FAQs', 'Below are some questions.'],
+    ['Will my credits be accepted?', 'We accept up to 65 credits from a two-year school.'],
+    ['Is there an application fee?', 'The fee is $65.'],
+  ]);
+});
