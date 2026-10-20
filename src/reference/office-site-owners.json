@@ -114,6 +114,13 @@
       "note": "The site is named Ramapo International, which is a listed alias, and the home page names the Roukema Center along with its location, hours and team."
     },
     {
+      "folder": "its",
+      "owner": "IT Help Desk",
+      "evidence_url": "https://www.ramapo.edu/its/help-desk/",
+      "evidence_quote": "This should be the first point of contact for all IT Service requests",
+      "note": "The IT Help Desk's own website is /its/help-desk/, a page inside the ITS site; the ITS site's how-to pages (email, passwords, printing, Wi-Fi) are the requests the Help Desk takes first. Reviewed 2026-10-20."
+    },
+    {
       "folder": "leadership",
       "owner": "Student Leadership Programs",
       "evidence_url": "https://www.ramapo.edu/leadership/",

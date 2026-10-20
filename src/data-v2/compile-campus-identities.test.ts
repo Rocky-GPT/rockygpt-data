@@ -349,6 +349,15 @@ test("an office whose website is a page in another office's site links only the 
     ?.links.find(l => l.collection === 'office_sections')?.source_record_keys;
   assert.deepEqual(pages('ID Card Room'), ['www.ramapo.edu/publicsafety/id-cards/', 'www.ramapo.edu/publicsafety/id-cards/lost/']);
   assert.equal(pages('Public Safety (Non-Emergency)')?.length, 3);
+  // With no office at the site itself, still only its own pages: /about/ is not Transportation's.
+  const lone = snapshot();
+  lone.campus_contacts = [contact('office:transportation-services', 'Transportation Services',
+    'https://www.ramapo.edu/about/transportation-services/')];
+  lone.office_sections = [{ source_key: 'office-pages', source_record_key: 'www.ramapo.edu/about/accreditation/', site_folder: 'about' },
+    { source_key: 'office-pages', source_record_key: 'www.ramapo.edu/about/transportation-services/', site_folder: 'about' }];
+  const alone = compileCampusIdentities(real, lone).registry.entities.find(e => e.name === 'Transportation Services');
+  assert.deepEqual(alone?.links.find(l => l.collection === 'office_sections')?.source_record_keys,
+    ['www.ramapo.edu/about/transportation-services/']);
 });
 
 test('an office also links the pages of a site the reviewed site owners give it', async () => {
