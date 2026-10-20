@@ -48,3 +48,14 @@ test('a reviewed site owner holds only while its quote is on its own page in thi
   assert.throws(() => checkSiteOwners({ reviewed_on: '', sites: [site] }, pages, new Set(['registrar'])),
     /not a reviewed office site/);
 });
+
+test('a section holding FAQ items is its own opening text and then one section per question', () => {
+  const pages = new Map([page('https://www.ramapo.edu/registrar/faq/', [{ heading: 'FAQs',
+    text: 'Below are questions. Can I transfer credits? Up to 65 credits. Is there a fee? $65.',
+    questions: [{ question: 'Can I transfer credits?', answer: 'Up to 65 credits.' }, { question: 'Is there a fee?', answer: '$65.' }] }])]);
+  const [row] = officeSectionPages(pages, new Set(['registrar']), new Map());
+  assert.deepEqual(row.sections, [
+    { heading: 'FAQs', text: 'Below are questions.' },
+    { heading: 'Can I transfer credits?', text: 'Up to 65 credits.' },
+    { heading: 'Is there a fee?', text: '$65.' }]);
+});

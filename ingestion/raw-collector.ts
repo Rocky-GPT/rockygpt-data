@@ -12,9 +12,9 @@ import { type RawDatasetV1, type RawPageV1, validateRawDatasetV1 } from './raw-t
 const DEFAULT_TIMEOUT_MS = 15000;
 const DEFAULT_ATTEMPTS = 2;
 const DEFAULT_DETAIL_CONCURRENCY = 8;
-// An accordion's title (.collapsableTitle; the question line of an FAQ item in .accordions) names
-// its own answer, so each FAQ answer is its own section rather than one run of text.
-const SECTION_HEADINGS = 'h1, h2, h3, h4, h5, h6, summary, [role="heading"], .collapsableTitle, .accordions .item > .question';
+const SECTION_HEADINGS = 'h1, h2, h3, h4, h5, h6, summary, [role="heading"], .collapsableTitle';
+/** A WordPress FAQ accordion's question line; its answer is the rest of its item. */
+const FAQ_QUESTION = '.accordions .item > .question';
 
 const DOCUMENT_EXTENSIONS = new Set([
   '.pdf',
@@ -277,9 +277,16 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
   let open: Array<{ level: number; label: string; panel?: AnyNode }> = [];
   let panel: { node: AnyNode; label: string } | undefined;
   const labels = (entries = open) => entries.filter(entry => entry.level !== 1).map(entry => entry.label);
+  // The FAQ items in the section being read (a WordPress accordion's question and its answer). The
+  // section's own text is unchanged; its questions let a reader name the one asked.
+  let questions: Array<{ question: string; answer: string[]; item: AnyNode }> = [];
   const flush = () => {
-    if (parts.length) sections.push({ heading, text: parts.join(' '), ...parents.length ? { parents } : {} });
+    const asked = questions.filter(entry => entry.answer.length)
+      .map(entry => ({ question: entry.question, answer: entry.answer.join(' ') }));
+    if (parts.length) sections.push({ heading, text: parts.join(' '), ...parents.length ? { parents } : {},
+      ...asked.length ? { questions: asked } : {} });
     parts = [];
+    questions = [];
   };
   // Walk in document order, including tables and nested content wrappers.
   // Never clip a policy at a paragraph/character count: later chunks bound reads.
@@ -328,6 +335,11 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
       heading = text;
       return;
     }
+    if (node.is(FAQ_QUESTION)) {
+      const question = cleanText(node.text());
+      const item = node.closest('.item')[0];
+      if (question && item) questions.push({ question, answer: [], item });
+    }
     if (node.parents('li, table').length) return;
     // An anchor already represented in a text block must not become a duplicate
     // section entry. Standalone buttons/links still need their own retained text.
@@ -337,6 +349,8 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
         .map((cell) => textWithLinks($, cell, baseUrl)).join(' | ')).join('; ')
       : textWithLinks($, element, baseUrl);
     if (text && !parts.includes(text)) parts.push(text);
+    const asking = questions.at(-1);
+    if (text && asking && !node.is(FAQ_QUESTION) && node.closest('.item')[0] === asking.item) asking.answer.push(text);
   });
   flush();
   if (!sections.length) {
