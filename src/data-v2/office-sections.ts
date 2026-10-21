@@ -24,8 +24,10 @@ export interface OfficeSectionsPage {
 /** A section longer than this is kept to its start. 6,000 cut 124 sections of rules students ask
  * about (Residence Life's prohibited items); the Brain says the part of a long section that matches. */
 export const MAX_SECTION_CHARS = 20000;
-/** A page with more sections than this keeps its first ones. */
-export const MAX_PAGE_SECTIONS = 60;
+/** A page with more sections than this keeps its first ones. 60 cut 114 of the Residence Life
+ * guide's 174 sections (Pets, Noise Violations, Special Diets, building access), which students ask
+ * about; 300 keeps every captured page whole. */
+export const MAX_PAGE_SECTIONS = 300;
 
 /** The first folder of a www.ramapo.edu address ("counseling" for /counseling/faq/), or null. */
 export function siteFolder(url: string): string | null {
