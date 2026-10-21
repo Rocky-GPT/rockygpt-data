@@ -423,6 +423,21 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   }
   const courseIdentities = compileCourseIdentities(snapshot.artifacts.courses);
   const requirementGroups = compileRequirementGroups(snapshot.artifacts.programs, registry, courseIdentities);
+  // A program links the requirement groups the catalog lists for it, in section order, so its
+  // requirements are read through its own identity, never matched by name.
+  const groupsOf = new Map<string, string[]>();
+  for (const edge of requirementGroups.edges.filter(edge => edge.type === 'requirement_group')
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))) {
+    if (!('entity_id' in edge.source) || !('record_id' in edge.target)) continue;
+    const ids = groupsOf.get(edge.source.entity_id) ?? [];
+    if (!ids.includes(edge.target.record_id)) ids.push(edge.target.record_id);
+    groupsOf.set(edge.source.entity_id, ids);
+  }
+  for (const entity of entities) {
+    const ids = groupsOf.get(entity.id);
+    if (ids?.length) entity.links.push({ collection: 'requirement_groups', source_key: 'program-requirement-groups', source_record_keys: ids });
+  }
+  validateCampusIdentities(registry);
   return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact };
 }
 /** The Responsible Unit a college policy page names in its header ("Responsible Unit: | Payroll;"). */

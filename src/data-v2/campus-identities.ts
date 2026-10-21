@@ -1,5 +1,5 @@
 /** Curated identity links. Names locate identities; they never generate their IDs. */
-export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages';
+export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages' | 'requirement_groups';
 export interface IdentityRecordReference {
   collection: IdentityCollection;
   source_key: string;
@@ -31,7 +31,7 @@ export interface CampusIdentity {
 }
 export interface CampusIdentities { schema_version: 1; entities: CampusIdentity[] }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-const COLLECTIONS = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'campus_topics', 'office_sections', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages'];
+const COLLECTIONS = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'campus_topics', 'office_sections', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages', 'requirement_groups'];
 // Relationships whose target is a catalog record, not an identity.
 const RECORD_TARGETS = ['profile_course', 'includes_course'];
 function object(value: unknown, keys: string[], label: string, optional: string[] = []): Record<string, unknown> {
