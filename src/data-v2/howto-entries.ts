@@ -44,6 +44,10 @@ For each entry:
 - steps: what to do or know, in order, each a short plain sentence (text) and the words of the page
   that say it (quote), copied exactly, at most 300 characters. Every number, date, amount, email and
   web address in a step's text must be in its quote.
+- A table or list of dates, fees, refunds or sanctions by session, term, group or offense: keep
+  every row as its own step, its text naming the row (which session, term, group or offense) and
+  its quote the row's own words with that label. Never leave a row out or give one row's value for
+  another.
 
 Leave out navigation, staff lists, contact blocks, office hours, news, event listings and
 marketing. If the page tells nothing a student can do or must know, return no entries. Never add
