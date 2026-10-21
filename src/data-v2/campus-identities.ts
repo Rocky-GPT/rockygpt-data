@@ -96,6 +96,9 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
         // A page of a site two offices share (Public Safety's emergency and non-emergency lines)
         // is what both say: office sections may have more than one owner.
         if (link.collection === 'office_sections') continue;
+        // One published requirement section (Career Pathways, a shared Gen Ed block) is listed by
+        // every program that lists it: requirement groups may have more than one owner.
+        if (link.collection === 'requirement_groups') continue;
         if (records.has(target)) {
           const previous = records.get(target);
           if (!previous || !pinned || [...pinned].some(id => previous.has(id))) throw new Error('A source record must have exactly one identity link.');

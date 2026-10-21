@@ -395,6 +395,17 @@ test("a current topic links its own site's captured pages that no office links; 
   assert.equal(pages('Provisional Teacher Program'), undefined);
 });
 
+test('a program links the requirement groups the catalog lists for it, and a shared group links to each program', async () => {
+  const { validateCampusIdentities } = await import('./campus-identities');
+  const program = (id: string, name: string, groups: string[]) => ({ id, kind: 'program' as const, name, aliases: [],
+    links: [{ collection: 'programs' as const, source_key: 'academic-programs', source_record_keys: [`catalog:${name}`] },
+      { collection: 'requirement_groups' as const, source_key: 'program-requirement-groups', source_record_keys: groups }] });
+  const registry = { schema_version: 1 as const, entities: [
+    program('11111111-1111-4111-8111-111111111111', 'A', ['g-shared', 'g-a']),
+    program('22222222-2222-4222-8222-222222222222', 'B', ['g-shared'])] };
+  assert.doesNotThrow(() => validateCampusIdentities(registry));
+});
+
 test('a college policy page links to the office its Responsible Unit names', async () => {
   const { responsibleUnit } = await import('./compile-campus-identities');
   const header = [{ heading: 'Graduate Assistants', text: 'Policy Number: | 481; Responsible Unit: | Payroll; Approval Authority: | President' }];
