@@ -275,12 +275,13 @@
       ],
       "evidence": [
         {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "Public Safety - ",
+          "url": "https://www.ramapo.edu/publicsafety/parking-regulations/",
+          "section": "Click Here for Department of Public Safety Motor Vehicle Rules and Regulations PDF (https://www.ramapo.edu/publicsafety/wp-content/uploads/sites/141/2026/02/2025_FallParking-Regulations.pdf)",
+          "near": "Non-Emergency Number",
           "fields": [
             "phone"
-          ]
+          ],
+          "note": "Re-pointed 2026-10-21 (not reviewed by Dan): ramapo.edu/about/phone/ dropped its General Phone Number Listing; the same number on this official page, labelled as this office."
         },
         {
           "url": "https://www.ramapo.edu/publicsafety/",
@@ -412,96 +413,6 @@
       "contactReviewExclusions": [
         {
           "field": "phone",
-          "value": "2016847887",
-          "reason": "Source identifies Publications, a distinct office, role outside this office, or external referral; it is not a contact owned by Public Safety (Non-Emergency).",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847496",
-          "reason": "Source identifies Purchasing, a distinct office, role outside this office, or external referral; it is not a contact owned by Public Safety (Non-Emergency).",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847695",
-          "reason": "Source identifies Registrar, a distinct office, role outside this office, or external referral; it is not a contact owned by Public Safety (Non-Emergency).",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847461",
-          "reason": "Source identifies Residence Life, a distinct office, role outside this office, or external referral; it is not a contact owned by Public Safety (Non-Emergency).",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847053",
-          "reason": "Source identifies Residence Life \u2013 Bischoff Hall, a distinct office, role outside this office, or external referral; it is not a contact owned by Public Safety (Non-Emergency).",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847061",
-          "reason": "Source identifies Residence Life \u2013 College Park Apartments, a distinct office, role outside this office, or external referral; it is not a contact owned by Public Safety (Non-Emergency).",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847015",
-          "reason": "Source identifies Residence Life \u2013 Laurel, a distinct office, role outside this office, or external referral; it is not a contact owned by Public Safety (Non-Emergency).",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847043",
-          "reason": "Source identifies Residence Life \u2013 Mackin Hall, a distinct office, role outside this office, or external referral; it is not a contact owned by Public Safety (Non-Emergency).",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847074",
-          "reason": "Source identifies Residence Life \u2013 Overlook, a distinct office, role outside this office, or external referral; it is not a contact owned by Public Safety (Non-Emergency).",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
           "value": "2016847457",
           "reason": "Source identifies Student Affairs, a distinct office, role outside this office, or external referral; it is not a contact owned by Public Safety (Non-Emergency).",
           "evidence": {
@@ -629,6 +540,26 @@
             "section": "How to Report an Incident",
             "text_sha256": "e918e5674c37e626eb36307dc23c244f4352242c3da08f3db7445e956c00fdae"
           }
+        },
+        {
+          "field": "phone",
+          "value": "2016847788",
+          "reason": "Re-pointed 2026-10-21 (not reviewed by Dan): this section is newly cited for one number of Public Safety (Non-Emergency); its other phone values are labelled for other offices, people or roles, so none is published as a contact of Public Safety (Non-Emergency).",
+          "evidence": {
+            "url": "https://www.ramapo.edu/publicsafety/parking-regulations/",
+            "section": "Click Here for Department of Public Safety Motor Vehicle Rules and Regulations PDF (https://www.ramapo.edu/publicsafety/wp-content/uploads/sites/141/2026/02/2025_FallParking-Regulations.pdf)",
+            "text_sha256": "1b50088002c7b2aeaa0227ef83a226694fcfdb25e3e1193ce05b3cca96f01a36"
+          }
+        },
+        {
+          "field": "email",
+          "value": "parking@ramapo.edu",
+          "reason": "Re-pointed 2026-10-21 (not reviewed by Dan): this section is newly cited for one number of Public Safety (Non-Emergency); its other email values are labelled for other offices, people or roles, so none is published as a contact of Public Safety (Non-Emergency).",
+          "evidence": {
+            "url": "https://www.ramapo.edu/publicsafety/parking-regulations/",
+            "section": "Click Here for Department of Public Safety Motor Vehicle Rules and Regulations PDF (https://www.ramapo.edu/publicsafety/wp-content/uploads/sites/141/2026/02/2025_FallParking-Regulations.pdf)",
+            "text_sha256": "1b50088002c7b2aeaa0227ef83a226694fcfdb25e3e1193ce05b3cca96f01a36"
+          }
         }
       ]
     },
@@ -649,12 +580,13 @@
           ]
         },
         {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "Dining Services -",
+          "url": "https://www.ramapo.edu/reslife/gtcl/",
+          "section": "Dining Services Information",
+          "near": "Dining Services Office",
           "fields": [
             "phone"
-          ]
+          ],
+          "note": "Re-pointed 2026-10-21 (not reviewed by Dan): ramapo.edu/about/phone/ dropped its General Phone Number Listing; the same number on this official page, labelled as this office."
         }
       ],
       "phone": "(201) 684-7773",
@@ -813,12 +745,13 @@
           ]
         },
         {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "Dining Services -",
+          "url": "https://www.ramapo.edu/reslife/gtcl/",
+          "section": "Dining Services Information",
+          "near": "Dining Services Office",
           "fields": [
             "phone"
-          ]
+          ],
+          "note": "Re-pointed 2026-10-21 (not reviewed by Dan): ramapo.edu/about/phone/ dropped its General Phone Number Listing; the same number on this official page, labelled as this office."
         }
       ],
       "website": "https://www.ramapo.edu/tours/dining-shopping/",
@@ -990,12 +923,13 @@
           ]
         },
         {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "Dining Services -",
+          "url": "https://www.ramapo.edu/reslife/gtcl/",
+          "section": "Dining Services Information",
+          "near": "Dining Services Office",
           "fields": [
             "phone"
-          ]
+          ],
+          "note": "Re-pointed 2026-10-21 (not reviewed by Dan): ramapo.edu/about/phone/ dropped its General Phone Number Listing; the same number on this official page, labelled as this office."
         }
       ],
       "website": "https://www.ramapo.edu/tours/dining-shopping/",
@@ -1167,12 +1101,13 @@
           ]
         },
         {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "Dining Services -",
+          "url": "https://www.ramapo.edu/reslife/gtcl/",
+          "section": "Dining Services Information",
+          "near": "Dining Services Office",
           "fields": [
             "phone"
-          ]
+          ],
+          "note": "Re-pointed 2026-10-21 (not reviewed by Dan): ramapo.edu/about/phone/ dropped its General Phone Number Listing; the same number on this official page, labelled as this office."
         }
       ],
       "website": "https://www.ramapo.edu/tours/dining-shopping/",
@@ -1643,8 +1578,7 @@
           "scope": "explicit_ranked_general_contact_preference",
           "reason": "The reviewed current unit pages do not explicitly favor one general contact method over the alternatives. Merely listing a method or directing a particular task to it is not a ranked preference."
         }
-      ],
-      "contactReviewExclusions": []
+      ]
     },
     {
       "name": "Center for Student Success (Academic Advising)",
@@ -2044,15 +1978,16 @@
         {
           "field": "phone",
           "value": "(201) 684-7378",
-          "label": "General Phone Number Listing",
+          "label": "Phone",
           "evidence": [
             {
-              "url": "https://www.ramapo.edu/about/phone/",
-              "section": "General Phone Number Listing",
-              "near": "Anisfield School of Business - ",
+              "url": "https://www.ramapo.edu/myadvisor/declared-students/",
+              "section": "Declared Students",
+              "near": "Anisfield School of Business Office",
               "fields": [
                 "phone"
-              ]
+              ],
+              "note": "Re-pointed 2026-10-21 (not reviewed by Dan): ramapo.edu/about/phone/ dropped its General Phone Number Listing; the same number on this official page, labelled as this office."
             }
           ]
         },
@@ -2146,112 +2081,62 @@
       "contactReviewExclusions": [
         {
           "field": "phone",
-          "value": "2016847179",
-          "reason": "The full directory row labels this Annual Fund / Annual Giving; a broad neighboring text window does not make it a Anisfield School of Business contact.",
+          "value": "2016847406",
+          "reason": "Re-pointed 2026-10-21 (not reviewed by Dan): this section is newly cited for one number of Anisfield School of Business; its other phone values are labelled for other offices, people or roles, so none is published as a contact of Anisfield School of Business.",
           "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+            "url": "https://www.ramapo.edu/myadvisor/declared-students/",
+            "section": "Declared Students",
+            "text_sha256": "4bae11e00f207288f4136b6326538a703ec4722647fe2c162fdbd6b0882ea15b"
           }
         },
         {
           "field": "phone",
-          "value": "2016847147",
-          "reason": "The full directory row labels this Art Gallery; a broad neighboring text window does not make it a Anisfield School of Business contact.",
+          "value": "2016847365",
+          "reason": "Re-pointed 2026-10-21 (not reviewed by Dan): this section is newly cited for one number of Anisfield School of Business; its other phone values are labelled for other offices, people or roles, so none is published as a contact of Anisfield School of Business.",
           "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+            "url": "https://www.ramapo.edu/myadvisor/declared-students/",
+            "section": "Declared Students",
+            "text_sha256": "4bae11e00f207288f4136b6326538a703ec4722647fe2c162fdbd6b0882ea15b"
           }
         },
         {
           "field": "phone",
-          "value": "2016847260",
-          "reason": "The full directory row labels this Assessment Office; a broad neighboring text window does not make it a Anisfield School of Business contact.",
+          "value": "2016847625",
+          "reason": "Re-pointed 2026-10-21 (not reviewed by Dan): this section is newly cited for one number of Anisfield School of Business; its other phone values are labelled for other offices, people or roles, so none is published as a contact of Anisfield School of Business.",
           "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+            "url": "https://www.ramapo.edu/myadvisor/declared-students/",
+            "section": "Declared Students",
+            "text_sha256": "4bae11e00f207288f4136b6326538a703ec4722647fe2c162fdbd6b0882ea15b"
           }
         },
         {
-          "field": "phone",
-          "value": "2016847674",
-          "reason": "The full directory row labels this Athletics; a broad neighboring text window does not make it a Anisfield School of Business contact.",
+          "field": "office",
+          "value": "B224",
+          "reason": "Re-pointed 2026-10-21 (not reviewed by Dan): this section is newly cited for one number of Anisfield School of Business; its other office values are labelled for other offices, people or roles, so none is published as a contact of Anisfield School of Business.",
           "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+            "url": "https://www.ramapo.edu/myadvisor/declared-students/",
+            "section": "Declared Students",
+            "text_sha256": "4bae11e00f207288f4136b6326538a703ec4722647fe2c162fdbd6b0882ea15b"
           }
         },
         {
-          "field": "phone",
-          "value": "2016847230",
-          "reason": "The full directory row labels this Benefits; a broad neighboring text window does not make it a Anisfield School of Business contact.",
+          "field": "office",
+          "value": "BC237",
+          "reason": "Re-pointed 2026-10-21 (not reviewed by Dan): this section is newly cited for one number of Anisfield School of Business; its other office values are labelled for other offices, people or roles, so none is published as a contact of Anisfield School of Business.",
           "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+            "url": "https://www.ramapo.edu/myadvisor/declared-students/",
+            "section": "Declared Students",
+            "text_sha256": "4bae11e00f207288f4136b6326538a703ec4722647fe2c162fdbd6b0882ea15b"
           }
         },
         {
-          "field": "phone",
-          "value": "2016847202",
-          "reason": "The full directory row labels this Berrie Center; a broad neighboring text window does not make it a Anisfield School of Business contact.",
+          "field": "office",
+          "value": "ASB431",
+          "reason": "Re-pointed 2026-10-21 (not reviewed by Dan): this section is newly cited for one number of Anisfield School of Business; its other office values are labelled for other offices, people or roles, so none is published as a contact of Anisfield School of Business.",
           "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847800",
-          "reason": "The full directory row labels this Bookstore; a broad neighboring text window does not make it a Anisfield School of Business contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2018258770",
-          "reason": "The full directory row labels this Bookstore; a broad neighboring text window does not make it a Anisfield School of Business contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847763",
-          "reason": "The full directory row labels this Budget Office; a broad neighboring text window does not make it a Anisfield School of Business contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016846666",
-          "reason": "The full directory row labels this Business Continuity / Emergency Planning; a broad neighboring text window does not make it a Anisfield School of Business contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847176",
-          "reason": "The full directory row labels this Business Services; a broad neighboring text window does not make it a Anisfield School of Business contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
+            "url": "https://www.ramapo.edu/myadvisor/declared-students/",
+            "section": "Declared Students",
+            "text_sha256": "4bae11e00f207288f4136b6326538a703ec4722647fe2c162fdbd6b0882ea15b"
           }
         }
       ]
@@ -2642,8 +2527,7 @@
             }
           ]
         }
-      ],
-      "contactReviewExclusions": []
+      ]
     },
     {
       "name": "Health Services",
@@ -2659,14 +2543,6 @@
         {
           "url": "https://www.valleyhealth.com/save-your-spot-ramapo-college-health-services",
           "section": "Save Your Spot - Ramapo College Health Services",
-          "fields": [
-            "phone"
-          ]
-        },
-        {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "Health Services - ",
           "fields": [
             "phone"
           ]
@@ -2796,86 +2672,6 @@
         }
       ],
       "contactReviewExclusions": [
-        {
-          "field": "phone",
-          "value": "2016847669",
-          "reason": "Adjacent general-directory listing belongs to Honors Program, not Health Services.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847498",
-          "reason": "Adjacent general-directory listing belongs to Human Resources, not Health Services.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847777",
-          "reason": "Adjacent general-directory listing belongs to IT Help Desk, not Health Services.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847035",
-          "reason": "Adjacent general-directory listing belongs to Institutional Research, not Health Services.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847103",
-          "reason": "Adjacent general-directory listing belongs to Instructional Design Center, not Health Services.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847533",
-          "reason": "Adjacent general-directory listing belongs to International Education, not Health Services.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847472",
-          "reason": "Adjacent general-directory listing belongs to student organization, not Health Services.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847971",
-          "reason": "Adjacent general-directory listing belongs to Intramurals, not Health Services.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
         {
           "field": "email",
           "value": "deanofstudents@ramapo.edu",
@@ -4020,12 +3816,13 @@
       ],
       "evidence": [
         {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "Athletics - ",
+          "url": "https://www.ramapo.edu/consumer-information/",
+          "section": "Student Life",
+          "near": "Athletics Department",
           "fields": [
             "phone"
-          ]
+          ],
+          "note": "Re-pointed 2026-10-21 (not reviewed by Dan): ramapo.edu/about/phone/ dropped its General Phone Number Listing; the same number on this official page, labelled as this office."
         }
       ],
       "website": "https://ramapoathletics.com/",
@@ -4043,8 +3840,8 @@
               "url": "https://ramapoathletics.com/staff-directory",
               "section": "Staff Directory",
               "reviewed": {
-                "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
-                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference."
+                "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901",
+                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact."
               }
             },
             {
@@ -4060,7 +3857,7 @@
               "section": "Marie Curran",
               "reviewed": {
                 "text_sha256": "051419cf2c197e037cf88cb0f46077a8e39792be659140448669fa4f43b1666c",
-                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference."
+                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact. Re-bound 2026-10-21 (not reviewed by Dan): the staff page changed; it still lists only that person\u2019s own email and no general office, hours or preferred contact."
               }
             },
             {
@@ -4068,7 +3865,7 @@
               "section": "Joan Schofield",
               "reviewed": {
                 "text_sha256": "3ae33d7495816626feb517f04fd11f4344132d70ddca76b1ec4c0669d57f4cf0",
-                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference."
+                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact. Re-bound 2026-10-21 (not reviewed by Dan): the staff page changed; it still lists only that person\u2019s own email and no general office, hours or preferred contact."
               }
             }
           ]
@@ -4082,8 +3879,8 @@
               "url": "https://ramapoathletics.com/staff-directory",
               "section": "Staff Directory",
               "reviewed": {
-                "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
-                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference."
+                "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901",
+                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact."
               }
             },
             {
@@ -4099,7 +3896,7 @@
               "section": "Marie Curran",
               "reviewed": {
                 "text_sha256": "051419cf2c197e037cf88cb0f46077a8e39792be659140448669fa4f43b1666c",
-                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference."
+                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact. Re-bound 2026-10-21 (not reviewed by Dan): the staff page changed; it still lists only that person\u2019s own email and no general office, hours or preferred contact."
               }
             },
             {
@@ -4107,7 +3904,7 @@
               "section": "Joan Schofield",
               "reviewed": {
                 "text_sha256": "3ae33d7495816626feb517f04fd11f4344132d70ddca76b1ec4c0669d57f4cf0",
-                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference."
+                "reason": "Reviewed the office home/contact information and the relevant staff, FAQ, service and appointment instructions. The cited sections do not rank one general contact channel above the others. Task-specific directions are retained as contact notes and are not a general preference. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact. Re-bound 2026-10-21 (not reviewed by Dan): the staff page changed; it still lists only that person\u2019s own email and no general office, hours or preferred contact."
               }
             }
           ]
@@ -4121,8 +3918,8 @@
               "url": "https://ramapoathletics.com/staff-directory",
               "section": "Staff Directory",
               "reviewed": {
-                "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
-                "reason": "The official Athletics administrative staff directory provides named staff routes and a Main Athletic Phone/Fax, but no shared general-office mailbox. Named director/coordinator emails are not a shared office mailbox."
+                "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901",
+                "reason": "The official Athletics administrative staff directory provides named staff routes and a Main Athletic Phone/Fax, but no shared general-office mailbox. Named director/coordinator emails are not a shared office mailbox. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact."
               }
             },
             {
@@ -4138,7 +3935,7 @@
               "section": "Marie Curran",
               "reviewed": {
                 "text_sha256": "051419cf2c197e037cf88cb0f46077a8e39792be659140448669fa4f43b1666c",
-                "reason": "The official Athletics administrative staff directory provides named staff routes and a Main Athletic Phone/Fax, but no shared general-office mailbox. Named director/coordinator emails are not a shared office mailbox."
+                "reason": "The official Athletics administrative staff directory provides named staff routes and a Main Athletic Phone/Fax, but no shared general-office mailbox. Named director/coordinator emails are not a shared office mailbox. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact. Re-bound 2026-10-21 (not reviewed by Dan): the staff page changed; it still lists only that person\u2019s own email and no general office, hours or preferred contact."
               }
             },
             {
@@ -4146,7 +3943,7 @@
               "section": "Joan Schofield",
               "reviewed": {
                 "text_sha256": "3ae33d7495816626feb517f04fd11f4344132d70ddca76b1ec4c0669d57f4cf0",
-                "reason": "The official Athletics administrative staff directory provides named staff routes and a Main Athletic Phone/Fax, but no shared general-office mailbox. Named director/coordinator emails are not a shared office mailbox."
+                "reason": "The official Athletics administrative staff directory provides named staff routes and a Main Athletic Phone/Fax, but no shared general-office mailbox. Named director/coordinator emails are not a shared office mailbox. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact. Re-bound 2026-10-21 (not reviewed by Dan): the staff page changed; it still lists only that person\u2019s own email and no general office, hours or preferred contact."
               }
             }
           ]
@@ -4160,8 +3957,8 @@
               "url": "https://ramapoathletics.com/staff-directory",
               "section": "Staff Directory",
               "reviewed": {
-                "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
-                "reason": "The administrative contact block gives the campus mailing address, not an Athletics administrative office/room. Bradley Center activity facilities and membership reception are separate purposes."
+                "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901",
+                "reason": "The administrative contact block gives the campus mailing address, not an Athletics administrative office/room. Bradley Center activity facilities and membership reception are separate purposes. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact."
               }
             },
             {
@@ -4177,7 +3974,7 @@
               "section": "Marie Curran",
               "reviewed": {
                 "text_sha256": "051419cf2c197e037cf88cb0f46077a8e39792be659140448669fa4f43b1666c",
-                "reason": "The administrative contact block gives the campus mailing address, not an Athletics administrative office/room. Bradley Center activity facilities and membership reception are separate purposes."
+                "reason": "The administrative contact block gives the campus mailing address, not an Athletics administrative office/room. Bradley Center activity facilities and membership reception are separate purposes. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact. Re-bound 2026-10-21 (not reviewed by Dan): the staff page changed; it still lists only that person\u2019s own email and no general office, hours or preferred contact."
               }
             },
             {
@@ -4185,7 +3982,7 @@
               "section": "Joan Schofield",
               "reviewed": {
                 "text_sha256": "3ae33d7495816626feb517f04fd11f4344132d70ddca76b1ec4c0669d57f4cf0",
-                "reason": "The administrative contact block gives the campus mailing address, not an Athletics administrative office/room. Bradley Center activity facilities and membership reception are separate purposes."
+                "reason": "The administrative contact block gives the campus mailing address, not an Athletics administrative office/room. Bradley Center activity facilities and membership reception are separate purposes. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact. Re-bound 2026-10-21 (not reviewed by Dan): the staff page changed; it still lists only that person\u2019s own email and no general office, hours or preferred contact."
               }
             }
           ]
@@ -4199,8 +3996,8 @@
               "url": "https://ramapoathletics.com/staff-directory",
               "section": "Staff Directory",
               "reviewed": {
-                "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0",
-                "reason": "The official staff contact directory and college Athletics contact/report information do not state fixed administrative office hours. Bradley Center recreation and membership-processing schedules do not establish Athletics administrative office hours."
+                "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901",
+                "reason": "The official staff contact directory and college Athletics contact/report information do not state fixed administrative office hours. Bradley Center recreation and membership-processing schedules do not establish Athletics administrative office hours. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact."
               }
             },
             {
@@ -4216,7 +4013,7 @@
               "section": "Marie Curran",
               "reviewed": {
                 "text_sha256": "051419cf2c197e037cf88cb0f46077a8e39792be659140448669fa4f43b1666c",
-                "reason": "The official staff contact directory and college Athletics contact/report information do not state fixed administrative office hours. Bradley Center recreation and membership-processing schedules do not establish Athletics administrative office hours."
+                "reason": "The official staff contact directory and college Athletics contact/report information do not state fixed administrative office hours. Bradley Center recreation and membership-processing schedules do not establish Athletics administrative office hours. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact. Re-bound 2026-10-21 (not reviewed by Dan): the staff page changed; it still lists only that person\u2019s own email and no general office, hours or preferred contact."
               }
             },
             {
@@ -4224,7 +4021,7 @@
               "section": "Joan Schofield",
               "reviewed": {
                 "text_sha256": "3ae33d7495816626feb517f04fd11f4344132d70ddca76b1ec4c0669d57f4cf0",
-                "reason": "The official staff contact directory and college Athletics contact/report information do not state fixed administrative office hours. Bradley Center recreation and membership-processing schedules do not establish Athletics administrative office hours."
+                "reason": "The official staff contact directory and college Athletics contact/report information do not state fixed administrative office hours. Bradley Center recreation and membership-processing schedules do not establish Athletics administrative office hours. Re-bound 2026-10-21 (not reviewed by Dan): the staff directory changed (a new head coach line); it still lists no general email, office, hours or preferred contact. Re-bound 2026-10-21 (not reviewed by Dan): the staff page changed; it still lists only that person\u2019s own email and no general office, hours or preferred contact."
               }
             }
           ]
@@ -4315,292 +4112,192 @@
       "contactReviewExclusions": [
         {
           "field": "phone",
-          "value": "2016847230",
-          "reason": "The full directory row labels this Benefits; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847202",
-          "reason": "The full directory row labels this Berrie Center; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847800",
-          "reason": "The full directory row labels this Bookstore; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2018258770",
-          "reason": "The full directory row labels this Bookstore; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847763",
-          "reason": "The full directory row labels this Budget Office; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016846666",
-          "reason": "The full directory row labels this Business Continuity / Emergency Planning; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847176",
-          "reason": "The full directory row labels this Business Services; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847444",
-          "reason": "The full directory row labels this Cahill Center; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847251",
-          "reason": "The full directory row labels this Campus Ministry; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016846841",
-          "reason": "The full directory row labels this Campus Ministry; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847663",
-          "reason": "The full directory row labels this Campus Planning; a broad neighboring text window does not make it a Athletics contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
           "value": "2016847073",
-          "reason": "Published for Chuck McBreen, facilities/game contracts and head coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Chuck McBreen, facilities/game contracts and head coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847679",
-          "reason": "Published for Rachel L. Pinton, communications/marketing/branding, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Rachel L. Pinton, communications/marketing/branding, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847680",
-          "reason": "Published for Bridgette Quimpo, senior woman administrator/head softball coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Bridgette Quimpo, senior woman administrator/head softball coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847734",
-          "reason": "Published for Matthew Jobrack, Faculty Athletics Representative, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Matthew Jobrack, Faculty Athletics Representative, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847346",
-          "reason": "Published for Alexandre Olbrecht, Faculty Athletics Representative, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Alexandre Olbrecht, Faculty Athletics Representative, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847913",
-          "reason": "Published for Jesse Boyland, Head Athletic Trainer, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Jesse Boyland, Head Athletic Trainer, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847676",
-          "reason": "Published for Luis Pomales, Assistant Athletic Trainer, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Luis Pomales, Assistant Athletic Trainer, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847049",
-          "reason": "Published for Joe Valentino, strength and conditioning coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Joe Valentino, strength and conditioning coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016846293",
-          "reason": "Published for Kate Levin, Sports Information contact, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Kate Levin, Sports Information contact, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847111",
-          "reason": "Published for PJ Bartolotto, Bradley Center facilities/equipment, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for PJ Bartolotto, Bradley Center facilities/equipment, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847198",
-          "reason": "Published for DJ Pinton, coach/facilities/budget, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for DJ Pinton, coach/facilities/budget, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847076",
-          "reason": "Published for Nicole Barbella, transportation/head coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Nicole Barbella, transportation/head coach, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847066",
-          "reason": "Published for Ryan Rinsky, Intramurals/baseball, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Ryan Rinsky, Intramurals/baseball, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847678",
-          "reason": "Published for Abby Shiffler, Intramurals/soccer, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Abby Shiffler, Intramurals/soccer, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847795",
-          "reason": "Published for Justina Cassavell, cross country/track and field, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Justina Cassavell, cross country/track and field, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847938",
-          "reason": "Published for Rachel McHale, field hockey, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Rachel McHale, field hockey, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016847646",
-          "reason": "Published for Gary Orr, swimming, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Gary Orr, swimming, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         },
         {
           "field": "phone",
           "value": "2016846292",
-          "reason": "Published for Tyler Kwinta, volleyball, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records.",
+          "reason": "Published for Tyler Kwinta, volleyball, not the shared Athletics front-office contact. Director/coordinator office routes retained; team/facility staff lines remain scoped source records. Re-bound 2026-10-21: the section changed and still states this value.",
           "evidence": {
             "url": "https://ramapoathletics.com/staff-directory",
             "section": "Staff Directory",
-            "text_sha256": "b1f69038a6f8343b1b4a284c7c817d0aeb22e3a52c31e56d4f0c55292bbeb9d0"
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
+          }
+        },
+        {
+          "field": "phone",
+          "value": "2016846235",
+          "reason": "Added 2026-10-21 (not reviewed by Dan): the staff directory lists this as Nina Stone's, Head Coach, Women's Basketball; a coach's own line is not a contact of the Athletics department.",
+          "evidence": {
+            "url": "https://ramapoathletics.com/staff-directory",
+            "section": "Staff Directory",
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           }
         }
       ]
@@ -6684,8 +6381,7 @@
           "scope": "explicit_ranked_general_contact_preference",
           "reason": "The reviewed current unit pages do not explicitly favor one general contact method over the alternatives. Merely listing a method or directing a particular task to it is not a ranked preference."
         }
-      ],
-      "contactReviewExclusions": []
+      ]
     },
     {
       "name": "Center for Reading and Writing",
@@ -7169,106 +6865,6 @@
         },
         {
           "field": "phone",
-          "value": "2016847550",
-          "reason": "Source identifies Veterans Affairs, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847621",
-          "reason": "Source identifies VP Admin and Finance, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847040",
-          "reason": "Source identifies White House, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847468",
-          "reason": "Source identifies Women\u2019s Center, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847444",
-          "reason": "Source identifies Work-Study Program, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847084",
-          "reason": "Source identifies Writing Center, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847998",
-          "reason": "Source identifies WRPR Radio Station, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2018251234",
-          "reason": "Source identifies WRPR Radio Station On-Air Studio, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847778",
-          "reason": "Source identifies Yearbook, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847901",
-          "reason": "Source identifies York Room, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
           "value": "8004213481",
           "reason": "Source identifies U.S. Department of Education Office for Civil Rights telephone, a distinct office, role outside this office, or external referral; it is not a contact owned by Title IX.",
           "evidence": {
@@ -7522,8 +7118,7 @@
             "section": "Who should I contact if I have questions about the application process?"
           }
         }
-      ],
-      "contactReviewExclusions": []
+      ]
     },
     {
       "name": "Testing Center",
@@ -7712,14 +7307,6 @@
             "email",
             "office"
           ]
-        },
-        {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "Payroll - ",
-          "fields": [
-            "phone"
-          ]
         }
       ],
       "contactNotes": [
@@ -7809,108 +7396,6 @@
           ],
           "scope": "explicit_ranked_general_contact_preference",
           "reason": "The reviewed current unit pages do not explicitly favor one general contact method over the alternatives. Merely listing a method or directing a particular task to it is not a ranked preference."
-        }
-      ],
-      "contactReviewExclusions": [
-        {
-          "field": "phone",
-          "value": "2016847862",
-          "reason": "Source identifies Pool, a distinct office, role outside this office, or external referral; it is not a contact owned by Payroll.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847607",
-          "reason": "Source identifies President\u2019s Office, a distinct office, role outside this office, or external referral; it is not a contact owned by Payroll.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847477",
-          "reason": "Source identifies Public Relations, a distinct office, role outside this office, or external referral; it is not a contact owned by Payroll.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847432",
-          "reason": "Source identifies Public Safety, a distinct office, role outside this office, or external referral; it is not a contact owned by Payroll.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847887",
-          "reason": "Source identifies Publications, a distinct office, role outside this office, or external referral; it is not a contact owned by Payroll.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847496",
-          "reason": "Source identifies Purchasing, a distinct office, role outside this office, or external referral; it is not a contact owned by Payroll.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847695",
-          "reason": "Source identifies Registrar, a distinct office, role outside this office, or external referral; it is not a contact owned by Payroll.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847461",
-          "reason": "Source identifies Residence Life, a distinct office, role outside this office, or external referral; it is not a contact owned by Payroll.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847053",
-          "reason": "Source identifies Residence Life \u2013 Bischoff Hall, a distinct office, role outside this office, or external referral; it is not a contact owned by Payroll.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847061",
-          "reason": "Source identifies Residence Life \u2013 College Park Apartments, a distinct office, role outside this office, or external referral; it is not a contact owned by Payroll.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
         }
       ]
     },
@@ -8584,12 +8069,13 @@
           ]
         },
         {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "Environmental Health and Safety - ",
+          "url": "https://www.ramapo.edu/ehs/",
+          "section": "Contacts",
+          "near": "Director of Environmental Health",
           "fields": [
             "phone"
-          ]
+          ],
+          "note": "Re-pointed 2026-10-21 (not reviewed by Dan): ramapo.edu/about/phone/ dropped its General Phone Number Listing; the same number on this official page, labelled as this office."
         }
       ],
       "office": "CPA/EHS Garage",
@@ -8791,56 +8277,6 @@
             "section": "Public Information Sessions",
             "text_sha256": "44385b19db1fdead24084dcfc9edc031705ed089e4162a902bc24c80fe658f29"
           }
-        },
-        {
-          "field": "phone",
-          "value": "2016847742",
-          "reason": "The explicit neighboring directory row belongs to Environmental Institute, not Environmental Health and Safety.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016846693",
-          "reason": "The explicit neighboring directory row belongs to Equity, Diversity, Inclusion and Compliance, not Environmental Health and Safety.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847590",
-          "reason": "The explicit neighboring directory row belongs to Events and Conferences, not Environmental Health and Safety.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847663",
-          "reason": "The explicit neighboring directory row belongs to Facilities administration/building/grounds/utilities, not Environmental Health and Safety.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847660",
-          "reason": "The explicit neighboring directory row belongs to Facilities emergency work requests, not Environmental Health and Safety.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
         }
       ]
     },
@@ -8950,21 +8386,6 @@
               ]
             }
           ]
-        },
-        {
-          "field": "phone",
-          "value": "(201) 684-6768",
-          "label": "Nursing Program",
-          "evidence": [
-            {
-              "url": "https://www.ramapo.edu/about/phone/",
-              "section": "General Phone Number Listing",
-              "near": "Nursing Program - ",
-              "fields": [
-                "phone"
-              ]
-            }
-          ]
         }
       ],
       "contactNotes": [
@@ -8985,96 +8406,6 @@
             "url": "https://www.ramapo.edu/nursing/",
             "section": "Nursing Programs Contact Information:",
             "text_sha256": "030f807101b71b8f70d47962bb756e46111bac8715750d1338d2beff69acd712"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847869",
-          "reason": "Adjacent general-directory listing belongs to Office of Student Conduct, not Nursing.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847560",
-          "reason": "Adjacent general-directory listing belongs to Testing Center, not Nursing.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847804",
-          "reason": "Adjacent general-directory listing belongs to Ombuds, not Nursing.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847473",
-          "reason": "Adjacent general-directory listing belongs to Organization of African Unity, not Nursing.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847472",
-          "reason": "Adjacent general-directory listing belongs to Organization of Latino Unity, not Nursing.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847783",
-          "reason": "Adjacent general-directory listing belongs to Payroll, not Nursing.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847862",
-          "reason": "Adjacent general-directory listing belongs to Pool, not Nursing.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847607",
-          "reason": "Adjacent general-directory listing belongs to President, not Nursing.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847477",
-          "reason": "Adjacent general-directory listing belongs to Public Relations, not Nursing.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
           }
         },
         {
@@ -9297,98 +8628,6 @@
           ],
           "scope": "explicit_ranked_general_contact_preference",
           "reason": "The reviewed current unit pages do not explicitly favor one general contact method over the alternatives. Merely listing a method or directing a particular task to it is not a ranked preference."
-        }
-      ],
-      "contactReviewExclusions": [
-        {
-          "field": "phone",
-          "value": "2016847406",
-          "reason": "The adjacent directory entry is School of Humanities and Global Studies, including its adjunct line, not Roadrunner Central. The scope window must not assign a neighbour\u2019s contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847847",
-          "reason": "The adjacent directory entry is Security Booth, not Roadrunner Central. The scope window must not assign a neighbour\u2019s contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847625",
-          "reason": "The adjacent directory entry is Social Science and Human Services / Social Work, not Roadrunner Central. The scope window must not assign a neighbour\u2019s contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847514",
-          "reason": "The adjacent directory entry is Specialized Services, not Roadrunner Central. The scope window must not assign a neighbour\u2019s contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847670",
-          "reason": "The adjacent directory entry is Storeroom, not Roadrunner Central. The scope window must not assign a neighbour\u2019s contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847495",
-          "reason": "The adjacent directory entry is Student Accounts, not Roadrunner Central. The scope window must not assign a neighbour\u2019s contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847937",
-          "reason": "The adjacent directory entry is Student Activities Revenue Mgt, not Roadrunner Central. The scope window must not assign a neighbour\u2019s contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847457",
-          "reason": "The adjacent directory entry is Student Affairs Office, not Roadrunner Central. The scope window must not assign a neighbour\u2019s contact.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
-        },
-        {
-          "field": "phone",
-          "value": "2016847933",
-          "reason": "The college phone listing keeps an old Roadrunner Central line; Roadrunner Central's own page says its functions are provided by CSI at 201-684-7593. Reviewed 2026-10-14.",
-          "evidence": {
-            "url": "https://www.ramapo.edu/about/phone/",
-            "section": "General Phone Number Listing",
-            "text_sha256": "eeb28e51961185ab8be5ac42352c6697b8a7e96bcf452b36b75d0553a5fce468"
-          }
         }
       ]
     },
@@ -9645,8 +8884,7 @@
             }
           ]
         }
-      ],
-      "contactReviewExclusions": []
+      ]
     },
     {
       "name": "ENHANCE Program",
@@ -18751,7 +17989,6 @@
     },
     {
       "name": "Ramapo Honors Program",
-      "phone": "(201) 684-7669",
       "category": "Academic",
       "email": "honors@ramapo.edu",
       "department": "College Honors Program",
@@ -18762,14 +17999,6 @@
         "Honors scholarships, conferences and study abroad"
       ],
       "evidence": [
-        {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "Honors Program - ",
-          "fields": [
-            "phone"
-          ]
-        },
         {
           "url": "https://archway.ramapo.edu/rhp/contact-us/",
           "section": "Overview",
@@ -20334,12 +19563,13 @@
       ],
       "evidence": [
         {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "President's Office - ",
+          "url": "https://www.ramapo.edu/president/",
+          "section": "Senior Leadership: Mission Element Team",
+          "near": "President Phone",
           "fields": [
             "phone"
-          ]
+          ],
+          "note": "Re-pointed 2026-10-21 (not reviewed by Dan): ramapo.edu/about/phone/ dropped its General Phone Number Listing; the same number on this official page, labelled as this office."
         }
       ],
       "additionalContacts": [
@@ -20936,12 +20166,13 @@
       ],
       "evidence": [
         {
-          "url": "https://www.ramapo.edu/about/phone/",
-          "section": "General Phone Number Listing",
-          "near": "General Counsel - ",
+          "url": "https://www.ramapo.edu/policies/policy/legal-services/",
+          "section": "Contacts",
+          "near": "Vice President and General Counsel",
           "fields": [
             "phone"
-          ]
+          ],
+          "note": "Re-pointed 2026-10-21 (not reviewed by Dan): ramapo.edu/about/phone/ dropped its General Phone Number Listing; the same number on this official page, labelled as this office."
         }
       ],
       "contactNotes": [
