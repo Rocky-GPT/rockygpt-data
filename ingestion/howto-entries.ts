@@ -47,13 +47,13 @@ export function pageEntries(capture: HowtoCapture, page: OfficeSectionsPage): Ho
   return read && read.key === entriesKey(page.url, page.sections) ? verifiedEntries(read.reply, page.sections) : [];
 }
 
-async function ask(page: OfficeSectionsPage, model: string): Promise<{ reply: unknown; input: number; output: number }> {
+async function ask(page: OfficeSectionsPage, model: string, maxOutput = 8000): Promise<{ reply: unknown; input: number; output: number }> {
   const headers: Record<string, string> = { 'content-type': 'application/json',
     authorization: `Bearer ${process.env.HOWTO_OPENAI_API_KEY}` };
   if (process.env.HOWTO_OPENAI_PROJECT) headers['openai-project'] = process.env.HOWTO_OPENAI_PROJECT;
   for (let attempt = 1; ; attempt++) {
     const response = await fetch('https://api.openai.com/v1/responses', { method: 'POST', headers, body: JSON.stringify({
-      model, store: false, max_output_tokens: 8000,
+      model, store: false, max_output_tokens: maxOutput,
       input: [{ role: 'system', content: HOWTO_PROMPT }, { role: 'user', content: pageInput(page.url, page.sections) }],
       text: { format: { type: 'json_schema', name: 'howto_entries', schema: HOWTO_SCHEMA, strict: true } },
     }) });
@@ -80,8 +80,22 @@ async function main(): Promise<void> {
   console.log(`${pages.length} pages; ${due.length} to read (${pages.length - due.length} unchanged).`);
   let input = 0, output = 0, done = 0, entries = 0;
   const queue = pLimit(Number(process.env.HOWTO_CONCURRENCY) || 4);
+  let skipped = 0;
   await Promise.all(due.map(page => queue(async () => {
-    const read = await ask(page, model);
+    // A page with many table rows can outrun the reply's length and come back cut mid-JSON: read
+    // it once more with room to spare; a page that still fails keeps no entries, not the run.
+    let read: Awaited<ReturnType<typeof ask>>;
+    try {
+      read = await ask(page, model);
+    } catch {
+      try {
+        read = await ask(page, model, 24000);
+      } catch (error) {
+        skipped++;
+        console.log(`Skipped ${page.url}: ${error instanceof Error ? error.message : error}`);
+        return;
+      }
+    }
     capture.pages[page.key] = { key: entriesKey(page.url, page.sections), url: page.url, model, read_at: new Date().toISOString(), reply: read.reply };
     input += read.input; output += read.output; done++;
     entries += verifiedEntries(read.reply, page.sections).length;
@@ -89,7 +103,7 @@ async function main(): Promise<void> {
   })));
   writeJsonFile(HOWTO_RAW, capture);
   writeRawFileProvenance('howto-entries', HOWTO_RAW, { recordCount: Object.keys(capture.pages).length });
-  console.log(`Read ${done} pages: ${entries} verified entries; ${input} input and ${output} output tokens.`);
+  console.log(`Read ${done} pages (${skipped} skipped): ${entries} verified entries; ${input} input and ${output} output tokens.`);
 }
 
 if (process.argv[1]?.endsWith('howto-entries.ts')) {
