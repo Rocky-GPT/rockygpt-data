@@ -378,6 +378,23 @@ test('an office also links the pages of a site the reviewed site owners give it'
     ['www.ramapo.edu/myadvisor/']);
 });
 
+test("a current topic links its own site's captured pages that no office links; a retired one links none", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const topic = (name: string, status: string, url: string) => ({ source_key: 'office-pages', source_record_key: name,
+    name, status, url });
+  input.campus_topics = [topic('Scholarships', 'current', 'https://www.ramapo.edu/scholarships/faqs/'),
+    topic('Provisional Teacher Program', 'retired', 'https://www.ramapo.edu/ptp/')];
+  const page = (key: string, folder: string) => ({ source_key: 'office-pages', source_record_key: key, site_folder: folder });
+  input.office_sections = [page('www.ramapo.edu/scholarships/faqs/', 'scholarships'),
+    page('www.ramapo.edu/scholarships/', 'scholarships'), page('www.ramapo.edu/ptp/', 'ptp')];
+  const result = compileCampusIdentities(real, input);
+  const pages = (name: string) => result.registry.entities.find(e => e.name === name)
+    ?.links.find(l => l.collection === 'office_sections')?.source_record_keys;
+  assert.deepEqual(pages('Scholarships'), ['www.ramapo.edu/scholarships/', 'www.ramapo.edu/scholarships/faqs/']);
+  assert.equal(pages('Provisional Teacher Program'), undefined);
+});
+
 test('a college policy page links to the office its Responsible Unit names', async () => {
   const { responsibleUnit } = await import('./compile-campus-identities');
   const header = [{ heading: 'Graduate Assistants', text: 'Policy Number: | 481; Responsible Unit: | Payroll; Approval Authority: | President' }];
