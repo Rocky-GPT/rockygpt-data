@@ -396,6 +396,22 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
         source_record_keys: keys.filter(key => (pageSource.get(key) ?? 'office-pages') === source) });
     }
   }
+  // A current topic (a site with no office behind it, campus-topics.json) links the captured pages
+  // of its own site that no office links: the Scholarships FAQ and award pages, the Summer Session
+  // policies, the parents' guide. Without it those pages were linked to nothing and never read.
+  const claimed = new Set(linkable.flatMap(entity => entity.links
+    .filter(link => link.collection === 'office_sections').flatMap(link => link.source_record_keys)));
+  const topicRows = new Map((snapshot.campus_topics ?? []).map(row => [string(row.source_record_key), row]));
+  for (const topic of entities.filter(entity => entity.kind === 'topic')) {
+    const row = topic.links.filter(link => link.collection === 'campus_topics')
+      .flatMap(link => link.source_record_keys).map(key => topicRows.get(key)).find(Boolean);
+    const folder = row && string(row.status) === 'current' && typeof row.url === 'string' ? siteFolder(row.url) : null;
+    const keys = (folder ? pagesByFolder.get(folder) ?? [] : []).filter(key => !claimed.has(key)).sort();
+    for (const source of [...new Set(keys.map(key => pageSource.get(key) ?? 'office-pages'))].sort()) {
+      topic.links.push({ collection: 'office_sections', source_key: source,
+        source_record_keys: keys.filter(key => (pageSource.get(key) ?? 'office-pages') === source) });
+    }
+  }
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved, alias_sources: aliasRecords(entities, ledger) };
