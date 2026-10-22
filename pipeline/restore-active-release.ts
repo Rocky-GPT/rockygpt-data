@@ -202,8 +202,11 @@ export function restoreActiveReleaseFiles(input: {
   for (const [key, relativePaths] of Object.entries(RELEASE_ARTIFACT_TARGETS)) {
     if (!artifacts.has(key)) {
       // Optional artifacts absent from this release must not retain another
-      // release's local projection.
-      for (const relativePath of relativePaths) fs.rmSync(path.join(rootDir, relativePath), { force: true });
+      // release's local projection. Committed reference files (src/) are not
+      // projections: a release made before they existed keeps the checked-in copy.
+      for (const relativePath of relativePaths) {
+        if (!relativePath.startsWith('src/')) fs.rmSync(path.join(rootDir, relativePath), { force: true });
+      }
       continue;
     }
     const payload = artifacts.get(key);
