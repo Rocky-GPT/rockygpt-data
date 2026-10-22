@@ -62,6 +62,23 @@ test('legacy release restoration removes an optional manifest left by another re
   assert.equal(fs.readFileSync(path.join(rootDir, 'data/context/hours/source.md'), 'utf8'), '# Source document');
 });
 
+test('a release made before the office reviews keeps the committed review files', (t) => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'rockygpt-restore-release-'));
+  t.after(() => fs.rmSync(rootDir, { recursive: true, force: true }));
+  const reviews = ['office-contact-review', 'office-hours-review'];
+  const reviewPaths = reviews.map((key) => path.join(rootDir, RELEASE_ARTIFACT_TARGETS[key][0]));
+  for (const reviewPath of reviewPaths) writeJsonFile(reviewPath, { schema_version: 1, offices: [] });
+  restoreActiveReleaseFiles({
+    rootDir,
+    release: { datasetId: 'dataset', releaseId: 'release', version: 'before-reviews', activatedAt: '2026-10-07T12:00:00Z' },
+    artifacts: Object.keys(RELEASE_ARTIFACT_TARGETS)
+      .filter((key) => !reviews.includes(key))
+      .map((key) => ({ key, payload: [] })),
+    documents: [{ content: '# Source document', metadata: { sourcePath: 'hours/source.md' } }],
+  });
+  for (const reviewPath of reviewPaths) assert.ok(fs.existsSync(reviewPath), `${reviewPath} was removed.`);
+});
+
 // Published artifacts that come back without a release artifact target: the
 // search vocabulary is committed, and context markdown is restored from the
 // release's documents.
