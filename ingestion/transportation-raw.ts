@@ -6,6 +6,8 @@ const SEED_URLS = [
   'https://www.ramapo.edu/csi/commuter-affairs/',
   'https://www.ramapo.edu/csi/commuter-affairs/commuter-resources/',
   'https://www.ramapo.edu/about/transportation-services/',
+  // Holiday and special-day timetables; no other captured page links to it.
+  'https://www.ramapo.edu/about/transportation-services/special-shuttle-schedule/',
 ];
 
 function isTransportationDetail(url: URL): boolean {

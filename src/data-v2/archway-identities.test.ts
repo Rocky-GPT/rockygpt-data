@@ -230,3 +230,20 @@ test('a reviewed desk contact is not linked to a missing group, under another na
     ['Pine Hall', 'office:pine-hall', 'missing_connection'],
   ]);
 });
+
+test("a reviewed desk links its own published schedules by name, and only those", () => {
+  const group: CampusIdentity = { id: id(41), kind: 'organization', name: 'Commuter Affairs', aliases: [], links: [{ collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['Commuter Affairs'] }] };
+  const contacts = new Map([['office:commuter-affairs', { source_key: 'campus-directory', name: 'Commuter Affairs' }]]);
+  const schedules = ['Monday', 'Tuesday'].flatMap(day => [
+    { source_key: 'campus-hours', source_record_key: `Commuter Affairs:${day}`, name: 'Commuter Affairs' },
+    { source_key: 'campus-hours', source_record_key: `Registrar:${day}`, name: 'Registrar' },
+  ]);
+  const review = { group: 'Commuter Affairs', contact: 'office:commuter-affairs', reviewed_at: '2026-10-14', note: 'Approved.', hours: ['Commuter Affairs'] };
+  const { unresolved } = linkReviewedArchwayContacts([group], contacts, [review], new Set(), schedules);
+  assert.deepEqual(unresolved, []);
+  assert.deepEqual(group.links.find(link => link.collection === 'campus_hours'), {
+    collection: 'campus_hours', source_key: 'campus-hours', source_record_keys: ['Commuter Affairs:Monday', 'Commuter Affairs:Tuesday'] });
+  const missing: CampusIdentity = { ...group, id: id(42), links: [{ collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['Commuter Affairs'] }] };
+  const none = linkReviewedArchwayContacts([missing], contacts, [{ ...review, hours: ['Nowhere'] }], new Set(), schedules);
+  assert.deepEqual(none.unresolved.map(issue => [issue.collection, issue.kind]), [['campus_hours', 'no_records']]);
+});

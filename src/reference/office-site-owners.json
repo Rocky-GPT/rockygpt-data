@@ -1,0 +1,229 @@
+{
+  "$comment": [
+    "Office sites whose own pages are run by an office the website claim does not name: each folder's",
+    "captured pages are also linked to this office (compile-campus-identities.ts). The evidence quote",
+    "is the site's own words naming the office; the publish re-checks it against the capture and",
+    "stops when it is gone. Reviewed October 19, 2026 against the October 15 capture. Folders where",
+    "two offices are plausible, a college-wide site, or an office not in the graph have no owner."
+  ],
+  "reviewed_on": "2026-10-19",
+  "sites": [
+    {
+      "folder": "admissions",
+      "owner": "Admissions",
+      "evidence_url": "https://www.ramapo.edu/admissions/financial-aid-tuition/faqs/",
+      "evidence_quote": "Still don’t see the answer to your question? Email us at admissions@ramapo.edu",
+      "note": "The site is titled 'Admissions & Aid', and its sections (freshmen, transfer, re-admit, school counselors) speak as the Admissions team. Caveat: the /financial-aid-tuition/ subpages carry the Office of Financial Aid contact block. The FAQ also gives graduate@ for graduate applicants. The home page itself names no office."
+    },
+    {
+      "folder": "admitted-students",
+      "owner": "Admissions",
+      "evidence_url": "https://www.ramapo.edu/admitted-students/portal/",
+      "evidence_quote": "contact us anytime at admissions@ramapo.edu",
+      "note": "Admitted-student site speaking as Admissions ('Follow Admissions' on the home page, Admissions Portal, deposit). Its resources page also lists other offices' contacts."
+    },
+    {
+      "folder": "asb-career-pathways",
+      "owner": "Cahill Career Development Center",
+      "evidence_url": "https://www.ramapo.edu/asb-career-pathways/contact/",
+      "evidence_quote": "Come and see us in the Cahill Career Center",
+      "note": "Named for an ASB degree requirement but run by the Career Center: the contact page lists the Cahill Center Director and Career Center staff."
+    },
+    {
+      "folder": "assessment",
+      "owner": "Office of the Provost",
+      "evidence_url": "https://www.ramapo.edu/assessment/assessment-plan-report/",
+      "evidence_quote": "Fill this form out only if you received an email from the Office of the Provost requesting you to do so.",
+      "note": "The site name 'Assessment of Student Learning' is a listed alias of Office of the Provost. Its contacts are the Vice Provost and the Assistant Provost for Assessment & Accreditation."
+    },
+    {
+      "folder": "campustours",
+      "owner": "Admissions",
+      "evidence_url": "https://www.ramapo.edu/campustours/",
+      "evidence_quote": "If you require further information, please call Admissions at 201-684-7300 or email us at admissions@ramapo.edu",
+      "note": "The site name 'Campus Tours' is a listed Admissions alias, and the page speaks as Admissions."
+    },
+    {
+      "folder": "ccec",
+      "owner": "Civic and Community Engagement Center",
+      "evidence_url": "https://www.ramapo.edu/ccec/",
+      "evidence_quote": "Welcome to the Civic and Community Engagement Center (CCEC)",
+      "note": "The site name is the office name, with its own location (SC-213), hours, ccec@ramapo.edu and staff. CSI's site says CSI supervises CCEC, but this is CCEC's own site, and CCEC is its own graph office."
+    },
+    {
+      "folder": "clubs",
+      "owner": "Center for Student Involvement",
+      "evidence_url": "https://www.ramapo.edu/clubs/organization/bioinformatics-club/",
+      "evidence_quote": "More information coming soon! Questions? Email csi@ramapo.edu",
+      "note": "The /clubs/ home page is not in the capture. Club pages give CSI's mailbox as the site contact, and CSI's own site says it provides support for approved clubs and organizations, linking to /clubs/. SGA is only a related-resources link here."
+    },
+    {
+      "folder": "conferences",
+      "owner": "Events and Conferences",
+      "evidence_url": "https://www.ramapo.edu/conferences/",
+      "evidence_quote": "Ramapo College’s Events & Conferences (E&C) is your go-to partner for planning and executing exceptional meetings, events, and film shoots on campus.",
+      "note": "The site name 'Events & Conferences' is a listed alias. The contact block gives Ramapo College Events & Conferences, 201-684-7082, events@ramapo.edu."
+    },
+    {
+      "folder": "first-gen",
+      "owner": "First Generation Student Center",
+      "evidence_url": "https://www.ramapo.edu/first-gen/",
+      "evidence_quote": "The First-Generation Student Center at Ramapo College of New Jersey provides purposeful support",
+      "note": "The site name is the office name (the page hyphenates 'First-Generation'), and its contact is the center's Assistant Director in D-208."
+    },
+    {
+      "folder": "giving",
+      "owner": "Ramapo College Foundation",
+      "evidence_url": "https://www.ramapo.edu/giving/how-to-give/",
+      "evidence_quote": "You can send cash or checks made payable to the Ramapo College Foundation",
+      "note": "Fundraising site for gifts to the Foundation, with the Foundation as its only related resource. The Contact Us page lists Institutional Advancement staff, including the Executive Director of the Ramapo College Foundation. Institutional Advancement is not a graph office. Review this one: the staff are Advancement staff."
+    },
+    {
+      "folder": "greek",
+      "owner": "Office of Fraternity and Sorority Life",
+      "evidence_url": "https://www.ramapo.edu/greek/",
+      "evidence_quote": "The Office of Fraternity and Sorority Life aims to provide and coordinate resources and services",
+      "note": "The site title and home page name the office, and the contact block gives the office's coordinator."
+    },
+    {
+      "folder": "health-promotion",
+      "owner": "Health Promotion",
+      "evidence_url": "https://www.ramapo.edu/health-promotion/",
+      "evidence_quote": "Megan Johnston, LSW, Coordinator, Health Promotion",
+      "note": "The site name is the office name, and its staff entry is the Health Promotion coordinator. One subpage uses the studentwellness@ mailbox (Center for Student Wellness, its parent), but the site is Health Promotion's own."
+    },
+    {
+      "folder": "honors",
+      "owner": "Ramapo Honors Program",
+      "evidence_url": "https://www.ramapo.edu/honors/",
+      "evidence_quote": "The Ramapo College Honors Program is a community of faculty and students dedicated to intellectual, creative, and moral engagement.",
+      "note": "The site, titled College Honors, is the Honors Program's own site, and its contacts are the Honors Director and the Honors Program Coordinator."
+    },
+    {
+      "folder": "inter-students",
+      "owner": "Roukema Center for International Education",
+      "evidence_url": "https://www.ramapo.edu/inter-students/",
+      "evidence_quote": "The Office of International Student and Scholar Services (ISSS) staff warmly welcomes you",
+      "note": "The site is titled 'Ramapo International Students' and links to the /international/ contact form. ISSS is not a graph office. The /international/ home page says the Roukema Center houses ISSS."
+    },
+    {
+      "folder": "international",
+      "owner": "Roukema Center for International Education",
+      "evidence_url": "https://www.ramapo.edu/international/",
+      "evidence_quote": "The Roukema Center for International Education houses the Office of International Programs and the Office of International Student and Scholar Services.",
+      "note": "The site is named Ramapo International, which is a listed alias, and the home page names the Roukema Center along with its location, hours and team."
+    },
+    {
+      "folder": "its",
+      "owner": "IT Help Desk",
+      "evidence_url": "https://www.ramapo.edu/its/help-desk/",
+      "evidence_quote": "This should be the first point of contact for all IT Service requests",
+      "note": "The IT Help Desk's own website is /its/help-desk/, a page inside the ITS site; the ITS site's how-to pages (email, passwords, printing, Wi-Fi) are the requests the Help Desk takes first. Reviewed 2026-10-20."
+    },
+    {
+      "folder": "leadership",
+      "owner": "Student Leadership Programs",
+      "evidence_url": "https://www.ramapo.edu/leadership/",
+      "evidence_quote": "The Student Leadership Programs Committee supports students in their leadership development",
+      "note": "The site name is the office name, and its contact is leaders@ramapo.edu. Some programs, such as JUMP, are advised by CSI staff."
+    },
+    {
+      "folder": "learn",
+      "owner": "Admissions",
+      "evidence_url": "https://www.ramapo.edu/learn/",
+      "evidence_quote": "Ramapo College Office of Admissions505 Ramapo Valley Road | Mahwah, NJ 07430 Phone: 201-684-7300",
+      "note": "Prospective-student site. The Contact Information block on all 24 pages is the Office of Admissions (the capture runs 'Admissions' and '505' together)."
+    },
+    {
+      "folder": "military",
+      "owner": "Military and Veterans Success",
+      "evidence_url": "https://www.ramapo.edu/military/veteran-success-team/",
+      "evidence_quote": "Our Veterans and Military Families Success Team is here to assist you every step of the way.",
+      "note": "The graph office's own hours record is sourced from /military/veterans-lounge-advisement/ in this folder. The site's contacts include the Coordinator of Military and Veteran Enrollment and Success. Review this one: the 'Success Team' page lists staff from many offices, and the site is titled only 'Military'."
+    },
+    {
+      "folder": "multicultural-center",
+      "owner": "The Multicultural Center and the Office of Access, Belonging and Community (ABC)",
+      "evidence_url": "https://www.ramapo.edu/multicultural-center/",
+      "evidence_quote": "a Multicultural Center Exploratory Committee was established through the Office of Access, Belonging & Community",
+      "note": "The site name 'The Multicultural Center' is part of the office's name, and its contact block is abc@ramapo.edu."
+    },
+    {
+      "folder": "myadvisor",
+      "owner": "Center for Student Success (Academic Advising)",
+      "evidence_url": "https://www.ramapo.edu/myadvisor/",
+      "evidence_quote": "The Advisement Team in the Center for Student Success guides students towards graduation",
+      "note": "The home page heading is 'Academic Advisement at the Center for Student Success', and the contact is D-207, success@ramapo.edu."
+    },
+    {
+      "folder": "oabc",
+      "owner": "The Multicultural Center and the Office of Access, Belonging and Community (ABC)",
+      "evidence_url": "https://www.ramapo.edu/oabc/",
+      "evidence_quote": "The Office of Access, Belonging and Community is also comprised of the MultiCultural Center.",
+      "note": "The site is titled 'Office of Access Belonging and Community', and its contact is abc@ramapo.edu."
+    },
+    {
+      "folder": "peer-facilitators",
+      "owner": "Peer Facilitators",
+      "evidence_url": "https://www.ramapo.edu/peer-facilitators/",
+      "evidence_quote": "Peer Facilitators General Contact Information",
+      "note": "The site name is the office name, and its contact is peers@ramapo.edu."
+    },
+    {
+      "folder": "president",
+      "owner": "Office of the President",
+      "evidence_url": "https://www.ramapo.edu/president/",
+      "evidence_quote": "The Office of the President extends sincere congratulations",
+      "note": "The site title is Office of the President, and the home page lists the office's staff in an 'Office of the President' section. About 35 captured pages have no site title (404s or stray pages)."
+    },
+    {
+      "folder": "ramapo-green",
+      "owner": "Ramapo Green",
+      "evidence_url": "https://www.ramapo.edu/ramapo-green/",
+      "evidence_quote": "Welcome to the Campus Sustainability Hub!",
+      "note": "The site name is the office name, and 'Campus Sustainability Hub' is its listed alias. The contact on every page is ramapogreen@ramapo.edu."
+    },
+    {
+      "folder": "sga",
+      "owner": "Student Government Association",
+      "evidence_url": "https://www.ramapo.edu/sga/",
+      "evidence_quote": "The Ramapo College Student Government Association serves as the persistent voice of the student body.",
+      "note": "The site name is the office name, with its own room (SC-225) and sga@ramapo.edu."
+    },
+    {
+      "folder": "snh-pathways-program",
+      "owner": "Cahill Career Development Center",
+      "evidence_url": "https://www.ramapo.edu/snh-pathways-program/contact/",
+      "evidence_quote": "Come and see us in the Cahill Career Center",
+      "note": "Named for an SNH degree requirement but run by the Career Center (C-209, Handshake advising)."
+    },
+    {
+      "folder": "sssw-pathways-program",
+      "owner": "Cahill Career Development Center",
+      "evidence_url": "https://www.ramapo.edu/sssw-pathways-program/contact/",
+      "evidence_quote": "Come and see us in the Career Center,",
+      "note": "Named for an SSSW degree requirement but run by the Career Center. 'Career Center' is a listed alias."
+    },
+    {
+      "folder": "study-abroad",
+      "owner": "Roukema Center for International Education",
+      "evidence_url": "https://www.ramapo.edu/study-abroad/alumni/",
+      "evidence_quote": "let the Roukema Center for International Education help guide you towards additional overseas study",
+      "note": "The site speaks as the Roukema Center throughout. Its contact is the Assistant Director of International Education and goabroad@ramapo.edu, and every page links to the /international/contact/ form."
+    },
+    {
+      "folder": "womenscenter",
+      "owner": "Women's Center & LGBTQ+ Services",
+      "evidence_url": "https://www.ramapo.edu/womenscenter/gender-inclusive-housing/",
+      "evidence_quote": "Please email the Women’s Center & LGBTQ+ Services at women@ramapo.edu",
+      "note": "The site name is the office name. The home page has the office's location (C-220), hours and women@ramapo.edu."
+    },
+    {
+      "folder": "adult-students",
+      "owner": "Admissions",
+      "evidence_url": "https://www.ramapo.edu/adult-students/contacts/",
+      "evidence_quote": "Ramapo College Office of Admissions Nora McCarthy Adult Transfer Specialist",
+      "note": "Added 2026-10-20 by Claude under Dan's standing goal (how-to answers solid), not reviewed by him: every captured Adult Students page carries the Office of Admissions block, and its Contacts page lists the Admissions adult transfer specialist first. The site's FAQ (attendance set by each instructor; who to contact) was unreachable because the folder linked to no office. Caveat: the FAQ also names other offices (Student Success, Reading and Writing, Degree Completion Program); those are said as that page says them."
+    }
+  ]
+}

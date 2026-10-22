@@ -47,7 +47,7 @@ export const CONTACT_SEARCH_TERMS: ReadonlyMap<string, string> = new Map([
       'night escort blue light telephone security phone box police dispatch',
   ],
   [
-    // The non-emergency desk, from the same directory entry (secdesk@ramapo.edu).
+    // The non-emergency desk, from its own directory entry.
     // Kept deliberately thinner: routing an escort request here would send a
     // student to the wrong number.
     'Public Safety (Non-Emergency)',

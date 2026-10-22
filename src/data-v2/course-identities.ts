@@ -39,7 +39,13 @@ export function courseIdentityId(sourceKey: string, code: string): string {
   return uuid5(NAMESPACE_URL, pythonJsonStrings(['rockygpt', 'course', sourceKey, code]));
 }
 
-export interface CourseIdentity { id: string; source_key: string; source_record_key: string; name: string | null }
+/** A course's own page in the public catalog: its code without spaces (CMPS147). Checked 10-21:
+ * a real code returns the course page, an unknown one the catalog's 404. */
+export function courseCatalogUrl(code: string): string {
+  return `https://catalog.ramapo.edu/courses/${encodeURIComponent(code.replace(/\s+/g, ''))}`;
+}
+
+export interface CourseIdentity { id: string; source_key: string; source_record_key: string; name: string | null; url: string }
 export interface CourseIdentitiesArtifact { schema_version: 1; derivation: string; courses: CourseIdentity[] }
 
 /** One identity per published catalog course, keyed exactly as the `courses` artifact keys it. */
@@ -50,7 +56,7 @@ export function compileCourseIdentities(courses: unknown): CourseIdentitiesArtif
     derivation: COURSE_ID_DERIVATION,
     courses: entries.map(([code, value]) => {
       const name = value && typeof value === 'object' ? (value as Row).name : undefined;
-      return { id: courseIdentityId(COURSE_SOURCE_KEY, code), source_key: COURSE_SOURCE_KEY, source_record_key: code, name: typeof name === 'string' ? name : null };
+      return { id: courseIdentityId(COURSE_SOURCE_KEY, code), source_key: COURSE_SOURCE_KEY, source_record_key: code, name: typeof name === 'string' ? name : null, url: courseCatalogUrl(code) };
     }).sort((a, b) => (a.source_record_key < b.source_record_key ? -1 : a.source_record_key > b.source_record_key ? 1 : 0)),
   };
 }

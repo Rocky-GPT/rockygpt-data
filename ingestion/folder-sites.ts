@@ -67,7 +67,9 @@ const SITE_HOST = 'www.ramapo.edu';
 const SITE_WIDE_SITEMAP = `${SITE}/sitemap.xml`;
 export const RAW_DIR = path.join(process.cwd(), 'data', 'raw');
 const REQUEST_INTERVAL_MS = 1_000;
-const MAX_UNLISTED_PAGES = 500;
+// Pages a listed page links to that no sitemap lists (a site's policy pages): 500 left the
+// Provost's policy pages uncollected (October 19, 2026).
+const MAX_UNLISTED_PAGES = 1500;
 const DOCUMENT = /\.(pdf|docx?|xlsx?|pptx?|csv|txt|jpe?g|png|gif|zip|mp3|mp4)$/i;
 // Listings WordPress builds from posts (archives, feeds) and its own endpoints, not pages.
 const WORDPRESS_LISTING =
@@ -333,12 +335,12 @@ export function pagesCollectedElsewhere(collectors: readonly CollectedPages[], r
 }
 
 /**
- * A sitemap's XML from the answer to its request, or null when there is none: a 404, or a page that
- * is not a sitemap. Any other failure stops the collection, so a passing server error cannot quietly
- * change what is collected.
+ * A sitemap's XML from the answer to its request, or null when there is none: a 404 or a 410 (the
+ * college has taken the site down), or a page that is not a sitemap. Any other failure stops the
+ * collection, so a passing server error cannot quietly change what is collected.
  */
 export function sitemapXml(url: string, response: { ok: boolean; status: number; text(): string }): string | null {
-  if (response.status === 404) return null;
+  if (response.status === 404 || response.status === 410) return null;
   if (!response.ok) throw new Error(`The sitemap ${url} answered ${response.status}.`);
   const text = response.text();
   return /<(?:urlset|sitemapindex)[\s>]/.test(text) ? text : null;

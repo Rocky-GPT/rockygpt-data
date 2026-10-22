@@ -2,9 +2,14 @@ import { load } from 'cheerio';
 import type { PoolClient } from 'pg';
 import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
+import siteOwners from '../reference/office-site-owners.json';
+import policyUnitOwners from '../reference/policy-unit-owners.json';
+import catalogPoliciesOwner from '../reference/catalog-policies-owner.json';
 import { compileArchwayIdentities, linkReviewedArchwayContacts, linkReviewedArchwayGroups, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact, type ReviewedArchwayContact, type ReviewedArchwayGroup } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
+import { compileRouteIdentities } from './campus-routes';
+import { siteFolder } from './office-sections';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
 import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, type AliasLedger, type AliasRecord, type ReviewedAlias } from './identity-aliases';
 import type { ReviewedBuilding, ReviewedLocation, ReviewedRoom } from './campus-buildings';
@@ -19,6 +24,18 @@ type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
   campus_contacts: Row[]; campus_hours: Row[]; dining_hours: Row[]; menu_items: Row[]; programs: Row[];
   clubs?: Row[]; events?: Row[];
+  /** The published shuttle timetables and their trips; a release without them has no route identities. */
+  shuttle_routes?: Row[]; shuttle_trips?: Row[];
+  /** Menu files a dining venue publishes (a PDF menu board), one row per file, named by the venue. */
+  menu_documents?: Row[];
+  /** Which menus each venue's listing names, one row per venue. */
+  menu_listings?: Row[];
+  /** Reviewed topics (sites with no office behind them), one row per topic, by name. */
+  campus_topics?: Row[];
+  /** What each shuttle stop is and where to wait, by the stop name timetables use. */
+  shuttle_stops?: Row[];
+  /** Each captured page of a reviewed office site, by page key, with its site folder. */
+  office_sections?: Row[];
   artifacts: Record<string, unknown>;
 }
 /** What a coverage issue means for lookups: `unlinked_record`, an original record no identity
@@ -77,7 +94,7 @@ export function identityCandidates(snapshot: IdentitySnapshot): Candidate[] {
         ...(email(row.email) && snapshot.campus_contacts.filter(c => c.source_key === source && email(c.email) === email(row.email)).length === 1 ? [`email:${email(row.email)}`] : []),
       ] });
   }
-  for (const [collection, rows] of [['campus_hours', snapshot.campus_hours], ['dining_hours', snapshot.dining_hours], ['menu', snapshot.menu_items], ['programs', snapshot.programs]] as const) {
+  for (const [collection, rows] of [['campus_hours', snapshot.campus_hours], ['dining_hours', snapshot.dining_hours], ['menu', snapshot.menu_items], ['menu_documents', snapshot.menu_documents ?? []], ['menu_listings', snapshot.menu_listings ?? []], ['campus_topics', snapshot.campus_topics ?? []], ['programs', snapshot.programs]] as const) {
     for (const row of rows) result.push({ collection, source: string(row.source_key), key: string(row.source_record_key), row, anchors: [] });
   }
   const programs = programArtifactRows(snapshot.artifacts.programs);
@@ -189,7 +206,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
         const key = `${row.collection}:${row.source}:${row.key}`;
         if (owners.has(key) && owners.get(key) !== entity.id) throw new Error(`Conflicting identity ownership of ${key}.`);
         owners.set(key, entity.id);
-        if (row.collection !== 'menu' && string(row.row.name) !== entity.name && string(row.row.name)) {
+        // A schedule's name ("Counseling Center (Summer)") names a timetable, not the place.
+        if (!['menu', 'campus_hours'].includes(row.collection) && string(row.row.name) !== entity.name && string(row.row.name)) {
           displayNames.add(string(row.row.name));
           noteAlias(ledger, entity.id, string(row.row.name), { basis: 'record_name', evidence: { collection: row.collection, source_key: row.source, source_record_key: row.key, field: 'name' } });
         }
@@ -309,7 +327,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   // were reported unlinked above only because no seed identity claims them.
   const directoryContacts = new Map(candidates.filter(c => c.collection === 'contacts' && c.source === 'campus-directory').map(c => [c.key, c.row]));
   const archwayContacts = linkReviewedArchwayContacts(archway.entities, directoryContacts, inputs.identityReviews?.archway_contacts ?? [],
-    new Set([...owners.keys()].filter(key => key.startsWith('contacts:campus-directory:')).map(key => key.slice('contacts:campus-directory:'.length))));
+    new Set([...owners.keys()].filter(key => key.startsWith('contacts:campus-directory:')).map(key => key.slice('contacts:campus-directory:'.length))),
+    snapshot.campus_hours);
   for (let index = unresolved.length - 1; index >= 0; index--) {
     const issue = unresolved[index];
     if (issue.kind === 'unlinked_record' && issue.collection === 'contacts' && archwayContacts.linked.has(issue.record ?? '')) unresolved.splice(index, 1);
@@ -320,12 +339,79 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const places = compileBuildingIdentities(campusBuildings, entities, contactRows);
   entities.push(...places.buildings);
   unresolved.push(...places.unresolved);
+  const shuttle = compileRouteIdentities(snapshot.shuttle_routes ?? [], snapshot.shuttle_trips ?? [], snapshot.shuttle_stops ?? []);
+  entities.push(...shuttle.routes);
+  unresolved.push(...shuttle.unresolved);
   const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects);
   entities.push(...compileSubjectIdentities(subjects.artifact, snapshot.artifacts.courses, ledger));
   unresolved.push(...subjects.unresolved);
   applyPublishedAliases(entities, recordRows, ledger);
   const reviewedAliases = applyReviewedAliases(entities, inputs.identityReviews?.aliases ?? [], ledger);
   unresolved.push(...reviewedAliases.unresolved);
+  // What each office's own site says: an office, venue, facility or Archway group (a center, a
+  // club run as an office) links every captured page of the folder its reviewed website names (its
+  // contact's evidence.website.url on www.ramapo.edu). Run once every identity is in the registry.
+  // Two offices that share a site both link its pages; a site no office names links to none.
+  const siteContactRows = new Map(candidates.filter(candidate => candidate.collection === 'contacts')
+    .map(candidate => [`${candidate.source}:${candidate.key}`, candidate.row]));
+  // A page is named by its source and record key: office pages and catalog policies share the table.
+  const pagesByFolder = new Map<string, string[]>();
+  const pageSource = new Map<string, string>();
+  // A college policy page links to the office its Responsible Unit names (policy-unit-owners.json).
+  const policyPages = new Map<string, string[]>();
+  const unitOwners = (policyUnitOwners as { units: Record<string, string> }).units;
+  for (const row of snapshot.office_sections ?? []) {
+    const folder = string(row.site_folder);
+    pagesByFolder.set(folder, [...pagesByFolder.get(folder) ?? [], string(row.source_record_key)]);
+    pageSource.set(string(row.source_record_key), string(row.source_key) || 'office-pages');
+    const unit = folder === 'policies' ? responsibleUnit(row.sections) ?? '' : '';
+    const owner = unit ? unitOwners[unit] ?? unitOwners[unit.replace(/\s+Department$/, '')] : undefined;
+    if (owner) policyPages.set(owner, [...policyPages.get(owner) ?? [], string(row.source_record_key)]);
+  }
+  // A site no website claim names is linked to the office its own pages name (office-site-owners.json).
+  const ownedFolders = new Map<string, string[]>();
+  for (const site of (siteOwners as { sites: Array<{ folder: string; owner: string }> }).sites) {
+    ownedFolders.set(site.owner, [...ownedFolders.get(site.owner) ?? [], site.folder]);
+  }
+  // The catalog's academic policies belong to the office its index names (catalog-policies-owner.json).
+  const catalog = catalogPoliciesOwner as { owner: string; folder: string };
+  ownedFolders.set(catalog.owner, [...ownedFolders.get(catalog.owner) ?? [], catalog.folder]);
+  const linkable = entities.filter(candidate => ['office', 'venue', 'facility', 'organization', 'club'].includes(candidate.kind));
+  const websites = new Map(linkable.map(entity => [entity.id, entity.links.filter(link => link.collection === 'contacts')
+    .flatMap(link => link.source_record_keys.map(key => siteContactRows.get(`${link.source_key}:${key}`)))
+    .map(row => reviewedWebsite(row)).filter((site): site is { folder: string; path: string } => Boolean(site))]));
+  // An office whose website is a page inside a site (the ID Card Room's /publicsafety/id-cards/,
+  // Transportation Services' /about/transportation-services/) links only the pages under its own
+  // address; a whole site is an office's only when its website is the site itself or a reviewed
+  // site owner says so (office-site-owners.json).
+  for (const entity of linkable) {
+    const scoped = (websites.get(entity.id) ?? []).flatMap(site =>
+      (pagesByFolder.get(site.folder) ?? []).filter(key => site.path === `/${site.folder}/`
+        || key.slice(key.indexOf('/')).toLowerCase().startsWith(site.path)));
+    const keys = [...new Set([...scoped,
+      ...(ownedFolders.get(entity.name) ?? []).flatMap(folder => pagesByFolder.get(folder) ?? []),
+      ...policyPages.get(entity.name) ?? []])].sort();
+    for (const source of [...new Set(keys.map(key => pageSource.get(key) ?? 'office-pages'))].sort()) {
+      entity.links.push({ collection: 'office_sections', source_key: source,
+        source_record_keys: keys.filter(key => (pageSource.get(key) ?? 'office-pages') === source) });
+    }
+  }
+  // A current topic (a site with no office behind it, campus-topics.json) links the captured pages
+  // of its own site that no office links: the Scholarships FAQ and award pages, the Summer Session
+  // policies, the parents' guide. Without it those pages were linked to nothing and never read.
+  const claimed = new Set(linkable.flatMap(entity => entity.links
+    .filter(link => link.collection === 'office_sections').flatMap(link => link.source_record_keys)));
+  const topicRows = new Map((snapshot.campus_topics ?? []).map(row => [string(row.source_record_key), row]));
+  for (const topic of entities.filter(entity => entity.kind === 'topic')) {
+    const row = topic.links.filter(link => link.collection === 'campus_topics')
+      .flatMap(link => link.source_record_keys).map(key => topicRows.get(key)).find(Boolean);
+    const folder = row && string(row.status) === 'current' && typeof row.url === 'string' ? siteFolder(row.url) : null;
+    const keys = (folder ? pagesByFolder.get(folder) ?? [] : []).filter(key => !claimed.has(key)).sort();
+    for (const source of [...new Set(keys.map(key => pageSource.get(key) ?? 'office-pages'))].sort()) {
+      topic.links.push({ collection: 'office_sections', source_key: source,
+        source_record_keys: keys.filter(key => (pageSource.get(key) ?? 'office-pages') === source) });
+    }
+  }
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved, alias_sources: aliasRecords(entities, ledger) };
@@ -337,14 +423,63 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   }
   const courseIdentities = compileCourseIdentities(snapshot.artifacts.courses);
   const requirementGroups = compileRequirementGroups(snapshot.artifacts.programs, registry, courseIdentities);
+  // A program links the requirement groups the catalog lists for it, in section order, so its
+  // requirements are read through its own identity, never matched by name.
+  const groupsOf = new Map<string, string[]>();
+  for (const edge of requirementGroups.edges.filter(edge => edge.type === 'requirement_group')
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))) {
+    if (!('entity_id' in edge.source) || !('record_id' in edge.target)) continue;
+    const ids = groupsOf.get(edge.source.entity_id) ?? [];
+    if (!ids.includes(edge.target.record_id)) ids.push(edge.target.record_id);
+    groupsOf.set(edge.source.entity_id, ids);
+  }
+  // Each catalog course is an identity of its own, linked to its course record by its catalog code
+  // (the id the course-identities artifact publishes), so a course is read through its identity.
+  for (const course of courseIdentities.courses) {
+    entities.push({ id: course.id, kind: 'course', name: course.source_record_key, aliases: [],
+      links: [{ collection: 'courses', source_key: course.source_key, source_record_keys: [course.source_record_key] }] });
+  }
+  for (const entity of entities) {
+    const ids = groupsOf.get(entity.id);
+    if (ids?.length) entity.links.push({ collection: 'requirement_groups', source_key: 'program-requirement-groups', source_record_keys: ids });
+  }
+  validateCampusIdentities(registry);
   return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact };
+}
+/** The Responsible Unit a college policy page names in its header ("Responsible Unit: | Payroll;"). */
+export function responsibleUnit(sections: unknown): string | null {
+  const list = (Array.isArray(sections) ? sections : [])
+    .filter((section): section is { heading?: unknown; text?: unknown } => Boolean(section) && typeof section === 'object');
+  const text = list.map(section => String(section.text ?? '')).join(' ').replace(/\s+/g, ' ');
+  const found = /Responsible Unit:\s*\|?\s*([^;|]+)/.exec(text);
+  if (found) return found[1].trim();
+  // A page with no Responsible Unit header can name its office in a section headed Contacts
+  // ("Office of the General Counsel"): the name, up to its phone, address or the next heading.
+  const contacts = list.find(section => String(section.heading ?? '').trim().toLowerCase() === 'contacts');
+  const named = String(contacts?.text ?? '').split(/\s*(?:\(\d|\d{3}-|\||;|\n|mailto:)/)[0]
+    .replace(/\s+Procedure$/, '').trim();
+  return named || null;
+}
+/** The site folder of a contact's reviewed website on www.ramapo.edu, or null. */
+/** A contact's reviewed website on www.ramapo.edu: its site folder and its own path ("/publicsafety/id-cards/"). */
+function reviewedWebsite(row: Row | undefined): { folder: string; path: string } | null {
+  const metadata = row?.normalization_metadata as { evidence?: { website?: { url?: unknown } } } | undefined;
+  const url = metadata?.evidence?.website?.url;
+  const folder = typeof url === 'string' ? siteFolder(url) : null;
+  if (!folder || typeof url !== 'string') return null;
+  const path = new URL(url).pathname.toLowerCase().replace(/\/{2,}/g, '/');
+  return { folder, path: path.endsWith('/') ? path : `${path}/` };
 }
 function listStrings(value: unknown): string[] { return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []; }
 
 /** Use inside the publisher transaction after original rows/artifacts exist. */
 export async function loadIdentitySnapshot(client: Pick<PoolClient, 'query'>, datasetId: string): Promise<IdentitySnapshot> {
-  const snapshot: IdentitySnapshot = { campus_contacts: [], campus_hours: [], dining_hours: [], menu_items: [], programs: [], clubs: [], events: [], artifacts: {} };
+  const snapshot: IdentitySnapshot = { campus_contacts: [], campus_hours: [], dining_hours: [], menu_items: [], programs: [], clubs: [], events: [], shuttle_routes: [], shuttle_trips: [], artifacts: {} };
   for (const table of ['campus_contacts', 'campus_hours', 'dining_hours', 'menu_items', 'programs'] as const) {
+    const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
+    snapshot[table] = result.rows;
+  }
+  for (const table of ['shuttle_routes', 'shuttle_trips', 'menu_documents', 'menu_listings', 'campus_topics', 'shuttle_stops', 'office_sections'] as const) {
     const result = await client.query(`SELECT t.*, s.source_key FROM rockygpt_v2.${table} t JOIN rockygpt_v2.sources s ON s.id=t.source_id WHERE t.dataset_version_id=$1::uuid`, [datasetId]);
     snapshot[table] = result.rows;
   }

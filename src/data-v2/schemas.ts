@@ -88,7 +88,7 @@ export interface ContactRecord {
   type?: 'person' | 'office';
   title?: string;
   status?: 'retired';
-  offices?: string[];
+  offices?: Array<string | { location: string; label: string }>;
   /** Ingestion audit information; excluded from clean record exports. */
   normalization_metadata?: Record<string, unknown>;
   department?: string;

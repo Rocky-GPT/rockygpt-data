@@ -57,3 +57,29 @@ test("with the option, a page left with nothing of its own, such as an image's a
   assert.match(hoisted.markdown, /Shown on every Information Technology Services page\./);
   assert.equal(core6Markdown(withAttachment, options).pages, 5);
 });
+
+test("a section is written under the tab and headings it sits under, so its passages' heading path says whose it is", () => {
+  const printing = page('https://www.ramapo.edu/its/mobile-printing/', `<title>Printing - ITS</title><main><h1>Printing</h1>
+    <div id="tab-content"><div class="content" title="Student Printing"><h3>Where can students print or copy?</h3>
+      <p>Students can only print or copy in the Fishbowl, or in the Learning Commons on floors 1, 2, 3, and 4.</p></div>
+    <div class="content" title="Faculty Printing"><h2>Faculty Printing</h2><p>All faculty share a pool of printers near the Dean's Suite offices.</p>
+      <h3>Printer Locations</h3><ul><li>ASB122 – Undergraduate Studies Office</li><li>H113 – H-Wing Copy Room</li></ul></div></div></main>`);
+  const { markdown } = core6Markdown({ ...dataset, pages: [printing] }, options);
+  assert.match(markdown, /\n### Student Printing › Where can students print or copy\?\n/);
+  assert.match(markdown, /\n### Faculty Printing\n/);
+  assert.match(markdown, /\n### Faculty Printing › Printer Locations\n/);
+  const locations = chunkDocumentSections(markdown).find(chunk => chunk.content.includes('ASB122'));
+  assert.equal(locations?.headingPath, 'Information Technology Services › Printing - ITS › Faculty Printing › Printer Locations');
+  assert.match(locations?.content ?? '', /^### Faculty Printing › Printer Locations/);
+});
+
+test("a heading that only says what follows are questions is not written above them", () => {
+  const faqs = page('https://www.ramapo.edu/student-accounts/title-iv/', `<title>Title IV - Student Accounts</title><main>
+    <h1>Title IV</h1><h2>Frequently Asked Questions (FAQ)</h2><h3>What is Title IV financial aid?</h3>
+    <p>Title IV aid is federal student aid such as Pell Grants and Direct Loans.</p>
+    <h2>Financial Aid FAQs</h2><h3>Can I change my answers?</h3><p>Yes, change them any time in the student portal.</p></main>`);
+  const { markdown } = core6Markdown({ ...dataset, pages: [faqs] }, options);
+  assert.match(markdown, /\n### What is Title IV financial aid\?\n/);
+  // A question list named for its subject still names it.
+  assert.match(markdown, /\n### Financial Aid FAQs › Can I change my answers\?\n/);
+});

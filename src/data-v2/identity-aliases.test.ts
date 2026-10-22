@@ -139,3 +139,16 @@ test('an alias no rule noted is a compiler error, and a repeated source is kept 
   noteAlias(ledger, id(8), 'Birch', { basis: 'human_reviewed', reviewed_at: '2026-09-23', note: 'Approved.' });
   assert.equal(aliasRecords([venue], ledger)[0].sources.length, 1);
 });
+
+test("a department that is another identity's name does not become an alias", () => {
+  const entities: CampusIdentity[] = [
+    { id: id(1), kind: 'office', name: 'Center for Student Involvement', aliases: [], links: contact('office:csi') },
+    { id: id(2), kind: 'office', name: 'Roadrunner Central', aliases: [], links: contact('office:rrc') },
+  ];
+  const rows = new Map<string, Record<string, unknown>>([
+    ['contacts:campus-directory:office:csi', { department: 'Center for Student Involvement' }],
+    ['contacts:campus-directory:office:rrc', { department: 'Center for Student Involvement' }],
+  ]);
+  applyPublishedAliases(entities, rows);
+  assert.deepEqual(entities.map(e => e.aliases), [[], []]);
+});

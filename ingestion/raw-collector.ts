@@ -4,8 +4,8 @@ import { createHash } from 'node:crypto';
 import { gunzipSync, gzipSync } from 'node:zlib';
 import { load } from 'cheerio';
 import type { AnyNode } from 'domhandler';
-import pLimit from 'p-limit';
 import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
+import { limit } from './limit';
 import { writeJsonFile, writeRawProvenance } from './pipeline-utils';
 import { type RawDatasetV1, type RawPageV1, validateRawDatasetV1 } from './raw-types';
 
@@ -13,6 +13,8 @@ const DEFAULT_TIMEOUT_MS = 15000;
 const DEFAULT_ATTEMPTS = 2;
 const DEFAULT_DETAIL_CONCURRENCY = 8;
 const SECTION_HEADINGS = 'h1, h2, h3, h4, h5, h6, summary, [role="heading"], .collapsableTitle';
+/** A WordPress FAQ accordion's question line; its answer is the rest of its item. */
+const FAQ_QUESTION = '.accordions .item > .question';
 
 const DOCUMENT_EXTENSIONS = new Set([
   '.pdf',
@@ -196,7 +198,11 @@ function textWithLinks($: ReturnType<typeof load>, element: AnyNode, baseUrl: st
   const copy = $(element).clone();
   copy.find('a[href]').addBack('a[href]').each((_, anchor) => {
     const link = $(anchor);
-    const resolved = resolveHttpUrl(link.attr('href') || '', baseUrl, true);
+    const href = link.attr('href') || '';
+    // Retain literal contact destinations beside their labels. A label and mailto
+    // target can differ; discarding the target loses that original evidence.
+    const contact = /^(?:mailto|tel|sms):/i.test(href) ? href.split('?')[0] : null;
+    const resolved = contact || resolveHttpUrl(href, baseUrl, true);
     if (!resolved) return;
     const label = cleanText(link.text()) || cleanText(link.attr('aria-label') || link.attr('title')
       || link.find('img[alt]').first().attr('alt') || '');
@@ -205,13 +211,82 @@ function textWithLinks($: ReturnType<typeof load>, element: AnyNode, baseUrl: st
   return cleanText(copy.text());
 }
 
+// A tab widget shows one panel at a time, and only the tab names what the panel is about:
+// Ramapo's #tab-content panels carry their tab's name as a title ("Student Printing", "Faculty
+// Printing"), ARIA panels name the tab that labels them, and Divi's panels follow their
+// controls in order. The controls themselves are not page text.
+const TAB_PANELS = '#tab-content .content[title], [role="tabpanel"], .et_pb_all_tabs > .et_pb_tab';
+const TAB_CONTROLS = '#tabs, [role="tablist"], .et_pb_tabs_controls';
+
+/** The tab panel an element sits in and its tab's name, if it sits in one. */
+function tabPanel($: ReturnType<typeof load>, element: AnyNode): { node: AnyNode; label: string } | undefined {
+  const panel = $(element).closest(TAB_PANELS);
+  if (!panel.length) return undefined;
+  const labelledBy = panel.attr('aria-labelledby');
+  // A panel's title can hold markup, such as "<strong>Pre-Arrival</strong>".
+  const label = cleanText((panel.attr('title') || '').replace(/<[^>]*>/g, ' '))
+    || (labelledBy ? cleanText($(`[id="${labelledBy}"]`).first().text()) : '')
+    || cleanText(panel.attr('aria-label') || '')
+    || (panel.is('.et_pb_tab')
+      ? cleanText(panel.closest('.et_pb_tabs').find('.et_pb_tabs_controls li').eq(panel.index('.et_pb_tab')).text())
+      : '');
+  return label ? { node: panel[0], label } : undefined;
+}
+
+const ACCORDION_LEVEL = 7;
+const TOP_LINK = /^(?:back|return) to (?:the )?top$/i;
+
+/**
+ * The text directly in a tab panel before its first heading, which no paragraph holds: the
+ * Student Printing tab opens "... to any swipe-to-release printer located in the Learning
+ * Commons and Fishbowl" as bare text, so it was lost (09-29).
+ */
+function panelIntro($: ReturnType<typeof load>, panel: AnyNode): string {
+  const texts: string[] = [];
+  for (const child of $(panel).contents().toArray()) {
+    if (child.type === 'text') {
+      texts.push(cleanText((child as unknown as { data?: string }).data || ''));
+      continue;
+    }
+    if ($(child).is(SECTION_HEADINGS) || $(child).find(SECTION_HEADINGS).length) break;
+  }
+  return cleanText(texts.join(' '));
+}
+
+/** A heading's level: h1 to h6 or its ARIA level; an accordion's title sits under the page's headings. */
+function headingLevel(node: ReturnType<ReturnType<typeof load>>): number {
+  const tag = /^h([1-6])$/i.exec(node.prop('tagName') || '');
+  if (tag) return Number(tag[1]);
+  if (!node.is('[role="heading"]')) return ACCORDION_LEVEL;
+  const level = Number(node.attr('aria-level') || 2);
+  return Number.isInteger(level) && level >= 1 && level <= 6 ? level : 2;
+}
+
+/**
+ * The page's sections in document order, each under its heading. A section also keeps what it
+ * sits under, outermost first: the headings above it and the tab of the panel it is in. "Printer
+ * Locations" under Faculty Printing lists printers only faculty can use; without its parents it
+ * read as every printer on campus (09-29). The page's h1 is its title, which is written anyway.
+ */
 function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHeading: string): RawPageV1['sections'] {
   const sections: RawPageV1['sections'] = [];
   let heading = cleanText($('h1').first().text()) || initialHeading || 'Overview';
+  let parents: string[] = [];
   let parts: string[] = [];
+  // The headings open at this point, and the tab panel they belong to (none outside a panel).
+  let open: Array<{ level: number; label: string; panel?: AnyNode }> = [];
+  let panel: { node: AnyNode; label: string } | undefined;
+  const labels = (entries = open) => entries.filter(entry => entry.level !== 1).map(entry => entry.label);
+  // The FAQ items in the section being read (a WordPress accordion's question and its answer). The
+  // section's own text is unchanged; its questions let a reader name the one asked.
+  let questions: Array<{ question: string; answer: string[]; item: AnyNode }> = [];
   const flush = () => {
-    if (parts.length) sections.push({ heading, text: parts.join(' ') });
+    const asked = questions.filter(entry => entry.answer.length)
+      .map(entry => ({ question: entry.question, answer: entry.answer.join(' ') }));
+    if (parts.length) sections.push({ heading, text: parts.join(' '), ...parents.length ? { parents } : {},
+      ...asked.length ? { questions: asked } : {} });
     parts = [];
+    questions = [];
   };
   // Walk in document order, including tables and nested content wrappers.
   // Never clip a policy at a paragraph/character count: later chunks bound reads.
@@ -222,12 +297,48 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
       // Resources". Those headings do not describe the subsequent page body.
       flush();
       heading = initialHeading || 'Overview';
+      parents = [];
+      open = [];
+      panel = undefined;
       return;
+    }
+    if (node.closest(TAB_CONTROLS).length) return;
+    const inPanel = tabPanel($, element);
+    if (inPanel?.node !== panel?.node) {
+      // Each panel starts a section named by its tab, under the headings above the widget. After
+      // the widget, the text continues under the heading that preceded it. An accordion's title
+      // names only its own answer, so it titles no panel.
+      flush();
+      open = open.filter(entry => !entry.panel && entry.level < ACCORDION_LEVEL);
+      panel = inPanel;
+      if (panel) {
+        parents = labels();
+        heading = panel.label;
+        open.push({ level: 0, label: panel.label, panel: panel.node });
+        const intro = panelIntro($, panel.node);
+        if (intro) parts.push(intro);
+      } else {
+        heading = open.at(-1)?.label || initialHeading || 'Overview';
+        parents = labels(open.slice(0, -1));
+      }
     }
     if (node.is(SECTION_HEADINGS)) {
       flush();
-      heading = textWithLinks($, element, baseUrl) || heading;
+      const text = textWithLinks($, element, baseUrl);
+      // Residence Life's guide puts "return to top" links in h2s between its h3 sections.
+      if (!text || TOP_LINK.test(cleanText(node.text()))) return;
+      const level = headingLevel(node);
+      // A heading closes the ones at its level or below in the same panel, never the panel's tab.
+      while (open.length && open.at(-1)!.panel === panel?.node && open.at(-1)!.level >= level) open.pop();
+      parents = labels();
+      open.push({ level, label: text, panel: panel?.node });
+      heading = text;
       return;
+    }
+    if (node.is(FAQ_QUESTION)) {
+      const question = cleanText(node.text());
+      const item = node.closest('.item')[0];
+      if (question && item) questions.push({ question, answer: [], item });
     }
     if (node.parents('li, table').length) return;
     // An anchor already represented in a text block must not become a duplicate
@@ -238,6 +349,8 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
         .map((cell) => textWithLinks($, cell, baseUrl)).join(' | ')).join('; ')
       : textWithLinks($, element, baseUrl);
     if (text && !parts.includes(text)) parts.push(text);
+    const asking = questions.at(-1);
+    if (text && asking && !node.is(FAQ_QUESTION) && node.closest('.item')[0] === asking.item) asking.answer.push(text);
   });
   flush();
   if (!sections.length) {
@@ -458,6 +571,20 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
   // useful crawl discovery above, but should not be asserted as page prose.
   $('#left-nav-ul, ul.subnav, #breadcrumbs').remove();
 
+  const sections = extractSections($, options.url, initialHeading);
+  // Potter Library's named research-help contact widget sits beside the article.
+  // Keep that office-owned contact block without importing the site's navigation
+  // or unrelated sidebar schedules into the article's evidence.
+  const pageUrl = new URL(options.url);
+  if (['ramapo.edu', 'www.ramapo.edu'].includes(pageUrl.hostname) && pageUrl.pathname.startsWith('/library/')) {
+    document('.page_in_widget').each((_, element) => {
+      const heading = cleanText(document(element).find('.widgettitle').first().text());
+      if (heading !== 'Ask a Librarian' || sections.some(section => section.heading === heading)) return;
+      const widget = load(document(element).html() || '');
+      sections.push(...extractSections(widget, options.url, heading));
+    });
+  }
+
   return {
     url: normalizeUrl(options.url),
     sourceType: options.sourceType,
@@ -466,7 +593,7 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
     title,
     links: asSortedArray(links),
     externalLinks: asSortedArray(externalLinks),
-    sections: extractSections($, options.url, initialHeading),
+    sections,
     lists: extractLists($, options.url),
     tables: extractTables($, options.url),
     contacts: extractContacts($),
@@ -720,7 +847,7 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
     }
 
     const uniqueDetails = Array.from(new Set(detailCandidates)).slice(0, maxDetailPages);
-    const detailFetchLimit = pLimit(detailConcurrency);
+    const detailFetchLimit = limit(detailConcurrency);
 
     const detailResults = await Promise.allSettled(
       uniqueDetails.map((detailUrl) =>

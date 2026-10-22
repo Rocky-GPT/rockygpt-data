@@ -154,7 +154,11 @@ export function linkReviewedArchwayGroups(entities: CampusIdentity[], clubs: Row
 }
 
 /** A reviewed contact record for an Archway group's own desk (a residence hall office, a center). */
-export interface ReviewedArchwayContact { group: string; contact: string; reviewed_at: string; note: string }
+export interface ReviewedArchwayContact {
+  group: string; contact: string; reviewed_at: string; note: string;
+  /** The desk's own published schedules, by the exact name the hours collector gives them. */
+  hours?: string[];
+}
 
 /**
  * Links a reviewed contact record to the Archway group identity it belongs to, so a
@@ -162,7 +166,7 @@ export interface ReviewedArchwayContact { group: string; contact: string; review
  * and room. The contact must carry the group's exact name, so the identity's name
  * stays one value, and it must not already belong to another identity.
  */
-export function linkReviewedArchwayContacts(entities: CampusIdentity[], contacts: ReadonlyMap<string, Row>, reviews: ReviewedArchwayContact[], owned: ReadonlySet<string>): { linked: Set<string>; unresolved: IdentityCoverageIssue[] } {
+export function linkReviewedArchwayContacts(entities: CampusIdentity[], contacts: ReadonlyMap<string, Row>, reviews: ReviewedArchwayContact[], owned: ReadonlySet<string>, schedules: readonly Row[] = []): { linked: Set<string>; unresolved: IdentityCoverageIssue[] } {
   const linked = new Set<string>(); const unresolved: IdentityCoverageIssue[] = [];
   for (const review of reviews) {
     const issue = (kind: CoverageKind, reason: string) => unresolved.push({ entity: review.group, collection: 'contacts', record: review.contact, reason, kind });
@@ -175,6 +179,16 @@ export function linkReviewedArchwayContacts(entities: CampusIdentity[], contacts
     if (text(row.name) !== entity.name) { issue('missing_connection', `The reviewed contact is named ${text(row.name)}, not ${entity.name}; it is not linked.`); continue; }
     entity.links.push({ collection: 'contacts', source_key: text(row.source_key), source_record_keys: [review.contact] });
     linked.add(review.contact);
+    if (review.hours?.length) {
+      const rows = schedules.filter(schedule => review.hours!.includes(text(schedule.name)));
+      const sources = new Set(rows.map(schedule => text(schedule.source_key)));
+      if (!rows.length || sources.size !== 1) {
+        unresolved.push({ entity: review.group, collection: 'campus_hours', record: review.hours.join(', '),
+          reason: rows.length ? 'The reviewed schedules come from more than one source; they are not linked.' : 'No reviewed schedule of this desk is in this release; its hours are not linked.', kind: 'no_records' });
+      } else {
+        entity.links.push({ collection: 'campus_hours', source_key: [...sources][0], source_record_keys: rows.map(schedule => text(schedule.source_record_key)).sort() });
+      }
+    }
   }
   return { linked, unresolved };
 }

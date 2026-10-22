@@ -1,5 +1,5 @@
 /** Curated identity links. Names locate identities; they never generate their IDs. */
-export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages';
+export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages' | 'requirement_groups';
 export interface IdentityRecordReference {
   collection: IdentityCollection;
   source_key: string;
@@ -21,7 +21,7 @@ export type CampusIdentityRelationship =
   | { type: 'profile_course' | 'includes_course'; target_record: IdentityRecordReference; evidence: IdentityEvidence[] };
 export interface CampusIdentity {
   id: string;
-  kind: 'office' | 'person' | 'facility' | 'venue' | 'program' | 'club' | 'organization' | 'event' | 'building' | 'school' | 'subject';
+  kind: 'office' | 'person' | 'facility' | 'venue' | 'program' | 'club' | 'organization' | 'event' | 'building' | 'school' | 'subject' | 'route' | 'topic' | 'course';
   name: string;
   aliases: string[];
   links: CampusIdentityLink[];
@@ -31,7 +31,7 @@ export interface CampusIdentity {
 }
 export interface CampusIdentities { schema_version: 1; entities: CampusIdentity[] }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-const COLLECTIONS = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages'];
+const COLLECTIONS = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'campus_topics', 'office_sections', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages', 'requirement_groups'];
 // Relationships whose target is a catalog record, not an identity.
 const RECORD_TARGETS = ['profile_course', 'includes_course'];
 function object(value: unknown, keys: string[], label: string, optional: string[] = []): Record<string, unknown> {
@@ -69,7 +69,7 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
     text(entity.id, 'Identity id');
     if (!UUID.test(entity.id) || ids.has(entity.id)) throw new Error('Identity IDs must be unique, persistent lowercase UUIDs.');
     ids.add(entity.id);
-    if (!['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject'].includes(entity.kind as string)) throw new Error('Unsupported identity kind.');
+    if (!['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course'].includes(entity.kind as string)) throw new Error('Unsupported identity kind.');
     text(entity.name, 'Identity name', 240); array(entity.aliases, 32, 'aliases');
     for (const alias of entity.aliases) text(alias, 'Identity alias', 240);
     array(entity.links, 32, 'links');
@@ -93,6 +93,12 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
       }
       for (const key of link.source_record_keys) {
         text(key, 'Source record key'); const target = JSON.stringify([link.collection, link.source_key, key]);
+        // A page of a site two offices share (Public Safety's emergency and non-emergency lines)
+        // is what both say: office sections may have more than one owner.
+        if (link.collection === 'office_sections') continue;
+        // One published requirement section (Career Pathways, a shared Gen Ed block) is listed by
+        // every program that lists it: requirement groups may have more than one owner.
+        if (link.collection === 'requirement_groups') continue;
         if (records.has(target)) {
           const previous = records.get(target);
           if (!previous || !pinned || [...pinned].some(id => previous.has(id))) throw new Error('A source record must have exactly one identity link.');

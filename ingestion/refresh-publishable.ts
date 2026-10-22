@@ -26,7 +26,7 @@ export const SOURCE_REFRESH_SCRIPTS: Record<string, string[]> = {
   'archway-events': ['fetch:events:live'],
   'archway-clubs': ['fetch:clubs'],
   'academic-programs': ['fetch:programs:catalog'],
-  'campus-directory': ['fetch:directory:raw'],
+  'campus-directory': ['fetch:directory:raw', 'fetch:reviewed-contacts', 'fetch:reviewed-contact-documents'],
   transportation: ['fetch:transportation:raw'],
   housing: ['fetch:housing:raw'],
   health: ['fetch:health:raw'],
@@ -38,6 +38,7 @@ export const SOURCE_REFRESH_SCRIPTS: Record<string, string[]> = {
   'major-page-links': ['fetch:major-page-links'],
   // Skips the pages the other Ramapo site collectors keep, so it follows them in source order.
   'office-pages': ['fetch:office-pages'],
+  'catalog-policies': ['fetch:catalog-policies'],
   // Skips the office pages as well, so it follows fetch:office-pages in source order.
   'academic-sites': ['fetch:academic-sites'],
 };

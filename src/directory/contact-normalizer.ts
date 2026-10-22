@@ -7,7 +7,7 @@ export interface ContactFieldInput {
   department?: string | null;
   status?: 'retired' | null;
   office?: string | null;
-  offices?: string[] | null;
+  offices?: Array<string | { location: string; label: string }> | null;
 }
 
 export interface NormalizedContactFields {
@@ -17,7 +17,11 @@ export interface NormalizedContactFields {
   title?: string;
   department?: string;
   status?: 'retired';
-  offices?: string[];
+  offices?: Array<string | { location: string; label: string }>;
+}
+
+export function formatOffices(offices: NormalizedContactFields['offices']): string | undefined {
+  return offices?.map(value => typeof value === 'string' ? value : `${value.location} (${value.label})`).join(' / ');
 }
 
 function text(value: string | null | undefined): string {
@@ -65,13 +69,14 @@ export function normalizeContactFields(input: ContactFieldInput): NormalizedCont
   const title = withoutRetirement(input.title);
   const department = withoutRetirement(input.department);
   const supplied = input.offices ?? (input.office ? [input.office] : []);
-  const offices = supplied.flatMap((office) => {
+  const offices: NonNullable<NormalizedContactFields['offices']> = supplied.flatMap((office): NonNullable<NormalizedContactFields['offices']> => {
+    if (typeof office !== 'string') return [{ location: normalizeOffice(office.location), label: text(office.label) }];
     const parts = office.split('/');
     // Slash splitting is safe only when every part is an explicit room code.
     return parts.length > 1 && parts.every(p => /^[A-Z]{1,4}[ -]*\d{3}(?:[ -]*[A-Z])?$/.test(text(p)))
       ? parts.map(normalizeOffice)
       : [normalizeOffice(office)];
-  }).filter(Boolean);
+  }).filter(office => typeof office === 'string' ? Boolean(office) : Boolean(office.location));
   return {
     ...(input.id ? { id: input.id } : {}),
     ...(input.type ? { type: input.type } : {}),

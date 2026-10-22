@@ -15,7 +15,9 @@ export type RawPageV1 = {
   title: string | null;
   links: string[];
   externalLinks: string[];
-  sections: { heading: string; text: string }[];
+  /** parents: the headings and tab a section sits under, outermost first. */
+  /** questions: the FAQ items (accordion question and answer) inside the section's text. */
+  sections: { heading: string; text: string; parents?: string[]; questions?: { question: string; answer: string }[] }[];
   lists: string[][];
   tables: { headers: string[]; rows: string[][] }[];
   contacts: { name?: string; email?: string; phone?: string; office?: string }[];
@@ -68,7 +70,18 @@ function validateRawPageV1(page: unknown, index: number): RawPageV1 {
     assert(isRecord(section), `${pathPrefix}.sections[${sectionIndex}] must be an object`);
     assert(typeof section.heading === 'string', `${pathPrefix}.sections[${sectionIndex}].heading must be a string`);
     assert(typeof section.text === 'string', `${pathPrefix}.sections[${sectionIndex}].text must be a string`);
-    return { heading: section.heading, text: section.text };
+    const parents = section.parents === undefined
+      ? undefined : asStringArray(section.parents, `${pathPrefix}.sections[${sectionIndex}].parents`);
+    const questions = section.questions === undefined ? undefined : (() => {
+      assert(Array.isArray(section.questions), `${pathPrefix}.sections[${sectionIndex}].questions must be an array`);
+      return section.questions.map((entry, entryIndex) => {
+        assert(isRecord(entry) && typeof entry.question === 'string' && typeof entry.answer === 'string',
+          `${pathPrefix}.sections[${sectionIndex}].questions[${entryIndex}] needs a question and an answer`);
+        return { question: entry.question, answer: entry.answer };
+      });
+    })();
+    return { heading: section.heading, text: section.text, ...parents?.length ? { parents } : {},
+      ...questions?.length ? { questions } : {} };
   });
 
   assert(Array.isArray(page.lists), `${pathPrefix}.lists must be an array`);
