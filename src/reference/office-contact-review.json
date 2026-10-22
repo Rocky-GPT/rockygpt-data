@@ -854,6 +854,14 @@
           "decision": "saved",
           "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
           "saved_as": "additionalContacts"
+        },
+        {
+          "reviewed_at": "2026-10-22T19:15:00.000Z",
+          "kind": "exclusions_rebound",
+          "url": "https://www.ramapo.edu/myadvisor/declared-students/",
+          "section": "Declared Students",
+          "text_sha256": "5f1f7ab0dbefdf57dfafd7debdb5e5b232cc7caafd6219acacf5021109ebe6b5",
+          "reason": "The section now names the arts school \"Susan and Nick Vallario School of Arts, Humanities, and Education\"; every other line, including the six excluded rooms and numbers of the other schools (B-224, BC-237, ASB-431, 7406, 7365, 7625), is unchanged, so the exclusions are re-bound to the new text."
         }
       ]
     },
