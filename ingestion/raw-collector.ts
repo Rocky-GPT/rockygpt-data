@@ -4,8 +4,8 @@ import { createHash } from 'node:crypto';
 import { gunzipSync, gzipSync } from 'node:zlib';
 import { load } from 'cheerio';
 import type { AnyNode } from 'domhandler';
-import pLimit from 'p-limit';
 import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
+import { limit } from './limit';
 import { writeJsonFile, writeRawProvenance } from './pipeline-utils';
 import { type RawDatasetV1, type RawPageV1, validateRawDatasetV1 } from './raw-types';
 
@@ -847,7 +847,7 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
     }
 
     const uniqueDetails = Array.from(new Set(detailCandidates)).slice(0, maxDetailPages);
-    const detailFetchLimit = pLimit(detailConcurrency);
+    const detailFetchLimit = limit(detailConcurrency);
 
     const detailResults = await Promise.allSettled(
       uniqueDetails.map((detailUrl) =>
