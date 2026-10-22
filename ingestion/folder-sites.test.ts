@@ -217,6 +217,8 @@ test('a folder without a sitemap falls back, but a server error stops the collec
   const answer = (status: number, body: string) => ({ ok: status >= 200 && status < 300, status, text: () => body });
   const url = 'https://www.ramapo.edu/dh/wp-sitemap.xml';
   assert.equal(sitemapXml(url, answer(404, 'Not found')), null);
+  // The Edible Garden site was taken down: 410 Gone is the same as no sitemap, not a failure.
+  assert.equal(sitemapXml(url, answer(410, 'Gone')), null);
   assert.equal(sitemapXml(url, answer(200, '<html>Home</html>')), null);
   assert.equal(sitemapXml(url, answer(200, '<?xml version="1.0"?><sitemapindex></sitemapindex>')), '<?xml version="1.0"?><sitemapindex></sitemapindex>');
   assert.throws(() => sitemapXml(url, answer(503, 'Busy')), /answered 503/);

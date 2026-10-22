@@ -14,7 +14,7 @@ test('the CSI seed links the published contact key without copying its facts', (
   assert.ok(contact);
   assert.equal(contact.publicationSourceKey, seed.entities[0].links[0].source_key);
   assert.equal(contact.name, seed.entities[0].name);
-  assert.equal(seed.entities[0].links[1].source_record_keys.length, 7);
+  assert.equal(seed.entities[0].links[1].source_record_keys.length, 14); // 7 weekdays x (regular + Summer)
   assert.equal('phone' in seed.entities[0], false);
   assert.equal('collected_at' in seed, false);
 });

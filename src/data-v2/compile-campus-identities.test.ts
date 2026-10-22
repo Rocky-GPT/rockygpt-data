@@ -230,3 +230,234 @@ test('a program links the public program pages that link its catalog code as the
     .links.some(link => link.collection === 'major_pages'));
   assert.throws(() => compileCampusIdentities(seed, snapshot(), raw, { majorPages: { pages: [{ programCodes: [] }] } }), /no ID or program links/);
 });
+
+test('two offices that publish one role email each keep their own contact by their reviewed key', async () => {
+  // The ID Card Room's page lists publicsafety@ramapo.edu, the address Public Safety (Emergency) is known by.
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const contact = (key: string, name: string) => ({ source_key: 'campus-directory', source_record_key: key, name, email: 'publicsafety@ramapo.edu', phone: '(201) 684-6666' });
+  input.campus_contacts = [contact('office:public-safety-emergency', 'Public Safety (Emergency)'), contact('office:id-card-room', 'ID Card Room')];
+  const result = compileCampusIdentities(real, input);
+  const contactKeys = (name: string) => result.registry.entities.find(e => e.name === name)!
+    .links.find(l => l.collection === 'contacts')!.source_record_keys;
+  assert.deepEqual(contactKeys('Public Safety (Emergency)'), ['office:public-safety-emergency']);
+  assert.deepEqual(contactKeys('ID Card Room'), ['office:id-card-room']);
+  // The shared address is no longer a unique anchor for either, so neither claims the other's record.
+  assert.equal(result.report.unresolved.some(issue => issue.collection === 'contacts' && issue.kind === 'unlinked_record'
+    && /public-safety-emergency|id-card-room/.test(issue.record ?? '')), false);
+});
+
+test('every office whose own page prints hours links exactly those records, and no office links two schedules', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const { OFFICE_HOURS_PAGES } = await import('../../ingestion/campus-hours');
+  const input = snapshot();
+  // A unit that is an Archway group links its schedules through its reviewed desk contact, once.
+  const { archway_contacts: desks } = (await import('../reference/campus-identity-reviews.json')).default as { archway_contacts: Array<{ hours?: string[] }> };
+  const deskHours = desks.flatMap(desk => desk.hours ?? []);
+  assert.equal(new Set(deskHours).size, deskHours.length);
+  for (const name of deskHours) assert.ok(OFFICE_HOURS_PAGES.some(office => office.name === name), name);
+  const names = [...new Set(OFFICE_HOURS_PAGES.map(office => office.name))].filter(name => !deskHours.includes(name));
+  input.campus_hours = names.flatMap(name => ['Monday', 'Tuesday'].map(day =>
+    ({ source_key: 'campus-hours', source_record_key: `${name}:${day}`, name, day, schedule: '8:30am-4:30pm' })));
+  const result = compileCampusIdentities(real, input);
+  const owners = new Map<string, string[]>();
+  for (const entity of result.registry.entities) {
+    for (const link of entity.links.filter(l => l.collection === 'campus_hours')) {
+      for (const key of link.source_record_keys) owners.set(key, [...(owners.get(key) ?? []), entity.name]);
+    }
+  }
+  // Each schedule name (an office's regular, Summer, early-arrival or service schedule) belongs to exactly one office.
+  const selectedBy = new Map<string, string[]>();
+  for (const entity of real.entities) {
+    for (const link of entity.links.filter(l => l.collection === 'campus_hours')) {
+      for (const value of link.selector?.values ?? []) selectedBy.set(value, [...(selectedBy.get(value) ?? []), entity.name]);
+    }
+  }
+  for (const name of names) {
+    assert.equal(selectedBy.get(name)?.length, 1, `${name} is selected by exactly one office`);
+    for (const day of ['Monday', 'Tuesday']) assert.deepEqual(owners.get(`${name}:${day}`), selectedBy.get(name), `${name} ${day}`);
+  }
+  assert.equal(result.report.unresolved.some(issue => issue.collection === 'campus_hours' && names.some(name => (issue.record ?? '').includes(name))), false);
+  // An office has one hours link. It may select several named, season-scoped schedules; no name is shared by two offices.
+  for (const entity of real.entities) {
+    assert.ok(entity.links.filter(l => l.collection === 'campus_hours').length <= 1, `${entity.name} has two hours links`);
+  }
+  for (const [name, offices] of selectedBy) assert.equal(offices.length, 1, `${name} is selected by ${offices.join(' and ')}`);
+});
+
+test('the Counseling Center, both Public Safety offices and the IT Help Desk link their own hours by name', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const names = ['Counseling Center', 'Public Safety (Emergency)', 'Public Safety (Non-Emergency)', 'IT Help Desk', 'Registrar'];
+  input.campus_hours = names.flatMap(name => ['Monday', 'Tuesday'].map(day =>
+    ({ source_key: 'campus-hours', source_record_key: `${name}:${day}`, name, day, schedule: '8:30am-4:30pm' })));
+  const result = compileCampusIdentities(real, input);
+  for (const name of names) {
+    const links = result.registry.entities.find(e => e.name === name)!.links.filter(l => l.collection === 'campus_hours');
+    assert.deepEqual(links.map(l => l.source_record_keys), [[`${name}:Monday`, `${name}:Tuesday`]], name);
+  }
+});
+
+test("a schedule's name is not an alias of the office whose hours it is", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  input.campus_hours = ['Counseling Center', 'Counseling Center (Summer)'].flatMap(name => ['Monday', 'Tuesday'].map(day =>
+    ({ source_key: 'campus-hours', source_record_key: `${name}:${day}`, name, day, schedule: '8:30am-4:30pm' })));
+  const result = compileCampusIdentities(real, input);
+  const counseling = result.registry.entities.find(e => e.name === 'Counseling Center')!;
+  assert.deepEqual(counseling.links.find(l => l.collection === 'campus_hours')!.source_record_keys.length, 4);
+  assert.equal(counseling.aliases.includes('Counseling Center (Summer)'), false);
+});
+
+test("an office links the captured pages of the folder its reviewed website names, and two offices sharing one site both do", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const site = (url: string) => ({ evidence: { website: { url } } });
+  const contact = (key: string, name: string, url: string) => ({ source_key: 'campus-directory', source_record_key: key, name,
+    email: `${key.replace(/\W/g, '')}@ramapo.edu`, normalization_metadata: site(url) });
+  input.campus_contacts = [
+    contact('office:public-safety-emergency', 'Public Safety (Emergency)', 'https://www.ramapo.edu/publicsafety/'),
+    contact('office:public-safety-non-emergency', 'Public Safety (Non-Emergency)', 'https://www.ramapo.edu/publicsafety/'),
+    contact('office:counseling-center', 'Counseling Center', 'https://www.ramapo.edu/counseling/')];
+  const page = (key: string, folder: string) => ({ source_key: 'office-pages', source_record_key: key, site_folder: folder });
+  input.office_sections = [page('www.ramapo.edu/publicsafety/parking/', 'publicsafety'),
+    page('www.ramapo.edu/counseling/faq/', 'counseling'), page('www.ramapo.edu/policies/', 'policies')];
+  const result = compileCampusIdentities(real, input);
+  const pages = (name: string) => result.registry.entities.find(e => e.name === name)
+    ?.links.find(l => l.collection === 'office_sections')?.source_record_keys;
+  assert.deepEqual(pages('Counseling Center'), ['www.ramapo.edu/counseling/faq/']);
+  assert.deepEqual(pages('Public Safety (Emergency)'), ['www.ramapo.edu/publicsafety/parking/']);
+  assert.deepEqual(pages('Public Safety (Non-Emergency)'), ['www.ramapo.edu/publicsafety/parking/']);
+  // A site no office names (the college-wide policies folder) links to no office.
+  assert.equal(result.registry.entities.some(e => e.links.some(l => l.collection === 'office_sections'
+    && l.source_record_keys.includes('www.ramapo.edu/policies/'))), false);
+});
+
+test("an office whose website is a page in another office's site links only the pages under its own address", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const contact = (key: string, name: string, url: string) => ({ source_key: 'campus-directory', source_record_key: key, name,
+    email: `${key.replace(/\W/g, '')}@ramapo.edu`, normalization_metadata: { evidence: { website: { url } } } });
+  input.campus_contacts = [
+    contact('office:public-safety-non-emergency', 'Public Safety (Non-Emergency)', 'https://www.ramapo.edu/publicsafety/'),
+    contact('office:id-card-room', 'ID Card Room', 'https://www.ramapo.edu/publicsafety/id-cards/')];
+  const page = (key: string) => ({ source_key: 'office-pages', source_record_key: key, site_folder: 'publicsafety' });
+  input.office_sections = [page('www.ramapo.edu/publicsafety/parking/'), page('www.ramapo.edu/publicsafety/id-cards/'),
+    page('www.ramapo.edu/publicsafety/id-cards/lost/')];
+  const result = compileCampusIdentities(real, input);
+  const pages = (name: string) => result.registry.entities.find(e => e.name === name)
+    ?.links.find(l => l.collection === 'office_sections')?.source_record_keys;
+  assert.deepEqual(pages('ID Card Room'), ['www.ramapo.edu/publicsafety/id-cards/', 'www.ramapo.edu/publicsafety/id-cards/lost/']);
+  assert.equal(pages('Public Safety (Non-Emergency)')?.length, 3);
+  // With no office at the site itself, still only its own pages: /about/ is not Transportation's.
+  const lone = snapshot();
+  lone.campus_contacts = [contact('office:transportation-services', 'Transportation Services',
+    'https://www.ramapo.edu/about/transportation-services/')];
+  lone.office_sections = [{ source_key: 'office-pages', source_record_key: 'www.ramapo.edu/about/accreditation/', site_folder: 'about' },
+    { source_key: 'office-pages', source_record_key: 'www.ramapo.edu/about/transportation-services/', site_folder: 'about' }];
+  const alone = compileCampusIdentities(real, lone).registry.entities.find(e => e.name === 'Transportation Services');
+  assert.deepEqual(alone?.links.find(l => l.collection === 'office_sections')?.source_record_keys,
+    ['www.ramapo.edu/about/transportation-services/']);
+});
+
+test('an office also links the pages of a site the reviewed site owners give it', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const owners = (await import('../reference/office-site-owners.json')).default as { sites: Array<{ folder: string; owner: string }> };
+  const site = owners.sites.find(entry => entry.folder === 'myadvisor')!;
+  const input = snapshot();
+  // The office's own directory contact, by the key its reviewed selector names.
+  const seeded = real.entities.find(entity => entity.name === site.owner)!;
+  const contact = seeded.links.find(link => link.collection === 'contacts')!;
+  const key = String(contact.selector!.values[0]).replace(/^key:/, '');
+  input.campus_contacts = [{ source_key: contact.source_key, source_record_key: key, name: site.owner }];
+  input.office_sections = [{ source_key: 'office-pages', source_record_key: 'www.ramapo.edu/myadvisor/', site_folder: 'myadvisor' }];
+  const result = compileCampusIdentities(real, input);
+  const owner = result.registry.entities.find(e => e.name === site.owner);
+  assert.ok(owner, `${site.owner} is an identity`);
+  assert.deepEqual(owner!.links.find(l => l.collection === 'office_sections')?.source_record_keys,
+    ['www.ramapo.edu/myadvisor/']);
+});
+
+test("a current topic links its own site's captured pages that no office links; a retired one links none", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const topic = (name: string, status: string, url: string) => ({ source_key: 'office-pages', source_record_key: name,
+    name, status, url });
+  input.campus_topics = [topic('Scholarships', 'current', 'https://www.ramapo.edu/scholarships/faqs/'),
+    topic('Provisional Teacher Program', 'retired', 'https://www.ramapo.edu/ptp/')];
+  const page = (key: string, folder: string) => ({ source_key: 'office-pages', source_record_key: key, site_folder: folder });
+  input.office_sections = [page('www.ramapo.edu/scholarships/faqs/', 'scholarships'),
+    page('www.ramapo.edu/scholarships/', 'scholarships'), page('www.ramapo.edu/ptp/', 'ptp')];
+  const result = compileCampusIdentities(real, input);
+  const pages = (name: string) => result.registry.entities.find(e => e.name === name)
+    ?.links.find(l => l.collection === 'office_sections')?.source_record_keys;
+  assert.deepEqual(pages('Scholarships'), ['www.ramapo.edu/scholarships/', 'www.ramapo.edu/scholarships/faqs/']);
+  assert.equal(pages('Provisional Teacher Program'), undefined);
+});
+
+test('a program links the requirement groups the catalog lists for it, and a shared group links to each program', async () => {
+  const { validateCampusIdentities } = await import('./campus-identities');
+  const program = (id: string, name: string, groups: string[]) => ({ id, kind: 'program' as const, name, aliases: [],
+    links: [{ collection: 'programs' as const, source_key: 'academic-programs', source_record_keys: [`catalog:${name}`] },
+      { collection: 'requirement_groups' as const, source_key: 'program-requirement-groups', source_record_keys: groups }] });
+  const registry = { schema_version: 1 as const, entities: [
+    program('11111111-1111-4111-8111-111111111111', 'A', ['g-shared', 'g-a']),
+    program('22222222-2222-4222-8222-222222222222', 'B', ['g-shared'])] };
+  assert.doesNotThrow(() => validateCampusIdentities(registry));
+});
+
+test('each catalog course is an identity of its own, linked to its course record by its code', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  input.artifacts.courses = { 'CMPS 147': { code: 'CMPS 147', name: 'COMPUTER SCIENCE I' } };
+  const result = compileCampusIdentities(real, input);
+  const course = result.registry.entities.find(e => e.kind === 'course' && e.name === 'CMPS 147');
+  assert.ok(course);
+  assert.equal(course!.id, result.courseIdentities.courses[0].id);
+  assert.deepEqual(course!.links, [{ collection: 'courses', source_key: 'academic-programs', source_record_keys: ['CMPS 147'] }]);
+  assert.equal(result.courseIdentities.courses[0].url, 'https://catalog.ramapo.edu/courses/CMPS147');
+});
+
+test('a college policy page links to the office its Responsible Unit names', async () => {
+  const { responsibleUnit } = await import('./compile-campus-identities');
+  const header = [{ heading: 'Graduate Assistants', text: 'Policy Number: | 481; Responsible Unit: | Payroll; Approval Authority: | President' }];
+  assert.equal(responsibleUnit(header), 'Payroll');
+  assert.equal(responsibleUnit([{ heading: 'x', text: 'no header here' }]), null);
+  // Without a Responsible Unit header, the office a Contacts section names.
+  assert.equal(responsibleUnit([{ heading: 'Policy', text: 'Students may file a complaint.' },
+    { heading: 'Contacts', text: 'Office of the General Counsel' },
+    { heading: 'Procedure', text: 'The amendment moved the responsibility for this policy.' }]), 'Office of the General Counsel');
+  assert.equal(responsibleUnit([{ heading: 'Contacts', text: 'Office of the Controller (201) 684-7500' }]),
+    'Office of the Controller');
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  const seeded = real.entities.find(entity => entity.name === 'Payroll')!;
+  const contact = seeded.links.find(link => link.collection === 'contacts')!;
+  input.campus_contacts = [{ source_key: contact.source_key, source_record_key: String(contact.selector!.values[0]).replace(/^key:/, ''), name: 'Payroll' }];
+  input.office_sections = [
+    { source_key: 'office-pages', source_record_key: 'www.ramapo.edu/policies/policy/481/', site_folder: 'policies', sections: header },
+    { source_key: 'office-pages', source_record_key: 'www.ramapo.edu/policies/policy/1/', site_folder: 'policies',
+      sections: [{ heading: 'x', text: 'Responsible Unit: | Administration and Finance;' }] }];
+  const result = compileCampusIdentities(real, input);
+  const payroll = result.registry.entities.find(e => e.name === 'Payroll')!;
+  assert.deepEqual(payroll.links.find(l => l.collection === 'office_sections')?.source_record_keys,
+    ['www.ramapo.edu/policies/policy/481/']);
+});
+
+test("the catalog's academic policies link to the office its index names, under their own source", async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const owner = (await import('../reference/catalog-policies-owner.json')).default as { owner: string; folder: string };
+  const input = snapshot();
+  const seeded = real.entities.find(entity => entity.name === owner.owner)!;
+  const contact = seeded.links.find(link => link.collection === 'contacts')!;
+  input.campus_contacts = [{ source_key: contact.source_key, source_record_key: String(contact.selector!.values[0]).replace(/^key:/, ''), name: owner.owner }];
+  input.office_sections = [
+    { source_key: 'catalog-policies', source_record_key: 'catalog.ramapo.edu/pages/ABC/#used-name', site_folder: owner.folder },
+    { source_key: 'office-pages', source_record_key: 'www.ramapo.edu/provost/', site_folder: 'provost' }];
+  const result = compileCampusIdentities(real, input);
+  const provost = result.registry.entities.find(e => e.name === owner.owner)!;
+  const links = provost.links.filter(l => l.collection === 'office_sections');
+  assert.deepEqual(links.find(l => l.source_key === 'catalog-policies')?.source_record_keys,
+    ['catalog.ramapo.edu/pages/ABC/#used-name']);
+  assert.ok(links.every(l => l.source_record_keys.every(key => l.source_key === 'catalog-policies' ? key.startsWith('catalog.') : !key.startsWith('catalog.'))));
+});

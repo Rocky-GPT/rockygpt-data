@@ -139,6 +139,8 @@ function courseCode(url: string): string | null {
   return match ? `${match[1]} ${match[2]}` : null;
 }
 
+const TERM_HEADING = /^(?:fall|spring|summer|winter)\b(?!.*\byear\b)/i;
+
 /** One plan page: its semesters, placement, totals and notes, and all of its text. */
 export function parseGraduationPlan(html: string, url: string): GraduationPlanPage {
   const $ = load(html);
@@ -152,8 +154,11 @@ export function parseGraduationPlan(html: string, url: string): GraduationPlanPa
   let year = '';
   plan.children().each((_, element) => {
     const tag = element.tagName.toLowerCase();
-    if (tag === 'h3') year = clean($(element).text());
-    if (tag === 'h4') terms.push({ year, term: clean($(element).text()), items: [], totalHours: null });
+    // Some pages head a summer term at the year's level ("<h3>Summer Semester</h3>" after a
+    // year's spring): it is a term of the year before it, not a year of its own.
+    const heading = clean($(element).text());
+    if (tag === 'h3' && !TERM_HEADING.test(heading)) year = heading;
+    if (tag === 'h4' || (tag === 'h3' && TERM_HEADING.test(heading))) terms.push({ year, term: heading, items: [], totalHours: null });
     if (tag === 'ul' && terms.length) {
       const term = terms[terms.length - 1];
       $(element).children('li').each((__, item) => {
@@ -174,6 +179,9 @@ export function parseGraduationPlan(html: string, url: string): GraduationPlanPa
       });
     }
   });
+  // A heading that only introduces term headings of its own ("Summer Semester" over "Summer
+  // Session 1" and "Summer Session 2") holds nothing itself.
+  const filled = terms.filter(term => term.items.length || term.totalHours !== null);
   const paragraphs = (scope: ReturnType<CheerioAPI>) => scope.find('p').toArray().map(p => clean($(p).text())).filter(Boolean);
   const before = block.find('.colSet').first();
   const introduction = paragraphs(before);
@@ -195,7 +203,8 @@ export function parseGraduationPlan(html: string, url: string): GraduationPlanPa
   block.find('h1,h2,h3,h4,h5,h6,p,li,.boxTitle,.collapsableTitle').each((_, element) => {
     if ($(element).is('p') && $(element).closest('li').length) return;
     const text = clean($(element).text());
-    if (text && lines[lines.length - 1] !== text) lines.push(text);
+    // A plan repeats a line when it means it twice ("Elective" in two rows of one semester).
+    if (text && ($(element).is('li') || lines[lines.length - 1] !== text)) lines.push(text);
   });
   // Pages word totals differently: "Total Credits Required: 128 credits GPA: 2.0", or
   // "Total Undergraduate Credits Required: 128 credits" and "Major GPA required for
@@ -214,7 +223,7 @@ export function parseGraduationPlan(html: string, url: string): GraduationPlanPa
   return {
     title: clean($('h1').last().text()) || clean($('title').text()),
     applicability, introduction, documents: namedLinks($, before.find('.btn').parent(), url).filter(link => /\.(pdf|docx?)(\?|$)/i.test(link.url)),
-    placement, terms, totalCredits: credits ? Number(credits[1]) : null, graduateCredits: graduate ? Number(graduate[1]) : null,
+    placement, terms: filled, totalCredits: credits ? Number(credits[1]) : null, graduateCredits: graduate ? Number(graduate[1]) : null,
     gpa: gpa ? gpa[1] : null, totals: [...new Set(statements)], generalEducation, notes, text: lines.join('\n'),
   };
 }

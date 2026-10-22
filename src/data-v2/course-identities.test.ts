@@ -24,8 +24,8 @@ test('course IDs reproduce the Brain derivation byte for byte, including escapes
 test('every published catalog key becomes one course identity, in stable order', () => {
   const artifact = compileCourseIdentities({ 'CMPS 147': { code: 'CMPS 147', name: 'COMPUTER SCIENCE I' }, 'ACCT 100': { code: 'ACCT 100' } });
   assert.deepEqual(artifact.courses, [
-    { id: GOLDEN[0][1], source_key: 'academic-programs', source_record_key: 'ACCT 100', name: null },
-    { id: GOLDEN[1][1], source_key: 'academic-programs', source_record_key: 'CMPS 147', name: 'COMPUTER SCIENCE I' },
+    { id: GOLDEN[0][1], source_key: 'academic-programs', source_record_key: 'ACCT 100', name: null, url: 'https://catalog.ramapo.edu/courses/ACCT100' },
+    { id: GOLDEN[1][1], source_key: 'academic-programs', source_record_key: 'CMPS 147', name: 'COMPUTER SCIENCE I', url: 'https://catalog.ramapo.edu/courses/CMPS147' },
   ]);
   assert.deepEqual(compileCourseIdentities(undefined).courses, []);
 });

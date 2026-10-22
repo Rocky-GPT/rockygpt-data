@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-15",
+  "$comment": [
+    "Topics: ramapo.edu sites with no office behind them, each pointing to the offices its own page names (Dan, 2026-10-15: topics for most, a note for the two that are gone).",
+    "Every quote is exact text of its cited section (pieces in page order joined by ' … '); a changed section or a name the graph lacks stops the publish."
+  ],
+  "topics": [
+    {
+      "name": "Scholarships",
+      "aliases": [],
+      "status": "current",
+      "handled_by": [
+        "Student Accounts",
+        "Financial Aid"
+      ],
+      "evidence": {
+        "url": "https://www.ramapo.edu/scholarships/faqs/",
+        "section": "How will I receive the funds? Can I see them on my student account?",
+        "text_sha256": "fc1a12ef074c916f4446d1295d7d616500846c30192e022bb724acc7065c94a6",
+        "quote": "If you have questions regarding your refund please contact the Office of Student Accounts (mailto:studentaccts@ramapo.edu)."
+      },
+      "more_evidence": [
+        {
+          "url": "https://www.ramapo.edu/scholarships/faqs/",
+          "section": "How do I show financial need?",
+          "text_sha256": "e4698f6e684a5c149bea3ee4a087f02f197309a8ebefc57e9642b58634e1d5c7",
+          "quote": "please reach out to the Office of Financial Aid (finaid@ramapo.edu) or call 201-684-7549 to discuss your situation and the documents required to prove financial need.",
+          "handled_by": [
+            "Financial Aid"
+          ]
+        }
+      ],
+      "note": "The Scholarships FAQ sends questions about a scholarship refund to Student Accounts and questions about showing financial need to Financial Aid; applications themselves go through the AcademicWorks portal, which has no office of its own."
+    },
+    {
+      "name": "Summer Session",
+      "aliases": [
+        "Ramapo Summer Session"
+      ],
+      "status": "current",
+      "handled_by": [
+        "IT Help Desk",
+        "Registrar",
+        "Student Accounts",
+        "Admissions",
+        "Financial Aid"
+      ],
+      "evidence": {
+        "url": "https://www.ramapo.edu/summer/policies/",
+        "section": "Additional Help",
+        "text_sha256": "bc8248a7622c358a6fc8553817996065a696ea7716d179daf57fafc18ce6bbaa",
+        "quote": "Contact Information Technology Services at helpdesk@ramapo.edu … Contact the Registrar’s office at or call (201) 684-7695 … Contact the Office of Student Accounts at studentaccts@ramapo.edu"
+      },
+      "more_evidence": [
+        {
+          "url": "https://www.ramapo.edu/summer/policies/",
+          "section": "Admission for New Students (Not Required for Matriculated Ramapo Students)",
+          "text_sha256": "19a5676a6915267734cf1c3c2b581bb8b6434ca680919b864401573a7624e487",
+          "quote": "Submit the completed form and documentation to the Admissions Office.",
+          "handled_by": [
+            "Admissions"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/summer/policies/",
+          "section": "Financial Aid",
+          "text_sha256": "eb0f35a1e65cfb2b9521650fdae6f90a84a3824de603a6fb2aa738308c176898",
+          "quote": "Please review the Financial Aid (https://www.ramapo.edu/finaid/) website for additional information.",
+          "handled_by": [
+            "Financial Aid"
+          ]
+        }
+      ],
+      "note": "The Summer Session policies page sends tech/login problems to the IT Help Desk (helpdesk@), registration to the Registrar, payment to Student Accounts, new non-degree students to the Admissions Office and aid questions to Financial Aid; the graduate summer page names the Office of Graduate and Adult Admissions, mapped to Graduate Admissions. Graduate Admissions is left out: the page names the Office of Graduate and Adult Admissions with a different phone number."
+    },
+    {
+      "name": "Parents, Guardians & Families",
+      "aliases": [
+        "Parents/Guardians",
+        "Parents & Families"
+      ],
+      "status": "current",
+      "handled_by": [
+        "Admissions",
+        "Center for Student Success (Academic Advising)",
+        "First-Year Seminar",
+        "Testing Center",
+        "Center for Reading and Writing",
+        "Student Accounts",
+        "Financial Aid",
+        "Registrar"
+      ],
+      "evidence": {
+        "url": "https://www.ramapo.edu/parents/",
+        "section": "Important Parents / Families Contacts",
+        "text_sha256": "49142444db26ecbd21332f7ee428aca76417ce58cfd9371a9b37f5ab848ad627",
+        "quote": "Admissions Office … New Student Experience (https://www.ramapo.edu/studentsuccess/) … First – Year Seminar … Testing Center … Tutoring (https://www.ramapo.edu/crw/) … Office of Student Accounts … Financial Aid … Registrar"
+      },
+      "note": "The parents home page lists these eight contacts for families; \"New Student Experience\" links the Center for Student Success site (/studentsuccess/, success@) and \"Tutoring\" links the Center for Reading and Writing site (/crw/)."
+    },
+    {
+      "name": "Student Media",
+      "aliases": [],
+      "status": "current",
+      "handled_by": [
+        "Yearbook",
+        "Ramapo News",
+        "Ramapo Broadcasting Club"
+      ],
+      "evidence": {
+        "url": "https://www.ramapo.edu/student-media/",
+        "section": "Yearbook",
+        "text_sha256": "46bfe615ef1c96aaafca2ebca7c18b9664f649e4e17307882e1ec2dddaf8647c",
+        "quote": "If you are interested in joining the yearbook committee please email yearbook@ramapo.edu"
+      },
+      "more_evidence": [
+        {
+          "url": "https://www.ramapo.edu/student-media/",
+          "section": "Ramapo News",
+          "text_sha256": "37b4158adb18577dfd753494871985899c1b59847f2eb5725ce47ce0d5037aab",
+          "quote": "Location:The Robert A. Scott Student Center, second floor, Room SC-218, Email: rcnjnews@ramapo.edu",
+          "handled_by": [
+            "Ramapo News"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/student-media/",
+          "section": "Radio Station WRPR-FM",
+          "text_sha256": "3e147154d2879bd0b77b0b526f714f0b27598a51fb8c36d6c714b05e1a8d5db1",
+          "quote": "is operated by the student Ramapo Broadcasting Club under professional supervision",
+          "handled_by": [
+            "Ramapo Broadcasting Club"
+          ]
+        }
+      ],
+      "note": "Student Media is a page about three student groups with their own desks (Yearbook, Ramapo News, and WRPR-FM run by the Ramapo Broadcasting Club); RCTV and Trillium are also described but have no contact on the page and no graph desk."
+    },
+    {
+      "name": "Emergency Preparedness",
+      "aliases": [],
+      "status": "current",
+      "handled_by": [
+        "Public Safety (Emergency)",
+        "Public Safety (Non-Emergency)"
+      ],
+      "evidence": {
+        "url": "https://www.ramapo.edu/emergency/",
+        "section": "Reporting an Emergency at Ramapo College",
+        "text_sha256": "6674f0acd4a768cf0328c8ce860d8d3744c11dc9fc6a47237c8908b8edd159b0",
+        "quote": "Call Public Safety at 684-6666 or ext. 6666 from a campus phone or go to the Public Safety Office in C-102."
+      },
+      "note": "The page tells people to report an emergency to Public Safety at 684-6666 (the Emergency line) or at the Public Safety Office in C-102, the room both Public Safety entries share."
+    },
+    {
+      "name": "Student Research",
+      "aliases": [],
+      "status": "current",
+      "handled_by": [
+        "Anisfield School of Business",
+        "School of Arts, Humanities, and Education Office",
+        "School of Social Sciences and Social Work Office",
+        "School of Science, Nursing, and Health Office",
+        "Ramapo Honors Program"
+      ],
+      "evidence": {
+        "url": "https://www.ramapo.edu/student-research/undergraduate-research-in-the-schools/",
+        "section": "Anisfield School of Business (ASB)",
+        "text_sha256": "a14d9d67b17dc5425a9913e453ecd55321dc43e873e3cdab0b133ee511de4420",
+        "quote": "Student / Faculty Research (https://www.ramapo.edu/asb/student-faculty-research/)"
+      },
+      "more_evidence": [
+        {
+          "url": "https://www.ramapo.edu/student-research/undergraduate-research-in-the-schools/",
+          "section": "School of Humanities and Global Studies (HGS)",
+          "text_sha256": "131297582f567af516956f03c94eb0b167f312b7d998db4f98102fe2392b6abb",
+          "quote": "Joint Faculty Student Research / Presentations (https://www.ramapo.edu/ahe/research/)",
+          "handled_by": [
+            "School of Arts, Humanities, and Education Office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/student-research/undergraduate-research-in-the-schools/",
+          "section": "School of Social Sciences and Social Work (SSSW)",
+          "text_sha256": "56b863a03b9d252b47837be9f146984ed50d334050fbb73028a47f2365bf187b",
+          "quote": "Student / Faculty Research (https://www.ramapo.edu/sssw/research/)",
+          "handled_by": [
+            "School of Social Sciences and Social Work Office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/student-research/undergraduate-research-in-the-schools/",
+          "section": "School of Theoretical and Applied Science (TAS)",
+          "text_sha256": "7229468bb78e46dac01b0b321be85b203fcef4931755f83dbf7c3a69ba1855c7",
+          "quote": "TAS Student Research Honors Program / Symposium (https://www.ramapo.edu/snh/symposium/)",
+          "handled_by": [
+            "School of Science, Nursing, and Health Office"
+          ]
+        },
+        {
+          "url": "https://www.ramapo.edu/student-research/college-honors-program/",
+          "section": "College Honors Program",
+          "text_sha256": "f3889d950fef474e6c69a9d82fffb1ecfb557052a0a8b2315c9b581d457b7ad5",
+          "quote": "College Honors Senior Projects in the Major (https://www.ramapo.edu/honors/projects/)",
+          "handled_by": [
+            "Ramapo Honors Program"
+          ]
+        }
+      ],
+      "note": "Student Research has no office; each school section links research pages on a school site (/asb/, /ahe/, /sssw/, /snh/) and the Honors section links the Honors Program site (/honors/). The page still uses the old school names (HGS, CA, TAS), so the mapping is by link, not by name."
+    },
+    {
+      "name": "Digital Accessibility at Ramapo College",
+      "aliases": [
+        "Digital Accessibility"
+      ],
+      "status": "current",
+      "handled_by": [
+        "Instructional Design Center",
+        "IT Help Desk",
+        "Office of Specialized Services",
+        "Marketing and Branding"
+      ],
+      "evidence": {
+        "url": "https://www.ramapo.edu/digital-accessibility/help-support/",
+        "section": "Help & Support",
+        "text_sha256": "a75626c4d0b091a7c5e7c31bc62efe29496899eea4255949f91e44541349a091",
+        "quote": "Instructional Design Center (https://www.ramapo.edu/idc) … ITS Helpdesk (https://www.ramapo.edu/its/help-desk/) … Office of Specialized Services (https://www.ramapo.edu/oss/) … Office of Web Administration (https://www.ramapo.edu/marketing-communications/web-administration/)"
+      },
+      "more_evidence": [
+        {
+          "url": "https://www.ramapo.edu/marketing-communications/",
+          "section": "Marketing and Branding",
+          "text_sha256": "d277a079590f80d7cc0516183bd1e25f6b450115fce1a257ed5f4a9ff62f48c5",
+          "quote": "The Office of Marketing and Branding is responsible for overseeing … the official College websites (https://www.ramapo.edu/marketing-communications/web-administration)",
+          "handled_by": [
+            "Marketing and Branding"
+          ]
+        }
+      ],
+      "note": "Help & Support sends course materials to the IDC, software and assistive technology to the ITS Helpdesk, student accommodations to OSS and web accessibility to the Office of Web Administration, which the Marketing and Branding home page says it oversees (\"the official College websites\")."
+    },
+    {
+      "name": "Sustainability at Ramapo College",
+      "aliases": [
+        "Sustainability"
+      ],
+      "status": "current",
+      "handled_by": [
+        "Ramapo Green",
+        "Facilities Management"
+      ],
+      "evidence": {
+        "url": "https://www.ramapo.edu/sustainability/",
+        "section": "Related Resources",
+        "text_sha256": "6033a4becbeabdf2cf2690c6494afcf3eb4c15af9d760a8ecfa208487c7217d1",
+        "quote": "Ramapo Green (https://www.ramapo.edu/ramapo-green/) RCNJ Sustainability Facilities (https://www.ramapo.edu/facilities/sustainability/)"
+      },
+      "more_evidence": [
+        {
+          "url": "https://www.ramapo.edu/sustainability/",
+          "section": "Sustainability at Facilities Management",
+          "text_sha256": "48f155b4ffb6f5a0411770f9c9fc3675ff8f5583f172d1177cb3009693ad63d6",
+          "quote": "Ramapo College has implemented various sustainability practices within its campus operations.",
+          "handled_by": [
+            "Facilities Management"
+          ]
+        }
+      ],
+      "note": "The sustainability hub points to Ramapo Green (the student umbrella group) and to the Facilities Management sustainability page; the Sharp Sustainability Education Center and the Compression Institute are also linked but are not graph identities with contacts."
+    },
+    {
+      "name": "Small Business Development Center at Ramapo College",
+      "aliases": [
+        "Bergen County SBDC",
+        "NJSBDC",
+        "Small Business Development Center",
+        "SBDC"
+      ],
+      "status": "retired",
+      "handled_by": [],
+      "evidence": {
+        "url": "https://www.ramapo.edu/sbdc/",
+        "section": "Overview",
+        "text_sha256": "d9638041405e3b5c7ed89462ad4b0d8a1ae8a376a95c2c987be6e9fa19cea211",
+        "quote": "The Bergen County SBDC is no longer headquartered at Ramapo College. For additional information, please visit https://njsbdc.com/."
+      },
+      "refer_url": "https://njsbdc.com/",
+      "note": "The SBDC left Ramapo; its page only refers people to the statewide NJSBDC site, so no Ramapo office handles it."
+    },
+    {
+      "name": "Provisional Teacher Program",
+      "aliases": [
+        "Ramapo College Provisional Teacher Program",
+        "PTP"
+      ],
+      "status": "retired",
+      "handled_by": [],
+      "evidence": {
+        "url": "https://www.ramapo.edu/ptp/",
+        "section": "Provisional Teacher Program",
+        "text_sha256": "aad4264328664276841cd96c599cb48161f2fb5ff6622353d04d98ce39ec6e21",
+        "quote": "The Ramapo College Provisional Teacher Program has been discontinued. A list of Regional Training Centers that are providing classes can be found on the NJDOE website http://www.state.nj.us/education/educators/license/advisories/applicant.htm"
+      },
+      "refer_url": "http://www.state.nj.us/education/educators/license/advisories/applicant.htm",
+      "note": "The program was discontinued; the page refers people to the NJDOE list of Regional Training Centers and names only a staff member (Joanne Caselli, Certification Officer, Teacher Education Program) for questions, who is not a graph office."
+    }
+  ]
+}
