@@ -1,4 +1,4 @@
-import pLimit from 'p-limit';
+import { limit, type Limit } from './limit';
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_ATTEMPTS = 3;
@@ -12,7 +12,7 @@ export const DEFAULT_USER_AGENT =
 const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const IDEMPOTENT_METHODS = new Set(['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']);
 
-const hostLimiters = new Map<string, ReturnType<typeof pLimit>>();
+const hostLimiters = new Map<string, Limit>();
 
 export interface HttpPolicyOptions {
   timeoutMs?: number;
@@ -44,11 +44,11 @@ function positiveInteger(value: number | undefined, fallback: number): number {
     : fallback;
 }
 
-function limiterFor(url: URL, concurrency: number): ReturnType<typeof pLimit> {
+function limiterFor(url: URL, concurrency: number): Limit {
   const key = `${url.protocol}//${url.host}`;
   let limiter = hostLimiters.get(key);
   if (!limiter) {
-    limiter = pLimit(concurrency);
+    limiter = limit(concurrency);
     hostLimiters.set(key, limiter);
   }
   return limiter;
