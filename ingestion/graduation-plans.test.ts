@@ -162,3 +162,30 @@ test('credits and GPA are read only from plain statements, and every statement i
   // Ramapo's share of a joint program is not the degree's total, but it stays as written.
   assert.deepEqual([joint.totalCredits, joint.gpa, joint.totals], [null, '2.85', ['Total RCNJ Credits: 104.5 credits GPA: 2.85']]);
 });
+
+test('a summer term headed at the year\'s level is its own term of that year, and repeated lines stay', () => {
+  const page = parseGraduationPlan(`<html><body><h1>Elementary Education</h1><div id="content-block"><div class="fouryear">
+    <h3>Second Year</h3>
+    <h4>Spring Semester</h4>
+    <ul>
+      <li>Elective (Middle School Content for those interested) (HRS 4)</li>
+      <li>Elective (Middle School Content for those interested) (HRS 4)</li>
+      <li>Total: (HRS 8)</li>
+    </ul>
+    <h3>Summer Semester</h3>
+    <ul><li>Major: <a href="https://catalog.ramapo.edu/courses/EDUC241">EDUC 241 - INSTRUCTIONAL TECHNOLOGY</a> (HRS 4)</li></ul>
+    <h3>Summer Semester</h3>
+    <h4>Summer Session 1</h4>
+    <ul><li>Major: <a href="https://catalog.ramapo.edu/courses/BIOL214">BIOL 214 - GENETICS</a> (HRS 4)</li></ul>
+    <h3>Third Year</h3>
+    <h4>Fall Semester</h4>
+    <ul><li>General Education Requirement (HRS 4)</li></ul>
+  </div></div></body></html>`, `${PLAN}/sshs/elementary-education/`);
+  assert.deepEqual(page.terms.map(term => [term.year, term.term, term.items.map(item => item.courses.join() || 'elective')]), [
+    ['Second Year', 'Spring Semester', ['elective', 'elective']],
+    ['Second Year', 'Summer Semester', ['EDUC 241']],
+    ['Second Year', 'Summer Session 1', ['BIOL 214']],
+    ['Third Year', 'Fall Semester', ['elective']],
+  ]);
+  assert.equal(page.text.split('\n').filter(line => line.startsWith('Elective (Middle School')).length, 2);
+});
