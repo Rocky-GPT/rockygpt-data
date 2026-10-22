@@ -21,7 +21,7 @@ export type CampusIdentityRelationship =
   | { type: 'profile_course' | 'includes_course'; target_record: IdentityRecordReference; evidence: IdentityEvidence[] };
 export interface CampusIdentity {
   id: string;
-  kind: 'office' | 'person' | 'facility' | 'venue' | 'program' | 'club' | 'organization' | 'event' | 'building' | 'school' | 'subject' | 'route' | 'topic';
+  kind: 'office' | 'person' | 'facility' | 'venue' | 'program' | 'club' | 'organization' | 'event' | 'building' | 'school' | 'subject' | 'route' | 'topic' | 'course';
   name: string;
   aliases: string[];
   links: CampusIdentityLink[];
@@ -69,7 +69,7 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
     text(entity.id, 'Identity id');
     if (!UUID.test(entity.id) || ids.has(entity.id)) throw new Error('Identity IDs must be unique, persistent lowercase UUIDs.');
     ids.add(entity.id);
-    if (!['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic'].includes(entity.kind as string)) throw new Error('Unsupported identity kind.');
+    if (!['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course'].includes(entity.kind as string)) throw new Error('Unsupported identity kind.');
     text(entity.name, 'Identity name', 240); array(entity.aliases, 32, 'aliases');
     for (const alias of entity.aliases) text(alias, 'Identity alias', 240);
     array(entity.links, 32, 'links');

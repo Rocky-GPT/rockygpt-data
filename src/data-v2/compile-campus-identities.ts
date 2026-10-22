@@ -433,6 +433,12 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     if (!ids.includes(edge.target.record_id)) ids.push(edge.target.record_id);
     groupsOf.set(edge.source.entity_id, ids);
   }
+  // Each catalog course is an identity of its own, linked to its course record by its catalog code
+  // (the id the course-identities artifact publishes), so a course is read through its identity.
+  for (const course of courseIdentities.courses) {
+    entities.push({ id: course.id, kind: 'course', name: course.source_record_key, aliases: [],
+      links: [{ collection: 'courses', source_key: course.source_key, source_record_keys: [course.source_record_key] }] });
+  }
   for (const entity of entities) {
     const ids = groupsOf.get(entity.id);
     if (ids?.length) entity.links.push({ collection: 'requirement_groups', source_key: 'program-requirement-groups', source_record_keys: ids });
