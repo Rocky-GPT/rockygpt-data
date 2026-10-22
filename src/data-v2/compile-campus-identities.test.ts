@@ -406,6 +406,18 @@ test('a program links the requirement groups the catalog lists for it, and a sha
   assert.doesNotThrow(() => validateCampusIdentities(registry));
 });
 
+test('each catalog course is an identity of its own, linked to its course record by its code', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const input = snapshot();
+  input.artifacts.courses = { 'CMPS 147': { code: 'CMPS 147', name: 'COMPUTER SCIENCE I' } };
+  const result = compileCampusIdentities(real, input);
+  const course = result.registry.entities.find(e => e.kind === 'course' && e.name === 'CMPS 147');
+  assert.ok(course);
+  assert.equal(course!.id, result.courseIdentities.courses[0].id);
+  assert.deepEqual(course!.links, [{ collection: 'courses', source_key: 'academic-programs', source_record_keys: ['CMPS 147'] }]);
+  assert.equal(result.courseIdentities.courses[0].url, 'https://catalog.ramapo.edu/courses/CMPS147');
+});
+
 test('a college policy page links to the office its Responsible Unit names', async () => {
   const { responsibleUnit } = await import('./compile-campus-identities');
   const header = [{ heading: 'Graduate Assistants', text: 'Policy Number: | 481; Responsible Unit: | Payroll; Approval Authority: | President' }];
