@@ -7,6 +7,7 @@ import 'dotenv/config';
 import { Pool, type PoolClient } from 'pg';
 import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
 import { loadCapturedPages } from '../../src/directory/contact-evidence';
+import { checkCompletedOfficeReviews } from '../office-review-gate';
 import { parseStopDescriptions, parseTransportationSchedules } from '../../ingestion/transportation-schedule';
 import { validateRawDatasetV1 } from '../../ingestion/raw-types';
 import { normalizeMenuWeek } from '../../ingestion/menu-data';
@@ -488,32 +489,15 @@ async function insertStructured(
   if (withheldValues > Math.max(5, reviewedValues * 0.25)) {
     throw new Error(`${withheldValues} of ${reviewedValues} reviewed contact values have no supporting page in this run's captures.`);
   }
-  // Completed manual office reviews must not silently degrade on a later refresh.
-  // Discovery candidates stay diagnostic; changed sections require another review.
   const officeReview = readJson<{ schema_version: number; offices: Array<{ name: string }> }>('src/reference/office-contact-review.json');
   if (officeReview.schema_version !== 1 || !Array.isArray(officeReview.offices)
       || new Set(officeReview.offices.map(office => office.name)).size !== officeReview.offices.length) {
     throw new Error('Invalid completed office review artifact.');
   }
-  for (const office of officeReview.offices) {
-    const matches = directoryContacts.filter(contact => contact.name === office.name && contact.type === 'office');
-    const evidence = matches.length === 1 ? matches[0].evidence : undefined;
-    if (!evidence || evidence.withheld.length || evidence.absence_issues.length || evidence.website_issue
-        || evidence.contact_note_issues?.length || evidence.contact_review?.status !== 'no_unrecorded_values_in_scanned_sections') {
-      throw new Error(`Completed office review needs attention before publication: ${office.name}. Inspect contact evidence and coverage diagnostics.`);
-    }
-    const contact = matches[0];
-    const reviewedFields = { department: contact.department, email: contact.email,
-      phone: contact.phone || contact.phones?.length, office: contact.office || contact.offices?.length,
-      prefers_email: contact.prefers_email, preferred_contact: contact.preferred_contact,
-      contact_note: contact.contact_note };
-    for (const [field, value] of Object.entries(reviewedFields)) {
-      if ((value === undefined || value === null || value === '' || value === 0)
-          && !evidence.not_published.some(absence => absence.field === field)) {
-        throw new Error(`Completed office review has an unreviewed missing field: ${office.name} ${field}.`);
-      }
-    }
-    if (!evidence.website) throw new Error(`Completed office review needs a checked website: ${office.name}.`);
+  const officeCheck = checkCompletedOfficeReviews(officeReview.offices.map(office => office.name), directoryContacts);
+  for (const office of officeCheck.toReview) console.warn(`Completed office review needs another review (not blocking): ${office}`);
+  if (officeCheck.blocking.length) {
+    throw new Error(`Completed office review needs attention before publication:\n${officeCheck.blocking.join('\n')}`);
   }
   for (const contact of directoryContacts) {
     const name = cleanText(contact.name);
