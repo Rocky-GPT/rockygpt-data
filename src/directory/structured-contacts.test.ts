@@ -155,3 +155,25 @@ test('a confirmed absence reaches the contact row, and one this capture cannot c
     OFFICE_DIRECTORY_CONTACTS.pop();
   }
 });
+
+test('a listed username gets its full address only where a captured page states it', () => {
+  const pages = new Map([['www.ramapo.edu/library/faq/', {
+    url: 'https://www.ramapo.edu/library/faq/', fetchedAt: '2026-10-26T12:00:00.000Z',
+    sections: [{ heading: 'Contact', text: 'Questions? Email skurzman@ramapo.edu.' }],
+  }]]);
+  const faculty = [
+    { name: 'Susan Kurzmann', title: 'Librarian', school: 'Library Faculty & Staff', email: '',
+      bio: 'LC-218\nExt: 7199 | E-mail: skurzman (https://www.ramapo.edu/library/contact-form-sku/)',
+      profileUrl: 'https://www.ramapo.edu/library/staff/' },
+    { name: 'Vito Savino', title: 'Librarian', school: 'Library Faculty & Staff', email: '',
+      bio: 'E-mail: vsavino (https://www.ramapo.edu/library/contact-form-vsa/)',
+      profileUrl: 'https://www.ramapo.edu/library/staff/' },
+  ];
+  const contacts = buildStructuredDirectoryContacts(faculty, pages);
+  const kurzmann = contacts.find(contact => contact.name === 'Susan Kurzmann');
+  assert.equal(kurzmann?.email, 'skurzman@ramapo.edu');
+  assert.deepEqual((kurzmann?.normalization_metadata as Record<string, unknown>).email_evidence,
+    { url: 'https://www.ramapo.edu/library/faq/', heading: 'Contact' });
+  // No captured page states vsavino@ramapo.edu, so no address is made up from the username.
+  assert.equal(contacts.find(contact => contact.name === 'Vito Savino')?.email, undefined);
+});
