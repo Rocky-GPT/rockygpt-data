@@ -12,6 +12,13 @@ import {
 import { validateFacultyProfiles } from './schema';
 import { partitionHoursForPublication } from '../src/data-v2/validity';
 import { hoursSourceErrors } from '../pipeline/quality/hours-coverage';
+import {
+  groupScriptsBySource,
+  KEPT_SOURCES_REPORT,
+  keptSourcesReport,
+  runIsolatedRefresh,
+  type KeptSource,
+} from './refresh-isolation';
 
 /**
  * Collector commands that can renew each non-static publishable source.
@@ -157,15 +164,27 @@ function runNpmScript(script: string, rawOnly: boolean): void {
   console.log(`\n=== npm run ${script} ===`);
   const result = spawnSync('npm', ['run', script], {
     cwd: process.cwd(),
-    stdio: 'inherit',
+    // stderr is read back so a failure can say why (the collector's own message), then echoed.
+    stdio: ['inherit', 'inherit', 'pipe'],
+    maxBuffer: 64 * 1024 * 1024,
     env: {
       ...process.env,
       ...(rawOnly ? { RAW_ONLY: '1' } : {}),
       ...(script === 'fetch:events:live' ? { EVENTS_FORCE_SCRAPE: '1' } : {}),
     },
   });
+  const stderr = result.stderr?.toString() ?? '';
+  if (stderr) process.stderr.write(stderr);
   if (result.status !== 0) {
-    throw new Error(`npm run ${script} failed with exit code ${result.status ?? 'unknown'}.`);
+    const reason = stderr
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('(node:') && !line.startsWith('(Use `node'))
+      .slice(-2)
+      .join(' ');
+    throw new Error(
+      `npm run ${script} failed with exit code ${result.status ?? 'unknown'}.${reason ? ` ${reason}` : ''}`
+    );
   }
 }
 
@@ -197,6 +216,7 @@ export async function main(): Promise<void> {
     );
   }
   const scripts = [...new Set([...provenanceScripts, ...compatibilityScripts])];
+  let kept: KeptSource[] = [];
 
   if (scripts.length) {
     console.log(
@@ -205,7 +225,11 @@ export async function main(): Promise<void> {
     // Collector-owned normalization preserves enrichment from detail pages,
     // public APIs, and source-specific merging that the generic validator
     // cannot reconstruct from the primary raw file alone.
-    for (const script of scripts) runNpmScript(script, false);
+    kept = runIsolatedRefresh({
+      rootDir: process.cwd(),
+      groups: groupScriptsBySource(scripts, SOURCE_REFRESH_SCRIPTS),
+      runScript: (script) => runNpmScript(script, false),
+    });
   } else {
     console.log('All publishable source provenance is fresh; no collection needed.');
   }
@@ -215,8 +239,19 @@ export async function main(): Promise<void> {
   if (nonFresh.length) {
     throw new Error(
       `Collection finished without fresh provenance for: ${nonFresh
-        .map((state) => `${state.key} (${state.detail})`)
+        .map((state) => {
+          const failed = kept.find((entry) => entry.key === state.key);
+          return `${state.key} (${state.detail}${failed ? `; its collector failed: ${failed.error}` : ''})`;
+        })
         .join('; ')}`
+    );
+  }
+  if (kept.length) {
+    fs.mkdirSync(path.dirname(KEPT_SOURCES_REPORT), { recursive: true });
+    fs.writeFileSync(KEPT_SOURCES_REPORT, keptSourcesReport(kept, after, restored.version));
+    console.log(
+      `Kept the active release's copy of ${kept.map((entry) => entry.key).join(', ')}; ` +
+        `see ${KEPT_SOURCES_REPORT}.`
     );
   }
 

@@ -158,12 +158,13 @@ jobs:
               --body-file data/review/page-check.md
           fi
 
-      - name: Resolve data refresh incident
+      - name: Resolve or update data refresh incident
         if: ${{ success() }}
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           incident_number="$(
@@ -176,6 +177,28 @@ jobs:
               --jq '.[] | select(.title == "[Data Refresh] Daily refresh failing") | .number' \
               | head -n 1
           )"
+          kept_report=data/review/refresh-kept-sources.md
+          if [[ -f "$kept_report" ]]; then
+            # Published, but some source kept the active release's copy: the incident stays open
+            # with the reason until that source is fixed.
+            kept_body="$(printf '@%s Published, but kept some sources from the previous release.\n\n- Run: %s\n\n%s' \
+              "$REPOSITORY_OWNER" "$RUN_URL" "$(cat "$kept_report")")"
+            gh label create data-refresh \
+              --repo "$REPOSITORY" \
+              --color B60205 \
+              --description "Automated data collection or publication incident" \
+              --force
+            if [[ -n "$incident_number" ]]; then
+              gh issue comment "$incident_number" --repo "$REPOSITORY" --body "$kept_body"
+            else
+              gh issue create \
+                --repo "$REPOSITORY" \
+                --title "[Data Refresh] Daily refresh failing" \
+                --label data-refresh \
+                --body "$kept_body"
+            fi
+            exit 0
+          fi
           if [[ -z "$incident_number" ]]; then
             exit 0
           fi
