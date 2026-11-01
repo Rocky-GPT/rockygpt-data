@@ -13500,12 +13500,21 @@
       ],
       "evidence": [
         {
-          "url": "https://www.ramapo.edu/study-abroad/scholarships/pell-students/",
-          "section": "Ramapo College Partners\u2019 Scholarships for Pell Grant Eligible Students",
+          "url": "https://www.ramapo.edu/study-abroad/program-options/virtual/",
+          "section": "Virtual International Courses",
           "fields": [
-            "phone",
             "email"
-          ]
+          ],
+          "note": "Re-pointed 2026-11-01 (not reviewed by Dan): ramapo.edu removed the study-abroad Pell scholarship page that held this value; this official study-abroad page directs students to the same address to reach an advisor."
+        },
+        {
+          "url": "https://www.ramapo.edu/inter-students/orientation/",
+          "section": "International & Visiting Student Orientation",
+          "near": "Roukema Center for International Education",
+          "fields": [
+            "phone"
+          ],
+          "note": "Re-pointed 2026-11-01 (not reviewed by Dan): ramapo.edu removed the study-abroad Pell scholarship page that held this value; the same number on this official page, labelled as this office."
         },
         {
           "url": "https://www.ramapo.edu/about/phone/",
@@ -13666,14 +13675,6 @@
                 "text_sha256": "3bac3cd80e9cf3c1814ab4e4f3ebdedc6e21936d1eb6fbd4983362762ca9ce8c",
                 "reason": "The center home, contact and study-abroad/ISSS contact blocks list phone, email and staff contacts without ranking one general contact channel above the others. Task-specific directions are kept as contact notes."
               }
-            },
-            {
-              "url": "https://www.ramapo.edu/study-abroad/scholarships/pell-students/",
-              "section": "Ramapo College Partners\u2019 Scholarships for Pell Grant Eligible Students",
-              "reviewed": {
-                "text_sha256": "a2eef4a9a35a1c42a7e3429dc2fd29525022c2c5f3f729a60ceacd791d6aab4a",
-                "reason": "The center home, contact and study-abroad/ISSS contact blocks list phone, email and staff contacts without ranking one general contact channel above the others. Task-specific directions are kept as contact notes."
-              }
             }
           ]
         },
@@ -13705,14 +13706,6 @@
                 "text_sha256": "3bac3cd80e9cf3c1814ab4e4f3ebdedc6e21936d1eb6fbd4983362762ca9ce8c",
                 "reason": "The center home, contact and study-abroad/ISSS contact blocks list phone, email and staff contacts without ranking one general contact channel above the others. Task-specific directions are kept as contact notes."
               }
-            },
-            {
-              "url": "https://www.ramapo.edu/study-abroad/scholarships/pell-students/",
-              "section": "Ramapo College Partners\u2019 Scholarships for Pell Grant Eligible Students",
-              "reviewed": {
-                "text_sha256": "a2eef4a9a35a1c42a7e3429dc2fd29525022c2c5f3f729a60ceacd791d6aab4a",
-                "reason": "The center home, contact and study-abroad/ISSS contact blocks list phone, email and staff contacts without ranking one general contact channel above the others. Task-specific directions are kept as contact notes."
-              }
             }
           ]
         }
@@ -13721,11 +13714,11 @@
         {
           "field": "office",
           "value": "ASB123",
-          "reason": "This study-abroad scholarship section tells students to visit the Roukema Center at ASB-123. The center's current home page \"Location & Hours\" places it in C-wing, Suite 213, so ASB-123 is kept out as an older, conflicting location rather than a second current office.",
+          "reason": "Re-pointed 2026-11-01 (not reviewed by Dan): this orientation contact block lists the Roukema Center at ASB-123. The center's current home page \"Location & Hours\" places it in C-wing, Suite 213, so ASB-123 is kept out as an older, conflicting location rather than a second current office.",
           "evidence": {
-            "url": "https://www.ramapo.edu/study-abroad/scholarships/pell-students/",
-            "section": "Ramapo College Partners\u2019 Scholarships for Pell Grant Eligible Students",
-            "text_sha256": "a2eef4a9a35a1c42a7e3429dc2fd29525022c2c5f3f729a60ceacd791d6aab4a"
+            "url": "https://www.ramapo.edu/inter-students/orientation/",
+            "section": "International & Visiting Student Orientation",
+            "text_sha256": "e4baa270e7d03f866a7eb681ddf311f4c69c2457ae8f81ecc69d44497f892278"
           }
         },
         {
