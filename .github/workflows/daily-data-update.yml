@@ -310,7 +310,7 @@ jobs:
       - name: Build the release graph from the campus database
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: python brain/scripts/build_graph.py --out .published
+        run: python brain/scripts/build_graph.py --out .published --read-seconds 900
 
       - name: Build the meaning index
         env:
