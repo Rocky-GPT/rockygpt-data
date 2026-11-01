@@ -330,4 +330,9 @@ jobs:
       - name: Store the index beside the release
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: python brain/scripts/publish_meaning_index.py --dir .published
+        # The URL asks Neon for full certificate checks (sslmode=verify-full), and psycopg looks
+        # for ~/.postgresql/root.crt, which a runner lacks. Trust the same roots the Brain's own
+        # connections use (certifi; retrieval/postgres.py), as the graph step above already does.
+        run: |
+          PGSSLROOTCERT="$(python -c 'import certifi; print(certifi.where())')" \
+            python brain/scripts/publish_meaning_index.py --dir .published
