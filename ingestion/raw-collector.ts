@@ -664,7 +664,9 @@ async function fetchHtmlWithRetry(
       html: response.text(),
       contentType: response.headers.get('content-type') || '',
     };
-  } catch {
+  } catch (error) {
+    // Say why, so a failed collection names the page and the reason instead of only a count.
+    console.warn(`${url}: no usable page (${error instanceof Error ? error.message : String(error)})`);
     return { url, statusCode: null, html: '', contentType: '' };
   }
 }
@@ -693,6 +695,15 @@ function successfulPage(page: RawPageV1): boolean {
   return page.statusCode !== null && page.statusCode >= 200 && page.statusCode < 400;
 }
 
+/** The pages that did not count as successful, so the error says which ones to look at. */
+function failedPagesNote(pages: RawPageV1[]): string {
+  const failed = pages.filter(page => !successfulPage(page));
+  if (failed.length === 0) return '';
+  const shown = failed.slice(0, 20).map(page => `${page.url} (${page.statusCode ?? 'no response'})`);
+  const more = failed.length > shown.length ? `, and ${failed.length - shown.length} more` : '';
+  return ` Failed: ${shown.join(', ')}${more}.`;
+}
+
 export function assertRawCollectionCandidate(
   dataset: RawDatasetV1,
   options: Pick<
@@ -718,7 +729,8 @@ export function assertRawCollectionCandidate(
     successfulPages.length < options.minimumSuccessfulPages
   ) {
     throw new Error(
-      `${dataset.dataset}: collected ${successfulPages.length} successful pages; expected at least ${options.minimumSuccessfulPages}.`
+      `${dataset.dataset}: collected ${successfulPages.length} successful pages; expected at least ${options.minimumSuccessfulPages}.` +
+        failedPagesNote(dataset.pages)
     );
   }
 
@@ -730,7 +742,8 @@ export function assertRawCollectionCandidate(
         : seedPages.filter(successfulPage).length / dataset.seedUrls.length;
     if (rate < options.minimumSeedSuccessRate) {
       throw new Error(
-        `${dataset.dataset}: seed success rate ${(rate * 100).toFixed(1)}% is below ${(options.minimumSeedSuccessRate * 100).toFixed(0)}%.`
+        `${dataset.dataset}: seed success rate ${(rate * 100).toFixed(1)}% is below ${(options.minimumSeedSuccessRate * 100).toFixed(0)}%.` +
+          failedPagesNote(seedPages)
       );
     }
   }
