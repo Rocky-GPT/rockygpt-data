@@ -424,6 +424,20 @@ CREATE TABLE IF NOT EXISTS rockygpt_v2.release_artifacts (
   PRIMARY KEY (dataset_version_id, artifact_key)
 );
 
+-- The Brain's meaning index for a release, 8-bit vectors with one scale each, stored by
+-- rockygpt-brain scripts/publish_meaning_index.py and read by a Brain on Postgres (migration 034).
+CREATE TABLE IF NOT EXISTS rockygpt_v2.release_meaning_indexes (
+  dataset_version_id UUID PRIMARY KEY REFERENCES rockygpt_v2.dataset_versions(id) ON DELETE CASCADE,
+  identity_hash TEXT NOT NULL,
+  model TEXT NOT NULL,
+  dimensions INTEGER NOT NULL CHECK (dimensions > 0),
+  meta JSONB NOT NULL,
+  vectors BYTEA NOT NULL,
+  scales BYTEA NOT NULL,
+  content_hash TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- Student and operator ratings. rockygpt-brain writes this table through
 -- POST /v1/feedback and reads it for the Dev control room.
 CREATE TABLE IF NOT EXISTS rockygpt_v2.feedback (
