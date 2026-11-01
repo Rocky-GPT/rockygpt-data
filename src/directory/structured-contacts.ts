@@ -45,6 +45,11 @@ export type DirectoryPublicationSourceKey = 'campus-directory' | 'faculty';
  */
 export interface StructuredDirectoryContact extends ContactRecord {
   searchable: string;
+  /**
+   * A faculty or staff email the listing shows only as a username beside a contact form
+   * ("E-mail: skurzman"), kept because a page in this run's capture states the full address.
+   */
+  emailEvidence?: { url: string; heading: string };
   publicationSourceKey: DirectoryPublicationSourceKey;
   sourceRecordKey: string;
   /** Alternative names explicitly present in the published directory. */
@@ -130,7 +135,28 @@ function mergeFaculty(left: FacultyContactSeed, right: FacultyContactSeed): Facu
   };
 }
 
-function facultyContacts(input: unknown): StructuredDirectoryContact[] {
+/** The username a listing shows beside "E-mail:" when it links a contact form, not an address. */
+const LISTED_USERNAME = /\bE-?mail:\s*([a-z][a-z0-9._-]{1,30})\s*\(https?:\/\/[^)\s]*contact-form/i;
+
+/**
+ * A full ramapo.edu address for a listed username, only where a captured page states that
+ * exact address: the first page and section that do, else nothing.
+ */
+export function publishedAddress(
+  username: string, capturedPages?: ReadonlyMap<string, CapturedPage>,
+): { email: string; url: string; heading: string } | undefined {
+  const address = `${username}@ramapo.edu`.toLowerCase();
+  const pattern = new RegExp(`(^|[^a-z0-9._-])${address.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![a-z0-9-])`, 'i');
+  for (const page of [...(capturedPages?.values() ?? [])].sort((a, b) => a.url.localeCompare(b.url))) {
+    for (const section of page.sections) {
+      if (pattern.test(section.text)) return { email: address, url: page.url, heading: section.heading };
+    }
+  }
+  return undefined;
+}
+
+function facultyContacts(input: unknown, capturedPages?: ReadonlyMap<string, CapturedPage>,
+): StructuredDirectoryContact[] {
   if (!Array.isArray(input)) return [];
   const byNameAndSchool = new Map<string, FacultyContactSeed>();
   for (const value of input) {
@@ -151,7 +177,10 @@ function facultyContacts(input: unknown): StructuredDirectoryContact[] {
     )
     .map((contact) => {
       const normalizedPhone = parseAndNormalizePhone(contact.phone);
+      const username = contact.email ? undefined : LISTED_USERNAME.exec(contact.bio)?.[1];
+      const found = username ? publishedAddress(username, capturedPages) : undefined;
       return {
+        ...(found ? { emailEvidence: { url: found.url, heading: found.heading } } : {}),
         name: contact.name,
         type: 'person' as const,
         title: contact.title || undefined,
@@ -163,7 +192,7 @@ function facultyContacts(input: unknown): StructuredDirectoryContact[] {
         prefers_email: normalizedPhone.prefers_email,
         raw_phone: normalizedPhone.raw_phone || undefined,
         phone_normalization_status: normalizedPhone.phone_normalization_status,
-        email: contact.email,
+        email: contact.email || found?.email,
         office: contact.office,
         source: {
           sourceId: 'faculty-directory',
@@ -324,7 +353,7 @@ export function buildStructuredDirectoryContacts(
       evidence,
     };
   });
-  const contacts = [...offices, ...others, ...facultyContacts(facultyInput)].map(contact => {
+  const contacts = [...offices, ...others, ...facultyContacts(facultyInput, capturedPages)].map(contact => {
     const fields = normalizeContactFields(contact);
     return {
       ...contact,
@@ -337,6 +366,7 @@ export function buildStructuredDirectoryContacts(
         raw_fields: { name: contact.name, title: contact.title, department: contact.department, office: contact.office },
         review_flags: [],
         ...(contact.evidence ? { evidence: contact.evidence } : {}),
+        ...(contact.emailEvidence ? { email_evidence: contact.emailEvidence } : {}),
       },
     };
   });

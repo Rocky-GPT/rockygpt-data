@@ -97,6 +97,16 @@ test('a source that narrows what it collects compares only the previous pages it
   } finally {fs.rmSync(dir,{recursive:true,force:true});}
 });
 
+test('a collection short of its successful pages names the pages that failed', () => {
+  const outputPath=path.join(os.tmpdir(),'rocky-raw-none','none.raw.json');
+  assert.throws(()=>assertRawCollectionCandidate(dataset(2,1),{outputPath,minimumSuccessfulPages:3}),
+    /collected 2 successful pages; expected at least 3\. Failed: https:\/\/example\.edu\/policy \(404\)\./);
+  const seeds={...dataset(1,1),seedUrls:['https://example.edu/policy','https://example.edu/other']};
+  seeds.pages=seeds.pages.map(item=>({...item,sourceType:'seed' as const}));
+  assert.throws(()=>assertRawCollectionCandidate(seeds,{outputPath,minimumSeedSuccessRate:1}),
+    /seed success rate 50\.0% is below 100%\. Failed: https:\/\/example\.edu\/policy \(404\)\./);
+});
+
 test('HTML crawl retains document links without fetching them or fetching another seed twice', async () => {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'rocky-raw-crawl-'));
   const original=globalThis.fetch;

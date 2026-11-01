@@ -234,3 +234,74 @@ jobs:
               --label data-refresh \
               --body "$incident_body"
           fi
+
+  # The Brain finds programs, courses, people, events and how-to sections by meaning only with
+  # the active release's meaning index. Built from whichever release is active, so it runs even
+  # when today's refresh failed and an older release still serves; texts unchanged since the last
+  # run are not embedded again (the cache is kept between runs).
+  meaning-index:
+    needs: update-data
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply the database schema (adds the index table, migration 034)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run data:schema
+
+      - name: Checkout the Brain
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: main
+          path: brain
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install the Brain
+        run: pip install -e './brain[graph]'
+
+      - name: Restore the embedding and question caches
+        uses: actions/cache/restore@v4
+        with:
+          path: .meaning-cache
+          key: meaning-cache-${{ github.run_id }}
+          restore-keys: meaning-cache-
+
+      - name: Build the release graph from the campus database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python brain/scripts/build_graph.py --out .published
+
+      - name: Build the meaning index
+        env:
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python brain/scripts/build_meaning_index.py --dir .published --cache .meaning-cache
+
+      - name: Save the embedding and question caches
+        if: ${{ always() && hashFiles('.meaning-cache/questions.json') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: .meaning-cache
+          key: meaning-cache-${{ github.run_id }}
+
+      - name: Store the index beside the release
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python brain/scripts/publish_meaning_index.py --dir .published
