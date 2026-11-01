@@ -177,12 +177,15 @@ jobs:
               --jq '.[] | select(.title == "[Data Refresh] Daily refresh failing") | .number' \
               | head -n 1
           )"
-          kept_report=data/review/refresh-kept-sources.md
-          if [[ -f "$kept_report" ]]; then
-            # Published, but some source kept the active release's copy: the incident stays open
-            # with the reason until that source is fixed.
-            kept_body="$(printf '@%s Published, but kept some sources from the previous release.\n\n- Run: %s\n\n%s' \
-              "$REPOSITORY_OWNER" "$RUN_URL" "$(cat "$kept_report")")"
+          # Published, but some source kept the active release's copy or some reviewed topic was
+          # withheld because its page changed: the incident stays open with the reasons.
+          reports=()
+          for report in data/review/refresh-kept-sources.md data/review/refresh-withheld-topics.md; do
+            if [[ -f "$report" ]]; then reports+=("$report"); fi
+          done
+          if (( ${#reports[@]} )); then
+            kept_body="$(printf '@%s Published, but some data needs review.\n\n- Run: %s\n\n%s' \
+              "$REPOSITORY_OWNER" "$RUN_URL" "$(cat "${reports[@]}")")"
             gh label create data-refresh \
               --repo "$REPOSITORY" \
               --color B60205 \

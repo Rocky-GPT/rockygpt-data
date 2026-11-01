@@ -4,7 +4,9 @@
  * retired topic (a program that ended, a center that left) says so in its page's own words. A
  * topic publishes only when that section is in this run's capture with the reviewed text and
  * still holds the quote, and every office it names is an identity in the graph by exact name.
+ * A topic whose page changed is withheld until it is reviewed again; the other topics publish.
  */
+import path from 'node:path';
 import { type CapturedPage, contactSectionHash, evidenceText, pageKey } from '../directory/contact-evidence';
 
 export interface ReviewedTopic {
@@ -24,6 +26,9 @@ export interface ReviewedTopic {
 export interface TopicEvidence { url: string; section: string; text_sha256: string; quote: string }
 export interface ReviewedTopics { schema_version: 1; reviewed_on: string; topics: ReviewedTopic[] }
 export interface CheckedTopic extends ReviewedTopic { checked_at: string }
+/** A topic left out of this release because Ramapo's page no longer says what was reviewed. */
+export interface WithheldTopic { name: string; reason: string }
+export interface TopicCheck { topics: CheckedTopic[]; withheld: WithheldTopic[] }
 
 const words = (text: string) => text.replace(/\s+/g, ' ').trim().toLowerCase();
 
@@ -44,11 +49,18 @@ function sectionProblem(item: TopicEvidence, pages: ReadonlyMap<string, Captured
   return null;
 }
 
-/** The topics whose cited sections still say what was reviewed; anything else is an error. */
+/**
+ * The topics whose cited sections still say what was reviewed. A topic whose page changed (gone,
+ * section changed, quote missing) is withheld with the reason, never published from the older
+ * reading, and the rest publish: one page Ramapo edits must not hold back every source (11-01, the
+ * Emergency page's retirement stopped the daily publish). A mistake in the reviewed file itself (a
+ * duplicate, an office the graph lacks, a retired topic naming offices) is still an error.
+ */
 export function checkTopics(reviewed: ReviewedTopics, pages: ReadonlyMap<string, CapturedPage>,
-  identityNames: ReadonlySet<string>): CheckedTopic[] {
+  identityNames: ReadonlySet<string>): TopicCheck {
   const problems: string[] = [];
   const checked: CheckedTopic[] = [];
+  const withheld: WithheldTopic[] = [];
   const seen = new Set<string>();
   for (const topic of reviewed.topics) {
     const fail = (why: string) => problems.push(`${topic.name}: ${why}`);
@@ -65,9 +77,20 @@ export function checkTopics(reviewed: ReviewedTopics, pages: ReadonlyMap<string,
     const stray = extra.flatMap(item => item.handled_by).filter(name => !topic.handled_by.includes(name));
     if (stray.length) { fail(`cites a section for ${stray.join(', ')}, which it does not list`); continue; }
     const why = [topic.evidence, ...extra].map(item => sectionProblem(item, pages)).find(Boolean);
-    if (why) { fail(why); continue; }
+    if (why) { withheld.push({ name: topic.name, reason: why }); continue; }
     checked.push({ ...topic, checked_at: pages.get(pageKey(topic.evidence.url))?.fetchedAt || '' });
   }
   if (problems.length) throw new Error(`Reviewed topics need review:\n${problems.join('\n')}`);
-  return checked;
+  return { topics: checked, withheld };
+}
+
+/** Where a publish that withheld topics leaves its note for the data-refresh incident. */
+export const WITHHELD_TOPICS_REPORT = path.join('data', 'review', 'refresh-withheld-topics.md');
+
+/** The withheld topics as a review note, or null when every topic published. */
+export function withheldTopicsReport(withheld: readonly WithheldTopic[]): string | null {
+  if (!withheld.length) return null;
+  return ['Withheld these reviewed topics because their pages changed; review each again in',
+    '`src/reference/campus-topics.json`:', '',
+    ...withheld.map(topic => `- ${topic.name}: ${topic.reason}`), ''].join('\n');
 }
