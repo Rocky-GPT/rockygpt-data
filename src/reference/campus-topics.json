@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "reviewed_on": "2026-10-15",
+  "reviewed_on": "2026-11-01",
   "$comment": [
     "Topics: ramapo.edu sites with no office behind them, each pointing to the offices its own page names (Dan, 2026-10-15: topics for most, a note for the two that are gone).",
-    "Every quote is exact text of its cited section (pieces in page order joined by ' … '); a changed section or a name the graph lacks stops the publish."
+    "Every quote is exact text of its cited section (pieces in page order joined by ' … '); a topic whose section changed is withheld until reviewed again (the rest publish); a name the graph lacks stops the publish."
   ],
   "topics": [
     {
@@ -145,12 +145,12 @@
         "Public Safety (Non-Emergency)"
       ],
       "evidence": {
-        "url": "https://www.ramapo.edu/emergency/",
-        "section": "Reporting an Emergency at Ramapo College",
-        "text_sha256": "6674f0acd4a768cf0328c8ce860d8d3744c11dc9fc6a47237c8908b8edd159b0",
-        "quote": "Call Public Safety at 684-6666 or ext. 6666 from a campus phone or go to the Public Safety Office in C-102."
+        "url": "https://www.ramapo.edu/publicsafety/",
+        "section": "Public Safety Contact Information",
+        "text_sha256": "66bb0695f2b402c93b350e49c7ffea2e761d7485c49120c55b9c7893cff3b4d3",
+        "quote": "Campus Public Safety: (201) 684-6666 Office: Ground floor, C-Wing, C-102"
       },
-      "note": "The page tells people to report an emergency to Public Safety at 684-6666 (the Emergency line) or at the Public Safety Office in C-102, the room both Public Safety entries share."
+      "note": "Ramapo retired www.ramapo.edu/emergency/: since 2026-11-01 it redirects to the Public Safety home page, whose sidebar still links \"Emergency Preparedness\" there. That page's contact section gives Campus Public Safety at (201) 684-6666 (the Emergency line) and the office in C-102, the room both Public Safety entries share."
     },
     {
       "name": "Student Research",
@@ -224,7 +224,7 @@
       "evidence": {
         "url": "https://www.ramapo.edu/digital-accessibility/help-support/",
         "section": "Help & Support",
-        "text_sha256": "a75626c4d0b091a7c5e7c31bc62efe29496899eea4255949f91e44541349a091",
+        "text_sha256": "a462114eb5aafea3bb189e46640ca20ad538346907a9fbc4c6f14e837dee400a",
         "quote": "Instructional Design Center (https://www.ramapo.edu/idc) … ITS Helpdesk (https://www.ramapo.edu/its/help-desk/) … Office of Specialized Services (https://www.ramapo.edu/oss/) … Office of Web Administration (https://www.ramapo.edu/marketing-communications/web-administration/)"
       },
       "more_evidence": [
@@ -238,7 +238,7 @@
           ]
         }
       ],
-      "note": "Help & Support sends course materials to the IDC, software and assistive technology to the ITS Helpdesk, student accommodations to OSS and web accessibility to the Office of Web Administration, which the Marketing and Branding home page says it oversees (\"the official College websites\")."
+      "note": "Help & Support sends course materials to the IDC, software and assistive technology to the ITS Helpdesk, student accommodations to OSS and web accessibility to the Office of Web Administration, which the Marketing and Branding home page says it oversees (\"the official College websites\"). On 2026-11-01 the section added a fifth entry, \"Communications and Marketing / Social Media\" (https://www.ramapo.edu/social-media/) for college social media accounts; the four entries above are unchanged word for word."
     },
     {
       "name": "Sustainability at Ramapo College",

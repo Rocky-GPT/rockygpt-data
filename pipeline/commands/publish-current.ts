@@ -25,7 +25,7 @@ import { readSkippedSections } from '../../ingestion/folder-sites';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
 import { menuDocuments, menuListings } from '../../src/data-v2/menu-documents';
-import { checkTopics, type ReviewedTopics } from '../../src/data-v2/campus-topics';
+import { checkTopics, withheldTopicsReport, WITHHELD_TOPICS_REPORT, type ReviewedTopics } from '../../src/data-v2/campus-topics';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 import { assertQualityV2, validateCurrentDatasetV2 } from '../quality/validate';
 import { CRITICAL_FACT_VALIDITY_V2, CRITICAL_FACT_VALUES_V2 } from './check-quality';
@@ -290,13 +290,22 @@ async function insertStructured(
     counts.menu_listings = (counts.menu_listings || 0) + 1;
   }
   // Reviewed topics: sites with no office behind them, each pointing to the offices its own page
-  // names. A topic whose cited section changed, or that names an office the graph lacks, stops
-  // the publish: it must be reviewed again, never published from an older reading.
+  // names. A topic whose cited section changed is withheld until it is reviewed again, never
+  // published from an older reading; the workflow posts the list on the data-refresh incident.
+  // A topic that names an office the graph lacks stops the publish.
   const seeded = readJson<{ entities: Array<{ kind: string; name: string }> }>('src/reference/campus-identities.json').entities;
   const desks = readJson<{ archway_contacts: Array<{ group: string }> }>('src/reference/campus-identity-reviews.json').archway_contacts;
   const named = new Set([...seeded.filter(entity => ['office', 'venue', 'facility'].includes(entity.kind)).map(entity => entity.name),
     ...desks.map(desk => desk.group)]);
-  for (const topic of checkTopics(readJson<ReviewedTopics>('src/reference/campus-topics.json'), loadCapturedPages(), named)) {
+  const topicCheck = checkTopics(readJson<ReviewedTopics>('src/reference/campus-topics.json'), loadCapturedPages(), named);
+  const topicReport = withheldTopicsReport(topicCheck.withheld);
+  fs.rmSync(WITHHELD_TOPICS_REPORT, { force: true });
+  if (topicReport) {
+    fs.mkdirSync(path.dirname(WITHHELD_TOPICS_REPORT), { recursive: true });
+    fs.writeFileSync(WITHHELD_TOPICS_REPORT, topicReport);
+    console.warn(topicReport);
+  }
+  for (const topic of topicCheck.topics) {
     await client.query(
       `INSERT INTO rockygpt_v2.campus_topics
        (dataset_version_id, source_id, source_record_key, name, status, handled_by, url, section, quote, refer_url,
