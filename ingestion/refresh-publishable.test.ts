@@ -98,13 +98,18 @@ test('hours that no longer replay from their archived pages are recollected', ()
 });
 
 test('a course catalog captured before courses carried requisites is recollected', () => {
-  // Production served a July capture whose courses had no requisites field, so the Brain said
-  // "CMPS 231 has no published prerequisites" though the catalog lists CMPS 148.
+  // Production served a July capture in which every course had "requisites": [], so the Brain
+  // said "CMPS 231 has no published prerequisites" though the catalog lists CMPS 148.
   const catalog = SOURCE_REFRESH_SCRIPTS['academic-programs'][0];
-  const july = { 'CMPS 231': { code: 'CMPS 231', name: 'DATA STRUCTURES', credits: 4 } };
+  const july = {
+    'CMPS 231': { code: 'CMPS 231', name: 'DATA STRUCTURES', requisites: [] },
+    'SOCI 101': { code: 'SOCI 101', name: 'INTRODUCTION TO SOCIOLOGY', requisites: [] },
+  };
   assert.equal(coursesArtifactRequiresRefresh(july), true);
   assert.ok(refreshScriptsForArtifactCompatibility({ faculty: [], hours: [], courses: july })
     .includes(catalog));
+  // Older still: no requisites field at all.
+  assert.equal(coursesArtifactRequiresRefresh({ 'CMPS 231': { code: 'CMPS 231' } }), true);
 
   const current = {
     'CMPS 231': { code: 'CMPS 231', requisites: [{ name: 'Prerequisite Course' }] },

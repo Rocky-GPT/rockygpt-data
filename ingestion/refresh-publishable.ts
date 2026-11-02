@@ -119,16 +119,21 @@ export function hoursReplayRequiresRefresh(raw: unknown, sources: unknown): bool
 
 /**
  * The catalog collector writes a requisites list on every course, empty when the catalog
- * publishes none (Sept 24, 2026). A course record without one was captured by the older
- * collector, so its prerequisites are missing, not absent: the Brain would read the empty
- * list as "no published prerequisites". The catalog's 180-day freshness never asks for a
- * recollection, so a July capture would keep publishing that until January.
+ * publishes none (Sept 24, 2026), and the real catalog has hundreds of courses with
+ * prerequisites (879 of 2,658 on Oct 13). A catalog where no course has one was captured by
+ * an older collector: production served a July 16 capture of 3,344 courses, every one with
+ * "requisites": [], and the Brain said "CMPS 231 has no published prerequisites" though the
+ * catalog lists CMPS 148. The catalog's 180-day freshness would not have recollected it until
+ * January.
  */
 export function coursesArtifactRequiresRefresh(input: unknown): boolean {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return true;
   const courses = Object.values(input as Record<string, unknown>);
-  return courses.length === 0 || courses.some((course) =>
-    !course || typeof course !== 'object' || !Array.isArray((course as { requisites?: unknown }).requisites));
+  const requisites = courses.map((course) => course && typeof course === 'object'
+    ? (course as { requisites?: unknown }).requisites : undefined);
+  return courses.length === 0
+    || requisites.some((list) => !Array.isArray(list))
+    || !requisites.some((list) => Array.isArray(list) && list.length > 0);
 }
 
 export function refreshScriptsForArtifactCompatibility(
