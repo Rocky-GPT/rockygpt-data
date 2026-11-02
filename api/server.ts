@@ -251,7 +251,7 @@ async function handleRequest(
 /** Creates an unstarted server so integration tests can bind an ephemeral port. */
 export function createDataServer(env: NodeJS.ProcessEnv = process.env): http.Server {
   const service = http.createServer((incoming, response) => {
-    void handleRequest(incoming, response, env.STAGING_SERVICE_TOKEN).catch((error) => {
+    void handleRequest(incoming, response, env.SERVICE_TOKEN || env.STAGING_SERVICE_TOKEN).catch((error) => {
       // This is the final process boundary. No malformed request or unexpected
       // route bug is allowed to become an unhandled rejection that exits Node.
       console.error('Unhandled data request failure:', error);
