@@ -382,7 +382,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   linkEventOrganizers(entities, snapshot.events ?? []);
   // Topics to the offices their rows name, and shuttle stops as nodes routes stop at.
   linkTopicOffices(entities, snapshot.campus_topics ?? []);
-  const stops = compileStops(entities, snapshot.shuttle_stops ?? [], campusBuildings, inputs.campusMap, inputs.collectedAt?.transportation);
+  const stops = compileStops(entities, snapshot.shuttle_stops ?? [], campusBuildings, inputs.campusMap, inputs.collectedAt?.transportation, ledger);
   entities.push(...stops.entities);
   addGraphRecords(graphRecords, 'stops', stops.records);
   // What each office's own site says: an office, venue, facility or Archway group (a center, a
@@ -458,11 +458,11 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   entities.push(...clubPages.entities);
   unresolved.push(...clubPages.unresolved);
   // Office staff: the people each office's own pages list beside their own address, listed_by it.
-  const staff = compileOfficeStaff(entities, snapshot.office_sections ?? [], inputs.collectedAt?.['office-pages']);
+  const staff = compileOfficeStaff(entities, snapshot.office_sections ?? [], inputs.collectedAt?.['office-pages'], ledger);
   entities.push(...staff.entities);
   addGraphRecords(graphRecords, 'staff', staff.records);
   // Parking lots, from the reviewed list of what the Public Safety parking pages say (parking-lots.json).
-  const parking = compileParkingLots(entities, snapshot.office_sections ?? [], parkingLots as ReviewedParking, campusBuildings, inputs.collectedAt?.['office-pages']);
+  const parking = compileParkingLots(entities, snapshot.office_sections ?? [], parkingLots as ReviewedParking, campusBuildings, inputs.collectedAt?.['office-pages'], ledger);
   entities.push(...parking.entities);
   unresolved.push(...parking.unresolved);
   addGraphRecords(graphRecords, 'parking_lots', parking.records);
