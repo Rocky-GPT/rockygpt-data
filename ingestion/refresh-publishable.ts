@@ -117,8 +117,23 @@ export function hoursReplayRequiresRefresh(raw: unknown, sources: unknown): bool
   return hoursSourceErrors(raw, sources).length > 0;
 }
 
+/**
+ * The catalog collector writes a requisites list on every course, empty when the catalog
+ * publishes none (Sept 24, 2026). A course record without one was captured by the older
+ * collector, so its prerequisites are missing, not absent: the Brain would read the empty
+ * list as "no published prerequisites". The catalog's 180-day freshness never asks for a
+ * recollection, so a July capture would keep publishing that until January.
+ */
+export function coursesArtifactRequiresRefresh(input: unknown): boolean {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return true;
+  const courses = Object.values(input as Record<string, unknown>);
+  return courses.length === 0 || courses.some((course) =>
+    !course || typeof course !== 'object' || !Array.isArray((course as { requisites?: unknown }).requisites));
+}
+
 export function refreshScriptsForArtifactCompatibility(
-  artifacts: Readonly<{ faculty?: unknown; hours?: unknown; hoursRaw?: unknown; hoursSources?: unknown }>,
+  artifacts: Readonly<{ faculty?: unknown; hours?: unknown; hoursRaw?: unknown; hoursSources?: unknown;
+    courses?: unknown }>,
   now = new Date()
 ): string[] {
   const replays = !('hoursSources' in artifacts)
@@ -129,6 +144,10 @@ export function refreshScriptsForArtifactCompatibility(
       : []),
     ...(hoursArtifactRequiresRefresh(artifacts.hours, now) || !replays
       ? SOURCE_REFRESH_SCRIPTS['campus-hours']
+      : []),
+    // Checked only when the caller passes the catalog's courses.
+    ...('courses' in artifacts && coursesArtifactRequiresRefresh(artifacts.courses)
+      ? SOURCE_REFRESH_SCRIPTS['academic-programs']
       : []),
   ];
 }
@@ -151,12 +170,21 @@ function readRaw(cwd: string, name: string): unknown {
   }
 }
 
+function readPublic(cwd: string, name: string): unknown {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(cwd, 'public', 'data', name), 'utf8')) as unknown;
+  } catch {
+    return undefined;
+  }
+}
+
 function restoredArtifactCompatibilityScripts(cwd = process.cwd()): string[] {
   return refreshScriptsForArtifactCompatibility({
     faculty: readNormalized(cwd, 'faculty.json'),
     hours: readNormalized(cwd, 'hours.json'),
     hoursRaw: readRaw(cwd, 'hours.raw.json'),
     hoursSources: readRaw(cwd, 'hours-sources.raw.json'),
+    courses: readPublic(cwd, 'courses.json'),
   });
 }
 
