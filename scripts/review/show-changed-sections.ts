@@ -8,12 +8,14 @@
  *
  * --from-r2 first restores the newest archived raw bundle of each source into data/raw (needs
  * the RAW_ARTIFACT_* settings the publish uses). It reads the archive only: it never fetches a
- * college page.
+ * college page. It then runs the publish's completed-office-review gate on the same captures.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
 import { downloadRawArtifactBundle, SOURCE_RAW_ARTIFACT_FILES } from '../../pipeline/raw-artifacts';
+import { checkCompletedOfficeReviews } from '../../pipeline/office-review-gate';
+import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
 import {
   contactSectionHash, evidenceText, loadCapturedPages, pageKey, type CapturedPage,
 } from '../../src/directory/contact-evidence';
@@ -104,6 +106,13 @@ function main(): Promise<void> | void {
       console.log('----- end -----');
     }
     console.log(changed ? `\n${changed} reviewed section(s) of ${name} changed.` : `\nEvery reviewed section of ${name} still matches.`);
+    // The same check the publish runs, over every completed office review, on these captures.
+    const review = JSON.parse(fs.readFileSync('src/reference/office-contact-review.json', 'utf8')) as { offices: Array<{ name: string }> };
+    const check = checkCompletedOfficeReviews(review.offices.map(office => office.name), buildStructuredDirectoryContacts([], pages));
+    for (const office of check.toReview) console.log(`Needs another review (not blocking): ${office}`);
+    for (const office of check.blocking) console.log(`BLOCKS PUBLISH: ${office}`);
+    console.log(check.blocking.length ? `\nThe publish would stop: ${check.blocking.length} office(s).` : '\nThe office review gate passes.');
+    if (check.blocking.length) process.exitCode = 1;
   };
   return run();
 }

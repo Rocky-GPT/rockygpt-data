@@ -11,7 +11,7 @@ on:
         required: true
   push:
     branches: [claude/project-thread-hhsoia]
-    paths: [.github/workflows/show-changed-sections.yml, scripts/review/show-changed-sections.ts]
+    paths: [.github/workflows/show-changed-sections.yml, scripts/review/show-changed-sections.ts, src/reference/directory-contacts.json]
 
 permissions:
   contents: read
