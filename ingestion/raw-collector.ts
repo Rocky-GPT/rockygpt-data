@@ -6,6 +6,7 @@ import { load } from 'cheerio';
 import type { AnyNode } from 'domhandler';
 import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
 import { limit } from './limit';
+import { SiteFetchBlockedError } from './site-guard';
 import { writeJsonFile, writeRawProvenance } from './pipeline-utils';
 import { type RawDatasetV1, type RawPageV1, validateRawDatasetV1 } from './raw-types';
 
@@ -94,6 +95,21 @@ interface FetchHtmlResult {
   statusCode: number | null;
   html: string;
   contentType: string;
+  /** The page's validators, sent back next time so an unchanged page is not downloaded again. */
+  etag?: string;
+  lastModified?: string;
+  /** The site answered 304 Not Modified: the page is the last capture's, confirmed current at fetchedAt. */
+  unchanged?: boolean;
+}
+
+/** The last capture's copy of a page, sent as validators and reused when the site says it has not changed. */
+export interface PreviousSourcePage {
+  url: string;
+  statusCode: number | null;
+  html: string;
+  contentType: string;
+  etag?: string;
+  lastModified?: string;
 }
 
 export interface RawSourceCaptureV1 {
@@ -638,10 +654,40 @@ export function replayRawSourceCapture(capture: RawSourceCaptureV1): RawDatasetV
       externalLinksSeen:new Set(pages.flatMap(page => page.externalLinks)).size},pages};
 }
 
+/**
+ * The last capture's pages that can stand in for a 304 answer, by requested URL: a successful
+ * page with its HTML intact and a validator to send. A missing or unreadable capture gives none.
+ */
+export function previousSourcePages(capturePath: string): Map<string, PreviousSourcePage> {
+  const pages = new Map<string, PreviousSourcePage>();
+  let capture: RawSourceCaptureV1;
+  try {
+    capture = JSON.parse(fs.readFileSync(capturePath, 'utf8')) as RawSourceCaptureV1;
+  } catch {
+    return pages;
+  }
+  if (capture?.schemaVersion !== 1 || !Array.isArray(capture.pages)) return pages;
+  for (const page of capture.pages) {
+    if (!page.etag && !page.lastModified) continue;
+    if (page.statusCode === null || page.statusCode < 200 || page.statusCode >= 300) continue;
+    let html: string;
+    try {
+      html = sourceHtml(page);
+    } catch {
+      continue;
+    }
+    if (!html || createHash('sha256').update(html).digest('hex') !== page.contentHash) continue;
+    pages.set(page.requestedUrl, { url: page.url, statusCode: page.statusCode, html, contentType: page.contentType,
+      ...(page.etag ? { etag: page.etag } : {}), ...(page.lastModified ? { lastModified: page.lastModified } : {}) });
+  }
+  return pages;
+}
+
 async function fetchHtmlWithRetry(
   url: string,
   timeoutMs: number,
-  attempts: number
+  attempts: number,
+  previous?: PreviousSourcePage
 ): Promise<FetchHtmlResult> {
   try {
     const response = await fetchWithPolicy(
@@ -656,15 +702,33 @@ async function fetchHtmlWithRetry(
         timeoutMs,
         attempts,
         expectedContentTypes: ['text/html', 'application/xhtml+xml'],
+        etag: previous?.etag,
+        lastModified: previous?.lastModified,
       }
     );
+    const etag = response.headers.get('etag') || undefined;
+    const lastModified = response.headers.get('last-modified') || undefined;
+    if (response.status === 304 && previous) {
+      return {
+        url: previous.url,
+        statusCode: previous.statusCode,
+        html: previous.html,
+        contentType: previous.contentType,
+        etag: etag ?? previous.etag,
+        lastModified: lastModified ?? previous.lastModified,
+        unchanged: true,
+      };
+    }
     return {
       url: response.url || url,
       statusCode: response.status,
       html: response.text(),
       contentType: response.headers.get('content-type') || '',
+      ...(etag ? { etag } : {}),
+      ...(lastModified ? { lastModified } : {}),
     };
   } catch (error) {
+    if (error instanceof SiteFetchBlockedError) throw error;
     // Say why, so a failed collection names the page and the reason instead of only a count.
     console.warn(`${url}: no usable page (${error instanceof Error ? error.message : String(error)})`);
     return { url, statusCode: null, html: '', contentType: '' };
@@ -807,9 +871,15 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
   const sourcePages: RawSourceCaptureV1['pages'] = [];
   let collectionSucceeded = false;
   const pace = createRequestPacer(options.requestIntervalMs ?? 0);
+  // A retained capture keeps each page's validators, so a page the site says has not changed since
+  // the last capture is reused instead of downloaded again.
+  const capturePath = path.join(path.dirname(options.outputPath), `${options.dataset}-sources.raw.json`);
+  const previousPages = options.retainSourceHtml ? previousSourcePages(capturePath) : new Map<string, PreviousSourcePage>();
+  let unchangedPages = 0;
   async function fetchSource(url: string, sourceType: 'seed' | 'detail'): Promise<FetchHtmlResult & { fetchedAt: string }> {
     await pace();
-    const fetched = await fetchHtmlWithRetry(url, timeoutMs, attempts);
+    const fetched = await fetchHtmlWithRetry(url, timeoutMs, attempts, previousPages.get(url));
+    if (fetched.unchanged) unchangedPages += 1;
     const fetchedAt = new Date().toISOString();
     if (options.retainSourceHtml) {
       const contentHash = createHash('sha256').update(fetched.html).digest('hex');
@@ -923,6 +993,10 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
       fetchedAt: dataset.collectedAt,
     }, path.dirname(options.outputPath));
     collectionSucceeded = true;
+    if (options.retainSourceHtml) {
+      console.log(`${options.dataset}: ${unchangedPages} of ${sourcePages.length} pages unchanged since the last capture ` +
+        `(asked, not downloaded again); ${sourcePages.length - unchangedPages} downloaded.`);
+    }
     return dataset;
   } finally {
     // Keep the original pages even if parsing or a coverage gate fails. The
