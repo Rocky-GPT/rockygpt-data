@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { CampusIdentity } from './campus-identities';
-import { buildingIdentityId, campusBuildingsArtifact, compileBuildingIdentities, roomBuildings } from './campus-buildings';
+import { buildingIdentityId, campusBuildingId, campusBuildingsArtifact, compileBuildingIdentities, roomBuildings } from './campus-buildings';
 
 const building = (name: string, id: string | null, roomPrefixes: string[]) => ({
   key: `building_${name}`, name, category: 'Academic Buildings', aliases: [name.toLowerCase()], roomPrefixes,
@@ -16,13 +16,22 @@ const map = { source: 'https://api.concept3d.com/locations?map=2292', generatedA
 ] };
 const person = (id: string, name: string, key: string): CampusIdentity => ({ id, kind: 'person', name, aliases: [], links: [{ collection: 'contacts', source_key: 'faculty', source_record_keys: [key] }] });
 
-test('only buildings with reviewed room prefixes and their own map location become identities', () => {
+test('every map building is an identity; room prefixes count only at a map pin of its own', () => {
   const artifact = campusBuildingsArtifact(map);
-  assert.deepEqual(artifact.buildings.map(b => [b.concept3d_id, b.name, b.room_prefixes]), [
-    ['1133371', 'Academic Building D', ['D']], ['1133424', 'Anisfield School of Business (ASB)', ['ASB']],
+  assert.deepEqual(artifact.buildings.map(b => [b.record_key, b.name, b.room_prefixes, b.basis]), [
+    ['1133371', 'Academic Building D', ['D'], 'room_prefixes'], ['1133424', 'Anisfield School of Business (ASB)', ['ASB'], 'room_prefixes'],
+    ['1133500', 'Residence Hall', [], 'campus_map'],
+    // Two buildings at one pin, and one with no pin, are keyed by their map entry.
+    ['building_Laurel Hall North Building', 'Laurel Hall North Building', [], 'campus_map'],
+    ['building_Laurel Hall South Building', 'Laurel Hall South Building', [], 'campus_map'],
+    ['building_Visitor Kiosk', 'Visitor Kiosk', [], 'campus_map'],
   ]);
-  assert.deepEqual(artifact.unresolved.map(u => u.name), ['Laurel Hall North Building', 'Visitor Kiosk']);
-  assert.deepEqual(artifact.unresolved.map(u => u.kind), ['unlinked_record', 'unlinked_record']);
+  assert.deepEqual(artifact.unresolved.map(u => [u.name, u.kind]), [['Laurel Hall North Building', 'note'], ['Visitor Kiosk', 'note']]);
+  const [north, south] = artifact.buildings.filter(b => b.name.startsWith('Laurel'));
+  assert.notEqual(campusBuildingId(north), campusBuildingId(south));
+  assert.equal(campusBuildingId(artifact.buildings[0]), buildingIdentityId('1133371'));
+  // One name listed twice at one pin is one building.
+  assert.equal(campusBuildingsArtifact({ buildings: [building('Field', '9', []), { ...building('Field', '9', []), key: 'building_Field_2' }] }).buildings.length, 1);
   assert.deepEqual(artifact.source, { source_key: 'campus-map', title: 'Ramapo Campus Map', canonical_url: 'https://map.ramapo.edu/', trust_tier: 'official_primary', freshness_sla_hours: 4320, domain: 'map' });
   assert.equal(artifact.map_generated_at, map.generatedAt);
   // A rename keeps the building's identity; the ID derives from its map location.

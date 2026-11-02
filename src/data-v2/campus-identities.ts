@@ -2,7 +2,7 @@
 export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages' | 'requirement_groups' | GraphRecordCollection;
 /** Collections stored in the release's `graph-records` artifact (see graph-records.ts), one
  * generic store for every kind added since: the Brain reads all of them with one reader. */
-export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates'] as const;
+export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates', 'buildings', 'map_places'] as const;
 export type GraphRecordCollection = typeof GRAPH_RECORD_COLLECTIONS[number];
 export const IDENTITY_KINDS = ['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course', 'term', 'calendar_date'] as const;
 export const ENTITY_RELATIONSHIPS = ['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of', 'in_term'] as const;
@@ -105,6 +105,9 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
         // One published requirement section (Career Pathways, a shared Gen Ed block) is listed by
         // every program that lists it: requirement groups may have more than one owner.
         if (link.collection === 'requirement_groups') continue;
+        // One campus-map place can be two nodes (Public Safety's two lines; the Anisfield School
+        // of Business and its own office): map places may have more than one owner.
+        if (link.collection === 'map_places') continue;
         if (records.has(target)) {
           const previous = records.get(target);
           if (!previous || !pinned || [...pinned].some(id => previous.has(id))) throw new Error('A source record must have exactly one identity link.');
