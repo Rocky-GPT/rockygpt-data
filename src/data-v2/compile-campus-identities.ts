@@ -25,7 +25,8 @@ import { compileMapPlaces, type CampusMapMatches } from './campus-map-places';
 import campusMapMatches from '../reference/campus-map-places.json';
 import { linkEventOrganizers, linkEventPlaces } from './event-places';
 import { linkClubCategories, linkClubPages } from './club-links';
-import { compileStops, linkTopicOffices } from './graph-links';
+import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, type ReviewedListings } from './graph-links';
+import reviewedListings from '../reference/reviewed-listings.json';
 import { compileOfficeStaff } from './office-staff';
 import { compileParkingLots, type ReviewedParking } from './parking-lots';
 import parkingLots from '../reference/parking-lots.json';
@@ -379,7 +380,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   addGraphRecords(graphRecords, 'buildings', mapPlaces.buildings);
   addGraphRecords(graphRecords, 'map_places', mapPlaces.places);
   // Where each event is held, from its listing's location: a map place, or a building by room or name.
-  linkEventPlaces(entities, snapshot.events ?? [], campusBuildings);
+  linkEventPlaces(entities, snapshot.events ?? [], campusBuildings, list((snapshot.artifacts as Record<string, unknown> | undefined)?.events));
   // Who hosts an event Archway gives no organizer group ID for: the one node named like its organizer.
   linkEventOrganizers(entities, snapshot.events ?? []);
   // Topics to the offices their rows name, and shuttle stops as nodes routes stop at.
@@ -459,6 +460,13 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const clubPages = linkClubPages(entities, snapshot.office_sections ?? []);
   entities.push(...clubPages.entities);
   unresolved.push(...clubPages.unresolved);
+  // Nodes only another office's page knows: a desk known by that office's hours page, a person the
+  // directory files under an office, each shuttle route under the office that publishes its
+  // timetable, and the reviewed listings of one office's page naming another (reviewed-listings.json).
+  linkHoursDesks(entities, snapshot.campus_hours ?? []);
+  linkDirectoryPeople(entities, candidates.filter(c => c.collection === 'contacts').map(c => ({ ...c.row, source_key: c.source, source_record_key: c.key })));
+  linkRouteOffice(entities);
+  unresolved.push(...linkReviewedListings(entities, snapshot.office_sections ?? [], reviewedListings as ReviewedListings).unresolved);
   // Office staff: the people each office's own pages list beside their own address, listed_by it.
   const staff = compileOfficeStaff(entities, snapshot.office_sections ?? [], inputs.collectedAt?.['office-pages'], ledger);
   entities.push(...staff.entities);
