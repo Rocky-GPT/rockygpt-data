@@ -118,3 +118,18 @@ test('rule names, notes, free text and unknown restrictions survive the graph ar
   assert.notEqual(compileRequirementGroups(source, registry, courses).groups[0].id, compiled.id);
   assert.deepEqual(programs, original);
 });
+
+test('a program lists each course its requirement groups name, required or a choice', async () => {
+  const { linkProgramCourses } = await import('./requirement-groups');
+  const entities = structuredClone(registry.entities);
+  linkProgramCourses(entities, compiled(), new Set(courses.courses.map(c => c.id)));
+  const listed = (n: number) => (entities.find(e => e.id === programId(n))!.relationships ?? [])
+    .map(r => r.type === 'lists_course' && 'target_entity_id' in r ? courses.courses.find(c => c.id === r.target_entity_id)?.source_record_key : null).sort();
+  // Required (CMPS 148), a choice (MATH 205 or 237), and a shared Gen Ed choice; a code with no course
+  // (NOPE 999, and the mis-spaced "CMPS  311" the group keeps unresolved) is not linked.
+  assert.deepEqual(listed(1), ['CMPS 147', 'CMPS 148', 'CMPS 331', 'MATH 121', 'MATH 205', 'MATH 237']);
+  assert.deepEqual(listed(2), ['CMPS 147', 'MATH 121']);
+  const cmps147 = entities[0].relationships!.find(r => 'target_entity_id' in r && r.target_entity_id === courses.courses.find(c => c.source_record_key === 'CMPS 147')!.id)!;
+  // Listed twice in the Computer Science BS (Gen Ed and the major): both places are its evidence.
+  assert.equal(cmps147.evidence.length, 2);
+});

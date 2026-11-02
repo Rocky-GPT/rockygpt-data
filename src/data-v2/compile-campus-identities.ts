@@ -17,7 +17,7 @@ import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course
 import { compileSubjectIdentities, courseSubjectsArtifact, type CourseSubjectsArtifact, type CourseSubjectsInput } from './course-subjects';
 import { GRADUATION_PLANS_SOURCE_KEY, graduationPlansInput } from './graduation-plans';
 import { MAJOR_PAGES_SOURCE_KEY, majorPagesInput } from './major-pages';
-import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
+import { compileRequirementGroups, linkProgramCourses, type RequirementGroupsArtifact } from './requirement-groups';
 import { legacyProgramRecordKey, programRecordKey } from './program-records';
 import { compileCalendarIdentities } from './campus-calendar';
 import { addGraphRecords, emptyGraphRecords, type GraphRecordsArtifact } from './graph-records';
@@ -477,6 +477,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     const ids = groupsOf.get(entity.id);
     if (ids?.length) entity.links.push({ collection: 'requirement_groups', source_key: 'program-requirement-groups', source_record_keys: ids });
   }
+  // A program lists each catalog course its requirement groups name (required, or one of the choices).
+  linkProgramCourses(entities, requirementGroups, new Set(courseIdentities.courses.map(course => course.id)));
   validateCampusIdentities(registry);
   return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact, graphRecords };
 }
