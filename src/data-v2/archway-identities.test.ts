@@ -17,7 +17,8 @@ const inputs = () => ({ eventDetails: { pages: [structuredClone(page)] } });
 test('explicit source IDs assemble event→club with original records and actual page time', () => {
   const snapshot = fixture(); const before = JSON.stringify(snapshot);
   const result = compileCampusIdentities({ schema_version: 1, entities: [] }, snapshot, undefined, inputs());
-  assert.equal(result.registry.entities.length, 2);
+  // The event, the club, and the directory category the club is filed under.
+  assert.deepEqual(result.registry.entities.map(e => e.kind).sort(), ['club', 'club_category', 'event']);
   const eventIdentity = result.registry.entities.find(e => e.kind === 'event')!;
   const clubIdentity = result.registry.entities.find(e => e.kind === 'club')!;
   assert.equal(eventIdentity.name, 'Meeting (2026-09-21)');
