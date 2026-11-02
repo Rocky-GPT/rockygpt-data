@@ -199,11 +199,52 @@ export async function runDataRetention(
   };
 }
 
+/**
+ * Deleted rows leave their space inside each table, where later publishes reuse it, so the size
+ * Neon reports does not drop after a cleanup. VACUUM FULL rewrites a table to its live rows and
+ * gives the rest back. It locks the table while it runs (seconds per table at these sizes), so it
+ * is run by hand at a quiet hour, not after every publish. Smallest tables go first, so the
+ * temporary copy each rewrite needs fits in the space the earlier ones freed.
+ */
+export async function vacuumFull(pool: Pool): Promise<{ before: number; after: number }> {
+  const sizeOf = async () => Number((await pool.query<{ bytes: string }>(
+    `SELECT pg_database_size(current_database())::text AS bytes`
+  )).rows[0]?.bytes || 0);
+  const before = await sizeOf();
+  const tables = await pool.query<{ name: string; bytes: string }>(
+    `SELECT format('%I.%I', n.nspname, c.relname) AS name, pg_total_relation_size(c.oid)::text AS bytes
+     FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+     WHERE c.relkind = 'r' AND n.nspname IN ('rockygpt_v2', 'brain_ops')
+       AND pg_total_relation_size(c.oid) > 1048576
+     ORDER BY pg_total_relation_size(c.oid)`
+  );
+  // A rewrite can take longer than the cleanup's 60-second limit; waiting behind a long read
+  // for a lock is not worth it, so give up on that table instead.
+  await pool.query(`SET statement_timeout = 0`);
+  await pool.query(`SET lock_timeout = '15s'`);
+  for (const { name, bytes } of tables.rows) {
+    const started = Date.now();
+    try {
+      await pool.query(`VACUUM (FULL, ANALYZE) ${name}`);
+      const now = await pool.query<{ bytes: string }>(
+        `SELECT pg_total_relation_size($1::regclass)::text AS bytes`, [name]
+      );
+      console.log(`[data-retention] VACUUM FULL ${name}: ${Number(bytes)} -> ${Number(now.rows[0]?.bytes || 0)} bytes in ${Date.now() - started} ms`);
+    } catch (error) {
+      console.warn(`[data-retention] VACUUM FULL ${name} skipped: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  return { before, after: await sizeOf() };
+}
+
 async function main(): Promise<void> {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required.');
+  const options = ['--dry-run', '--vacuum-full'];
   const dryRun = process.argv.slice(2).includes('--dry-run');
-  const unknown = process.argv.slice(2).filter((arg) => arg !== '--dry-run');
+  const vacuum = process.argv.slice(2).includes('--vacuum-full');
+  const unknown = process.argv.slice(2).filter((arg) => !options.includes(arg));
   if (unknown.length) throw new Error(`Unknown option: ${unknown.join(', ')}`);
+  if (dryRun && vacuum) throw new Error('--vacuum-full writes; it cannot run with --dry-run.');
 
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -214,6 +255,10 @@ async function main(): Promise<void> {
   try {
     const summary = await runDataRetention(pool, dryRun);
     console.log(`[data-retention] ${dryRun ? 'Dry run' : 'Completed'}: ${JSON.stringify(summary)}`);
+    if (vacuum) {
+      const { before, after } = await vacuumFull(pool);
+      console.log(`[data-retention] VACUUM FULL done: database ${before} -> ${after} bytes`);
+    }
   } finally {
     await pool.end();
   }

@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '37 8 * * 0'
   workflow_dispatch:
+    inputs:
+      vacuum_full:
+        description: 'Also VACUUM FULL to give deleted space back to Neon (locks each table for seconds; run at a quiet hour)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -15,7 +20,7 @@ concurrency:
 jobs:
   retain:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
@@ -26,4 +31,5 @@ jobs:
       - name: Delete expired telemetry and old dataset payloads
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npm run maintenance:data-retention
+          VACUUM_FULL: ${{ inputs.vacuum_full && '--vacuum-full' || '' }}
+        run: npm run maintenance:data-retention -- $VACUUM_FULL
