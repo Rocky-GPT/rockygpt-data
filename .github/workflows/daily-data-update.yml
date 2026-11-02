@@ -345,5 +345,7 @@ jobs:
         with:
           name: production-graph
           path: .published
+          # upload-artifact v4.4+ skips dot-folders unless asked; without this the step finds nothing.
+          include-hidden-files: true
           retention-days: 7
           if-no-files-found: error
