@@ -47,6 +47,7 @@ import {
 import { applyDatabaseSchema } from '../database/migrations';
 import { programRecordKey } from '../../src/data-v2/program-records';
 import { RELEASE_ARTIFACT_FILES } from '../release-artifact-files';
+import { RELEASE_SNAPSHOT_FILE, writeReleaseSnapshot } from '../release-snapshot';
 
 type JsonRecord = Record<string, unknown>;
 
@@ -72,6 +73,8 @@ const CHUNK_BATCH_SIZE = 500;
 interface PreparedArtifact {
   key: string;
   payload: unknown;
+  /** The file's text, which contentHash hashes; saved for the next refresh (release-snapshot). */
+  content: string;
   contentHash: string;
 }
 
@@ -697,7 +700,7 @@ function prepareReleaseArtifacts(): PreparedArtifact[] {
     const payload = relativePath.endsWith('.json')
       ? JSON.parse(content) as unknown
       : { content };
-    return { key, payload, contentHash: sha256(content) };
+    return { key, payload, content, contentHash: sha256(content) };
   });
 }
 
@@ -1133,6 +1136,19 @@ async function main(): Promise<void> {
     transactionStarted = false;
     step('activate');
     console.log(JSON.stringify({ activated: version, datasetId, releaseId, summary }, null, 2));
+    // What was just uploaded, for the next refresh's restore (the daily workflow keeps it with
+    // actions/cache), so that run does not download this release from the database again.
+    try {
+      writeReleaseSnapshot(path.join(process.cwd(), RELEASE_SNAPSHOT_FILE), {
+        version,
+        artifacts: Object.fromEntries(artifacts.map((artifact) => [artifact.key, artifact.content])),
+        documents: Object.fromEntries(preparedDocuments.map((document) =>
+          [String(document.metadata.sourcePath), document.content])),
+      });
+    } catch (error) {
+      console.warn(`Could not save the release copy for the next refresh: ${
+        error instanceof Error ? error.message : String(error)}`);
+    }
   } catch (error) {
     if (transactionStarted) await client.query('ROLLBACK');
     await pool.query(
