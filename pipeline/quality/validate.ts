@@ -44,6 +44,12 @@ export interface QualityOptionsV2 {
    * certifying the dataset.
    */
   enforceProvenance?: boolean;
+  /**
+   * Report a stale source as a warning instead of an error, for a laptop test
+   * build made from pages already captured (pipeline/test-build.ts). A source
+   * of unknown age is still an error. Never set for a real release.
+   */
+  allowStaleSources?: boolean;
   /** Override the repository root for deterministic fixture tests. */
   cwd?: string;
   /** Override the clock for deterministic freshness/provenance tests. */
@@ -381,7 +387,7 @@ export function validateCurrentDatasetV2(
       const message =
         `Source ${state.key} is stale: ${state.detail}. ` +
         'Refresh the source before publishing.';
-      (enforceProvenance ? errors : warnings).push(message);
+      (enforceProvenance && !options.allowStaleSources ? errors : warnings).push(message);
     } else if (state.status === 'unknown') {
       const message =
         `Source ${state.key} has unknown collection age (${state.detail}). ` +
