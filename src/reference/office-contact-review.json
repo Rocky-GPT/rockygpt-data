@@ -1784,6 +1784,17 @@
           "decision": "saved",
           "reason": "Dan (2026-10-14): publish every office fax the same way, labelled Fax; the Brain now answers a fax question with the fax line alone. Financial Aid, Graduate Admissions, Registrar, Student Conduct, Student Accounts, Testing and Nursing already published theirs.",
           "saved_as": "additionalContacts"
+        },
+        {
+          "reviewed_at": "2026-11-02T23:55:00.000Z",
+          "kind": "exclusions_rebound",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "text_sha256": "eed60e44eaa1180a3db52cb4820694905999675139de1485f0dd351b36691ab3",
+          "previous_evidence": {
+            "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
+          },
+          "reason": "The 2026-11-02 capture of the staff directory added two women's basketball assistant coaches (Clayton Barker, Richard Larcara) with no email or phone. The contact block and every other staff line, including each excluded coach and staff number, are unchanged, so the reviewed absences (no general email, office, hours or preferred contact) and the exclusions are re-bound to the new text. Not reviewed by Dan."
         }
       ]
     },
