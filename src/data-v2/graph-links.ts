@@ -149,11 +149,14 @@ export function linkHoursDesks(entities: CampusIdentity[], hours: Row[]): number
 /**
  * A person the campus directory files under an office ("other" contacts: the President, the Vice
  * Provost, the President's special assistant) is listed_by the one office named exactly like the
- * contact's department. Faculty rows are left alone: their school links them already.
+ * contact's department (an office, or the Archway group that is that office). Faculty rows are left
+ * alone: their school links them already.
  */
 export function linkDirectoryPeople(entities: CampusIdentity[], contacts: Row[]): number {
   const offices = new Map<string, string[]>();
-  for (const office of entities.filter(e => ['office', 'venue', 'facility'].includes(e.kind))) offices.set(office.name, [...offices.get(office.name) ?? [], office.id]);
+  // OWNER_KINDS: an office with an Archway group (the Office of the President) is still that group's
+  // organization when people link; Brain shows it as an office.
+  for (const office of entities.filter(e => OWNER_KINDS.includes(e.kind))) offices.set(office.name, [...offices.get(office.name) ?? [], office.id]);
   const rows = new Map(contacts.map(row => [`${text(row.source_key)}:${text(row.source_record_key)}`, row]));
   let linked = 0;
   for (const person of entities.filter(e => e.kind === 'person')) {
