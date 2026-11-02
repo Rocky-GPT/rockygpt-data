@@ -5,7 +5,7 @@ export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 
 export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates', 'buildings', 'map_places', 'club_categories'] as const;
 export type GraphRecordCollection = typeof GRAPH_RECORD_COLLECTIONS[number];
 export const IDENTITY_KINDS = ['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course', 'term', 'calendar_date', 'club_category'] as const;
-export const ENTITY_RELATIONSHIPS = ['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of', 'in_term', 'held_at', 'listed_by', 'in_category'] as const;
+export const ENTITY_RELATIONSHIPS = ['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of', 'in_term', 'held_at', 'listed_by', 'in_category', 'lists_course'] as const;
 export interface IdentityRecordReference {
   collection: IdentityCollection;
   source_key: string;
