@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "listings": [
+    {
+      "node": "Counseling Center",
+      "listed_by": "Center for Student Wellness",
+      "url": "https://www.ramapo.edu/csw/",
+      "section": "Counseling Services",
+      "quote": "Location: Building D, room D-216 (entrance behind stairwell on left) Phone: (201) 684-7522",
+      "reviewed_at": "2026-11-02",
+      "note": "Approved by Dan's 2026-11-02 OK to link what is sure. The Center for Student Wellness page's Contact Us lists Counseling Services with the same room (D-216) and phone (684-7522) as the Counseling Center's own directory contact."
+    },
+    {
+      "node": "Health Services",
+      "listed_by": "Center for Student Wellness",
+      "url": "https://www.ramapo.edu/csw/",
+      "section": "Valley Medical Group Health Services",
+      "quote": "Location: Valley Medical Group Health Services is located near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road. Phone: (201) 684-7536",
+      "reviewed_at": "2026-11-02",
+      "note": "Approved by Dan's 2026-11-02 OK to link what is sure. The Center for Student Wellness page's Contact Us lists Health Services with the same place (near the South Gate) and phone (684-7536) as Health Services' own directory contact."
+    }
+  ]
+}

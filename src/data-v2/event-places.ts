@@ -2,6 +2,7 @@ import type { CampusIdentity, IdentityEvidence } from './campus-identities';
 import { buildingIdentityId, campusBuildingId, type CampusBuildingsArtifact } from './campus-buildings';
 import { placeName } from './campus-map-places';
 import type { IdentityCoverageIssue } from './compile-campus-identities';
+import { canonicalArchwayEventUrl } from '../archway-event-url';
 
 /**
  * @module data-v2/event-places
@@ -26,8 +27,17 @@ export function eventLocation(row: Row | undefined): string {
 }
 
 /** Adds held_at links to the events whose listed location names a building or a map place. */
-export function linkEventPlaces(entities: CampusIdentity[], events: Row[], artifact: CampusBuildingsArtifact): { linked: number; unresolved: IdentityCoverageIssue[] } {
+export function linkEventPlaces(entities: CampusIdentity[], events: Row[], artifact: CampusBuildingsArtifact, listings: Row[] = []): { linked: number; unresolved: IdentityCoverageIssue[] } {
   const unresolved: IdentityCoverageIssue[] = [];
+  // A stored event row has no location column: the location is on the release's events listing
+  // (the `events` artifact), found by the event's own Archway URL.
+  const listed = new Map<string, Row>();
+  for (const listing of listings) { const url = canonicalArchwayEventUrl(listing.url); if (url) listed.set(url, listing); }
+  const withListing = (row: Row | undefined): Row | undefined => {
+    if (!row || (row.listing && typeof row.listing === 'object')) return row;
+    const listing = listed.get(canonicalArchwayEventUrl(row.event_url) ?? '');
+    return listing ? { ...row, listing } : row;
+  };
   const byPrefix = new Map<string, string>();
   for (const building of artifact.buildings) for (const prefix of building.room_prefixes) byPrefix.set(prefix, campusBuildingId(building));
   const buildingIds = new Set([...artifact.buildings.map(campusBuildingId), ...(artifact.complexes ?? []).map(c => buildingIdentityId(c.concept3d_id))]);
@@ -47,7 +57,7 @@ export function linkEventPlaces(entities: CampusIdentity[], events: Row[], artif
   for (const entity of entities.filter(e => e.kind === 'event')) {
     for (const link of entity.links.filter(l => l.collection === 'events')) {
       for (const key of link.source_record_keys) {
-        const row = rows.get(`${link.source_key}:${key}`);
+        const row = withListing(rows.get(`${link.source_key}:${key}`));
         const location = eventLocation(row);
         if (!row || !location) continue;
         const places = new Set<string>();

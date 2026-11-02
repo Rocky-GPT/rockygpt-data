@@ -50,3 +50,12 @@ test('an event with no organizer group is organized_by the one node named like i
   assert.equal(result.linked, 2);
   assert.equal(made[0].entity.relationships?.[0].evidence[0].field, 'organizer');
 });
+
+test('a stored event row, which has no location column, is placed from the release listing with its URL', () => {
+  const { entity, row } = event(8, '');
+  const stored: Record<string, unknown> = { ...row }; delete stored.listing;
+  const listings = [{ url: 'https://archway.ramapo.edu/rsvp_boot?id=8', location: 'Berrie Center Sharp Theater (BC 125)' },
+    { url: 'https://archway.ramapo.edu/rsvp_boot?id=9', location: 'Wellness Room (E-216)' }];
+  linkEventPlaces([building('building_berrie', 'Berrie Center'), entity], [stored], artifact, listings);
+  assert.deepEqual(entity.relationships?.map(r => [r.type, 'target_entity_id' in r ? r.target_entity_id : null]), [['held_at', id('building_berrie')]]);
+});
