@@ -1,5 +1,11 @@
 /** Curated identity links. Names locate identities; they never generate their IDs. */
-export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages' | 'requirement_groups';
+export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages' | 'requirement_groups' | GraphRecordCollection;
+/** Collections stored in the release's `graph-records` artifact (see graph-records.ts), one
+ * generic store for every kind added since: the Brain reads all of them with one reader. */
+export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates'] as const;
+export type GraphRecordCollection = typeof GRAPH_RECORD_COLLECTIONS[number];
+export const IDENTITY_KINDS = ['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course', 'term', 'calendar_date'] as const;
+export const ENTITY_RELATIONSHIPS = ['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of', 'in_term'] as const;
 export interface IdentityRecordReference {
   collection: IdentityCollection;
   source_key: string;
@@ -17,11 +23,11 @@ export interface CampusIdentityLink {
   selector?: { field: 'faculty_identity' | 'contact_identity' | 'name' | 'catalog_code' | 'menu_venue'; values: string[]; evidence: string };
 }
 export type CampusIdentityRelationship =
-  | { type: 'convener' | 'listed_faculty' | 'organized_by' | 'office_at' | 'located_at' | 'part_of'; target_entity_id: string; evidence: IdentityEvidence[] }
+  | { type: typeof ENTITY_RELATIONSHIPS[number]; target_entity_id: string; evidence: IdentityEvidence[] }
   | { type: 'profile_course' | 'includes_course'; target_record: IdentityRecordReference; evidence: IdentityEvidence[] };
 export interface CampusIdentity {
   id: string;
-  kind: 'office' | 'person' | 'facility' | 'venue' | 'program' | 'club' | 'organization' | 'event' | 'building' | 'school' | 'subject' | 'route' | 'topic' | 'course';
+  kind: typeof IDENTITY_KINDS[number];
   name: string;
   aliases: string[];
   links: CampusIdentityLink[];
@@ -31,7 +37,7 @@ export interface CampusIdentity {
 }
 export interface CampusIdentities { schema_version: 1; entities: CampusIdentity[] }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-const COLLECTIONS = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'campus_topics', 'office_sections', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages', 'requirement_groups'];
+const COLLECTIONS: string[] = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'campus_topics', 'office_sections', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages', 'requirement_groups', ...GRAPH_RECORD_COLLECTIONS];
 // Relationships whose target is a catalog record, not an identity.
 const RECORD_TARGETS = ['profile_course', 'includes_course'];
 function object(value: unknown, keys: string[], label: string, optional: string[] = []): Record<string, unknown> {
@@ -69,7 +75,7 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
     text(entity.id, 'Identity id');
     if (!UUID.test(entity.id) || ids.has(entity.id)) throw new Error('Identity IDs must be unique, persistent lowercase UUIDs.');
     ids.add(entity.id);
-    if (!['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course'].includes(entity.kind as string)) throw new Error('Unsupported identity kind.');
+    if (!(IDENTITY_KINDS as readonly string[]).includes(entity.kind as string)) throw new Error('Unsupported identity kind.');
     text(entity.name, 'Identity name', 240); array(entity.aliases, 32, 'aliases');
     for (const alias of entity.aliases) text(alias, 'Identity alias', 240);
     array(entity.links, 32, 'links');
@@ -122,7 +128,7 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
       array(entity.relationships, 1000, 'relationships');
       for (const entry of entity.relationships) {
         const relation = object(entry, ['type', 'evidence'], 'Relationship', ['target_entity_id', 'target_record']);
-        if (['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of'].includes(relation.type as string)) {
+        if ((ENTITY_RELATIONSHIPS as readonly string[]).includes(relation.type as string)) {
           text(relation.target_entity_id, 'Target identity');
           if (!UUID.test(relation.target_entity_id) || relation.target_record !== undefined) throw new Error('Invalid identity target.');
         } else if (RECORD_TARGETS.includes(relation.type as string)) {

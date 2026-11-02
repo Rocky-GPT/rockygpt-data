@@ -46,3 +46,17 @@ test('a row that is genuinely two things keeps the more specific one', () => {
     'grading_option_deadline'
   );
 });
+
+test('a date just outside its term takes the year nearest the term', () => {
+  // Winter 2027 lists its December start; it was dated December 2027, a year late.
+  assert.equal(calendarConcept('Winter 2027', { date: 'Dec. 17', title: 'First Day of Winter Classes' }).startsAt?.slice(0, 10), '2026-12-17');
+  assert.equal(calendarConcept('Winter 2027', { date: 'Jan. 13', title: 'Finals and the Last Day of Winter Semester' }).startsAt?.slice(0, 10), '2027-01-13');
+  // A fall term's January grades are the next year's January.
+  assert.equal(calendarConcept('Fall 2026', { date: 'Jan. 04', title: 'Fall Grades Posted' }).startsAt?.slice(0, 10), '2027-01-04');
+  assert.equal(calendarConcept('Spring 2027', { date: 'Jun. 17', title: 'June - Degree Conferral Date' }).startsAt?.slice(0, 10), '2027-06-17');
+  assert.equal(calendarConcept('Fall 2026', { date: 'Aug. 26', title: 'Classes Begin' }).startsAt?.slice(0, 10), '2026-08-26');
+});
+
+test("a term's named first day of classes is classes_begin", () => {
+  assert.equal(kindOf('First Day of Winter Classes'), 'classes_begin');
+});

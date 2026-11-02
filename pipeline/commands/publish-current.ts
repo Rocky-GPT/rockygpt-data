@@ -1065,6 +1065,7 @@ async function main(): Promise<void> {
       courseSubjects: courseSubjectsInput(readJson('src/reference/course-subjects.source.json'), readJson('src/reference/course-subjects.json')),
       graduationPlans: readJson('public/data/graduation-plans.json'),
       majorPages: readJson('public/data/major-pages.json'),
+      collectedAt: { 'academic-calendar': collectedAtFor('academic-calendar') },
     });
     step('compile and insert campus identities');
     const releaseArtifactCount = sourceArtifactCount + identityArtifacts.count;
