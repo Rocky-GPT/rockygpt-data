@@ -71,7 +71,7 @@ test('a desk known only by one office\'s hours page is listed_by that office', (
 });
 
 test('a directory person filed under an office is listed_by it; faculty rows and unknown offices are left alone', () => {
-  const president = node(1, 'office', 'Office of the President');
+  const president = node(1, 'organization', 'Office of the President');
   const person = (n: number, key: string) => node(n, 'person', key, [{ collection: 'contacts', source_key: 'campus-directory', source_record_keys: [key] }]);
   const jebb = person(2, 'other:cindy-r-jebb-ph-d'); const prof = person(3, 'faculty:a-b:office-of-the-president'); const nobody = person(4, 'other:x');
   const rows = [
