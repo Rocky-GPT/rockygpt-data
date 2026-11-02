@@ -629,6 +629,97 @@ export function extractEventDetailSignalFromHtml(html: string): EventDetailSigna
   };
 }
 
+/**
+ * How long a downloaded event page is reused while its listing row stays the same. The listing
+ * (title, date, time, place, host, tags) is read every night; the page adds the description and
+ * the food note, which can change without the listing changing, so a page is downloaded again at
+ * least this often. Most events stay listed for weeks, so this cuts the ~240 pages a night to the
+ * new, changed and older-than-this ones (Dan, November 2, 2026: read Ramapo's sites less).
+ */
+export const EVENT_DETAIL_REUSE_HOURS = 72;
+
+/** Last night's event pages, kept to stand in for tonight's when nothing about the event changed. */
+export interface PreviousEventDetails {
+  events: ArchwayEvent[];
+  pages: RawPageV1[];
+  signalByUrl: Map<string, EventDetailSignal>;
+}
+
+/** An event's listing row as compared night to night, without the collection times it carries. */
+function listingFingerprint(event: ArchwayEvent): string {
+  return JSON.stringify(event, (key, value: unknown) => (key === 'collectedAt' ? undefined : value));
+}
+
+/**
+ * The event pages tonight's run can reuse from last night's capture instead of downloading, by
+ * lookup URL: the event is listed exactly as before, its page was read successfully, and that
+ * page is younger than EVENT_DETAIL_REUSE_HOURS.
+ */
+export function reusableEventDetails(
+  events: readonly ArchwayEvent[],
+  previous: PreviousEventDetails | null,
+  now = new Date(),
+  maxAgeHours = EVENT_DETAIL_REUSE_HOURS
+): Map<string, { page: RawPageV1; signal?: EventDetailSignal }> {
+  const reusable = new Map<string, { page: RawPageV1; signal?: EventDetailSignal }>();
+  if (!previous) return reusable;
+  const listedBefore = new Map<string, Set<string>>();
+  for (const event of previous.events) {
+    if (!event.url) continue;
+    const key = normalizeEventUrlForLookup(event.url);
+    listedBefore.set(key, new Set([...listedBefore.get(key) ?? [], listingFingerprint(event)]));
+  }
+  const pageByUrl = new Map(previous.pages.map((page) => [normalizeEventUrlForLookup(page.url), page]));
+  const listedTonight = new Map<string, string[]>();
+  for (const event of events) {
+    if (!event.url) continue;
+    const key = normalizeEventUrlForLookup(event.url);
+    listedTonight.set(key, [...listedTonight.get(key) ?? [], listingFingerprint(event)]);
+  }
+  for (const [key, fingerprints] of listedTonight) {
+    const before = listedBefore.get(key);
+    if (!before || !fingerprints.every((fingerprint) => before.has(fingerprint))) continue;
+    const page = pageByUrl.get(key);
+    if (!page || page.statusCode !== 200) continue;
+    const ageHours = (now.getTime() - Date.parse(page.fetchedAt)) / 3_600_000;
+    if (!(ageHours >= 0 && ageHours < maxAgeHours)) continue;
+    const signal = previous.signalByUrl.get(key);
+    reusable.set(key, { page, ...(signal ? { signal } : {}) });
+  }
+  return reusable;
+}
+
+/** Last night's listing, event pages and their signals, or null when any of them is missing or unreadable. */
+function readPreviousEventDetails(): PreviousEventDetails | null {
+  try {
+    return {
+      events: validateArchwayEvents(JSON.parse(fs.readFileSync(RAW_JSON_PATH, 'utf8'))),
+      pages: validateRawDatasetV1(JSON.parse(fs.readFileSync(DETAIL_RAW_JSON_PATH, 'utf8'))).pages,
+      signalByUrl: readEventSignalMapFromRawFile(SIGNAL_RAW_JSON_PATH),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The event pages to download tonight and the ones reused from last night, with the reused
+ * pages' signals already in signalByUrl.
+ */
+function planEventDetails(events: ArchwayEvent[], detailUrls: string[], signalByUrl: Map<string, EventDetailSignal>) {
+  const reusable = reusableEventDetails(events, readPreviousEventDetails());
+  const reused = new Map<string, RawPageV1>();
+  for (const url of detailUrls) {
+    const kept = reusable.get(normalizeEventUrlForLookup(url));
+    if (!kept) continue;
+    reused.set(url, kept.page);
+    if (kept.signal) signalByUrl.set(normalizeEventUrlForLookup(url), kept.signal);
+  }
+  console.log(`Event pages: ${reused.size} of ${detailUrls.length} reused from the last capture ` +
+    `(listed the same, read under ${EVENT_DETAIL_REUSE_HOURS}h ago); ${detailUrls.length - reused.size} to download.`);
+  return reused;
+}
+
 function failedDetailPage(url: string, statusCode: number | null = null): RawPageV1 {
   return {
     url,
@@ -683,8 +774,9 @@ export async function scrapePublicEventDetailRaw(
   ).slice(0, detailLimit);
   const limit = pLimit(RAMAPO_CONCURRENCY);
   const signalByUrl = new Map<string, EventDetailSignal>();
+  const reused = planEventDetails(events, detailUrls, signalByUrl);
   const pages = await Promise.all(
-    detailUrls.map((url) =>
+    detailUrls.map((url) => reused.get(url) ??
       limit(async () => {
         try {
           const response = await fetchWithPolicy(
@@ -732,8 +824,9 @@ async function scrapeEventDetailRaw(
 
   const limit = pLimit(RAMAPO_CONCURRENCY);
   const signalByUrl = new Map<string, EventDetailSignal>();
+  const reused = planEventDetails(events, detailUrls, signalByUrl);
   const pages = await Promise.all(
-    detailUrls.map((url) =>
+    detailUrls.map((url) => reused.get(url) ??
       limit(async () => {
         try {
           await paceRamapoRequest(url);
