@@ -141,3 +141,17 @@ test('an Archway group with a reviewed desk contact is placed by that room; one 
   assert.deepEqual(withDesk.relationships?.map(r => [r.type, 'target_entity_id' in r && r.target_entity_id]), [['located_at', buildings[0].id]]);
   assert.equal(clubOnly.relationships, undefined);
 });
+
+test('a room value with more than rooms still names its building when its rooms agree, or it is the building', async () => {
+  const { roomsInText } = await import('./campus-buildings');
+  const prefixes = new Map([['SC', 'sc'], ['LC', 'lc'], ['BC', 'bc'], ['D', 'd']]);
+  const names = new Map([['mcbride house', 'mcbride']]);
+  assert.equal(roomsInText('SC-202B (Coordinator of Fraternities, Sororities, and Student Organizations)', prefixes, names), 'sc');
+  assert.equal(roomsInText('Mercer Learning Commons LC-202', prefixes, names), 'lc');
+  assert.equal(roomsInText('Berrie Center 135 / BC-140A (Lighting Studio)', prefixes, names), 'bc');
+  assert.equal(roomsInText('McBride House', prefixes, names), 'mcbride');
+  // Rooms in two buildings, a room with no reviewed prefix, or no room at all name none.
+  assert.equal(roomsInText('SC-202 / D-101', prefixes, names), null);
+  assert.equal(roomsInText('M-220 (Birch Mansion)', prefixes, names), null);
+  assert.equal(roomsInText('The Lodge', prefixes, names), null);
+});

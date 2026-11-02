@@ -187,6 +187,26 @@ export function roomBuildings(value: unknown, byPrefix: Map<string, string>, byR
 }
 
 /**
+ * The building a published room value names when it is not only rooms: every PREFIX-NUMBER room
+ * in it ("SC-202B (Coordinator of Fraternities...)", "Mercer Learning Commons LC-202") has a
+ * reviewed prefix of one and the same building, or the whole value is one building's name ("McBride
+ * House"). Since November 2, 2026; before, such values placed nothing.
+ */
+export function roomsInText(value: unknown, byPrefix: Map<string, string>, byName: Map<string, string>): string | null {
+  const room = text(value);
+  if (!room) return null;
+  const named = byName.get(normalizeName(room));
+  if (named) return named;
+  const found = new Set<string>();
+  for (const [, prefix] of room.matchAll(/\b([A-Z]{1,4})-\d{1,4}[A-Z]?\b/g)) {
+    const building = byPrefix.get(prefix);
+    if (!building) return null;
+    found.add(building);
+  }
+  return found.size === 1 ? [...found][0] : null;
+}
+
+/**
  * Building identities, and office_at (people) / located_at (offices, facilities,
  * venues) relationships from each identity's own linked contact rooms or a
  * reviewed location. `contacts` maps `${source_key}:${source_record_key}` to the
@@ -217,6 +237,7 @@ export function compileBuildingIdentities(artifact: CampusBuildingsArtifact, ent
     ] }];
   });
   const byPrefix = new Map(artifact.buildings.flatMap((building, index) => building.room_prefixes.map(prefix => [prefix, buildings[index].id] as const)));
+  const byName = new Map(artifact.buildings.map((building, index) => [normalizeName(building.name), buildings[index].id] as const));
   const byReading = new Map(artifact.buildings.flatMap((building, index) => (building.reviewed_rooms ?? []).map(room => [room, buildings[index].id] as const)));
   for (const unlisted of artifact.unresolved) unresolved.push({ entity: unlisted.name, collection: 'buildings', reason: unlisted.reason, kind: unlisted.kind });
   // A reviewed location places only the identity it names by ID, and only one that
@@ -245,7 +266,9 @@ export function compileBuildingIdentities(artifact: CampusBuildingsArtifact, ent
     for (const placement of placements.get(entity.id) ?? []) evidence.set(placement.building, [...(evidence.get(placement.building) ?? []), placement.evidence]);
     for (const link of entity.links.filter(l => l.collection === 'contacts')) {
       for (const key of link.source_record_keys) {
-        const placed = roomBuildings(contacts.get(`${link.source_key}:${key}`)?.office, byPrefix, byReading);
+        const office = contacts.get(`${link.source_key}:${key}`)?.office;
+        let placed = roomBuildings(office, byPrefix, byReading);
+        if (placed && 'reason' in placed) { const loose = roomsInText(office, byPrefix, byName); if (loose) placed = { buildings: [loose] }; }
         if (placed === null) continue;
         if ('reason' in placed) { unresolved.push({ entity: entity.name, collection: 'contacts', record: key, reason: placed.reason, kind: 'missing_connection' }); continue; }
         for (const building of placed.buildings) {
