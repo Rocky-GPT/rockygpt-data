@@ -17,8 +17,20 @@ import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course
 import { compileSubjectIdentities, courseSubjectsArtifact, type CourseSubjectsArtifact, type CourseSubjectsInput } from './course-subjects';
 import { GRADUATION_PLANS_SOURCE_KEY, graduationPlansInput } from './graduation-plans';
 import { MAJOR_PAGES_SOURCE_KEY, majorPagesInput } from './major-pages';
-import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
+import { compileRequirementGroups, linkProgramCourses, type RequirementGroupsArtifact } from './requirement-groups';
 import { legacyProgramRecordKey, programRecordKey } from './program-records';
+import { compileCalendarIdentities } from './campus-calendar';
+import { addGraphRecords, emptyGraphRecords, type GraphRecordsArtifact } from './graph-records';
+import { compileMapPlaces, type CampusMapMatches } from './campus-map-places';
+import campusMapMatches from '../reference/campus-map-places.json';
+import { linkEventOrganizers, linkEventPlaces } from './event-places';
+import { linkClubCategories, linkClubPages } from './club-links';
+import { compileStops, linkTopicOffices } from './graph-links';
+import { compileOfficeStaff } from './office-staff';
+import { compileParkingLots, type ReviewedParking } from './parking-lots';
+import parkingLots from '../reference/parking-lots.json';
+import atriumMenuBoard from '../reference/atrium-menu-board.json';
+import { compileMenuBoard, type ReviewedMenuBoard } from './menu-boards';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -164,6 +176,8 @@ export interface CompiledIdentityArtifacts {
   registry: CampusIdentities; report: IdentityCoverageReport; eventOrganizers: EventOrganizersArtifact;
   courseIdentities: CourseIdentitiesArtifact; requirementGroups: RequirementGroupsArtifact;
   campusBuildings: CampusBuildingsArtifact; campusSchools: CampusSchoolsArtifact; courseSubjects: CourseSubjectsArtifact;
+  /** Records of the kinds stored in the generic graph-records artifact. */
+  graphRecords: GraphRecordsArtifact;
 }
 /** Inputs outside the release snapshot: Archway captures, the committed campus map, the reviewed schools and the catalog's subject list. */
 export interface IdentityInputs extends ArchwayIdentityInputs {
@@ -173,6 +187,8 @@ export interface IdentityInputs extends ArchwayIdentityInputs {
   graduationPlans?: unknown;
   /** The published program pages artifact, whose pages name their own programs' catalog codes. */
   majorPages?: unknown;
+  /** When each source was collected (source key -> ISO time), for the graph records' own dates. */
+  collectedAt?: Record<string, string>;
 }
 export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, inputs: IdentityInputs = {}): CompiledIdentityArtifacts {
   validateCampusIdentities(seed);
@@ -345,9 +361,32 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects);
   entities.push(...compileSubjectIdentities(subjects.artifact, snapshot.artifacts.courses, ledger));
   unresolved.push(...subjects.unresolved);
+  // Kinds whose records live in the generic graph-records artifact (graph-records.ts).
+  const graphRecords = emptyGraphRecords();
+  const calendar = compileCalendarIdentities(snapshot.artifacts.calendar, inputs.collectedAt?.['academic-calendar']);
+  entities.push(...calendar.entities);
+  unresolved.push(...calendar.unresolved);
+  addGraphRecords(graphRecords, 'terms', calendar.terms);
+  addGraphRecords(graphRecords, 'calendar_dates', calendar.dates);
   applyPublishedAliases(entities, recordRows, ledger);
   const reviewedAliases = applyReviewedAliases(entities, inputs.identityReviews?.aliases ?? [], ledger);
   unresolved.push(...reviewedAliases.unresolved);
+  // Every place the campus map lists in a building, placed there: the node the registry has for
+  // it, or a facility node of its own. Run after aliases, which the same-name match reads.
+  const mapPlaces = compileMapPlaces(inputs.campusMap, campusBuildings, entities, campusMapMatches as CampusMapMatches, inputs.collectedAt?.['campus-map'] ?? campusBuildings.map_generated_at ?? '');
+  entities.push(...mapPlaces.entities);
+  unresolved.push(...mapPlaces.unresolved);
+  addGraphRecords(graphRecords, 'buildings', mapPlaces.buildings);
+  addGraphRecords(graphRecords, 'map_places', mapPlaces.places);
+  // Where each event is held, from its listing's location: a map place, or a building by room or name.
+  linkEventPlaces(entities, snapshot.events ?? [], campusBuildings);
+  // Who hosts an event Archway gives no organizer group ID for: the one node named like its organizer.
+  linkEventOrganizers(entities, snapshot.events ?? []);
+  // Topics to the offices their rows name, and shuttle stops as nodes routes stop at.
+  linkTopicOffices(entities, snapshot.campus_topics ?? []);
+  const stops = compileStops(entities, snapshot.shuttle_stops ?? [], campusBuildings, inputs.campusMap, inputs.collectedAt?.transportation, ledger);
+  entities.push(...stops.entities);
+  addGraphRecords(graphRecords, 'stops', stops.records);
   // What each office's own site says: an office, venue, facility or Archway group (a center, a
   // club run as an office) links every captured page of the folder its reviewed website names (its
   // contact's evidence.website.url on www.ramapo.edu). Run once every identity is in the registry.
@@ -412,6 +451,27 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
         source_record_keys: keys.filter(key => (pageSource.get(key) ?? 'office-pages') === source) });
     }
   }
+  // Clubs: the directory category Archway files each under, and the ramapo.edu club directory's
+  // pages (who lists the club, and whether the page says it is inactive).
+  const clubCategories = linkClubCategories(entities, snapshot.clubs ?? [], inputs.collectedAt?.['archway-clubs']);
+  entities.push(...clubCategories.entities);
+  addGraphRecords(graphRecords, 'club_categories', clubCategories.records);
+  const clubPages = linkClubPages(entities, snapshot.office_sections ?? []);
+  entities.push(...clubPages.entities);
+  unresolved.push(...clubPages.unresolved);
+  // Office staff: the people each office's own pages list beside their own address, listed_by it.
+  const staff = compileOfficeStaff(entities, snapshot.office_sections ?? [], inputs.collectedAt?.['office-pages'], ledger);
+  entities.push(...staff.entities);
+  addGraphRecords(graphRecords, 'staff', staff.records);
+  // Parking lots, from the reviewed list of what the Public Safety parking pages say (parking-lots.json).
+  const parking = compileParkingLots(entities, snapshot.office_sections ?? [], parkingLots as ReviewedParking, campusBuildings, inputs.collectedAt?.['office-pages'], ledger);
+  entities.push(...parking.entities);
+  unresolved.push(...parking.unresolved);
+  addGraphRecords(graphRecords, 'parking_lots', parking.records);
+  // The Atrium's menu board items, while the dining site still links the file they were read from.
+  const atrium = compileMenuBoard(entities, snapshot.menu_documents ?? [], atriumMenuBoard as ReviewedMenuBoard, inputs.collectedAt?.dining);
+  unresolved.push(...atrium.unresolved);
+  addGraphRecords(graphRecords, 'menu_board_items', atrium.records);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved, alias_sources: aliasRecords(entities, ledger) };
@@ -443,8 +503,10 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     const ids = groupsOf.get(entity.id);
     if (ids?.length) entity.links.push({ collection: 'requirement_groups', source_key: 'program-requirement-groups', source_record_keys: ids });
   }
+  // A program lists each catalog course its requirement groups name (required, or one of the choices).
+  linkProgramCourses(entities, requirementGroups, new Set(courseIdentities.courses.map(course => course.id)));
   validateCampusIdentities(registry);
-  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact };
+  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact, graphRecords };
 }
 /** The Responsible Unit a college policy page names in its header ("Responsible Unit: | Payroll;"). */
 export function responsibleUnit(sections: unknown): string | null {

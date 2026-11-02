@@ -1,0 +1,238 @@
+{
+  "$comment": [
+    "Pairs that the campus map and the identity registry name differently, matched by reading both on 2026-11-02 (Claude, for Dan's review).",
+    "places: a campus-map place (data/map/campus-map-data.json offices[].key) that is these registry nodes, so they link its map record and are located_at its building.",
+    "buildings: a registry node named for a map building that the same-name rule cannot match.",
+    "A pair whose map place, node or building is not in a release under the name written here places nothing and is reported."
+  ],
+  "places": [
+    {
+      "map_key": "office_anisfield-school-of-business-asb-anisfield-school-of-business-asb",
+      "map_name": "Anisfield School of Business (ASB)",
+      "entity_ids": [
+        "6917efd3-3f23-4cd5-8ada-8330b2f2d00f",
+        "c1db6e48-d202-4de5-99c5-77cb08cc4041"
+      ],
+      "entities": [
+        "Anisfield School of Business",
+        "Anisfield School of Business"
+      ],
+      "note": "The school's own office is in its building; the map entry names both."
+    },
+    {
+      "map_key": "office_birch-tree-inn-restaurant-student-center-sc",
+      "map_name": "Birch Tree Inn Restaurant",
+      "entity_ids": [
+        "c98a4db7-9948-4e2c-98b5-4fe3f73ae488"
+      ],
+      "entities": [
+        "Birch Tree Inn"
+      ],
+      "note": "The dining hall; the map adds \"Restaurant\"."
+    },
+    {
+      "map_key": "office_bookstore-student-center-sc",
+      "map_name": "Bookstore",
+      "entity_ids": [
+        "79137ff1-e634-4785-bc52-2aa4e32237b1"
+      ],
+      "entities": [
+        "Ramapo Bookstore"
+      ],
+      "note": "The campus bookstore."
+    },
+    {
+      "map_key": "office_thomas-swimming-pool-bill-bradley-sports-and-recreation-center",
+      "map_name": "Thomas Swimming Pool",
+      "entity_ids": [
+        "fe48a997-a5a2-42ba-a081-5af0496c1396"
+      ],
+      "entities": [
+        "Swimming Pool"
+      ],
+      "note": "The Bradley Center's only pool; the map gives its donor name."
+    },
+    {
+      "map_key": "office_edelman-climbing-wall-bill-bradley-sports-and-recreation-center",
+      "map_name": "Edelman Climbing Wall",
+      "entity_ids": [
+        "79815db5-95bf-461d-8f4d-54fe22bb3c2a"
+      ],
+      "entities": [
+        "Rock Climbing Wall"
+      ],
+      "note": "The Bradley Center's only climbing wall; the map gives its donor name."
+    },
+    {
+      "map_key": "office_women-s-center-academic-building-c",
+      "map_name": "Women's Center",
+      "entity_ids": [
+        "58266c3e-5018-514c-b2f8-0cccfb6727c6"
+      ],
+      "entities": [
+        "Women's Center & LGBTQ+ Services"
+      ],
+      "note": "The same center; its directory name adds LGBTQ+ Services."
+    },
+    {
+      "map_key": "office_cahill-center-for-experiential-and-career-services-academic-building-c",
+      "map_name": "Cahill Center for Experiential and Career Services",
+      "entity_ids": [
+        "30adf6c0-33f9-4349-873d-18ae7e504766"
+      ],
+      "entities": [
+        "Cahill Career Development Center"
+      ],
+      "note": "The same Cahill center under its earlier name."
+    },
+    {
+      "map_key": "office_specialized-services-trio-academic-building-c",
+      "map_name": "Specialized Services/TRIO",
+      "entity_ids": [
+        "bd448eaa-d1c1-49b6-bbda-597b7c4e1423"
+      ],
+      "entities": [
+        "Office of Specialized Services"
+      ],
+      "note": "The Office of Specialized Services, as the map writes it."
+    },
+    {
+      "map_key": "office_counseling-health-services-academic-building-d",
+      "map_name": "Counseling/Health Services",
+      "entity_ids": [
+        "418cf077-132d-4b72-a3a9-e48d33353a5e"
+      ],
+      "entities": [
+        "Counseling Center"
+      ],
+      "note": "Counseling's office in D; Health Services has its own map place in Student Health Services."
+    },
+    {
+      "map_key": "office_nursing-program-adler-center-for-nursing-excellence",
+      "map_name": "Nursing Program",
+      "entity_ids": [
+        "0691dd1e-07c7-4189-bc7c-3bb469bda8e4"
+      ],
+      "entities": [
+        "Nursing Programs Office"
+      ],
+      "note": "The nursing programs' office in the Adler Center."
+    },
+    {
+      "map_key": "office_grants-administration-academic-building-d",
+      "map_name": "Grants Administration",
+      "entity_ids": [
+        "0fb2cf32-f2e5-4ae7-b910-8dad7bc50029"
+      ],
+      "entities": [
+        "Office of Grants & Sponsored Programs"
+      ],
+      "note": "The grants office under its map name."
+    },
+    {
+      "map_key": "office_facilities-administrative-services-facilities-complex",
+      "map_name": "Facilities Administrative Services",
+      "entity_ids": [
+        "8f53974e-4b24-4655-9dbb-cc097a405dfe"
+      ],
+      "entities": [
+        "Facilities Management"
+      ],
+      "note": "Facilities' administrative office in the Facilities Complex."
+    },
+    {
+      "map_key": "office_student-government-student-center-sc",
+      "map_name": "Student Government",
+      "entity_ids": [
+        "fed8b942-c1c6-570c-875e-f6beb939e43f"
+      ],
+      "entities": [
+        "Student Government Association"
+      ],
+      "note": "The Student Government Association."
+    },
+    {
+      "map_key": "office_public-safety-academic-building-c",
+      "map_name": "Public Safety",
+      "entity_ids": [
+        "4c0063a5-62be-44cd-8a11-35151b945be4",
+        "e2f70325-f937-446d-9ddd-f54a2eb2b746"
+      ],
+      "entities": [
+        "Public Safety (Non-Emergency)",
+        "Public Safety (Emergency)"
+      ],
+      "note": "One office; the directory lists its emergency and non-emergency lines as two nodes."
+    },
+    {
+      "map_key": "office_educational-opportunity-fund-eof-academic-building-d",
+      "map_name": "Educational Opportunity Fund (EOF)",
+      "entity_ids": [
+        "f5e3961d-c56b-4b29-89f3-64488f464e64"
+      ],
+      "entities": [
+        "Educational Opportunity Fund (EOF) Program"
+      ],
+      "note": "The EOF Program office."
+    },
+    {
+      "map_key": "office_center-for-holocaust-and-genocide-studies-peter-p-mercer-learning-commons",
+      "map_name": "Center for Holocaust and Genocide Studies",
+      "entity_ids": [
+        "ae0c6420-9415-5602-bbe6-6219eeb0ddef"
+      ],
+      "entities": [
+        "RCNJ Center for Holocaust and Genocide Studies"
+      ],
+      "note": "The same center; the directory adds RCNJ."
+    },
+    {
+      "map_key": "office_budget-and-fiscal-affairs-academic-building-d",
+      "map_name": "Budget and Fiscal Affairs",
+      "entity_ids": [
+        "1a7a8804-db10-4861-9ce1-49e1de5cb72d"
+      ],
+      "entities": [
+        "Budget and Fiscal Planning"
+      ],
+      "note": "The budget office under its map name."
+    }
+  ],
+  "buildings": [
+    {
+      "entity_id": "ccadf6a1-e852-5634-8b6b-3a0873d6e80d",
+      "entity": "Mackin Hall",
+      "building_key": "building_nancy-mackin-hall",
+      "building": "Nancy Mackin Hall",
+      "note": "The hall's desk; the map gives the hall's full name."
+    },
+    {
+      "entity_id": "e805682b-ed05-5a13-a946-d0598e96b044",
+      "entity": "Bischoff Hall",
+      "building_key": "building_pamela-m-bischoff-hall",
+      "building": "Pamela M. Bischoff Hall",
+      "note": "The hall's desk; the map gives the hall's full name."
+    },
+    {
+      "entity_id": "7c348bda-78aa-4806-9e3d-6bcc44f15cee",
+      "entity": "Bradley Center (Student & Recreation Lounge)",
+      "building_key": "building_bill-bradley-sports-and-recreation-center",
+      "building": "Bill Bradley Sports and Recreation Center",
+      "note": "Named for the Bradley Center."
+    },
+    {
+      "entity_id": "18ab518c-16ff-4fc2-8c4e-4ade42d89d40",
+      "entity": "Berrie Center Box Office",
+      "building_key": "building_berrie-center",
+      "building": "Berrie Center",
+      "note": "Named for the Berrie Center."
+    },
+    {
+      "entity_id": "50781ed1-6da3-4afd-a1a1-283a02a715ca",
+      "entity": "Lodge Fitness Center (College Park Apartments)",
+      "building_key": "building_the-lodge-cpa",
+      "building": "The Lodge (CPA)",
+      "note": "The fitness center in the Lodge at College Park Apartments."
+    }
+  ]
+}

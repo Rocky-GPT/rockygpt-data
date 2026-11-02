@@ -1,5 +1,11 @@
 /** Curated identity links. Names locate identities; they never generate their IDs. */
-export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages' | 'requirement_groups';
+export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages' | 'requirement_groups' | GraphRecordCollection;
+/** Collections stored in the release's `graph-records` artifact (see graph-records.ts), one
+ * generic store for every kind added since: the Brain reads all of them with one reader. */
+export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates', 'buildings', 'map_places', 'club_categories', 'stops', 'staff', 'parking_lots', 'menu_board_items'] as const;
+export type GraphRecordCollection = typeof GRAPH_RECORD_COLLECTIONS[number];
+export const IDENTITY_KINDS = ['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course', 'term', 'calendar_date', 'club_category', 'stop', 'parking_lot'] as const;
+export const ENTITY_RELATIONSHIPS = ['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of', 'in_term', 'held_at', 'listed_by', 'in_category', 'lists_course', 'handled_by', 'stops_at', 'retired_from', 'near'] as const;
 export interface IdentityRecordReference {
   collection: IdentityCollection;
   source_key: string;
@@ -17,21 +23,23 @@ export interface CampusIdentityLink {
   selector?: { field: 'faculty_identity' | 'contact_identity' | 'name' | 'catalog_code' | 'menu_venue'; values: string[]; evidence: string };
 }
 export type CampusIdentityRelationship =
-  | { type: 'convener' | 'listed_faculty' | 'organized_by' | 'office_at' | 'located_at' | 'part_of'; target_entity_id: string; evidence: IdentityEvidence[] }
+  | { type: typeof ENTITY_RELATIONSHIPS[number]; target_entity_id: string; evidence: IdentityEvidence[] }
   | { type: 'profile_course' | 'includes_course'; target_record: IdentityRecordReference; evidence: IdentityEvidence[] };
 export interface CampusIdentity {
   id: string;
-  kind: 'office' | 'person' | 'facility' | 'venue' | 'program' | 'club' | 'organization' | 'event' | 'building' | 'school' | 'subject' | 'route' | 'topic' | 'course';
+  kind: typeof IDENTITY_KINDS[number];
   name: string;
   aliases: string[];
   links: CampusIdentityLink[];
   relationships?: CampusIdentityRelationship[];
   /** A status the identity's own records publish; absent means none is published. */
-  status?: { state: 'retired'; evidence: IdentityEvidence[] };
+  status?: { state: 'retired'; evidence: IdentityEvidence[] }
+    /** A club its directory page says is not active, as of the date the page gives. */
+    | { state: 'inactive'; as_of: string; evidence: IdentityEvidence[] };
 }
 export interface CampusIdentities { schema_version: 1; entities: CampusIdentity[] }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-const COLLECTIONS = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'campus_topics', 'office_sections', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages', 'requirement_groups'];
+const COLLECTIONS: string[] = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'campus_topics', 'office_sections', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages', 'requirement_groups', ...GRAPH_RECORD_COLLECTIONS];
 // Relationships whose target is a catalog record, not an identity.
 const RECORD_TARGETS = ['profile_course', 'includes_course'];
 function object(value: unknown, keys: string[], label: string, optional: string[] = []): Record<string, unknown> {
@@ -69,7 +77,7 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
     text(entity.id, 'Identity id');
     if (!UUID.test(entity.id) || ids.has(entity.id)) throw new Error('Identity IDs must be unique, persistent lowercase UUIDs.');
     ids.add(entity.id);
-    if (!['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course'].includes(entity.kind as string)) throw new Error('Unsupported identity kind.');
+    if (!(IDENTITY_KINDS as readonly string[]).includes(entity.kind as string)) throw new Error('Unsupported identity kind.');
     text(entity.name, 'Identity name', 240); array(entity.aliases, 32, 'aliases');
     for (const alias of entity.aliases) text(alias, 'Identity alias', 240);
     array(entity.links, 32, 'links');
@@ -99,6 +107,9 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
         // One published requirement section (Career Pathways, a shared Gen Ed block) is listed by
         // every program that lists it: requirement groups may have more than one owner.
         if (link.collection === 'requirement_groups') continue;
+        // One campus-map place can be two nodes (Public Safety's two lines; the Anisfield School
+        // of Business and its own office): map places may have more than one owner.
+        if (link.collection === 'map_places') continue;
         if (records.has(target)) {
           const previous = records.get(target);
           if (!previous || !pinned || [...pinned].some(id => previous.has(id))) throw new Error('A source record must have exactly one identity link.');
@@ -113,8 +124,9 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
       }
     }
     if (entity.status !== undefined) {
-      const status = object(entity.status, ['state', 'evidence'], 'Identity status');
-      if (status.state !== 'retired') throw new Error('Unsupported identity status.');
+      const status = object(entity.status, ['state', 'evidence'], 'Identity status', ['as_of']);
+      if (status.state === 'inactive') { if (typeof status.as_of !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(status.as_of)) throw new Error('An inactive status needs its date.'); }
+      else if (status.state !== 'retired' || status.as_of !== undefined) throw new Error('Unsupported identity status.');
       array(status.evidence, 32, 'Status evidence'); if (!status.evidence.length) throw new Error('A status needs evidence.');
       for (const ref of status.evidence) reference(ref, true);
     }
@@ -122,7 +134,7 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
       array(entity.relationships, 1000, 'relationships');
       for (const entry of entity.relationships) {
         const relation = object(entry, ['type', 'evidence'], 'Relationship', ['target_entity_id', 'target_record']);
-        if (['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of'].includes(relation.type as string)) {
+        if ((ENTITY_RELATIONSHIPS as readonly string[]).includes(relation.type as string)) {
           text(relation.target_entity_id, 'Target identity');
           if (!UUID.test(relation.target_entity_id) || relation.target_record !== undefined) throw new Error('Invalid identity target.');
         } else if (RECORD_TARGETS.includes(relation.type as string)) {

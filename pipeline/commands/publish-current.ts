@@ -28,6 +28,7 @@ import { menuDocuments, menuListings } from '../../src/data-v2/menu-documents';
 import { checkTopics, withheldTopicsReport, WITHHELD_TOPICS_REPORT, type ReviewedTopics } from '../../src/data-v2/campus-topics';
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 import { assertQualityV2, validateCurrentDatasetV2 } from '../quality/validate';
+import { testBuildFromCapturedPages } from '../test-build';
 import { CRITICAL_FACT_VALIDITY_V2, CRITICAL_FACT_VALUES_V2 } from './check-quality';
 import { recordValidity } from '../../src/data-v2/validity';
 import { sourceKeyForPath } from '../context-sources';
@@ -959,6 +960,9 @@ function stepTimer(): (step: string) => void {
 
 async function main(): Promise<void> {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required.');
+  // A laptop test build publishes the pages already captured, however old, so it never sends
+  // the collectors back to ramapo.edu. It refuses any database but a local one, and any bucket.
+  const testBuild = testBuildFromCapturedPages(process.env);
 
   const step = stepTimer();
   const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 2 });
@@ -983,9 +987,11 @@ async function main(): Promise<void> {
 
   try {
     quality = validateCurrentDatasetV2(CRITICAL_FACT_VALUES_V2, {
-      enforceFreshness: true,
+      enforceFreshness: !testBuild,
       enforceProvenance: true,
+      allowStaleSources: testBuild,
     });
+    if (testBuild) console.warn('Test build from captured pages: source age is not checked. Never a release.');
     assertQualityV2(quality);
     step('check source freshness and provenance');
     const sources = await sourceIds(client);
@@ -1065,6 +1071,7 @@ async function main(): Promise<void> {
       courseSubjects: courseSubjectsInput(readJson('src/reference/course-subjects.source.json'), readJson('src/reference/course-subjects.json')),
       graduationPlans: readJson('public/data/graduation-plans.json'),
       majorPages: readJson('public/data/major-pages.json'),
+      collectedAt: { 'academic-calendar': collectedAtFor('academic-calendar') },
     });
     step('compile and insert campus identities');
     const releaseArtifactCount = sourceArtifactCount + identityArtifacts.count;

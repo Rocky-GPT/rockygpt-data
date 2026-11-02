@@ -1,4 +1,4 @@
-import type { CampusIdentities } from './campus-identities';
+import type { CampusIdentities, CampusIdentity, IdentityEvidence } from './campus-identities';
 import { legacyProgramRecordKey, programRecordKey } from './program-records';
 import type { CourseIdentitiesArtifact } from './course-identities';
 import { uuid5 } from './course-identities';
@@ -214,4 +214,34 @@ function optionEdges(group: RequirementGroup): RequirementEdge[] {
   if (group.rule) walk(group.rule, ['rule']);
   group.course_list?.courses.forEach((course, position) => add(course, ['course_list', 'courses', position], null));
   return edges;
+}
+
+/**
+ * `lists_course`: a program lists each catalog course its requirement groups name, whether
+ * required or one of the choices, so a course can say which programs list it. The evidence is
+ * the group and the course's place in it (at most 32 places per course).
+ */
+export function linkProgramCourses(entities: CampusIdentity[], artifact: RequirementGroupsArtifact, courseIds: ReadonlySet<string>): void {
+  const groupsOf = new Map<string, string[]>();
+  const optionsOf = new Map<string, RequirementEdge[]>();
+  for (const edge of artifact.edges) {
+    if (edge.type === 'requirement_group' && 'entity_id' in edge.source && 'record_id' in edge.target) {
+      groupsOf.set(edge.source.entity_id, [...new Set([...groupsOf.get(edge.source.entity_id) ?? [], edge.target.record_id])]);
+    }
+    if (edge.type === 'requirement_option' && 'record_id' in edge.source) optionsOf.set(edge.source.record_id, [...optionsOf.get(edge.source.record_id) ?? [], edge]);
+  }
+  for (const entity of entities) {
+    const listed = new Map<string, IdentityEvidence[]>();
+    for (const group of groupsOf.get(entity.id) ?? []) {
+      for (const edge of optionsOf.get(group) ?? []) {
+        if (!('entity_id' in edge.target) || !courseIds.has(edge.target.entity_id)) continue;
+        const evidence = listed.get(edge.target.entity_id) ?? [];
+        if (evidence.length < 32) evidence.push({ collection: 'requirement_groups', source_key: 'program-requirement-groups', source_record_key: group, field: (edge.path ?? []).join('.') || 'courses' });
+        listed.set(edge.target.entity_id, evidence);
+      }
+    }
+    if (!listed.size) continue;
+    entity.relationships ||= [];
+    for (const [course, evidence] of [...listed].sort(([a], [b]) => a.localeCompare(b))) entity.relationships.push({ type: 'lists_course', target_entity_id: course, evidence });
+  }
 }
