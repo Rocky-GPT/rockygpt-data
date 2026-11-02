@@ -365,7 +365,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   unresolved.push(...reviewedAliases.unresolved);
   // Every place the campus map lists in a building, placed there: the node the registry has for
   // it, or a facility node of its own. Run after aliases, which the same-name match reads.
-  const mapPlaces = compileMapPlaces(inputs.campusMap, campusBuildings, entities, campusMapMatches as CampusMapMatches, inputs.collectedAt?.['campus-map']);
+  const mapPlaces = compileMapPlaces(inputs.campusMap, campusBuildings, entities, campusMapMatches as CampusMapMatches, inputs.collectedAt?.['campus-map'] ?? campusBuildings.map_generated_at ?? '');
   entities.push(...mapPlaces.entities);
   unresolved.push(...mapPlaces.unresolved);
   addGraphRecords(graphRecords, 'buildings', mapPlaces.buildings);
