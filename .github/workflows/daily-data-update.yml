@@ -336,3 +336,14 @@ jobs:
         run: |
           PGSSLROOTCERT="$(python -c 'import certifi; print(certifi.where())')" \
             python brain/scripts/publish_meaning_index.py --dir .published
+
+      # The laptop's local Brain serves exactly what production serves: run-local.sh downloads this
+      # artifact (the active release's graph file, its meaning index and active.json) when it is
+      # newer than the local copy, instead of collecting and publishing campus data a second time.
+      - name: Share the release graph and index with local Brains
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-graph
+          path: .published
+          retention-days: 7
+          if-no-files-found: error
