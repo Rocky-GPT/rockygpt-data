@@ -90,6 +90,8 @@ export function compileSchoolIdentities(entities: CampusIdentity[], rows: Map<st
     if (entity.kind !== 'program' && entity.kind !== 'person') continue;
     const collection = entity.kind === 'program' ? 'programs' : 'faculty';
     const evidence = new Map<string, { collection: 'programs' | 'faculty'; source_key: string; source_record_key: string; field: string }[]>();
+    // A retired professor is linked to the school they retired from, never as a current member.
+    const retiredFrom = new Map<string, { collection: 'faculty'; source_key: string; source_record_key: string; field: string }[]>();
     for (const link of entity.links.filter(l => l.collection === collection)) {
       for (const key of link.source_record_keys) {
         const value = text(rows.get(`${collection}:${link.source_key}:${key}`)?.school);
@@ -100,7 +102,12 @@ export function compileSchoolIdentities(entities: CampusIdentity[], rows: Map<st
           if (targets.length > 1) { unresolved.push({ entity: entity.name, collection, record: key, reason: `Catalog school "${value}" was split between current schools; the program is not placed in one.`, kind: 'missing_connection' }); continue; }
         } else {
           const status = STATUS_SUFFIX.exec(value)?.[1];
-          if (status === 'Retired') { unresolved.push({ entity: entity.name, collection, record: key, reason: 'The faculty profile marks this person retired; no current school is linked.', kind: 'missing_connection' }); continue; }
+          if (status === 'Retired') {
+            const from = byName.get(value.replace(STATUS_SUFFIX, ''));
+            if (from) retiredFrom.set(from, [...retiredFrom.get(from) ?? [], { collection: 'faculty', source_key: link.source_key, source_record_key: key, field: 'school' }]);
+            else unresolved.push({ entity: entity.name, collection, record: key, reason: 'The faculty profile marks this person retired from a school that is not a current official school; no school is linked.', kind: 'missing_connection' });
+            continue;
+          }
           const school = byName.get(value.replace(STATUS_SUFFIX, ''));
           targets = school ? [school] : [];
         }
@@ -113,6 +120,10 @@ export function compileSchoolIdentities(entities: CampusIdentity[], rows: Map<st
     for (const [school, references] of evidence) {
       entity.relationships ||= [];
       entity.relationships.push({ type: 'part_of', target_entity_id: school, evidence: references });
+    }
+    for (const [school, references] of retiredFrom) {
+      entity.relationships ||= [];
+      entity.relationships.push({ type: 'retired_from', target_entity_id: school, evidence: references });
     }
   }
   return { schools, unresolved, ownedClubs };

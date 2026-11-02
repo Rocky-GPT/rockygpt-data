@@ -35,3 +35,18 @@ test('an event is held_at the place or building its listed location names', () =
   assert.equal(result.linked, 4);
   assert.deepEqual(events[0].entity.relationships?.[0].evidence, [{ collection: 'events', source_key: 'archway-events', source_record_key: 'e1', field: 'location', source_url: 'https://archway.ramapo.edu/rsvp_boot?id=1' }]);
 });
+
+test('an event with no organizer group is organized_by the one node named like its organizer', async () => {
+  const { linkEventOrganizers } = await import('./event-places');
+  const office: CampusIdentity = { id: '00000000-0000-4000-8000-000000000201', kind: 'office', name: 'Roukema Center for International Education', aliases: [], links: [] };
+  const school: CampusIdentity = { id: '00000000-0000-4000-8000-000000000202', kind: 'school', name: 'School of Arts, Humanities, and Education', aliases: [], links: [] };
+  const twinA: CampusIdentity = { id: '00000000-0000-4000-8000-000000000203', kind: 'office', name: 'Public Safety (Emergency)', aliases: [], links: [] };
+  const twinB: CampusIdentity = { id: '00000000-0000-4000-8000-000000000204', kind: 'office', name: 'Public Safety (Non-Emergency)', aliases: [], links: [] };
+  const made = [event(1, ''), event(2, ''), event(3, ''), event(4, '')];
+  const organizers = ['Roukema Center for International Education', 'School of Arts. Humanities, and Education', 'Public Safety', 'Somebody Else'];
+  const rows = made.map((e, index) => ({ ...e.row, organizer: organizers[index] }));
+  const result = linkEventOrganizers([office, school, twinA, twinB, ...made.map(e => e.entity)], rows);
+  assert.deepEqual(made.map(e => e.entity.relationships?.map(r => 'target_entity_id' in r ? r.target_entity_id : null)), [[office.id], [school.id], undefined, undefined]);
+  assert.equal(result.linked, 2);
+  assert.equal(made[0].entity.relationships?.[0].evidence[0].field, 'organizer');
+});

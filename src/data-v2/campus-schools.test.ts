@@ -66,14 +66,17 @@ test('programs follow reviewed legacy names with one successor; people follow th
   assert.deepEqual(entities[3].relationships, [{ type: 'part_of', target_entity_id: snh.id, evidence: [
     { collection: 'faculty', source_key: 'faculty', source_record_key: 'ada', field: 'school' },
   ] }]);
-  for (const index of [1, 2, 4, 5]) assert.equal(entities[index].relationships, undefined);
+  for (const index of [1, 2, 5]) assert.equal(entities[index].relationships, undefined);
+  // A retired professor is linked to the school they retired from, never as a current member.
+  assert.deepEqual(entities[4].relationships, [{ type: 'retired_from', target_entity_id: sssw.id, evidence: [
+    { collection: 'faculty', source_key: 'faculty', source_record_key: 'retired', field: 'school' },
+  ] }]);
   const reasons = unresolved.map(u => `${u.entity}: ${u.reason}`);
   assert.ok(reasons.some(r => r.startsWith('SSHS:Elementary Education BS') && r.includes('was split')));
-  assert.ok(reasons.some(r => r.startsWith('retired') && r.includes('retired')));
   assert.ok(reasons.some(r => r.startsWith('librarian') && r.includes('Library Faculty & Staff')));
   assert.ok(reasons.some(r => r.includes('Missing Group has 0 records')));
   assert.ok(reasons.some(r => r.startsWith('School of Science, Nursing, and Health') && r.includes('office "School of Contemporary Arts Office"')));
   const kind = (text: string) => unresolved.find(u => u.reason.includes(text))?.kind;
-  assert.deepEqual(['was split', 'retired;', 'Library Faculty & Staff', 'Missing Group has 0 records', 'a name lookup asks'].map(kind),
-    ['missing_connection', 'missing_connection', 'missing_connection', 'no_records', 'note']);
+  assert.deepEqual(['was split', 'Library Faculty & Staff', 'Missing Group has 0 records', 'a name lookup asks'].map(kind),
+    ['missing_connection', 'missing_connection', 'no_records', 'note']);
 });
