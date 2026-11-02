@@ -1,4 +1,5 @@
 import { limit, type Limit } from './limit';
+import { assertSiteFetchAllowed, isRamapoHost, paceRamapoRequest, RAMAPO_CONCURRENCY } from './site-guard';
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_ATTEMPTS = 3;
@@ -48,7 +49,8 @@ function limiterFor(url: URL, concurrency: number): Limit {
   const key = `${url.protocol}//${url.host}`;
   let limiter = hostLimiters.get(key);
   if (!limiter) {
-    limiter = limit(concurrency);
+    // Ramapo's own hosts get at most RAMAPO_CONCURRENCY open requests, whatever a collector asks.
+    limiter = limit(isRamapoHost(url.hostname) ? Math.min(concurrency, RAMAPO_CONCURRENCY) : concurrency);
     hostLimiters.set(key, limiter);
   }
   return limiter;
@@ -153,6 +155,7 @@ async function requestOnce(
 ): Promise<CollectedHttpResponse> {
   const limiter = limiterFor(url, policy.perHostConcurrency);
   return limiter(async () => {
+    await paceRamapoRequest(url);
     const controller = new AbortController();
     const externalSignal = init.signal;
     const abortFromExternal = () => controller.abort(externalSignal?.reason);
@@ -194,6 +197,7 @@ export async function fetchWithPolicy(
   options: HttpPolicyOptions = {}
 ): Promise<CollectedHttpResponse> {
   const url = input instanceof URL ? input : new URL(input);
+  assertSiteFetchAllowed(url);
   const timeoutMs = positiveInteger(options.timeoutMs, DEFAULT_TIMEOUT_MS);
   const attempts = positiveInteger(options.attempts, DEFAULT_ATTEMPTS);
   const maxResponseBytes = positiveInteger(
