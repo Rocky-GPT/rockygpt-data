@@ -21,6 +21,8 @@ import { compileRequirementGroups, type RequirementGroupsArtifact } from './requ
 import { legacyProgramRecordKey, programRecordKey } from './program-records';
 import { compileCalendarIdentities } from './campus-calendar';
 import { addGraphRecords, emptyGraphRecords, type GraphRecordsArtifact } from './graph-records';
+import { compileMapPlaces, type CampusMapMatches } from './campus-map-places';
+import campusMapMatches from '../reference/campus-map-places.json';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -361,6 +363,13 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   applyPublishedAliases(entities, recordRows, ledger);
   const reviewedAliases = applyReviewedAliases(entities, inputs.identityReviews?.aliases ?? [], ledger);
   unresolved.push(...reviewedAliases.unresolved);
+  // Every place the campus map lists in a building, placed there: the node the registry has for
+  // it, or a facility node of its own. Run after aliases, which the same-name match reads.
+  const mapPlaces = compileMapPlaces(inputs.campusMap, campusBuildings, entities, campusMapMatches as CampusMapMatches, inputs.collectedAt?.['campus-map']);
+  entities.push(...mapPlaces.entities);
+  unresolved.push(...mapPlaces.unresolved);
+  addGraphRecords(graphRecords, 'buildings', mapPlaces.buildings);
+  addGraphRecords(graphRecords, 'map_places', mapPlaces.places);
   // What each office's own site says: an office, venue, facility or Archway group (a center, a
   // club run as an office) links every captured page of the folder its reviewed website names (its
   // contact's evidence.website.url on www.ramapo.edu). Run once every identity is in the registry.
