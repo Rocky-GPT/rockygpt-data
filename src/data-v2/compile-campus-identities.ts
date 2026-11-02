@@ -27,6 +27,8 @@ import { linkEventOrganizers, linkEventPlaces } from './event-places';
 import { linkClubCategories, linkClubPages } from './club-links';
 import { compileStops, linkTopicOffices } from './graph-links';
 import { compileOfficeStaff } from './office-staff';
+import { compileParkingLots, type ReviewedParking } from './parking-lots';
+import parkingLots from '../reference/parking-lots.json';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -459,6 +461,11 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const staff = compileOfficeStaff(entities, snapshot.office_sections ?? [], inputs.collectedAt?.['office-pages']);
   entities.push(...staff.entities);
   addGraphRecords(graphRecords, 'staff', staff.records);
+  // Parking lots, from the reviewed list of what the Public Safety parking pages say (parking-lots.json).
+  const parking = compileParkingLots(entities, snapshot.office_sections ?? [], parkingLots as ReviewedParking, campusBuildings, inputs.collectedAt?.['office-pages']);
+  entities.push(...parking.entities);
+  unresolved.push(...parking.unresolved);
+  addGraphRecords(graphRecords, 'parking_lots', parking.records);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved, alias_sources: aliasRecords(entities, ledger) };
