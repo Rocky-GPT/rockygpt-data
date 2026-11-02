@@ -19,6 +19,7 @@ import {
   runIsolatedRefresh,
   type KeptSource,
 } from './refresh-isolation';
+import { ALLOW_SITE_FETCH_ENV, siteFetchAllowed } from './site-guard';
 
 /**
  * Collector commands that can renew each non-static publishable source.
@@ -55,19 +56,24 @@ export const SOURCE_REFRESH_SCRIPTS: Record<string, string[]> = {
 // daily refresh, and become stale minutes after activation.
 export const REFRESH_HORIZON_HOURS = 24;
 
+type RefreshState = Pick<SourceProvenanceState, 'key' | 'status' | 'ageHours' | 'maxAgeHours'>;
+
+/** Whether tonight's run must recollect a source: it is stale, unknown, or would go stale before the next run. */
+export function mustRefreshTonight(state: RefreshState, refreshHorizonHours = REFRESH_HORIZON_HOURS): boolean {
+  return state.status === 'stale' ||
+    state.status === 'unknown' ||
+    (state.status === 'fresh' &&
+      state.ageHours !== null &&
+      state.maxAgeHours - state.ageHours <= refreshHorizonHours);
+}
+
 export function refreshScriptsForStates(
-  states: ReadonlyArray<Pick<SourceProvenanceState, 'key' | 'status' | 'ageHours' | 'maxAgeHours'>>,
-  refreshHorizonHours = REFRESH_HORIZON_HOURS
+  states: ReadonlyArray<RefreshState>,
+  refreshHorizonHours = REFRESH_HORIZON_HOURS,
+  earlyKeys: ReadonlySet<string> = new Set()
 ): string[] {
   const scripts = states
-    .filter(
-      (state) =>
-        state.status === 'stale' ||
-        state.status === 'unknown' ||
-        (state.status === 'fresh' &&
-          state.ageHours !== null &&
-          state.maxAgeHours - state.ageHours <= refreshHorizonHours)
-    )
+    .filter((state) => mustRefreshTonight(state, refreshHorizonHours) || earlyKeys.has(state.key))
     .flatMap((state) => {
       const configured = SOURCE_REFRESH_SCRIPTS[state.key];
       if (!configured) {
@@ -76,6 +82,51 @@ export function refreshScriptsForStates(
       return configured;
     });
   return [...new Set(scripts)];
+}
+
+/**
+ * A source whose last capture held at least this many pages is a big download from Ramapo's sites
+ * (the office sites hold about 2,300 pages and the school sites about 480).
+ */
+export const HEAVY_SOURCE_PAGES = 300;
+/** How many nights ahead the refresh looks for big sources that would come due together. */
+export const SPREAD_LOOKAHEAD_NIGHTS = 7;
+
+/** The night, counted from tonight (0), on which a fresh source must be recollected. */
+export function nightsUntilDue(state: RefreshState, refreshHorizonHours = REFRESH_HORIZON_HOURS): number | null {
+  if (mustRefreshTonight(state, refreshHorizonHours)) return 0;
+  if (state.ageHours === null) return null;
+  return Math.ceil((state.maxAgeHours - state.ageHours - refreshHorizonHours) / 24);
+}
+
+/**
+ * Big sources recollected a night early so no two come due on the same night (Dan, November 2,
+ * 2026: read Ramapo's sites as gently as possible). The weekly office and school sites were
+ * collected together and so kept coming due together, about 2,900 pages in one night.
+ *
+ * Tonight's run takes at most one big source early, and only when no big source is due tonight
+ * and two big sources would otherwise come due on the same later night. It moves the earliest such
+ * pair apart by taking one of them tonight; both keep their own cycle afterwards, so they stay
+ * apart, and a source taken early costs one extra collection only once.
+ */
+export function spreadHeavySources(
+  states: ReadonlyArray<RefreshState & Pick<SourceProvenanceState, 'recordCount'>>,
+  refreshHorizonHours = REFRESH_HORIZON_HOURS
+): string[] {
+  const heavy = states.filter((state) => (state.recordCount ?? 0) >= HEAVY_SOURCE_PAGES
+    && SOURCE_REFRESH_SCRIPTS[state.key]);
+  if (heavy.some((state) => mustRefreshTonight(state, refreshHorizonHours))) return [];
+  const byNight = new Map<number, Array<(typeof heavy)[number]>>();
+  for (const state of heavy) {
+    const night = nightsUntilDue(state, refreshHorizonHours);
+    if (night === null || night < 1 || night > SPREAD_LOOKAHEAD_NIGHTS) continue;
+    byNight.set(night, [...byNight.get(night) ?? [], state]);
+  }
+  const collision = [...byNight.entries()].sort(([a], [b]) => a - b).find(([, due]) => due.length > 1);
+  if (!collision) return [];
+  // Take the smaller one early: the bigger one keeps its night.
+  const [early] = [...collision[1]].sort((a, b) => (a.recordCount ?? 0) - (b.recordCount ?? 0) || a.key.localeCompare(b.key));
+  return [early.key];
 }
 
 /**
@@ -243,7 +294,11 @@ export async function main(): Promise<void> {
       `(the rest matched the last publish's saved copy).`
   );
   const before = evaluateSourceProvenance(SOURCES);
-  const provenanceScripts = refreshScriptsForStates(before);
+  const early = spreadHeavySources(before);
+  if (early.length) {
+    console.log(`Collecting ${early.join(', ')} a night early, so no two big sources come due on the same night.`);
+  }
+  const provenanceScripts = refreshScriptsForStates(before, REFRESH_HORIZON_HOURS, new Set(early));
   const compatibilityScripts = restoredArtifactCompatibilityScripts();
   if (compatibilityScripts.length) {
     console.log(
@@ -253,6 +308,13 @@ export async function main(): Promise<void> {
   const scripts = [...new Set([...provenanceScripts, ...compatibilityScripts])];
   let kept: KeptSource[] = [];
 
+  if (scripts.length && !siteFetchAllowed()) {
+    throw new Error(
+      `This refresh would download from Ramapo's sites (${scripts.join(', ')}), and only the daily data run does that. ` +
+        "Use production's captured pages instead (npm run data:bootstrap -- --require-raw). " +
+        `If Dan asked for a fresh collection on this machine, run it with ${ALLOW_SITE_FETCH_ENV}=1.`
+    );
+  }
   if (scripts.length) {
     console.log(
       `Refreshing ${scripts.length} collector(s) for source provenance or artifact compatibility.`

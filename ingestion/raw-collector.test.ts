@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber, withYear} from './raw-collector';
+import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber, previousSourcePages, withYear} from './raw-collector';
 import { type RawDatasetV1, validateRawDatasetV1 } from './raw-types';
 
 const page = (statusCode = 200) => buildRawPageFromHtml({url:'https://example.edu/policy', html:'<main><h1>Policy</h1><p>Source content.</p></main>', sourceType:'seed', allowedHost:'example.edu',statusCode});
@@ -384,4 +384,58 @@ test("a WordPress FAQ accordion's questions are kept with its section, whose tex
     { question: 'Will my credits be accepted?', answer: 'We accept up to 65 credits from a two-year school.' },
     { question: 'Is there an application fee?', answer: 'The fee is $65. Waivers exist.' },
   ]);
+});
+
+test('a page the site says has not changed since the last capture is reused, not downloaded again', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-raw-unchanged-'));
+  const original = globalThis.fetch;
+  const pages: Record<string, string> = {
+    'https://example.edu/finaid/': '<main><h1>Financial Aid</h1><p>File the FAFSA by March 1.</p></main>',
+    'https://example.edu/registrar/': '<main><h1>Registrar</h1><p>Transcripts.</p></main>',
+    'https://example.edu/bursar/': '<main><h1>Bursar</h1><p>Pay your bill.</p></main>',
+  };
+  const etags: Record<string, string> = { 'https://example.edu/finaid/': '"fa-1"', 'https://example.edu/registrar/': '"rg-1"' };
+  const sent: Array<{ url: string; ifNoneMatch: string | null }> = [];
+  globalThis.fetch = async (input, init) => {
+    const url = String(input);
+    const ifNoneMatch = new Headers(init?.headers).get('if-none-match');
+    sent.push({ url, ifNoneMatch });
+    if (ifNoneMatch && ifNoneMatch === etags[url]) return new Response(null, { status: 304, headers: { etag: etags[url] } });
+    return new Response(pages[url], { headers: { 'content-type': 'text/html', ...(etags[url] ? { etag: etags[url] } : {}) } });
+  };
+  const collect = () => collectRawDataset({ dataset: 'office', seedUrls: Object.keys(pages), allowedHost: 'example.edu',
+    outputPath: path.join(dir, 'office.raw.json'), attempts: 1, maxDetailPages: 0, retainSourceHtml: true, compressSourceHtml: true });
+  try {
+    const first = await collect();
+    assert.ok(sent.every(request => request.ifNoneMatch === null));
+    // The registrar's page changes; the financial aid page does not; the bursar's sends no validator.
+    pages['https://example.edu/registrar/'] = '<main><h1>Registrar</h1><p>Transcripts and diplomas.</p></main>';
+    etags['https://example.edu/registrar/'] = '"rg-2"';
+    sent.length = 0;
+    const second = await collect();
+    assert.deepEqual(sent.map(request => [request.url, request.ifNoneMatch]).sort(), [
+      ['https://example.edu/bursar/', null],
+      ['https://example.edu/finaid/', '"fa-1"'],
+      ['https://example.edu/registrar/', '"rg-1"'],
+    ]);
+    const capture = JSON.parse(fs.readFileSync(path.join(dir, 'office-sources.raw.json'), 'utf8'));
+    const finaid = capture.pages.find((page: { requestedUrl: string }) => page.requestedUrl === 'https://example.edu/finaid/');
+    const registrar = capture.pages.find((page: { requestedUrl: string }) => page.requestedUrl === 'https://example.edu/registrar/');
+    assert.equal(finaid.unchanged, true);
+    assert.equal(finaid.statusCode, 200);
+    assert.equal(finaid.etag, '"fa-1"');
+    assert.equal(sourceHtml(finaid), '<main><h1>Financial Aid</h1><p>File the FAFSA by March 1.</p></main>');
+    assert.equal(registrar.unchanged, undefined);
+    assert.equal(registrar.etag, '"rg-2"');
+    // The reused page reads exactly as before, and the capture still replays with intact hashes.
+    const sections = (dataset: typeof first, folder: string) => dataset.pages.find(page => page.url.includes(folder))?.sections;
+    assert.ok(sections(first, '/finaid')?.length);
+    assert.deepEqual(sections(second, '/finaid'), sections(first, '/finaid'));
+    assert.ok(JSON.stringify(sections(second, '/registrar')).includes('diplomas'));
+    assert.deepEqual(replayRawSourceCapture(capture).pages.map(page => page.sections), second.pages.map(page => page.sections));
+    // A capture whose stored HTML no longer matches its hash is not trusted as the page.
+    finaid.htmlGzip = Buffer.from('changed').toString('base64');
+    fs.writeFileSync(path.join(dir, 'office-sources.raw.json'), JSON.stringify(capture));
+    assert.equal(previousSourcePages(path.join(dir, 'office-sources.raw.json')).has('https://example.edu/finaid/'), false);
+  } finally { globalThis.fetch = original; fs.rmSync(dir, { recursive: true, force: true }); }
 });

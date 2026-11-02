@@ -12,6 +12,7 @@ import fs from 'fs';
 import path from 'path';
 import { chromium } from 'playwright';
 import { publicPath } from '../src/paths';
+import { assertSiteFetchAllowed } from './site-guard';
 
 const CATALOG_URL = 'https://catalog.ramapo.edu/programs';
 const PROGRAMS_JSON = publicPath('data', 'programs.json');
@@ -260,6 +261,7 @@ function matchMajor(catalogName: string, catalogCode: string, majors: MajorEntry
 }
 
 async function main() {
+  assertSiteFetchAllowed(CATALOG_URL);
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',

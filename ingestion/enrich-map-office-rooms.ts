@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import pLimit from 'p-limit';
 import { DEFAULT_USER_AGENT } from './http-client';
+import { assertSiteFetchAllowed, paceRamapoRequest, RAMAPO_CONCURRENCY } from './site-guard';
 
 interface MapBuilding {
   key: string;
@@ -74,7 +75,7 @@ const MAP_DATA_FILE = path.join(process.cwd(), 'data', 'map', 'campus-map-data.j
 const RAW_DATA_DIR = path.join(process.cwd(), 'data', 'raw');
 const SOURCE_MAP_DATA_URL = 'https://www.ramapo.edu/map/data/mapData.json';
 const REQUEST_TIMEOUT_MS = 15000;
-const CONCURRENCY = 8;
+const CONCURRENCY = RAMAPO_CONCURRENCY;
 const MAX_SUBPAGES_PER_URL = 12;
 const MAX_RAW_ENTRIES_PER_SCOPE = 1200;
 const ALLOW_EXISTING_ROOMS = process.env.RESET_EXISTING_ROOMS !== '1';
@@ -401,6 +402,8 @@ function scoreCandidate(
 
 async function fetchText(url: string): Promise<string> {
   const controller = new AbortController();
+  assertSiteFetchAllowed(url);
+  await paceRamapoRequest(url);
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
