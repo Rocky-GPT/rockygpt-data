@@ -2,7 +2,7 @@
 export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages' | 'requirement_groups' | GraphRecordCollection;
 /** Collections stored in the release's `graph-records` artifact (see graph-records.ts), one
  * generic store for every kind added since: the Brain reads all of them with one reader. */
-export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates', 'buildings', 'map_places', 'club_categories', 'stops', 'staff', 'parking_lots'] as const;
+export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates', 'buildings', 'map_places', 'club_categories', 'stops', 'staff', 'parking_lots', 'menu_board_items'] as const;
 export type GraphRecordCollection = typeof GRAPH_RECORD_COLLECTIONS[number];
 export const IDENTITY_KINDS = ['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course', 'term', 'calendar_date', 'club_category', 'stop', 'parking_lot'] as const;
 export const ENTITY_RELATIONSHIPS = ['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of', 'in_term', 'held_at', 'listed_by', 'in_category', 'lists_course', 'handled_by', 'stops_at', 'retired_from', 'near'] as const;
