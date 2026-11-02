@@ -40,6 +40,16 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install chromium
 
+      # The last publish's own copy of the release it uploaded. The refresh below restores the
+      # active release from it wherever the database's content hashes match, instead of
+      # downloading the whole release from Neon (free plan: 5 GB of transfer a month).
+      - name: Restore the last published release's files
+        uses: actions/cache/restore@v4
+        with:
+          path: .release-snapshot
+          key: release-snapshot-${{ github.run_id }}
+          restore-keys: release-snapshot-
+
       - name: Refresh stale publication sources and rebuild derived data
         env:
           ARCHWAY_USERNAME: ${{ secrets.ARCHWAY_USERNAME }}
@@ -74,6 +84,14 @@ jobs:
           RAW_ARTIFACT_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
           RAW_ARTIFACT_REQUIRED: '1'
         run: npm run data:publish
+
+      - name: Keep this release's files for the next refresh
+        if: ${{ hashFiles('.release-snapshot/release.json') != '' }}
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: .release-snapshot
+          key: release-snapshot-${{ github.run_id }}
 
       # A release now holds about 21,700 document chunks, so a week of daily
       # publishes between Sunday cleanups can outgrow the free database's

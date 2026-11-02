@@ -23,6 +23,7 @@ npm-debug.log*
 /data/normalized/
 /data/context/
 /data/cache/
+/.release-snapshot/
 /data/logs/
 /data/review/
 /data/.cache/
