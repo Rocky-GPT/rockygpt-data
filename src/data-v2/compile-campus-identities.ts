@@ -29,6 +29,8 @@ import { compileStops, linkTopicOffices } from './graph-links';
 import { compileOfficeStaff } from './office-staff';
 import { compileParkingLots, type ReviewedParking } from './parking-lots';
 import parkingLots from '../reference/parking-lots.json';
+import atriumMenuBoard from '../reference/atrium-menu-board.json';
+import { compileMenuBoard, type ReviewedMenuBoard } from './menu-boards';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -466,6 +468,10 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   entities.push(...parking.entities);
   unresolved.push(...parking.unresolved);
   addGraphRecords(graphRecords, 'parking_lots', parking.records);
+  // The Atrium's menu board items, while the dining site still links the file they were read from.
+  const atrium = compileMenuBoard(entities, snapshot.menu_documents ?? [], atriumMenuBoard as ReviewedMenuBoard, inputs.collectedAt?.dining);
+  unresolved.push(...atrium.unresolved);
+  addGraphRecords(graphRecords, 'menu_board_items', atrium.records);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved, alias_sources: aliasRecords(entities, ledger) };

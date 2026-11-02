@@ -1,0 +1,1313 @@
+{
+ "$comment": "The Atrium's menu boards, read by Claude on 2026-11-02 from the rendered pages of the PDF the dining site links (Dan approved one download). Each item is written as its board prints it; page 7's station prints no name, so its station is null. The text layer of pages 7 and 8 holds an older Taqueria board and was not used. A build publishes these items only while the dining site still links this exact file for The Atrium; a new file leaves them out until someone reads it.",
+ "venue": "The Atrium",
+ "document_url": "https://media-prd.sodexomyway.net/web/en-us/media/Atrium%20Menu%20Boards%202026_tcm17-92157.pdf",
+ "document_title": "Atrium Menu Boards 2026",
+ "document_sha256": "5ad0022b4a297b2364cddcc879a760254b65614290101dc8612a2b87c74d267d",
+ "read_at": "2026-11-02",
+ "items": [
+  {
+   "page": 1,
+   "station": "The Grill",
+   "section": "Breakfast",
+   "name": "Steak & Eggs",
+   "description": "Eggs, Steak, Caramelized Onions, Cheddar Cheese and Rocky road Sauce in a Kaiser Roll",
+   "prices": [
+    {
+     "price": "$9.99",
+     "calories": "860 cal"
+    }
+   ],
+   "contains": "Milk, Eggs, Wheat, Soy and Gluten"
+  },
+  {
+   "page": 1,
+   "station": "The Grill",
+   "section": "Breakfast",
+   "name": "Crunch Wrap",
+   "description": "Two eggs, Bacon, Hash Brown, Avocado spread & Pepper Jack Cheese in a tortilla",
+   "prices": [
+    {
+     "price": "$8.99",
+     "calories": "660 cal"
+    }
+   ],
+   "contains": "Milk, Eggs, Wheat, Soy and Gluten"
+  },
+  {
+   "page": 1,
+   "station": "The Grill",
+   "section": "Breakfast",
+   "name": "Egg Avocado Toast",
+   "description": "Scrambled eggs Guacamole, Bacon on a multigrain Bread",
+   "prices": [
+    {
+     "price": "$7.99",
+     "calories": "450 cal"
+    }
+   ],
+   "contains": "Milk, Eggs, Wheat, Soy and Gluten"
+  },
+  {
+   "page": 1,
+   "station": "The Grill",
+   "section": "Breakfast",
+   "name": "Eggs Caprese",
+   "description": "Scrambled eggs, Fresh Mozzarella cheese, Tomato and Pesto sauce on a multigrain Bread",
+   "prices": [
+    {
+     "price": "$8.99",
+     "calories": "459 cal"
+    }
+   ],
+   "contains": "Milk, Eggs, Wheat, Soy and Gluten"
+  },
+  {
+   "page": 1,
+   "station": "The Grill",
+   "section": "Breakfast",
+   "name": "Build Your Own Breakfast Sandwich",
+   "description": "Two eggs any style, choice of cheese & bread",
+   "prices": [
+    {
+     "price": "$3.99",
+     "calories": "380-525 cal"
+    }
+   ],
+   "options": [
+    {
+     "group": "Bread",
+     "name": "Kaiser Roll",
+     "calories": "230 cal"
+    },
+    {
+     "group": "Bread",
+     "name": "Wrap",
+     "calories": "203 cal"
+    },
+    {
+     "group": "Bread",
+     "name": "Bagel",
+     "calories": "285 cal"
+    },
+    {
+     "group": "Cheese",
+     "name": "American",
+     "calories": "100 cal"
+    },
+    {
+     "group": "Cheese",
+     "name": "Swiss",
+     "calories": "110 cal"
+    },
+    {
+     "group": "Cheese",
+     "name": "Provolone",
+     "calories": "150 cal"
+    },
+    {
+     "group": "Cheese",
+     "name": "Pepper Jack",
+     "calories": "100 cal"
+    },
+    {
+     "group": "Meat (add $2.39)",
+     "name": "Sausage [2oz]",
+     "calories": "190 cal"
+    },
+    {
+     "group": "Meat (add $2.39)",
+     "name": "Bacon [2 strips]",
+     "calories": "60 cal"
+    },
+    {
+     "group": "Meat (add $2.39)",
+     "name": "Taylor Ham [2oz]",
+     "calories": "140 cal"
+    },
+    {
+     "group": "Substitution",
+     "name": "Egg whites",
+     "calories": "80 cal",
+     "price": "$2.19"
+    }
+   ]
+  },
+  {
+   "page": 1,
+   "station": "The Grill",
+   "section": "Breakfast sides",
+   "name": "Side of Breakfast Meat [2oz]",
+   "prices": [
+    {
+     "price": "$2.39"
+    }
+   ]
+  },
+  {
+   "page": 1,
+   "station": "The Grill",
+   "section": "Breakfast sides",
+   "name": "Hash Brown [3oz]",
+   "prices": [
+    {
+     "price": "$1.89",
+     "calories": "90 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "Hamburger",
+   "description": "brioche bun",
+   "prices": [
+    {
+     "price": "$8.99",
+     "calories": "674 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "Bacon Cheeseburger",
+   "description": "brioche bun",
+   "prices": [
+    {
+     "price": "$9.99",
+     "calories": "834 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "Grilled Chicken Sandwich",
+   "description": "served on a brioche bun with your choice of cheese",
+   "prices": [
+    {
+     "price": "$9.49",
+     "calories": "590 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "Avocado Chicken Sandwich",
+   "description": "served with low-fat avocado aioli on an 8 grain bun",
+   "prices": [
+    {
+     "price": "$9.99",
+     "calories": "330 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "Buffalo Chicken Sandwich",
+   "description": "served with grilled chicken, pepper jack & blue cheese dressing on a brioche bun",
+   "prices": [
+    {
+     "price": "$9.99",
+     "calories": "780 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "Crispy Chicken Sandwich",
+   "description": "Served on a brioche bun with Lettuce, pickles and Rocky sauce",
+   "prices": [
+    {
+     "price": "$9.99",
+     "calories": "460 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "Turkey Burger",
+   "description": "hand-formed turkey burger on an 8 grain bun",
+   "prices": [
+    {
+     "price": "$8.99",
+     "calories": "435 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "Cheesesteak",
+   "description": "with sautéed peppers, onions & chipotle mayo on a hoagie roll",
+   "prices": [
+    {
+     "price": "$10.99",
+     "calories": "875 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "BLT",
+   "description": "served with low-fat avocado aioli on a brioche bun",
+   "prices": [
+    {
+     "price": "$7.99",
+     "calories": "665 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "Grilled Cheese",
+   "description": "served on a brioche bun with your choice of cheese",
+   "prices": [
+    {
+     "price": "$7.99",
+     "calories": "565 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Burgers and Sandwiches",
+   "name": "Chicken Tenders [4 tenders]",
+   "description": "tossed in your choice of regular, buffalo, or BBQ sauce",
+   "prices": [
+    {
+     "price": "$8.49",
+     "calories": "440 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Plant-Based",
+   "name": "Black Bean & Chickpea Burger",
+   "description": "served with low-fat avocado aioli on an 8 grain bun",
+   "prices": [
+    {
+     "price": "$8.49",
+     "calories": "435 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Plant-Based",
+   "name": "Impossible Burger",
+   "description": "served on an 8 grain bun",
+   "prices": [
+    {
+     "price": "$9.99",
+     "calories": "875 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Plant-Based",
+   "name": "Impossible Tenders [4 tenders]",
+   "prices": [
+    {
+     "price": "$8.99",
+     "calories": "360 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Sides",
+   "name": "Sweet Potato Fries",
+   "prices": [
+    {
+     "price": "$3.99",
+     "calories": "420 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Sides",
+   "name": "Hand-Cut Fresh Fries",
+   "prices": [
+    {
+     "price": "$2.99",
+     "calories": "285 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Sides",
+   "name": "Po'Fries",
+   "description": "tossed in roasted garlic, parmesan & parsley",
+   "prices": [
+    {
+     "price": "$3.99",
+     "calories": "355 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Sides",
+   "name": "Breaded Wings [6ct]",
+   "description": "served with Blue cheese dressing",
+   "prices": [
+    {
+     "price": "$9.99",
+     "calories": "399 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Sides",
+   "name": "Mozzarella Sticks [6ct]",
+   "description": "served with marinara sauce",
+   "prices": [
+    {
+     "price": "$8.99",
+     "calories": "490 cal"
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "station": "The Grill",
+   "section": "Sides",
+   "name": "Add Avocado Mayo",
+   "prices": [
+    {
+     "price": "$0.69",
+     "calories": "160 cal"
+    }
+   ]
+  },
+  {
+   "page": 3,
+   "station": "Local Fresh Baked Bagels",
+   "section": "Ridgewood Bagels served all day",
+   "name": "Assorted Bagels",
+   "prices": [
+    {
+     "price": "$1.99",
+     "calories": "285 cal"
+    }
+   ]
+  },
+  {
+   "page": 3,
+   "station": "Local Fresh Baked Bagels",
+   "section": "Ridgewood Bagels served all day",
+   "name": "Regular Cream Cheese [2oz]",
+   "prices": [
+    {
+     "price": "$1.49",
+     "calories": "200 cal"
+    }
+   ]
+  },
+  {
+   "page": 3,
+   "station": "Local Fresh Baked Bagels",
+   "section": "Ridgewood Bagels served all day",
+   "name": "Low Fat Cream Cheese [2oz]",
+   "prices": [
+    {
+     "price": "$1.49",
+     "calories": "120 cal"
+    }
+   ]
+  },
+  {
+   "page": 3,
+   "station": "Local Fresh Baked Bagels",
+   "section": "Ridgewood Bagels served all day",
+   "name": "Vegetable Cream Cheese [2oz]",
+   "prices": [
+    {
+     "price": "$1.69",
+     "calories": "160 cal"
+    }
+   ]
+  },
+  {
+   "page": 3,
+   "station": "Local Fresh Baked Bagels",
+   "section": "Ridgewood Bagels served all day",
+   "name": "Scallion Cream Cheese [2oz]",
+   "prices": [
+    {
+     "price": "$1.69",
+     "calories": "209 cal"
+    }
+   ]
+  },
+  {
+   "page": 3,
+   "station": "Local Fresh Baked Bagels",
+   "section": "Ridgewood Bagels served all day",
+   "name": "Butter [2oz]",
+   "prices": [
+    {
+     "price": "$1.49",
+     "calories": "410 cal"
+    }
+   ]
+  },
+  {
+   "page": 3,
+   "station": "Local Fresh Baked Bagels",
+   "section": "Cream Cheese of the Month",
+   "name": "Jalapeno Cream Cheese [2oz]",
+   "prices": [
+    {
+     "price": "$1.69",
+     "calories": "220 cal"
+    }
+   ]
+  },
+  {
+   "page": 4,
+   "station": "Sandwiches",
+   "section": "Build Your Own Sandwich",
+   "name": "Build Your Own Sandwich",
+   "description": "includes lettuce, tomato, onion",
+   "options": [
+    {
+     "group": "Meat",
+     "name": "Fresh Roasted Turkey",
+     "calories": "80/160 cal",
+     "prices": [
+      {
+       "size": "6\"",
+       "price": "$8.99"
+      },
+      {
+       "size": "12\"",
+       "price": "$10.99"
+      }
+     ]
+    },
+    {
+     "group": "Meat",
+     "name": "Tuna Salad",
+     "calories": "430/860 cal",
+     "prices": [
+      {
+       "size": "6\"",
+       "price": "$8.99"
+      },
+      {
+       "size": "12\"",
+       "price": "$10.99"
+      }
+     ]
+    },
+    {
+     "group": "Meat",
+     "name": "Chicken Salad",
+     "calories": "430/860 cal",
+     "prices": [
+      {
+       "size": "6\"",
+       "price": "$8.99"
+      },
+      {
+       "size": "12\"",
+       "price": "$10.99"
+      }
+     ]
+    },
+    {
+     "group": "Meat",
+     "name": "Ham",
+     "calories": "80/160 cal",
+     "prices": [
+      {
+       "size": "6\"",
+       "price": "$8.99"
+      },
+      {
+       "size": "12\"",
+       "price": "$10.99"
+      }
+     ]
+    },
+    {
+     "group": "Meat",
+     "name": "Roasted Chicken",
+     "calories": "90/140 cal",
+     "prices": [
+      {
+       "size": "6\"",
+       "price": "$9.69"
+      },
+      {
+       "size": "12\"",
+       "price": "$11.69"
+      }
+     ]
+    },
+    {
+     "group": "Meat",
+     "name": "Crispy Chicken",
+     "calories": "180/280 cal",
+     "prices": [
+      {
+       "size": "6\"",
+       "price": "$9.69"
+      },
+      {
+       "size": "12\"",
+       "price": "$11.69"
+      }
+     ]
+    },
+    {
+     "group": "Bread",
+     "name": "Sub Roll",
+     "calories": "205/410 cal"
+    },
+    {
+     "group": "Bread",
+     "name": "Wrap",
+     "calories": "203 cal"
+    },
+    {
+     "group": "Bread",
+     "name": "Bagel",
+     "calories": "285 cal"
+    },
+    {
+     "group": "Bread",
+     "name": "Foccacia",
+     "calories": "385 cal"
+    },
+    {
+     "group": "Cheese",
+     "name": "American",
+     "calories": "75 cal"
+    },
+    {
+     "group": "Cheese",
+     "name": "Swiss",
+     "calories": "165 cal"
+    },
+    {
+     "group": "Cheese",
+     "name": "Provolone",
+     "calories": "225 cal"
+    },
+    {
+     "group": "Cheese",
+     "name": "Pepper Jack",
+     "calories": "150 cal"
+    },
+    {
+     "group": "Cheese",
+     "name": "Cheddar",
+     "calories": "180 cal"
+    }
+   ]
+  },
+  {
+   "page": 5,
+   "station": "Sandwiches",
+   "section": "Specialty Sandwiches",
+   "name": "Chicken Parm",
+   "description": "Crispy Chicken, Provolone Cheese and Marinara Sauce",
+   "prices": [
+    {
+     "size": "6\"",
+     "price": "$9.99",
+     "calories": "540 cal"
+    },
+    {
+     "size": "12\"",
+     "price": "$11.99",
+     "calories": "1080 cal"
+    }
+   ],
+   "contains": "Milk, Eggs, Wheat, Soy and Gluten"
+  },
+  {
+   "page": 5,
+   "station": "Sandwiches",
+   "section": "Specialty Sandwiches",
+   "name": "The Ramawrap",
+   "description": "Grilled Chicken, Crispy Bacon, Fresh Avocado, Cheddar Cheese and Mayo",
+   "prices": [
+    {
+     "price": "$10.99",
+     "calories": "740 cal"
+    }
+   ],
+   "contains": "Milk, Wheat, Soy, Sesame and Gluten"
+  },
+  {
+   "page": 5,
+   "station": "Sandwiches",
+   "section": "Specialty Sandwiches",
+   "name": "Chickpea Salad",
+   "description": "Chickpea salad, Lettuce and Tomatoes",
+   "prices": [
+    {
+     "size": "6\"",
+     "price": "$9.49",
+     "calories": "540 cal"
+    },
+    {
+     "size": "12\"",
+     "price": "$11.49",
+     "calories": "1080 cal"
+    }
+   ],
+   "contains": "Wheat, Soy, Gluten and Gluten"
+  },
+  {
+   "page": 5,
+   "station": "Sandwiches",
+   "section": "Specialty Sandwiches",
+   "name": "Chicken Melt",
+   "description": "Chicken, Buffalo Sauce, Bacon, Ranch Pepper Jack",
+   "prices": [
+    {
+     "size": "6\"",
+     "price": "$10.99",
+     "calories": "540 cal"
+    },
+    {
+     "size": "12\"",
+     "price": "$12.99",
+     "calories": "1080 cal"
+    }
+   ],
+   "contains": "Milk, Eggs, Wheat, Soy and Gluten"
+  },
+  {
+   "page": 5,
+   "station": "Sandwiches",
+   "section": "Specialty Sandwiches",
+   "name": "The Italian",
+   "description": "Ham, Capicola, Salami, Provolone",
+   "prices": [
+    {
+     "size": "6\"",
+     "price": "$9.99",
+     "calories": "540 cal"
+    },
+    {
+     "size": "12\"",
+     "price": "$11.99",
+     "calories": "1080 cal"
+    }
+   ],
+   "contains": "Milk, Eggs, Wheat, Soy and Gluten"
+  },
+  {
+   "page": 5,
+   "station": "Sandwiches",
+   "section": "Specialty Sandwiches",
+   "name": "Avocado Caprese",
+   "description": "Fresh Mozzarella, Avocado, Tomato and Pesto",
+   "prices": [
+    {
+     "size": "6\"",
+     "price": "$10.99",
+     "calories": "540 cal"
+    },
+    {
+     "size": "12\"",
+     "price": "$12.99",
+     "calories": "1080 cal"
+    }
+   ],
+   "contains": "Milk, Wheat, Soy and Gluten"
+  },
+  {
+   "page": 5,
+   "station": "Sandwiches",
+   "section": "Specialty Sandwiches",
+   "name": "Turkey Pesto",
+   "description": "Turkey, Fresh Mozzarella and Nut Free Pesto",
+   "prices": [
+    {
+     "size": "6\"",
+     "price": "$9.99",
+     "calories": "540 cal"
+    },
+    {
+     "size": "12\"",
+     "price": "$11.99",
+     "calories": "1080 cal"
+    }
+   ],
+   "contains": "Milk, Wheat, Soy and Gluten"
+  },
+  {
+   "page": 5,
+   "station": "Sandwiches",
+   "section": "Specialty Sandwiches",
+   "name": "Roadrunner BTL",
+   "description": "Ham, Crispy Bacon, Lettuce, Tomato and Mayo",
+   "prices": [
+    {
+     "size": "6\"",
+     "price": "$9.99",
+     "calories": "540 cal"
+    }
+   ],
+   "contains": "Milk, Wheat, Soy, Sesame and Gluten",
+   "note": "The board prints the 12\" price as \"$1.99 | 1040CAL\", which looks like a misprint, so the 12\" price is left out."
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Build Your Own Entree",
+   "name": "Build Your Own Entree",
+   "options": [
+    {
+     "group": "Style",
+     "name": "Burrito",
+     "calories": "203 cal"
+    },
+    {
+     "group": "Style",
+     "name": "Three Tacos",
+     "calories": "220 cal"
+    },
+    {
+     "group": "Style",
+     "name": "Bowl"
+    },
+    {
+     "group": "Style",
+     "name": "Quesadilla",
+     "calories": "220 cal"
+    },
+    {
+     "group": "Protein",
+     "name": "Chicken al Pastor",
+     "calories": "55 cal",
+     "price": "$10.99"
+    },
+    {
+     "group": "Protein",
+     "name": "Pollo Asado",
+     "calories": "204 cal",
+     "price": "$10.49"
+    },
+    {
+     "group": "Protein",
+     "name": "Ground Beef",
+     "calories": "220 cal",
+     "price": "$11.49"
+    },
+    {
+     "group": "Protein",
+     "name": "Beef Birra",
+     "calories": "344 cal",
+     "price": "$11.49"
+    },
+    {
+     "group": "Protein",
+     "name": "Sofritos (Plant-based protein)",
+     "calories": "245 cal",
+     "price": "$10.49"
+    },
+    {
+     "group": "Topping",
+     "name": "Cilantro Lime Rice [4oz]",
+     "calories": "140 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Spanish Brown Rice [4oz]",
+     "calories": "140 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Black or Pinto Beans [4oz]",
+     "calories": "50 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Cheddar Cheese [4oz]",
+     "calories": "140 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Roasted Corn [1oz]",
+     "calories": "30 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Sauteed Onions [1oz]",
+     "calories": "20 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Fajita Veggies [2oz]",
+     "calories": "23 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Sour Cream [2oz]",
+     "calories": "23 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Salsa Verde [1oz]",
+     "calories": "20 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Chipotle Salsa [1oz]",
+     "calories": "25 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Salsa Roja [1oz]",
+     "calories": "20 cal"
+    },
+    {
+     "group": "Topping",
+     "name": "Pico de Gallo [1oz]",
+     "calories": "15 cal"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Sides & Extras",
+   "name": "Guacamole [2oz]",
+   "prices": [
+    {
+     "price": "$2.69",
+     "calories": "80 cal"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Sides & Extras",
+   "name": "Chips",
+   "prices": [
+    {
+     "price": "$3.49",
+     "calories": "540 cal"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Sides & Extras",
+   "name": "Extra Meat [2oz]",
+   "prices": [
+    {
+     "price": "$3.19"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Sides & Extras",
+   "name": "Rice & Beans",
+   "prices": [
+    {
+     "price": "$3.99",
+     "calories": "695 cal"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Bowls",
+   "name": "Pollo a la Diabla Bowl",
+   "description": "Served with Chicken, Rice, Jalapenos, Pico and Chipotle sauce",
+   "prices": [
+    {
+     "price": "$10.69",
+     "calories": "435 cal"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Bowls",
+   "name": "Fajita Bowl",
+   "description": "Served with Rice, Onions & Peppers, Corn Salsa, Beans and Guacamole",
+   "prices": [
+    {
+     "price": "$10.49",
+     "calories": "875 cal"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Bowls",
+   "name": "Pollo Ranchero Bowl",
+   "description": "Served with Chicken, Rice, Salsa Verde, Onions & Peppers and Cheese",
+   "prices": [
+    {
+     "price": "$10.69",
+     "calories": "360 cal"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Nachos",
+   "name": "Nachos con Carne",
+   "description": "Tortilla chips, Meat, beans, Cheese Sauce, Pico de Gallo, & Sour cream",
+   "prices": [
+    {
+     "price": "$11.99",
+     "calories": "1020 cal"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Nachos",
+   "name": "Nachos con Queso",
+   "description": "Tortilla Chips, Beans, Cheese Sauce, Pico de Gallo, & Sour Cream",
+   "prices": [
+    {
+     "price": "$10.49",
+     "calories": "885 cal"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Nachos",
+   "name": "Chips and Salsa",
+   "description": "Tortilla chips and choice of Salsa",
+   "prices": [
+    {
+     "price": "$3.99",
+     "calories": "399 cal"
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "station": "Taqueria",
+   "section": "Nachos",
+   "name": "Chips & Guacamole",
+   "description": "Tortilla chips, Guacamole and choice of Salsa",
+   "prices": [
+    {
+     "price": "$5.99",
+     "calories": "770 cal"
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Entrées",
+   "name": "Single Entrée",
+   "description": "with your choice of veggie fried rice, lo mein, brown rice, white rice",
+   "prices": [
+    {
+     "price": "$9.99"
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Entrées",
+   "name": "Double Entrée",
+   "description": "with your choice of veggie fried rice, lo mein, brown rice, white rice",
+   "prices": [
+    {
+     "price": "$11.99"
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Entrées",
+   "name": "Sub Shrimp / Beef",
+   "prices": [
+    {
+     "price": "$1.99"
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Sides",
+   "name": "Brown Rice",
+   "prices": [
+    {
+     "price": "$3.99",
+     "calories": "230 cal"
+    }
+   ],
+   "note": "Marked vegan (VG) on the board."
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Sides",
+   "name": "White Rice",
+   "prices": [
+    {
+     "price": "$3.99",
+     "calories": "290 cal"
+    }
+   ],
+   "note": "Marked vegan (VG) on the board."
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Sides",
+   "name": "Lo Mein",
+   "prices": [
+    {
+     "price": "$4.49",
+     "calories": "270 cal"
+    }
+   ],
+   "note": "Marked vegetarian (V) on the board."
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Sides",
+   "name": "Veggie Fried Rice",
+   "prices": [
+    {
+     "price": "$4.49",
+     "calories": "270 cal"
+    }
+   ],
+   "note": "Marked vegan (VG) on the board."
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Extras",
+   "name": "Crab Rangoon (4)",
+   "prices": [
+    {
+     "price": "$8.99",
+     "calories": "310 cal"
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Extras",
+   "name": "Chicken Skewers (2)",
+   "prices": [
+    {
+     "price": "$10.99",
+     "calories": "300 cal"
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Extras",
+   "name": "Veggie Egg Roll",
+   "prices": [
+    {
+     "price": "$2.49",
+     "calories": "140 cal"
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Extras",
+   "name": "Chicken Dumplings (2)",
+   "prices": [
+    {
+     "price": "$2.49",
+     "calories": "60 cal"
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Dessert",
+   "name": "Mini Donuts",
+   "description": "dusted with cinnamon & sugar; add chocolate drizzle (plus 130 cal)",
+   "prices": [
+    {
+     "price": "$3.49",
+     "calories": "510 cal"
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Featured Entrées",
+   "name": "General Tso's Chicken",
+   "description": "tempura chicken with broccoli florets; with your choice of veggie fried rice, lo mein, brown rice, white rice",
+   "calories": "200 cal"
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Featured Entrées",
+   "name": "Beef & Broccoli",
+   "description": "stir-fried in a brown sauce; with your choice of veggie fried rice, lo mein, brown rice, white rice",
+   "calories": "160 cal"
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Featured Entrées",
+   "name": "Teriyaki Chicken",
+   "description": "in a sweet savory sauce; with your choice of veggie fried rice, lo mein, brown rice, white rice",
+   "calories": "190 cal"
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Featured Entrées",
+   "name": "Flash Fried Tofu",
+   "description": "with red bell peppers & onions in a savory sauce; with your choice of veggie fried rice, lo mein, brown rice, white rice",
+   "note": "Marked vegan (VG) on the board.",
+   "calories": "150 cal"
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Featured Entrées",
+   "name": "Firecracker Shrimp",
+   "description": "sweet & tangy with bold heat; with your choice of veggie fried rice, lo mein, brown rice, white rice",
+   "calories": "160 cal"
+  },
+  {
+   "page": 7,
+   "station": null,
+   "section": "Featured Entrées",
+   "name": "Orange Chicken",
+   "description": "sweet & tangy with sesame seeds; with your choice of veggie fried rice, lo mein, brown rice, white rice",
+   "calories": "190 cal"
+  },
+  {
+   "page": 8,
+   "station": "Taqueria",
+   "section": "Açaí Bowls",
+   "name": "Açaí Bowl",
+   "description": "Start with an açaí base, then top it off",
+   "prices": [
+    {
+     "price": "$9.99"
+    }
+   ],
+   "options": [
+    {
+     "group": "Fresh Fruits",
+     "name": "Strawberries"
+    },
+    {
+     "group": "Fresh Fruits",
+     "name": "Blueberries"
+    },
+    {
+     "group": "Fresh Fruits",
+     "name": "Bananas"
+    },
+    {
+     "group": "Fresh Fruits",
+     "name": "Pineapple"
+    },
+    {
+     "group": "Crunch & Texture",
+     "name": "Granola"
+    },
+    {
+     "group": "Crunch & Texture",
+     "name": "Chia Seeds"
+    },
+    {
+     "group": "Crunch & Texture",
+     "name": "Almonds"
+    },
+    {
+     "group": "Crunch & Texture",
+     "name": "Toasted Coconut"
+    },
+    {
+     "group": "Sweet Finishes",
+     "name": "Chocolate Chips"
+    },
+    {
+     "group": "Sweet Finishes",
+     "name": "Agave"
+    },
+    {
+     "group": "Sweet Finishes",
+     "name": "Peanut Butter"
+    },
+    {
+     "group": "Sweet Finishes",
+     "name": "Nutella"
+    },
+    {
+     "group": "Sweet Finishes",
+     "name": "Caramel"
+    }
+   ],
+   "note": "granola may contain gluten & wheat"
+  }
+ ]
+}
