@@ -75,3 +75,35 @@ export function linkEventPlaces(entities: CampusIdentity[], events: Row[], artif
   }
   return { linked, unresolved };
 }
+
+/** Kinds that can host an event. */
+const HOST_KINDS = ['office', 'venue', 'organization', 'club', 'school', 'facility'];
+
+/**
+ * organized_by for an event Archway names no organizer group ID for: the one office, club,
+ * organization or school named exactly like the listing's organizer text (compared as placeName
+ * compares). An Archway group ID, when there is one, already decided it; a name two nodes share
+ * links neither.
+ */
+export function linkEventOrganizers(entities: CampusIdentity[], events: Row[]): { linked: number } {
+  const named = new Map<string, Set<string>>();
+  for (const entity of entities.filter(e => HOST_KINDS.includes(e.kind))) {
+    for (const name of [entity.name, ...entity.aliases]) { const key = placeName(name); if (key) named.set(key, new Set([...named.get(key) ?? [], entity.id])); }
+  }
+  const rows = new Map(events.map(row => [`${text(row.source_key)}:${text(row.source_record_key)}`, row]));
+  let linked = 0;
+  for (const entity of entities.filter(e => e.kind === 'event' && !(e.relationships ?? []).some(r => r.type === 'organized_by'))) {
+    const link = entity.links.find(l => l.collection === 'events');
+    const key = link?.source_record_keys[0];
+    const row = link && key ? rows.get(`${link.source_key}:${key}`) : undefined;
+    const found = named.get(placeName(text(row?.organizer)));
+    if (!link || !key || !row || found?.size !== 1) continue;
+    const [host] = found;
+    entity.relationships ||= [];
+    entity.relationships.push({ type: 'organized_by', target_entity_id: host, evidence: [{ collection: 'events', source_key: link.source_key, source_record_key: key,
+      ...(typeof row.id === 'string' && /^[0-9a-f-]{36}$/i.test(row.id) ? { source_record_id: row.id } : {}),
+      field: 'organizer', ...(/^https:\/\//.test(text(row.event_url)) ? { source_url: text(row.event_url) } : {}) }] });
+    linked++;
+  }
+  return { linked };
+}
