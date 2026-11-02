@@ -157,3 +157,49 @@ test('a derived subject is expected missing only when all its prior courses are 
   const mixed = registry(subjects.map(s => ({ ...s, relationships: [...s.relationships!, { ...s.relationships![0], target_record: { collection: 'courses', source_key: 'academic-programs', source_record_key: `${s.name} 999` } } as CampusIdentityRelationship] })));
   assert.equal(compareIdentityRegistries(mixed, current, current, new Set(), { catalog, candidateCourses: {} }).expected_losses.inactive_catalog_subjects, 0);
 });
+
+const course = (n: number, key: string): CampusIdentity => ({
+  id: uuid(n), kind: 'course', name: key, aliases: [],
+  links: [{ collection: 'courses', source_key: 'academic-programs', source_record_keys: [key] }],
+});
+
+test('a course identity is an expected loss only when the current catalog marks its one row Inactive', () => {
+  // Replacing an old catalog capture drops courses the catalog has since retired.
+  const prior = registry(range(1, 10).map(n => course(n, `OLD ${100 + n}`)));
+  const current = registry([]);
+  const catalog = inactiveCapture(range(1, 10).map(n => `OLD${100 + n}`));
+  const report = compareIdentityRegistries(prior, current, registry([]), new Set(), { catalog, candidateCourses: {} });
+  assert.deepEqual(report.failures, []);
+  assert.equal(report.expected_losses.inactive_catalog_courses, 10);
+  assert.equal(report.inactive_catalog_evidence?.courses.length, 10);
+
+  for (const evidence of [
+    { catalog: { ...catalog, courses: [] }, candidateCourses: {} },
+    { catalog: { ...catalog, courses: catalog.courses.map(row => ({ ...row, status: 'Active' })) }, candidateCourses: {} },
+    { catalog: { ...catalog, courses: catalog.courses.flatMap(row => [row, row]) }, candidateCourses: {} },
+    { catalog: { ...catalog, scrapedAt: 'not dated' }, candidateCourses: {} },
+    { catalog },
+  ]) {
+    const rejected = compareIdentityRegistries(prior, current, registry([]), new Set(), evidence);
+    assert.equal(rejected.expected_losses.inactive_catalog_courses, 0);
+    assert.deepEqual(rejected.failures, ['10 of 10 course identities disappeared (at most 2 allowed)']);
+  }
+});
+
+test('links from other identities to an explicitly inactive course record go with it', () => {
+  const profile = (n: number, keys: string[]): CampusIdentity => ({
+    ...entity(n, 'person'),
+    relationships: keys.map(key => ({ type: 'profile_course', target_record: { collection: 'courses', source_key: 'academic-programs', source_record_key: key },
+      evidence: [{ collection: 'faculty', source_key: 'faculty', source_record_key: `key-${n}`, field: 'courses' }] }) as CampusIdentityRelationship),
+  });
+  const keys = range(1, 5).map(n => `OLD ${100 + n}`);
+  const prior = registry([profile(1, keys)]);
+  const current = registry([profile(1, [])]);
+  const catalog = inactiveCapture(keys.map(key => key.replace(' ', '')));
+  const report = compareIdentityRegistries(prior, current, registry([]), new Set(), { catalog, candidateCourses: {} });
+  assert.deepEqual(report.failures, []);
+  assert.deepEqual(report.expected_relationship_losses_by_type, { profile_course: 5 });
+  const active = { ...catalog, courses: catalog.courses.map(row => ({ ...row, status: 'Active' })) };
+  assert.deepEqual(compareIdentityRegistries(prior, current, registry([]), new Set(), { catalog: active, candidateCourses: {} }).failures,
+    ['5 of 5 profile_course relationships disappeared (at most 2 allowed)']);
+});
