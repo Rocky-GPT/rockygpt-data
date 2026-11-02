@@ -8,6 +8,15 @@ import {
 import { SOURCE_RAW_DATASETS } from './quality/provenance';
 import { restoreBundleToRawDirectory } from './restore-active-raw';
 import { writeJsonFile } from '../ingestion/pipeline-utils';
+import { RELEASE_ARTIFACT_FILES } from './release-artifact-files';
+import {
+  RELEASE_SNAPSHOT_FILE,
+  inJsonbKeyOrder,
+  md5,
+  readReleaseSnapshot,
+  sha256,
+  type ReleaseSnapshot,
+} from './release-snapshot';
 
 export interface ActiveReleaseIdentity {
   datasetId: string;
@@ -38,10 +47,14 @@ interface LoadedActiveRelease {
   artifacts: ActiveReleaseArtifact[];
   documents: ActiveReleaseDocument[];
   rawArtifacts: ActiveSourceArtifact[];
+  /** How many artifacts and documents came from the database rather than the saved copy. */
+  downloaded: { artifacts: number; documents: number };
 }
 
 export interface RestoreActiveReleaseOptions {
   rootDir?: string;
+  /** The publisher's saved copy of the release (default: .release-snapshot/release.json). */
+  snapshotFile?: string;
   requireRawArtifacts?: boolean;
   /** Only refresh workflows can discard incomplete legacy captures and recollect. */
   allowIncompleteRawArtifacts?: boolean;
@@ -62,6 +75,9 @@ export interface RestoreActiveReleaseSummary {
   artifactsRestored: number;
   artifactFilesWritten: number;
   documentsRestored: number;
+  /** Artifacts and documents read from the database; the rest matched the saved copy. */
+  artifactsDownloaded: number;
+  documentsDownloaded: number;
   rawRestoreEnabled: boolean;
   rawSourcesRestored: number;
   rawFilesRestored: number;
@@ -242,7 +258,46 @@ export function restoreActiveReleaseFiles(input: {
   };
 }
 
-async function loadActiveRelease(client: PoolClient): Promise<LoadedActiveRelease> {
+/**
+ * The artifacts and documents the saved copy holds with the database's exact hashes. An artifact
+ * is parsed as the database would return its jsonb payload, so either way the same files are
+ * written.
+ */
+export function fromSnapshot(
+  snapshot: ReleaseSnapshot | null,
+  artifactHashes: ReadonlyArray<{ artifact_key: string; content_hash: string }>,
+  documentHashes: ReadonlyArray<{ source_path: string | null; content_md5: string }>
+): {
+  artifacts: Array<{ key: string; payload: unknown }>;
+  documents: Array<{ sourcePath: string; content: string }>;
+} {
+  if (!snapshot) return { artifacts: [], documents: [] };
+  const artifacts: Array<{ key: string; payload: unknown }> = [];
+  for (const { artifact_key: key, content_hash: hash } of artifactHashes) {
+    const text = snapshot.artifacts[key];
+    if (text === undefined || sha256(text) !== hash) continue;
+    try {
+      const payload = RELEASE_ARTIFACT_FILES[key]?.endsWith('.json')
+        ? inJsonbKeyOrder(JSON.parse(text))
+        : { content: text };
+      artifacts.push({ key, payload });
+    } catch {
+      // Unreadable here: read from the database instead.
+    }
+  }
+  const documents: Array<{ sourcePath: string; content: string }> = [];
+  for (const { source_path: sourcePath, content_md5: hash } of documentHashes) {
+    if (sourcePath === null) continue;
+    const content = snapshot.documents[sourcePath];
+    if (content !== undefined && md5(content) === hash) documents.push({ sourcePath, content });
+  }
+  return { artifacts, documents };
+}
+
+async function loadActiveRelease(
+  client: PoolClient,
+  snapshot: ReleaseSnapshot | null
+): Promise<LoadedActiveRelease> {
   await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
   try {
     const active = await client.query<{
@@ -272,21 +327,54 @@ async function loadActiveRelease(client: PoolClient): Promise<LoadedActiveReleas
       activatedAt: new Date(row.activated_at).toISOString(),
     };
 
-    const [artifactResult, documentResult, rawResult] = await Promise.all([
-      client.query<{ artifact_key: string; payload: unknown }>(
-        `SELECT artifact_key, payload
+    // Only the hashes first: an artifact or document the saved copy already holds (same hash)
+    // is not downloaded again; the rest are read in this same snapshot of the database.
+    const restoredKeys = Object.keys(RELEASE_ARTIFACT_TARGETS);
+    const [artifactHashes, documentHashes] = await Promise.all([
+      client.query<{ artifact_key: string; content_hash: string }>(
+        `SELECT artifact_key, content_hash
          FROM rockygpt_v2.release_artifacts
-         WHERE dataset_version_id = $1::uuid
+         WHERE dataset_version_id = $1::uuid AND artifact_key = ANY($2::text[])
          ORDER BY artifact_key`,
-        [release.datasetId]
+        [release.datasetId, restoredKeys]
       ),
-      client.query<{ content: string; metadata: unknown }>(
-        `SELECT content, metadata
+      client.query<{ source_path: string | null; content_md5: string }>(
+        `SELECT metadata->>'sourcePath' AS source_path, md5(content) AS content_md5
          FROM rockygpt_v2.documents
          WHERE dataset_version_id = $1::uuid
          ORDER BY metadata->>'sourcePath'`,
         [release.datasetId]
       ),
+    ]);
+    const kept = fromSnapshot(snapshot, artifactHashes.rows, documentHashes.rows);
+    const missingKeys = artifactHashes.rows
+      .map((row) => row.artifact_key)
+      .filter((key) => !kept.artifacts.some((artifact) => artifact.key === key));
+    const keptPaths = new Set(kept.documents.map((document) => document.sourcePath));
+    const missingPaths = documentHashes.rows
+      .filter((row) => row.source_path === null || !keptPaths.has(row.source_path))
+      .map((row) => row.source_path);
+
+    const [artifactResult, documentResult, rawResult] = await Promise.all([
+      missingKeys.length
+        ? client.query<{ artifact_key: string; payload: unknown }>(
+            `SELECT artifact_key, payload
+             FROM rockygpt_v2.release_artifacts
+             WHERE dataset_version_id = $1::uuid AND artifact_key = ANY($2::text[])
+             ORDER BY artifact_key`,
+            [release.datasetId, missingKeys]
+          )
+        : { rows: [] },
+      missingPaths.length
+        ? client.query<{ content: string; metadata: unknown }>(
+            `SELECT content, metadata
+             FROM rockygpt_v2.documents
+             WHERE dataset_version_id = $1::uuid
+               AND (metadata->>'sourcePath' = ANY($2::text[]) OR metadata->>'sourcePath' IS NULL)
+             ORDER BY metadata->>'sourcePath'`,
+            [release.datasetId, missingPaths.filter((sourcePath) => sourcePath !== null)]
+          )
+        : { rows: [] },
       client.query<{
         source_key: string;
         raw_uri: string | null;
@@ -314,11 +402,18 @@ async function loadActiveRelease(client: PoolClient): Promise<LoadedActiveReleas
     await client.query('COMMIT');
     return {
       release,
-      artifacts: artifactResult.rows.map((artifact) => ({
-        key: artifact.artifact_key,
-        payload: artifact.payload,
-      })),
-      documents: documentResult.rows,
+      artifacts: [
+        ...kept.artifacts.map(({ key, payload }) => ({ key, payload })),
+        ...artifactResult.rows.map((artifact) => ({
+          key: artifact.artifact_key,
+          payload: artifact.payload,
+        })),
+      ],
+      documents: [
+        ...kept.documents.map(({ sourcePath, content }) => ({ content, metadata: { sourcePath } })),
+        ...documentResult.rows,
+      ],
+      downloaded: { artifacts: artifactResult.rows.length, documents: documentResult.rows.length },
       rawArtifacts: rawResult.rows.map((artifact) => ({
         sourceKey: artifact.source_key,
         rawUri: artifact.raw_uri,
@@ -388,11 +483,16 @@ export async function restoreActiveRelease(
     application_name: 'rockygpt-active-release-bootstrap',
   });
 
+  const rootDir = path.resolve(options.rootDir ?? process.cwd());
+  const snapshot = readReleaseSnapshot(
+    options.snapshotFile ?? path.join(rootDir, RELEASE_SNAPSHOT_FILE)
+  );
+
   try {
     const client = await pool.connect();
     let loaded: LoadedActiveRelease;
     try {
-      loaded = await loadActiveRelease(client);
+      loaded = await loadActiveRelease(client, snapshot);
     } finally {
       client.release();
     }
@@ -403,7 +503,6 @@ export async function restoreActiveRelease(
           options.downloadBundle ?? downloadRawArtifactBundle
         )
       : [];
-    const rootDir = path.resolve(options.rootDir ?? process.cwd());
     const restored = restoreActiveReleaseFiles({
       rootDir,
       release: loaded.release,
@@ -430,6 +529,8 @@ export async function restoreActiveRelease(
       releaseId: loaded.release.releaseId,
       version: loaded.release.version,
       ...restored,
+      artifactsDownloaded: loaded.downloaded.artifacts,
+      documentsDownloaded: loaded.downloaded.documents,
       rawRestoreEnabled,
       rawSourcesRestored: downloadedRaw.length - rawSourcesRequiringRefresh.length,
       rawFilesRestored,

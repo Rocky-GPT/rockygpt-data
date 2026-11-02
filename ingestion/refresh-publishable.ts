@@ -238,7 +238,9 @@ export async function main(): Promise<void> {
   console.log(
     `Bootstrapped ${restored.version}: ${restored.artifactFilesWritten} release artifact file(s), ` +
       `${restored.documentsRestored} context document(s), and ${restored.rawFilesRestored} raw file(s) ` +
-      `for ${restored.rawSourcesRestored} source(s).`
+      `for ${restored.rawSourcesRestored} source(s); downloaded from the database: ` +
+      `${restored.artifactsDownloaded} artifact(s) and ${restored.documentsDownloaded} document(s) ` +
+      `(the rest matched the last publish's saved copy).`
   );
   const before = evaluateSourceProvenance(SOURCES);
   const provenanceScripts = refreshScriptsForStates(before);
