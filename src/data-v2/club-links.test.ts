@@ -52,3 +52,14 @@ test('the ramapo.edu club directory lists clubs, marks inactive ones, and adds i
   // An active page with no Archway club is reported, never a second club.
   assert.deepEqual(result.unresolved.map(u => u.entity), ['Debate Club']);
 });
+
+test('an office that is an Archway group too is filed in its category; a school is not', () => {
+  const yearbook = club(4, 'Yearbook', 'office');
+  const school = club(5, 'Anisfield School of Business', 'school');
+  linkClubCategories([yearbook, school], [
+    { source_key: 'archway-clubs', source_record_key: 'Yearbook', category: 'Student Organization - Media' },
+    { source_key: 'archway-clubs', source_record_key: 'Anisfield School of Business', category: 'Academic Department' },
+  ]);
+  assert.deepEqual(yearbook.relationships?.map(r => 'target_entity_id' in r ? r.target_entity_id : null), [clubCategoryId('Student Organization')]);
+  assert.equal(school.relationships, undefined);
+});

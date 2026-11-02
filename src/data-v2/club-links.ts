@@ -47,7 +47,9 @@ export function linkClubCategories(entities: CampusIdentity[], clubs: Row[], col
   const filed = new Map<string, Set<string>>();
   const rows = new Map(clubs.map(row => [`${text(row.source_key)}:${text(row.source_record_key)}`, row]));
   const categories = new Map<string, CampusIdentity>();
-  for (const entity of entities.filter(e => CLUB_KINDS.includes(e.kind))) {
+  // Clubs and groups, and offices that are Archway groups too (Yearbook, Ramapo Green). A school's
+  // clubs link lists the groups it owns, not one group of its own, so a school is never filed.
+  for (const entity of entities.filter(e => [...CLUB_KINDS, 'office', 'facility'].includes(e.kind))) {
     for (const link of entity.links.filter(l => l.collection === 'clubs')) {
       for (const key of link.source_record_keys) {
         const row = rows.get(`${link.source_key}:${key}`);
