@@ -26,6 +26,7 @@ import campusMapMatches from '../reference/campus-map-places.json';
 import { linkEventOrganizers, linkEventPlaces } from './event-places';
 import { linkClubCategories, linkClubPages } from './club-links';
 import { compileStops, linkTopicOffices } from './graph-links';
+import { compileOfficeStaff } from './office-staff';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -454,6 +455,10 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const clubPages = linkClubPages(entities, snapshot.office_sections ?? []);
   entities.push(...clubPages.entities);
   unresolved.push(...clubPages.unresolved);
+  // Office staff: the people each office's own pages list beside their own address, listed_by it.
+  const staff = compileOfficeStaff(entities, snapshot.office_sections ?? [], inputs.collectedAt?.['office-pages']);
+  entities.push(...staff.entities);
+  addGraphRecords(graphRecords, 'staff', staff.records);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved, alias_sources: aliasRecords(entities, ledger) };
