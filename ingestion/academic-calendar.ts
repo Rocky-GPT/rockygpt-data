@@ -2,6 +2,7 @@ import path from 'node:path';
 import { load } from 'cheerio';
 import { chromium } from 'playwright';
 import { fetchWithPolicy } from './http-client';
+import { assertSiteFetchAllowed } from './site-guard';
 import {
   assertCollectionCount,
   isRawOnlyMode,
@@ -122,6 +123,7 @@ async function collectCalendarWithHttp(): Promise<Semester[]> {
 }
 
 async function collectCalendarWithBrowser(): Promise<Semester[]> {
+  assertSiteFetchAllowed(CURRENT_CALENDAR_URL);
   const browser = await chromium.launch({ headless: true });
   try {
     const page = await browser.newPage();

@@ -1,13 +1,17 @@
 import path from 'path';
 import fs from 'fs';
 import { chromium } from 'playwright';
+import { assertSiteFetchAllowed } from './site-guard';
+
+const RESLIFE_CALENDAR_URL = 'https://www.ramapo.edu/reslife/critical-housing-dates-deadlines-calendar/';
 
 async function fetchReslifeCalendar() {
+    assertSiteFetchAllowed(RESLIFE_CALENDAR_URL);
     console.log('Launching browser to fetch Residence Life important dates...');
     const browser = await chromium.launch({ headless: true });
     try {
         const page = await browser.newPage();
-        await page.goto('https://www.ramapo.edu/reslife/critical-housing-dates-deadlines-calendar/', { waitUntil: 'networkidle' });
+        await page.goto(RESLIFE_CALENDAR_URL, { waitUntil: 'networkidle' });
         
         const reslifeDates = await page.evaluate(() => {
             // Grab all visible text on the page

@@ -7,6 +7,7 @@ import { chromium, type BrowserContext, type Page } from 'playwright';
 import { assertRawCollectionCandidate } from './raw-collector';
 import { buildArchwayEventDetailPage } from './archway-event-detail';
 import { fetchWithPolicy } from './http-client';
+import { assertSiteFetchAllowed, paceRamapoRequest, RAMAPO_CONCURRENCY } from './site-guard';
 import {
   assertCollectionCount,
   isRawOnlyMode,
@@ -680,7 +681,7 @@ export async function scrapePublicEventDetailRaw(
   const detailUrls = Array.from(
     new Set(events.map((event) => event.url).filter((url): url is string => Boolean(url)))
   ).slice(0, detailLimit);
-  const limit = pLimit(8);
+  const limit = pLimit(RAMAPO_CONCURRENCY);
   const signalByUrl = new Map<string, EventDetailSignal>();
   const pages = await Promise.all(
     detailUrls.map((url) =>
@@ -692,7 +693,7 @@ export async function scrapePublicEventDetailRaw(
             {
               timeoutMs: 15_000,
               expectedContentTypes: ['text/html', 'application/xhtml+xml'],
-              perHostConcurrency: 8,
+              perHostConcurrency: RAMAPO_CONCURRENCY,
             }
           );
           const finalPath = new URL(response.url || url).pathname.toLowerCase();
@@ -729,12 +730,13 @@ async function scrapeEventDetailRaw(
     new Set(events.map((event) => event.url).filter((url): url is string => Boolean(url)))
   ).slice(0, detailLimit);
 
-  const limit = pLimit(8);
+  const limit = pLimit(RAMAPO_CONCURRENCY);
   const signalByUrl = new Map<string, EventDetailSignal>();
   const pages = await Promise.all(
     detailUrls.map((url) =>
       limit(async () => {
         try {
+          await paceRamapoRequest(url);
           const response = await context.request.get(url, { timeout: 15000 });
           const statusCode = response.status();
           const html = await response.text();
@@ -882,6 +884,7 @@ async function fetchArchwayEvents() {
     return;
   }
 
+  assertSiteFetchAllowed(ARCHWAY_URL);
   console.log('Launching a browser only for authenticated event-detail enrichment...');
   const browser = await chromium.launch({ headless: true });
 
