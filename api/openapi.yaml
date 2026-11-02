@@ -317,7 +317,7 @@ components:
       type: apiKey
       in: header
       name: x-rockygpt-environment-token
-      description: Required on non-health staging routes when STAGING_SERVICE_TOKEN is configured; omitted in production.
+      description: Required on non-health staging routes when SERVICE_TOKEN (formerly STAGING_SERVICE_TOKEN) is configured; omitted in production.
   parameters:
     Query:
       name: q
