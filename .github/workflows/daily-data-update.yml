@@ -357,15 +357,15 @@ jobs:
           PGSSLROOTCERT="$(python -c 'import certifi; print(certifi.where())')" \
             python brain/scripts/publish_meaning_index.py --dir .published
 
-      # The laptop's local Brain serves exactly what production serves: run-local.sh downloads this
-      # artifact (the active release's graph file, its meaning index and active.json) when it is
-      # newer than the local copy, instead of collecting and publishing campus data a second time.
-      - name: Share the release graph and index with local Brains
-        uses: actions/upload-artifact@v4
-        with:
-          name: production-graph
-          path: .published
-          # upload-artifact v4.4+ skips dot-folders unless asked; without this the step finds nothing.
-          include-hidden-files: true
-          retention-days: 7
-          if-no-files-found: error
+      # Production's Brain and the laptop's serve this one copy: the release graph file and its
+      # meaning index go to the file store (brain-graph/ in the raw-archive bucket), the pointer
+      # last. Production's Brain checks for it every 5 minutes; the laptop downloads it when Dan
+      # syncs (rockygpt-brain retrieval/graph_sync.py). Neither reads the campus database to answer.
+      - name: Share the release graph with every Brain
+        env:
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: python brain/scripts/publish_graph.py --dir .published
