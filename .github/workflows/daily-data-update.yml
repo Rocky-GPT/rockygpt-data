@@ -79,7 +79,8 @@ jobs:
       # publishes between Sunday cleanups can outgrow the free database's
       # 0.5 GB, and a full database also stops the Brain's budget ledger.
       # Prune right after each publish so the database keeps the active
-      # release and the three newest retired ones; the log shows its size.
+      # release and the newest retired one, drops failed publishes at once and
+      # trims settled Brain ledger rows past 60 days; the log shows its size.
       - name: Remove retired datasets beyond the rollback window
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
