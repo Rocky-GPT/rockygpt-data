@@ -23,6 +23,7 @@ import { compileCalendarIdentities } from './campus-calendar';
 import { addGraphRecords, emptyGraphRecords, type GraphRecordsArtifact } from './graph-records';
 import { compileMapPlaces, type CampusMapMatches } from './campus-map-places';
 import campusMapMatches from '../reference/campus-map-places.json';
+import { linkEventPlaces } from './event-places';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -370,6 +371,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   unresolved.push(...mapPlaces.unresolved);
   addGraphRecords(graphRecords, 'buildings', mapPlaces.buildings);
   addGraphRecords(graphRecords, 'map_places', mapPlaces.places);
+  // Where each event is held, from its listing's location: a map place, or a building by room or name.
+  linkEventPlaces(entities, snapshot.events ?? [], campusBuildings);
   // What each office's own site says: an office, venue, facility or Archway group (a center, a
   // club run as an office) links every captured page of the folder its reviewed website names (its
   // contact's evidence.website.url on www.ramapo.edu). Run once every identity is in the registry.
