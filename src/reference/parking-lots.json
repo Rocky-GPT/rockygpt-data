@@ -1,21 +1,21 @@
 {
-  "$comment": "Campus parking lots and who may park in each, read by Claude 2026-11-02 from the Public Safety parking pages for Dan's review. Every fact cites the page and the exact words it says them in; a build checks each quote against that page's capture and leaves out any fact the page no longer says. 'near' names a map building (its map key) or a building group (its name) only where the quote names the place.",
+  "$comment": "Campus parking lots and who may park in each, read by Claude 2026-11-02 from the Public Safety parking pages for Dan's review. Every fact cites the page and the exact words it says them in; a build checks each quote against that page's capture and leaves out any fact the page no longer says, and any alias none of the lot's pages prints. 'near' names a map building (its map key) or a building group (its name) only where the quote names the place.",
   "office": "Public Safety (Non-Emergency)",
   "pages": {
     "regulations": "www.ramapo.edu/publicsafety/parking-regulations/",
     "maps": "www.ramapo.edu/publicsafety/parking-maps/"
   },
   "lots": [
-    { "name": "Lot A-1", "aliases": ["A-1", "A1"], "facts": [
+    { "name": "Lot A-1", "aliases": ["A-1"], "facts": [
       { "group": "Faculty and staff", "page": "regulations", "quote": "FACULTY / STAFF are authorized to park in the A-1, A-2, A-3 lots" },
       { "note": "Gated; needs a magnetic entry card", "page": "maps", "quote": "South Parking Lots A-1, A-2, A-3 and A-4 are a short walk from the academic buildings. These lots are gated and require a magnetic entry card." } ] },
-    { "name": "Lot A-2", "aliases": ["A-2", "A2"], "facts": [
+    { "name": "Lot A-2", "aliases": ["A-2"], "facts": [
       { "group": "Faculty and staff", "page": "regulations", "quote": "FACULTY / STAFF are authorized to park in the A-1, A-2, A-3 lots" },
       { "note": "Gated; needs a magnetic entry card", "page": "maps", "quote": "South Parking Lots A-1, A-2, A-3 and A-4 are a short walk from the academic buildings. These lots are gated and require a magnetic entry card." } ] },
-    { "name": "Lot A-3", "aliases": ["A-3", "A3"], "facts": [
+    { "name": "Lot A-3", "aliases": ["A-3"], "facts": [
       { "group": "Faculty and staff", "page": "regulations", "quote": "FACULTY / STAFF are authorized to park in the A-1, A-2, A-3 lots" },
       { "note": "Gated; needs a magnetic entry card", "page": "maps", "quote": "South Parking Lots A-1, A-2, A-3 and A-4 are a short walk from the academic buildings. These lots are gated and require a magnetic entry card." } ] },
-    { "name": "Lot A-4", "aliases": ["A-4", "A4"], "facts": [
+    { "name": "Lot A-4", "aliases": ["A-4"], "facts": [
       { "group": "Village residents", "page": "regulations", "quote": "VILLAGE RESIDENTS are authorized to park in designated Village parking areas which include Lots A-4, B-4, C-3 and C-4" },
       { "group": "Village residents", "page": "maps", "quote": "Parking Lots A-4, B-4, C-3, and C-4 are Village authorized parking areas only." } ] },
     { "name": "Lot B-1", "aliases": ["B-1", "B1"], "facts": [
@@ -27,7 +27,7 @@
     { "name": "Lot B-3", "aliases": ["B-3", "B3"], "facts": [
       { "group": "Commuter students", "page": "regulations", "quote": "COMMUTER STUDENTS are authorized to park in the B1, B2 and B3 lots." },
       { "group": "Commuter students", "page": "maps", "quote": "Student Parking South Parking Lots B-1, B-2 and B-3 are authorized as Commuter Parking only." } ] },
-    { "name": "Lot B-4", "aliases": ["B-4", "B4"], "facts": [
+    { "name": "Lot B-4", "aliases": ["B-4"], "facts": [
       { "group": "Village residents", "page": "regulations", "quote": "VILLAGE RESIDENTS are authorized to park in designated Village parking areas which include Lots A-4, B-4, C-3 and C-4" },
       { "group": "Village residents", "page": "maps", "quote": "Parking Lots A-4, B-4, C-3, and C-4 are Village authorized parking areas only." } ] },
     { "name": "Lot C-1", "aliases": ["C-1", "C1"], "facts": [
@@ -36,25 +36,25 @@
     { "name": "Lot C-2", "aliases": ["C-2", "C2"], "facts": [
       { "group": "All students, as overflow when their own lot is full", "page": "regulations", "quote": "ALL STUDENTS may use the C1, C2, or D lots as overflow parking if their assigned lot is full." },
       { "group": "All students, as overflow when their own lot is full", "page": "maps", "quote": "Parking Lots C-1, C-2, D-1, and D-2 are overflow parking for students." } ] },
-    { "name": "Lot C-3", "aliases": ["C-3", "C3"], "facts": [
+    { "name": "Lot C-3", "aliases": ["C-3"], "facts": [
       { "group": "Village residents", "page": "regulations", "quote": "VILLAGE RESIDENTS are authorized to park in designated Village parking areas which include Lots A-4, B-4, C-3 and C-4" },
       { "group": "Village residents", "page": "maps", "quote": "Parking Lots A-4, B-4, C-3, and C-4 are Village authorized parking areas only." } ] },
-    { "name": "Lot C-4", "aliases": ["C-4", "C4"], "facts": [
+    { "name": "Lot C-4", "aliases": ["C-4"], "facts": [
       { "group": "Village residents", "page": "regulations", "quote": "VILLAGE RESIDENTS are authorized to park in designated Village parking areas which include Lots A-4, B-4, C-3 and C-4" },
       { "group": "Village residents", "page": "maps", "quote": "Parking Lots A-4, B-4, C-3, and C-4 are Village authorized parking areas only." } ] },
-    { "name": "Lot D-1", "aliases": ["D-1", "D1"], "facts": [
+    { "name": "Lot D-1", "aliases": ["D-1"], "facts": [
       { "group": "All students, as overflow when their own lot is full", "page": "maps", "quote": "Parking Lots C-1, C-2, D-1, and D-2 are overflow parking for students." },
       { "group": "Guests", "page": "maps", "quote": "Parking Lots D-1 and D-2 are guest authorized parking areas." },
       { "note": "Guests register their car at the Public Safety Booth", "page": "maps", "quote": "Visitors are permitted to park only in the south parking lots (Lot D-1 and D-2). They must register their vehicles with the Public Safety Department at the Public Safety Booth." } ] },
-    { "name": "Lot D-2", "aliases": ["D-2", "D2"], "facts": [
+    { "name": "Lot D-2", "aliases": ["D-2"], "facts": [
       { "group": "All students, as overflow when their own lot is full", "page": "maps", "quote": "Parking Lots C-1, C-2, D-1, and D-2 are overflow parking for students." },
       { "group": "Guests", "page": "maps", "quote": "Parking Lots D-1 and D-2 are guest authorized parking areas." },
       { "note": "Guests register their car at the Public Safety Booth", "page": "maps", "quote": "Visitors are permitted to park only in the south parking lots (Lot D-1 and D-2). They must register their vehicles with the Public Safety Department at the Public Safety Booth." } ] },
-    { "name": "College Park Apartments lots", "aliases": ["CPA lots", "CPA parking"], "near": [
+    { "name": "College Park Apartments lots", "aliases": [], "near": [
       { "building": "College Park Apartments", "page": "maps", "quote": "Limited Parking is available in the College Park Apartment lots" } ], "facts": [
       { "group": "CPA, Overlook and Laurel Hall residents", "page": "regulations", "quote": "CPA, THE OVERLOOK, AND LAUREL HALL RESIDENTS are authorized to park in any of these resident hall areas interchangeably, provided a valid, current parking permit is displayed." },
       { "note": "Barrier gates need an access card from the information booth", "page": "maps", "quote": "Limited Parking is available in the College Park Apartment lots (Barrier gates require access cards at the information booth)." } ] },
-    { "name": "Overlook Parking Area", "aliases": ["Overlook lot", "Overlook parking"], "near": [
+    { "name": "Overlook Parking Area", "aliases": [], "near": [
       { "building": "building_the-overlook", "page": "maps", "quote": "Limited parking is available in the Overlook Parking Area for Student residents, connected to the perimeter road." } ], "facts": [
       { "group": "CPA, Overlook and Laurel Hall residents", "page": "regulations", "quote": "CPA, THE OVERLOOK, AND LAUREL HALL RESIDENTS are authorized to park in any of these resident hall areas interchangeably, provided a valid, current parking permit is displayed." } ] },
     { "name": "Laurel Parking Deck", "aliases": ["Parking Deck"], "facts": [
@@ -63,23 +63,23 @@
     { "name": "Facilities Complex and Resident Parking Garage", "aliases": ["Parking Garage", "Resident Parking Garage", "Facilities Complex Parking"], "near": [
       { "building": "building_facilities-complex", "page": "maps", "quote": "Facilities and Student Resident Parking Facilities Complex Parking and Resident Parking Garage" } ], "facts": [
       { "group": "Facilities and student residents", "page": "maps", "quote": "Facilities and Student Resident Parking Facilities Complex Parking and Resident Parking Garage" } ] },
-    { "name": "Mackin and Bischoff Hall lots", "aliases": ["Bischoff lot", "Mackin lot", "Mackin/Bischoff lots", "Bischoff Hall/Mackin Hall/Pavilion lots"], "near": [
+    { "name": "Mackin and Bischoff Hall lots", "aliases": ["Bischoff lot", "Bischoff Hall/Mackin Hall/Pavilion lots"], "near": [
       { "building": "building_pamela-m-bischoff-hall", "page": "regulations", "quote": "MACKIN/BISCHOFF RESIDENTS are authorized to park in the Mackin/Bischoff Hall parking lots." },
       { "building": "building_nancy-mackin-hall", "page": "regulations", "quote": "MACKIN/BISCHOFF RESIDENTS are authorized to park in the Mackin/Bischoff Hall parking lots." } ], "facts": [
       { "group": "Mackin and Bischoff residents", "page": "regulations", "quote": "MACKIN/BISCHOFF RESIDENTS are authorized to park in the Mackin/Bischoff Hall parking lots." },
       { "group": "Faculty and staff, in a set-aside part", "page": "regulations", "quote": "FACULTY / STAFF are authorized to park in the A-1, A-2, A-3 lots, as well as a designated portion of the Mackin/Bischoff Lots." },
       { "note": "Barrier gates need an access card", "page": "maps", "quote": "Limited Parking is available in the Bischoff Hall/Mackin Hall/Pavilion lots (Barrier gates require access cards)." } ] },
-    { "name": "Student Center lot", "aliases": ["Student Center parking"], "near": [
+    { "name": "Student Center lot", "aliases": [], "near": [
       { "building": "building_student-center-sc", "page": "maps", "quote": "Special needs parking lots are available behind Academic Buildings A/B and adjacent to the Student Center." } ], "facts": [
       { "group": "Special needs (accessible spaces, including van spaces)", "page": "maps", "quote": "The parking area includes handicapped spaces for vans that are used to transport persons using wheelchairs." },
       { "group": "Reserved parking only, for every other space", "page": "maps", "quote": "All other parking spots are Reserved Parking only." } ] },
-    { "name": "Tennis Courts lot", "aliases": ["Tennis Courts parking"], "near": [
+    { "name": "Tennis Courts lot", "aliases": [], "near": [
       { "building": "building_tennis-courts", "page": "maps", "quote": "Limited parking available in a lot behind the tennis courts of Halifax Road." } ], "facts": [
       { "group": "Overflow, special events and special needs", "page": "maps", "quote": "Overflow, Special Event and Special Needs Parking Limited parking available in a lot behind the tennis courts of Halifax Road." } ] },
     { "name": "Circle Lot", "aliases": ["The Circle Lot"], "facts": [
       { "group": "Reserved parking and special needs", "page": "maps", "quote": "Reserved Parking is available in the Circle Lot (Barrier gates require access cards at the information booth)." },
       { "group": "Motorcycles, motorbikes and scooters", "page": "maps", "quote": "they are to be parked in a specially designated motorcycle parking area, which is located in the The Circle Lot near the Main Entrance to campus." } ] },
-    { "name": "North Field gravel lot", "aliases": ["North Field lot"], "near": [
+    { "name": "North Field gravel lot", "aliases": [], "near": [
       { "building": "building_north-field", "page": "maps", "quote": "Additional overflow parking is available in the gravel lot on the lower level of North Field." } ], "facts": [
       { "group": "Overflow parking", "page": "maps", "quote": "Additional overflow parking is available in the gravel lot on the lower level of North Field." } ] }
   ]

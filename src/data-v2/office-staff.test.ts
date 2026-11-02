@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { CampusIdentity } from './campus-identities';
 import { addressFits, compileOfficeStaff, staffIdentityId, staffInSection } from './office-staff';
+import { aliasRecords, type AliasLedger } from './identity-aliases';
 
 test('a name is read only beside its own address, with the title between them', () => {
   assert.deepEqual(staffInSection('Office of Specialized Services (OSS) Staff & Contact Information',
@@ -51,4 +52,18 @@ test('each person is listed_by the office whose page lists them, merged with the
     source_url: 'https://www.ramapo.edu/registrar/' }]);
   assert.equal(result.records.collected_at, '2026-11-01T00:00:00Z');
   assert.equal(result.linked, 2);
+});
+
+test('a person printed under two spellings keeps the other as an alias, with its source noted', () => {
+  const office: CampusIdentity = { id: '00000000-0000-4000-8000-000000000301', kind: 'office', name: 'Registrar', aliases: [],
+    links: [{ collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['www.ramapo.edu/registrar/', 'www.ramapo.edu/registrar/staff/', 'www.ramapo.edu/registrar/contact/'] }] };
+  const page = (key: string, text: string) => ({ source_key: 'office-pages', source_record_key: key, url: `https://${key}`, sections: [{ heading: 'Staff', text }] });
+  const ledger: AliasLedger = new Map();
+  const result = compileOfficeStaff([office], [
+    page('www.ramapo.edu/registrar/', 'Joseph Smith, Registrar jsmith@ramapo.edu'),
+    page('www.ramapo.edu/registrar/staff/', 'Joseph Smith Registrar jsmith@ramapo.edu'),
+    page('www.ramapo.edu/registrar/contact/', 'Joe Smith Registrar jsmith@ramapo.edu')], '', ledger);
+  assert.deepEqual(result.entities.map(e => [e.name, e.aliases]), [['Joseph Smith', ['Joe Smith']]]);
+  assert.deepEqual(aliasRecords(result.entities, ledger)[0].sources, [{ basis: 'record_name',
+    evidence: { collection: 'staff', source_key: 'office-pages', source_record_key: 'jsmith@ramapo.edu', field: 'names' } }]);
 });

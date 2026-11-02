@@ -1,6 +1,7 @@
 import type { CampusIdentity, IdentityEvidence } from './campus-identities';
 import { pythonJsonStrings, uuid5 } from './course-identities';
 import type { GraphRecordCollectionData, GraphRecordRow } from './graph-records';
+import { noteAlias, type AliasLedger } from './identity-aliases';
 
 /**
  * @module data-v2/office-staff
@@ -124,7 +125,7 @@ export function staffInSection(heading: string, body: string): StaffMention[] {
 }
 
 /** listed_by links, and person nodes and `staff` records for the people no node holds yet. */
-export function compileOfficeStaff(entities: CampusIdentity[], pages: Row[], collectedAt = ''): { entities: CampusIdentity[]; records: GraphRecordCollectionData; linked: number } {
+export function compileOfficeStaff(entities: CampusIdentity[], pages: Row[], collectedAt = '', ledger: AliasLedger = new Map()): { entities: CampusIdentity[]; records: GraphRecordCollectionData; linked: number } {
   const owners = new Map<string, CampusIdentity[]>();
   for (const office of entities.filter(e => e.kind === 'office')) {
     for (const link of office.links.filter(l => l.collection === 'office_sections')) {
@@ -198,6 +199,8 @@ export function compileOfficeStaff(entities: CampusIdentity[], pages: Row[], col
     const count = (name: string) => printed.get(`${person.id}\n${name}`) ?? 0;
     person.name = record.names.reduce((best, name) => count(name) > count(best) ? name : best, record.names[0]);
     person.aliases = record.names.filter(name => name !== person.name).sort();
+    for (const alias of person.aliases) noteAlias(ledger, person.id, alias, { basis: 'record_name',
+      evidence: { collection: 'staff', source_key: 'office-pages', source_record_key: record.source_record_key, field: 'names' } });
     record.name = person.name;
   }
   const rows = [...records.values()].map(row => ({ ...row, names: row.names.sort(), emails: row.emails.sort() }))

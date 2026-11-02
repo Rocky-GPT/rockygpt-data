@@ -3,6 +3,7 @@ import test from 'node:test';
 import type { CampusIdentity } from './campus-identities';
 import { campusBuildingId, campusBuildingsArtifact } from './campus-buildings';
 import { compileParkingLots, parkingLotId } from './parking-lots';
+import { aliasRecords, type AliasLedger } from './identity-aliases';
 
 const artifact = campusBuildingsArtifact({ buildings: [
   { key: 'building_student-center-sc', name: 'Student Center (SC)', mapUrl: 'https://map.ramapo.edu/?id=2292#!m/1218428?sbc/', roomPrefixes: ['SC'] },
@@ -30,4 +31,13 @@ test('a parking lot keeps only the facts its page still says, word for word', ()
   // The fact the page does not say, and the lot with nothing said, are reported, not published.
   assert.deepEqual(result.unresolved.map(u => u.entity), ['Lot D-1', 'Gone lot']);
   assert.equal(result.records.collected_at, '2026-11-02T00:00:00Z');
+});
+
+test('a parking lot keeps only the aliases its pages print, each with its source noted', () => {
+  const ledger: AliasLedger = new Map();
+  const lot = { name: 'Lot D-1', aliases: ['D-1', 'D1'], facts: [{ group: 'Guests', page: 'maps', quote: 'Visitors are permitted to park only in the south parking lots (Lot D-1 and D-2).' }] };
+  const result = compileParkingLots([safety], [page], { ...reviewed, lots: [lot] }, artifact, '', ledger);
+  assert.deepEqual(result.entities[0].aliases, ['D-1']);
+  assert.deepEqual(aliasRecords(result.entities, ledger)[0].sources, [{ basis: 'record_name', evidence: { collection: 'office_sections', source_key: 'office-pages',
+    source_record_key: 'www.ramapo.edu/publicsafety/parking-maps/', field: 'sections', source_url: 'https://www.ramapo.edu/publicsafety/parking-maps/' } }]);
 });

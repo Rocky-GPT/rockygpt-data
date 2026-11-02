@@ -3,6 +3,7 @@ import { buildingIdentityId, campusBuildingId, type CampusBuildingsArtifact } fr
 import { placeName } from './campus-map-places';
 import { pythonJsonStrings, uuid5 } from './course-identities';
 import type { GraphRecordCollectionData, GraphRecordRow } from './graph-records';
+import { noteAlias, type AliasLedger } from './identity-aliases';
 import { SOURCES } from './source-seeds';
 
 /**
@@ -44,7 +45,7 @@ export function linkTopicOffices(entities: CampusIdentity[], topics: Row[]): voi
 }
 
 /** Stop nodes and their records; routes stop at them, and a campus stop is in the building it names. */
-export function compileStops(entities: CampusIdentity[], stops: Row[], artifact: CampusBuildingsArtifact, map: unknown, collectedAt = ''): { entities: CampusIdentity[]; records: GraphRecordCollectionData } {
+export function compileStops(entities: CampusIdentity[], stops: Row[], artifact: CampusBuildingsArtifact, map: unknown, collectedAt = '', ledger: AliasLedger = new Map()): { entities: CampusIdentity[]; records: GraphRecordCollectionData } {
   const page = SOURCES.find(source => source.key === 'transportation')?.url ?? 'https://www.ramapo.edu/about/transportation-services/';
   const rows = new Map(stops.map(row => [`${text(row.source_key)}:${text(row.source_record_key)}`, row]));
   const buildings = new Map<string, string[]>();
@@ -68,6 +69,9 @@ export function compileStops(entities: CampusIdentity[], stops: Row[], artifact:
         if (!row || !name) continue;
         const stop = nodes.get(name) ?? { id: stopIdentityId(name), kind: 'stop', name, aliases: text(row.label) && text(row.label) !== name ? [text(row.label)] : [],
           links: [{ collection: 'stops', source_key: 'transportation', source_record_keys: [name] }] };
+        // The stop's label on the timetable page ("CityMD Ramsey Urgent Care") is its other name.
+        if (!nodes.has(name)) for (const alias of stop.aliases) noteAlias(ledger, stop.id, alias, { basis: 'record_name',
+          evidence: { collection: 'shuttle_stops', source_key: link.source_key, source_record_key: key, field: 'label', source_url: page } });
         nodes.set(name, stop);
         if (!records.has(name)) records.set(name, { source_record_key: name, name, label: text(row.label) || null, pickup: text(row.pickup) || null, description: text(row.description) || null, source_url: page });
         route.relationships ||= [];

@@ -3,6 +3,7 @@ import test from 'node:test';
 import type { CampusIdentity } from './campus-identities';
 import { campusBuildingId, campusBuildingsArtifact } from './campus-buildings';
 import { compileStops, linkTopicOffices, stopIdentityId } from './graph-links';
+import { aliasRecords, type AliasLedger } from './identity-aliases';
 
 const node = (n: number, kind: CampusIdentity['kind'], name: string, links: CampusIdentity['links'] = []): CampusIdentity =>
   ({ id: `00000000-0000-4000-8000-00000000030${n}`, kind, name, aliases: [], links });
@@ -32,4 +33,14 @@ test('routes stop at shared stop nodes, and a campus stop is in the building it 
   assert.deepEqual(result.entities[0].relationships?.map(r => 'target_entity_id' in r ? r.target_entity_id : null), [bradley.id]);
   assert.equal(result.entities[1].relationships, undefined);
   assert.deepEqual(result.records.rows.map(r => [r.source_record_key, r.pickup]), [['Ramapo College (Bradley Center)', null], ['Garden State Plaza', 'the Bus Shelters']]);
+});
+
+test('a stop label is an alias with its source noted, so the alias report can trace it', () => {
+  const route = node(1, 'route', 'Sunday', [{ collection: 'shuttle_stops', source_key: 'transportation', source_record_keys: ['Sunday:stop:City MD Ramsey'] }]);
+  const ledger: AliasLedger = new Map();
+  const result = compileStops([route], [{ source_key: 'transportation', source_record_key: 'Sunday:stop:City MD Ramsey', name: 'City MD Ramsey', label: 'CityMD Ramsey Urgent Care' }],
+    campusBuildingsArtifact({ buildings: [] }), { buildings: [] }, '', ledger);
+  assert.deepEqual(result.entities[0].aliases, ['CityMD Ramsey Urgent Care']);
+  assert.deepEqual(aliasRecords(result.entities, ledger)[0].sources, [{ basis: 'record_name', evidence: { collection: 'shuttle_stops', source_key: 'transportation',
+    source_record_key: 'Sunday:stop:City MD Ramsey', field: 'label', source_url: 'https://www.ramapo.edu/about/transportation-services/ramapo-roadrunner-express-shuttle/' } }]);
 });

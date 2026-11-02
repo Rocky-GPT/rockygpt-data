@@ -3,6 +3,7 @@ import { buildingIdentityId, campusBuildingId, type CampusBuildingsArtifact } fr
 import type { IdentityCoverageIssue } from './compile-campus-identities';
 import { pythonJsonStrings, uuid5 } from './course-identities';
 import type { GraphRecordCollectionData, GraphRecordRow } from './graph-records';
+import { noteAlias, type AliasLedger } from './identity-aliases';
 
 /**
  * @module data-v2/parking-lots
@@ -11,7 +12,8 @@ import type { GraphRecordCollectionData, GraphRecordRow } from './graph-records'
  * The lots and their facts are a reviewed list (src/reference/parking-lots.json) read from the
  * Public Safety parking pages. Each fact quotes the page; a build keeps a fact only when this
  * run's capture of that page still says the quote word for word, and reports the rest. A lot is
- * `listed_by` the office whose pages they are, and `near` the building its quote names.
+ * `listed_by` the office whose pages they are, and `near` the building its quote names. A lot
+ * keeps only the other names ("A-1", "Parking Deck") one of its pages prints as a whole word.
  */
 
 type Row = Record<string, unknown>;
@@ -24,7 +26,7 @@ export interface ReviewedParking { office: string; pages: Record<string, string>
 
 export const parkingLotId = (name: string): string => uuid5(NAMESPACE_URL, pythonJsonStrings(['rockygpt', 'parking_lot', 'office-pages', name]));
 
-export function compileParkingLots(entities: CampusIdentity[], pages: Row[], reviewed: ReviewedParking, artifact: CampusBuildingsArtifact, collectedAt = ''):
+export function compileParkingLots(entities: CampusIdentity[], pages: Row[], reviewed: ReviewedParking, artifact: CampusBuildingsArtifact, collectedAt = '', ledger: AliasLedger = new Map()):
   { entities: CampusIdentity[]; records: GraphRecordCollectionData; unresolved: IdentityCoverageIssue[] } {
   const unresolved: IdentityCoverageIssue[] = [];
   const captured = new Map(pages.map(page => [text(page.source_record_key), page]));
@@ -50,7 +52,18 @@ export function compileParkingLots(entities: CampusIdentity[], pages: Row[], rev
     };
     const facts = lot.facts.flatMap(fact => { const at = said(fact); return at ? [{ ...fact.group ? { group: fact.group } : {}, ...fact.note ? { note: fact.note } : {}, quote: fact.quote, source_url: at.url, page: at.key }] : []; });
     if (!facts.length) continue;
-    const node: CampusIdentity = { id: parkingLotId(lot.name), kind: 'parking_lot', name: lot.name, aliases: [...lot.aliases].sort(),
+    const id = parkingLotId(lot.name);
+    // An alias stays only where a page this lot's facts cite prints it, as a whole word.
+    const cited = [...new Map(facts.map(fact => [fact.page, fact.source_url])).entries()];
+    const aliases: string[] = [];
+    for (const alias of [...new Set(lot.aliases)].sort()) {
+      const word = new RegExp(`(?<![\\w-])${alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\w-])`);
+      const at = cited.find(([key]) => word.test(pageText(key) ?? ''));
+      if (!at) continue;
+      aliases.push(alias);
+      noteAlias(ledger, id, alias, { basis: 'record_name', evidence: { collection: 'office_sections', source_key: 'office-pages', source_record_key: at[0], field: 'sections', ...(/^https:\/\//.test(at[1]) ? { source_url: at[1] } : {}) } });
+    }
+    const node: CampusIdentity = { id, kind: 'parking_lot', name: lot.name, aliases,
       links: [{ collection: 'parking_lots', source_key: 'office-pages', source_record_keys: [lot.name] }] };
     const evidenceAt = (key: string, url: string, field: string): IdentityEvidence => ({ collection: 'office_sections', source_key: 'office-pages', source_record_key: key, field, ...(/^https:\/\//.test(url) ? { source_url: url } : {}) });
     node.relationships = [];
