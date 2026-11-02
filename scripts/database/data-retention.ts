@@ -6,20 +6,60 @@ interface RetentionSummary {
   retiredDatasetsDeleted: number;
   sourceSnapshotsDeleted: number;
   ingestionRunsDeleted: number;
+  ledgerOperationsDeleted: number;
+  ledgerTurnsDeleted: number;
   /** pg_database_size after cleanup; the free Neon plan stops writes at 0.5 GB. */
   databaseBytes: number;
   dryRun: boolean;
 }
 
-/** Retired dataset versions kept for rollback; with daily publishes, about 3 days. */
-export const RETIRED_VERSIONS_KEPT = 3;
+/**
+ * Retired dataset versions kept for rollback. A release is about 105 MB (28,500 document chunks,
+ * office sections, artifacts and a 10 MB meaning index), so on the free 0.5 GB database the
+ * active release and one backup are all that fit with room to grow: on 2026-11-02 the active
+ * release, three retired ones and a failed one filled 569 of 674 MB.
+ */
+export const RETIRED_VERSIONS_KEPT = 1;
 
-async function tableExists(pool: Pool, table: string): Promise<boolean> {
+/** A publish takes under an hour; a version still staging or validating a day later was abandoned. */
+const ABANDONED_AFTER = '1 day';
+
+/**
+ * Settled Brain spending-ledger rows older than this are history only: the monthly cap reads the
+ * current month's settled rows and every unsettled one, which are never deleted here.
+ */
+const LEDGER_KEPT = '60 days';
+const LEDGER_BATCH = 5000;
+
+async function tableExists(pool: Pool, table: string, schema = 'rockygpt_v2'): Promise<boolean> {
   const result = await pool.query<{ present: boolean }>(
     `SELECT to_regclass($1) IS NOT NULL AS present`,
-    [`rockygpt_v2.${table}`]
+    [`${schema}.${table}`]
   );
   return result.rows[0]?.present === true;
+}
+
+/** Deletes the rows `where` selects, a batch per statement so each stays inside the timeout. */
+async function deleteInBatches(
+  pool: Pool,
+  table: string,
+  where: string,
+  dryRun: boolean
+): Promise<number> {
+  if (dryRun) {
+    const result = await pool.query<{ count: number }>(
+      `SELECT count(*)::integer AS count FROM ${table} WHERE ${where}`
+    );
+    return Number(result.rows[0]?.count || 0);
+  }
+  let deleted = 0;
+  for (;;) {
+    const result = await pool.query(
+      `DELETE FROM ${table} WHERE ctid IN (SELECT ctid FROM ${table} WHERE ${where} LIMIT ${LEDGER_BATCH})`
+    );
+    deleted += result.rowCount || 0;
+    if ((result.rowCount || 0) < LEDGER_BATCH) return deleted;
+  }
 }
 
 export async function runDataRetention(
@@ -29,22 +69,29 @@ export async function runDataRetention(
   let failedDatasetsDeleted = 0;
   let retiredDatasetsDeleted = 0;
   if (await tableExists(pool, 'dataset_versions')) {
-    const failedSql = dryRun
-      ? `SELECT count(*)::integer AS count
-         FROM rockygpt_v2.dataset_versions
-         WHERE status IN ('failed', 'staging', 'validating')
-           AND created_at < now() - interval '7 days'`
-      : `DELETE FROM rockygpt_v2.dataset_versions
-         WHERE status IN ('failed', 'staging', 'validating')
-           AND created_at < now() - interval '7 days'`;
-    const failed = await pool.query<{ count?: number }>(failedSql);
-    failedDatasetsDeleted = dryRun
-      ? Number(failed.rows[0]?.count || 0)
-      : Number(failed.rowCount || 0);
+    // A failed publish is never used again but holds a full copy of the release, so it goes
+    // at once; a staging or validating one goes once it is clearly abandoned.
+    const failed = await pool.query<{ id: string }>(
+      `SELECT id FROM rockygpt_v2.dataset_versions
+       WHERE status = 'failed'
+          OR (status IN ('staging', 'validating') AND created_at < now() - interval '${ABANDONED_AFTER}')`
+    );
+    if (dryRun) {
+      failedDatasetsDeleted = failed.rows.length;
+    } else {
+      for (const { id } of failed.rows) {
+        const deleted = await pool.query(
+          `DELETE FROM rockygpt_v2.dataset_versions
+           WHERE id = $1::uuid
+             AND (status = 'failed'
+                  OR (status IN ('staging', 'validating') AND created_at < now() - interval '${ABANDONED_AFTER}'))`,
+          [id]
+        );
+        failedDatasetsDeleted += deleted.rowCount || 0;
+      }
+    }
 
-    // Keep the newest retired versions for rollback, and nothing older. A
-    // release is several times the size it was before identities and office
-    // pages, and the free database's 0.5 GB cannot hold a month of them.
+    // Keep the newest retired version for rollback, and nothing older.
     const removable = await pool.query<{ id: string }>(
       `SELECT id FROM (
          SELECT id, row_number() OVER (ORDER BY created_at DESC) AS rollback_rank
@@ -114,6 +161,28 @@ export async function runDataRetention(
       : Number(result.rowCount || 0);
   }
 
+  // The Brain's spending ledger shares this database and gains a row per model call; October
+  // 2026 alone added 45 MB. Only settled rows past the window go; reserved and uncertain rows
+  // still count against the cap and stay.
+  let ledgerOperationsDeleted = 0;
+  if (await tableExists(pool, 'operations', 'brain_ops')) {
+    ledgerOperationsDeleted = await deleteInBatches(
+      pool,
+      'brain_ops.operations',
+      `state = 'settled' AND created_at < now() - interval '${LEDGER_KEPT}'`,
+      dryRun
+    );
+  }
+  let ledgerTurnsDeleted = 0;
+  if (await tableExists(pool, 'turns', 'brain_ops')) {
+    ledgerTurnsDeleted = await deleteInBatches(
+      pool,
+      'brain_ops.turns',
+      `created_at < now() - interval '${LEDGER_KEPT}'`,
+      dryRun
+    );
+  }
+
   const size = await pool.query<{ bytes: string }>(
     `SELECT pg_database_size(current_database())::text AS bytes`
   );
@@ -123,16 +192,59 @@ export async function runDataRetention(
     retiredDatasetsDeleted,
     sourceSnapshotsDeleted,
     ingestionRunsDeleted,
+    ledgerOperationsDeleted,
+    ledgerTurnsDeleted,
     databaseBytes: Number(size.rows[0]?.bytes || 0),
     dryRun,
   };
 }
 
+/**
+ * Deleted rows leave their space inside each table, where later publishes reuse it, so the size
+ * Neon reports does not drop after a cleanup. VACUUM FULL rewrites a table to its live rows and
+ * gives the rest back. It locks the table while it runs (seconds per table at these sizes), so it
+ * is run by hand at a quiet hour, not after every publish. Smallest tables go first, so the
+ * temporary copy each rewrite needs fits in the space the earlier ones freed.
+ */
+export async function vacuumFull(pool: Pool): Promise<{ before: number; after: number }> {
+  const sizeOf = async () => Number((await pool.query<{ bytes: string }>(
+    `SELECT pg_database_size(current_database())::text AS bytes`
+  )).rows[0]?.bytes || 0);
+  const before = await sizeOf();
+  const tables = await pool.query<{ name: string; bytes: string }>(
+    `SELECT format('%I.%I', n.nspname, c.relname) AS name, pg_total_relation_size(c.oid)::text AS bytes
+     FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+     WHERE c.relkind = 'r' AND n.nspname IN ('rockygpt_v2', 'brain_ops')
+       AND pg_total_relation_size(c.oid) > 1048576
+     ORDER BY pg_total_relation_size(c.oid)`
+  );
+  // A rewrite can take longer than the cleanup's 60-second limit; waiting behind a long read
+  // for a lock is not worth it, so give up on that table instead.
+  await pool.query(`SET statement_timeout = 0`);
+  await pool.query(`SET lock_timeout = '15s'`);
+  for (const { name, bytes } of tables.rows) {
+    const started = Date.now();
+    try {
+      await pool.query(`VACUUM (FULL, ANALYZE) ${name}`);
+      const now = await pool.query<{ bytes: string }>(
+        `SELECT pg_total_relation_size($1::regclass)::text AS bytes`, [name]
+      );
+      console.log(`[data-retention] VACUUM FULL ${name}: ${Number(bytes)} -> ${Number(now.rows[0]?.bytes || 0)} bytes in ${Date.now() - started} ms`);
+    } catch (error) {
+      console.warn(`[data-retention] VACUUM FULL ${name} skipped: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  return { before, after: await sizeOf() };
+}
+
 async function main(): Promise<void> {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required.');
+  const options = ['--dry-run', '--vacuum-full'];
   const dryRun = process.argv.slice(2).includes('--dry-run');
-  const unknown = process.argv.slice(2).filter((arg) => arg !== '--dry-run');
+  const vacuum = process.argv.slice(2).includes('--vacuum-full');
+  const unknown = process.argv.slice(2).filter((arg) => !options.includes(arg));
   if (unknown.length) throw new Error(`Unknown option: ${unknown.join(', ')}`);
+  if (dryRun && vacuum) throw new Error('--vacuum-full writes; it cannot run with --dry-run.');
 
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -143,6 +255,10 @@ async function main(): Promise<void> {
   try {
     const summary = await runDataRetention(pool, dryRun);
     console.log(`[data-retention] ${dryRun ? 'Dry run' : 'Completed'}: ${JSON.stringify(summary)}`);
+    if (vacuum) {
+      const { before, after } = await vacuumFull(pool);
+      console.log(`[data-retention] VACUUM FULL done: database ${before} -> ${after} bytes`);
+    }
   } finally {
     await pool.end();
   }
