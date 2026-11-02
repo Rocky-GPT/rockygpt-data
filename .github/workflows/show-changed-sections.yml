@@ -1,0 +1,35 @@
+name: Show changed office review sections
+
+# When a publish stops with "Completed office review needs attention", this prints the
+# office's reviewed sections whose text changed, with their current text and hash, read
+# from the newest archived captures. It reads the archive only and fetches no college page.
+on:
+  workflow_dispatch:
+    inputs:
+      office:
+        description: Reviewed contact name, exactly as in directory-contacts.json
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  show:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Show the changed sections
+        env:
+          OFFICE: ${{ inputs.office || 'Athletics' }}
+          RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          RAW_ARTIFACT_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          RAW_ARTIFACT_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: npx tsx scripts/review/show-changed-sections.ts "$OFFICE" --from-r2
