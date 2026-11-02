@@ -23,4 +23,5 @@ fs.writeFileSync(path.join(outputPath, 'program-requirement-groups.json'), JSON.
 fs.writeFileSync(path.join(outputPath, 'campus-buildings.json'), JSON.stringify(result.campusBuildings, null, 2) + '\n');
 fs.writeFileSync(path.join(outputPath, 'campus-schools.json'), JSON.stringify(result.campusSchools, null, 2) + '\n');
 fs.writeFileSync(path.join(outputPath, 'course-subjects.json'), JSON.stringify(result.courseSubjects, null, 2) + '\n');
+fs.writeFileSync(path.join(outputPath, 'graph-records.json'), JSON.stringify(result.graphRecords, null, 2) + '\n');
 console.log(JSON.stringify({ ...result.report, unresolved: result.report.unresolved.length }, null, 2));

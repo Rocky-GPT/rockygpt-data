@@ -19,6 +19,8 @@ import { GRADUATION_PLANS_SOURCE_KEY, graduationPlansInput } from './graduation-
 import { MAJOR_PAGES_SOURCE_KEY, majorPagesInput } from './major-pages';
 import { compileRequirementGroups, type RequirementGroupsArtifact } from './requirement-groups';
 import { legacyProgramRecordKey, programRecordKey } from './program-records';
+import { compileCalendarIdentities } from './campus-calendar';
+import { addGraphRecords, emptyGraphRecords, type GraphRecordsArtifact } from './graph-records';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -164,6 +166,8 @@ export interface CompiledIdentityArtifacts {
   registry: CampusIdentities; report: IdentityCoverageReport; eventOrganizers: EventOrganizersArtifact;
   courseIdentities: CourseIdentitiesArtifact; requirementGroups: RequirementGroupsArtifact;
   campusBuildings: CampusBuildingsArtifact; campusSchools: CampusSchoolsArtifact; courseSubjects: CourseSubjectsArtifact;
+  /** Records of the kinds stored in the generic graph-records artifact. */
+  graphRecords: GraphRecordsArtifact;
 }
 /** Inputs outside the release snapshot: Archway captures, the committed campus map, the reviewed schools and the catalog's subject list. */
 export interface IdentityInputs extends ArchwayIdentityInputs {
@@ -173,6 +177,8 @@ export interface IdentityInputs extends ArchwayIdentityInputs {
   graduationPlans?: unknown;
   /** The published program pages artifact, whose pages name their own programs' catalog codes. */
   majorPages?: unknown;
+  /** When each source was collected (source key -> ISO time), for the graph records' own dates. */
+  collectedAt?: Record<string, string>;
 }
 export function compileCampusIdentities(seed: CampusIdentities, snapshot: IdentitySnapshot, rawPrograms?: unknown, inputs: IdentityInputs = {}): CompiledIdentityArtifacts {
   validateCampusIdentities(seed);
@@ -345,6 +351,13 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects);
   entities.push(...compileSubjectIdentities(subjects.artifact, snapshot.artifacts.courses, ledger));
   unresolved.push(...subjects.unresolved);
+  // Kinds whose records live in the generic graph-records artifact (graph-records.ts).
+  const graphRecords = emptyGraphRecords();
+  const calendar = compileCalendarIdentities(snapshot.artifacts.calendar, inputs.collectedAt?.['academic-calendar']);
+  entities.push(...calendar.entities);
+  unresolved.push(...calendar.unresolved);
+  addGraphRecords(graphRecords, 'terms', calendar.terms);
+  addGraphRecords(graphRecords, 'calendar_dates', calendar.dates);
   applyPublishedAliases(entities, recordRows, ledger);
   const reviewedAliases = applyReviewedAliases(entities, inputs.identityReviews?.aliases ?? [], ledger);
   unresolved.push(...reviewedAliases.unresolved);
@@ -444,7 +457,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     if (ids?.length) entity.links.push({ collection: 'requirement_groups', source_key: 'program-requirement-groups', source_record_keys: ids });
   }
   validateCampusIdentities(registry);
-  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact };
+  return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact, graphRecords };
 }
 /** The Responsible Unit a college policy page names in its header ("Responsible Unit: | Payroll;"). */
 export function responsibleUnit(sections: unknown): string | null {

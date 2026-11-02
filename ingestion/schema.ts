@@ -171,6 +171,8 @@ export interface CalendarEvent {
 export interface Semester {
   name: string;
   events: CalendarEvent[];
+  /** The ramapo.edu page that lists this term (the current or the future calendars page). */
+  sourceUrl?: string;
 }
 
 export interface FacultyProfile {
@@ -626,7 +628,8 @@ export function validateAcademicCalendar(input: unknown): Semester[] {
       return;
     }
 
-    semesters.push({ name, events });
+    const sourceUrl = asOptionalString(semester.sourceUrl);
+    semesters.push(sourceUrl ? { name, events, sourceUrl } : { name, events });
   });
 
   if (semesters.length === 0) {

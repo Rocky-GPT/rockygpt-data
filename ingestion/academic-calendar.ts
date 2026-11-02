@@ -61,7 +61,8 @@ export function mergeCalendarSemesters(semesters: Semester[]): Semester[] {
   const merged = new Map<string, Semester>();
   for (const semester of semesters) {
     const key = cleanText(semester.name).toLowerCase();
-    const existing = merged.get(key) ?? { name: semester.name, events: [] };
+    // A term both pages list keeps the first page's address (the current calendar's).
+    const existing = merged.get(key) ?? { name: semester.name, events: [], ...(semester.sourceUrl ? { sourceUrl: semester.sourceUrl } : {}) };
     for (const event of semester.events) {
       const prior = existing.events.find(item => item.date === event.date && item.title === event.title);
       if (prior && prior.description !== event.description) {
@@ -82,6 +83,7 @@ export function parseCalendarHtml(currentHtml: string, futureHtml: string): Seme
     semesters.push({
       name: semesterNameFromPage(currentHtml),
       events: currentEvents,
+      sourceUrl: CURRENT_CALENDAR_URL,
     });
   }
 
@@ -94,7 +96,7 @@ export function parseCalendarHtml(currentHtml: string, futureHtml: string): Seme
       load(`<div>${container.html() || ''}</div>`),
       '.ramapo-tribe-event-body'
     );
-    if (events.length > 0) semesters.push({ name, events });
+    if (events.length > 0) semesters.push({ name, events, sourceUrl: FUTURE_CALENDAR_URL });
   });
 
   return mergeCalendarSemesters(semesters);

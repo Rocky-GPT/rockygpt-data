@@ -133,7 +133,7 @@ function conceptFrom(title: string): Pick<CalendarConcept, 'family' | 'kind'> {
   if (/\bpass\s*\/\s*fail\b|\baudit grade\b|\bincomplete\b|\bI grade\b/i.test(title)) {
     return { family: 'grading', kind: 'grading_option_deadline' };
   }
-  if (/\bclasses? begin\b|\bfirst day of classes\b/i.test(title)) {
+  if (/\bclasses? begin\b|\bfirst day of (?:\w+ )?classes\b/i.test(title)) {
     return { family: 'instruction', kind: 'classes_begin' };
   }
   // `the semester` alongside `the session`: a term's own last day of
@@ -161,8 +161,25 @@ function conceptFrom(title: string): Pick<CalendarConcept, 'family' | 'kind'> {
   return { family: 'other', kind: 'other' };
 }
 
+// The month each term is centred on. A term's page lists a few dates just outside it: "Winter
+// 2027" lists its December start, and a fall term its January grades. Each date takes the year
+// that puts it nearest its own term, so Winter 2027's "Dec. 17" is December 2026, not 2027.
+const TERM_CENTRE_MONTH: Record<string, number> = { winter: 0, spring: 2, summer: 6, fall: 9 };
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+export function eventYear(term: string, date: string): number | undefined {
+  const year = Number(/\b(20\d{2})\b/.exec(term)?.[1]);
+  if (!year) return undefined;
+  const season = /\b(winter|spring|summer|fall)\b/i.exec(term)?.[1].toLowerCase();
+  const month = MONTHS.indexOf(date.trim().slice(0, 3).toLowerCase());
+  if (season === undefined || month < 0) return year;
+  const centre = year * 12 + TERM_CENTRE_MONTH[season];
+  return [year - 1, year, year + 1]
+    .reduce((best, candidate) => Math.abs(candidate * 12 + month - centre) < Math.abs(best * 12 + month - centre) ? candidate : best);
+}
+
 function startsAt(term: string, event: CalendarEventLike): string | undefined {
-  const year = /\b(20\d{2})\b/.exec(term)?.[1];
+  const year = eventYear(term, event.date);
   if (!year) return undefined;
   const parsed = parseEventStart(`${event.date}, ${year}`, event.description || '12:00 AM');
   return parsed.ok ? parsed.startsAtIso : undefined;
