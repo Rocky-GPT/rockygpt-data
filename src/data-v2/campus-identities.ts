@@ -2,10 +2,10 @@
 export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages' | 'requirement_groups' | GraphRecordCollection;
 /** Collections stored in the release's `graph-records` artifact (see graph-records.ts), one
  * generic store for every kind added since: the Brain reads all of them with one reader. */
-export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates', 'buildings', 'map_places'] as const;
+export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates', 'buildings', 'map_places', 'club_categories'] as const;
 export type GraphRecordCollection = typeof GRAPH_RECORD_COLLECTIONS[number];
-export const IDENTITY_KINDS = ['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course', 'term', 'calendar_date'] as const;
-export const ENTITY_RELATIONSHIPS = ['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of', 'in_term', 'held_at'] as const;
+export const IDENTITY_KINDS = ['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course', 'term', 'calendar_date', 'club_category'] as const;
+export const ENTITY_RELATIONSHIPS = ['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of', 'in_term', 'held_at', 'listed_by', 'in_category'] as const;
 export interface IdentityRecordReference {
   collection: IdentityCollection;
   source_key: string;
@@ -33,7 +33,9 @@ export interface CampusIdentity {
   links: CampusIdentityLink[];
   relationships?: CampusIdentityRelationship[];
   /** A status the identity's own records publish; absent means none is published. */
-  status?: { state: 'retired'; evidence: IdentityEvidence[] };
+  status?: { state: 'retired'; evidence: IdentityEvidence[] }
+    /** A club its directory page says is not active, as of the date the page gives. */
+    | { state: 'inactive'; as_of: string; evidence: IdentityEvidence[] };
 }
 export interface CampusIdentities { schema_version: 1; entities: CampusIdentity[] }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -122,8 +124,9 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
       }
     }
     if (entity.status !== undefined) {
-      const status = object(entity.status, ['state', 'evidence'], 'Identity status');
-      if (status.state !== 'retired') throw new Error('Unsupported identity status.');
+      const status = object(entity.status, ['state', 'evidence'], 'Identity status', ['as_of']);
+      if (status.state === 'inactive') { if (typeof status.as_of !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(status.as_of)) throw new Error('An inactive status needs its date.'); }
+      else if (status.state !== 'retired' || status.as_of !== undefined) throw new Error('Unsupported identity status.');
       array(status.evidence, 32, 'Status evidence'); if (!status.evidence.length) throw new Error('A status needs evidence.');
       for (const ref of status.evidence) reference(ref, true);
     }

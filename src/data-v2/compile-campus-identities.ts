@@ -24,6 +24,7 @@ import { addGraphRecords, emptyGraphRecords, type GraphRecordsArtifact } from '.
 import { compileMapPlaces, type CampusMapMatches } from './campus-map-places';
 import campusMapMatches from '../reference/campus-map-places.json';
 import { linkEventPlaces } from './event-places';
+import { linkClubCategories, linkClubPages } from './club-links';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -437,6 +438,14 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
         source_record_keys: keys.filter(key => (pageSource.get(key) ?? 'office-pages') === source) });
     }
   }
+  // Clubs: the directory category Archway files each under, and the ramapo.edu club directory's
+  // pages (who lists the club, and whether the page says it is inactive).
+  const clubCategories = linkClubCategories(entities, snapshot.clubs ?? [], inputs.collectedAt?.['archway-clubs']);
+  entities.push(...clubCategories.entities);
+  addGraphRecords(graphRecords, 'club_categories', clubCategories.records);
+  const clubPages = linkClubPages(entities, snapshot.office_sections ?? []);
+  entities.push(...clubPages.entities);
+  unresolved.push(...clubPages.unresolved);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved, alias_sources: aliasRecords(entities, ledger) };
