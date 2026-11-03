@@ -115,3 +115,36 @@ test("a fraternity or sorority chapter's page joins the Archway chapter it names
   assert.deepEqual(result.entities, []);
   assert.deepEqual(result.unresolved.map(u => [u.entity, u.kind]), [['Alpha Chi Rho', 'unlinked_record']]);
 });
+
+test("a council's page joins the Archway group named like it, or the one whose Archway site its abbreviation names, never by email", () => {
+  const councils = ['cph', 'nphc', 'ifc', 'unrecognized-or-inactive-chapters'].map(s => `www.ramapo.edu/greek/chapters-councils/${s}/`);
+  const fsl: CampusIdentity = { id: '00000000-0000-4000-8000-000000000031', kind: 'office', name: 'Office of Fraternity and Sorority Life', aliases: [], links: [
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: councils }] };
+  const cph = club(1, 'College Panhellenic Council');
+  const nphc = club(2, 'National Pan-Hellenic Conference');
+  const tke = club(3, 'Tau Kappa Epsilon');
+  const councilPage = (slug: string, heading: string, text: string) => ({ ...page(slug, heading, text),
+    source_record_key: `www.ramapo.edu/greek/chapters-councils/${slug}/`, url: `https://www.ramapo.edu/greek/chapters-councils/${slug}/`, site_folder: 'greek' });
+  const clubs = [
+    { source_key: 'archway-clubs', source_record_key: 'College Panhellenic Council', website_url: 'https://archway.ramapo.edu/CPH/', listing: {} },
+    { source_key: 'archway-clubs', source_record_key: 'National Pan-Hellenic Conference', website_url: 'https://archway.ramapo.edu/NPHC/', listing: {} },
+    // The IFC president's own address is a chapter's Archway email; the IFC page must not join that chapter.
+    { source_key: 'archway-clubs', source_record_key: 'Tau Kappa Epsilon', website_url: 'https://archway.ramapo.edu/TKE/', listing: { email: 'mcirill3@ramapo.edu' } },
+  ];
+  const result = linkClubPages([fsl, cph, nphc, tke], [
+    councilPage('cph', 'College Panhellenic Council (CPH)', 'At Ramapo, there are six (6) NPC member sororities.'),
+    councilPage('nphc', 'National Pan-Hellenic Council (NPHC)', 'At Ramapo, we currently have four (4) active NPHC chapters.'),
+    councilPage('ifc', 'Interfraternity Council (IFC)', 'President E-mail: mcirill3@ramapo.edu'),
+    councilPage('unrecognized-or-inactive-chapters', 'Unrecognized and Inactive Chapters', `Chapter closure. ${INACTIVE}`),
+  ], clubs);
+  for (const [council, slug, joined] of [[cph, 'cph', 'name'], [nphc, 'nphc', 'website_url']] as const) {
+    assert.deepEqual(council.links[1], { collection: 'office_sections', source_key: 'office-pages', source_record_keys: [`www.ramapo.edu/greek/chapters-councils/${slug}/`] });
+    assert.deepEqual(council.relationships?.map(r => [r.type, 'target_entity_id' in r ? r.target_entity_id : null, r.evidence[0].field]), [['listed_by', fsl.id, joined]]);
+    assert.equal(council.status, undefined);
+  }
+  assert.deepEqual(tke.links.length, 1);
+  assert.equal(tke.relationships, undefined);
+  // A council no Archway group is named or sited like is reported; the inactive-chapters list is no council.
+  assert.deepEqual(result.entities, []);
+  assert.deepEqual(result.unresolved.map(u => [u.entity, u.kind]), [['Interfraternity Council', 'unlinked_record']]);
+});
