@@ -59,6 +59,8 @@ export interface CampusBuilding {
   reviewed_rooms?: string[];
   /** The group this building is part of: the record key of the map pin it shares with its neighbours. */
   complex?: string;
+  /** The map's own search names for it ("gym", "d wing"), as the map lists them, without its name (building-nicknames.ts). */
+  search_names?: string[];
 }
 /** Buildings the map pins as one place under a shared name: "College Park Apartments" for its 14 buildings. */
 export interface BuildingComplex { concept3d_id: string; record_key: string; name: string; map_url: string; members: string[] }
@@ -92,6 +94,20 @@ const decode = (value: string): string => value.replace(/&amp;/g, '&').replace(/
 
 const rows = (value: unknown): Row[] => Array.isArray(value) ? value.filter(v => v && typeof v === 'object') as Row[] : [];
 const text = (value: unknown): string => typeof value === 'string' ? value.trim() : '';
+const said = (value: string): string => value.toLowerCase().replace(/&/g, ' and ').replace(/[’']/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+
+/** The map entry's search names, each once, apart from the building's own name. */
+function searchNames(row: Row, name: string): string[] {
+  const seen = new Set([said(name)]);
+  const names: string[] = [];
+  for (const value of Array.isArray(row.aliases) ? row.aliases : []) {
+    const alias = decode(text(value));
+    if (!said(alias) || seen.has(said(alias))) continue;
+    seen.add(said(alias));
+    names.push(alias);
+  }
+  return names;
+}
 
 /** Every building on the map; room prefixes count only for one at a Concept3D location no other map entry shares. */
 export function campusBuildingsArtifact(map: unknown, reviewed: ReviewedBuilding[] = [], locations: ReviewedLocation[] = [], rooms: ReviewedRoom[] = []): CampusBuildingsArtifact {
@@ -124,9 +140,10 @@ export function campusBuildingsArtifact(map: unknown, reviewed: ReviewedBuilding
     let kept = prefixes;
     if (prefixes.length && !ownPin) { unresolved.push({ name, reason: 'Its map pin is shared or missing, so its room prefixes place nothing.', kind: 'note' }); kept = []; }
     else if (prefixes.some(prefix => owners.get(prefix) !== 1 || !/^[A-Z]+$/.test(prefix))) { unresolved.push({ name, reason: 'A room prefix is claimed by another building or is not an uppercase code; its prefixes place nothing.', kind: 'note' }); kept = []; }
+    const search = searchNames(row, name);
     buildings.push({ concept3d_id: id, name, category: decode(text(row.category)) || null, map_url: text(row.mapUrl), room_prefixes: kept,
       map_key: text(row.key), record_key: ownPin ? id! : text(row.key),
-      basis: kept.length ? 'room_prefixes' : review ? 'human_reviewed' : 'campus_map' });
+      basis: kept.length ? 'room_prefixes' : review ? 'human_reviewed' : 'campus_map', ...(search.length ? { search_names: search } : {}) });
   }
   for (const building of reviewed) {
     if (!entries.some(entry => entry.id === building.concept3d_id)) unresolved.push({ name: building.name, reason: `The reviewed Concept3D location ${building.concept3d_id} is not on the committed map.`, kind: 'no_records' });
