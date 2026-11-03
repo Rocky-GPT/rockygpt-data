@@ -83,6 +83,12 @@ function readJson<T>(relativePath: string): T {
   return JSON.parse(fs.readFileSync(path.join(process.cwd(), relativePath), 'utf8')) as T;
 }
 
+/** A file that may not exist yet (a source added before its first collection). */
+function readOptionalJson(relativePath: string): unknown {
+  const file = path.join(process.cwd(), relativePath);
+  return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) as unknown : undefined;
+}
+
 function sha256(value: string): string {
   return crypto.createHash('sha256').update(value).digest('hex');
 }
@@ -1073,6 +1079,8 @@ async function main(): Promise<void> {
       courseSubjects: courseSubjectsInput(readJson('src/reference/course-subjects.source.json'), readJson('src/reference/course-subjects.json')),
       graduationPlans: readJson('public/data/graduation-plans.json'),
       majorPages: readJson('public/data/major-pages.json'),
+      athleticsSchedules: readOptionalJson('data/raw/athletics-schedules.raw.json'),
+      athleticsCoaches: readOptionalJson('data/raw/athletics-coaches.raw.json'),
       collectedAt: { 'academic-calendar': collectedAtFor('academic-calendar') },
     });
     step('compile and insert campus identities');

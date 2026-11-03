@@ -31,3 +31,16 @@ test('a test build only warns about a stale source and still stops on unknown ag
   assert.ok(summary.warnings.some(w => w.startsWith('Source academic-calendar is stale')));
   assert.ok(summary.errors.some(e => e.includes('unknown collection age')));
 });
+
+test('a test build is built without a source added since the capture, but a release is not', () => {
+  const cwd = oldCapture();
+  const now = new Date('2026-11-04T00:00:00Z');
+  const build = validateCurrentDatasetV2({}, { cwd, now, allowStaleSources: true });
+  assert.ok(build.warnings.some(w => w.startsWith('Source athletics-schedules was added since')));
+  assert.ok(!build.errors.some(e => e.startsWith('Source athletics-schedules')));
+  const release = validateCurrentDatasetV2({}, { cwd, now });
+  assert.ok(release.errors.some(e => e.startsWith('Source athletics-schedules has unknown collection age')));
+  // Two weeks on, production has had its chance to collect it: a missing capture stops a test build too.
+  const later = validateCurrentDatasetV2({}, { cwd, now: new Date('2026-11-20T00:00:00Z'), allowStaleSources: true });
+  assert.ok(later.errors.some(e => e.startsWith('Source athletics-schedules has unknown collection age')));
+});

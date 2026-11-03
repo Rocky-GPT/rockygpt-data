@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
-import type { SourceSeed } from '../../src/data-v2/source-seeds';
+import { NEW_SOURCE_GRACE_DAYS, SOURCES, type SourceSeed } from '../../src/data-v2/source-seeds';
 
 /**
  * Source-native provenance (PROB-002/REC-002).
@@ -52,6 +52,8 @@ export const SOURCE_RAW_DATASETS: Record<string, string[]> = {
   'office-pages': ['office-pages', 'office-pages-sources'],
   'catalog-policies': ['catalog-policies', 'catalog-policies-sources'],
   'academic-sites': ['academic-sites', 'academic-sites-sources'],
+  'athletics-schedules': ['athletics-schedules'],
+  'athletics-coaches': ['athletics-coaches'],
 };
 
 export const RAW_DATASET_FILES: Record<string, string> = {
@@ -89,6 +91,8 @@ export const RAW_DATASET_FILES: Record<string, string> = {
   'catalog-policies-sources': 'catalog-policies-sources.raw.json',
   'academic-sites': 'academic-sites.raw.json',
   'academic-sites-sources': 'academic-sites-sources.raw.json',
+  'athletics-schedules': 'athletics-schedules.raw.json',
+  'athletics-coaches': 'athletics-coaches.raw.json',
   'safety-sources': 'safety-sources.raw.json',
   'directory-sources': 'directory-sources.raw.json',
   'transportation-sources': 'transportation-sources.raw.json',
@@ -215,4 +219,17 @@ export function evaluateSourceProvenance(
       detail: `collected ${ageHours.toFixed(1)}h ago (max ${seed.freshnessHours}h)`,
     };
   });
+}
+
+/**
+ * A source added in the last NEW_SOURCE_GRACE_DAYS (its seed's addedOn) with no raw file at all:
+ * production has not collected it yet, so a test build made from production's capture has none.
+ */
+export function notCapturedYet(key: string, rawDir = 'data/raw', now = new Date()): boolean {
+  const added = SOURCES.find((source) => source.key === key)?.addedOn;
+  if (!added || now.getTime() - Date.parse(`${added}T00:00:00Z`) > NEW_SOURCE_GRACE_DAYS * 86_400_000) return false;
+  const dir = path.resolve(process.cwd(), rawDir);
+  return (SOURCE_RAW_DATASETS[key] ?? []).every(
+    (dataset) => !fs.existsSync(path.join(dir, RAW_DATASET_FILES[dataset] ?? `${dataset}.raw.json`))
+  );
 }

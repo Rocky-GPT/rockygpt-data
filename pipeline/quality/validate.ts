@@ -18,6 +18,7 @@ import {
 } from './content-policy';
 import {
   evaluateSourceProvenance,
+  notCapturedYet,
   type SourceProvenanceState,
 } from './provenance';
 import { hoursValidityErrors } from '../../src/data-v2/validity';
@@ -47,7 +48,9 @@ export interface QualityOptionsV2 {
   /**
    * Report a stale source as a warning instead of an error, for a laptop test
    * build made from pages already captured (pipeline/test-build.ts). A source
-   * of unknown age is still an error. Never set for a real release.
+   * of unknown age is still an error, unless it is a source added in the last
+   * NEW_SOURCE_GRACE_DAYS that the capture has no file of at all (production
+   * has not collected it yet). Never set for a real release.
    */
   allowStaleSources?: boolean;
   /** Override the repository root for deterministic fixture tests. */
@@ -388,6 +391,8 @@ export function validateCurrentDatasetV2(
         `Source ${state.key} is stale: ${state.detail}. ` +
         'Refresh the source before publishing.';
       (enforceProvenance && !options.allowStaleSources ? errors : warnings).push(message);
+    } else if (state.status === 'unknown' && options.allowStaleSources && notCapturedYet(state.key, path.join(cwd, 'data/raw'), now)) {
+      warnings.push(`Source ${state.key} was added since the captured pages were collected; built without it.`);
     } else if (state.status === 'unknown') {
       const message =
         `Source ${state.key} has unknown collection age (${state.detail}). ` +
