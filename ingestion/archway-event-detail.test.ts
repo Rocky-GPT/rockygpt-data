@@ -6,7 +6,7 @@ import { buildArchwayEventDetailPage } from './archway-event-detail';
 import { validateRawDatasetV1 } from './raw-types';
 import { archwayIdentityId, compileArchwayIdentities } from '../src/data-v2/archway-identities';
 import type { IdentitySnapshot } from '../src/data-v2/compile-campus-identities';
-import { publicListingEvent } from './archway-events';
+import { feedEvent, groupFeedUrl, parseIcs } from './archway-calendar-feeds';
 import { validateArchwayEvents } from './schema';
 
 const html = fs.readFileSync(path.join(__dirname, 'fixtures/archway-event-host.html'), 'utf8');
@@ -73,22 +73,31 @@ test('matching names cannot override a different group ID or website', () => {
   }
 });
 
-test('listing clubId and clubLogin survive normalization/publication even without accessible detail HTML', () => {
-  const listing = publicListingEvent({ fields: 'displayType,eventName,eventDates,clubId,clubLogin,clubName,eventUrl,',
-    p0: 'event', p1: 'Commanders VS 49ers', p2: '<p>Mon, Oct 19, 2026</p><p>8 PM – 10 PM</p>',
-    p3: '62965', p4: 'Sport', p5: 'Sports Club', p6: '/rsvp_boot?id=1409871' }, options.fetchedAt)!;
+test("a group calendar file's organizer survives normalization/publication even without accessible detail HTML", () => {
+  const feedUrl = groupFeedUrl('62965');
+  const [entry] = parseIcs([
+    'BEGIN:VCALENDAR', 'BEGIN:VEVENT', 'SUMMARY:Commanders VS 49ers', 'DTSTART:20261020T000000Z',
+    'DTEND:20261020T020000Z', 'ORGANIZER;CN="Sports Club":mailto:noreply@archway.ramapo.edu',
+    'URL:https://archway.ramapo.edu/rsvp?id=1409871', 'END:VEVENT', 'END:VCALENDAR',
+  ].join('\r\n'));
+  const listing = feedEvent(entry, { groupId: '62965', url: feedUrl }, options.fetchedAt)!;
+  assert.equal(listing.date, 'Mon, Oct 19, 2026');
+  assert.equal(listing.time, '8 PM');
+  assert.equal(listing.url, 'https://archway.ramapo.edu/rsvp_boot?id=1409871');
   const data = snapshot();
   data.artifacts.events = JSON.parse(JSON.stringify(validateArchwayEvents([listing])));
   const result = compileArchwayIdentities(data);
   assert.equal(result.entities.find(e => e.kind === 'event')?.relationships?.[0].type, 'organized_by');
   assert.equal(result.organizers.events[0].organizer_group_id, '62965');
-  assert.equal(result.organizers.events[0].source_url, 'https://archway.ramapo.edu/home/events/');
+  assert.equal(result.organizers.events[0].source_url, feedUrl);
   assert.equal(result.organizers.events[0].collected_at, options.fetchedAt);
-  for (const patch of [{ groupId: '999' }, { groupLogin: 'Other' }, { collectedAt: '' }, { sourceUrl: 'https://example.org/' }]) {
-    data.artifacts.events = [{ ...listing, organizerIdentity: { ...listing.organizerIdentity, ...patch } }];
+  // Another group's file, a changed ID, a missing time or a foreign address never link.
+  for (const patch of [{ groupId: '999' }, { groupLogin: 'Other' }, { collectedAt: '' },
+    { sourceUrl: 'https://example.org/' }, { sourceUrl: groupFeedUrl('999') }]) {
+    data.artifacts.events = [{ ...listing, organizerIdentity: { ...listing.organizerIdentity!, ...patch } }];
     assert.equal(compileArchwayIdentities(data).organizers.events.length, 0);
   }
-  const invalid = validateArchwayEvents([{ ...listing, organizerIdentity: { ...listing.organizerIdentity, groupId: 'bad' } }]);
+  const invalid = validateArchwayEvents([{ ...listing, organizerIdentity: { ...listing.organizerIdentity!, groupId: 'bad' } }]);
   assert.equal(invalid[0].organizerIdentity, undefined);
 });
 
