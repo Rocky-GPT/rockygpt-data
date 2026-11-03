@@ -78,7 +78,7 @@ export function compileMapPlaces(map: unknown, artifact: CampusBuildingsArtifact
   const buildingRows: GraphRecordRow[] = [
     ...artifact.buildings.map(b => ({
       source_record_key: b.record_key, name: b.name, category: b.category, map_key: b.map_key,
-      concept3d_id: b.concept3d_id, room_prefixes: b.room_prefixes, part_of: b.complex ?? null, source_url: b.map_url,
+      concept3d_id: b.concept3d_id, room_prefixes: b.room_prefixes, part_of: b.complex ?? null, search_names: b.search_names ?? [], source_url: b.map_url,
     })),
     ...(artifact.complexes ?? []).map(c => ({
       source_record_key: c.record_key, name: c.name, concept3d_id: c.concept3d_id,

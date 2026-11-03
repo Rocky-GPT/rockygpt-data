@@ -48,6 +48,7 @@ export type AliasBasis =
   | 'abbreviation' // The parenthesized abbreviation in its own name, or the name without it.
   | 'program_family' // Its program name without the degree designation.
   | 'subject_code' // A course subject's catalog code, the only name it answers to in lookup.
+  | 'map_search_name' // A building's search name on the campus map ("gym", "d wing"); building-nicknames.ts.
   | 'human_reviewed'; // A person approved it; no rule derives it. A source_url is a page using it as a label.
 export interface AliasSource {
   basis: AliasBasis;

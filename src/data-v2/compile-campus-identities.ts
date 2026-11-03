@@ -12,6 +12,7 @@ import { compileRouteIdentities } from './campus-routes';
 import { siteFolder } from './office-sections';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
 import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, type AliasLedger, type AliasRecord, type ReviewedAlias } from './identity-aliases';
+import { applyBuildingNicknames } from './building-nicknames';
 import type { ReviewedBuilding, ReviewedLocation, ReviewedRoom } from './campus-buildings';
 import { COURSE_SOURCE_KEY, compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileSubjectIdentities, courseSubjectsArtifact, type CourseSubjectsArtifact, type CourseSubjectsInput } from './course-subjects';
@@ -397,6 +398,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   applyPublishedAliases(entities, recordRows, ledger);
   const reviewedAliases = applyReviewedAliases(entities, inputs.identityReviews?.aliases ?? [], ledger);
   unresolved.push(...reviewedAliases.unresolved);
+  // The campus map's search names as building nicknames ("gym", "d wing"), where they name nothing else.
+  unresolved.push(...applyBuildingNicknames(entities, campusBuildings, inputs.campusMap, ledger).unresolved);
   // Every place the campus map lists in a building, placed there: the node the registry has for
   // it, or a facility node of its own. Run after aliases, which the same-name match reads.
   const mapPlaces = compileMapPlaces(inputs.campusMap, campusBuildings, entities, campusMapMatches as CampusMapMatches, inputs.collectedAt?.['campus-map'] ?? campusBuildings.map_generated_at ?? '');
