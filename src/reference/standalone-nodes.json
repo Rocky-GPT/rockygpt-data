@@ -9,7 +9,7 @@
       "note": "Approved by Dan's 2026-11-03 OK to mark nodes that should stay alone."
     },
     {
-      "kind": "office",
+      "kind": "facility",
       "name": "Administrative Offices (Normal Hours)",
       "reason": "Not an office: a general hours line on the campus hours page that applies to the college's administrative offices as a whole.",
       "reviewed_at": "2026-11-03",

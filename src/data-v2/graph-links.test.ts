@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { CampusIdentity } from './campus-identities';
 import { campusBuildingId, campusBuildingsArtifact } from './campus-buildings';
-import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, markUnlinked, stopIdentityId, type ReviewedListings } from './graph-links';
+import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, markUnlinked, stopIdentityId, type ReviewedListings, type ReviewedStandaloneNodes } from './graph-links';
 import { aliasRecords, type AliasLedger } from './identity-aliases';
 
 const node = (n: number, kind: CampusIdentity['kind'], name: string, links: CampusIdentity['links'] = []): CampusIdentity =>
@@ -124,4 +124,15 @@ test('every node with no link in or out carries a note on why, and on purpose wh
   assert.deepEqual(program.unlinked, { reason: 'A catalog placeholder.', on_purpose: true });
   assert.equal(ended.unlinked?.on_purpose, true);
   for (const linked of [lab, library, course, teacher]) assert.equal(linked.unlinked, undefined);
+});
+
+test('every reviewed standalone node and listing names a kind and names the graph can have', async () => {
+  const { IDENTITY_KINDS } = await import('./campus-identities');
+  const standalone = (await import('../reference/standalone-nodes.json')).default as ReviewedStandaloneNodes;
+  for (const node of standalone.nodes) assert.ok((IDENTITY_KINDS as readonly string[]).includes(node.kind), node.name);
+  const seed = (await import('../reference/campus-identities.json')).default as { entities: Array<{ kind: string; name: string }> };
+  for (const node of standalone.nodes) {
+    const found = seed.entities.filter(entity => entity.name === node.name);
+    if (found.length) assert.deepEqual(found.map(entity => entity.kind), [node.kind], `${node.name} is a ${found[0].kind} in the registry`);
+  }
 });
