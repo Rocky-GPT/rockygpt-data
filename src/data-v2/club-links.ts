@@ -1,4 +1,4 @@
-import type { CampusIdentity, IdentityEvidence } from './campus-identities';
+import { readsAsOffice, type CampusIdentity, type IdentityEvidence } from './campus-identities';
 import { placeName } from './campus-map-places';
 import type { IdentityCoverageIssue } from './compile-campus-identities';
 import { pythonJsonStrings, uuid5 } from './course-identities';
@@ -100,10 +100,12 @@ export function linkClubCategories(entities: CampusIdentity[], clubs: Row[], col
 
 /**
  * The ramapo.edu club directory's pages: listed_by, the page link, inactive status, and nodes for
- * inactive clubs Archway no longer lists. `clubs` are the Archway directory rows, whose listings
- * give each group's email.
+ * inactive clubs Archway no longer lists. `clubs` are the Archway directory rows. A stored row has
+ * no listing column: its Archway listing, which gives the group's email, is the release's `clubs`
+ * artifact entry of the same name (`listed`, the first one, as the Brain reads it); a row that
+ * carries its `listing` (a graph record) keeps it.
  */
-export function linkClubPages(entities: CampusIdentity[], pages: Row[], clubs: Row[] = []): { entities: CampusIdentity[]; unresolved: IdentityCoverageIssue[] } {
+export function linkClubPages(entities: CampusIdentity[], pages: Row[], clubs: Row[] = [], listed: Row[] = []): { entities: CampusIdentity[]; unresolved: IdentityCoverageIssue[] } {
   const unresolved: IdentityCoverageIssue[] = [];
   const created: CampusIdentity[] = [];
   const named = new Map<string, CampusIdentity[]>();
@@ -120,9 +122,12 @@ export function linkClubPages(entities: CampusIdentity[], pages: Row[], clubs: R
   for (const entity of entities) {
     for (const link of entity.links.filter(l => l.collection === 'clubs')) for (const key of link.source_record_keys) holder.set(`${link.source_key}:${key}`, entity);
   }
+  const byName = new Map<string, Row>();
+  for (const item of listed) { const name = text(item.name); if (name && !byName.has(name)) byName.set(name, item); }
+  const listingOf = (row: Row): Row | undefined => row.listing && typeof row.listing === 'object' ? row.listing as Row : byName.get(text(row.source_record_key));
   const listings = new Map<string, Row[]>();
   for (const row of clubs) {
-    const email = text((row.listing as Row | undefined)?.email).toLowerCase();
+    const email = text(listingOf(row)?.email).toLowerCase();
     if (email) listings.set(email, [...listings.get(email) ?? [], row]);
   }
   // Each Archway group's own site name (lower case), with the club-kind nodes holding the listing.
@@ -136,8 +141,9 @@ export function linkClubPages(entities: CampusIdentity[], pages: Row[], clubs: R
     const rows = listings.get(email) ?? [];
     return rows.length === 1 ? holder.get(`${text(rows[0].source_key)}:${text(rows[0].source_record_key)}`) : undefined;
   };
+  // The office whose pages these are; the Office of Fraternity and Sorority Life is an Archway group the Brain reads as an office.
   const owners = new Map<string, CampusIdentity[]>();
-  for (const entity of entities.filter(e => e.kind === 'office')) {
+  for (const entity of entities.filter(readsAsOffice)) {
     for (const link of entity.links.filter(l => l.collection === 'office_sections')) {
       for (const key of link.source_record_keys) owners.set(key, [...owners.get(key) ?? [], entity]);
     }
@@ -177,8 +183,8 @@ export function linkClubPages(entities: CampusIdentity[], pages: Row[], clubs: R
       continue;
     }
     // A page named like an office, or giving an office's Archway email (SGA, Ramapo News), is that
-    // office's own; the office keeps its site.
-    if (found.length === 1 && !CLUB_KINDS.includes(found[0].kind)) continue;
+    // office's own; the office keeps its site. So is a desk's: those Archway groups are offices to the Brain.
+    if (found.length === 1 && (!CLUB_KINDS.includes(found[0].kind) || readsAsOffice(found[0]))) continue;
     let club = found[0];
     if (!club) {
       if (chapter) { unresolved.push({ entity: name, collection: 'office_sections', record: key, reason: 'No Archway chapter has the name this chapter page gives; nothing is linked.', kind: 'unlinked_record' }); continue; }

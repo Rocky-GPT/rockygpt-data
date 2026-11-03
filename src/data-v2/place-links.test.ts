@@ -93,6 +93,36 @@ test('a map facility whose map entry gives an office\'s website, or a page of on
   assert.deepEqual([twins.linked, targets(room), twins.unresolved.map(u => u.entity)], [0, [], ['Provost Board Room']]);
 });
 
+test('a desk the Brain reads as an office holds its site: the rooms its pages give are listed by it, a facility never by itself', () => {
+  // The Office of the President and Laurel Hall are Archway groups with a directory contact; the Bookstore is
+  // a facility with one. Each is an office to the Brain, so a map entry giving a page of its site is its room.
+  const desk = (n: number, kind: CampusIdentity['kind'], name: string, key: string) =>
+    node(n, kind, name, [{ collection: 'contacts', source_key: 'campus-directory', source_record_keys: [key] }]);
+  const place = (n: number, name: string) => node(n, 'facility', name, [{ collection: 'map_places', source_key: 'campus-map', source_record_keys: [`facility_${n}`] }]);
+  const president = desk(1, 'organization', 'Office of the President', 'office:president');
+  const housing = desk(2, 'office', 'Housing & Residence Life', 'office:reslife');
+  const laurel = desk(3, 'organization', 'Laurel Hall', 'office:laurel');
+  const store = desk(4, 'facility', 'Ramapo Bookstore', 'office:bookstore');
+  store.links.push({ collection: 'map_places', source_key: 'campus-map', source_record_keys: ['facility_4'] });
+  const board = place(5, 'Board Room');
+  const lounge = place(6, 'Laurel Hall Student Lounges');
+  // An Archway club with no directory contact is no office; its site lists nothing.
+  const club = node(7, 'club', 'Chess Club', [{ collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['Chess Club'] }]);
+  const den = place(8, 'Chess Den');
+  const contacts = new Map<string, Record<string, unknown>>([contact('office:president', 'https://www.ramapo.edu/president/'),
+    contact('office:reslife', 'https://www.ramapo.edu/reslife/'), contact('office:laurel', 'https://www.ramapo.edu/reslife/laurel-hall/'),
+    contact('office:bookstore', 'https://www.ramapo.edu/bookstore/')]);
+  const row = (n: number, website: string) => ({ source_record_key: `facility_${n}`, website, source_url: `https://map.ramapo.edu/?id=2292#!m/${n}` });
+  const result = linkFacilityWebsites([president, housing, laurel, store, board, lounge, club, den], [row(4, 'https://www.ramapo.edu/bookstore/'),
+    row(5, 'https://www.ramapo.edu/president/board-room/'), row(6, 'https://www.ramapo.edu/reslife/laurel-hall/'), row(8, 'https://www.ramapo.edu/clubs/chess/')], contacts);
+  assert.equal(result.linked, 2);
+  assert.deepEqual(targets(board), [['listed_by', president.id]]);
+  // The hall's own site holds the lounge's page more closely than Housing's.
+  assert.deepEqual(targets(lounge), [['listed_by', laurel.id]]);
+  assert.deepEqual([targets(store), targets(den)], [[], []]);
+  assert.deepEqual(result.unresolved, []);
+});
+
 test('a reviewed placement places its node while its section still gives the room, cited to the building\'s reviewed locations', () => {
   const artifact = campusBuildingsArtifact(map);
   const ovp = node(1, 'organization', 'Office of Violence Prevention');
