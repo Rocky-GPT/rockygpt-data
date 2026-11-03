@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { canonicalArchwayEventUrl } from '../../src/archway-event-url';
+import { berrieEventId } from '../../src/berrie-event-url';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -379,9 +380,11 @@ export function eventDetailCoverageErrors(
   const pages = Array.isArray(detailDatasetInput.pages)
     ? detailDatasetInput.pages.filter(isRecord)
     : [];
+  // Only Archway events have detail pages; a Berrie Center show is read from its own page.
   const eventUrls = new Set(
     eventsInput
       .filter(isRecord)
+      .filter((event) => !berrieEventId(event.url))
       .map((event) => canonicalUrl(event.url))
       .filter(Boolean)
   );

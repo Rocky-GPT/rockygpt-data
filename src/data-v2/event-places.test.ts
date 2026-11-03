@@ -159,3 +159,14 @@ test('a stored event row, which has no location column, is placed from the relea
   linkEventPlaces([building('building_berrie', 'Berrie Center'), entity], [stored], artifact, listings);
   assert.deepEqual(entity.relationships?.map(r => [r.type, 'target_entity_id' in r ? r.target_entity_id : null]), [['held_at', id('building_berrie')]]);
 });
+
+test('a Berrie Center show is placed by the venue its own page names, found by that page\'s address', () => {
+  const sharp = mapPlace(13, 'venue', 'Sharp Theater', 'building_berrie');
+  const show: CampusIdentity = { id: '00000000-0000-4000-8000-000000000300', kind: 'event', name: 'As You Like It (2026-11-13)', aliases: [],
+    links: [{ collection: 'events', source_key: 'academic-sites', source_record_keys: ['s1'] }] };
+  const row = { source_key: 'academic-sites', source_record_key: 's1', event_url: 'https://www.ramapo.edu/berriecenter/event/as-you-like-it/2026-11-13/' };
+  const listings = [{ url: 'https://ramapo.edu/berriecenter/event/as-you-like-it/2026-11-13', location: 'Sharp Theater' }];
+  const entities = [building('building_berrie', 'Berrie Center'), sharp, show];
+  assert.equal(linkEventPlaces(entities, [row], artifact, listings).linked, 1);
+  assert.deepEqual(show.relationships?.map(r => 'target_entity_id' in r ? r.target_entity_id : null), [sharp.id]);
+});

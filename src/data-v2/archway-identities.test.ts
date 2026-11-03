@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { archwayEventId, archwayIdentityId, compileArchwayIdentities, eventOrganizersArtifact, linkReviewedArchwayContacts, linkReviewedArchwayGroups } from './archway-identities';
+import { archwayEventId, archwayIdentityId, berrieEventIdentityId, compileArchwayIdentities, eventOrganizersArtifact, linkReviewedArchwayContacts, linkReviewedArchwayGroups } from './archway-identities';
 import type { CampusIdentity } from './campus-identities';
 import { validateCampusIdentities } from './campus-identities';
 import { compileCampusIdentities, type IdentitySnapshot } from './compile-campus-identities';
@@ -266,4 +266,22 @@ test("a reviewed desk links its own published schedules by name, and only those"
   const missing: CampusIdentity = { ...group, id: id(42), links: [{ collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['Commuter Affairs'] }] };
   const none = linkReviewedArchwayContacts([missing], contacts, [{ ...review, hours: ['Nowhere'] }], new Set(), schedules);
   assert.deepEqual(none.unresolved.map(issue => [issue.collection, issue.kind]), [['campus_hours', 'no_records']]);
+});
+
+test('a Berrie Center show is an event identity by its own page path, with no Archway organizer to assert', () => {
+  const snapshot = fixture();
+  const show = { id: id(30), source_key: 'academic-sites', source_record_key: 'Fri, Nov 13, 2026:RCNJ Theater Presents: As You Like It',
+    title: 'RCNJ Theater Presents: As You Like It', starts_at: '2026-11-14T00:30:00Z', organizer: 'CA Theater Program Productions',
+    event_url: 'https://www.ramapo.edu/berriecenter/event/as-you-like-it/2026-11-13/' };
+  snapshot.events!.push(show, { ...show, id: id(31), source_record_key: 'Fri, Nov 20, 2026:RCNJ Theater Presents: As You Like It', starts_at: '2026-11-21T00:30:00Z',
+    event_url: 'https://www.ramapo.edu/berriecenter/event/as-you-like-it/2026-11-20/' });
+  const result = compileArchwayIdentities(snapshot, inputs());
+  const shows = result.entities.filter(e => e.kind === 'event' && e.links[0].source_key === 'academic-sites');
+  assert.deepEqual(shows.map(e => e.id).sort(), [berrieEventIdentityId('as-you-like-it/2026-11-13'), berrieEventIdentityId('as-you-like-it/2026-11-20')].sort());
+  const first = shows.find(e => e.id === berrieEventIdentityId('as-you-like-it/2026-11-13'))!;
+  assert.equal(first.name, 'RCNJ Theater Presents: As You Like It (2026-11-13)');
+  assert.deepEqual(first.links[0].source_record_ids, [id(30)]);
+  assert.equal(first.relationships, undefined);
+  assert.equal(result.unresolved.filter(i => i.entity === show.title).length, 0);
+  assert.notEqual(berrieEventIdentityId('901'), archwayIdentityId('event', '901'));
 });

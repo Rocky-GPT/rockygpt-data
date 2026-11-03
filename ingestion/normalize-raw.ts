@@ -14,6 +14,7 @@ import { rebuildClubsFromRaw } from './archway-clubs';
 import { normalizeCatalogCapture, parseBooleanEnv } from './scrape-catalog-api';
 import { replayFacultySources, type FacultySourceCapture } from './replay-faculty';
 import { replayRawSourceCapture, type RawSourceCaptureV1 } from './raw-collector';
+import { berrieEventsFromCapture, withBerrieEvents } from './berrie-events';
 
 export interface NormalizationOptions {
   now?: Date;
@@ -37,8 +38,14 @@ export function normalizeRaw(cwd = process.cwd(), options: NormalizationOptions 
   stage('dining-hours', validateDiningHoursState(read('dining-hours.raw.json')));
   const details = validateRawDatasetV1(read('events-detail.raw.json'));
   if (details.dataset !== 'events-detail') throw new Error('Expected events-detail raw dataset.');
-  stage('events', rebuildEventsFromRaw(validateArchwayEvents(read('events.raw.json')), details,
-    readEventSignalMapFromRawFile(path.join(cwd, 'data/raw/events-signals.raw.json'))), true);
+  const archwayEvents = rebuildEventsFromRaw(validateArchwayEvents(read('events.raw.json')), details,
+    readEventSignalMapFromRawFile(path.join(cwd, 'data/raw/events-signals.raw.json')));
+  // The Berrie Center's shows, from the show pages the school sites collector keeps (berrie-events.ts).
+  const berrieShows = berrieEventsFromCapture(read('academic-sites-sources.raw.json') as RawSourceCaptureV1, options.now ?? new Date());
+  const events = withBerrieEvents(archwayEvents, berrieShows);
+  console.log(`Events: ${archwayEvents.length} from Archway, ${events.length - archwayEvents.length} Berrie Center shows from their own pages`
+    + ` (${berrieShows.length - (events.length - archwayEvents.length)} already on Archway).`);
+  stage('events', validateArchwayEvents(events), true);
   stage('events-detail', details);
   const clubDetails = validateRawDatasetV1(read('clubs-detail.raw.json'));
   if (clubDetails.dataset !== 'clubs-detail') throw new Error('Expected clubs-detail raw dataset.');
