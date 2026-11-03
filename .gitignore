@@ -44,3 +44,7 @@ npm-debug.log*
 # Build output, produced by npm run build and shipped by npm publish
 /dist/
 /build/sdk/
+
+# The nightly job's campus database dumps (.github/scripts/campus-db.sh)
+/campus*.dump
+/campus-db-active.json
