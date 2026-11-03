@@ -18,6 +18,51 @@
       "quote": "Location: Valley Medical Group Health Services is located near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road. Phone: (201) 684-7536",
       "reviewed_at": "2026-11-02",
       "note": "Approved by Dan's 2026-11-02 OK to link what is sure. The Center for Student Wellness page's Contact Us lists Health Services with the same place (near the South Gate) and phone (684-7536) as Health Services' own directory contact."
+    },
+    {
+      "node": "Behavioral Intervention Team",
+      "listed_by": "Dean of Students",
+      "url": "https://www.ramapo.edu/student-affairs/mental-health-and-well-being-resources/",
+      "section": "Mental Health and Well-Being Resources",
+      "quote": "Behavioral Intervention Team If you are concerned about another student",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan's 2026-11-03 OK to link what other offices' saved pages say. The Dean of Students' Mental Health and Well-Being Resources page sends students with a concern about another student to the Behavioral Intervention Team."
+    },
+    {
+      "node": "Connect Resource Center",
+      "listed_by": "Center for Student Success (Academic Advising)",
+      "url": "https://www.ramapo.edu/myadvisor/",
+      "section": "Resources",
+      "quote": "Connect Resource Center for Student (https://www.ramapo.edu/connect/students/)",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan's 2026-11-03 OK to link what other offices' saved pages say. The advising site's Resources list links the Connect Resource Center."
+    },
+    {
+      "node": "ResNET",
+      "listed_by": "IT Help Desk",
+      "url": "https://www.ramapo.edu/its/resnet/",
+      "section": "What is ResNET?",
+      "quote": "Residential Networking (ResNET) provides high-speed Ethernet access for students living in the Ramapo College Residence Halls",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan's 2026-11-03 OK to link what other offices' saved pages say. ResNET is described on the IT site's own ResNET page (the IT Help Desk owns the /its/ pages)."
+    },
+    {
+      "node": "Laptop Upcycle @ Ramapo",
+      "listed_by": "Civic and Community Engagement Center",
+      "url": "https://www.ramapo.edu/ccec/we-care-program-application/",
+      "section": "We Care Program Application",
+      "quote": "The We Care Program at Ramapo College is comprised of: Food Pantry Laptop Upcycle",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan's 2026-11-03 OK to link what other offices' saved pages say. The Civic and Community Engagement Center's We Care Program page names Laptop Upcycle as one of the program's parts."
+    },
+    {
+      "node": "Open Public Records Act",
+      "listed_by": "Office of the General Counsel & Institutional Compliance",
+      "url": "https://www.ramapo.edu/general-counsel/",
+      "section": "Additional Resources",
+      "quote": "Open Public Records Act (https://www.ramapo.edu/opra/)",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan's 2026-11-03 OK to link what other offices' saved pages say. The General Counsel's Additional Resources list links the Open Public Records Act page."
     }
   ]
 }
