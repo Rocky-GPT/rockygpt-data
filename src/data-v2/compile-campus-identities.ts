@@ -392,7 +392,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   addGraphRecords(graphRecords, 'buildings', mapPlaces.buildings);
   addGraphRecords(graphRecords, 'map_places', mapPlaces.places);
   // Where each event is held, from its listing's location: a map place, or a building by room or name.
-  linkEventPlaces(entities, snapshot.events ?? [], campusBuildings, list((snapshot.artifacts as Record<string, unknown> | undefined)?.events));
+  unresolved.push(...linkEventPlaces(entities, snapshot.events ?? [], campusBuildings, list((snapshot.artifacts as Record<string, unknown> | undefined)?.events), snapshot.office_sections ?? []).unresolved);
   // Who hosts an event Archway gives no organizer group ID for: the one node named like its organizer.
   linkEventOrganizers(entities, snapshot.events ?? []);
   // Topics to the offices their rows name, and shuttle stops as nodes routes stop at.
