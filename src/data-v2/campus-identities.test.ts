@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import rawSeed from '../reference/campus-identities.json';
 import { buildStructuredDirectoryContacts } from '../directory/structured-contacts';
-import { validateCampusIdentities, type CampusIdentities } from './campus-identities';
+import { readsAsOffice, validateCampusIdentities, type CampusIdentities, type CampusIdentity } from './campus-identities';
 
 const seed = rawSeed as CampusIdentities;
 
@@ -97,3 +97,21 @@ test('buildings link to the campus map, and room relationships target identities
   assert.throws(() => validateCampusIdentities(registry), /Broken relationship identity target/);
 });
 
+test('an office, and a club, group or facility a directory contact belongs to (or a facility with published hours), reads as an office as the Brain reads it', () => {
+  const entity = (kind: CampusIdentity['kind'], collection: CampusIdentity['links'][number]['collection'], keys: string[]): CampusIdentity =>
+    ({ id: '00000000-0000-4000-8000-000000000061', kind, name: 'Desk', aliases: [], links: [{ collection, source_key: 'source', source_record_keys: keys }] });
+  assert.deepEqual([
+    readsAsOffice(entity('office', 'office_sections', [])),
+    readsAsOffice(entity('organization', 'contacts', ['office:president'])),
+    readsAsOffice(entity('club', 'contacts', ['office:fsl'])),
+    readsAsOffice(entity('facility', 'contacts', ['office:bookstore'])),
+    readsAsOffice(entity('facility', 'campus_hours', ['pool'])),
+  ], [true, true, true, true, true]);
+  assert.deepEqual([
+    readsAsOffice(entity('club', 'contacts', [])),
+    readsAsOffice(entity('club', 'campus_hours', ['lounge'])),
+    readsAsOffice(entity('organization', 'clubs', ['Chess Club'])),
+    readsAsOffice(entity('venue', 'contacts', ['office:atrium'])),
+    readsAsOffice(entity('person', 'contacts', ['person:a'])),
+  ], [false, false, false, false, false]);
+});

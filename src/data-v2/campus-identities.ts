@@ -41,6 +41,17 @@ export interface CampusIdentity {
   unlinked?: { reason: string; on_purpose: boolean };
 }
 export interface CampusIdentities { schema_version: 1; entities: CampusIdentity[] }
+/**
+ * Kinds the Brain reads as an office once a reviewed directory contact belongs to them (a residence hall
+ * desk, a center, the President's office as an Archway group), or, for a facility, its published hours
+ * (the pool, the gym): rockygpt-brain's entity_facts DESK_KINDS. The graph shows these as offices.
+ */
+export const DESK_KINDS: readonly string[] = ['club', 'organization', 'facility'];
+/** An office, or a desk the Brain reads as one; a rule that looks for "the office" behind a page or site looks among these. */
+export function readsAsOffice(entity: CampusIdentity): boolean {
+  return entity.kind === 'office' || (DESK_KINDS.includes(entity.kind) && entity.links.some(link => link.source_record_keys.length > 0
+    && (link.collection === 'contacts' || (entity.kind === 'facility' && link.collection === 'campus_hours'))));
+}
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const COLLECTIONS: string[] = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'campus_topics', 'office_sections', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages', 'requirement_groups', ...GRAPH_RECORD_COLLECTIONS];
 // Relationships whose target is a catalog record, not an identity.

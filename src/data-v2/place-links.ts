@@ -1,4 +1,4 @@
-import type { CampusIdentity, IdentityEvidence } from './campus-identities';
+import { readsAsOffice, type CampusIdentity, type IdentityEvidence } from './campus-identities';
 import { campusBuildingId, roomBuildings, type CampusBuildingsArtifact } from './campus-buildings';
 import type { IdentityCoverageIssue } from './compile-campus-identities';
 
@@ -69,10 +69,14 @@ function relate(entity: CampusIdentity, type: 'listed_by' | 'located_at', target
   return true;
 }
 
-/** Each office's own reviewed websites: its directory contacts' evidence.website.url, the college's home page aside. */
+/**
+ * Each office's own reviewed websites: its directory contacts' evidence.website.url, the college's home page aside.
+ * A desk the Brain reads as an office is one here too: the Office of the President is an Archway group in this
+ * release, and its contact's site is the President's pages.
+ */
 function officeSites(entities: CampusIdentity[], contacts: Map<string, Row>): Array<{ entity: CampusIdentity; site: Site }> {
   const sites: Array<{ entity: CampusIdentity; site: Site }> = [];
-  for (const entity of entities.filter(e => e.kind === 'office')) {
+  for (const entity of entities.filter(readsAsOffice)) {
     const seen = new Set<string>();
     for (const link of entity.links.filter(l => l.collection === 'contacts')) {
       for (const key of link.source_record_keys) {
@@ -151,7 +155,7 @@ export function linkFacilityWebsites(entities: CampusIdentity[], mapPlaces: Row[
         if (!row || !own) continue;
         // The office whose site holds the page most closely: Bischoff Hall's /reslife/bischoff-hall/
         // over Housing & Residence Life's /reslife/.
-        const holding = sites.filter(s => s.site.host === own.host && own.path.startsWith(s.site.path));
+        const holding = sites.filter(s => s.entity.id !== facility.id && s.site.host === own.host && own.path.startsWith(s.site.path));
         const deepest = Math.max(0, ...holding.map(s => s.site.path.length));
         const holders = [...new Map(holding.filter(s => s.site.path.length === deepest).map(s => [s.entity.id, s.entity])).values()];
         if (holders.length > 1) {

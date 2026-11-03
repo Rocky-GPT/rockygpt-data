@@ -1,4 +1,4 @@
-import type { CampusIdentity, IdentityEvidence } from './campus-identities';
+import { readsAsOffice, type CampusIdentity, type IdentityEvidence } from './campus-identities';
 import type { IdentityCoverageIssue } from './compile-campus-identities';
 import { normalizeName } from './archway-identities';
 import { campusBuildingId, roomBuildings, type CampusBuildingsArtifact } from './campus-buildings';
@@ -199,7 +199,7 @@ export function linkPeople(entities: CampusIdentity[], records: Map<string, Row>
         for (const [subject, references] of found) relate(person, 'part_of', subject, references);
         const owners = [...folderOwners.get(siteFolder(url) ?? '') ?? []];
         const office = owners.length === 1 ? byId.get(owners[0]) : undefined;
-        if (office?.kind === 'office') relate(person, 'listed_by', office.id, [evidence('profileUrl')]);
+        if (office && readsAsOffice(office)) relate(person, 'listed_by', office.id, [evidence('profileUrl')]);
       }
       // The profile's own words give its room when the office field is empty ("Office: AC-210B").
       const line = text(row.office) ? undefined : /^\s*Office(?: Location)?\s*:\s*(\S[^\n]*)$/im.exec(typeof row.bio === 'string' ? row.bio : '')?.[1];

@@ -478,7 +478,7 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const clubCategories = linkClubCategories(entities, snapshot.clubs ?? [], inputs.collectedAt?.['archway-clubs']);
   entities.push(...clubCategories.entities);
   addGraphRecords(graphRecords, 'club_categories', clubCategories.records);
-  const clubPages = linkClubPages(entities, snapshot.office_sections ?? [], snapshot.clubs ?? []);
+  const clubPages = linkClubPages(entities, snapshot.office_sections ?? [], snapshot.clubs ?? [], list(snapshot.artifacts.clubs));
   entities.push(...clubPages.entities);
   unresolved.push(...clubPages.unresolved);
   // Nodes only another office's page knows: a desk known by that office's hours page, a person the

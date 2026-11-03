@@ -94,6 +94,22 @@ test('a club page no club is named like joins the one Archway group whose own em
   assert.match(result.unresolved[0].reason, /no Archway club has its name or its email/);
 });
 
+test("a stored club row's email is its Archway listing in the release's clubs artifact, by name", () => {
+  const csi: CampusIdentity = { id: '00000000-0000-4000-8000-000000000030', kind: 'office', name: 'Center for Student Involvement', aliases: [], links: [
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['www.ramapo.edu/clubs/organization/ivcf/'] }] };
+  const ivcf = club(1, 'InterVarsity Christian Fellowship');
+  // As the publish stores it: name, category and website, no listing column.
+  const stored = [{ source_key: 'archway-clubs', source_record_key: 'InterVarsity Christian Fellowship', category: 'Student Organization', website_url: 'https://archway.ramapo.edu/IVCF/' }];
+  const artifact = [{ name: 'InterVarsity Christian Fellowship', clubId: '1', email: 'ivcf@ramapo.edu' }, { name: 'InterVarsity Christian Fellowship', clubId: '2', email: 'other@ramapo.edu' }];
+  const ivcfPage = page('ivcf', 'Inter-Varsity Christian Fellowship (IVCF)', 'Email: ivcf@ramapo.edu');
+  // Without the artifact the stored row gives no email, and the page joins nothing.
+  assert.equal(linkClubPages([csi, ivcf], [ivcfPage], stored).unresolved.length, 1);
+  assert.equal(ivcf.relationships?.length ?? 0, 0);
+  const result = linkClubPages([csi, ivcf], [ivcfPage], stored, artifact);
+  assert.deepEqual(result.unresolved, []);
+  assert.deepEqual(ivcf.relationships?.map(r => [r.type, 'target_entity_id' in r ? r.target_entity_id : null, r.evidence[0].field]), [['listed_by', csi.id, 'email']]);
+});
+
 test("a fraternity or sorority chapter's page joins the Archway chapter it names, Greek letters aside", () => {
   const fsl: CampusIdentity = { id: '00000000-0000-4000-8000-000000000031', kind: 'office', name: 'Office of Fraternity and Sorority Life', aliases: [], links: [
     { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['alpha-kappa-alpha', 'omega-psi-phi', 'alpha-chi-rho'].map(s => `www.ramapo.edu/greek/chapters/${s}/`) }] };
@@ -114,6 +130,30 @@ test("a fraternity or sorority chapter's page joins the Archway chapter it names
   // A chapter page no Archway chapter matches is reported, never made a node, whatever it says.
   assert.deepEqual(result.entities, []);
   assert.deepEqual(result.unresolved.map(u => [u.entity, u.kind]), [['Alpha Chi Rho', 'unlinked_record']]);
+});
+
+test('an Archway group the Brain reads as an office lists the chapter pages it holds, and a club page named like it is its own', () => {
+  // In the compile, the Office of Fraternity and Sorority Life is an Archway club with a directory contact;
+  // the Brain reads such a desk as an office, so its chapter pages list their chapters under it.
+  const fsl: CampusIdentity = { id: '00000000-0000-4000-8000-000000000032', kind: 'club', name: 'Office of Fraternity and Sorority Life', aliases: [], links: [
+    { collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['Office of Fraternity and Sorority Life'] },
+    { collection: 'contacts', source_key: 'campus-directory', source_record_keys: ['office:fsl'] },
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['www.ramapo.edu/greek/chapters/alpha-omicron-pi/'] }] };
+  const csi: CampusIdentity = { id: '00000000-0000-4000-8000-000000000033', kind: 'office', name: 'Center for Student Involvement', aliases: [], links: [
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['www.ramapo.edu/clubs/organization/sga/'] }] };
+  const aoii = club(1, 'Alpha Omicron Pi');
+  const sga = club(2, 'Student Government Association');
+  sga.links.push({ collection: 'contacts', source_key: 'campus-directory', source_record_keys: ['office:sga'] });
+  const result = linkClubPages([fsl, csi, aoii, sga], [
+    { ...page('alpha-omicron-pi', 'Alpha Omicron Pi - ΑΟΠ', 'Founded 1897.'), source_record_key: 'www.ramapo.edu/greek/chapters/alpha-omicron-pi/',
+      url: 'https://www.ramapo.edu/greek/chapters/alpha-omicron-pi/', site_folder: 'greek' },
+    page('sga', 'Student Government Association', 'The voice of the students.'),
+  ]);
+  assert.deepEqual(aoii.relationships?.map(r => [r.type, 'target_entity_id' in r ? r.target_entity_id : null, r.evidence[0].field]), [['listed_by', fsl.id, 'name']]);
+  // SGA's page in the club directory is the desk's own: it is not made a club page, and lists nothing.
+  assert.equal(sga.relationships, undefined);
+  assert.deepEqual(sga.links.map(l => l.collection), ['clubs', 'contacts']);
+  assert.deepEqual([result.entities, result.unresolved], [[], []]);
 });
 
 test("a council's page joins the Archway group named like it, or the one whose Archway site its abbreviation names, never by email", () => {
