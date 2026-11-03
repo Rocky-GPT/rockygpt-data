@@ -352,7 +352,11 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   for (const name of entities.flatMap(entity => [entity.name, ...entity.aliases])) reserved.add(normalizeName(name));
   const offices = linkReviewedArchwayGroups(entities, snapshot.clubs || [], inputs.identityReviews?.archway_groups ?? [], schools.ownedClubs);
   unresolved.push(...offices.unresolved);
-  const archway = compileArchwayIdentities(snapshot, inputs, reserved, new Set([...schools.ownedClubs, ...offices.owned]), ledger);
+  // Each owned group by the identity whose clubs link lists it: a school, or an office a review gave its page.
+  const ownedKeys = new Set([...schools.ownedClubs, ...offices.owned]);
+  const owned = new Map(entities.flatMap(entity => entity.links.filter(link => link.collection === 'clubs')
+    .flatMap(link => link.source_record_keys.filter(key => ownedKeys.has(key)).map(key => [key, entity.id] as const))));
+  const archway = compileArchwayIdentities(snapshot, inputs, reserved, owned, ledger);
   entities.push(...archway.entities);
   unresolved.push(...archway.unresolved);
   // Reviewed contacts of Archway groups' own desks join those groups' identities; they
