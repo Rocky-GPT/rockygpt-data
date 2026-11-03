@@ -19,7 +19,7 @@ import {
   runIsolatedRefresh,
   type KeptSource,
 } from './refresh-isolation';
-import { ALLOW_SITE_FETCH_ENV, siteFetchAllowed } from './site-guard';
+import { ALLOW_SITE_FETCH_ENV, noteSiteDownloads, SITE_DOWNLOADS_NOTE, siteFetchAllowed } from './site-guard';
 
 /**
  * Collector commands that can renew each non-static publishable source.
@@ -293,10 +293,11 @@ export async function main(): Promise<void> {
       `${restored.artifactsDownloaded} artifact(s) and ${restored.documentsDownloaded} document(s) ` +
       `(the rest matched the last publish's saved copy).`
   );
+  fs.rmSync(SITE_DOWNLOADS_NOTE, { force: true });
   const before = evaluateSourceProvenance(SOURCES);
   const early = spreadHeavySources(before);
   if (early.length) {
-    console.log(`Collecting ${early.join(', ')} a night early, so no two big sources come due on the same night.`);
+    noteSiteDownloads(`Collecting ${early.join(', ')} a night early, so no two big sources come due on the same night.`);
   }
   const provenanceScripts = refreshScriptsForStates(before, REFRESH_HORIZON_HOURS, new Set(early));
   const compatibilityScripts = restoredArtifactCompatibilityScripts();
@@ -315,6 +316,9 @@ export async function main(): Promise<void> {
         `If Dan asked for a fresh collection on this machine, run it with ${ALLOW_SITE_FETCH_ENV}=1.`
     );
   }
+  noteSiteDownloads(scripts.length
+    ? `Collectors run tonight: ${scripts.join(', ')}.`
+    : 'No collector ran tonight: every source was fresh.');
   if (scripts.length) {
     console.log(
       `Refreshing ${scripts.length} collector(s) for source provenance or artifact compatibility.`

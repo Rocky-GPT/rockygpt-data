@@ -14,6 +14,9 @@
  *    to that host started.
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
+
 export const ALLOW_SITE_FETCH_ENV = 'ROCKYGPT_ALLOW_SITE_FETCH';
 export const RAMAPO_CONCURRENCY = 2;
 export const RAMAPO_REQUEST_GAP_MS = 500;
@@ -64,4 +67,21 @@ export async function paceRamapoRequest(input: string | URL): Promise<void> {
   nextStartByHost.set(host, start + RAMAPO_REQUEST_GAP_MS);
   const wait = start - Date.now();
   if (wait > 0) await new Promise<void>(resolve => setTimeout(resolve, wait));
+}
+
+/**
+ * Where a run notes what it read from Ramapo's sites, one line per collector. The daily run prints
+ * it as its last step, so the counts sit at the end of the log where they are easy to find.
+ */
+export const SITE_DOWNLOADS_NOTE = path.join('data', 'review', 'site-downloads.txt');
+
+/** Prints a line and adds it to the run's note of what was read from Ramapo's sites. */
+export function noteSiteDownloads(line: string, notePath = path.join(process.cwd(), SITE_DOWNLOADS_NOTE)): void {
+  console.log(line);
+  try {
+    fs.mkdirSync(path.dirname(notePath), { recursive: true });
+    fs.appendFileSync(notePath, `${line}\n`);
+  } catch {
+    // The note is a convenience; a collection never fails over it.
+  }
 }

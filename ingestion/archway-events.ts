@@ -7,7 +7,7 @@ import { chromium, type BrowserContext, type Page } from 'playwright';
 import { assertRawCollectionCandidate } from './raw-collector';
 import { buildArchwayEventDetailPage } from './archway-event-detail';
 import { fetchWithPolicy } from './http-client';
-import { assertSiteFetchAllowed, paceRamapoRequest, RAMAPO_CONCURRENCY } from './site-guard';
+import { assertSiteFetchAllowed, noteSiteDownloads, paceRamapoRequest, RAMAPO_CONCURRENCY } from './site-guard';
 import {
   assertCollectionCount,
   isRawOnlyMode,
@@ -715,7 +715,7 @@ function planEventDetails(events: ArchwayEvent[], detailUrls: string[], signalBy
     reused.set(url, kept.page);
     if (kept.signal) signalByUrl.set(normalizeEventUrlForLookup(url), kept.signal);
   }
-  console.log(`Event pages: ${reused.size} of ${detailUrls.length} reused from the last capture ` +
+  noteSiteDownloads(`Event pages: ${reused.size} of ${detailUrls.length} reused from the last capture ` +
     `(listed the same, read under ${EVENT_DETAIL_REUSE_HOURS}h ago); ${detailUrls.length - reused.size} to download.`);
   return reused;
 }

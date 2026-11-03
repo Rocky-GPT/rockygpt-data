@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 
 import { fetchWithPolicy } from './http-client';
@@ -6,6 +9,7 @@ import {
   ALLOW_SITE_FETCH_ENV,
   assertSiteFetchAllowed,
   isRamapoHost,
+  noteSiteDownloads,
   RAMAPO_CONCURRENCY,
   RAMAPO_REQUEST_GAP_MS,
   SiteFetchBlockedError,
@@ -96,4 +100,14 @@ test('Ramapo gets at most two open requests, each started half a second after th
   for (let index = 1; index < starts.length; index += 1) {
     assert.ok(starts[index] - starts[index - 1] >= RAMAPO_REQUEST_GAP_MS - 20, `gap ${starts[index] - starts[index - 1]}ms`);
   }
+});
+
+test('a download note line is printed and kept for the end of the run', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-site-note-'));
+  const note = path.join(dir, 'review', 'site-downloads.txt');
+  try {
+    noteSiteDownloads('office-pages: 2300 of 2320 pages unchanged', note);
+    noteSiteDownloads('Event pages: 180 of 240 reused', note);
+    assert.equal(fs.readFileSync(note, 'utf8'), 'office-pages: 2300 of 2320 pages unchanged\nEvent pages: 180 of 240 reused\n');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
