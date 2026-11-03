@@ -39,8 +39,10 @@ const GRAD_FEE = /GRAD FEE AS/i;
 const fold = (value: string): string => (value.toLowerCase().match(/[a-z0-9]+/g) ?? []).join(' ');
 const plural = (count: number, noun: string): string => `${count} ${noun}${count === 1 ? '' : 's'}`;
 
-/** The catalog's course search, which the catalog capture reads every course from (ingestion/scrape-catalog-api.ts). */
-export const COURSE_SEARCH_URL = 'https://app.coursedog.com/api/v1/cm/ramapo_banner_ethos/courses/search/%24filters';
+/** The catalog site a student can open, whose course pages print each course's attributes; a node's
+ * record cites it, and each course's link cites that course's own page. (The capture reads the
+ * courses from the catalog's course search API, which is no page to show a student.) */
+export const COURSE_CATALOG_URL = 'https://catalog.ramapo.edu/';
 
 export const courseAttributeId = (code: string): string =>
   uuid5(NAMESPACE_URL, pythonJsonStrings(['rockygpt', 'course_attribute', COURSE_SOURCE_KEY, code]));
@@ -138,6 +140,6 @@ export function linkCourseAttributes(entities: CampusIdentity[], courses: unknow
       reason: `The catalog prints this attribute on ${plural(codes.length, 'course')} (${codes.slice(0, 5).join(', ')}${codes.length > 5 ? ` and ${codes.length - 5} more` : ''}) without a code in parentheses; no code is guessed for it, so no course is linked to it.` });
   }
   const rows: GraphRecordRow[] = [...nodes].map(([attribute, node]) => ({ source_record_key: attribute, name: node.name,
-    course_count: carriers.get(attribute)?.size ?? 0, source_url: COURSE_SEARCH_URL }));
+    course_count: carriers.get(attribute)?.size ?? 0, source_url: COURSE_CATALOG_URL }));
   return { entities: [...nodes.values()], records: { source_key: COURSE_SOURCE_KEY, collected_at: collectedAt, rows }, linked, unresolved };
 }

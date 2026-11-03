@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validateCampusIdentities, type CampusIdentity } from './campus-identities';
-import { attributeCode, COURSE_SEARCH_URL, courseAttributeId, linkCourseAttributes } from './course-attributes';
+import { attributeCode, COURSE_CATALOG_URL, courseAttributeId, linkCourseAttributes } from './course-attributes';
 import { courseIdentityId, COURSE_SOURCE_KEY } from './course-identities';
 import { aliasRecords, type AliasLedger } from './identity-aliases';
 
@@ -57,10 +57,10 @@ test('each course is in the attributes its record prints, one node per code, nam
   assert.deepEqual(targets(byCode.get('NURS 800')), [courseAttributeId('DNP')]);
   assert.equal(result.linked, 6);
   assert.deepEqual(result.records, { source_key: COURSE_SOURCE_KEY, collected_at: '2026-11-03T00:00:00Z', rows: [
-    { source_record_key: 'CPST', name: 'Capstone Course (CPST)', course_count: 1, source_url: COURSE_SEARCH_URL },
-    { source_record_key: 'DNP', name: 'DNP Program (DNP)', course_count: 1, source_url: COURSE_SEARCH_URL },
-    { source_record_key: 'GEGA', name: 'Gen Ed 18-Global Awareness (GEGA)', course_count: 2, source_url: COURSE_SEARCH_URL },
-    { source_record_key: 'WRIT', name: 'WRITING INTENSIVE (WRIT)', course_count: 2, source_url: COURSE_SEARCH_URL }] });
+    { source_record_key: 'CPST', name: 'Capstone Course (CPST)', course_count: 1, source_url: COURSE_CATALOG_URL },
+    { source_record_key: 'DNP', name: 'DNP Program (DNP)', course_count: 1, source_url: COURSE_CATALOG_URL },
+    { source_record_key: 'GEGA', name: 'Gen Ed 18-Global Awareness (GEGA)', course_count: 2, source_url: COURSE_CATALOG_URL },
+    { source_record_key: 'WRIT', name: 'WRITING INTENSIVE (WRIT)', course_count: 2, source_url: COURSE_CATALOG_URL }] });
   assert.deepEqual(result.unresolved.map(u => [u.entity, u.collection, u.record, u.kind]), [
     ['DNP Program (DNP)', 'course_attributes', 'DNP', 'note'],
     ['WRITING INTENSIVE (WRIT)', 'course_attributes', 'WRIT', 'note'],

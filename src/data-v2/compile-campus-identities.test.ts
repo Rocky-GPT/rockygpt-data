@@ -553,7 +553,7 @@ test('the compile makes the departments the catalog names into subjects, places 
 });
 
 test('the compile files each course under the attributes its record prints, and counts them in the report', async () => {
-  const { COURSE_SEARCH_URL, courseAttributeId } = await import('./course-attributes');
+  const { COURSE_CATALOG_URL, courseAttributeId } = await import('./course-attributes');
   const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
   const subjects = (await import('../reference/course-subjects.json')).default;
   const subjectsSource = (await import('../reference/course-subjects.source.json')).default;
@@ -572,8 +572,8 @@ test('the compile files each course under the attributes its record prints, and 
   const writ = entities.find(e => e.kind === 'course' && e.name === 'WRIT 101');
   assert.deepEqual(writ?.relationships?.filter(r => r.type === 'in_category').map(r => 'target_entity_id' in r && r.target_entity_id), [courseAttributeId('WRIT')]);
   assert.deepEqual(result.graphRecords.collections.course_attributes, { source_key: 'academic-programs', collected_at: '2026-11-03T00:00:00Z', rows: [
-    { source_record_key: 'GEQR', name: 'Gen Ed 18-Quantitative Rsng (GEQR)', course_count: 1, source_url: COURSE_SEARCH_URL },
-    { source_record_key: 'WRIT', name: 'WRITING INTENSIVE (WRIT)', course_count: 1, source_url: COURSE_SEARCH_URL }] });
+    { source_record_key: 'GEQR', name: 'Gen Ed 18-Quantitative Rsng (GEQR)', course_count: 1, source_url: COURSE_CATALOG_URL },
+    { source_record_key: 'WRIT', name: 'WRITING INTENSIVE (WRIT)', course_count: 1, source_url: COURSE_CATALOG_URL }] });
   // The report counts the new nodes, their records, links and aliases with everything else.
   const { report } = result;
   assert.equal(report.identities_by_kind.course_attribute, 2);
