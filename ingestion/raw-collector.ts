@@ -6,7 +6,7 @@ import { load } from 'cheerio';
 import type { AnyNode } from 'domhandler';
 import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
 import { limit } from './limit';
-import { SiteFetchBlockedError } from './site-guard';
+import { noteSiteDownloads, SiteFetchBlockedError } from './site-guard';
 import { writeJsonFile, writeRawProvenance } from './pipeline-utils';
 import { type RawDatasetV1, type RawPageV1, validateRawDatasetV1 } from './raw-types';
 
@@ -1022,7 +1022,7 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
     }, path.dirname(options.outputPath));
     collectionSucceeded = true;
     if (options.retainSourceHtml) {
-      console.log(`${options.dataset}: ${unchangedPages} of ${sourcePages.length} pages unchanged since the last capture ` +
+      noteSiteDownloads(`${options.dataset}: ${unchangedPages} of ${sourcePages.length} pages unchanged since the last capture ` +
         `(asked, not downloaded again); ${sourcePages.length - unchangedPages} downloaded.`);
     }
     return dataset;
