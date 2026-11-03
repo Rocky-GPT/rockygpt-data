@@ -141,6 +141,24 @@ A course subject is the code in front of a catalog course: CMPS in CMPS 147. Eve
 
 The `course-subjects` release artifact lists each subject with its code, catalog name, display name, search terms and course count. It is the ninth artifact the installer writes, and its static source is `course-subjects`.
 
+## People: departments, listings and rooms
+
+`person-links` (November 3, 2026) runs after the office-staff step. It adds three kinds of links from what a person's own records, and the pages that list them, say:
+
+- **Department (`part_of` a subject).** A current professor's own profile title names a field after the rank: "Associate Professor of Chemistry", "Lecturer, Finance", "Chemistry Lecturer". A title with several roles is read per role, split at "/"; a fellowship after a comma and a specialty after a dash or in parentheses are dropped. The profile's "Convening Group" lines count too, one per line while each line is a department. The field must be, word for word, the department list's name of exactly one code that has a subject in this release. "X and Y" names each only when both are department names.
+  - A name two subjects, or two codes of the department list, share names neither, and the coverage report says so: "Business Administration" (BADM, MBAD) and "Data Science" (DATA and DSCI, though only DATA has courses).
+  - Close names never match: "Communication" is not Communications (COMM), and "Literature" and "Theater" have no department.
+  - A retired profile is not placed.
+- **Listing (`listed_by` an office).** A professor whose profile is on an office's own site, when exactly one node links that site's pages. The Library's staff are listed this way: their profiles are the Library's staff page.
+- **Building (`office_at`),** for a person no contact room places yet, read in this order:
+  1. The room the profile's own text gives when its office field is empty ("Office: AC-210B").
+  2. A room an office page that lists the person prints beside them. Between their name and their own address, it is labeled ("Office: SC-202D"), in parentheses ("(C207)") or part of the college's address. After the address and phone, it must be labeled, and the section's entries must each end that way, as its last entry shows. Where only some entries have a room, the room could open the next entry, so it is no one's.
+  3. A reviewed room in `src/reference/reviewed-person-rooms.json`. Each entry has the person's ID and name, the room, the page URL, the section heading and its exact quote, the review date and a note. The build places the person only while this run's capture of that section still holds the quote, and never moves someone their own records place elsewhere. The first entry is Dean Benny Chan's ASB-422, from the Registrar's list of school deans.
+
+  A room places someone only by a reviewed building prefix, and all the rooms read for one person must name one building. Otherwise nothing is placed and the coverage report says why.
+
+A replay over the live graph's export of November 3, 2026 adds 140 `part_of` links from 131 professors to their departments, 7 `listed_by` links to the Library, and 64 `office_at` links: 2 professors and 62 office staff. The coverage report keeps the rest: two professors whose titles name "Data Science", Bernadette Connors (the two Grants pages give C105 and D211L) and Patricia Chavez (M-208; `M` is not a reviewed prefix).
+
 ## Published aliases and status
 
 After compilation, each identity gains the aliases its own name and linked records publish. No rule matches one entity's name against another's. An alias several identities share stays on each of them, and a lookup by it asks which one is meant.

@@ -85,11 +85,19 @@ const displayName = (words: string[]): string => words.map(word => /^[A-Z'’-]{
   ? word.split(/([-'’])/).map(part => part.charAt(0) + part.slice(1).toLowerCase()).join('') : word).join(' ');
 
 export interface StaffMention { name: string; email: string; title: string | null }
+/** A mention with the page's own words around it: those between the name and the address, as
+ * printed (rooms and phones included), and the rest of the section after the address. */
+export interface StaffSpan extends StaffMention { between: string; after: string }
 
 /** The people one section names, each by the address that follows their name. */
 export function staffInSection(heading: string, body: string): StaffMention[] {
+  return staffSpansInSection(heading, body).map(({ name, email, title }) => ({ name, email, title }));
+}
+
+/** staffInSection, keeping the words around each mention (person-links.ts reads rooms from them). */
+export function staffSpansInSection(heading: string, body: string): StaffSpan[] {
   const raw = `${heading} :: ${body}`.replace(/([a-z])- ([A-Z])/g, '$1-$2').replace(/\(mailto:([^)\s]+)\)/gi, ' $1 ').replace(/\(https?:[^)\s]*\)/g, ' ').replace(/https?:\/\/\S+/g, ' ');
-  const mentions: StaffMention[] = [];
+  const mentions: StaffSpan[] = [];
   for (const match of raw.matchAll(EMAIL)) {
     const local = match[1].toLowerCase();
     // A link's address printed again beside it is one mention.
@@ -109,8 +117,9 @@ export function staffInSection(heading: string, body: string): StaffMention[] {
     }
     if (!best) continue;
     const name = displayName(words.slice(best.start, best.end + 1).map(word => word.replace(/[,;:]+$/, '')));
+    const printed = words.slice(best.end + 1).join(' ');
     // The title: the words between the name and the address, without degrees, rooms and labels.
-    const between = words.slice(best.end + 1).join(' ')
+    const between = printed
       .replace(DEGREES, ' ').replace(/\([^)]*\)/g, ' ')
       .replace(/(E-?mail|Phone|Call|Text|Office|Ext|Cell|Fax|TTY via NJ Relay|Pronouns)\s*:?/gi, ' ')
       .replace(/(\+1\s*)?(\(?\d{3}\)?[\s.]*)?\d{3}\s*[-–.]\s*\d{4}|\bx\d{4}\b/g, ' ')
@@ -119,7 +128,7 @@ export function staffInSection(heading: string, body: string): StaffMention[] {
       // A room's building letter or a "Location:" label left at the end.
       .replace(/\s+(?:[A-Z]{1,3}|Location)$/, '').trim();
     const title = between && ROLE.test(between) && between.split(' ').length <= 12 && !/@/.test(between) ? between : null;
-    mentions.push({ name, email: `${local}@ramapo.edu`, title });
+    mentions.push({ name, email: `${local}@ramapo.edu`, title, between: printed, after: raw.slice(match.index! + match[0].length) });
   }
   return mentions;
 }

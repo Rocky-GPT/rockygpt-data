@@ -1,0 +1,22 @@
+{
+  "$comment": [
+    "Rooms an office's page gives a person in words that no rule reads: one person, one room, the",
+    "page section that says so and its exact words. The build places the person in the room's",
+    "building (office_at) only while this run's capture of that section still holds the quote, the",
+    "person is the only node with that ID and name, and the room has a reviewed building prefix.",
+    "A person whose own profile or listing publishes a room is placed by it, never from here."
+  ],
+  "schema_version": 1,
+  "rooms": [
+    {
+      "person_id": "f427468e-88e2-447e-ae15-edc0ddcf760c",
+      "person": "Benny Chan",
+      "room": "ASB-422",
+      "url": "https://www.ramapo.edu/registrar/graduation-commencement/",
+      "section": "School Deans",
+      "quote": "Dean Benny Chan, School of Science, Nursing, and Health, Room ASB-422",
+      "reviewed_at": "2026-11-03",
+      "note": "Proposed 2026-11-03 under the OK to link what is sure; needs a person's confirmation. The Registrar's list of school deans gives Dean Benny Chan's room as ASB-422; their faculty profile and directory entry publish no room, and the Center for Student Success's SNH listing gives the school office the same room (\"Office location: ASB422\")."
+    }
+  ]
+}
