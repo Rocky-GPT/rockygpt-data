@@ -37,7 +37,11 @@ export interface ContactEvidence {
 }
 
 export interface CapturedSection { heading: string; text: string; questions?: Array<{ question: string; answer: string }> }
-export interface CapturedPage { url: string; fetchedAt: string; sections: CapturedSection[] }
+export interface CapturedPage {
+  url: string; fetchedAt: string; sections: CapturedSection[];
+  /** When the page says it was last changed, as an ISO time, when it says so. */
+  modifiedAt?: string;
+}
 
 /** A second contact stays tied to its published service or staff role. */
 export interface ReviewedContactAddition {
@@ -132,6 +136,7 @@ export function loadCapturedPages(rawDir = path.join(process.cwd(), 'data', 'raw
         fetchedAt: typeof page.fetchedAt === 'string' ? page.fetchedAt : '',
         sections: page.sections.filter((s): s is CapturedSection =>
           typeof s?.heading === 'string' && typeof s?.text === 'string'),
+        ...(typeof page.modifiedAt === 'string' && page.modifiedAt ? { modifiedAt: page.modifiedAt } : {}),
       };
       const key = pageKey(page.url);
       const existing = pages.get(key);

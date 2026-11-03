@@ -439,3 +439,17 @@ test('a page the site says has not changed since the last capture is reused, not
     assert.equal(previousSourcePages(path.join(dir, 'office-sources.raw.json')).has('https://example.edu/finaid/'), false);
   } finally { globalThis.fetch = original; fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('a page keeps the date its SEO tags say it was last changed', () => {
+  const html = (head: string) => `<html><head>${head}</head><body><main><h1>Health Services</h1>`
+    + '<p>Open weekdays from 9 to 5 for every student.</p></main></body></html>';
+  const build = (head: string) => buildRawPageFromHtml({ url: 'https://example.edu/health/', sourceType: 'seed',
+    allowedHost: 'example.edu', html: html(head) });
+  assert.equal(build('<meta property="article:modified_time" content="2025-01-29T21:09:46+00:00" />').modifiedAt,
+    '2025-01-29T21:09:46.000Z');
+  assert.equal(build('<script type="application/ld+json">{"@graph":[{"dateModified":"2021-03-04T10:00:00+00:00"}]}</script>')
+    .modifiedAt, '2021-03-04T10:00:00.000Z');
+  assert.equal('modifiedAt' in build(''), false);
+  assert.equal('modifiedAt' in build('<meta property="article:modified_time" content="not a date" />'), false);
+  assert.equal('modifiedAt' in build('<meta property="article:modified_time" content="2999-01-01T00:00:00Z" />'), false);
+});
