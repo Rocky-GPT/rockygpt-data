@@ -31,7 +31,9 @@ export interface CampusSchoolsArtifact {
   captured_at: string;
   schools: CampusSchool[];
 }
-interface ReviewedSchool extends CampusSchool { id: string; archway_groups: string[] }
+/** `catalog_colleges`: the catalog's own short forms of the school's name, which it files courses
+ * under ("Vallario Sch of Arts, Hum, Edu"), each with the evidence that it means this school. */
+interface ReviewedSchool extends CampusSchool { id: string; archway_groups: string[]; catalog_colleges?: { name: string; evidence: string }[] }
 export interface ReviewedSchools { source_url: string; captured_at: string; schools: ReviewedSchool[] }
 
 const text = (value: unknown): string => typeof value === 'string' ? value.trim() : '';

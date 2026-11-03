@@ -12,7 +12,11 @@
     "program still filed under it therefore has no single current school.",
     "",
     "archway_groups are the exact Archway directory records (category Schools) that",
-    "publish a school's current or legacy name; each is reviewed, never matched by name."
+    "publish a school's current or legacy name; each is reviewed, never matched by name.",
+    "",
+    "catalog_colleges (reviewed November 3, 2026) are the catalog's own short forms of a school's",
+    "name, which its course records file courses under. Each says why it means that school. They",
+    "place course subjects in schools (subject-schools.ts) and are not aliases."
   ],
   "source_url": "https://www.ramapo.edu/academics/schools/",
   "captured_at": "2026-09-23T12:31:43Z",
@@ -38,7 +42,13 @@
           "evidence": "https://www.ramapo.edu/sshs/ redirects (301, server rule) to https://www.ramapo.edu/sssw/; observed 2026-09-23."
         }
       ],
-      "archway_groups": ["School of Social Sciences and Social Work"]
+      "archway_groups": ["School of Social Sciences and Social Work"],
+      "catalog_colleges": [
+        {
+          "name": "Social Sciences and Social Work",
+          "evidence": "The catalog files this school's courses (PSYC, SOCI, POLI, SWRK and others) under its name without \"School of\"; the catalog capture already maps the same label to this school for programs (ingestion/scrape-catalog-api.ts, normalizeCatalogSchool)."
+        }
+      ]
     },
     {
       "id": "c5e91f2f-d073-4bfa-8f8b-819457982c99",
@@ -52,7 +62,13 @@
           "evidence": "https://www.ramapo.edu/tas/ redirects (301, server rule) to https://www.ramapo.edu/snh/; observed 2026-09-23."
         }
       ],
-      "archway_groups": ["School of Science, Nursing, and Health"]
+      "archway_groups": ["School of Science, Nursing, and Health"],
+      "catalog_colleges": [
+        {
+          "name": "Science, Nursing and Health",
+          "evidence": "The catalog files this school's courses (BIOL, CHEM, CMPS, MATH, NURS and others) under its name without \"School of\" and the serial comma; the catalog capture already maps the same label to this school for programs (ingestion/scrape-catalog-api.ts, normalizeCatalogSchool)."
+        }
+      ]
     },
     {
       "id": "a0af6d36-ac17-4d2f-9a95-ccb68cd98772",
@@ -74,7 +90,13 @@
           "evidence": "https://www.ramapo.edu/ahe/ lists Elementary, Special and Teacher Education, which the catalog files under this former school; observed 2026-09-23."
         }
       ],
-      "archway_groups": ["School of Contemporary Arts", "School of Humanities and Global Studies"]
+      "archway_groups": ["School of Contemporary Arts", "School of Humanities and Global Studies"],
+      "catalog_colleges": [
+        {
+          "name": "Vallario Sch of Arts, Hum, Edu",
+          "evidence": "The school's full name is the Susan and Nick Vallario School of Arts, Humanities, and Education: https://www.ramapo.edu/myadvisor/ lists it under that name, linked to https://www.ramapo.edu/ahe/faculty/, and https://www.ramapo.edu/myadvisor/declared-students/ links it to https://www.ramapo.edu/ahe/. The catalog shortens that name for this school's courses (ARTS, COMM, HIST, MUSI, EDUC and others)."
+        }
+      ]
     }
   ]
 }

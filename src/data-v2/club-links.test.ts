@@ -63,3 +63,128 @@ test('an office that is an Archway group too is filed in its category; a school 
   assert.deepEqual(yearbook.relationships?.map(r => 'target_entity_id' in r ? r.target_entity_id : null), [clubCategoryId('Student Organization')]);
   assert.equal(school.relationships, undefined);
 });
+
+test('a club page no club is named like joins the one Archway group whose own email it gives', () => {
+  const csi: CampusIdentity = { id: '00000000-0000-4000-8000-000000000030', kind: 'office', name: 'Center for Student Involvement', aliases: [], links: [
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['ivcf', 'tau', 'sga', 'chess'].map(s => `www.ramapo.edu/clubs/organization/${s}/`) }] };
+  const ivcf = club(1, 'InterVarsity Christian Fellowship');
+  const tau = club(2, 'Tau Sigma');
+  const ald = club(3, 'Alpha Lambda Delta');
+  const sga = club(4, 'Student Government Association', 'office');
+  const listing = (name: string, email: string) => ({ source_key: 'archway-clubs', source_record_key: name, listing: { name, email } });
+  const result = linkClubPages([csi, ivcf, tau, ald, sga], [
+    page('ivcf', 'Inter-Varsity Christian Fellowship (IVCF)', 'Small groups meet weekly. Email: IVCF@ramapo.edu (mailto:ivcf@ramapo.edu)'),
+    page('tau', 'Tau Sigma National Honor Society', 'Advisor: mgregory@ramapo.edu'),
+    page('sga', 'Student Government Association (SGA)', 'Email: sga@ramapo.edu'),
+    page('chess', 'Ramapo Chess', 'Email: chess@ramapo.edu'),
+  ], [
+    listing('InterVarsity Christian Fellowship', 'ivcf@ramapo.edu'),
+    // An adviser's own address two groups list names neither.
+    listing('Tau Sigma', 'mgregory@ramapo.edu'), listing('Alpha Lambda Delta', 'mgregory@ramapo.edu'),
+    listing('Student Government Association', 'sga@ramapo.edu'),
+  ]);
+  assert.deepEqual(ivcf.links[1], { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['www.ramapo.edu/clubs/organization/ivcf/'] });
+  assert.deepEqual(ivcf.relationships, [{ type: 'listed_by', target_entity_id: csi.id, evidence: [{ collection: 'office_sections', source_key: 'office-pages',
+    source_record_key: 'www.ramapo.edu/clubs/organization/ivcf/', field: 'email', source_url: 'https://www.ramapo.edu/clubs/organization/ivcf/' }] }]);
+  assert.deepEqual([tau.links.length, ald.links.length, tau.relationships, ald.relationships], [1, 1, undefined, undefined]);
+  // A group that is an office keeps its own site, as with a name.
+  assert.deepEqual([sga.links.length, sga.relationships], [1, undefined]);
+  assert.deepEqual(result.entities, []);
+  assert.deepEqual(result.unresolved.map(u => u.entity), ['Tau Sigma National Honor Society', 'Ramapo Chess']);
+  assert.match(result.unresolved[0].reason, /no Archway club has its name or its email/);
+});
+
+test("a stored club row's email is its Archway listing in the release's clubs artifact, by name", () => {
+  const csi: CampusIdentity = { id: '00000000-0000-4000-8000-000000000030', kind: 'office', name: 'Center for Student Involvement', aliases: [], links: [
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['www.ramapo.edu/clubs/organization/ivcf/'] }] };
+  const ivcf = club(1, 'InterVarsity Christian Fellowship');
+  // As the publish stores it: name, category and website, no listing column.
+  const stored = [{ source_key: 'archway-clubs', source_record_key: 'InterVarsity Christian Fellowship', category: 'Student Organization', website_url: 'https://archway.ramapo.edu/IVCF/' }];
+  const artifact = [{ name: 'InterVarsity Christian Fellowship', clubId: '1', email: 'ivcf@ramapo.edu' }, { name: 'InterVarsity Christian Fellowship', clubId: '2', email: 'other@ramapo.edu' }];
+  const ivcfPage = page('ivcf', 'Inter-Varsity Christian Fellowship (IVCF)', 'Email: ivcf@ramapo.edu');
+  // Without the artifact the stored row gives no email, and the page joins nothing.
+  assert.equal(linkClubPages([csi, ivcf], [ivcfPage], stored).unresolved.length, 1);
+  assert.equal(ivcf.relationships?.length ?? 0, 0);
+  const result = linkClubPages([csi, ivcf], [ivcfPage], stored, artifact);
+  assert.deepEqual(result.unresolved, []);
+  assert.deepEqual(ivcf.relationships?.map(r => [r.type, 'target_entity_id' in r ? r.target_entity_id : null, r.evidence[0].field]), [['listed_by', csi.id, 'email']]);
+});
+
+test("a fraternity or sorority chapter's page joins the Archway chapter it names, Greek letters aside", () => {
+  const fsl: CampusIdentity = { id: '00000000-0000-4000-8000-000000000031', kind: 'office', name: 'Office of Fraternity and Sorority Life', aliases: [], links: [
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['alpha-kappa-alpha', 'omega-psi-phi', 'alpha-chi-rho'].map(s => `www.ramapo.edu/greek/chapters/${s}/`) }] };
+  const aka = club(1, 'Alpha Kappa Alpha Sorority, Inc.');
+  const opp = club(2, 'Omega Psi Phi Fraternity, Inc.');
+  const chapterPage = (slug: string, heading: string, text: string) => ({ ...page(slug, heading, text),
+    source_record_key: `www.ramapo.edu/greek/chapters/${slug}/`, url: `https://www.ramapo.edu/greek/chapters/${slug}/`, site_folder: 'greek' });
+  const result = linkClubPages([fsl, aka, opp], [
+    chapterPage('alpha-kappa-alpha', 'Alpha Kappa Alpha Sorority, Inc. - ΑΚΑ', 'Founded 1908.'),
+    chapterPage('omega-psi-phi', 'Omega Psi Phi Fraternity, Incorporated - ΩΨΦ', 'Founded 1911.'),
+    chapterPage('alpha-chi-rho', 'Alpha Chi Rho - ΑΧΡ', `Disciplinary history for chapter. ${INACTIVE}`),
+  ]);
+  for (const [chapter, slug] of [[aka, 'alpha-kappa-alpha'], [opp, 'omega-psi-phi']] as const) {
+    assert.deepEqual(chapter.links[1], { collection: 'office_sections', source_key: 'office-pages', source_record_keys: [`www.ramapo.edu/greek/chapters/${slug}/`] });
+    assert.deepEqual(chapter.relationships?.map(r => [r.type, 'target_entity_id' in r ? r.target_entity_id : null, r.evidence[0].field]), [['listed_by', fsl.id, 'name']]);
+    assert.equal(chapter.status, undefined);
+  }
+  // A chapter page no Archway chapter matches is reported, never made a node, whatever it says.
+  assert.deepEqual(result.entities, []);
+  assert.deepEqual(result.unresolved.map(u => [u.entity, u.kind]), [['Alpha Chi Rho', 'unlinked_record']]);
+});
+
+test('an Archway group the Brain reads as an office lists the chapter pages it holds, and a club page named like it is its own', () => {
+  // In the compile, the Office of Fraternity and Sorority Life is an Archway club with a directory contact;
+  // the Brain reads such a desk as an office, so its chapter pages list their chapters under it.
+  const fsl: CampusIdentity = { id: '00000000-0000-4000-8000-000000000032', kind: 'club', name: 'Office of Fraternity and Sorority Life', aliases: [], links: [
+    { collection: 'clubs', source_key: 'archway-clubs', source_record_keys: ['Office of Fraternity and Sorority Life'] },
+    { collection: 'contacts', source_key: 'campus-directory', source_record_keys: ['office:fsl'] },
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['www.ramapo.edu/greek/chapters/alpha-omicron-pi/'] }] };
+  const csi: CampusIdentity = { id: '00000000-0000-4000-8000-000000000033', kind: 'office', name: 'Center for Student Involvement', aliases: [], links: [
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['www.ramapo.edu/clubs/organization/sga/'] }] };
+  const aoii = club(1, 'Alpha Omicron Pi');
+  const sga = club(2, 'Student Government Association');
+  sga.links.push({ collection: 'contacts', source_key: 'campus-directory', source_record_keys: ['office:sga'] });
+  const result = linkClubPages([fsl, csi, aoii, sga], [
+    { ...page('alpha-omicron-pi', 'Alpha Omicron Pi - ΑΟΠ', 'Founded 1897.'), source_record_key: 'www.ramapo.edu/greek/chapters/alpha-omicron-pi/',
+      url: 'https://www.ramapo.edu/greek/chapters/alpha-omicron-pi/', site_folder: 'greek' },
+    page('sga', 'Student Government Association', 'The voice of the students.'),
+  ]);
+  assert.deepEqual(aoii.relationships?.map(r => [r.type, 'target_entity_id' in r ? r.target_entity_id : null, r.evidence[0].field]), [['listed_by', fsl.id, 'name']]);
+  // SGA's page in the club directory is the desk's own: it is not made a club page, and lists nothing.
+  assert.equal(sga.relationships, undefined);
+  assert.deepEqual(sga.links.map(l => l.collection), ['clubs', 'contacts']);
+  assert.deepEqual([result.entities, result.unresolved], [[], []]);
+});
+
+test("a council's page joins the Archway group named like it, or the one whose Archway site its abbreviation names, never by email", () => {
+  const councils = ['cph', 'nphc', 'ifc', 'unrecognized-or-inactive-chapters'].map(s => `www.ramapo.edu/greek/chapters-councils/${s}/`);
+  const fsl: CampusIdentity = { id: '00000000-0000-4000-8000-000000000031', kind: 'office', name: 'Office of Fraternity and Sorority Life', aliases: [], links: [
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: councils }] };
+  const cph = club(1, 'College Panhellenic Council');
+  const nphc = club(2, 'National Pan-Hellenic Conference');
+  const tke = club(3, 'Tau Kappa Epsilon');
+  const councilPage = (slug: string, heading: string, text: string) => ({ ...page(slug, heading, text),
+    source_record_key: `www.ramapo.edu/greek/chapters-councils/${slug}/`, url: `https://www.ramapo.edu/greek/chapters-councils/${slug}/`, site_folder: 'greek' });
+  const clubs = [
+    { source_key: 'archway-clubs', source_record_key: 'College Panhellenic Council', website_url: 'https://archway.ramapo.edu/CPH/', listing: {} },
+    { source_key: 'archway-clubs', source_record_key: 'National Pan-Hellenic Conference', website_url: 'https://archway.ramapo.edu/NPHC/', listing: {} },
+    // The IFC president's own address is a chapter's Archway email; the IFC page must not join that chapter.
+    { source_key: 'archway-clubs', source_record_key: 'Tau Kappa Epsilon', website_url: 'https://archway.ramapo.edu/TKE/', listing: { email: 'mcirill3@ramapo.edu' } },
+  ];
+  const result = linkClubPages([fsl, cph, nphc, tke], [
+    councilPage('cph', 'College Panhellenic Council (CPH)', 'At Ramapo, there are six (6) NPC member sororities.'),
+    councilPage('nphc', 'National Pan-Hellenic Council (NPHC)', 'At Ramapo, we currently have four (4) active NPHC chapters.'),
+    councilPage('ifc', 'Interfraternity Council (IFC)', 'President E-mail: mcirill3@ramapo.edu'),
+    councilPage('unrecognized-or-inactive-chapters', 'Unrecognized and Inactive Chapters', `Chapter closure. ${INACTIVE}`),
+  ], clubs);
+  for (const [council, slug, joined] of [[cph, 'cph', 'name'], [nphc, 'nphc', 'website_url']] as const) {
+    assert.deepEqual(council.links[1], { collection: 'office_sections', source_key: 'office-pages', source_record_keys: [`www.ramapo.edu/greek/chapters-councils/${slug}/`] });
+    assert.deepEqual(council.relationships?.map(r => [r.type, 'target_entity_id' in r ? r.target_entity_id : null, r.evidence[0].field]), [['listed_by', fsl.id, joined]]);
+    assert.equal(council.status, undefined);
+  }
+  assert.deepEqual(tke.links.length, 1);
+  assert.equal(tke.relationships, undefined);
+  // A council no Archway group is named or sited like is reported; the inactive-chapters list is no council.
+  assert.deepEqual(result.entities, []);
+  assert.deepEqual(result.unresolved.map(u => [u.entity, u.kind]), [['Interfraternity Council', 'unlinked_record']]);
+});
