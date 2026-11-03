@@ -338,10 +338,12 @@ async function insertStructured(
     if (!kept) continue;
     await client.query(
       `INSERT INTO rockygpt_v2.office_sections
-       (dataset_version_id, source_id, source_record_key, site_folder, url, sections, collected_at, content_hash, howto_entries)
-       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9::jsonb)`,
+       (dataset_version_id, source_id, source_record_key, site_folder, url, sections, collected_at, content_hash, howto_entries,
+        page_modified_at)
+       VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9::jsonb,$10)`,
       [datasetId, sources.get('office-pages'), page.key, page.folder, page.url, JSON.stringify(kept.sections),
-        page.fetchedAt || collectedAtFor('office-pages'), kept.contentHash, JSON.stringify(pageEntries(howto, page))]
+        page.fetchedAt || collectedAtFor('office-pages'), kept.contentHash, JSON.stringify(pageEntries(howto, page)),
+        page.modifiedAt ?? null]
     );
     counts.office_sections = (counts.office_sections || 0) + 1;
   }

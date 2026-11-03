@@ -80,3 +80,13 @@ test('a section said word for word on many pages is the site frame and is not pu
   assert.deepEqual(changed.sections, [{ heading: 'Step 0', text: 'Do thing 0.' }]);
   assert.notEqual(changed.contentHash, rows.find(row => row.url.endsWith('/p0/'))!.contentHash);
 });
+
+test('a page keeps the date it says it was last changed, and a page that says none has none', () => {
+  const [key, dated] = page('https://www.ramapo.edu/healthservices/faq/', [{ heading: 'Hours', text: 'Open 9 to 5.' }]);
+  const pages = new Map([[key, { ...dated, modifiedAt: '2025-01-29T21:09:46.000Z' }],
+    page('https://www.ramapo.edu/healthservices/old/', [{ heading: 'Hours', text: 'Open 8 to 4.' }])]);
+  const rows = officeSectionPages(pages, new Set(['healthservices']), new Map());
+  assert.deepEqual(rows.map(row => [row.key, row.modifiedAt]), [
+    ['www.ramapo.edu/healthservices/faq/', '2025-01-29T21:09:46.000Z'],
+    ['www.ramapo.edu/healthservices/old/', undefined]]);
+});
