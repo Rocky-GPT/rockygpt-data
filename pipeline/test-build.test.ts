@@ -21,7 +21,17 @@ test('the test-build switch refuses a remote database', () => {
   assert.equal(isLocalDatabaseUrl('not a url'), false);
 });
 
-test('the test-build switch refuses a bucket or a workflow', () => {
+test('the test-build switch refuses a bucket or a production workflow run', () => {
   assert.throws(() => testBuildFromCapturedPages({ ...ON, DATABASE_URL: LOCAL, RAW_ARTIFACT_BUCKET: 'b' }), /never uploads/);
-  assert.throws(() => testBuildFromCapturedPages({ ...ON, DATABASE_URL: LOCAL, GITHUB_ACTIONS: 'true' }), /never a workflow/);
+  assert.throws(() => testBuildFromCapturedPages({ ...ON, DATABASE_URL: LOCAL, GITHUB_ACTIONS: 'true' }), /never a production run/);
+  assert.throws(() => testBuildFromCapturedPages({
+    ...ON, DATABASE_URL: LOCAL, GITHUB_ACTIONS: 'true', ROCKYGPT_BUILD_TARGET: 'production',
+  }), /never a production run/);
+});
+
+test("the workflow's dev build may use it, still only with the runner's own database", () => {
+  const devRun = { ...ON, GITHUB_ACTIONS: 'true', ROCKYGPT_BUILD_TARGET: 'dev' };
+  assert.equal(testBuildFromCapturedPages({ ...devRun, DATABASE_URL: LOCAL }), true);
+  assert.throws(() => testBuildFromCapturedPages({ ...devRun, DATABASE_URL: 'postgresql://u:p@ep-x.neon.tech/neondb' }), /this machine/);
+  assert.throws(() => testBuildFromCapturedPages({ ...devRun, DATABASE_URL: LOCAL, RAW_ARTIFACT_BUCKET: 'b' }), /never uploads/);
 });
