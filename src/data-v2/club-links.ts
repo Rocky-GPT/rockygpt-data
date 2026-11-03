@@ -19,7 +19,12 @@ import { SOURCES } from './source-seeds';
  *   club node of its own only when it is inactive, so a student asking about it hears it is not
  *   active; an active page no Archway club matches is reported, not made a second club.
  *
- * Pages and Archway clubs are matched by name the way map places are (placeName), uniquely.
+ * Pages and Archway clubs are matched by name the way map places are (placeName), uniquely. A page
+ * no node is named like is matched by email: when an address the page gives is the one Archway
+ * lists for exactly one group, the page is that group's ("Inter-Varsity Christian Fellowship
+ * (IVCF)" and Archway's "InterVarsity Christian Fellowship" both give ivcf@ramapo.edu). An address
+ * two Archway listings share (an adviser's own) names neither; a group that is an office keeps its
+ * own site, as with a name.
  */
 
 type Row = Record<string, unknown>;
@@ -28,6 +33,7 @@ const text = (value: unknown): string => typeof value === 'string' ? value.repla
 const CLUB_PAGE = /\/clubs\/organization\/[^/]+\/$/;
 const INACTIVE = /NOT CURRENTLY AN ACTIVE CLUB AT RAMAPO COLLEGE AS OF (\d{1,2})\/(\d{1,2})\/(\d{2,4})/i;
 const CLUB_KINDS = ['club', 'organization'];
+const EMAIL = /[\w.+-]+@ramapo\.edu\b/gi;
 
 export const clubCategoryId = (category: string): string =>
   uuid5(NAMESPACE_URL, pythonJsonStrings(['rockygpt', 'club_category', 'archway-clubs', category]));
@@ -72,14 +78,32 @@ export function linkClubCategories(entities: CampusIdentity[], clubs: Row[], col
   return { entities: nodes, records: { source_key: 'archway-clubs', collected_at: collectedAt, rows: records } };
 }
 
-/** The ramapo.edu club directory's pages: listed_by, the page link, inactive status, and nodes for inactive clubs Archway no longer lists. */
-export function linkClubPages(entities: CampusIdentity[], pages: Row[]): { entities: CampusIdentity[]; unresolved: IdentityCoverageIssue[] } {
+/**
+ * The ramapo.edu club directory's pages: listed_by, the page link, inactive status, and nodes for
+ * inactive clubs Archway no longer lists. `clubs` are the Archway directory rows, whose listings
+ * give each group's email.
+ */
+export function linkClubPages(entities: CampusIdentity[], pages: Row[], clubs: Row[] = []): { entities: CampusIdentity[]; unresolved: IdentityCoverageIssue[] } {
   const unresolved: IdentityCoverageIssue[] = [];
   const created: CampusIdentity[] = [];
   const named = new Map<string, CampusIdentity[]>();
   for (const entity of entities.filter(e => [...CLUB_KINDS, 'office', 'venue'].includes(e.kind))) {
     for (const name of new Set([entity.name, ...entity.aliases].map(placeName))) if (name) named.set(name, [...named.get(name) ?? [], entity]);
   }
+  // Each Archway group's own email: the node holding the listing, for an address one listing gives.
+  const holder = new Map<string, CampusIdentity>();
+  for (const entity of entities) {
+    for (const link of entity.links.filter(l => l.collection === 'clubs')) for (const key of link.source_record_keys) holder.set(`${link.source_key}:${key}`, entity);
+  }
+  const listings = new Map<string, Row[]>();
+  for (const row of clubs) {
+    const email = text((row.listing as Row | undefined)?.email).toLowerCase();
+    if (email) listings.set(email, [...listings.get(email) ?? [], row]);
+  }
+  const mailed = (email: string): CampusIdentity | undefined => {
+    const rows = listings.get(email) ?? [];
+    return rows.length === 1 ? holder.get(`${text(rows[0].source_key)}:${text(rows[0].source_record_key)}`) : undefined;
+  };
   const owners = new Map<string, CampusIdentity[]>();
   for (const entity of entities.filter(e => e.kind === 'office')) {
     for (const link of entity.links.filter(l => l.collection === 'office_sections')) {
@@ -93,24 +117,35 @@ export function linkClubPages(entities: CampusIdentity[], pages: Row[]): { entit
     const sections = Array.isArray(page.sections) ? page.sections as Row[] : [];
     const name = sections.map(s => text(s.heading)).find(h => h && h !== 'Related Resources')?.replace(/\*+$/, '').trim();
     if (!name) { unresolved.push({ collection: 'office_sections', record: key, reason: 'The club page names no club.', kind: 'unlinked_record' }); continue; }
-    const said = INACTIVE.exec(sections.map(s => text(s.text)).join(' '));
+    const body = sections.map(s => text(s.text)).join(' ');
+    const said = INACTIVE.exec(body);
     const asOf = said ? `${said[3].length === 2 ? `20${said[3]}` : said[3]}-${said[1].padStart(2, '0')}-${said[2].padStart(2, '0')}` : null;
     const evidence: IdentityEvidence = { collection: 'office_sections', source_key: text(page.source_key) || 'office-pages', source_record_key: key, field: said ? 'status' : 'name', source_url: url };
     const lister = owners.get(key) ?? [];
-    const found = named.get(placeName(name)) ?? [];
-    if (found.length > 1) { unresolved.push({ entity: name, collection: 'office_sections', record: key, reason: `The club page is named like ${found.length} nodes; nothing is linked.`, kind: 'missing_connection' }); continue; }
-    // A page named like an office (SGA, Ramapo News) is that office's own; the office keeps its site.
+    let found = named.get(placeName(name)) ?? [];
+    let joined: 'name' | 'email' = 'name';
+    if (!found.length) {
+      const byEmail = [...new Set((body.match(EMAIL) ?? []).map(email => mailed(email.toLowerCase())).filter((e): e is CampusIdentity => !!e))];
+      if (byEmail.length) { found = byEmail; joined = 'email'; }
+    }
+    if (found.length > 1) {
+      unresolved.push({ entity: name, collection: 'office_sections', record: key, kind: 'missing_connection',
+        reason: joined === 'email' ? `The club page gives the emails of ${found.length} Archway groups; nothing is linked.` : `The club page is named like ${found.length} nodes; nothing is linked.` });
+      continue;
+    }
+    // A page named like an office, or giving an office's Archway email (SGA, Ramapo News), is that
+    // office's own; the office keeps its site.
     if (found.length === 1 && !CLUB_KINDS.includes(found[0].kind)) continue;
     let club = found[0];
     if (!club) {
-      if (!asOf) { unresolved.push({ entity: name, collection: 'office_sections', record: key, reason: 'The club directory lists this club, but no Archway club has its name; no second club node is made.', kind: 'unlinked_record' }); continue; }
+      if (!asOf) { unresolved.push({ entity: name, collection: 'office_sections', record: key, reason: 'The club directory lists this club, but no Archway club has its name or its email; no second club node is made.', kind: 'unlinked_record' }); continue; }
       club = { id: clubPageIdentityId(key), kind: 'club', name, aliases: [], links: [] };
       created.push(club);
     }
     const pageLink = club.links.find(l => l.collection === 'office_sections' && l.source_key === evidence.source_key);
     if (pageLink) { if (!pageLink.source_record_keys.includes(key)) pageLink.source_record_keys = [...pageLink.source_record_keys, key].sort(); }
     else club.links.push({ collection: 'office_sections', source_key: evidence.source_key, source_record_keys: [key] });
-    if (lister.length === 1) relate(club, 'listed_by', lister[0].id, { ...evidence, field: 'name' });
+    if (lister.length === 1) relate(club, 'listed_by', lister[0].id, { ...evidence, field: joined });
     if (asOf) club.status = { state: 'inactive', as_of: asOf, evidence: [evidence] };
   }
   return { entities: created, unresolved };

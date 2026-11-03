@@ -63,3 +63,33 @@ test('an office that is an Archway group too is filed in its category; a school 
   assert.deepEqual(yearbook.relationships?.map(r => 'target_entity_id' in r ? r.target_entity_id : null), [clubCategoryId('Student Organization')]);
   assert.equal(school.relationships, undefined);
 });
+
+test('a club page no club is named like joins the one Archway group whose own email it gives', () => {
+  const csi: CampusIdentity = { id: '00000000-0000-4000-8000-000000000030', kind: 'office', name: 'Center for Student Involvement', aliases: [], links: [
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['ivcf', 'tau', 'sga', 'chess'].map(s => `www.ramapo.edu/clubs/organization/${s}/`) }] };
+  const ivcf = club(1, 'InterVarsity Christian Fellowship');
+  const tau = club(2, 'Tau Sigma');
+  const ald = club(3, 'Alpha Lambda Delta');
+  const sga = club(4, 'Student Government Association', 'office');
+  const listing = (name: string, email: string) => ({ source_key: 'archway-clubs', source_record_key: name, listing: { name, email } });
+  const result = linkClubPages([csi, ivcf, tau, ald, sga], [
+    page('ivcf', 'Inter-Varsity Christian Fellowship (IVCF)', 'Small groups meet weekly. Email: IVCF@ramapo.edu (mailto:ivcf@ramapo.edu)'),
+    page('tau', 'Tau Sigma National Honor Society', 'Advisor: mgregory@ramapo.edu'),
+    page('sga', 'Student Government Association (SGA)', 'Email: sga@ramapo.edu'),
+    page('chess', 'Ramapo Chess', 'Email: chess@ramapo.edu'),
+  ], [
+    listing('InterVarsity Christian Fellowship', 'ivcf@ramapo.edu'),
+    // An adviser's own address two groups list names neither.
+    listing('Tau Sigma', 'mgregory@ramapo.edu'), listing('Alpha Lambda Delta', 'mgregory@ramapo.edu'),
+    listing('Student Government Association', 'sga@ramapo.edu'),
+  ]);
+  assert.deepEqual(ivcf.links[1], { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['www.ramapo.edu/clubs/organization/ivcf/'] });
+  assert.deepEqual(ivcf.relationships, [{ type: 'listed_by', target_entity_id: csi.id, evidence: [{ collection: 'office_sections', source_key: 'office-pages',
+    source_record_key: 'www.ramapo.edu/clubs/organization/ivcf/', field: 'email', source_url: 'https://www.ramapo.edu/clubs/organization/ivcf/' }] }]);
+  assert.deepEqual([tau.links.length, ald.links.length, tau.relationships, ald.relationships], [1, 1, undefined, undefined]);
+  // A group that is an office keeps its own site, as with a name.
+  assert.deepEqual([sga.links.length, sga.relationships], [1, undefined]);
+  assert.deepEqual(result.entities, []);
+  assert.deepEqual(result.unresolved.map(u => u.entity), ['Tau Sigma National Honor Society', 'Ramapo Chess']);
+  assert.match(result.unresolved[0].reason, /no Archway club has its name or its email/);
+});
