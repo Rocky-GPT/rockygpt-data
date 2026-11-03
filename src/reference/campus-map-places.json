@@ -196,6 +196,17 @@
         "Budget and Fiscal Planning"
       ],
       "note": "The budget office under its map name."
+    },
+    {
+      "map_key": "office_j-lee-s-lounge-student-center-sc",
+      "map_name": "J. Lee's Lounge",
+      "entity_ids": [
+        "08cf7420-0eab-4448-852d-7687bfe3d877"
+      ],
+      "entities": [
+        "J. Lee's (Student Lounge & Game Room)"
+      ],
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: the map's J. Lee's Lounge is the lounge and game room the campus hours and the Center for Student Involvement's page call J. Lee's (Student Center Annex, SC-226)."
     }
   ],
   "buildings": [

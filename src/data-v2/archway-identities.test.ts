@@ -191,7 +191,26 @@ test('a reviewed club page joins the office it names and never becomes a second 
   assert.deepEqual(unresolved.map(issue => [issue.record, issue.kind]), [['Missing Page', 'no_records'], ['Potter Library', 'no_records'], ['School Page', 'missing_connection']]);
   // An owned page is skipped by the Archway compiler, so no identity takes the office's department name.
   const snapshot = { ...fixture(), clubs: [page] };
-  assert.equal(compileArchwayIdentities(snapshot, inputs(), new Set(['library']), owned).unresolved.some(issue => issue.record === 'Potter Library'), false);
+  assert.equal(compileArchwayIdentities(snapshot, inputs(), new Set(['library']), new Map([...owned].map(key => [key, office.id]))).unresolved.some(issue => issue.record === 'Potter Library'), false);
+});
+
+test("an event an owned group organized is organized_by the office that owns the group's page", () => {
+  // The Ramapo College Residence Life group is Housing & Residence Life's own page; its events stay organized.
+  const office = id(30);
+  const owned = compileArchwayIdentities(fixture(), inputs(), new Set(), new Map([['Example Club', office]]));
+  assert.deepEqual(owned.entities.map(entity => entity.kind), ['event']);
+  const meeting = owned.entities[0];
+  assert.equal(meeting.relationships?.[0].type, 'organized_by');
+  assert.deepEqual(meeting.relationships?.map(r => 'target_entity_id' in r ? r.target_entity_id : ''), [office]);
+  assert.equal(owned.unresolved.some(issue => issue.kind === 'missing_connection'), false);
+  // Owned by no one, the same group is its own identity and organizes the event, as before.
+  const own = compileArchwayIdentities(fixture(), inputs());
+  const organizer = own.entities.find(entity => entity.kind === 'event')!.relationships?.[0];
+  assert.equal(organizer && 'target_entity_id' in organizer ? organizer.target_entity_id : undefined, archwayIdentityId('club', '801'));
+  // A group page two published rows share gives no explicit group ID, so its owners organize nothing.
+  const twice = { ...fixture(), clubs: [{ ...club }, { ...club, id: id(32), source_record_key: 'Example Club (copy)', website_url: 'https://archway.ramapo.edu/example' }] };
+  const claimed = compileArchwayIdentities(twice, inputs(), new Set(), new Map([['Example Club', office], ['Example Club (copy)', id(33)]]));
+  assert.equal(claimed.entities.find(entity => entity.kind === 'event')!.relationships, undefined);
 });
 
 test('a reviewed desk contact joins its Archway group identity, which keeps its ID and kind', () => {
