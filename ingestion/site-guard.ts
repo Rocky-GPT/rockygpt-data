@@ -1,8 +1,8 @@
 /**
  * site-guard.ts
  *
- * Ramapo's own sites (*.ramapo.edu) are read as little and as gently as possible (Dan,
- * November 2, 2026). Three rules live here:
+ * Ramapo's own sites (*.ramapo.edu, and the college's athletics site ramapoathletics.com) are
+ * read as little and as gently as possible (Dan, November 2, 2026). Three rules live here:
  *
  * 1. Only the daily data run downloads from them. A laptop, or any other machine, reuses the
  *    pages that run captured (npm run data:bootstrap -- --require-raw) and never collects on
@@ -23,10 +23,14 @@ export const RAMAPO_REQUEST_GAP_MS = 500;
 
 type GuardEnvironment = Readonly<Record<string, string | undefined>>;
 
-/** Whether a host is one of Ramapo's own: ramapo.edu and every name under it. */
+/** Ramapo's own sites outside ramapo.edu: the athletics site (its robots.txt also asks 30 s between pages). */
+const RAMAPO_OTHER_HOSTS = ['ramapoathletics.com'];
+
+/** Whether a host is one of Ramapo's own: ramapo.edu and every name under it, and the athletics site. */
 export function isRamapoHost(hostname: string): boolean {
   const host = hostname.toLowerCase().replace(/\.$/, '');
-  return host === 'ramapo.edu' || host.endsWith('.ramapo.edu');
+  return host === 'ramapo.edu' || host.endsWith('.ramapo.edu')
+    || RAMAPO_OTHER_HOSTS.some(other => host === other || host.endsWith(`.${other}`));
 }
 
 /**

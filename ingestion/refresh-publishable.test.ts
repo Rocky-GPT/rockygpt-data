@@ -68,7 +68,7 @@ test('every source with publication provenance has a refresh command', () => {
 
 test('daily sources outlast a daily run that starts late and are renewed by one that starts early', () => {
   const daily = SOURCES.filter((source) => source.freshnessHours === DAILY_SOURCE_FRESHNESS_HOURS);
-  assert.deepEqual(daily.map((source) => source.key).sort(), ['archway-events', 'dining']);
+  assert.deepEqual(daily.map((source) => source.key).sort(), ['archway-events', 'athletics-schedules', 'dining']);
 
   // September 2026's runs started up to 3 hours later than the day before and
   // took up to an hour to publish, so data from yesterday's run must still be
