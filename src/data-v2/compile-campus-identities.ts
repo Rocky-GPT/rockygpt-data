@@ -25,7 +25,8 @@ import { compileMapPlaces, type CampusMapMatches } from './campus-map-places';
 import campusMapMatches from '../reference/campus-map-places.json';
 import { linkEventOrganizers, linkEventPlaces } from './event-places';
 import { linkClubCategories, linkClubPages } from './club-links';
-import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, type ReviewedListings } from './graph-links';
+import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, markUnlinked, type ReviewedListings, type ReviewedStandaloneNodes } from './graph-links';
+import standaloneNodes from '../reference/standalone-nodes.json';
 import reviewedListings from '../reference/reviewed-listings.json';
 import { compileOfficeStaff } from './office-staff';
 import { compileParkingLots, type ReviewedParking } from './parking-lots';
@@ -60,6 +61,8 @@ export interface IdentityCoverageIssue { entity?: string; collection: string; re
 export interface IdentityCoverageReport {
   identity_count: number; identities_by_kind: Record<string, number>; linked_records: Record<string, number>;
   relationships: Record<string, number>; unresolved: IdentityCoverageIssue[];
+  /** Nodes with no link in or out, each carrying an `unlinked` note; `on_purpose` ones should stay alone. */
+  unlinked?: { total: number; on_purpose: number };
   /** Aliases a person approved, kept apart from source-derived evidence. */
   human_reviewed_aliases?: { entity_id: string; entity: string; alias: string; basis: 'human_reviewed'; reviewed_at: string }[];
   /** Every alias in the registry, with the rule and evidence that put it there. */
@@ -513,6 +516,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   }
   // A program lists each catalog course its requirement groups name (required, or one of the choices).
   linkProgramCourses(entities, requirementGroups, new Set(courseIdentities.courses.map(course => course.id)));
+  // Every node still alone gets a note on why, so it can be listed and read though nothing links to it.
+  report.unlinked = markUnlinked(entities, snapshot.campus_topics ?? [], standaloneNodes as ReviewedStandaloneNodes);
   validateCampusIdentities(registry);
   return { registry, report, eventOrganizers: archway.organizers, courseIdentities, requirementGroups, campusBuildings, campusSchools: campusSchoolsArtifact(inputs.campusSchools), courseSubjects: subjects.artifact, graphRecords };
 }

@@ -217,3 +217,48 @@ export function linkReviewedListings(entities: CampusIdentity[], pages: Row[], r
   }
   return { linked, unresolved };
 }
+
+/** A node reviewed to stay alone, with the reason a reader is shown (standalone-nodes.json). */
+export interface ReviewedStandalone { kind: string; name: string; reason: string; reviewed_at: string; note: string }
+export interface ReviewedStandaloneNodes { schema_version: 1; nodes: ReviewedStandalone[] }
+
+const UNLINKED_REASONS: Record<string, string> = {
+  building: 'The campus map lists it, but no captured page puts an office, event, parking lot or shuttle stop in or near it.',
+  office: 'No room or building is published for it, and no captured page of another office lists it.',
+  person: 'The directory files this person under no office or school that is in the graph.',
+};
+
+/**
+ * Notes on every node with no link in or out, run once every link is made: why it is alone, and
+ * whether it should stay so (a retired topic; a reviewed standalone node). A node that is reached
+ * by nothing is otherwise unreachable from the graph's root, so readers list these through the note.
+ */
+export function markUnlinked(entities: CampusIdentity[], topics: Row[], reviewed: ReviewedStandaloneNodes): { total: number; on_purpose: number } {
+  const courseOf = new Map<string, string>();
+  for (const entity of entities) for (const link of entity.links) for (const key of link.source_record_keys) courseOf.set(`${link.collection}:${link.source_key}:${key}`, entity.id);
+  const linked = new Set<string>();
+  for (const entity of entities) {
+    for (const relation of entity.relationships ?? []) {
+      const target = 'target_entity_id' in relation ? relation.target_entity_id
+        : courseOf.get(`${relation.target_record.collection}:${relation.target_record.source_key}:${relation.target_record.source_record_key}`);
+      if (!target) continue;
+      linked.add(entity.id); linked.add(target);
+    }
+  }
+  const standalone = new Map(reviewed.nodes.map(node => [`${node.kind}:${node.name}`, node.reason]));
+  const retired = new Map(topics.filter(row => text(row.status) === 'retired').map(row => [`${text(row.source_key)}:${text(row.source_record_key)}`, row]));
+  const count = { total: 0, on_purpose: 0 };
+  for (const entity of entities) {
+    delete entity.unlinked;
+    if (linked.has(entity.id)) continue;
+    const reviewedReason = standalone.get(`${entity.kind}:${entity.name}`);
+    const ended = entity.kind === 'topic' && entity.links.some(link => link.collection === 'campus_topics'
+      && link.source_record_keys.some(key => retired.has(`${link.source_key}:${key}`)));
+    if (reviewedReason) entity.unlinked = { reason: reviewedReason, on_purpose: true };
+    else if (ended) entity.unlinked = { reason: 'Its own page says it ended or left the college and sends people elsewhere, so no campus office handles it now.', on_purpose: true };
+    else entity.unlinked = { reason: UNLINKED_REASONS[['venue', 'facility', 'organization', 'club'].includes(entity.kind) ? 'office' : entity.kind] ?? `No captured page connects this ${entity.kind.replace(/_/g, ' ')} to another node.`, on_purpose: false };
+    count.total++;
+    if (entity.unlinked.on_purpose) count.on_purpose++;
+  }
+  return count;
+}

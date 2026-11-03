@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { CampusIdentity } from './campus-identities';
 import { campusBuildingId, campusBuildingsArtifact } from './campus-buildings';
-import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, stopIdentityId, type ReviewedListings } from './graph-links';
+import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, markUnlinked, stopIdentityId, type ReviewedListings } from './graph-links';
 import { aliasRecords, type AliasLedger } from './identity-aliases';
 
 const node = (n: number, kind: CampusIdentity['kind'], name: string, links: CampusIdentity['links'] = []): CampusIdentity =>
@@ -104,4 +104,24 @@ test('a reviewed listing links only while its page section still says the review
   assert.deepEqual(targets(counseling), [['listed_by', csw.id]]);
   assert.deepEqual(targets(health), []);
   assert.equal(result.unresolved.length, 1);
+});
+
+test('every node with no link in or out carries a note on why, and on purpose when it should stay alone', () => {
+  const office = node(1, 'office', 'ResNET'); const lab = node(2, 'office', 'Game Lab'); const library = node(3, 'office', 'Library');
+  const field = node(4, 'building', 'Softball Field'); const program = node(5, 'program', 'NMG-Non-Degree-MAPP');
+  const ended = node(6, 'topic', 'Provisional Teacher Program', [{ collection: 'campus_topics', source_key: 'office-pages', source_record_keys: ['Provisional Teacher Program'] }]);
+  const course = node(7, 'course', 'DATA 450', [{ collection: 'courses', source_key: 'catalog', source_record_keys: ['DATA 450'] }]);
+  const teacher = node(8, 'person', 'A Teacher');
+  lab.relationships = [{ type: 'listed_by', target_entity_id: library.id, evidence: [{ collection: 'campus_hours', source_key: 'campus-hours', source_record_key: 'Game Lab:Monday', field: 'source_url' }] }];
+  teacher.relationships = [{ type: 'profile_course', target_record: { collection: 'courses', source_key: 'catalog', source_record_key: 'DATA 450' }, evidence: [{ collection: 'faculty', source_key: 'faculty', source_record_key: 'x', field: 'courses' }] }];
+  library.unlinked = { reason: 'stale', on_purpose: false };
+  const count = markUnlinked([office, lab, library, field, program, ended, course, teacher],
+    [{ source_key: 'office-pages', source_record_key: 'Provisional Teacher Program', status: 'retired' }],
+    { schema_version: 1, nodes: [{ kind: 'program', name: 'NMG-Non-Degree-MAPP', reason: 'A catalog placeholder.', reviewed_at: '2026-11-03', note: '' }] });
+  assert.deepEqual(count, { total: 4, on_purpose: 2 });
+  assert.equal(office.unlinked?.on_purpose, false); assert.match(office.unlinked?.reason ?? '', /No room or building/);
+  assert.match(field.unlinked?.reason ?? '', /campus map/);
+  assert.deepEqual(program.unlinked, { reason: 'A catalog placeholder.', on_purpose: true });
+  assert.equal(ended.unlinked?.on_purpose, true);
+  for (const linked of [lab, library, course, teacher]) assert.equal(linked.unlinked, undefined);
 });
