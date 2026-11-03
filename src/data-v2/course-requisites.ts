@@ -45,18 +45,24 @@ export function requisiteCodes(rule: unknown): string[] {
   return found;
 }
 
-/**
- * Adds `requires` and `taken_with` links between catalog course identities. `courses` is the
- * release's `courses` artifact (catalog code -> course record); a course identity is found by the
- * code its `courses` record link names.
- */
-export function linkCourseRequisites(entities: CampusIdentity[], courses: unknown): { linked: number; unresolved: IdentityCoverageIssue[] } {
+/** Each catalog course identity by the code its `courses` record link names. */
+export function catalogCourses(entities: CampusIdentity[]): Map<string, CampusIdentity> {
   const byCode = new Map<string, CampusIdentity>();
   for (const entity of entities.filter(e => e.kind === 'course')) {
     for (const link of entity.links.filter(l => l.collection === 'courses' && l.source_key === COURSE_SOURCE_KEY)) {
       for (const key of link.source_record_keys) byCode.set(key, entity);
     }
   }
+  return byCode;
+}
+
+/**
+ * Adds `requires` and `taken_with` links between catalog course identities. `courses` is the
+ * release's `courses` artifact (catalog code -> course record); a course identity is found by the
+ * code its `courses` record link names.
+ */
+export function linkCourseRequisites(entities: CampusIdentity[], courses: unknown): { linked: number; unresolved: IdentityCoverageIssue[] } {
+  const byCode = catalogCourses(entities);
   const unresolved: IdentityCoverageIssue[] = [];
   let linked = 0;
   for (const [code, value] of Object.entries(record(courses)).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))) {
