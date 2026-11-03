@@ -2,9 +2,10 @@ name: Daily Data Update
 
 on:
   schedule:
-    # Every day at 10:41 UTC (5:41 AM EST / 6:41 AM EDT). GitHub starts scheduled runs late,
-    # worst at the top of the hour: at '0 11' they began 3 to 6 hours late (10-21..11-01).
-    - cron: '41 10 * * *'
+    # Every day at 03:41 UTC (10:41 PM EST / 11:41 PM EDT the evening before). GitHub starts
+    # scheduled runs late: at '0 11' they began 3 to 6 hours late (10-21..11-01), and at
+    # '41 10' 7 to 10 hours late (11-02, 11-03), so this lands around breakfast New York time.
+    - cron: '41 3 * * *'
   workflow_dispatch:
 
 permissions:
