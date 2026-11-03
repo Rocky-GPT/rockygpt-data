@@ -3,6 +3,7 @@ import { buildingIdentityId, campusBuildingId, type CampusBuildingsArtifact } fr
 import { placeName } from './campus-map-places';
 import type { IdentityCoverageIssue } from './compile-campus-identities';
 import { canonicalArchwayEventUrl } from '../archway-event-url';
+import { canonicalBerrieEventUrl } from '../berrie-event-url';
 import eventPlaceReadings from '../reference/event-places.json';
 
 /**
@@ -116,10 +117,12 @@ export function linkEventPlaces(entities: CampusIdentity[], events: Row[], artif
   // A stored event row has no location column: the location is on the release's events listing
   // (the `events` artifact), found by the event's own Archway URL.
   const listed = new Map<string, Row>();
-  for (const listing of listings) { const url = canonicalArchwayEventUrl(listing.url); if (url) listed.set(url, listing); }
+  // A Berrie Center show is found by its own page's address (berrie-events.ts).
+  const eventUrl = (value: unknown): string | undefined => canonicalArchwayEventUrl(value) ?? canonicalBerrieEventUrl(value);
+  for (const listing of listings) { const url = eventUrl(listing.url); if (url) listed.set(url, listing); }
   const withListing = (row: Row | undefined): Row | undefined => {
     if (!row || (row.listing && typeof row.listing === 'object')) return row;
-    const listing = listed.get(canonicalArchwayEventUrl(row.event_url) ?? '');
+    const listing = listed.get(eventUrl(row.event_url) ?? '');
     return listing ? { ...row, listing } : row;
   };
   const byPrefix = new Map<string, string>();
