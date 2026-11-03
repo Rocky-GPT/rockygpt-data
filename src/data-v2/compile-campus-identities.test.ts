@@ -3,6 +3,8 @@ import test from 'node:test';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import type { CampusIdentities } from './campus-identities';
 import { catalogConvenersArtifact, compileCampusIdentities, explicitCatalogConveners, explicitCatalogProgramFaculty, facultyRecordKey, type IdentitySnapshot } from './compile-campus-identities';
+import type { ReviewedSchools } from './campus-schools';
+import { courseSubjectsInput, subjectIdentityId } from './course-subjects';
 
 const personId = '97d9efbf-6c8e-4549-8ec6-98c61e49e375';
 const venueId = 'c3c6968f-407d-43f3-bab5-e06c37945991';
@@ -460,4 +462,126 @@ test("the catalog's academic policies link to the office its index names, under 
   assert.deepEqual(links.find(l => l.source_key === 'catalog-policies')?.source_record_keys,
     ['catalog.ramapo.edu/pages/ABC/#used-name']);
   assert.ok(links.every(l => l.source_record_keys.every(key => l.source_key === 'catalog-policies' ? key.startsWith('catalog.') : !key.startsWith('catalog.'))));
+});
+
+test('the compile links courses to their requisites and cross-listings, subjects to their school and programs to their department', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const schools = (await import('../reference/campus-schools.json')).default as unknown as ReviewedSchools;
+  const subjects = (await import('../reference/course-subjects.json')).default;
+  const subjectsSource = (await import('../reference/course-subjects.source.json')).default;
+  const input = snapshot();
+  input.artifacts.courses = {
+    'CMPS 147': { code: 'CMPS 147', name: 'COMPUTER SCIENCE I', school: 'Science, Nursing and Health', requisites: [] },
+    'CMPS 148': { code: 'CMPS 148', name: 'COMPUTER SCIENCE II', school: 'Science, Nursing and Health',
+      requisites: [{ section: 'Prerequisite', rule: { name: 'Prerequisite Course', condition: 'completedAllOf', items: [{ codes: [{ code: 'CMPS 147', name: 'COMPUTER SCIENCE I' }], logic: 'and' }] } }] },
+    'CMPS 364': { code: 'CMPS 364', name: 'DATA MINING', school: 'Science, Nursing and Health', description: 'This course is cross-listed with CMPS 147.' },
+  };
+  (input.artifacts.programs as { schools: { majors: Record<string, unknown>[] }[] }).schools[0].majors[0].conveningGroups = ['Computer Science (CMPS)'];
+  const result = compileCampusIdentities(real, input, raw, { campusSchools: schools, courseSubjects: courseSubjectsInput(subjectsSource, subjects) });
+  const byName = new Map(result.registry.entities.map(e => [`${e.kind}:${e.name}`, e]));
+  const targets = (key: string, type: string) => (byName.get(key)?.relationships ?? []).filter(r => r.type === type)
+    .map(r => 'target_entity_id' in r ? result.registry.entities.find(e => e.id === r.target_entity_id)?.name : undefined);
+  assert.deepEqual(targets('course:CMPS 148', 'requires'), ['CMPS 147']);
+  assert.deepEqual(targets('course:CMPS 147', 'cross_listed'), ['CMPS 364']);
+  assert.deepEqual(targets('subject:Computer Science (CMPS)', 'part_of'), ['School of Science, Nursing, and Health']);
+  assert.ok(targets('program:Computer Science BS', 'part_of').includes('Computer Science (CMPS)'));
+  assert.equal(result.report.relationships.requires, 1);
+  assert.equal(result.report.relationships.cross_listed, 1);
+});
+
+test('the compile makes the departments the catalog names into subjects, places them, and links subjects and programs to them', async () => {
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const schools = (await import('../reference/campus-schools.json')).default as unknown as ReviewedSchools;
+  const subjects = (await import('../reference/course-subjects.json')).default;
+  const subjectsSource = (await import('../reference/course-subjects.source.json')).default;
+  const input = snapshot();
+  const course = (code: string, school: string | null, group?: string) => [code, { code, name: code, school, conveningGroups: group ? [group] : [] }];
+  const AHE = 'Vallario Sch of Arts, Hum, Edu';
+  input.artifacts.courses = Object.fromEntries([
+    course('CMPS 147', 'Science, Nursing and Health', 'Computer Science (CMPS)'),
+    course('LITR 201', AHE, 'English and Literary Studies (ENLS)'), course('LITR 202', AHE, 'English and Literary Studies (ENLS)'), course('LITR 300', AHE),
+    course('THEA 101', AHE, 'Theater and Film (THFL)'), course('FILM 101', AHE, 'Theater and Film (THFL)'),
+    course('GEOL 101', 'Science, Nursing and Health', 'Geology (GEOL)'), course('GEOL 102', 'Science, Nursing and Health', 'Environmental Science (ENSC)'),
+    course('ENSC 101', 'Science, Nursing and Health', 'Environmental Science (ENSC)'),
+  ]);
+  const programs = input.artifacts.programs as { schools: { school: string; majors: Record<string, unknown>[] }[] };
+  programs.schools[0].majors[0].conveningGroups = ['Computer Science (CMPS)'];
+  programs.schools.push({ school: 'School of Science, Nursing, and Health', majors: [
+    { name: 'Data Science BS', catalogCode: 'SN-BS-DSCI', catalogUrl: 'https://catalog.ramapo.edu/programs/SN-BS-DSCI', conveningGroups: ['Data Science (DSCI)'] }] });
+  programs.schools.push({ school: 'School of Arts, Humanities, and Education', majors: [
+    { name: 'Theater and Film BA', catalogCode: 'AH-BA-THFL', catalogUrl: 'https://catalog.ramapo.edu/programs/AH-BA-THFL', conveningGroups: ['Theater and Film (THFL)'] }] });
+  input.programs.push({ source_key: 'academic-programs', source_record_key: 'catalog:SN-BS-DSCI', name: 'Data Science BS' },
+    { source_key: 'academic-programs', source_record_key: 'catalog:AH-BA-THFL', name: 'Theater and Film BA' });
+  const result = compileCampusIdentities(real, input, raw, { campusSchools: schools, courseSubjects: courseSubjectsInput(subjectsSource, subjects) });
+  const entities = result.registry.entities;
+  const byName = new Map(entities.map(e => [`${e.kind}:${e.name}`, e]));
+  const targets = (key: string) => (byName.get(key)?.relationships ?? []).filter(r => r.type === 'part_of')
+    .map(r => 'target_entity_id' in r ? entities.find(e => e.id === r.target_entity_id)?.name : undefined);
+  // Departments the catalog names are subjects with their code's ID and alias; a listed one nothing names is not.
+  for (const [code, name] of [['ENLS', 'English and Literary Studies (ENLS)'], ['THFL', 'Theater and Film (THFL)'], ['DSCI', 'Data Science (DSCI)']]) {
+    const department = byName.get(`subject:${name}`);
+    assert.deepEqual([department?.id, department?.aliases], [subjectIdentityId(code), [code]], name);
+    assert.equal(department?.relationships?.some(r => r.type === 'includes_course'), false);
+    assert.equal(result.courseSubjects.subjects.find(s => s.code === code)?.course_count, 0);
+  }
+  assert.equal(byName.has('subject:Cybersecurity (CYBR)'), false);
+  assert.ok(result.report.unresolved.some(u => u.record === 'CYBR' && u.kind === 'no_records'));
+  // Subjects named by their code are part of the department that convenes their courses, and of their school.
+  assert.deepEqual(targets('subject:LITR'), ['School of Arts, Humanities, and Education', 'English and Literary Studies (ENLS)']);
+  assert.deepEqual(targets('subject:THEA'), ['School of Arts, Humanities, and Education', 'Theater and Film (THFL)']);
+  assert.deepEqual(targets('subject:FILM'), ['School of Arts, Humanities, and Education', 'Theater and Film (THFL)']);
+  // A department is placed by the courses it convenes, or, convening none, by the programs that name it.
+  assert.deepEqual(targets('subject:English and Literary Studies (ENLS)'), ['School of Arts, Humanities, and Education']);
+  assert.deepEqual(targets('subject:Theater and Film (THFL)'), ['School of Arts, Humanities, and Education']);
+  assert.deepEqual(targets('subject:Data Science (DSCI)'), ['School of Science, Nursing, and Health']);
+  assert.deepEqual(byName.get('subject:Data Science (DSCI)')?.relationships?.[0].evidence.map(e => `${e.collection}:${e.source_record_key}:${e.field}`), ['programs:catalog:SN-BS-DSCI:school']);
+  assert.ok(targets('program:Data Science BS').includes('Data Science (DSCI)'));
+  assert.ok(targets('program:Theater and Film BA').includes('Theater and Film (THFL)'));
+  // A subject split between groups, and every department with its own courses, is in no other department.
+  assert.deepEqual(targets('subject:Geology (GEOL)'), ['School of Science, Nursing, and Health']);
+  assert.ok(result.report.unresolved.some(u => u.record === 'GEOL' && /not placed in a second department/.test(u.reason)));
+  assert.deepEqual(targets('subject:Computer Science (CMPS)'), ['School of Science, Nursing, and Health']);
+  for (const subject of entities.filter(e => e.kind === 'subject')) {
+    const departments = (subject.relationships ?? []).filter(r => r.type === 'part_of' && 'target_entity_id' in r && entities.find(e => e.id === r.target_entity_id)?.kind === 'subject');
+    assert.ok(departments.length <= 1 && departments.every(r => 'target_entity_id' in r && r.target_entity_id !== subject.id), subject.name);
+  }
+  // The report counts what the registry holds.
+  const count = (type: string) => entities.flatMap(e => e.relationships ?? []).filter(r => r.type === type).length;
+  assert.equal(result.report.relationships.part_of, count('part_of'));
+  assert.equal(result.report.identities_by_kind.subject, entities.filter(e => e.kind === 'subject').length);
+  assert.equal(result.report.linked_records.subjects, result.courseSubjects.subjects.length);
+});
+
+test('the compile files each course under the attributes its record prints, and counts them in the report', async () => {
+  const { COURSE_CATALOG_URL, courseAttributeId } = await import('./course-attributes');
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const subjects = (await import('../reference/course-subjects.json')).default;
+  const subjectsSource = (await import('../reference/course-subjects.source.json')).default;
+  const input = snapshot();
+  input.artifacts.courses = {
+    'CMPS 147': { code: 'CMPS 147', name: 'COMPUTER SCIENCE I', attributes: ['Gen Ed 18-Quantitative Rsng (GEQR)'] },
+    'WRIT 101': { code: 'WRIT 101', name: 'COLLEGE WRITING', attributes: ['WRITING INTENSIVE (WRIT)', 'MBA COURSE FOR GRAD FEE ASSESS (MBA)'] },
+  };
+  const result = compileCampusIdentities(real, input, raw, { courseSubjects: courseSubjectsInput(subjectsSource, subjects),
+    collectedAt: { 'academic-programs': '2026-11-03T00:00:00Z' } });
+  const entities = result.registry.entities;
+  // WRIT stays the Writing subject's code alone; GEQR names nothing else, so it is an alias.
+  assert.deepEqual(entities.filter(e => e.kind === 'course_attribute').map(e => [e.id, e.name, e.aliases]), [
+    [courseAttributeId('GEQR'), 'Gen Ed 18-Quantitative Rsng (GEQR)', ['GEQR']], [courseAttributeId('WRIT'), 'WRITING INTENSIVE (WRIT)', []]]);
+  assert.deepEqual(entities.find(e => e.kind === 'subject' && e.aliases.includes('WRIT'))?.name, 'Writing (WRIT)');
+  const writ = entities.find(e => e.kind === 'course' && e.name === 'WRIT 101');
+  assert.deepEqual(writ?.relationships?.filter(r => r.type === 'in_category').map(r => 'target_entity_id' in r && r.target_entity_id), [courseAttributeId('WRIT')]);
+  assert.deepEqual(result.graphRecords.collections.course_attributes, { source_key: 'academic-programs', collected_at: '2026-11-03T00:00:00Z', rows: [
+    { source_record_key: 'GEQR', name: 'Gen Ed 18-Quantitative Rsng (GEQR)', course_count: 1, source_url: COURSE_CATALOG_URL },
+    { source_record_key: 'WRIT', name: 'WRITING INTENSIVE (WRIT)', course_count: 1, source_url: COURSE_CATALOG_URL }] });
+  // The report counts the new nodes, their records, links and aliases with everything else.
+  const { report } = result;
+  assert.equal(report.identities_by_kind.course_attribute, 2);
+  assert.equal(report.identity_count, Object.values(report.identities_by_kind).reduce((total, count) => total + count, 0));
+  assert.equal(report.linked_records.course_attributes, 2);
+  assert.equal(report.relationships.in_category, entities.flatMap(e => e.relationships ?? []).filter(r => r.type === 'in_category').length);
+  assert.equal(report.relationships.in_category, 2);
+  assert.equal(report.alias_sources.length, entities.reduce((total, entity) => total + entity.aliases.length, 0));
+  assert.deepEqual(report.alias_sources.find(r => r.alias === 'GEQR')?.sources, [{ basis: 'abbreviation' }]);
+  assert.deepEqual(report.unresolved.filter(u => u.collection === 'course_attributes').map(u => [u.record, u.kind]), [['MBA', 'note'], ['WRIT', 'note']]);
 });

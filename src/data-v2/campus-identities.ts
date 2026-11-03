@@ -2,10 +2,10 @@
 export type IdentityCollection = 'contacts' | 'campus_hours' | 'dining_hours' | 'menu' | 'menu_documents' | 'menu_listings' | 'campus_topics' | 'office_sections' | 'shuttle_stops' | 'shuttle_trips' | 'faculty' | 'programs' | 'courses' | 'clubs' | 'events' | 'buildings' | 'schools' | 'subjects' | 'graduation_plans' | 'major_pages' | 'requirement_groups' | GraphRecordCollection;
 /** Collections stored in the release's `graph-records` artifact (see graph-records.ts), one
  * generic store for every kind added since: the Brain reads all of them with one reader. */
-export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates', 'buildings', 'map_places', 'club_categories', 'stops', 'staff', 'parking_lots', 'menu_board_items'] as const;
+export const GRAPH_RECORD_COLLECTIONS = ['terms', 'calendar_dates', 'buildings', 'map_places', 'club_categories', 'stops', 'staff', 'parking_lots', 'menu_board_items', 'course_attributes'] as const;
 export type GraphRecordCollection = typeof GRAPH_RECORD_COLLECTIONS[number];
-export const IDENTITY_KINDS = ['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course', 'term', 'calendar_date', 'club_category', 'stop', 'parking_lot'] as const;
-export const ENTITY_RELATIONSHIPS = ['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of', 'in_term', 'held_at', 'listed_by', 'in_category', 'lists_course', 'handled_by', 'stops_at', 'retired_from', 'near'] as const;
+export const IDENTITY_KINDS = ['office', 'person', 'facility', 'venue', 'program', 'club', 'organization', 'event', 'building', 'school', 'subject', 'route', 'topic', 'course', 'term', 'calendar_date', 'club_category', 'stop', 'parking_lot', 'course_attribute'] as const;
+export const ENTITY_RELATIONSHIPS = ['convener', 'listed_faculty', 'organized_by', 'office_at', 'located_at', 'part_of', 'in_term', 'held_at', 'listed_by', 'in_category', 'lists_course', 'handled_by', 'stops_at', 'retired_from', 'near', 'requires', 'taken_with', 'cross_listed'] as const;
 export interface IdentityRecordReference {
   collection: IdentityCollection;
   source_key: string;
@@ -41,6 +41,17 @@ export interface CampusIdentity {
   unlinked?: { reason: string; on_purpose: boolean };
 }
 export interface CampusIdentities { schema_version: 1; entities: CampusIdentity[] }
+/**
+ * Kinds the Brain reads as an office once a reviewed directory contact belongs to them (a residence hall
+ * desk, a center, the President's office as an Archway group), or, for a facility, its published hours
+ * (the pool, the gym): rockygpt-brain's entity_facts DESK_KINDS. The graph shows these as offices.
+ */
+export const DESK_KINDS: readonly string[] = ['club', 'organization', 'facility'];
+/** An office, or a desk the Brain reads as one; a rule that looks for "the office" behind a page or site looks among these. */
+export function readsAsOffice(entity: CampusIdentity): boolean {
+  return entity.kind === 'office' || (DESK_KINDS.includes(entity.kind) && entity.links.some(link => link.source_record_keys.length > 0
+    && (link.collection === 'contacts' || (entity.kind === 'facility' && link.collection === 'campus_hours'))));
+}
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const COLLECTIONS: string[] = ['contacts', 'campus_hours', 'dining_hours', 'menu', 'menu_documents', 'menu_listings', 'campus_topics', 'office_sections', 'shuttle_stops', 'shuttle_trips', 'faculty', 'programs', 'courses', 'clubs', 'events', 'buildings', 'schools', 'subjects', 'graduation_plans', 'major_pages', 'requirement_groups', ...GRAPH_RECORD_COLLECTIONS];
 // Relationships whose target is a catalog record, not an identity.
