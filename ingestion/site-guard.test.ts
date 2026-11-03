@@ -47,6 +47,10 @@ test('only the daily data run, or a run told to, may download from Ramapo', () =
   assert.equal(siteFetchAllowed({ [ALLOW_SITE_FETCH_ENV]: '1' }), true);
   assert.equal(siteFetchAllowed({}), false);
   assert.equal(siteFetchAllowed({ GITHUB_ACTIONS: 'false', [ALLOW_SITE_FETCH_ENV]: 'yes' }), false);
+  // The workflow's dev build reuses production's pages and never downloads, even in Actions.
+  assert.equal(siteFetchAllowed({ GITHUB_ACTIONS: 'true', ROCKYGPT_BUILD_TARGET: 'dev' }), false);
+  assert.equal(siteFetchAllowed({ ROCKYGPT_BUILD_TARGET: 'dev', [ALLOW_SITE_FETCH_ENV]: '1' }), false);
+  assert.equal(siteFetchAllowed({ GITHUB_ACTIONS: 'true', ROCKYGPT_BUILD_TARGET: 'production' }), true);
   assert.throws(() => assertSiteFetchAllowed('https://www.ramapo.edu/registrar/', {}), SiteFetchBlockedError);
   assert.throws(() => assertSiteFetchAllowed('https://www.ramapo.edu/registrar/', {}), /data:bootstrap -- --require-raw/);
   assertSiteFetchAllowed('https://example.edu/registrar/', {});
