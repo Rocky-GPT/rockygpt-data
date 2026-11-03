@@ -26,6 +26,10 @@ on:
         type: choice
         options: [production, dev]
         default: production
+      inspect:
+        description: 'Node names to list every link of in the run log, separated by ";" (optional)'
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -522,6 +526,13 @@ jobs:
         if: ${{ hashFiles('brain/scripts/check_plain_writer.py') != '' }}
         continue-on-error: true
         run: python brain/scripts/check_plain_writer.py .published
+
+      # Node and link counts in the log, to compare a dev build with production's or a laptop's.
+      - name: Count the graph's nodes and links
+        continue-on-error: true
+        env:
+          INSPECT: ${{ inputs.inspect }}
+        run: python .github/scripts/graph_summary.py .published --show "$INSPECT"
 
       - name: Save the embedding and question caches
         if: ${{ always() && hashFiles('.meaning-cache/questions.json') != '' }}
