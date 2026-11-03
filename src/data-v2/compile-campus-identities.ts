@@ -26,6 +26,7 @@ import campusMapMatches from '../reference/campus-map-places.json';
 import { linkEventOrganizers, linkEventPlaces } from './event-places';
 import { linkCourseRequisites } from './course-requisites';
 import { linkSubjectSchools } from './subject-schools';
+import { linkProgramDepartments } from './program-departments';
 import { linkClubCategories, linkClubPages } from './club-links';
 import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, markUnlinked, type ReviewedListings, type ReviewedStandaloneNodes } from './graph-links';
 import standaloneNodes from '../reference/standalone-nodes.json';
@@ -369,6 +370,9 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   unresolved.push(...subjects.unresolved);
   // Each subject in the one school its catalog courses are filed under (subject-schools.ts).
   unresolved.push(...linkSubjectSchools(entities, snapshot.artifacts.courses, inputs.campusSchools).unresolved);
+  // Each program in the department that convenes it, by its catalog Convening Group (program-departments.ts).
+  unresolved.push(...linkProgramDepartments(entities, candidates.filter(c => c.collection === 'programs')
+    .map(c => ({ ...c.row, source_key: c.source, source_record_key: c.key }))).unresolved);
   // Kinds whose records live in the generic graph-records artifact (graph-records.ts).
   const graphRecords = emptyGraphRecords();
   const calendar = compileCalendarIdentities(snapshot.artifacts.calendar, inputs.collectedAt?.['academic-calendar']);
