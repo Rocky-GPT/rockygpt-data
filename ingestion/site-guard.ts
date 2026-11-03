@@ -7,7 +7,7 @@
  * 1. Only the daily data run downloads from them. A laptop, or any other machine, reuses the
  *    pages that run captured (npm run data:bootstrap -- --require-raw) and never collects on
  *    its own. A collection Dan asks for on a laptop sets ROCKYGPT_ALLOW_SITE_FETCH=1 for that
- *    one command.
+ *    one command. The workflow's dev build (ROCKYGPT_BUILD_TARGET=dev) also only reuses pages.
  * 2. At most RAMAPO_CONCURRENCY requests are open to one Ramapo host at a time, whatever a
  *    collector asks for.
  * 3. Each request to a Ramapo host starts at least RAMAPO_REQUEST_GAP_MS after the last one
@@ -29,8 +29,12 @@ export function isRamapoHost(hostname: string): boolean {
   return host === 'ramapo.edu' || host.endsWith('.ramapo.edu');
 }
 
-/** Whether this process may download from Ramapo's sites: the daily data run, or a run told to. */
+/**
+ * Whether this process may download from Ramapo's sites: the daily data run, or a run told to.
+ * The workflow's dev build never may: it builds from the pages production already captured.
+ */
 export function siteFetchAllowed(env: GuardEnvironment = process.env): boolean {
+  if (env.ROCKYGPT_BUILD_TARGET === 'dev') return false;
   return env.GITHUB_ACTIONS === 'true' || env[ALLOW_SITE_FETCH_ENV] === '1';
 }
 

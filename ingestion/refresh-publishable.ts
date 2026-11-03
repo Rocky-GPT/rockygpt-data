@@ -283,7 +283,15 @@ export function assertRefreshCoverage(): void {
   }
 }
 
-export async function main(): Promise<void> {
+/**
+ * `--from-captured-pages` (the workflow's dev build): restore production's newest pages and
+ * rebuild every projection with this checkout's code, but collect nothing. A source past its
+ * freshness window is listed, not refused; the dev build's publish skips the age check too.
+ */
+export async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
+  const unknown = argv.filter((arg) => arg !== '--from-captured-pages');
+  if (unknown.length) throw new Error(`Unknown option: ${unknown.join(', ')}`);
+  if (argv.includes('--from-captured-pages')) return rebuildFromCapturedPages();
   assertRefreshCoverage();
   const restored = await restoreActiveRelease({ requireRawArtifacts: true, allowIncompleteRawArtifacts: true });
   console.log(
@@ -356,11 +364,33 @@ export async function main(): Promise<void> {
     );
   }
 
+  rebuildProjections();
+}
+
+function rebuildProjections(): void {
   // Rebuild every projection from its complete source capture, including
   // event/club detail pages; never relabel old normalized content as fresh.
   runNpmScript('quality:raw', false);
   runNpmScript('normalize:raw', false);
   runNpmScript('generate:context', false);
+}
+
+async function rebuildFromCapturedPages(): Promise<void> {
+  const restored = await restoreActiveRelease({ requireRawArtifacts: true });
+  console.log(
+    `Dev build from production's ${restored.version}: ${restored.rawFilesRestored} raw file(s) for ` +
+      `${restored.rawSourcesRestored} source(s); downloaded from the database: ` +
+      `${restored.artifactsDownloaded} artifact(s) and ${restored.documentsDownloaded} document(s) ` +
+      `(the rest matched the last publish's saved copy).`
+  );
+  fs.rmSync(SITE_DOWNLOADS_NOTE, { force: true });
+  noteSiteDownloads(`Dev build: no collector ran; built from production's captured pages (${restored.version}).`);
+  const aged = evaluateSourceProvenance(SOURCES)
+    .filter((state) => state.status === 'stale' || state.status === 'unknown');
+  if (aged.length) {
+    console.log(`Past their freshness window (built anyway): ${aged.map((state) => `${state.key} (${state.detail})`).join('; ')}.`);
+  }
+  rebuildProjections();
 }
 
 if (process.argv[1]?.endsWith('refresh-publishable.ts')) {
