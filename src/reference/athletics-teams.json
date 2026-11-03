@@ -1,0 +1,25 @@
+{
+  "site": "https://ramapoathletics.com",
+  "office": "Athletics",
+  "teams": [
+    { "slug": "baseball", "name": "Baseball" },
+    { "slug": "mens-basketball", "name": "Men's Basketball" },
+    { "slug": "mens-cross-country", "name": "Men's Cross Country" },
+    { "slug": "mens-soccer", "name": "Men's Soccer" },
+    { "slug": "mens-swimming-and-diving", "name": "Men's Swimming and Diving" },
+    { "slug": "mens-track-and-field", "name": "Men's Track and Field" },
+    { "slug": "mens-volleyball", "name": "Men's Volleyball" },
+    { "slug": "womens-basketball", "name": "Women's Basketball" },
+    { "slug": "womens-cross-country", "name": "Women's Cross Country" },
+    { "slug": "field-hockey", "name": "Field Hockey" },
+    { "slug": "womens-lacrosse", "name": "Women's Lacrosse" },
+    { "slug": "womens-soccer", "name": "Women's Soccer" },
+    { "slug": "softball", "name": "Softball" },
+    { "slug": "womens-swimming-and-diving", "name": "Women's Swimming and Diving" },
+    { "slug": "womens-track-and-field", "name": "Women's Track and Field" },
+    { "slug": "womens-volleyball", "name": "Women's Volleyball" }
+  ],
+  "venues": {
+    "Bradley Center": "building_bill-bradley-sports-and-recreation-center"
+  }
+}

@@ -10,7 +10,16 @@ export interface SourceSeed {
   trustTier: 'official_primary' | 'official_secondary' | 'community';
   freshnessHours: number;
   domain: string;
+  /**
+   * The day a new source was added (YYYY-MM-DD). A test build (the cloud dev graph) is built from
+   * production's last capture, which has none of a source added since; for NEW_SOURCE_GRACE_DAYS
+   * it builds without one it has no capture of, instead of stopping.
+   */
+  addedOn?: string;
 }
+
+/** How long a test build may lack a new source's capture: production collects it on its first run. */
+export const NEW_SOURCE_GRACE_DAYS = 14;
 
 /**
  * How long a source collected by every daily update stays usable. The update
@@ -54,5 +63,8 @@ export const SOURCES: SourceSeed[] = [
   // The academic policies the Provost's own policy addresses redirect to, from the course catalog.
   { key: 'catalog-policies', title: 'Ramapo Catalog Academic Policies', url: 'https://catalog.ramapo.edu/quicklinks/academicpolicies', trustTier: 'official_primary', freshnessHours: 168, domain: 'offices' },
   // After office-pages: it skips the office pages as well as the collectors above.
+  // The college's athletics site: each varsity team's schedule (daily) and coaches page (weekly).
+  { key: 'athletics-schedules', title: 'Ramapo Athletics Schedules', url: 'https://ramapoathletics.com/', trustTier: 'official_primary', freshnessHours: DAILY_SOURCE_FRESHNESS_HOURS, domain: 'athletics', addedOn: '2026-11-03' },
+  { key: 'athletics-coaches', title: 'Ramapo Athletics Coaches', url: 'https://ramapoathletics.com/', trustTier: 'official_primary', freshnessHours: 168, domain: 'athletics', addedOn: '2026-11-03' },
   { key: 'academic-sites', title: 'Ramapo College School, Program and Center Sites', url: 'https://www.ramapo.edu/', trustTier: 'official_primary', freshnessHours: 168, domain: 'academics' },
 ];

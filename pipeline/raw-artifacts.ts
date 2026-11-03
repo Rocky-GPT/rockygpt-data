@@ -29,6 +29,8 @@ export const SOURCE_RAW_ARTIFACT_FILES: Record<string, string[]> = {
   'office-pages': ['office-pages.raw.json', 'office-pages-sources.raw.json'],
   'catalog-policies': ['catalog-policies.raw.json', 'catalog-policies-sources.raw.json'],
   'academic-sites': ['academic-sites.raw.json', 'academic-sites-sources.raw.json'],
+  'athletics-schedules': ['athletics-schedules.raw.json'],
+  'athletics-coaches': ['athletics-coaches.raw.json'],
 };
 
 export interface ArchivedRawArtifact {

@@ -7,7 +7,7 @@ import {
   eventQualityErrors,
   facultyQualityErrors,
 } from '../../pipeline/quality/content-policy';
-import { evaluateSourceProvenance } from '../../pipeline/quality/provenance';
+import { evaluateSourceProvenance, notCapturedYet } from '../../pipeline/quality/provenance';
 import { SOURCES } from '../../src/data-v2/source-seeds';
 import {
   countDiningLocations,
@@ -261,8 +261,17 @@ function runProvenanceGate(
     new Date(),
     path.join(cwd, 'data', 'raw')
   );
+  // A test build (the cloud dev graph, a laptop build) is made from production's capture, which
+  // has none of a source added since; it builds without it (provenance.ts notCapturedYet).
+  const testBuild = process.env.ROCKYGPT_BUILD_TARGET === 'dev' || process.env.ROCKYGPT_TEST_BUILD_FROM_CAPTURED_PAGES === '1';
   for (const state of states) {
     if (state.status !== 'stale' && state.status !== 'unknown') continue;
+    if (state.status === 'unknown' && testBuild && notCapturedYet(state.key, path.join(cwd, 'data', 'raw'))) {
+      const note = `Source ${state.key} was added since the captured pages were collected; built without it.`;
+      console.warn(note);
+      warnings.push(note);
+      continue;
+    }
     const message =
       state.status === 'stale'
         ? `Source ${state.key} is stale: ${state.detail}`

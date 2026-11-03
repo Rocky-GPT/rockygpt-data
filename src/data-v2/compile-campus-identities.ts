@@ -40,6 +40,8 @@ import { compileParkingLots, type ReviewedParking } from './parking-lots';
 import parkingLots from '../reference/parking-lots.json';
 import atriumMenuBoard from '../reference/atrium-menu-board.json';
 import { compileMenuBoard, type ReviewedMenuBoard } from './menu-boards';
+import { athleticsCapture, compileAthleticsTeams, type ReviewedAthletics } from './athletics';
+import athleticsTeams from '../reference/athletics-teams.json';
 import { linkPlaces, type ReviewedPlacements } from './place-links';
 
 type Row = Record<string, unknown>;
@@ -199,6 +201,8 @@ export interface IdentityInputs extends ArchwayIdentityInputs {
   graduationPlans?: unknown;
   /** The published program pages artifact, whose pages name their own programs' catalog codes. */
   majorPages?: unknown;
+  /** The athletics collectors' captures (data/raw/athletics-*.raw.json); absent before the first collection. */
+  athleticsSchedules?: unknown; athleticsCoaches?: unknown;
   /** When each source was collected (source key -> ISO time), for the graph records' own dates. */
   collectedAt?: Record<string, string>;
 }
@@ -507,6 +511,12 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const atrium = compileMenuBoard(entities, snapshot.menu_documents ?? [], atriumMenuBoard as ReviewedMenuBoard, inputs.collectedAt?.dining);
   unresolved.push(...atrium.unresolved);
   addGraphRecords(graphRecords, 'menu_board_items', atrium.records);
+  // Varsity teams, from the athletics site's schedule and coaches pages (athletics-teams.json).
+  const teams = compileAthleticsTeams(entities, athleticsCapture(inputs.athleticsSchedules), athleticsCapture(inputs.athleticsCoaches),
+    athleticsTeams as ReviewedAthletics, campusBuildings);
+  entities.push(...teams.entities);
+  unresolved.push(...teams.unresolved);
+  addGraphRecords(graphRecords, 'teams', teams.records);
   validateCampusIdentities(registry);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   const report: IdentityCoverageReport = { identity_count: entities.length, identities_by_kind: {}, linked_records: {}, relationships: {}, unresolved, alias_sources: aliasRecords(entities, ledger) };
