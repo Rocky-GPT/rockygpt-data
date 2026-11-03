@@ -20,6 +20,11 @@ import type { ConvenerReplacementReview } from './convener-continuity';
  * This describes catalog inclusion, not institutional subject retirement.
  * A convener replacement needs both captured Convener fields and uniquely
  * verified old/new faculty targets; missing source evidence remains a loss.
+ * A node whose own records all now belong to one node the active release already
+ * had was merged into it by a reviewed decision (an Archway group reviewed as an
+ * office's own page, a map place paired with the registry node it is): its facts
+ * live on in that node, so it is not a loss. Records that move to a new ID are
+ * still a loss, so a changed ID derivation is caught.
  * A changed kind for the same ID fails, except a club becoming an
  * organization or back (Archway recategorized the same group). Otherwise a kind or
  * relationship type fails only when it loses more than 10% of its previous
@@ -52,7 +57,9 @@ export interface IdentityContinuityReport {
   candidate_entities: number;
   added_entities: number;
   expected_losses: { past_event_occurrences: number; retired_in_seed: number; inactive_catalog_subjects: number;
-    inactive_catalog_courses: number };
+    inactive_catalog_courses: number; merged_into_existing: number };
+  /** Each node merged into one the active release already had, and that node. */
+  merged: { id: string; kind: string; name: string; into: string }[];
   expected_relationship_losses_by_type: Record<string, number>;
   convener_replacement_evidence?: ConvenerReplacementReview;
   /** Catalog inclusion changed; this does not assert institutional subject retirement. */
@@ -92,7 +99,8 @@ export function compareIdentityRegistries(
     previous_entities: previous?.entities.length ?? 0,
     candidate_entities: candidate.entities.length,
     added_entities: 0,
-    expected_losses: { past_event_occurrences: 0, retired_in_seed: 0, inactive_catalog_subjects: 0, inactive_catalog_courses: 0 },
+    expected_losses: { past_event_occurrences: 0, retired_in_seed: 0, inactive_catalog_subjects: 0, inactive_catalog_courses: 0, merged_into_existing: 0 },
+    merged: [],
     expected_relationship_losses_by_type: {},
     lost_by_kind: {},
     lost: [],
@@ -171,6 +179,17 @@ export function compareIdentityRegistries(
   const seedKinds = new Set(seed.entities.map(entity => entity.kind));
   const previousByKind: Record<string, number> = {};
   const lost: IdentityLoss[] = [];
+  // Each record by the candidate node that holds it, for nodes merged into another one.
+  const holders = new Map<string, Set<string>>();
+  for (const entity of candidate.entities) for (const link of entity.links) for (const key of link.source_record_keys) {
+    const record = `${link.collection}:${link.source_key}:${key}`; holders.set(record, new Set([...holders.get(record) ?? [], entity.id]));
+  }
+  const mergedInto = (entity: CampusIdentities['entities'][number]): string | undefined => {
+    const records = entity.links.flatMap(link => link.source_record_keys.map(key => `${link.collection}:${link.source_key}:${key}`));
+    const into = new Set(records.flatMap(record => [...holders.get(record) ?? ['']]));
+    const [id] = into;
+    return records.length && into.size === 1 && id && previousIds.has(id) ? id : undefined;
+  };
   for (const entity of previous.entities) {
     previousByKind[entity.kind] = (previousByKind[entity.kind] || 0) + 1;
     const now = current.get(entity.id);
@@ -178,6 +197,9 @@ export function compareIdentityRegistries(
       if (now.kind !== entity.kind) report.kind_changes.push({ id: entity.id, from: entity.kind, to: now.kind });
     } else if (entity.kind === 'event' && pastEventIds.has(entity.id)) {
       report.expected_losses.past_event_occurrences += 1;
+    } else if (mergedInto(entity)) {
+      report.expected_losses.merged_into_existing += 1;
+      report.merged.push({ id: entity.id, kind: entity.kind, name: entity.name, into: mergedInto(entity)! });
     } else if (seedKinds.has(entity.kind) && !seedIds.has(entity.id)) {
       report.expected_losses.retired_in_seed += 1;
     } else if (acceptInactiveSubject(entity)) {

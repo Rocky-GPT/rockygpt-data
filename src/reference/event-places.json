@@ -4,7 +4,7 @@
     "names: the listing's words for the place, compared as map places are (case, punctuation, apostrophes and a leading \"The\" aside), after the words that only say where inside it (\"1st Floor Lounge\", \"Main Lobby\", a room number) are set aside.",
     "room: the room the quote gives it, placed in the building whose reviewed room prefix it has. place: the building or campus-map place it is, by that node's exact name. One of the two.",
     "Each reading places an event only while the captured page's section still holds the quote (src/data-v2/event-places.ts); a reading the page no longer backs is reported, never used.",
-    "Read by Claude on 2026-11-03 from the release v2-20261103013713 capture, for Dan's review."
+    "Read by Claude on 2026-11-03 from the release v2-20261103013713 capture; Dan approved them on 2026-11-03."
   ],
   "schema_version": 1,
   "places": [
@@ -16,15 +16,6 @@
       "quote": "Friends Hall (SC-219) – Large tiled multipurpose room.",
       "reviewed_at": "2026-11-03",
       "note": "The Center for Student Involvement's list of Student Center rooms gives Friends Hall as SC-219; SC is the Student Center's reviewed room prefix."
-    },
-    {
-      "names": ["J. Lee’s"],
-      "place": "J. Lee's Lounge",
-      "url": "https://www.ramapo.edu/csi/",
-      "section": "J. Lee’s",
-      "quote": "J.Lee’s is a student activities lounge on the second floor of the Student Center Annex",
-      "reviewed_at": "2026-11-03",
-      "note": "The Center for Student Involvement's own section on J. Lee's (Location: Student Center Annex, SC-226) says it is a lounge; the campus map lists it as J. Lee's Lounge in the Student Center. Listings write it \"J Lees\" and \"J Lee’s\"."
     },
     {
       "names": ["Multicultural Center"],
