@@ -3,11 +3,12 @@ import fs from 'fs';
 import path from 'path';
 import pLimit from 'p-limit';
 import { load } from 'cheerio';
-import { chromium, type BrowserContext, type Page } from 'playwright';
+import { chromium, type BrowserContext } from 'playwright';
 import { assertRawCollectionCandidate } from './raw-collector';
 import { buildArchwayEventDetailPage } from './archway-event-detail';
 import { fetchWithPolicy } from './http-client';
 import { assertSiteFetchAllowed, noteSiteDownloads, paceRamapoRequest, RAMAPO_CONCURRENCY } from './site-guard';
+import { ARCHWAY_FEED_INDEX_URL, fetchCalendarFeedEvents } from './archway-calendar-feeds';
 import {
   assertCollectionCount,
   isRawOnlyMode,
@@ -23,7 +24,6 @@ import { publicPath } from '../src/paths';
 import { canonicalArchwayEventUrl } from '../src/archway-event-url';
 
 const ARCHWAY_URL = 'https://archway.ramapo.edu/events';
-const ARCHWAY_PUBLIC_EVENTS_URL = 'https://archway.ramapo.edu/home/events/';
 const RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'events.raw.json');
 const DETAIL_RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'events-detail.raw.json');
 const SIGNAL_RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'events-signals.raw.json');
@@ -56,153 +56,6 @@ type EventSignalRawDataset = {
   signalCount: number;
   signals: EventSignalRawRecord[];
 };
-
-type PublicListingRow = Record<string, unknown> & {
-  fields?: string;
-  counter?: string;
-};
-
-function listingField(row: PublicListingRow, field: string): string | undefined {
-  const fields = (row.fields ?? '').split(',').filter(Boolean);
-  const index = fields.indexOf(field);
-  if (index < 0) return undefined;
-  const value = row[`p${index}`];
-  return typeof value === 'string' && value.trim() ? value : undefined;
-}
-
-function htmlText(value: string | undefined): string | undefined {
-  if (!value) return undefined;
-  return normalizeText(load(`<div>${value}</div>`)('div').text());
-}
-
-export function publicListingEvent(row: PublicListingRow, collectedAt = new Date().toISOString()): ArchwayEvent | null {
-  if (listingField(row, 'displayType') !== 'event') return null;
-  const title = htmlText(listingField(row, 'eventName'));
-  const datesHtml = listingField(row, 'eventDates');
-  if (!title || !datesHtml) return null;
-  const dateParts = load(`<div>${datesHtml}</div>`)('p')
-    .toArray()
-    .map((part) => htmlText(load(`<div>${datesHtml}</div>`)(part).html() ?? undefined))
-    .filter((part): part is string => Boolean(part));
-  const date = dateParts[0];
-  if (!date) return null;
-  const times = (dateParts[1] ?? '')
-    .split(/\s*[–—-]\s*/)
-    .map((part) => part.trim())
-    .filter(Boolean);
-  const relativeUrl = listingField(row, 'eventUrl');
-  const relativeImage = listingField(row, 'eventPicture');
-  const groupId = listingField(row, 'clubId')?.trim();
-  const groupLogin = listingField(row, 'clubLogin')?.trim();
-  const tags = load(`<div>${listingField(row, 'eventTags') ?? ''}</div>`)('.label')
-    .toArray()
-    .map((tag) => htmlText(load(`<div>${listingField(row, 'eventTags') ?? ''}</div>`)(tag).html() ?? undefined))
-    .filter((tag): tag is string => Boolean(tag));
-  const event: ArchwayEvent = {
-    title,
-    date,
-    ...(groupId && /^\d+$/.test(groupId) ? { organizerIdentity: {
-      groupId, ...(groupLogin ? { groupLogin } : {}), sourceUrl: ARCHWAY_PUBLIC_EVENTS_URL, collectedAt,
-    } } : {}),
-    ...(times[0] ? { time: times[0] } : {}),
-    ...(times[1] ? { endTime: times[1] } : {}),
-    ...(htmlText(listingField(row, 'clubName'))
-      ? { organizer: htmlText(listingField(row, 'clubName')) }
-      : {}),
-    ...(htmlText(listingField(row, 'eventLocation'))
-      ? { location: htmlText(listingField(row, 'eventLocation')) }
-      : {}),
-    ...(relativeUrl
-      ? { url: new URL(relativeUrl, 'https://archway.ramapo.edu').toString() }
-      : {}),
-    ...(relativeImage
-      ? { imageUrl: new URL(relativeImage, 'https://archway.ramapo.edu').toString() }
-      : {}),
-    ...(htmlText(listingField(row, 'eventPriceRange'))
-      ? { ticketStatus: htmlText(listingField(row, 'eventPriceRange')) }
-      : {}),
-    ...(tags.length ? { tags } : {}),
-  };
-  return event;
-}
-
-export async function fetchPublicArchwayEvents(): Promise<ArchwayEvent[]> {
-  const cookies = new Map<string, string>();
-  const updateCookies = (response: { headers: Headers }) => {
-    const headersWithCookies = response.headers as Headers & {
-      getSetCookie?: () => string[];
-    };
-    const combined = response.headers.get('set-cookie');
-    const setCookies =
-      headersWithCookies.getSetCookie?.() || (combined ? [combined] : []);
-    for (const cookie of setCookies) {
-      const pair = cookie.split(';')[0];
-      const separator = pair.indexOf('=');
-      if (separator > 0) cookies.set(pair.slice(0, separator), pair.slice(separator + 1));
-    }
-  };
-  const cookieHeader = () =>
-    [...cookies.entries()].map(([name, value]) => `${name}=${value}`).join('; ');
-
-  let response = await fetchWithPolicy(
-    ARCHWAY_PUBLIC_EVENTS_URL,
-    { redirect: 'manual' },
-    { expectedContentTypes: ['text/html', 'application/xhtml+xml'] }
-  );
-  updateCookies(response);
-  const location = response.headers.get('location');
-  if (!location) throw new Error('Public Archway events page did not establish a session.');
-  response = await fetchWithPolicy(
-    new URL(location, ARCHWAY_PUBLIC_EVENTS_URL),
-    { headers: { cookie: cookieHeader() } },
-    { expectedContentTypes: ['text/html', 'application/xhtml+xml'] }
-  );
-  updateCookies(response);
-  if (!response.ok) throw new Error(`Public Archway events page returned HTTP ${response.status}.`);
-  response.text();
-
-  const events: ArchwayEvent[] = [];
-  let total = 0;
-  const maximumEvents = 5_000;
-  for (
-    let range = 0;
-    (range <= total || range === 0) && range < maximumEvents;
-    range += 40
-  ) {
-    const endpoint = new URL('/mobile_ws/v17/mobile_events_list', ARCHWAY_PUBLIC_EVENTS_URL);
-    endpoint.searchParams.set('range', String(range));
-    endpoint.searchParams.set('limit', '40');
-    endpoint.searchParams.set('order', '');
-    endpoint.searchParams.set('search_word', '');
-    const listing = await fetchWithPolicy(
-      endpoint,
-      {
-        headers: {
-          cookie: cookieHeader(),
-          referer: 'https://archway.ramapo.edu/events',
-        },
-      },
-      // CampusGroups serves this JSON body with text/html in production.
-      { expectedContentTypes: ['application/json', 'text/html'] }
-    );
-    if (!listing.ok) throw new Error(`Public Archway listing returned HTTP ${listing.status}.`);
-    const rows = listing.json<PublicListingRow[]>();
-    if (rows.length === 0) break;
-    total = Math.max(total, ...rows.map((row) => Number(row.counter) || 0));
-    if (total > maximumEvents) {
-      throw new Error(`Public Archway listing reported an implausible total of ${total} events.`);
-    }
-    events.push(...rows.map(row => publicListingEvent(row)).filter((event): event is ArchwayEvent => Boolean(event)));
-    if (total === 0) break;
-  }
-  const unique = events.filter(
-    (event, index, all) =>
-      all.findIndex((candidate) =>
-        candidate.title === event.title && candidate.date === event.date && candidate.time === event.time
-      ) === index
-  );
-  return validateArchwayEvents(unique);
-}
 
 function parseDetailLimit(rawValue: string | undefined, fallback: number): number {
   if (!rawValue) return fallback;
@@ -931,6 +784,44 @@ function writeEventRawArtifacts(
   });
 }
 
+/** The last capture's events, so a normal day reads only the groups that had events. */
+function readPreviousRawEvents(): ArchwayEvent[] | null {
+  try {
+    if (!fs.existsSync(RAW_JSON_PATH)) return null;
+    return validateArchwayEvents(JSON.parse(fs.readFileSync(RAW_JSON_PATH, 'utf-8')));
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The ticket line an event page shows beside its date ("Oct 30 FREE", "Nov 7 $5 - $10"). The
+ * calendar files carry no price, and the old listing's "FREE" is what the Brain says as tickets.
+ */
+export function ticketStatusFromDetailPage(page: RawPageV1): string | undefined {
+  for (const section of page.sections) {
+    const text = normalizeText(section.text);
+    const match = text?.match(
+      /^[A-Z][a-z]{2}\s+\d{1,2}(?:\s*[-–]\s*(?:[A-Z][a-z]{2}\s+)?\d{1,2})?\s+(FREE|\$\s?\d[\d.,]*(?:\s*[-–]\s*\$\s?\d[\d.,]*)?)$/
+    );
+    if (match) return match[1];
+  }
+  return undefined;
+}
+
+export function withDetailTickets(events: ArchwayEvent[], details: RawDatasetV1): ArchwayEvent[] {
+  const tickets = new Map<string, string>();
+  for (const page of details.pages) {
+    if (page.sourceType !== 'detail' || page.statusCode !== 200) continue;
+    const ticket = ticketStatusFromDetailPage(page);
+    if (ticket) tickets.set(normalizeEventUrlForLookup(page.url), ticket);
+  }
+  return events.map((event) => {
+    const ticket = event.url ? tickets.get(normalizeEventUrlForLookup(event.url)) : undefined;
+    return ticket && !event.ticketStatus ? { ...event, ticketStatus: ticket } : event;
+  });
+}
+
 async function fetchArchwayEvents() {
   try {
     if (tryBuildFromRawCache()) {
@@ -943,36 +834,29 @@ async function fetchArchwayEvents() {
 
   const username = process.env.ARCHWAY_USERNAME;
   const password = process.env.ARCHWAY_PASSWORD;
-  let publicEvents: ArchwayEvent[] | null = null;
-  try {
-    console.log('Fetching the official public Archway event listing...');
-    publicEvents = await fetchPublicArchwayEvents();
-    if (!publicEvents.length) {
-      throw new Error('The public Archway listing returned no upcoming events.');
-    }
-  } catch (error: unknown) {
-    if (!username || !password) throw error;
-    console.warn(
-      `Public Archway listing failed; authenticated browser listing will be used as a fallback. ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    );
+  // The list comes from the groups' calendar files (archway-calendar-feeds.ts), never from
+  // /mobile_ws/, which Archway's robots.txt disallows (Dan, November 3, 2026). There is no
+  // browser fallback for the list: the /events page fills itself from that same address.
+  console.log("Reading Archway's group calendar files...");
+  const publicEvents = await fetchCalendarFeedEvents(readPreviousRawEvents());
+  if (!publicEvents.length) {
+    throw new Error("Archway's group calendar files hold no upcoming events.");
   }
 
   if (!username || !password) {
-    if (!publicEvents) throw new Error('Public Archway events are unavailable.');
-    console.log('Archway credentials are unavailable; publishing the official public listing.');
+    console.log('Archway credentials are unavailable; publishing the calendar files with public event pages.');
     const detailResult = await scrapePublicEventDetailRaw(publicEvents);
-    writeEventRawArtifacts(publicEvents, detailResult, ARCHWAY_PUBLIC_EVENTS_URL);
-    console.log(`Saved ${publicEvents.length} public Archway events to ${RAW_JSON_PATH}`);
+    const events = withDetailTickets(publicEvents, detailResult.dataset);
+    writeEventRawArtifacts(events, detailResult, ARCHWAY_FEED_INDEX_URL);
+    console.log(`Saved ${events.length} Archway events to ${RAW_JSON_PATH}`);
     if (isRawOnlyMode()) {
       console.log('RAW_ONLY enabled: skipping normalization and context generation.');
       return;
     }
     writeNormalizedEventArtifacts(
-      publicEvents,
+      events,
       detailResult.signalByUrl,
-      'public Archway listing + public detail pages'
+      'Archway group calendar files + public detail pages'
     );
     return;
   }
@@ -1011,24 +895,13 @@ async function fetchArchwayEvents() {
       page.click('button[type="submit"]'),
     ]);
 
-    let rawEvents = publicEvents;
-    let sourceUrl = ARCHWAY_PUBLIC_EVENTS_URL;
-    if (!rawEvents) {
-      console.log('Login successful; loading the authenticated event listing fallback...');
-      await page.goto(ARCHWAY_URL, { waitUntil: 'networkidle' });
-      await scrollToLoadAll(page);
-      rawEvents = validateArchwayEvents(await scrapeEvents(page));
-      sourceUrl = ARCHWAY_URL;
-    } else {
-      console.log(
-        `Login successful; enriching ${rawEvents.length} events from the public canonical listing.`
-      );
-    }
+    console.log(`Login successful; enriching ${publicEvents.length} events from the calendar files.`);
 
     console.log('Scraping event detail pages for raw dataset...');
-    const detailResult = await scrapeEventDetailRaw(context, rawEvents);
+    const detailResult = await scrapeEventDetailRaw(context, publicEvents);
     const detailDataset = detailResult.dataset;
-    writeEventRawArtifacts(rawEvents, detailResult, sourceUrl);
+    const rawEvents = withDetailTickets(publicEvents, detailDataset);
+    writeEventRawArtifacts(rawEvents, detailResult, ARCHWAY_FEED_INDEX_URL);
     console.log(`Saved raw events to ${RAW_JSON_PATH}`);
     console.log(
       `Saved event detail raw to ${DETAIL_RAW_JSON_PATH} (${detailDataset.pages.length} pages)`
@@ -1041,7 +914,7 @@ async function fetchArchwayEvents() {
       console.log('RAW_ONLY enabled: skipping normalization and context generation.');
       return;
     }
-    writeNormalizedEventArtifacts(rawEvents, detailResult.signalByUrl, 'public listing + authenticated enrichment');
+    writeNormalizedEventArtifacts(rawEvents, detailResult.signalByUrl, 'calendar files + authenticated enrichment');
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Error fetching Archway events:', message);
@@ -1049,141 +922,6 @@ async function fetchArchwayEvents() {
   } finally {
     await browser.close();
   }
-}
-
-async function scrollToLoadAll(page: Page) {
-  let previousCount = 0;
-  let stagnantRounds = 0;
-  const maxStagnantRounds = 3;
-
-  for (let i = 0; i < 20; i += 1) {
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await page.waitForTimeout(2000);
-
-    const currentCount = await page.locator('a[href*="/rsvp_boot?id="]').count();
-    if (currentCount === previousCount) {
-      stagnantRounds += 1;
-      if (stagnantRounds >= maxStagnantRounds) {
-        console.log(`Stopped scrolling after ${i + 1} rounds (no new events loaded)`);
-        break;
-      }
-    } else {
-      stagnantRounds = 0;
-      console.log(`Loaded ${currentCount} events...`);
-    }
-
-    previousCount = currentCount;
-  }
-}
-
-async function scrapeEvents(page: Page): Promise<ArchwayEvent[]> {
-  return page.evaluate(() => {
-    const eventElements = document.querySelectorAll('li.list-group-item[id^="event_"]');
-    const scrapedEvents: ArchwayEvent[] = [];
-
-    eventElements.forEach((el: Element) => {
-      try {
-        const titleEl = el.querySelector('h3.media-heading a');
-        const title = titleEl?.textContent?.trim();
-        const relativeUrl = titleEl?.getAttribute('href');
-        const url = relativeUrl ? `https://archway.ramapo.edu${relativeUrl}` : undefined;
-        if (!title) return;
-
-        const imgEl = el.querySelector('.listing-element__preimg-block img');
-        const relativeImageUrl = imgEl?.getAttribute('src');
-        const imageUrl = relativeImageUrl ? `https://archway.ramapo.edu${relativeImageUrl}` : undefined;
-
-        const dateIcon = el.querySelector('[aria-label="Event date"]');
-        let dateText = '';
-        let timeText = '';
-        let endTimeText = '';
-
-        if (dateIcon) {
-          const dateTimeContainer = dateIcon.nextElementSibling;
-          if (dateTimeContainer) {
-            const paragraphs = dateTimeContainer.querySelectorAll('p');
-            paragraphs.forEach((p: Element) => {
-              const text = p.textContent?.trim() || '';
-              if (text.match(/[A-Z][a-z]{2},\s+[A-Z][a-z]{2}\s+\d{1,2},\s+\d{4}/)) {
-                dateText = text;
-              }
-              const timeMatch = text.match(/(\d{1,2}(?::\d{2})?\s+[AP]M)/g);
-              if (timeMatch && timeMatch.length >= 1) {
-                [timeText] = timeMatch;
-                if (timeMatch.length >= 2) {
-                  endTimeText = timeMatch[1];
-                }
-              }
-            });
-          }
-        }
-
-        const locationEl = el.querySelector('[aria-label="Event location"]');
-        let location = locationEl?.textContent?.trim().replace(/\s+/g, ' ');
-        if (location === '-' || !location) {
-          location = undefined;
-        }
-
-        const descElements = el.querySelectorAll('p');
-        let description = '';
-        descElements.forEach((p: Element) => {
-          const text = p.textContent?.trim() || '';
-          if (
-            text &&
-            !text.match(/^[A-Z][a-z]{2},\s+[A-Z][a-z]{2}/) &&
-            !text.match(/^\d{1,2}:\d{2}/) &&
-            text.length > 20
-          ) {
-            description += `${text} `;
-          }
-        });
-        description = description.trim();
-
-        if (!timeText && description) {
-          const descTimeMatch = description.match(/(\d{1,2}:\d{2}\s+[AP]M)/g);
-          if (descTimeMatch && descTimeMatch.length >= 1) {
-            [timeText] = descTimeMatch;
-            if (descTimeMatch.length >= 2) {
-              endTimeText = descTimeMatch[1];
-            }
-          }
-        }
-
-        const tagElements = el.querySelectorAll('.rsvp__event-tags .label-tag');
-        const tags: string[] = [];
-        tagElements.forEach((tag: Element) => {
-          const tagText = tag.textContent?.trim();
-          if (tagText) tags.push(tagText);
-        });
-
-        const organizerEl = el.querySelector('.listing-element__btn-block p.h6');
-        const organizer = organizerEl?.textContent?.trim();
-        const attendanceEl = el.querySelector('.event_display1');
-        const attendance = attendanceEl?.textContent?.trim();
-        const ticketEl = el.querySelector('.img-label');
-        const ticketStatus = ticketEl?.textContent?.trim();
-
-        scrapedEvents.push({
-          title,
-          date: dateText,
-          time: timeText || undefined,
-          endTime: endTimeText || undefined,
-          location: location || undefined,
-          organizer: organizer || undefined,
-          description: description || undefined,
-          url,
-          imageUrl,
-          tags: tags.length > 0 ? tags : undefined,
-          attendance: attendance || undefined,
-          ticketStatus: ticketStatus || undefined,
-        });
-      } catch (error) {
-        console.error('Error parsing event:', error);
-      }
-    });
-
-    return scrapedEvents;
-  });
 }
 
 if (process.argv[1]?.endsWith('archway-events.ts')) {

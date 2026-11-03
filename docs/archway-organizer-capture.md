@@ -1,5 +1,18 @@
 # Archway organizer capture
 
+**Since November 3, 2026 the event list comes from each group's calendar file**
+(`archway.ramapo.edu/ical/ramapo/ical_club_<groupId>.ics`, listed on the Subscribe page
+`/ics_helper`), read by `ingestion/archway-calendar-feeds.ts`. Archway's robots.txt disallows
+`/mobile_ws/v17/`, so the collector no longer reads the listing endpoint described below, and the
+authenticated browser listing fallback is gone (the `/events` page fills itself from that same
+endpoint). A file's own group is the organizer identity (`sourceUrl` is that file's address) only
+when the entry's ORGANIZER is that group; the compiler still checks the ID against the club
+directory, so a co-host's file never links another group's event. Event pages still add the
+description, food note and ticket line. A normal day reads only the groups that had events in the
+last capture; Mondays read every group.
+
+The rest of this note is the September 22 history of the listing-based capture.
+
 Traced against the official listing and event 1409871 on September 22, 2026.
 
 ## Where evidence was lost

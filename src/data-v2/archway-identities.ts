@@ -70,8 +70,12 @@ export function eventOrganizersArtifact(snapshot: IdentitySnapshot, inputs: Arch
   // name-based join. Details can corroborate or conflict with this assertion.
   for (const listing of rows(snapshot.artifacts.events)) {
     const identity = listing.organizerIdentity as Row | undefined;
-    if (!identity || identity.sourceUrl !== 'https://archway.ramapo.edu/home/events/') continue;
+    if (!identity) continue;
     const eventId = archwayEventId(listing.url); const groupId = numericId(identity.groupId);
+    // The old public listing, or (since November 3, 2026) the group's own calendar file, whose
+    // address names the same group: archway.ramapo.edu/ical/ramapo/ical_club_<groupId>.ics.
+    if (identity.sourceUrl !== 'https://archway.ramapo.edu/home/events/'
+      && identity.sourceUrl !== `https://archway.ramapo.edu/ical/ramapo/ical_club_${groupId}.ics`) continue;
     const collectedAt = text(identity.collectedAt); const name = text(listing.organizer);
     const matches = groups.get(groupId) || [];
     const names = new Set(matches.map(r => text(r.name))); const urls = new Set(matches.map(r => canonicalClubUrl(r.websiteUrl)));
