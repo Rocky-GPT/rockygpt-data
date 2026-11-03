@@ -57,6 +57,52 @@ test('a subject answers to its code only and includes each course by the course\
   assert.equal(compileSubjectIdentities(courseSubjectsArtifact(courses, renamed).artifact, courses)[0].id, cmps.id);
 });
 
+test('a listed department with no course of its own code is a subject only when the catalog names it as a convening group', () => {
+  const departments = { ...input, subjects: [
+    { code: 'CMPS', name: 'Computer Science', aliases: ['CS'] },
+    { code: 'CYBR', name: 'Cybersecurity', aliases: [] },
+    { code: 'DSCI', name: 'Data Science', aliases: [] },
+    { code: 'NASC', name: 'Natural Sciences', aliases: [] },
+    { code: 'THEA', name: '', aliases: ['Theater'] },
+    { code: 'THFL', name: 'Theater and Film', aliases: ['Theatre and Film'] },
+  ] };
+  const catalog = {
+    'CMPS 147': { code: 'CMPS 147', conveningGroups: ['Computer Science (CMPS)'] },
+    // A course convened by a department with no course of its own code names that department.
+    'THEA 101': { code: 'THEA 101', conveningGroups: ['Theater and Film (THFL)'] }, 'THEA 102': { code: 'THEA 102', conveningGroups: [] },
+  };
+  const programs = [
+    { source_key: 'academic-programs', source_record_key: 'catalog:SN-BS-DSCI', conveningGroups: ['Data Science  (DSCI)'] },
+    // Only the catalog's display form names a department: neither the bare name nor another case does.
+    { source_key: 'academic-programs', source_record_key: 'catalog:SN-BS-CYBR', conveningGroups: ['Cybersecurity'] },
+    { source_key: 'academic-programs', source_record_key: 'catalog:SN-BS-NASC', conveningGroups: ['Natural sciences (NASC)'] },
+  ];
+  const { artifact, unresolved } = courseSubjectsArtifact(catalog, departments, programs);
+  assert.deepEqual(artifact.subjects, [
+    { code: 'CMPS', name: 'Computer Science', display_name: 'Computer Science (CMPS)', search_terms: ['CS'], course_count: 1 },
+    { code: 'DSCI', name: 'Data Science', display_name: 'Data Science (DSCI)', search_terms: [], course_count: 0 },
+    { code: 'THEA', name: null, display_name: 'THEA', search_terms: ['Theater'], course_count: 2 },
+    { code: 'THFL', name: 'Theater and Film', display_name: 'Theater and Film (THFL)', search_terms: ['Theatre and Film'], course_count: 0 },
+  ]);
+  // A listed department nothing names stays reported, with no node.
+  assert.deepEqual(unresolved.filter(u => u.kind === 'no_records').map(u => u.record), ['CYBR', 'NASC']);
+  assert.match(unresolved.find(u => u.record === 'CYBR')!.reason, /no catalog program or course names this department as its convening group/);
+  // A department node has the subject ID scheme, its code as its one alias, and includes no course.
+  const ledger: AliasLedger = new Map();
+  const identities = compileSubjectIdentities(artifact, catalog, ledger);
+  const thfl = identities.find(subject => subject.id === subjectIdentityId('THFL'))!;
+  assert.deepEqual([thfl.kind, thfl.name, thfl.aliases], ['subject', 'Theater and Film (THFL)', ['THFL']]);
+  assert.deepEqual(thfl.links, [{ collection: 'subjects', source_key: 'course-subjects', source_record_keys: ['THFL'] }]);
+  assert.equal(thfl.relationships, undefined);
+  assert.deepEqual(aliasRecords([thfl], ledger)[0].sources, [{ basis: 'subject_code' }]);
+  // The subjects with courses keep their ID, name and courses whether or not any department is named.
+  const unnamed = Object.fromEntries(Object.keys(catalog).map(key => [key, { code: key }]));
+  const before = compileSubjectIdentities(courseSubjectsArtifact(unnamed, departments).artifact, unnamed);
+  assert.deepEqual(before.map(subject => subject.name), ['Computer Science (CMPS)', 'THEA']);
+  for (const subject of before) assert.deepEqual(identities.find(found => found.id === subject.id), subject);
+  validateCampusIdentities({ schema_version: 1, entities: identities });
+});
+
 test('compiled subjects validate, keep their catalog name out of lookup and survive continuity checks', () => {
   const snapshot = { campus_contacts: [], campus_hours: [], dining_hours: [], menu_items: [], programs: [], artifacts: { courses } };
   const result = compileCampusIdentities({ schema_version: 1, entities: [] }, snapshot, undefined, { courseSubjects: input });

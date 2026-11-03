@@ -13,7 +13,7 @@ import { siteFolder } from './office-sections';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
 import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, type AliasLedger, type AliasRecord, type ReviewedAlias } from './identity-aliases';
 import type { ReviewedBuilding, ReviewedLocation, ReviewedRoom } from './campus-buildings';
-import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
+import { COURSE_SOURCE_KEY, compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileSubjectIdentities, courseSubjectsArtifact, type CourseSubjectsArtifact, type CourseSubjectsInput } from './course-subjects';
 import { GRADUATION_PLANS_SOURCE_KEY, graduationPlansInput } from './graduation-plans';
 import { MAJOR_PAGES_SOURCE_KEY, majorPagesInput } from './major-pages';
@@ -24,9 +24,11 @@ import { addGraphRecords, emptyGraphRecords, type GraphRecordsArtifact } from '.
 import { compileMapPlaces, type CampusMapMatches } from './campus-map-places';
 import campusMapMatches from '../reference/campus-map-places.json';
 import { linkEventOrganizers, linkEventPlaces } from './event-places';
+import { linkCourseAttributes } from './course-attributes';
 import { linkCourseCrossListings } from './course-cross-listings';
 import { linkCourseRequisites } from './course-requisites';
 import { linkSubjectSchools } from './subject-schools';
+import { linkSubjectDepartments } from './subject-departments';
 import { linkProgramDepartments } from './program-departments';
 import { linkClubCategories, linkClubPages } from './club-links';
 import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, markUnlinked, type ReviewedListings, type ReviewedStandaloneNodes } from './graph-links';
@@ -368,14 +370,19 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const shuttle = compileRouteIdentities(snapshot.shuttle_routes ?? [], snapshot.shuttle_trips ?? [], snapshot.shuttle_stops ?? []);
   entities.push(...shuttle.routes);
   unresolved.push(...shuttle.unresolved);
-  const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects);
+  // This release's program records with their catalog fields (the Convening Group among them).
+  const programRows = candidates.filter(c => c.collection === 'programs').map(c => ({ ...c.row, source_key: c.source, source_record_key: c.key }));
+  // Subjects, and the listed departments with no course of their own that the catalog names as a convening group (course-subjects.ts).
+  const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects, programRows);
   entities.push(...compileSubjectIdentities(subjects.artifact, snapshot.artifacts.courses, ledger));
   unresolved.push(...subjects.unresolved);
-  // Each subject in the one school its catalog courses are filed under (subject-schools.ts).
-  unresolved.push(...linkSubjectSchools(entities, snapshot.artifacts.courses, inputs.campusSchools).unresolved);
+  // Each subject in the one school its catalog courses are filed under, a department with no courses
+  // of its own by the courses it convenes or the programs that name it (subject-schools.ts).
+  unresolved.push(...linkSubjectSchools(entities, snapshot.artifacts.courses, inputs.campusSchools, programRows).unresolved);
+  // Each subject named by its code in the department that convenes all of its courses (subject-departments.ts).
+  unresolved.push(...linkSubjectDepartments(entities, snapshot.artifacts.courses).unresolved);
   // Each program in the department that convenes it, by its catalog Convening Group (program-departments.ts).
-  unresolved.push(...linkProgramDepartments(entities, candidates.filter(c => c.collection === 'programs')
-    .map(c => ({ ...c.row, source_key: c.source, source_record_key: c.key }))).unresolved);
+  unresolved.push(...linkProgramDepartments(entities, programRows).unresolved);
   // Kinds whose records live in the generic graph-records artifact (graph-records.ts).
   const graphRecords = emptyGraphRecords();
   const calendar = compileCalendarIdentities(snapshot.artifacts.calendar, inputs.collectedAt?.['academic-calendar']);
@@ -480,8 +487,10 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   linkHoursDesks(entities, snapshot.campus_hours ?? []);
   linkDirectoryPeople(entities, candidates.filter(c => c.collection === 'contacts').map(c => ({ ...c.row, source_key: c.source, source_record_key: c.key })));
   linkRouteOffice(entities);
-  // Archway groups whose website is a page of one office's site, and reviewed room placements (place-links.ts).
-  unresolved.push(...linkPlaces(entities, snapshot.clubs ?? [], siteContactRows, snapshot.office_sections ?? [], reviewedListings as ReviewedPlacements, campusBuildings).unresolved);
+  // Archway groups whose website is a page of one office's site, map facilities whose map entry gives
+  // an office's site, and reviewed room placements (place-links.ts).
+  unresolved.push(...linkPlaces(entities, snapshot.clubs ?? [], siteContactRows, snapshot.office_sections ?? [], reviewedListings as ReviewedPlacements, campusBuildings,
+    mapPlaces.places.rows).unresolved);
   unresolved.push(...linkReviewedListings(entities, snapshot.office_sections ?? [], reviewedListings as ReviewedListings).unresolved);
   // Office staff: the people each office's own pages list beside their own address, listed_by it.
   const staff = compileOfficeStaff(entities, snapshot.office_sections ?? [], inputs.collectedAt?.['office-pages'], ledger);
@@ -525,15 +534,26 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     entities.push({ id: course.id, kind: 'course', name: course.source_record_key, aliases: [],
       links: [{ collection: 'courses', source_key: course.source_key, source_record_keys: [course.source_record_key] }] });
   }
-  // Each course to the courses its own catalog requisites name (course-requisites.ts) and to the
-  // courses its description says it is cross-listed with (course-cross-listings.ts), counted in
-  // the report with the links made before the course identities existed.
+  // Each course to the courses its own catalog requisites name (course-requisites.ts), to the
+  // courses its description says it is cross-listed with (course-cross-listings.ts) and in the
+  // attributes its record prints (course-attributes.ts), counted in the report with the links
+  // made before the course identities existed.
   const requisites = linkCourseRequisites(entities, snapshot.artifacts.courses);
   const crossListings = linkCourseCrossListings(entities, snapshot.artifacts.courses);
+  const attributes = linkCourseAttributes(entities, snapshot.artifacts.courses, inputs.collectedAt?.[COURSE_SOURCE_KEY], ledger);
+  entities.push(...attributes.entities);
+  addGraphRecords(graphRecords, 'course_attributes', attributes.records);
   for (const entity of entities.filter(e => e.kind === 'course')) {
     for (const relation of entity.relationships ?? []) report.relationships[relation.type] = (report.relationships[relation.type] || 0) + 1;
   }
-  unresolved.push(...requisites.unresolved, ...crossListings.unresolved);
+  // The attribute nodes are identities like the ones counted above, with their aliases' sources.
+  for (const entity of attributes.entities) {
+    report.identity_count++;
+    report.identities_by_kind[entity.kind] = (report.identities_by_kind[entity.kind] || 0) + 1;
+    for (const link of entity.links) report.linked_records[link.collection] = (report.linked_records[link.collection] || 0) + link.source_record_keys.length;
+  }
+  report.alias_sources.push(...aliasRecords(attributes.entities, ledger));
+  unresolved.push(...requisites.unresolved, ...crossListings.unresolved, ...attributes.unresolved);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   for (const entity of entities) {
     const ids = groupsOf.get(entity.id);

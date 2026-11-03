@@ -4,7 +4,7 @@ import path from 'node:path';
 import test from 'node:test';
 import type { CampusIdentity } from './campus-identities';
 import { campusBuildingId, campusBuildingsArtifact } from './campus-buildings';
-import { linkGroupWebsites, linkPlaces, linkReviewedPlacements, websiteOf, type ReviewedPlacement, type ReviewedPlacements } from './place-links';
+import { linkFacilityWebsites, linkGroupWebsites, linkPlaces, linkReviewedPlacements, websiteOf, type ReviewedPlacement, type ReviewedPlacements } from './place-links';
 
 const node = (n: number, kind: CampusIdentity['kind'], name: string, links: CampusIdentity['links'] = []): CampusIdentity =>
   ({ id: `00000000-0000-4000-8000-00000000050${n}`, kind, name, aliases: [], links });
@@ -60,6 +60,38 @@ const ovpPage = { source_key: 'office-pages', source_record_key: 'www.ramapo.edu
   { heading: 'Office of Violence Prevention', text: 'Location:  C-216 (near the fishbowl) Phone: (201) 684-7430' }] };
 const placement = (over: Partial<ReviewedPlacement> = {}): ReviewedPlacement => ({ node: 'Office of Violence Prevention', building: 'Academic Building C', room: 'C-216',
   url: 'https://www.ramapo.edu/csi/ovp/', section: 'Office of Violence Prevention', quote: 'Location: C-216 (near the fishbowl)', reviewed_at: '2026-11-03', note: '', ...over });
+
+test('a map facility whose map entry gives an office\'s website, or a page of one office\'s site, is listed by that office', () => {
+  const office = (n: number, name: string, key: string) => node(n, 'office', name, [{ collection: 'contacts', source_key: 'campus-directory', source_record_keys: [key] }]);
+  const place = (n: number, name: string) => node(n, 'facility', name, [{ collection: 'map_places', source_key: 'campus-map', source_record_keys: [`facility_${n}`] }]);
+  const athletics = office(1, 'Athletics', 'office:athletics');
+  const asb = office(2, 'Anisfield School of Business', 'office:asb');
+  const provost = office(3, 'Office of the Provost', 'office:provost');
+  const affairs = office(4, 'Academic Affairs Office', 'office:aap');
+  const arena = place(5, 'Arena');
+  const lab = place(6, 'Global Financial Markets Trading Lab');
+  const nested = place(7, 'Academic Affairs');
+  const labs = place(8, 'Language Lab');
+  const contacts = new Map<string, Record<string, unknown>>([contact('office:athletics', 'http://www.ramapoathletics.com/'),
+    contact('office:asb', 'https://www.ramapo.edu/asb/'), contact('office:provost', 'https://www.ramapo.edu/provost/'), contact('office:aap', 'https://www.ramapo.edu/provost/aap/')]);
+  const row = (n: number, website: string) => ({ source_record_key: `facility_${n}`, website, source_url: `https://map.ramapo.edu/?id=2292#!m/${n}` });
+  const result = linkFacilityWebsites([athletics, asb, provost, affairs, arena, lab, nested, labs],
+    [row(5, 'http://www.ramapoathletics.com/'), row(6, 'https://www.ramapo.edu/asb/tradinglab/'), row(7, 'https://www.ramapo.edu/provost/aap/'), row(8, 'https://www.ramapo.edu/its/computer-labs/')], contacts);
+  assert.equal(result.linked, 3);
+  // An office's own website, for a map place, is the office's space, not a second name for it.
+  assert.deepEqual(targets(arena), [['listed_by', athletics.id]]);
+  assert.deepEqual(arena.relationships?.[0].evidence, [{ collection: 'map_places', source_key: 'campus-map', source_record_key: 'facility_5', field: 'website', source_url: 'https://map.ramapo.edu/?id=2292#!m/5' }]);
+  assert.deepEqual(targets(lab), [['listed_by', asb.id]]);
+  // Where sites nest, the office holding the page most closely lists it; a site no office has links nothing.
+  assert.deepEqual([targets(nested), targets(labs)], [[['listed_by', affairs.id]], []]);
+  assert.deepEqual(result.unresolved, []);
+  // Two offices with the same site list neither.
+  const twin = office(9, 'Provost Desk', 'office:twin');
+  const room = place(10, 'Provost Board Room');
+  const twins = linkFacilityWebsites([provost, twin, room], [row(10, 'https://www.ramapo.edu/provost/')],
+    new Map([...contacts, contact('office:twin', 'https://www.ramapo.edu/provost/')]));
+  assert.deepEqual([twins.linked, targets(room), twins.unresolved.map(u => u.entity)], [0, [], ['Provost Board Room']]);
+});
 
 test('a reviewed placement places its node while its section still gives the room, cited to the building\'s reviewed locations', () => {
   const artifact = campusBuildingsArtifact(map);
