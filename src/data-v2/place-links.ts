@@ -14,6 +14,16 @@ import type { IdentityCoverageIssue } from './compile-campus-identities';
  *   neither. A website that is an office's own website, not a page inside it, is the same unit
  *   under a second name (the Cahill Career Center group and the Cahill Career Development Center):
  *   it is reported as a possible duplicate, never linked or merged.
+ * - `listed_by`, by the campus map: a facility (a place the campus map lists that no office or
+ *   venue is) whose map entry gives an office's own website, or a page inside exactly one office's
+ *   site, is listed by that office. The map gives the Arena ramapoathletics.com (Athletics), the
+ *   Board Room /president/ (the Office of the President), the Global Financial Markets Trading Lab
+ *   /asb/tradinglab/ (the Anisfield School of Business). Unlike a group's, a map place's website
+ *   being an office's own is no sign of a second name for the office: the map files rooms,
+ *   theaters and labs under the site of the office whose space they are. Where offices' sites
+ *   nest, the one holding the page most closely lists it (a hall's lounge is listed by the hall's
+ *   own /reslife/<hall>/ site, not Housing's /reslife/); two offices with that same site list
+ *   neither, and a place named like its office is left alone.
  * - `located_at`, by a reviewed placement (src/reference/reviewed-listings.json `placements`): an
  *   official page's section gives a node's room ("Location: C-216" on the Office of Violence
  *   Prevention's page). It holds only while this run's capture of that section still says the
@@ -59,13 +69,8 @@ function relate(entity: CampusIdentity, type: 'listed_by' | 'located_at', target
   return true;
 }
 
-/**
- * listed_by for every Archway club or group whose website is a page inside one office's own reviewed
- * website (its directory contact's evidence.website.url). `contacts` maps `${source_key}:${source_record_key}`
- * to the contact row in this release; `clubs` are the Archway rows.
- */
-export function linkGroupWebsites(entities: CampusIdentity[], clubs: Row[], contacts: Map<string, Row>): { linked: number; unresolved: IdentityCoverageIssue[] } {
-  const unresolved: IdentityCoverageIssue[] = [];
+/** Each office's own reviewed websites: its directory contacts' evidence.website.url, the college's home page aside. */
+function officeSites(entities: CampusIdentity[], contacts: Map<string, Row>): Array<{ entity: CampusIdentity; site: Site }> {
   const sites: Array<{ entity: CampusIdentity; site: Site }> = [];
   for (const entity of entities.filter(e => e.kind === 'office')) {
     const seen = new Set<string>();
@@ -80,6 +85,17 @@ export function linkGroupWebsites(entities: CampusIdentity[], clubs: Row[], cont
       }
     }
   }
+  return sites;
+}
+
+/**
+ * listed_by for every Archway club or group whose website is a page inside one office's own reviewed
+ * website (its directory contact's evidence.website.url). `contacts` maps `${source_key}:${source_record_key}`
+ * to the contact row in this release; `clubs` are the Archway rows.
+ */
+export function linkGroupWebsites(entities: CampusIdentity[], clubs: Row[], contacts: Map<string, Row>): { linked: number; unresolved: IdentityCoverageIssue[] } {
+  const unresolved: IdentityCoverageIssue[] = [];
+  const sites = officeSites(entities, contacts);
   const rows = new Map(clubs.map(row => [`${text(row.source_key)}:${text(row.source_record_key)}`, row]));
   let linked = 0;
   for (const group of entities.filter(e => GROUP_KINDS.includes(e.kind))) {
@@ -117,6 +133,43 @@ export interface ReviewedPlacement { node: string; building: string; room: strin
 export interface ReviewedPlacements { placements?: ReviewedPlacement[] }
 
 /** located_at for each reviewed placement this run's capture still says, cited to the building's reviewed_locations. */
+/**
+ * listed_by for every map facility whose campus-map entry (its `map_places` record's `website`, the
+ * map's own office link) is an office's own website or a page inside exactly one office's site.
+ * `mapPlaces` are this release's map place records.
+ */
+export function linkFacilityWebsites(entities: CampusIdentity[], mapPlaces: Row[], contacts: Map<string, Row>): { linked: number; unresolved: IdentityCoverageIssue[] } {
+  const unresolved: IdentityCoverageIssue[] = [];
+  const sites = officeSites(entities, contacts);
+  const rows = new Map(mapPlaces.map(row => [text(row.source_record_key), row]));
+  let linked = 0;
+  for (const facility of entities.filter(e => e.kind === 'facility')) {
+    for (const link of facility.links.filter(l => l.collection === 'map_places')) {
+      for (const key of link.source_record_keys) {
+        const row = rows.get(key);
+        const own = websiteOf(row?.website);
+        if (!row || !own) continue;
+        // The office whose site holds the page most closely: Bischoff Hall's /reslife/bischoff-hall/
+        // over Housing & Residence Life's /reslife/.
+        const holding = sites.filter(s => s.site.host === own.host && own.path.startsWith(s.site.path));
+        const deepest = Math.max(0, ...holding.map(s => s.site.path.length));
+        const holders = [...new Map(holding.filter(s => s.site.path.length === deepest).map(s => [s.entity.id, s.entity])).values()];
+        if (holders.length > 1) {
+          unresolved.push({ entity: facility.name, collection: 'map_places', record: key, kind: 'missing_connection',
+            reason: `Its campus-map website is the site of ${holders.length} offices (${holders.map(e => `"${e.name}"`).join(', ')}); nothing is linked.` });
+          continue;
+        }
+        const [office] = holders;
+        if (!office || words(office.name) === words(facility.name)) continue;
+        const url = text(row.source_url);
+        if (relate(facility, 'listed_by', office.id, { collection: 'map_places', source_key: link.source_key, source_record_key: key,
+          field: 'website', ...(/^https:\/\//.test(url) ? { source_url: url } : {}) })) linked++;
+      }
+    }
+  }
+  return { linked, unresolved };
+}
+
 export function linkReviewedPlacements(entities: CampusIdentity[], pages: Row[], reviewed: ReviewedPlacements, artifact: CampusBuildingsArtifact): { linked: number; unresolved: IdentityCoverageIssue[] } {
   const named = new Map<string, CampusIdentity[]>();
   for (const entity of entities) named.set(entity.name, [...named.get(entity.name) ?? [], entity]);
@@ -158,8 +211,10 @@ export function linkReviewedPlacements(entities: CampusIdentity[], pages: Row[],
 
 /** Both, as the compile runs them once every office, group and building is in the registry. */
 export function linkPlaces(entities: CampusIdentity[], clubs: Row[], contacts: Map<string, Row>, pages: Row[], reviewed: ReviewedPlacements,
-  artifact: CampusBuildingsArtifact): { listed_by: number; located_at: number; unresolved: IdentityCoverageIssue[] } {
+  artifact: CampusBuildingsArtifact, mapPlaces: Row[] = []): { listed_by: number; located_at: number; unresolved: IdentityCoverageIssue[] } {
   const websites = linkGroupWebsites(entities, clubs, contacts);
+  const facilities = linkFacilityWebsites(entities, mapPlaces, contacts);
   const placements = linkReviewedPlacements(entities, pages, reviewed, artifact);
-  return { listed_by: websites.linked, located_at: placements.linked, unresolved: [...websites.unresolved, ...placements.unresolved] };
+  return { listed_by: websites.linked + facilities.linked, located_at: placements.linked,
+    unresolved: [...websites.unresolved, ...facilities.unresolved, ...placements.unresolved] };
 }
