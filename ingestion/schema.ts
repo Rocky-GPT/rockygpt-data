@@ -372,7 +372,9 @@ export function validateArchwayEvents(input: unknown): ArchwayEvent[] {
       const groupLogin = asOptionalString(identity.groupLogin);
       const sourceUrl = asOptionalString(identity.sourceUrl);
       const collectedAt = asOptionalString(identity.collectedAt);
-      if (groupId && /^\d+$/.test(groupId) && sourceUrl === 'https://archway.ramapo.edu/home/events/' &&
+      // The old public listing, or the group's own calendar file (since November 3, 2026).
+      if (groupId && /^\d+$/.test(groupId) && (sourceUrl === 'https://archway.ramapo.edu/home/events/'
+          || sourceUrl === `https://archway.ramapo.edu/ical/ramapo/ical_club_${groupId}.ics`) &&
           collectedAt && Number.isFinite(Date.parse(collectedAt))) {
         normalized.organizerIdentity = { groupId, ...(groupLogin ? { groupLogin } : {}), sourceUrl, collectedAt };
       }
