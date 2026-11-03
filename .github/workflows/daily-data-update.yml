@@ -2,11 +2,14 @@ name: Daily Data Update
 
 # One workflow, two targets.
 #
-# production: main's code collects what is stale from Ramapo's sites, publishes to the campus
-#   database (Neon), builds the release graph and shares it under brain-graph/, which the live
-#   Brain follows.
+# production: main's code collects what is stale from Ramapo's sites, publishes to the job's
+#   campus database (a Postgres inside the runner, loaded from last run's dump in campus-db/ and
+#   saved back there), builds the release graph and shares it under brain-graph/, which the live
+#   Brain follows. Neon's campus tables are neither read nor written (only once, to start the
+#   chain, when campus-db/ is empty).
 # dev: dev's code (data dev + Brain dev) rebuilds from the pages production captured last, with
-#   no download from Ramapo's sites, in a throwaway database inside the runner (never Neon), and
+#   no download from Ramapo's sites, in the same kind of database (loaded from production's newest
+#   dump, never saved back), and
 #   shares the graph under brain-graph-dev/, which only the laptop reads
 #   (`./run-local.sh sync-dev`). It runs on every push to data dev, and hourly when Brain dev
 #   has moved since the last dev build. It catches a build problem before a release.
@@ -23,7 +26,7 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: 'production (main, Neon, brain-graph/) or dev (dev code, runner database, brain-graph-dev/)'
+        description: 'production (main, campus-db/, brain-graph/) or dev (dev code, production pages, brain-graph-dev/)'
         type: choice
         options: [production, dev]
         default: production
@@ -44,8 +47,11 @@ concurrency:
 
 env:
   DEV_GRAPH_PREFIX: brain-graph-dev/
-  # The runner's own throwaway database for a dev build (a container on 127.0.0.1).
-  DEV_DATABASE_URL: postgresql://postgres:dev-build@127.0.0.1:5432/campus
+  # The job's campus database, a container on 127.0.0.1 (.github/scripts/campus-db.sh). Both
+  # targets use it; only production saves it back to the file store, as one dump per release.
+  JOB_DATABASE_URL: postgresql://postgres:job-build@127.0.0.1:5432/campus
+  CAMPUS_DB_PREFIX: campus-db/
+  CAMPUS_DB_KEEP: '7'
 
 jobs:
   # Which target this run builds, from which commits, and whether there is anything new to build.
@@ -137,12 +143,27 @@ jobs:
           key: release-snapshot-${{ github.run_id }}
           restore-keys: release-snapshot-
 
+      # The job's campus database, loaded with production's newest dump from the file store. Only
+      # when there is none yet (the first run) does the refresh below read Neon's active release.
+      - name: Start the job's campus database
+        run: .github/scripts/campus-db.sh start
+
+      - name: Load production's campus database from the file store
+        id: campus-db
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ vars.RAW_ARTIFACT_REGION || 'auto' }}
+          BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+        run: .github/scripts/campus-db.sh load
+
       - name: Refresh stale publication sources and rebuild derived data
         if: ${{ env.TARGET == 'production' }}
         env:
           ARCHWAY_USERNAME: ${{ secrets.ARCHWAY_USERNAME }}
           ARCHWAY_PASSWORD: ${{ secrets.ARCHWAY_PASSWORD }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ steps.campus-db.outputs.loaded == 'true' && env.JOB_DATABASE_URL || secrets.DATABASE_URL }}
           RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
           RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
           RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
@@ -151,22 +172,14 @@ jobs:
           RAW_ARTIFACT_REQUIRED: '1'
         run: npm run refresh:publishable
 
-      # Dev build: production's newest captured pages, this checkout's code, a database that lives
-      # and dies with this runner. Neon is only read (which pages the active release holds; the
-      # saved copy above covers the rest), and nothing is downloaded from Ramapo's sites.
-      - name: Start the dev build's throwaway database
-        if: ${{ env.TARGET == 'dev' }}
-        run: |
-          docker run -d --name campus-db -e POSTGRES_PASSWORD=dev-build -e POSTGRES_DB=campus \
-            -p 127.0.0.1:5432:5432 postgres:17
-          for _ in $(seq 60); do docker exec campus-db pg_isready -U postgres -d campus -q && break; sleep 1; done
-          docker exec campus-db pg_isready -U postgres -d campus
+      # Dev build: production's newest captured pages, this checkout's code, the job's database
+      # (production's newest dump; never saved back). Nothing is downloaded from Ramapo's sites.
 
       - name: Restore production's captured pages and rebuild derived data with dev's code
         if: ${{ env.TARGET == 'dev' }}
         env:
           ROCKYGPT_BUILD_TARGET: dev
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ steps.campus-db.outputs.loaded == 'true' && env.JOB_DATABASE_URL || secrets.DATABASE_URL }}
           RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
           RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
           RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
@@ -188,7 +201,7 @@ jobs:
       - name: Atomically publish verified dataset
         if: ${{ env.TARGET == 'production' }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_EMBEDDING_MODEL: ${{ vars.OPENAI_EMBEDDING_MODEL || 'text-embedding-3-small' }}
           SOURCE_COMMIT_SHA: ${{ github.sha }}
@@ -206,13 +219,13 @@ jobs:
         env:
           ROCKYGPT_BUILD_TARGET: dev
           ROCKYGPT_TEST_BUILD_FROM_CAPTURED_PAGES: '1'
-          DATABASE_URL: ${{ env.DEV_DATABASE_URL }}
+          DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
           SOURCE_COMMIT_SHA: ${{ needs.plan.outputs.data_ref }}
         run: npm run data:publish
 
       - name: Hand the dev database to the graph job
         if: ${{ env.TARGET == 'dev' }}
-        run: docker exec campus-db pg_dump -U postgres -d campus -Fc > campus-dev.dump && ls -lh campus-dev.dump
+        run: .github/scripts/campus-db.sh dump campus-dev.dump
 
       - name: Upload the dev database
         if: ${{ env.TARGET == 'dev' }}
@@ -239,8 +252,21 @@ jobs:
       - name: Remove retired datasets beyond the rollback window
         if: ${{ env.TARGET == 'production' }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
         run: npm run maintenance:data-retention
+
+      # The next run starts from this dump; the pointer moves last, so a run that stops before it
+      # leaves the last good dump in charge. The newest CAMPUS_DB_KEEP dumps stay for rollback.
+      - name: Save production's campus database to the file store
+        if: ${{ env.TARGET == 'production' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ vars.RAW_ARTIFACT_REGION || 'auto' }}
+          BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: .github/scripts/campus-db.sh save
 
       # After publishing, Jev labels the office and school pages that are new, changed or a
       # month past their last check, and flagged pages wait in an issue for a person. A
@@ -456,19 +482,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Apply the database schema (adds the index table, migration 034)
-        if: ${{ env.TARGET == 'production' }}
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npm run data:schema
+      - name: Start the job's campus database
+        run: .github/scripts/campus-db.sh start
 
-      - name: Start the dev build's throwaway database
-        if: ${{ env.TARGET == 'dev' }}
-        run: |
-          docker run -d --name campus-db -e POSTGRES_PASSWORD=dev-build -e POSTGRES_DB=campus \
-            -p 127.0.0.1:5432:5432 postgres:17
-          for _ in $(seq 60); do docker exec campus-db pg_isready -U postgres -d campus -q && break; sleep 1; done
-          docker exec campus-db pg_isready -U postgres -d campus
 
       - name: Download the dev database
         if: ${{ env.TARGET == 'dev' }}
@@ -478,7 +494,20 @@ jobs:
 
       - name: Load the dev database
         if: ${{ env.TARGET == 'dev' }}
-        run: docker exec -i campus-db pg_restore -U postgres -d campus --no-owner < campus-dev.dump
+        run: .github/scripts/campus-db.sh restore campus-dev.dump
+
+      # Production builds from the release its campus database holds: today's when today's
+      # publish saved it, else the last good one. Neon only when the file store has none yet.
+      - name: Load production's campus database from the file store
+        id: campus-db
+        if: ${{ env.TARGET == 'production' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ vars.RAW_ARTIFACT_REGION || 'auto' }}
+          BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+        run: .github/scripts/campus-db.sh load
 
       - name: Checkout the Brain
         uses: actions/checkout@v7
@@ -510,7 +539,7 @@ jobs:
 
       - name: Build the release graph from the campus database
         env:
-          DATABASE_URL: ${{ env.TARGET == 'dev' && env.DEV_DATABASE_URL || secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ (env.TARGET == 'dev' || steps.campus-db.outputs.loaded == 'true') && env.JOB_DATABASE_URL || secrets.DATABASE_URL }}
         run: python brain/scripts/build_graph.py --out .published --read-seconds 900
 
       - name: Build the meaning index
@@ -541,17 +570,6 @@ jobs:
         with:
           path: .meaning-cache
           key: ${{ env.TARGET == 'dev' && 'dev-' || '' }}meaning-cache-${{ github.run_id }}
-
-      - name: Store the index beside the release
-        if: ${{ env.TARGET == 'production' }}
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        # The URL asks Neon for full certificate checks (sslmode=verify-full), and psycopg looks
-        # for ~/.postgresql/root.crt, which a runner lacks. Trust the same roots the Brain's own
-        # connections use (certifi; retrieval/postgres.py), as the graph step above already does.
-        run: |
-          PGSSLROOTCERT="$(python -c 'import certifi; print(certifi.where())')" \
-            python brain/scripts/publish_meaning_index.py --dir .published
 
       # Production's Brain and the laptop's serve this one copy: the release graph file and its
       # meaning index go to the file store (brain-graph/ in the raw-archive bucket), the pointer
