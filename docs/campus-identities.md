@@ -92,6 +92,16 @@ On the September 22 snapshot there are 14 buildings, 201 `office_at` relationshi
 
 On September 24, 2026, an offline compile of the dev release with `LC`, `SS`, the Library's reviewed location and the two reviewed readings has 16 buildings, 220 `office_at` and 11 `located_at` relationships, and no unplaced contact room. The 17 Library staff with `LC-` rooms, Cathy Moran Hajo ("Learning Commons 204A") and the Library itself are in the Peter P. Mercer Learning Commons, Housing & Residence Life ("The Lodge") is in The Lodge (CPA), and Joel Weissman ("SS-106") is in the Sculpture Studios.
 
+### Groups and places to their offices and buildings
+
+Since November 3, 2026 (`place-links.ts`, run right after the route's office link):
+
+- An Archway club or group whose website is a page inside exactly one office's own reviewed website is `listed_by` that office: RCNJ Baseball's ramapoathletics.com/sports/baseball is a page of Athletics' ramapoathletics.com. A page inside two offices' sites links neither. A website that is an office's own website, not a page inside it, may be the same unit under a second name (the Cahill Career Center group and the Cahill Career Development Center); it is reported as a note and never linked or merged.
+- A reviewed placement (`placements` in `src/reference/reviewed-listings.json`) places a node in a building by the room its own page gives ("Location: C-216" on the Office of Violence Prevention's page), only while this run's capture of that section still says the reviewed words, the words still give the room, and the room's reviewed prefix is that building's. The statement goes on the building's `reviewed_locations`, which the `located_at` cites, as a reviewed location's does.
+- 42 more reviewed listings join the six Dan approved: units the Center for Student Involvement's page says it supervises, groups other offices' pages describe, map facilities the owning office's pages list, residence hall spaces on Housing's hall pages, and the four dining venues on Dining Services' Dining & Shopping page. These and the three placements were read by Claude for Dan's review; each holds only while its captured section still says its quote.
+
+On the November 3 live release this adds 51 links: 48 `listed_by` (42 reviewed, 6 by website) and 3 `located_at`.
+
 ## Schools
 
 School identities are Ramapo's current schools, as its official schools page (https://www.ramapo.edu/academics/schools/) lists them:
