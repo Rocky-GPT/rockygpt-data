@@ -37,6 +37,7 @@ import { compileParkingLots, type ReviewedParking } from './parking-lots';
 import parkingLots from '../reference/parking-lots.json';
 import atriumMenuBoard from '../reference/atrium-menu-board.json';
 import { compileMenuBoard, type ReviewedMenuBoard } from './menu-boards';
+import { linkPlaces, type ReviewedPlacements } from './place-links';
 
 type Row = Record<string, unknown>;
 export interface IdentitySnapshot {
@@ -478,6 +479,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   linkHoursDesks(entities, snapshot.campus_hours ?? []);
   linkDirectoryPeople(entities, candidates.filter(c => c.collection === 'contacts').map(c => ({ ...c.row, source_key: c.source, source_record_key: c.key })));
   linkRouteOffice(entities);
+  // Archway groups whose website is a page of one office's site, and reviewed room placements (place-links.ts).
+  unresolved.push(...linkPlaces(entities, snapshot.clubs ?? [], siteContactRows, snapshot.office_sections ?? [], reviewedListings as ReviewedPlacements, campusBuildings).unresolved);
   unresolved.push(...linkReviewedListings(entities, snapshot.office_sections ?? [], reviewedListings as ReviewedListings).unresolved);
   // Office staff: the people each office's own pages list beside their own address, listed_by it.
   const staff = compileOfficeStaff(entities, snapshot.office_sections ?? [], inputs.collectedAt?.['office-pages'], ledger);
