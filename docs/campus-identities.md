@@ -200,6 +200,12 @@ The public TCG October 1 page capture is preserved in `src/reference/archway-eve
 
 Initial verified coverage against `dev-profiles-full-20260921`: **905 identities**, comprising 402 existing identities, 187 clubs, and all 316 event instances. The new records preserve original IDs, keys and timestamps. Of 254 directory records, 66 non-club categories and Visual Arts Society's missing website identity bridge remain unresolved. One real `organized_by` edge links `TCG Club General Meeting (2026-10-01)` to Trading Card Game Club. There are 56 fully supported captured organizer assertions: 55 target administrative/non-club directory entries and one supports the TCG edge. The other 315 event relationships remain unresolved. These 382 new issues plus the previous 671 produce 1,053 coverage issues; an unresolved relationship does not prevent retrieval of its event profile.
 
+### Where events are held and who hosts them
+
+An event is `held_at` the building or campus-map place its listing's location names (`event-places.ts`): by the place's name, or by a room number in a building's reviewed room prefix ("SC-219"). Since November 3, 2026 words that only say where inside a building are set aside when what is left is one building's name: a floor ("2nd Floor Student Center Lobby"), a lounge or lobby ("Thomases Commons Lounge") or a room number ("Trustees Pavilion 1-3"); after setting words aside only a building matches, so "Alumni Lounge" never becomes the Alumni Office. A name no node carries ("Friends Hall", "Mackin", a misspelled "Trustees Pavillion") places an event only by a reviewed reading in `src/reference/event-places.json`, and only while this run's captured office page section still holds the reading's quote; the link then cites that page beside the listing, and a reading the page no longer backs is reported, never used. A spot beside a place ("Outside of Atrium"), places off campus, online events and private locations are not linked.
+
+An event Archway gives no organizer group node for is `organized_by` the one office, club, organization or school named like the listing's organizer. A node named as the organizer is written (case and punctuation aside) wins over one that matches only once "Office" is dropped, so "School of Arts. Humanities, and Education" is the school, not the school's office. A name two nodes share links neither. On the November 3 live release these rules place 132 of 240 events (84 before) and host 238 (219 before).
+
 Reproduce compilation without database writes:
 
 ```sh
