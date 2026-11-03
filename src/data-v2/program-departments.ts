@@ -8,9 +8,10 @@ import type { IdentityCoverageIssue } from './compile-campus-identities';
  * A program's catalog page shows its Convening Group, the department that runs it ("Computer
  * Science (CMPS)"); the catalog capture keeps it as the program's `conveningGroups`. A course
  * subject is that same catalog department, named in the same form ("Computer Science (CMPS)",
- * course-subjects.ts). A program is placed in the one subject whose name is exactly its convening
- * group. A group no subject is named like (a department with no courses of its own code, such as
- * Data Science (DSCI)) is reported, never matched by a similar name.
+ * course-subjects.ts); a listed department with no courses of its own code, such as Data Science
+ * (DSCI), is a subject because the catalog names it as a convening group. A program is placed in
+ * the one subject whose name is exactly its convening group. A group no subject is named like is
+ * reported, never matched by a similar name.
  */
 
 type Row = Record<string, unknown>;
@@ -33,7 +34,7 @@ export function linkProgramDepartments(entities: CampusIdentity[], programs: Row
           if (found.length !== 1) {
             unresolved.push({ entity: program.name, collection: 'programs', record: key, kind: 'missing_connection',
               reason: found.length ? `Its convening group "${group}" names ${found.length} subjects; the program is not placed in one.`
-                : `Its convening group "${group}" is not a course subject in this release (no catalog course carries its code); the program is not placed in a department.` });
+                : `Its convening group "${group}" is not a course subject in this release (no department of the catalog's list has that name and code); the program is not placed in a department.` });
             continue;
           }
           program.relationships ||= [];

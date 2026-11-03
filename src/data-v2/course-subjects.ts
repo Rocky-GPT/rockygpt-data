@@ -19,6 +19,13 @@ import { SOURCES } from './source-seeds';
  * takes the catalog's own display form, "Computer Science (CMPS)". A code no
  * department names keeps the code as its name; no name is guessed from titles.
  *
+ * A department of that list with no course under its own code is a subject too, but
+ * only when this release's catalog names it, word for word in that display form, as
+ * the Convening Group of a program or a course (`conveningGroups`): Theater and Film
+ * (THFL) convenes THEA and FILM courses, Data Science (DSCI) its programs. It has the
+ * same ID scheme, name and alias as any subject, includes no course, and its artifact
+ * entry counts none. A listed department nothing names is reported and not made.
+ *
  * Lookup (reviewed September 23, 2026): a subject answers to its code only. Its
  * catalog name ("Computer Science") and the curated short forms ("CS", "Psych")
  * still find programs in lookup; they mean courses only in course search, so the
@@ -64,14 +71,24 @@ export function courseSubjectsInput(source: unknown, subjects: unknown): CourseS
 }
 
 const text = (value: unknown): string => typeof value === 'string' ? value.trim() : '';
+/** A catalog Convening Group as program-departments.ts reads it: "Data Science (DSCI)". */
+const group = (value: unknown): string => typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : '';
 
 /** The subject code of a catalog course key such as "CMPS 147", or null. */
 export function courseSubjectCode(courseKey: string): string | null {
   return COURSE_CODE.exec(courseKey)?.[1] ?? null;
 }
 
-/** Subjects of this release's catalog, named by the reviewed department list. */
-export function courseSubjectsArtifact(courses: unknown, input?: CourseSubjectsInput): { artifact: CourseSubjectsArtifact; unresolved: IdentityCoverageIssue[] } {
+/** The Convening Groups a catalog course or program record names, each once, in order. */
+export function convenedBy(row: unknown): string[] {
+  const groups = (row && typeof row === 'object' ? (row as Record<string, unknown>).conveningGroups : undefined);
+  return Array.isArray(groups) ? [...new Set(groups.map(group).filter(Boolean))] : [];
+}
+
+/** Subjects of this release's catalog, named by the reviewed department list. `programs` are this
+ * release's program records with their catalog fields: with the courses, they say which departments
+ * the catalog names as a Convening Group. */
+export function courseSubjectsArtifact(courses: unknown, input?: CourseSubjectsInput, programs: unknown[] = []): { artifact: CourseSubjectsArtifact; unresolved: IdentityCoverageIssue[] } {
   const seed = SOURCES.find(source => source.key === COURSE_SUBJECTS_SOURCE_KEY);
   if (!seed) throw new Error('The course-subjects source seed is missing.');
   const source = { source_key: seed.key, title: seed.title, canonical_url: seed.url, trust_tier: seed.trustTier, freshness_sla_hours: seed.freshnessHours, domain: seed.domain };
@@ -79,41 +96,54 @@ export function courseSubjectsArtifact(courses: unknown, input?: CourseSubjectsI
   if (!input) return { artifact: { schema_version: 1, source, source_url: null, captured_at: null, subjects: [] }, unresolved: [] };
   const unresolved: IdentityCoverageIssue[] = [];
   const counts = new Map<string, number>();
-  for (const key of Object.keys(courses && typeof courses === 'object' ? courses : {})) {
+  const catalog = courses && typeof courses === 'object' ? courses as Record<string, unknown> : {};
+  for (const key of Object.keys(catalog)) {
     const code = courseSubjectCode(key);
     if (code) counts.set(code, (counts.get(code) ?? 0) + 1);
     else unresolved.push({ collection: 'courses', record: key, reason: 'The course code has no leading subject code; it is not placed in a subject.', kind: 'missing_connection' });
   }
   const reference = new Map(input.subjects.map(subject => [text(subject.code), subject]));
-  const subjects: CourseSubject[] = [...counts].sort(([a], [b]) => (a < b ? -1 : 1)).map(([code, count]) => {
+  const searchTerms = (code: string) => [...new Set((reference.get(code)?.aliases ?? []).map(text).filter(Boolean))];
+  const subjects: CourseSubject[] = [...counts].map(([code, count]) => {
     const name = text(reference.get(code)?.name) || null;
     if (!name) unresolved.push({ entity: code, collection: 'subjects', record: code, reason: 'The catalog department list publishes no name for this subject code; the subject is named by its code.', kind: 'note' });
-    return { code, name, display_name: name ? `${name} (${code})` : code, search_terms: [...new Set((reference.get(code)?.aliases ?? []).map(text).filter(Boolean))], course_count: count };
+    return { code, name, display_name: name ? `${name} (${code})` : code, search_terms: searchTerms(code), course_count: count };
   });
+  // A listed department no course code carries is a subject only when the catalog names it as a convening group.
+  const convening = new Set([...Object.values(catalog), ...programs].flatMap(convenedBy));
   for (const [code, subject] of reference) {
-    if (!counts.has(code)) unresolved.push({ entity: text(subject.name) || code, collection: 'subjects', record: code, reason: 'No course in this release\'s catalog carries this subject code; no subject identity is created.', kind: 'no_records' });
+    if (counts.has(code)) continue;
+    const name = text(subject.name);
+    if (name && convening.has(`${name} (${code})`)) {
+      subjects.push({ code, name, display_name: `${name} (${code})`, search_terms: searchTerms(code), course_count: 0 });
+      continue;
+    }
+    unresolved.push({ entity: name || code, collection: 'subjects', record: code, reason: 'No course in this release\'s catalog carries this subject code, and no catalog program or course names this department as its convening group; no subject identity is created.', kind: 'no_records' });
   }
+  subjects.sort((a, b) => (a.code < b.code ? -1 : 1));
   return {
     artifact: { schema_version: 1, source, source_url: input.source_url, captured_at: input.captured_at, subjects },
     unresolved,
   };
 }
 
-/** Subject identities answering to their code, each including its courses. */
+/** Subject identities answering to their code, each including its courses (a department with no
+ * course of its own code includes none). */
 export function compileSubjectIdentities(artifact: CourseSubjectsArtifact, courses: unknown, ledger: AliasLedger = new Map()): CampusIdentity[] {
   const keys = Object.keys(courses && typeof courses === 'object' ? courses : {}).sort();
   return artifact.subjects.map(subject => {
     const id = subjectIdentityId(subject.code);
     const aliases = subject.display_name === subject.code ? [] : [subject.code];
     for (const alias of aliases) noteAlias(ledger, id, alias, { basis: 'subject_code' });
+    const relationships = keys.filter(key => courseSubjectCode(key) === subject.code).map(key => ({
+      type: 'includes_course' as const,
+      target_record: { collection: 'courses' as const, source_key: COURSE_SOURCE_KEY, source_record_key: key },
+      evidence: [{ collection: 'courses' as const, source_key: COURSE_SOURCE_KEY, source_record_key: key, field: 'code' }],
+    }));
     return {
       id, kind: 'subject', name: subject.display_name, aliases,
       links: [{ collection: 'subjects', source_key: artifact.source.source_key, source_record_keys: [subject.code] }],
-      relationships: keys.filter(key => courseSubjectCode(key) === subject.code).map(key => ({
-        type: 'includes_course' as const,
-        target_record: { collection: 'courses' as const, source_key: COURSE_SOURCE_KEY, source_record_key: key },
-        evidence: [{ collection: 'courses' as const, source_key: COURSE_SOURCE_KEY, source_record_key: key, field: 'code' }],
-      })),
+      ...(relationships.length ? { relationships } : {}),
     };
   });
 }

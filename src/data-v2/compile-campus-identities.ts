@@ -27,6 +27,7 @@ import { linkEventOrganizers, linkEventPlaces } from './event-places';
 import { linkCourseCrossListings } from './course-cross-listings';
 import { linkCourseRequisites } from './course-requisites';
 import { linkSubjectSchools } from './subject-schools';
+import { linkSubjectDepartments } from './subject-departments';
 import { linkProgramDepartments } from './program-departments';
 import { linkClubCategories, linkClubPages } from './club-links';
 import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, markUnlinked, type ReviewedListings, type ReviewedStandaloneNodes } from './graph-links';
@@ -368,14 +369,19 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const shuttle = compileRouteIdentities(snapshot.shuttle_routes ?? [], snapshot.shuttle_trips ?? [], snapshot.shuttle_stops ?? []);
   entities.push(...shuttle.routes);
   unresolved.push(...shuttle.unresolved);
-  const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects);
+  // This release's program records with their catalog fields (the Convening Group among them).
+  const programRows = candidates.filter(c => c.collection === 'programs').map(c => ({ ...c.row, source_key: c.source, source_record_key: c.key }));
+  // Subjects, and the listed departments with no course of their own that the catalog names as a convening group (course-subjects.ts).
+  const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects, programRows);
   entities.push(...compileSubjectIdentities(subjects.artifact, snapshot.artifacts.courses, ledger));
   unresolved.push(...subjects.unresolved);
-  // Each subject in the one school its catalog courses are filed under (subject-schools.ts).
-  unresolved.push(...linkSubjectSchools(entities, snapshot.artifacts.courses, inputs.campusSchools).unresolved);
+  // Each subject in the one school its catalog courses are filed under, a department with no courses
+  // of its own by the courses it convenes or the programs that name it (subject-schools.ts).
+  unresolved.push(...linkSubjectSchools(entities, snapshot.artifacts.courses, inputs.campusSchools, programRows).unresolved);
+  // Each subject named by its code in the department that convenes all of its courses (subject-departments.ts).
+  unresolved.push(...linkSubjectDepartments(entities, snapshot.artifacts.courses).unresolved);
   // Each program in the department that convenes it, by its catalog Convening Group (program-departments.ts).
-  unresolved.push(...linkProgramDepartments(entities, candidates.filter(c => c.collection === 'programs')
-    .map(c => ({ ...c.row, source_key: c.source, source_record_key: c.key }))).unresolved);
+  unresolved.push(...linkProgramDepartments(entities, programRows).unresolved);
   // Kinds whose records live in the generic graph-records artifact (graph-records.ts).
   const graphRecords = emptyGraphRecords();
   const calendar = compileCalendarIdentities(snapshot.artifacts.calendar, inputs.collectedAt?.['academic-calendar']);
