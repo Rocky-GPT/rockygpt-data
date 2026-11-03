@@ -36,6 +36,9 @@ export interface CampusIdentity {
   status?: { state: 'retired'; evidence: IdentityEvidence[] }
     /** A club its directory page says is not active, as of the date the page gives. */
     | { state: 'inactive'; as_of: string; evidence: IdentityEvidence[] };
+  /** Why a node has no link in or out, so a reader can still find it and see why; `on_purpose`
+   * when it should stay alone (a retired topic, a reviewed standalone node). */
+  unlinked?: { reason: string; on_purpose: boolean };
 }
 export interface CampusIdentities { schema_version: 1; entities: CampusIdentity[] }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -73,7 +76,7 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
   array(registry.entities, 5000, 'entities');
   const ids = new Set<string>(); const records = new Map<string, Set<string> | null>(); const rowIds = new Set<string>();
   for (const entry of registry.entities) {
-    const entity = object(entry, ['id', 'kind', 'name', 'aliases', 'links'], 'Identity', ['relationships', 'status']);
+    const entity = object(entry, ['id', 'kind', 'name', 'aliases', 'links'], 'Identity', ['relationships', 'status', 'unlinked']);
     text(entity.id, 'Identity id');
     if (!UUID.test(entity.id) || ids.has(entity.id)) throw new Error('Identity IDs must be unique, persistent lowercase UUIDs.');
     ids.add(entity.id);
@@ -129,6 +132,11 @@ export function validateCampusIdentities(value: unknown): asserts value is Campu
       else if (status.state !== 'retired' || status.as_of !== undefined) throw new Error('Unsupported identity status.');
       array(status.evidence, 32, 'Status evidence'); if (!status.evidence.length) throw new Error('A status needs evidence.');
       for (const ref of status.evidence) reference(ref, true);
+    }
+    if (entity.unlinked !== undefined) {
+      const unlinked = object(entity.unlinked, ['reason', 'on_purpose'], 'Unlinked note');
+      text(unlinked.reason, 'Unlinked reason');
+      if (typeof unlinked.on_purpose !== 'boolean') throw new Error('An unlinked note says whether it is on purpose.');
     }
     if (entity.relationships !== undefined) {
       array(entity.relationships, 1000, 'relationships');
