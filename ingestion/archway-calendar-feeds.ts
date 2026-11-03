@@ -292,7 +292,7 @@ export async function fetchCalendarFeedEvents(previous: ArchwayEvent[] | null): 
     try {
       await paceRamapoRequest(url);
       const response = await fetchWithPolicy(url, {}, {
-        expectedContentTypes: ['text/calendar', 'text/plain', 'application/octet-stream'],
+        expectedContentTypes: ['text/calendar', 'text/plain', 'application/octet-stream', 'binary/octet-stream'],
         perHostConcurrency: RAMAPO_CONCURRENCY,
       });
       const text = response.ok ? response.text() : '';
