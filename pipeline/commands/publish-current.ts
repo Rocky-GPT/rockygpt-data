@@ -12,6 +12,7 @@ import { parseStopDescriptions, parseTransportationSchedules } from '../../inges
 import { validateRawDatasetV1 } from '../../ingestion/raw-types';
 import { normalizeMenuWeek } from '../../ingestion/menu-data';
 import { parseEventStart } from '../../src/data-v2/event-time';
+import { berrieEventId } from '../../src/berrie-event-url';
 import { normalizeOpeningHours } from '../../src/data-v2/opening-hours';
 import { calendarConcept } from '../../src/data-v2/calendar-concepts';
 import { courseSubjectsInput } from '../../src/data-v2/course-subjects';
@@ -426,15 +427,17 @@ async function insertStructured(
       );
     }
     const recordKey = `${date}:${title}`;
+    // A Berrie Center show comes from its own page, which the school sites collector keeps.
+    const sourceKey = berrieEventId(event.url) ? 'academic-sites' : 'archway-events';
     await client.query(
       `INSERT INTO rockygpt_v2.campus_events
        (dataset_version_id, source_id, source_record_key, title, date_label, starts_at, start_time,
         end_time, organizer, description, event_url, collected_at, content_hash)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
-      [datasetId, sources.get('archway-events'), recordKey, title, date,
+      [datasetId, sources.get(sourceKey), recordKey, title, date,
         startParse.startsAtIso,
         cleanText(event.time) || null, cleanText(event.endTime) || null, cleanText(event.organizer) || null,
-        cleanText(event.description) || null, cleanText(event.url) || null, collectedAtFor('archway-events'), sha256(recordKey)]
+        cleanText(event.description) || null, cleanText(event.url) || null, collectedAtFor(sourceKey), sha256(recordKey)]
     );
     counts.campus_events = (counts.campus_events || 0) + 1;
   }
