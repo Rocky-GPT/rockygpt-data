@@ -19,6 +19,8 @@ export interface OfficeSectionsPage {
   fetchedAt: string;
   sections: OfficeSection[];
   contentHash: string;
+  /** When the page says it was last changed, so the Brain can tell a newer page from an older one. */
+  modifiedAt?: string;
 }
 
 /** A section longer than this is kept to its start. 6,000 cut 124 sections of rules students ask
@@ -72,7 +74,8 @@ export function officeSectionPages(pages: ReadonlyMap<string, CapturedPage>, fol
       .slice(0, MAX_PAGE_SECTIONS);
     if (!sections.length) continue;
     const contentHash = createHash('sha256').update(JSON.stringify(sections)).digest('hex');
-    rows.push({ key, folder, url: page.url, fetchedAt: page.fetchedAt, sections, contentHash });
+    rows.push({ key, folder, url: page.url, fetchedAt: page.fetchedAt, sections, contentHash,
+      ...(page.modifiedAt ? { modifiedAt: page.modifiedAt } : {}) });
   }
   return rows.sort((a, b) => a.key.localeCompare(b.key));
 }

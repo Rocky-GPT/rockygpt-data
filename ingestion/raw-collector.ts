@@ -557,6 +557,8 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
   }
 
   const document = load(options.html);
+  // Read before the scripts go: the date can sit in the page's JSON-LD.
+  const modifiedAt = pageModifiedAt(document);
   document('script, style, noscript, template, svg, nav, footer, [role="navigation"]').remove();
   document('header').not('main header, article header, [role="main"] header').remove();
   addEventCalendarYears(document);
@@ -614,7 +616,33 @@ export function buildRawPageFromHtml(options: BuildRawPageFromHtmlOptions): RawP
     tables: extractTables($, options.url),
     contacts: extractContacts($),
     documents: extractDocuments($, options.url),
+    ...(modifiedAt ? { modifiedAt } : {}),
   };
+}
+
+const MODIFIED_META = ['meta[property="article:modified_time"]', 'meta[property="og:updated_time"]',
+  'meta[itemprop="dateModified"]'];
+
+/**
+ * When the page says it was last changed, as an ISO time, or null. The college's WordPress pages
+ * carry it in their SEO tags (article:modified_time, and dateModified in the JSON-LD): 2,382 of the
+ * 2,706 office pages captured 10-25 did, from 2013 to 2026. A date that does not parse, or one
+ * after the capture, is not taken.
+ */
+export function pageModifiedAt(document: ReturnType<typeof load>, now = Date.now()): string | null {
+  const said: string[] = MODIFIED_META.map(selector => document(selector).first().attr('content') ?? '');
+  document('script[type="application/ld+json"]').each((_, element) => {
+    const found = /"dateModified"\s*:\s*"([^"]+)"/.exec(document(element).text());
+    if (found) said.push(found[1]);
+  });
+  for (const value of said) {
+    const time = Date.parse(value.trim());
+    // A day's grace: the page's clock and the collector's may disagree.
+    if (Number.isFinite(time) && time <= now + 86_400_000 && time > Date.UTC(1995, 0, 1)) {
+      return new Date(time).toISOString();
+    }
+  }
+  return null;
 }
 
 function buildEmptyPage(url: string, sourceType: 'seed' | 'detail', statusCode: number | null, fetchedAt?: string): RawPageV1 {

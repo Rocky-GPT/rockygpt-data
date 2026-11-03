@@ -23,6 +23,8 @@ export type RawPageV1 = {
   contacts: { name?: string; email?: string; phone?: string; office?: string }[];
   documents: { label: string; url: string }[];
   archwayOrganizers?: { groupId: string; groupUrl: string; name: string }[];
+  /** When the page says it was last changed (its article:modified_time), as an ISO time. */
+  modifiedAt?: string;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -132,6 +134,9 @@ function validateRawPageV1(page: unknown, index: number): RawPageV1 {
     });
   }
 
+  const modifiedAt = asOptionalString(page.modifiedAt, `${pathPrefix}.modifiedAt`);
+  assert(modifiedAt === undefined || Number.isFinite(Date.parse(modifiedAt)), `${pathPrefix}.modifiedAt must be a time`);
+
   return {
     url: page.url,
     sourceType: page.sourceType,
@@ -146,6 +151,7 @@ function validateRawPageV1(page: unknown, index: number): RawPageV1 {
     contacts,
     documents,
     ...(archwayOrganizers !== undefined ? { archwayOrganizers } : {}),
+    ...(modifiedAt !== undefined ? { modifiedAt } : {}),
   };
 }
 
