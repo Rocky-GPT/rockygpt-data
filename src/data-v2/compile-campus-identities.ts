@@ -13,7 +13,7 @@ import { siteFolder } from './office-sections';
 import { campusSchoolsArtifact, compileSchoolIdentities, type CampusSchoolsArtifact, type ReviewedSchools } from './campus-schools';
 import { aliasRecords, applyPublishedAliases, applyReviewedAliases, noteAlias, type AliasLedger, type AliasRecord, type ReviewedAlias } from './identity-aliases';
 import type { ReviewedBuilding, ReviewedLocation, ReviewedRoom } from './campus-buildings';
-import { compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
+import { COURSE_SOURCE_KEY, compileCourseIdentities, type CourseIdentitiesArtifact } from './course-identities';
 import { compileSubjectIdentities, courseSubjectsArtifact, type CourseSubjectsArtifact, type CourseSubjectsInput } from './course-subjects';
 import { GRADUATION_PLANS_SOURCE_KEY, graduationPlansInput } from './graduation-plans';
 import { MAJOR_PAGES_SOURCE_KEY, majorPagesInput } from './major-pages';
@@ -24,6 +24,7 @@ import { addGraphRecords, emptyGraphRecords, type GraphRecordsArtifact } from '.
 import { compileMapPlaces, type CampusMapMatches } from './campus-map-places';
 import campusMapMatches from '../reference/campus-map-places.json';
 import { linkEventOrganizers, linkEventPlaces } from './event-places';
+import { linkCourseAttributes } from './course-attributes';
 import { linkCourseCrossListings } from './course-cross-listings';
 import { linkCourseRequisites } from './course-requisites';
 import { linkSubjectSchools } from './subject-schools';
@@ -533,15 +534,26 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     entities.push({ id: course.id, kind: 'course', name: course.source_record_key, aliases: [],
       links: [{ collection: 'courses', source_key: course.source_key, source_record_keys: [course.source_record_key] }] });
   }
-  // Each course to the courses its own catalog requisites name (course-requisites.ts) and to the
-  // courses its description says it is cross-listed with (course-cross-listings.ts), counted in
-  // the report with the links made before the course identities existed.
+  // Each course to the courses its own catalog requisites name (course-requisites.ts), to the
+  // courses its description says it is cross-listed with (course-cross-listings.ts) and in the
+  // attributes its record prints (course-attributes.ts), counted in the report with the links
+  // made before the course identities existed.
   const requisites = linkCourseRequisites(entities, snapshot.artifacts.courses);
   const crossListings = linkCourseCrossListings(entities, snapshot.artifacts.courses);
+  const attributes = linkCourseAttributes(entities, snapshot.artifacts.courses, inputs.collectedAt?.[COURSE_SOURCE_KEY], ledger);
+  entities.push(...attributes.entities);
+  addGraphRecords(graphRecords, 'course_attributes', attributes.records);
   for (const entity of entities.filter(e => e.kind === 'course')) {
     for (const relation of entity.relationships ?? []) report.relationships[relation.type] = (report.relationships[relation.type] || 0) + 1;
   }
-  unresolved.push(...requisites.unresolved, ...crossListings.unresolved);
+  // The attribute nodes are identities like the ones counted above, with their aliases' sources.
+  for (const entity of attributes.entities) {
+    report.identity_count++;
+    report.identities_by_kind[entity.kind] = (report.identities_by_kind[entity.kind] || 0) + 1;
+    for (const link of entity.links) report.linked_records[link.collection] = (report.linked_records[link.collection] || 0) + link.source_record_keys.length;
+  }
+  report.alias_sources.push(...aliasRecords(attributes.entities, ledger));
+  unresolved.push(...requisites.unresolved, ...crossListings.unresolved, ...attributes.unresolved);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   for (const entity of entities) {
     const ids = groupsOf.get(entity.id);

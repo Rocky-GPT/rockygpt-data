@@ -551,3 +551,37 @@ test('the compile makes the departments the catalog names into subjects, places 
   assert.equal(result.report.identities_by_kind.subject, entities.filter(e => e.kind === 'subject').length);
   assert.equal(result.report.linked_records.subjects, result.courseSubjects.subjects.length);
 });
+
+test('the compile files each course under the attributes its record prints, and counts them in the report', async () => {
+  const { COURSE_SEARCH_URL, courseAttributeId } = await import('./course-attributes');
+  const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
+  const subjects = (await import('../reference/course-subjects.json')).default;
+  const subjectsSource = (await import('../reference/course-subjects.source.json')).default;
+  const input = snapshot();
+  input.artifacts.courses = {
+    'CMPS 147': { code: 'CMPS 147', name: 'COMPUTER SCIENCE I', attributes: ['Gen Ed 18-Quantitative Rsng (GEQR)'] },
+    'WRIT 101': { code: 'WRIT 101', name: 'COLLEGE WRITING', attributes: ['WRITING INTENSIVE (WRIT)', 'MBA COURSE FOR GRAD FEE ASSESS (MBA)'] },
+  };
+  const result = compileCampusIdentities(real, input, raw, { courseSubjects: courseSubjectsInput(subjectsSource, subjects),
+    collectedAt: { 'academic-programs': '2026-11-03T00:00:00Z' } });
+  const entities = result.registry.entities;
+  // WRIT stays the Writing subject's code alone; GEQR names nothing else, so it is an alias.
+  assert.deepEqual(entities.filter(e => e.kind === 'course_attribute').map(e => [e.id, e.name, e.aliases]), [
+    [courseAttributeId('GEQR'), 'Gen Ed 18-Quantitative Rsng (GEQR)', ['GEQR']], [courseAttributeId('WRIT'), 'WRITING INTENSIVE (WRIT)', []]]);
+  assert.deepEqual(entities.find(e => e.kind === 'subject' && e.aliases.includes('WRIT'))?.name, 'Writing (WRIT)');
+  const writ = entities.find(e => e.kind === 'course' && e.name === 'WRIT 101');
+  assert.deepEqual(writ?.relationships?.filter(r => r.type === 'in_category').map(r => 'target_entity_id' in r && r.target_entity_id), [courseAttributeId('WRIT')]);
+  assert.deepEqual(result.graphRecords.collections.course_attributes, { source_key: 'academic-programs', collected_at: '2026-11-03T00:00:00Z', rows: [
+    { source_record_key: 'GEQR', name: 'Gen Ed 18-Quantitative Rsng (GEQR)', course_count: 1, source_url: COURSE_SEARCH_URL },
+    { source_record_key: 'WRIT', name: 'WRITING INTENSIVE (WRIT)', course_count: 1, source_url: COURSE_SEARCH_URL }] });
+  // The report counts the new nodes, their records, links and aliases with everything else.
+  const { report } = result;
+  assert.equal(report.identities_by_kind.course_attribute, 2);
+  assert.equal(report.identity_count, Object.values(report.identities_by_kind).reduce((total, count) => total + count, 0));
+  assert.equal(report.linked_records.course_attributes, 2);
+  assert.equal(report.relationships.in_category, entities.flatMap(e => e.relationships ?? []).filter(r => r.type === 'in_category').length);
+  assert.equal(report.relationships.in_category, 2);
+  assert.equal(report.alias_sources.length, entities.reduce((total, entity) => total + entity.aliases.length, 0));
+  assert.deepEqual(report.alias_sources.find(r => r.alias === 'GEQR')?.sources, [{ basis: 'abbreviation' }]);
+  assert.deepEqual(report.unresolved.filter(u => u.collection === 'course_attributes').map(u => [u.record, u.kind]), [['MBA', 'note'], ['WRIT', 'note']]);
+});
