@@ -281,6 +281,13 @@ jobs:
               --body "$incident_body"
           fi
 
+      # Last, so the counts sit at the end of the log: which collectors ran, and how many pages
+      # each reused (unchanged since the last capture) instead of downloading from Ramapo's sites.
+      - name: Show what was read from Ramapo's sites
+        if: ${{ always() }}
+        continue-on-error: true
+        run: cat data/review/site-downloads.txt 2>/dev/null || echo 'No collector wrote a download note.'
+
   # The Brain finds programs, courses, people, events and how-to sections by meaning only with
   # the active release's meaning index. Built from whichever release is active, so it runs even
   # when today's refresh failed and an older release still serves; texts unchanged since the last
