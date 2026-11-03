@@ -24,6 +24,7 @@ import { addGraphRecords, emptyGraphRecords, type GraphRecordsArtifact } from '.
 import { compileMapPlaces, type CampusMapMatches } from './campus-map-places';
 import campusMapMatches from '../reference/campus-map-places.json';
 import { linkEventOrganizers, linkEventPlaces } from './event-places';
+import { linkCourseCrossListings } from './course-cross-listings';
 import { linkCourseRequisites } from './course-requisites';
 import { linkSubjectSchools } from './subject-schools';
 import { linkProgramDepartments } from './program-departments';
@@ -518,13 +519,15 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     entities.push({ id: course.id, kind: 'course', name: course.source_record_key, aliases: [],
       links: [{ collection: 'courses', source_key: course.source_key, source_record_keys: [course.source_record_key] }] });
   }
-  // Each course to the courses its own catalog requisites name (course-requisites.ts), counted in
+  // Each course to the courses its own catalog requisites name (course-requisites.ts) and to the
+  // courses its description says it is cross-listed with (course-cross-listings.ts), counted in
   // the report with the links made before the course identities existed.
   const requisites = linkCourseRequisites(entities, snapshot.artifacts.courses);
+  const crossListings = linkCourseCrossListings(entities, snapshot.artifacts.courses);
   for (const entity of entities.filter(e => e.kind === 'course')) {
     for (const relation of entity.relationships ?? []) report.relationships[relation.type] = (report.relationships[relation.type] || 0) + 1;
   }
-  unresolved.push(...requisites.unresolved);
+  unresolved.push(...requisites.unresolved, ...crossListings.unresolved);
   unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   for (const entity of entities) {
     const ids = groupsOf.get(entity.id);

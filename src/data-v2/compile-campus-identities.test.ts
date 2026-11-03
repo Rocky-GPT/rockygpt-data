@@ -464,7 +464,7 @@ test("the catalog's academic policies link to the office its index names, under 
   assert.ok(links.every(l => l.source_record_keys.every(key => l.source_key === 'catalog-policies' ? key.startsWith('catalog.') : !key.startsWith('catalog.'))));
 });
 
-test('the compile links courses to their requisites, subjects to their school and programs to their department', async () => {
+test('the compile links courses to their requisites and cross-listings, subjects to their school and programs to their department', async () => {
   const real = (await import('../reference/campus-identities.json')).default as unknown as CampusIdentities;
   const schools = (await import('../reference/campus-schools.json')).default as unknown as ReviewedSchools;
   const subjects = (await import('../reference/course-subjects.json')).default;
@@ -474,6 +474,7 @@ test('the compile links courses to their requisites, subjects to their school an
     'CMPS 147': { code: 'CMPS 147', name: 'COMPUTER SCIENCE I', school: 'Science, Nursing and Health', requisites: [] },
     'CMPS 148': { code: 'CMPS 148', name: 'COMPUTER SCIENCE II', school: 'Science, Nursing and Health',
       requisites: [{ section: 'Prerequisite', rule: { name: 'Prerequisite Course', condition: 'completedAllOf', items: [{ codes: [{ code: 'CMPS 147', name: 'COMPUTER SCIENCE I' }], logic: 'and' }] } }] },
+    'CMPS 364': { code: 'CMPS 364', name: 'DATA MINING', school: 'Science, Nursing and Health', description: 'This course is cross-listed with CMPS 147.' },
   };
   (input.artifacts.programs as { schools: { majors: Record<string, unknown>[] }[] }).schools[0].majors[0].conveningGroups = ['Computer Science (CMPS)'];
   const result = compileCampusIdentities(real, input, raw, { campusSchools: schools, courseSubjects: courseSubjectsInput(subjectsSource, subjects) });
@@ -481,7 +482,9 @@ test('the compile links courses to their requisites, subjects to their school an
   const targets = (key: string, type: string) => (byName.get(key)?.relationships ?? []).filter(r => r.type === type)
     .map(r => 'target_entity_id' in r ? result.registry.entities.find(e => e.id === r.target_entity_id)?.name : undefined);
   assert.deepEqual(targets('course:CMPS 148', 'requires'), ['CMPS 147']);
+  assert.deepEqual(targets('course:CMPS 147', 'cross_listed'), ['CMPS 364']);
   assert.deepEqual(targets('subject:Computer Science (CMPS)', 'part_of'), ['School of Science, Nursing, and Health']);
   assert.ok(targets('program:Computer Science BS', 'part_of').includes('Computer Science (CMPS)'));
   assert.equal(result.report.relationships.requires, 1);
+  assert.equal(result.report.relationships.cross_listed, 1);
 });
