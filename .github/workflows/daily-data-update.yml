@@ -340,6 +340,16 @@ jobs:
           BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python brain/scripts/build_meaning_index.py --dir .published --cache .meaning-cache
 
+      # Every office and venue card, looked up the ways a student asks, must read as the Brain's
+      # plain sentences (brain/scripts/check_plain_writer.py). A card shape it can't say reaches
+      # students as code's evidence text with notes like "captured 2026-10-23T14:20" (11-03: the
+      # gym's hours). The check flags it for a Brain fix and the release still goes out: a day's
+      # data is never held back by wording.
+      - name: Check every card reads as plain sentences
+        if: ${{ hashFiles('brain/scripts/check_plain_writer.py') != '' }}
+        continue-on-error: true
+        run: python brain/scripts/check_plain_writer.py .published
+
       - name: Save the embedding and question caches
         if: ${{ always() && hashFiles('.meaning-cache/questions.json') != '' }}
         uses: actions/cache/save@v4
