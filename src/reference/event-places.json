@@ -1,0 +1,11 @@
+{
+  "$comment": [
+    "Names Archway event listings give a place that no node in the graph carries, each read from a captured Ramapo page.",
+    "names: the listing's words for the place, compared as map places are (case, punctuation, apostrophes and a leading \"The\" aside), after the words that only say where inside it (\"1st Floor Lounge\", \"Main Lobby\", a room number) are set aside.",
+    "room: the room the quote gives it, placed in the building whose reviewed room prefix it has. place: the building or campus-map place it is, by that node's exact name. One of the two.",
+    "Each reading places an event only while the captured page's section still holds the quote (src/data-v2/event-places.ts); a reading the page no longer backs is reported, never used.",
+    "Read by Claude on 2026-11-03 from the release v2-20261103013713 capture, for Dan's review."
+  ],
+  "schema_version": 1,
+  "places": []
+}

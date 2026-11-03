@@ -1,0 +1,11 @@
+{
+  "$comment": [
+    "Rooms an office's page gives a person in words that no rule reads: one person, one room, the",
+    "page section that says so and its exact words. The build places the person in the room's",
+    "building (office_at) only while this run's capture of that section still holds the quote, the",
+    "person is the only node with that ID and name, and the room has a reviewed building prefix.",
+    "A person whose own profile or listing publishes a room is placed by it, never from here."
+  ],
+  "schema_version": 1,
+  "rooms": []
+}
