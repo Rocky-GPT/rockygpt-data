@@ -4,7 +4,7 @@ import {
   campusDateLabel, campusTimeLabel, feedEvent, feedLocation, feedTags, groupFeedUrl, groupsToRead,
   mergeFeedEvents, ownerName, parseFeedIndex, parseIcs,
 } from './archway-calendar-feeds';
-import { ticketStatusFromDetailPage, withDetailTickets } from './archway-events';
+import { ticketStatusFromDetailPage, withDetailPageFacts } from './archway-events';
 import type { RawDatasetV1, RawPageV1 } from './raw-types';
 
 // The shape of Archway's group files, as read from ical_club_36419.ics on November 3, 2026.
@@ -57,6 +57,9 @@ test('places drop the street address; a dash is no place', () => {
   assert.equal(feedLocation('ASB 332\\, 505 Ramapo Valley Road\\, ASB-123\\, Mahwah'), 'ASB 332');
   assert.equal(feedLocation('-'), undefined);
   assert.equal(feedLocation('Mahwah Senior Center'), 'Mahwah Senior Center');
+  assert.equal(feedLocation('undefined'), undefined);
+  assert.equal(feedLocation('Sign in to download the location'), undefined);
+  assert.equal(feedLocation('Mansion York Room\\, 41.081276\\,-74.175518'), 'Mansion York Room');
 });
 
 test('the group acronym is never a tag', () => {
@@ -104,7 +107,7 @@ test("a file's owner is the organizer on most of its entries", () => {
   assert.equal(ownerName(roukema), 'Roukema Center for International Education');
 });
 
-test('the event page supplies the ticket line the calendar files lack', () => {
+test('the event page supplies the ticket line and its own Where line', () => {
   const page = { url: 'https://archway.ramapo.edu/ccec/rsvp_boot?id=1411135', sourceType: 'detail', statusCode: 200,
     fetchedAt: now, title: 't', links: [], externalLinks: [], lists: [], tables: [], contacts: [], documents: [],
     sections: [{ heading: 'Service Opportunity', text: 'Oct 30 FREE' }, { heading: 'Where', text: 'Mahwah Senior Center' }],
@@ -113,6 +116,8 @@ test('the event page supplies the ticket line the calendar files lack', () => {
   assert.equal(ticketStatusFromDetailPage({ ...page, sections: [{ heading: 'h', text: 'Nov 7 $5 - $10' }] }), '$5 - $10');
   assert.equal(ticketStatusFromDetailPage({ ...page, sections: [{ heading: 'h', text: 'FREE pizza for everyone' }] }), undefined);
   const dataset = { pages: [page] } as unknown as RawDatasetV1;
-  const [event] = withDetailTickets([{ title: 't', date: 'Fri, Oct 30, 2026', url: 'https://archway.ramapo.edu/rsvp_boot?id=1411135' }], dataset);
+  const [event] = withDetailPageFacts([{ title: 't', date: 'Fri, Oct 30, 2026', location: 'Mahwah Senior Ctr',
+    url: 'https://archway.ramapo.edu/rsvp_boot?id=1411135' }], dataset);
   assert.equal(event.ticketStatus, 'FREE');
+  assert.equal(event.location, 'Mahwah Senior Center');
 });

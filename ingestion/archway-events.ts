@@ -809,16 +809,34 @@ export function ticketStatusFromDetailPage(page: RawPageV1): string | undefined 
   return undefined;
 }
 
-export function withDetailTickets(events: ArchwayEvent[], details: RawDatasetV1): ArchwayEvent[] {
-  const tickets = new Map<string, string>();
+/** The event page's own "Where" line, which the old listing showed as the event's place. */
+export function whereFromDetailPage(page: RawPageV1): string | undefined {
+  const where = page.sections.find((section) => /^where$/i.test(normalizeText(section.heading) ?? ''));
+  const text = normalizeText(where?.text);
+  return text && text !== '-' ? text : undefined;
+}
+
+/**
+ * What the event pages add to the calendar files' entries: the ticket line, and the place as the
+ * page words it. The files spell some places differently ("and" for "&"), write "undefined" for
+ * none and hide private and online places behind sign-in, where the page says which it is.
+ */
+export function withDetailPageFacts(events: ArchwayEvent[], details: RawDatasetV1): ArchwayEvent[] {
+  const facts = new Map<string, { ticket?: string; where?: string }>();
   for (const page of details.pages) {
     if (page.sourceType !== 'detail' || page.statusCode !== 200) continue;
-    const ticket = ticketStatusFromDetailPage(page);
-    if (ticket) tickets.set(normalizeEventUrlForLookup(page.url), ticket);
+    facts.set(normalizeEventUrlForLookup(page.url), {
+      ticket: ticketStatusFromDetailPage(page), where: whereFromDetailPage(page),
+    });
   }
   return events.map((event) => {
-    const ticket = event.url ? tickets.get(normalizeEventUrlForLookup(event.url)) : undefined;
-    return ticket && !event.ticketStatus ? { ...event, ticketStatus: ticket } : event;
+    const found = event.url ? facts.get(normalizeEventUrlForLookup(event.url)) : undefined;
+    if (!found) return event;
+    return {
+      ...event,
+      ...(found.ticket && !event.ticketStatus ? { ticketStatus: found.ticket } : {}),
+      ...(found.where ? { location: found.where } : {}),
+    };
   });
 }
 
@@ -846,7 +864,7 @@ async function fetchArchwayEvents() {
   if (!username || !password) {
     console.log('Archway credentials are unavailable; publishing the calendar files with public event pages.');
     const detailResult = await scrapePublicEventDetailRaw(publicEvents);
-    const events = withDetailTickets(publicEvents, detailResult.dataset);
+    const events = withDetailPageFacts(publicEvents, detailResult.dataset);
     writeEventRawArtifacts(events, detailResult, ARCHWAY_FEED_INDEX_URL);
     console.log(`Saved ${events.length} Archway events to ${RAW_JSON_PATH}`);
     if (isRawOnlyMode()) {
@@ -900,7 +918,7 @@ async function fetchArchwayEvents() {
     console.log('Scraping event detail pages for raw dataset...');
     const detailResult = await scrapeEventDetailRaw(context, publicEvents);
     const detailDataset = detailResult.dataset;
-    const rawEvents = withDetailTickets(publicEvents, detailDataset);
+    const rawEvents = withDetailPageFacts(publicEvents, detailDataset);
     writeEventRawArtifacts(rawEvents, detailResult, ARCHWAY_FEED_INDEX_URL);
     console.log(`Saved raw events to ${RAW_JSON_PATH}`);
     console.log(

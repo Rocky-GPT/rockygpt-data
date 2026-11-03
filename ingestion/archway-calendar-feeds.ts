@@ -154,8 +154,15 @@ export function campusTimeLabel(at: Date): string {
 /** Archway appends the college's street address to every room ("York Room, 505 Ramapo Valley Road, ..."). */
 export function feedLocation(value: string | undefined): string | undefined {
   if (!value) return undefined;
-  const place = unescapeIcsText(value).replace(/,\s*505 Ramapo Valley Road\b.*$/i, '').replace(/\s+/g, ' ').trim();
-  return place && place !== '-' ? place : undefined;
+  const place = unescapeIcsText(value)
+    .replace(/,\s*505 Ramapo Valley Road\b.*$/i, '')
+    // A map pin's coordinates after the room ("Mansion York Room, 41.081276,-74.175518").
+    .replace(/,\s*-?\d{1,3}\.\d+\s*,\s*-?\d{1,3}\.\d+\s*$/, '')
+    .replace(/\s+/g, ' ').trim();
+  // Archway writes "undefined" for no place, and hides private and online places behind sign-in;
+  // the event page's own Where line says which (withDetailPageFacts).
+  if (!place || place === '-' || /^undefined$/i.test(place) || /^sign in to\b/i.test(place)) return undefined;
+  return place;
 }
 
 function organizerName(property: IcsProperty | undefined): string | undefined {
@@ -279,6 +286,7 @@ export async function fetchCalendarFeedEvents(previous: ArchwayEvent[] | null): 
 
   const limit = pLimit(RAMAPO_CONCURRENCY);
   let failed = 0;
+  const failures: string[] = [];
   const feeds = (await Promise.all(groups.map((group) => limit(async () => {
     const url = groupFeedUrl(group.groupId);
     try {
@@ -288,16 +296,21 @@ export async function fetchCalendarFeedEvents(previous: ArchwayEvent[] | null): 
         perHostConcurrency: RAMAPO_CONCURRENCY,
       });
       const text = response.ok ? response.text() : '';
-      if (!text.includes('BEGIN:VCALENDAR')) { failed += 1; return null; }
+      if (!text.includes('BEGIN:VCALENDAR')) {
+        failed += 1;
+        failures.push(`${group.groupId} (HTTP ${response.status}, ${response.headers.get('content-type') ?? 'no type'})`);
+        return null;
+      }
       return { ...group, url, text };
-    } catch {
+    } catch (error) {
       failed += 1;
+      failures.push(`${group.groupId} (${error instanceof Error ? error.message : String(error)})`);
       return null;
     }
   })))).filter((feed): feed is NonNullable<typeof feed> => Boolean(feed));
 
   noteSiteDownloads(`Archway calendar files: ${groups.length} read (${all ? 'every group' : 'groups with events'}), ` +
-    `${failed} failed, plus the Subscribe page`);
+    `${failed} failed${failures.length ? `: ${failures.join('; ')}` : ''}, plus the Subscribe page`);
   if (groups.length && failed / groups.length > MAX_FEED_FAILURE_SHARE) {
     throw new Error(`${failed} of ${groups.length} Archway calendar files could not be read.`);
   }
