@@ -24,6 +24,8 @@ import { addGraphRecords, emptyGraphRecords, type GraphRecordsArtifact } from '.
 import { compileMapPlaces, type CampusMapMatches } from './campus-map-places';
 import campusMapMatches from '../reference/campus-map-places.json';
 import { linkEventOrganizers, linkEventPlaces } from './event-places';
+import { linkCourseRequisites } from './course-requisites';
+import { linkSubjectSchools } from './subject-schools';
 import { linkClubCategories, linkClubPages } from './club-links';
 import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings, linkRouteOffice, linkTopicOffices, markUnlinked, type ReviewedListings, type ReviewedStandaloneNodes } from './graph-links';
 import standaloneNodes from '../reference/standalone-nodes.json';
@@ -365,6 +367,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const subjects = courseSubjectsArtifact(snapshot.artifacts.courses, inputs.courseSubjects);
   entities.push(...compileSubjectIdentities(subjects.artifact, snapshot.artifacts.courses, ledger));
   unresolved.push(...subjects.unresolved);
+  // Each subject in the one school its catalog courses are filed under (subject-schools.ts).
+  unresolved.push(...linkSubjectSchools(entities, snapshot.artifacts.courses, inputs.campusSchools).unresolved);
   // Kinds whose records live in the generic graph-records artifact (graph-records.ts).
   const graphRecords = emptyGraphRecords();
   const calendar = compileCalendarIdentities(snapshot.artifacts.calendar, inputs.collectedAt?.['academic-calendar']);
@@ -510,6 +514,14 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
     entities.push({ id: course.id, kind: 'course', name: course.source_record_key, aliases: [],
       links: [{ collection: 'courses', source_key: course.source_key, source_record_keys: [course.source_record_key] }] });
   }
+  // Each course to the courses its own catalog requisites name (course-requisites.ts), counted in
+  // the report with the links made before the course identities existed.
+  const requisites = linkCourseRequisites(entities, snapshot.artifacts.courses);
+  for (const entity of entities.filter(e => e.kind === 'course')) {
+    for (const relation of entity.relationships ?? []) report.relationships[relation.type] = (report.relationships[relation.type] || 0) + 1;
+  }
+  unresolved.push(...requisites.unresolved);
+  unresolved.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   for (const entity of entities) {
     const ids = groupsOf.get(entity.id);
     if (ids?.length) entity.links.push({ collection: 'requirement_groups', source_key: 'program-requirement-groups', source_record_keys: ids });
