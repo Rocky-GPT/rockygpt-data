@@ -13,7 +13,11 @@ import { SOURCES } from './source-seeds';
  *   ("Honor Society - Academic" is in "Honor Society"). A category is a `club_category` node.
  * - `listed_by`: a club whose page is in the Clubs & Organizations directory on ramapo.edu
  *   (/clubs/organization/<club>/) is listed by the office whose site that directory is (the Center
- *   for Student Involvement). The club links its page.
+ *   for Student Involvement). The club links its page. A fraternity or sorority chapter whose page is
+ *   on the Fraternity and Sorority Life site (/greek/chapters/<chapter>/) is listed by that office
+ *   the same way, matched by the name the page gives before the chapter's Greek letters ("Alpha
+ *   Kappa Alpha Sorority, Inc. - ΑΚΑ"), with "Inc." and "Incorporated" read alike. A chapter page
+ *   no Archway chapter is named like is reported; its disciplinary history is not a status.
  * - status `inactive`: a page that says "THIS IS NOT CURRENTLY AN ACTIVE CLUB AT RAMAPO COLLEGE AS OF
  *   6/12/25" marks its club inactive as of that date. A page with no Archway club behind it is a
  *   club node of its own only when it is inactive, so a student asking about it hears it is not
@@ -31,6 +35,12 @@ type Row = Record<string, unknown>;
 const NAMESPACE_URL = Buffer.from('6ba7b8119dad11d180b400c04fd430c8', 'hex');
 const text = (value: unknown): string => typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : '';
 const CLUB_PAGE = /\/clubs\/organization\/[^/]+\/$/;
+// A fraternity or sorority chapter's page on the Fraternity and Sorority Life site.
+const CHAPTER_PAGE = /\/greek\/chapters\/[^/]+\/$/;
+// "Alpha Kappa Alpha Sorority, Inc. - ΑΚΑ": the chapter's Greek letters after its name.
+const LETTERS = /\s+[-–]\s+\S*[\u0370-\u03ff\u1f00-\u1fff]\S*$/;
+// "Inc", "Inc." and "Incorporated" end a chapter's name the same way.
+const chapterName = (name: string): string => placeName(name).replace(/\s+(inc|incorporated)$/, '');
 const INACTIVE = /NOT CURRENTLY AN ACTIVE CLUB AT RAMAPO COLLEGE AS OF (\d{1,2})\/(\d{1,2})\/(\d{2,4})/i;
 const CLUB_KINDS = ['club', 'organization'];
 const EMAIL = /[\w.+-]+@ramapo\.edu\b/gi;
@@ -90,6 +100,11 @@ export function linkClubPages(entities: CampusIdentity[], pages: Row[], clubs: R
   for (const entity of entities.filter(e => [...CLUB_KINDS, 'office', 'venue'].includes(e.kind))) {
     for (const name of new Set([entity.name, ...entity.aliases].map(placeName))) if (name) named.set(name, [...named.get(name) ?? [], entity]);
   }
+  // Chapters by name, for the Fraternity and Sorority Life site's chapter pages.
+  const chapters = new Map<string, CampusIdentity[]>();
+  for (const entity of entities.filter(e => CLUB_KINDS.includes(e.kind))) {
+    for (const name of new Set([entity.name, ...entity.aliases].map(chapterName))) if (name) chapters.set(name, [...chapters.get(name) ?? [], entity]);
+  }
   // Each Archway group's own email: the node holding the listing, for an address one listing gives.
   const holder = new Map<string, CampusIdentity>();
   for (const entity of entities) {
@@ -113,16 +128,19 @@ export function linkClubPages(entities: CampusIdentity[], pages: Row[], clubs: R
   for (const page of pages) {
     const key = text(page.source_record_key);
     const url = text(page.url);
-    if (!CLUB_PAGE.test(key) || !/^https:\/\//.test(url)) continue;
+    const chapter = CHAPTER_PAGE.test(key);
+    if (!(CLUB_PAGE.test(key) || chapter) || !/^https:\/\//.test(url)) continue;
     const sections = Array.isArray(page.sections) ? page.sections as Row[] : [];
-    const name = sections.map(s => text(s.heading)).find(h => h && h !== 'Related Resources')?.replace(/\*+$/, '').trim();
-    if (!name) { unresolved.push({ collection: 'office_sections', record: key, reason: 'The club page names no club.', kind: 'unlinked_record' }); continue; }
+    const heading = sections.map(s => text(s.heading)).find(h => h && h !== 'Related Resources')?.replace(/\*+$/, '').trim();
+    const name = chapter ? heading?.replace(LETTERS, '').trim() : heading;
+    if (!name) { unresolved.push({ collection: 'office_sections', record: key, reason: chapter ? 'The chapter page names no chapter.' : 'The club page names no club.', kind: 'unlinked_record' }); continue; }
     const body = sections.map(s => text(s.text)).join(' ');
-    const said = INACTIVE.exec(body);
+    // Only the club directory says a club is inactive; a chapter page's history is not a status.
+    const said = chapter ? null : INACTIVE.exec(body);
     const asOf = said ? `${said[3].length === 2 ? `20${said[3]}` : said[3]}-${said[1].padStart(2, '0')}-${said[2].padStart(2, '0')}` : null;
     const evidence: IdentityEvidence = { collection: 'office_sections', source_key: text(page.source_key) || 'office-pages', source_record_key: key, field: said ? 'status' : 'name', source_url: url };
     const lister = owners.get(key) ?? [];
-    let found = named.get(placeName(name)) ?? [];
+    let found = (chapter ? chapters.get(chapterName(name)) : named.get(placeName(name))) ?? [];
     let joined: 'name' | 'email' = 'name';
     if (!found.length) {
       const byEmail = [...new Set((body.match(EMAIL) ?? []).map(email => mailed(email.toLowerCase())).filter((e): e is CampusIdentity => !!e))];
@@ -138,6 +156,7 @@ export function linkClubPages(entities: CampusIdentity[], pages: Row[], clubs: R
     if (found.length === 1 && !CLUB_KINDS.includes(found[0].kind)) continue;
     let club = found[0];
     if (!club) {
+      if (chapter) { unresolved.push({ entity: name, collection: 'office_sections', record: key, reason: 'No Archway chapter has the name this chapter page gives; nothing is linked.', kind: 'unlinked_record' }); continue; }
       if (!asOf) { unresolved.push({ entity: name, collection: 'office_sections', record: key, reason: 'The club directory lists this club, but no Archway club has its name or its email; no second club node is made.', kind: 'unlinked_record' }); continue; }
       club = { id: clubPageIdentityId(key), kind: 'club', name, aliases: [], links: [] };
       created.push(club);

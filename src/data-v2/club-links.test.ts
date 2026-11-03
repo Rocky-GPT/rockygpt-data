@@ -93,3 +93,25 @@ test('a club page no club is named like joins the one Archway group whose own em
   assert.deepEqual(result.unresolved.map(u => u.entity), ['Tau Sigma National Honor Society', 'Ramapo Chess']);
   assert.match(result.unresolved[0].reason, /no Archway club has its name or its email/);
 });
+
+test("a fraternity or sorority chapter's page joins the Archway chapter it names, Greek letters aside", () => {
+  const fsl: CampusIdentity = { id: '00000000-0000-4000-8000-000000000031', kind: 'office', name: 'Office of Fraternity and Sorority Life', aliases: [], links: [
+    { collection: 'office_sections', source_key: 'office-pages', source_record_keys: ['alpha-kappa-alpha', 'omega-psi-phi', 'alpha-chi-rho'].map(s => `www.ramapo.edu/greek/chapters/${s}/`) }] };
+  const aka = club(1, 'Alpha Kappa Alpha Sorority, Inc.');
+  const opp = club(2, 'Omega Psi Phi Fraternity, Inc.');
+  const chapterPage = (slug: string, heading: string, text: string) => ({ ...page(slug, heading, text),
+    source_record_key: `www.ramapo.edu/greek/chapters/${slug}/`, url: `https://www.ramapo.edu/greek/chapters/${slug}/`, site_folder: 'greek' });
+  const result = linkClubPages([fsl, aka, opp], [
+    chapterPage('alpha-kappa-alpha', 'Alpha Kappa Alpha Sorority, Inc. - ΑΚΑ', 'Founded 1908.'),
+    chapterPage('omega-psi-phi', 'Omega Psi Phi Fraternity, Incorporated - ΩΨΦ', 'Founded 1911.'),
+    chapterPage('alpha-chi-rho', 'Alpha Chi Rho - ΑΧΡ', `Disciplinary history for chapter. ${INACTIVE}`),
+  ]);
+  for (const [chapter, slug] of [[aka, 'alpha-kappa-alpha'], [opp, 'omega-psi-phi']] as const) {
+    assert.deepEqual(chapter.links[1], { collection: 'office_sections', source_key: 'office-pages', source_record_keys: [`www.ramapo.edu/greek/chapters/${slug}/`] });
+    assert.deepEqual(chapter.relationships?.map(r => [r.type, 'target_entity_id' in r ? r.target_entity_id : null, r.evidence[0].field]), [['listed_by', fsl.id, 'name']]);
+    assert.equal(chapter.status, undefined);
+  }
+  // A chapter page no Archway chapter matches is reported, never made a node, whatever it says.
+  assert.deepEqual(result.entities, []);
+  assert.deepEqual(result.unresolved.map(u => [u.entity, u.kind]), [['Alpha Chi Rho', 'unlinked_record']]);
+});
