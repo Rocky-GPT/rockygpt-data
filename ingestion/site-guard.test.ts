@@ -37,6 +37,8 @@ test("Ramapo's hosts are ramapo.edu and every name under it, and nothing that on
   for (const host of ['ramapo.edu', 'www.ramapo.edu', 'archway.ramapo.edu', 'catalog.ramapo.edu', 'WWW.Ramapo.EDU.']) {
     assert.equal(isRamapoHost(host), true, host);
   }
+  assert.equal(isRamapoHost('ramapoathletics.com'), true);
+  assert.equal(isRamapoHost('notramapoathletics.com'), false);
   for (const host of ['notramapo.edu', 'ramapo.edu.example.com', 'ramapo.sodexomyway.com', 'example.edu']) {
     assert.equal(isRamapoHost(host), false, host);
   }

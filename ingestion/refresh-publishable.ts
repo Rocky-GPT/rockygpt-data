@@ -49,6 +49,9 @@ export const SOURCE_REFRESH_SCRIPTS: Record<string, string[]> = {
   'catalog-policies': ['fetch:catalog-policies'],
   // Skips the office pages as well, so it follows fetch:office-pages in source order.
   'academic-sites': ['fetch:academic-sites'],
+  // The athletics site, one page every 30 seconds (its robots.txt).
+  'athletics-schedules': ['fetch:athletics-schedules'],
+  'athletics-coaches': ['fetch:athletics-coaches'],
 };
 
 // The workflow runs daily. Renew a source that would cross its SLA before
