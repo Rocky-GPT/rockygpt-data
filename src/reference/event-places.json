@@ -1,0 +1,111 @@
+{
+  "$comment": [
+    "Names Archway event listings give a place that no node in the graph carries, each read from a captured Ramapo page.",
+    "names: the listing's words for the place, compared as map places are (case, punctuation, apostrophes and a leading \"The\" aside), after the words that only say where inside it (\"1st Floor Lounge\", \"Main Lobby\", a room number) are set aside.",
+    "room: the room the quote gives it, placed in the building whose reviewed room prefix it has. place: the building or campus-map place it is, by that node's exact name. One of the two.",
+    "Each reading places an event only while the captured page's section still holds the quote (src/data-v2/event-places.ts); a reading the page no longer backs is reported, never used.",
+    "Read by Claude on 2026-11-03 from the release v2-20261103013713 capture, for Dan's review."
+  ],
+  "schema_version": 1,
+  "places": [
+    {
+      "names": ["Friends Hall"],
+      "room": "SC-219",
+      "url": "https://www.ramapo.edu/csi/",
+      "section": "Conference and Meeting Rooms",
+      "quote": "Friends Hall (SC-219) – Large tiled multipurpose room.",
+      "reviewed_at": "2026-11-03",
+      "note": "The Center for Student Involvement's list of Student Center rooms gives Friends Hall as SC-219; SC is the Student Center's reviewed room prefix."
+    },
+    {
+      "names": ["J. Lee’s"],
+      "place": "J. Lee's Lounge",
+      "url": "https://www.ramapo.edu/csi/",
+      "section": "J. Lee’s",
+      "quote": "J.Lee’s is a student activities lounge on the second floor of the Student Center Annex",
+      "reviewed_at": "2026-11-03",
+      "note": "The Center for Student Involvement's own section on J. Lee's (Location: Student Center Annex, SC-226) says it is a lounge; the campus map lists it as J. Lee's Lounge in the Student Center. Listings write it \"J Lees\" and \"J Lee’s\"."
+    },
+    {
+      "names": ["Multicultural Center"],
+      "room": "D-214",
+      "url": "https://www.ramapo.edu/student-affairs/mental-health-and-well-being-resources/",
+      "section": "Mental Health and Well-Being Resources",
+      "quote": "hosts drop in hours on Tuesdays from 1:00pm-2:00pm in the Multicultural Center (D-214)",
+      "reviewed_at": "2026-11-03",
+      "note": "Student Affairs gives the Multicultural Center's room; the CCEC's Satellite Pantry list also says \"The Multicultural Center D-214\". The Multicultural Center's Archway group is an organization node, not a place, so the room places events in Academic Building D."
+    },
+    {
+      "names": ["Fish Bowl", "Fishbowl"],
+      "place": "Fishbowl Lounge",
+      "url": "https://www.ramapo.edu/conferences/nj-deca/",
+      "section": "Tag your photos @RamapoCollegeNJ on Instagram or TikTok, or use #RCNJ",
+      "quote": "C Wing 2nd floor Lounge, also known as the Fishbowl",
+      "reviewed_at": "2026-11-03",
+      "note": "Events & Conferences' visitor guide says the Fishbowl is the C Wing's second-floor lounge, and lists the \"Micro-Mart, C-Wing Fishbowl Lounge\" in the same section. The campus map lists the Fishbowl Lounge (and the Micro Market kiosk 'Fish Bowl', spelled as the listings spell it) in Academic Building C."
+    },
+    {
+      "names": ["Mansion York Room"],
+      "place": "York Room",
+      "url": "https://www.ramapo.edu/provost/home/councils-committees/",
+      "section": "AY2026-2027 Meetings",
+      "quote": "All meetings are held from 10 am to 11:30 am, in the Mansion York Room.",
+      "reviewed_at": "2026-11-03",
+      "note": "The Provost's council pages call the York Room in Birch Mansion \"the Mansion York Room\"; the campus map lists the York Room in Birch Mansion."
+    },
+    {
+      "names": ["CPA Lodge"],
+      "place": "The Lodge (CPA)",
+      "url": "https://www.ramapo.edu/reslife/gtcl/",
+      "section": "Hotspots: What They Are & Why They Matter",
+      "quote": "College Park Apartments (CPA): CPA Lodge and CPA Laundry Room",
+      "reviewed_at": "2026-11-03",
+      "note": "Residence Life's Guide to Community Living calls the Lodge at College Park Apartments the \"CPA Lodge\"; the campus map's building is The Lodge (CPA)."
+    },
+    {
+      "names": ["Mackin", "Mackin Hall"],
+      "place": "Nancy Mackin Hall",
+      "url": "https://www.ramapo.edu/reslife/gtcl/",
+      "section": "Hotspots: What They Are & Why They Matter",
+      "quote": "Front entrances to each traditional residence hall: Bischoff, Mackin, Laurel, and Overlook",
+      "reviewed_at": "2026-11-03",
+      "note": "Residence Life names its halls by their short names (its own page for this hall is \"Mackin Hall\"); the campus map gives the hall's full name, Nancy Mackin Hall, as the campus-map-places.json pair for the Mackin Hall desk already says."
+    },
+    {
+      "names": ["Bischoff", "Bischoff Hall"],
+      "place": "Pamela M. Bischoff Hall",
+      "url": "https://www.ramapo.edu/reslife/gtcl/",
+      "section": "Hotspots: What They Are & Why They Matter",
+      "quote": "Front entrances to each traditional residence hall: Bischoff, Mackin, Laurel, and Overlook",
+      "reviewed_at": "2026-11-03",
+      "note": "Residence Life names its halls by their short names (its own page for this hall is \"Bischoff Hall\"); the campus map gives the hall's full name, Pamela M. Bischoff Hall, as the campus-map-places.json pair for the Bischoff Hall desk already says."
+    },
+    {
+      "names": ["Laurel"],
+      "place": "Laurel Hall",
+      "url": "https://www.ramapo.edu/reslife/gtcl/",
+      "section": "Hotspots: What They Are & Why They Matter",
+      "quote": "Front entrances to each traditional residence hall: Bischoff, Mackin, Laurel, and Overlook",
+      "reviewed_at": "2026-11-03",
+      "note": "Residence Life calls Laurel Hall \"Laurel\" (its RA meetings are \"in the Laurel 1st FL Lounge\"); the campus map's Laurel Hall is the group of its North and South buildings. Only a listing whose whole place name is \"Laurel\" reads this way; Laurel Courts and the Laurel Parking Deck keep their own names."
+    },
+    {
+      "names": ["Padavano Commons"],
+      "place": "Padovano Commons",
+      "url": "https://www.ramapo.edu/reslife/the-overlook/",
+      "section": "The Overlook Building Features",
+      "quote": "The Overlook is adjacent to the Padavano Commons, Student Center, Birch Tree Inn, The Atrium and Kameron Pond.",
+      "reviewed_at": "2026-11-03",
+      "note": "A misspelling of Padovano Commons that Residence Life's own Overlook page shares; there is no other Padavano on campus."
+    },
+    {
+      "names": ["Trustees Pavillion"],
+      "place": "Trustees Pavilion",
+      "url": "https://www.ramapo.edu/board/bylaws/",
+      "section": "Meeting Notice, Membership, Calendar",
+      "quote": "the Board’s regular meetings will take place in the Trustees Pavilion at 505 Ramapo Valley Road",
+      "reviewed_at": "2026-11-03",
+      "note": "A misspelling (double l) of the Trustees Pavilion, the campus building the Board of Trustees and other events meet in; no captured page spells it this way and no other Pavilion is a building on the map."
+    }
+  ]
+}
