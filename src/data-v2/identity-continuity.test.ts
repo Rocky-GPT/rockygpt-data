@@ -68,6 +68,28 @@ test('past event occurrences and deliberate seed retirements are expected losses
   assert.deepEqual(retired.failures, []);
 });
 
+test('a node merged into one the active release had is an expected loss; records moved to a new ID are not', () => {
+  // Six Archway department groups reviewed as offices' own pages: each group's record now belongs to its office.
+  const clubs = (keys: string[]): CampusIdentity['links'][number] => ({ collection: 'clubs', source_key: 'archway-clubs', source_record_keys: keys });
+  const groups: CampusIdentity[] = range(500, 6).map(n => ({ ...entity(n, 'organization'), links: [clubs([`group-${n}`])] }));
+  const before = registry([...seed.entities, ...range(600, 50).map(n => entity(n, 'organization')), ...groups]);
+  const owners = offices.slice(0, 6).map((office, index) => ({ ...office, links: [...office.links, groups[index].links[0]] }));
+  const merged = compareIdentityRegistries(before, registry([...owners, ...offices.slice(6), ...people, ...range(600, 50).map(n => entity(n, 'organization'))]), seed);
+  assert.deepEqual(merged.failures, []);
+  assert.deepEqual(merged.lost_by_kind, {});
+  assert.equal(merged.expected_losses.merged_into_existing, 6);
+  assert.deepEqual(merged.merged[0], { id: uuid(500), kind: 'organization', name: 'organization 500', into: uuid(1) });
+  // The same records under new IDs (a changed ID derivation) are still lost, and fail.
+  const renamed: CampusIdentity[] = groups.map(group => ({ ...group, id: uuid(Number(group.id.slice(-12)) + 1000) }));
+  const rederived = compareIdentityRegistries(before, registry([...seed.entities, ...range(600, 50).map(n => entity(n, 'organization')), ...renamed]), seed);
+  assert.equal(rederived.expected_losses.merged_into_existing, 0);
+  assert.deepEqual(rederived.failures, ['6 of 56 organization identities disappeared (at most 5 allowed)']);
+  // A node whose records went two ways, or nowhere, was not merged.
+  const split = compareIdentityRegistries(registry([...seed.entities, { ...entity(700, 'organization'), links: [clubs(['a', 'b'])] }]),
+    registry([{ ...offices[0], links: [...offices[0].links, clubs(['a'])] }, ...offices.slice(1), ...people]), seed);
+  assert.deepEqual(split.lost_by_kind, { organization: 1 });
+});
+
 test('relationship loss is judged only where both endpoints survive', () => {
   const evidence = (id: string) => [{ collection: 'programs' as const, source_key: 'catalog', source_record_key: `program-${id}`, field: 'customFields.rJQmj', source_record_id: id }];
   const programs = (rowId: (n: number) => string, withConvener: (n: number) => boolean) =>
