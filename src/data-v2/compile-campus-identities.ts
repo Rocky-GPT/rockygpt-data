@@ -33,6 +33,7 @@ import { compileStops, linkDirectoryPeople, linkHoursDesks, linkReviewedListings
 import standaloneNodes from '../reference/standalone-nodes.json';
 import reviewedListings from '../reference/reviewed-listings.json';
 import { compileOfficeStaff } from './office-staff';
+import { linkPeople } from './person-links';
 import { compileParkingLots, type ReviewedParking } from './parking-lots';
 import parkingLots from '../reference/parking-lots.json';
 import atriumMenuBoard from '../reference/atrium-menu-board.json';
@@ -486,6 +487,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   const staff = compileOfficeStaff(entities, snapshot.office_sections ?? [], inputs.collectedAt?.['office-pages'], ledger);
   entities.push(...staff.entities);
   addGraphRecords(graphRecords, 'staff', staff.records);
+  // People's departments, listings and rooms (person-links.ts); after the staff block, so staff are placed too.
+  unresolved.push(...linkPeople(entities, recordRows, snapshot.office_sections ?? [], campusBuildings, inputs.courseSubjects?.subjects).unresolved);
   // Parking lots, from the reviewed list of what the Public Safety parking pages say (parking-lots.json).
   const parking = compileParkingLots(entities, snapshot.office_sections ?? [], parkingLots as ReviewedParking, campusBuildings, inputs.collectedAt?.['office-pages'], ledger);
   entities.push(...parking.entities);
