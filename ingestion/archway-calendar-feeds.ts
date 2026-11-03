@@ -286,6 +286,7 @@ export async function fetchCalendarFeedEvents(previous: ArchwayEvent[] | null): 
 
   const limit = pLimit(RAMAPO_CONCURRENCY);
   let failed = 0;
+  let missingFiles = 0;
   const failures: string[] = [];
   const feeds = (await Promise.all(groups.map((group) => limit(async () => {
     const url = groupFeedUrl(group.groupId);
@@ -295,6 +296,8 @@ export async function fetchCalendarFeedEvents(previous: ArchwayEvent[] | null): 
         expectedContentTypes: ['text/calendar', 'text/plain', 'application/octet-stream', 'binary/octet-stream'],
         perHostConcurrency: RAMAPO_CONCURRENCY,
       });
+      // A group with no calendar file (18 of 263 on November 3) is not a failed read.
+      if (response.status === 404) { missingFiles += 1; return null; }
       const text = response.ok ? response.text() : '';
       if (!text.includes('BEGIN:VCALENDAR')) {
         failed += 1;
@@ -310,7 +313,7 @@ export async function fetchCalendarFeedEvents(previous: ArchwayEvent[] | null): 
   })))).filter((feed): feed is NonNullable<typeof feed> => Boolean(feed));
 
   noteSiteDownloads(`Archway calendar files: ${groups.length} read (${all ? 'every group' : 'groups with events'}), ` +
-    `${failed} failed${failures.length ? `: ${failures.join('; ')}` : ''}, plus the Subscribe page`);
+    `${missingFiles} groups have no file, ${failed} failed${failures.length ? `: ${failures.join('; ')}` : ''}, plus the Subscribe page`);
   if (groups.length && failed / groups.length > MAX_FEED_FAILURE_SHARE) {
     throw new Error(`${failed} of ${groups.length} Archway calendar files could not be read.`);
   }
