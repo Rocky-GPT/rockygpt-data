@@ -858,6 +858,62 @@
       "reviewed_at": "2026-10-15",
       "source_url": "https://www.ramapo.edu/study-abroad/",
       "note": "Added 2026-10-15 on Dan's request to add every office; proposed by Claude from a printed name, not reviewed alias by alias by him. The Study Abroad pages head their links \"Follow Ramapo International\" and send students to the Roukema Center's contacts."
+    },
+    {
+      "entity_id": "2feaee5a-22ab-42a9-a5b8-6160b36bed20",
+      "entity": "Dining Services",
+      "alias": "Ramapo Dining",
+      "reviewed_at": "2026-11-03",
+      "source_url": "https://archway.ramapo.edu/Dining/",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: Archway lists this office's own page under this name (https://archway.ramapo.edu/Dining/)."
+    },
+    {
+      "entity_id": "79137ff1-e634-4785-bc52-2aa4e32237b1",
+      "entity": "Ramapo Bookstore",
+      "alias": "Ramapo College Bookstore",
+      "reviewed_at": "2026-11-03",
+      "source_url": "https://archway.ramapo.edu/Bookstore/",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: Archway lists this office's own page under this name (https://archway.ramapo.edu/Bookstore/)."
+    },
+    {
+      "entity_id": "30adf6c0-33f9-4349-873d-18ae7e504766",
+      "entity": "Cahill Career Development Center",
+      "alias": "Cahill Career Center",
+      "reviewed_at": "2026-11-03",
+      "source_url": "https://www.ramapo.edu/careercenter/",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: Archway lists this office's own page under this name (https://www.ramapo.edu/careercenter/)."
+    },
+    {
+      "entity_id": "bd448eaa-d1c1-49b6-bbda-597b7c4e1423",
+      "entity": "Office of Specialized Services",
+      "alias": "Office for Specialized Services",
+      "reviewed_at": "2026-11-03",
+      "source_url": "https://archway.ramapo.edu/OFSS/",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: Archway lists this office's own page under this name (https://archway.ramapo.edu/OFSS/)."
+    },
+    {
+      "entity_id": "5ab938ac-bc5c-4fce-9771-db49be4fd2ef",
+      "entity": "Admissions",
+      "alias": "Ramapo Admissions",
+      "reviewed_at": "2026-11-03",
+      "source_url": "https://archway.ramapo.edu/Admissions/",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: Archway lists this office's own page under this name (https://archway.ramapo.edu/Admissions/)."
+    },
+    {
+      "entity_id": "c8fe1166-f8e7-4684-923a-164591b4b4dd",
+      "entity": "Housing & Residence Life",
+      "alias": "Ramapo College Residence Life",
+      "reviewed_at": "2026-11-03",
+      "source_url": "https://archway.ramapo.edu/ResLife/",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: Archway lists this office's own page under this name (https://archway.ramapo.edu/ResLife/)."
+    },
+    {
+      "entity_id": "08cf7420-0eab-4448-852d-7687bfe3d877",
+      "entity": "J. Lee's (Student Lounge & Game Room)",
+      "alias": "J. Lee's Lounge",
+      "reviewed_at": "2026-11-03",
+      "source_url": "https://map.ramapo.edu/?id=2292#!m/1218428?sbc/",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: the campus map names the student lounge and game room J. Lee's Lounge in the Student Center."
     }
   ],
   "buildings": [
@@ -961,6 +1017,48 @@
       "group": "Public Safety",
       "reviewed_at": "2026-09-24",
       "note": "Approved: the Archway department page for Public Safety, which links to ramapo.edu/publicsafety/. It belongs to the non-emergency office, the department's everyday office; the Emergency entry stays the emergency line."
+    },
+    {
+      "entity_id": "2feaee5a-22ab-42a9-a5b8-6160b36bed20",
+      "entity": "Dining Services",
+      "group": "Ramapo Dining",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: the Archway department page Ramapo Dining is Dining Services' own page. Dining Services' own site is titled Ramapo Dining (ramapo.sodexomyway.com)."
+    },
+    {
+      "entity_id": "79137ff1-e634-4785-bc52-2aa4e32237b1",
+      "entity": "Ramapo Bookstore",
+      "group": "Ramapo College Bookstore",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: the Archway department page Ramapo College Bookstore is the campus bookstore's own page."
+    },
+    {
+      "entity_id": "30adf6c0-33f9-4349-873d-18ae7e504766",
+      "entity": "Cahill Career Development Center",
+      "group": "Cahill Career Center",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: the Archway department page Cahill Career Center, which links to ramapo.edu/careercenter/, is the Cahill Career Development Center's own page."
+    },
+    {
+      "entity_id": "bd448eaa-d1c1-49b6-bbda-597b7c4e1423",
+      "entity": "Office of Specialized Services",
+      "group": "Office for Specialized Services",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: the Archway department page Office for Specialized Services is the Office of Specialized Services' own page."
+    },
+    {
+      "entity_id": "5ab938ac-bc5c-4fce-9771-db49be4fd2ef",
+      "entity": "Admissions",
+      "group": "Ramapo Admissions",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: the Archway department page Ramapo Admissions is the Admissions office's own page."
+    },
+    {
+      "entity_id": "c8fe1166-f8e7-4684-923a-164591b4b4dd",
+      "entity": "Housing & Residence Life",
+      "group": "Ramapo College Residence Life",
+      "reviewed_at": "2026-11-03",
+      "note": "Approved by Dan on 2026-11-03, one of the seven look-alike pairs he said to treat as one: the Archway page Ramapo College Residence Life is Housing & Residence Life's own page; the events Archway says it runs are Housing & Residence Life's."
     }
   ],
   "archway_contacts": [

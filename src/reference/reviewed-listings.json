@@ -54,7 +54,524 @@
       "quote": "Open Public Records Act (https://www.ramapo.edu/opra/)",
       "reviewed_at": "2026-11-03",
       "note": "Approved by Dan's 2026-11-03 OK to link what other offices' saved pages say. The General Counsel's Additional Resources list links the Open Public Records Act page."
+    },
+    {
+      "node": "Civic and Community Engagement Center",
+      "listed_by": "Center for Student Involvement",
+      "url": "https://www.ramapo.edu/csi/",
+      "section": "What we do",
+      "quote": "Supervise operations and employees of: C (https://www.ramapo.edu/ccec/)ivic and Community Engagement Center",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Center for Student Involvement's What we do list names it among the operations CSI supervises (the page splits the \"C\" from \"ivic\" around its link)."
+    },
+    {
+      "node": "Commuter Affairs",
+      "listed_by": "Center for Student Involvement",
+      "url": "https://www.ramapo.edu/csi/",
+      "section": "What we do",
+      "quote": "Commuter Affairs: (https://www.ramapo.edu/csi/commuter-affairs/)A community where commuter students can connect to academic, social, and leadership opportunities",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Center for Student Involvement's What we do list names it among the operations CSI supervises; its pages are in the CSI site."
+    },
+    {
+      "node": "Office of Fraternity and Sorority Life",
+      "listed_by": "Center for Student Involvement",
+      "url": "https://www.ramapo.edu/csi/",
+      "section": "What we do",
+      "quote": "Fraternity & Sorority Life (https://www.ramapo.edu/greek/): Greek system and events",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Center for Student Involvement's What we do list names it among the operations CSI supervises, linking the /greek/ site the office links."
+    },
+    {
+      "node": "J. Lee's (Student Lounge & Game Room)",
+      "listed_by": "Center for Student Involvement",
+      "url": "https://www.ramapo.edu/csi/",
+      "section": "What we do",
+      "quote": "J. Lee’s: Lounge and game room with pool table, table tennis, Wii and Xbox 360 systems, free popcorn and events",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Center for Student Involvement's What we do list names it among the operations CSI supervises."
+    },
+    {
+      "node": "Roadrunner Central",
+      "listed_by": "Center for Student Involvement",
+      "url": "https://www.ramapo.edu/csi/",
+      "section": "What we do",
+      "quote": "Roadrunner Central: Tickets for off campus events including Broadway shows and sporting events; discounted movie tickets",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Center for Student Involvement's What we do list names it among the operations CSI supervises; its own website is a page of the CSI site."
+    },
+    {
+      "node": "Student Activities Resource Management",
+      "listed_by": "Center for Student Involvement",
+      "url": "https://www.ramapo.edu/csi/",
+      "section": "What we do",
+      "quote": "Student Activities Resource Management (SARM): Club financial center",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Center for Student Involvement's What we do list names it among the operations CSI supervises. The Archway group of the same name (sarm@ramapo.edu) is that unit."
+    },
+    {
+      "node": "Women's Center & LGBTQ+ Services",
+      "listed_by": "Center for Student Involvement",
+      "url": "https://www.ramapo.edu/csi/",
+      "section": "What we do",
+      "quote": "Women’s Center & LGBTQ+ Services (https://www.ramapo.edu/womenscenter/): A welcoming space and caring community for people of all genders and sexualities",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Center for Student Involvement's What we do list names it among the operations CSI supervises, linking the /womenscenter/ site the office links."
+    },
+    {
+      "node": "Office of Violence Prevention",
+      "listed_by": "Center for Student Involvement",
+      "url": "https://www.ramapo.edu/csi/",
+      "section": "What we do",
+      "quote": "Office of Violence Prevention: (https://www.ramapo.edu/student-affairs/ovp/) Engages the campus community in evidence-based prevention education",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Center for Student Involvement's What we do list names it among the operations CSI supervises. The Archway group of the same name (ovp@ramapo.edu) is that office; its page is in the CSI site (/csi/ovp/)."
+    },
+    {
+      "node": "Flag Football Club",
+      "listed_by": "Center for Student Involvement",
+      "url": "https://www.ramapo.edu/clubs/organization/flag-football/",
+      "section": "Flag Football",
+      "quote": "Intramural Flag Football is dedicated to bringing students together through fun, inclusive, and competitive play.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The CSI club directory's Flag Football page describes the Archway Flag Football Club in the words of its Archway mission (the intramural flag football program); its page name lacks \"Club\", so the club-page match missed it."
+    },
+    {
+      "node": "Sophomores Advancing In Leadership (S.A.I.L)",
+      "listed_by": "Student Leadership Programs",
+      "url": "https://www.ramapo.edu/leadership/sail-sophomores-advancing-leadership/",
+      "section": "About Us",
+      "quote": "Sophomores Advancing In Leadership (SAIL) is a Leadership Certificate program",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Student Leadership Programs site (/leadership/) has a page for SAIL, the Archway group of that name."
+    },
+    {
+      "node": "Ramapo Admissions Student Ambassadors",
+      "listed_by": "Admissions",
+      "url": "https://www.ramapo.edu/undergraduate/ramapo-ambassadors/",
+      "section": "Ramapo Admissions Student Ambassadors",
+      "quote": "Our Student Ambassadors are an essential part of the Ramapo College experience",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Admissions' own Student Ambassadors page, under the Archway group's own name."
+    },
+    {
+      "node": "Wellness Is Now",
+      "listed_by": "Health Promotion",
+      "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+      "section": "Welcome to Wellness Is Now (W.I.N.)",
+      "quote": "The Wellness Is Now Peer Education program is an ever-growing and developing student leadership program",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Health Promotion's peer education page is the W.I.N. program's own page; the Archway group's email (win@ramapo.edu) is the one the page gives."
+    },
+    {
+      "node": "We Care",
+      "listed_by": "Civic and Community Engagement Center",
+      "url": "https://www.ramapo.edu/ccec/clothing-closet/",
+      "section": "How to Access the Clothing Closet",
+      "quote": "Students can access the closet by emailing the We Care Program at wecare@ramapo.edu",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The CCEC's Clothing Closet page sends students to the We Care Program at wecare@ramapo.edu, the Archway group We Care's own email."
+    },
+    {
+      "node": "Global Roadrunners",
+      "listed_by": "Roukema Center for International Education",
+      "url": "https://www.ramapo.edu/study-abroad/roadrunners/",
+      "section": "Q: What is the Global Roadrunner program?",
+      "quote": "The Global Roadrunner Program is designed to engage returned international program students",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The study abroad site (the Roukema Center's, office-site-owners.json) has the Global Roadrunner program's own page."
+    },
+    {
+      "node": "Bandshell",
+      "listed_by": "Events and Conferences",
+      "url": "https://www.ramapo.edu/conferences/facilities/additional-facilities/",
+      "section": "Bandshell",
+      "quote": "Stage 70-100 chairs, 4 20amp circuits (1020 sq. ft.) Lawn 8500 chairs",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Events and Conferences lists the Bandshell among the facilities it books."
+    },
+    {
+      "node": "York Room",
+      "listed_by": "Events and Conferences",
+      "url": "https://www.ramapo.edu/conferences/facilities/additional-facilities/",
+      "section": "York Room",
+      "quote": "47.5′ X 22′ (1,045 sq.ft.) 49 Chairs",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Events and Conferences lists the York Room among the facilities it books; the campus map's York Room links the Events and Conferences site."
+    },
+    {
+      "node": "Conference Center",
+      "listed_by": "Events and Conferences",
+      "url": "https://www.ramapo.edu/conferences/facilities/conference-center/",
+      "section": "Trustees Pavilion / Conference Center",
+      "quote": "The one-story Trustees Pavilion has state of-the-art technology and divisible meeting space.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The campus map's Conference Center in the Trustees Pavilion links the Events and Conferences site, whose Conference Center page is this one."
+    },
+    {
+      "node": "H-Wing Auditorium",
+      "listed_by": "Events and Conferences",
+      "url": "https://www.ramapo.edu/conferences/facilities/h-wing-auditorium/",
+      "section": "H-Wing Auditorium",
+      "quote": "VIRTUAL TOUR: H-WING AUDITORIUM",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Events and Conferences has a facility page for the H-Wing Auditorium; the campus map's entry links its site."
+    },
+    {
+      "node": "Alumni Lounges",
+      "listed_by": "Events and Conferences",
+      "url": "https://www.ramapo.edu/conferences/facilities/student-center/",
+      "section": "Alumni Lounges Combined (SC 156/157/158)",
+      "quote": "300 Chairs",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Events and Conferences lists the Student Center's Alumni Lounges (SC 156-158); the campus map's entry links its site."
+    },
+    {
+      "node": "Building Maintenance (Repairs & Trades Shops)",
+      "listed_by": "Facilities Management",
+      "url": "https://www.ramapo.edu/facilities/",
+      "section": "Hours",
+      "quote": "Building Maintenance Monday – Friday, 7:00a.m. to 10:30 p.m.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Facilities Management's own page gives this unit's hours; the campus map's entry for it, in the Facilities Complex, links that page."
+    },
+    {
+      "node": "Building Services (Housekeeping & Events - Setups)",
+      "listed_by": "Facilities Management",
+      "url": "https://www.ramapo.edu/facilities/",
+      "section": "Hours",
+      "quote": "Building Services Monday – Friday, 7:00 a.m. to 12:00 a.m.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Facilities Management's own page gives this unit's hours; the campus map's entry for it, in the Facilities Complex, links that page."
+    },
+    {
+      "node": "Grounds",
+      "listed_by": "Facilities Management",
+      "url": "https://www.ramapo.edu/facilities/",
+      "section": "Hours",
+      "quote": "Grounds Maintenance Monday – Saturday, 7:00 a.m. to 3:30 p.m.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Facilities Management's own page gives this unit's hours; the campus map's entry for it, in the Facilities Complex, links that page."
+    },
+    {
+      "node": "Receiving/Storeroom",
+      "listed_by": "Facilities Management",
+      "url": "https://www.ramapo.edu/facilities/",
+      "section": "Hours",
+      "quote": "Receiving / Storeroom Monday – Friday, 8:00 a.m. to 4:00 p.m.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Facilities Management's own page gives this unit's hours; the campus map's entry for it, in the Facilities Complex, links that page."
+    },
+    {
+      "node": "Friends of Ramapo Office",
+      "listed_by": "Ramapo College Foundation",
+      "url": "https://www.ramapo.edu/foundation/friends/benefits/",
+      "section": "Contact Information",
+      "quote": "For any additional information please email friends@ramapo.edu (mailto:friends@ramapo.edu) or visit our office in the Birch Mansion to join in person.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Foundation's Friends of Ramapo page names its office in the Birch Mansion, where the campus map puts the Friends of Ramapo Office."
+    },
+    {
+      "node": "Library Computer Lab",
+      "listed_by": "IT Help Desk",
+      "url": "https://www.ramapo.edu/its/computer-labs/",
+      "section": "Computer Labs",
+      "quote": "The main computer lab in the Learning Commons is located on the fourth floor, and consists of 15 Windows computers and 3 Macs.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The IT site's Computer Labs page (the IT Help Desk owns /its/) describes the Learning Commons lab; the campus map's Library Computer Lab links this page."
+    },
+    {
+      "node": "H Wing Computer Lab",
+      "listed_by": "IT Help Desk",
+      "url": "https://www.ramapo.edu/its/computer-labs/",
+      "section": "Computer Labs",
+      "quote": "In H-Wing, you can find a mix of Windows and Mac computers in the lounge area, near the entrance to the H-Wing Auditorium.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The IT site's Computer Labs page describes the H-Wing lab; the campus map's H Wing Computer Lab links this page."
+    },
+    {
+      "node": "Fire Safety Officer",
+      "listed_by": "Environmental Health and Safety",
+      "url": "https://www.ramapo.edu/ehs/fire-safety/",
+      "section": "Mission",
+      "quote": "The Office of the Fire Marshal is dedicated to providing the students, faculty, staff, administration, and guests of Ramapo College of New Jersey with a sustainable educational environment free from recognized fire, life safety, and health hazards.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The campus map's Fire Safety Officer links the EHS site's Fire Safety page, which is the Office of the Fire Marshal's."
+    },
+    {
+      "node": "Veterans' Affairs",
+      "listed_by": "Financial Aid",
+      "url": "https://www.ramapo.edu/finaid/vet-prog/",
+      "section": "Contact Our School Certifying Official",
+      "quote": "Please contact our school certifying official in order to see what requirements are needed to utilize benefits from Veteran Affairs.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The campus map's Veterans' Affairs (Building E) links this Financial Aid page, whose certifying official is in E-209."
+    },
+    {
+      "node": "Study Abroad",
+      "listed_by": "Roukema Center for International Education",
+      "url": "https://www.ramapo.edu/international/",
+      "section": "Meet the Team",
+      "quote": "Director of Study Abroad Phone: +1 (201) 684-7806",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The campus map's Study Abroad links the Roukema Center's own site, whose team includes the Director of Study Abroad."
+    },
+    {
+      "node": "Pine Hall Student Lounge",
+      "listed_by": "Housing & Residence Life",
+      "url": "https://www.ramapo.edu/reslife/pine-hall/",
+      "section": "Pine Hall Building Features",
+      "quote": "Floors 2 through 5 have 2 lounges per floor.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Housing & Residence Life's own page for the hall names this space; the campus map's entry for it links that page. (The hall's own office shares the hall's name with its building, so it cannot be named here.)"
+    },
+    {
+      "node": "Laurel Hall Student Lounges",
+      "listed_by": "Housing & Residence Life",
+      "url": "https://www.ramapo.edu/reslife/laurel-hall/",
+      "section": "Building Amenities",
+      "quote": "Lounges: Lounge spaces are available on the first and second floors.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Housing & Residence Life's own page for the hall names this space; the campus map's entry for it links that page. (The hall's own office shares the hall's name with its building, so it cannot be named here.)"
+    },
+    {
+      "node": "Laurel Hall Screening Room",
+      "listed_by": "Housing & Residence Life",
+      "url": "https://www.ramapo.edu/reslife/laurel-hall/",
+      "section": "Building Amenities",
+      "quote": "Community Spaces: The first floor includes a screening room",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Housing & Residence Life's own page for the hall names this space; the campus map's entry for it links that page. (The hall's own office shares the hall's name with its building, so it cannot be named here.)"
+    },
+    {
+      "node": "Mackin Student Lounges",
+      "listed_by": "Housing & Residence Life",
+      "url": "https://www.ramapo.edu/reslife/mackin-hall/",
+      "section": "Mackin Hall Building Features",
+      "quote": "Each floor contains a common space lounge.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Housing & Residence Life's own page for the hall names this space; the campus map's entry for it links that page. (The hall's own office shares the hall's name with its building, so it cannot be named here.)"
+    },
+    {
+      "node": "Bischoff Student Lounges",
+      "listed_by": "Housing & Residence Life",
+      "url": "https://www.ramapo.edu/reslife/bischoff-hall/",
+      "section": "Bischoff Hall Building Features",
+      "quote": "Flat screen televisions and Wi-Fi in all floor lounges",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Housing & Residence Life's own page for the hall names this space; the campus map's entry for it links that page. (The hall's own office shares the hall's name with its building, so it cannot be named here.)"
+    },
+    {
+      "node": "The Overlook Student Lounges",
+      "listed_by": "Housing & Residence Life",
+      "url": "https://www.ramapo.edu/reslife/the-overlook/",
+      "section": "The Overlook Building Features",
+      "quote": "Each floor contains a common space lounge.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Housing & Residence Life's own page for the hall names this space; the campus map's entry for it links that page. (The hall's own office shares the hall's name with its building, so it cannot be named here.)"
+    },
+    {
+      "node": "Lounge area for The Village residents",
+      "listed_by": "Housing & Residence Life",
+      "url": "https://www.ramapo.edu/reslife/village/",
+      "section": "The Thomases Commons",
+      "quote": "The Thomases Commons is the central point of the Village, and holds the Village Office, mail room, laundry room, and lounge.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Housing & Residence Life's own page for the hall names this space; the campus map's entry for it links that page. (The hall's own office shares the hall's name with its building, so it cannot be named here.)"
+    },
+    {
+      "node": "Laundry Room",
+      "listed_by": "Housing & Residence Life",
+      "url": "https://www.ramapo.edu/reslife/college-park-apartments-cpa/",
+      "section": "The Lodge: What You Should Know",
+      "quote": "The laundry room for the College Park Apartments area is located in front of the Lodge.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Housing & Residence Life's own page for the hall names this space; the campus map's entry for it links that page. (The hall's own office shares the hall's name with its building, so it cannot be named here.)"
+    },
+    {
+      "node": "Birch Tree Inn",
+      "listed_by": "Dining Services",
+      "url": "https://www.ramapo.edu/tours/dining-shopping/",
+      "section": "Birch Tree Inn",
+      "quote": "Located in the Robert A. Scott Student Center, the Birch Tree Inn offers an all-you-care-to-eat dining program",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Dining Services' reviewed website is this Dining & Shopping page, which has a section for each dining venue; the venue's own website is the same page. The page's Bookstore section is not a Dining Services venue and is not linked."
+    },
+    {
+      "node": "The Atrium",
+      "listed_by": "Dining Services",
+      "url": "https://www.ramapo.edu/tours/dining-shopping/",
+      "section": "The Atrium",
+      "quote": "The Atrium, also located in the Robert A. Scott Student Center, is an ideal hub for the campus community.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Dining Services' reviewed website is this Dining & Shopping page, which has a section for each dining venue; the venue's own website is the same page. The page's Bookstore section is not a Dining Services venue and is not linked."
+    },
+    {
+      "node": "We Proudly Serve Starbucks at Common Grounds",
+      "listed_by": "Dining Services",
+      "url": "https://www.ramapo.edu/tours/dining-shopping/",
+      "section": "Common Grounds",
+      "quote": "We proudly serve Starbucks at Common Grounds.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Dining Services' reviewed website is this Dining & Shopping page, which has a section for each dining venue; the venue's own website is the same page. The page's Bookstore section is not a Dining Services venue and is not linked."
+    },
+    {
+      "node": "Dunkin'",
+      "listed_by": "Dining Services",
+      "url": "https://www.ramapo.edu/tours/dining-shopping/",
+      "section": "Dunkin",
+      "quote": "The newly opened NextGen Dunkin’ restaurant on the Ramapo College campus",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. Dining Services' reviewed website is this Dining & Shopping page, which has a section for each dining venue; the venue's own website is the same page. The page's Bookstore section is not a Dining Services venue and is not linked."
+    },
+    {
+      "node": "Alpha Omicron Pi",
+      "listed_by": "College Panhellenic Council",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/cph/",
+      "section": "College Panhellenic Council (CPH)",
+      "quote": "At Ramapo, there are six (6) NPC member sororities: Alpha Omicron Pi, Delta Phi Epsilon, Theta Phi Alpha, Sigma Delta Tau, Alpha Sigma Alpha and Sigma Sigma Sigma.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The College Panhellenic Council's page on the Fraternity and Sorority Life site names Ramapo's six NPC member sororities, this one among them by its Archway name."
+    },
+    {
+      "node": "Delta Phi Epsilon",
+      "listed_by": "College Panhellenic Council",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/cph/",
+      "section": "College Panhellenic Council (CPH)",
+      "quote": "At Ramapo, there are six (6) NPC member sororities: Alpha Omicron Pi, Delta Phi Epsilon, Theta Phi Alpha, Sigma Delta Tau, Alpha Sigma Alpha and Sigma Sigma Sigma.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The College Panhellenic Council's page on the Fraternity and Sorority Life site names Ramapo's six NPC member sororities, this one among them by its Archway name."
+    },
+    {
+      "node": "Theta Phi Alpha",
+      "listed_by": "College Panhellenic Council",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/cph/",
+      "section": "College Panhellenic Council (CPH)",
+      "quote": "At Ramapo, there are six (6) NPC member sororities: Alpha Omicron Pi, Delta Phi Epsilon, Theta Phi Alpha, Sigma Delta Tau, Alpha Sigma Alpha and Sigma Sigma Sigma.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The College Panhellenic Council's page on the Fraternity and Sorority Life site names Ramapo's six NPC member sororities, this one among them by its Archway name."
+    },
+    {
+      "node": "Sigma Delta Tau",
+      "listed_by": "College Panhellenic Council",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/cph/",
+      "section": "College Panhellenic Council (CPH)",
+      "quote": "At Ramapo, there are six (6) NPC member sororities: Alpha Omicron Pi, Delta Phi Epsilon, Theta Phi Alpha, Sigma Delta Tau, Alpha Sigma Alpha and Sigma Sigma Sigma.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The College Panhellenic Council's page on the Fraternity and Sorority Life site names Ramapo's six NPC member sororities, this one among them by its Archway name."
+    },
+    {
+      "node": "Alpha Sigma Alpha",
+      "listed_by": "College Panhellenic Council",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/cph/",
+      "section": "College Panhellenic Council (CPH)",
+      "quote": "At Ramapo, there are six (6) NPC member sororities: Alpha Omicron Pi, Delta Phi Epsilon, Theta Phi Alpha, Sigma Delta Tau, Alpha Sigma Alpha and Sigma Sigma Sigma.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The College Panhellenic Council's page on the Fraternity and Sorority Life site names Ramapo's six NPC member sororities, this one among them by its Archway name."
+    },
+    {
+      "node": "Sigma Sigma Sigma",
+      "listed_by": "College Panhellenic Council",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/cph/",
+      "section": "College Panhellenic Council (CPH)",
+      "quote": "At Ramapo, there are six (6) NPC member sororities: Alpha Omicron Pi, Delta Phi Epsilon, Theta Phi Alpha, Sigma Delta Tau, Alpha Sigma Alpha and Sigma Sigma Sigma.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The College Panhellenic Council's page on the Fraternity and Sorority Life site names Ramapo's six NPC member sororities, this one among them by its Archway name."
+    },
+    {
+      "node": "Alpha Kappa Psi Professional Business Fraternity",
+      "listed_by": "Professional Fraternity Council",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/pfc/",
+      "section": "Professional Fraternity Council (PFC)",
+      "quote": "At Ramapo, there are three (3) PFC member groups: Alpha Kappa Psi, Alpha Phi Omega, and Phi Alpha Delta.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Professional Fraternity Council's page names its three member groups, Alpha Kappa Psi among them; Archway's own PFC listing names the same three, and Alpha Kappa Psi is Archway's Alpha Kappa Psi Professional Business Fraternity, the only node with that name."
+    },
+    {
+      "node": "Alpha Phi Omega",
+      "listed_by": "Professional Fraternity Council",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/pfc/",
+      "section": "Professional Fraternity Council (PFC)",
+      "quote": "At Ramapo, there are three (3) PFC member groups: Alpha Kappa Psi, Alpha Phi Omega, and Phi Alpha Delta.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Professional Fraternity Council's page names its three member groups, this one among them by its Archway name; Archway's own PFC listing names the same three."
+    },
+    {
+      "node": "Phi Alpha Delta",
+      "listed_by": "Professional Fraternity Council",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/pfc/",
+      "section": "Professional Fraternity Council (PFC)",
+      "quote": "At Ramapo, there are three (3) PFC member groups: Alpha Kappa Psi, Alpha Phi Omega, and Phi Alpha Delta.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The Professional Fraternity Council's page names its three member groups, this one among them by its Archway name; Archway's own PFC listing names the same three."
+    },
+    {
+      "node": "Alpha Kappa Alpha Sorority, Inc.",
+      "listed_by": "National Pan-Hellenic Conference",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/nphc/",
+      "section": "National Pan-Hellenic Council (NPHC)",
+      "quote": "At Ramapo, we currently have four (4) active NPHC chapters: Alpha Kappa Alpha Sorority Inc., Omega Psi Phi Fraternity, Inc., Zeta Phi Beta Sorority Inc., and Sigma Gamma Rho Sorority, Inc.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The National Pan-Hellenic Council (NPHC) page names its four active chapters, this one among them. That council is Archway's National Pan-Hellenic Conference group, whose Archway site is archway.ramapo.edu/NPHC/."
+    },
+    {
+      "node": "Omega Psi Phi Fraternity, Inc.",
+      "listed_by": "National Pan-Hellenic Conference",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/nphc/",
+      "section": "National Pan-Hellenic Council (NPHC)",
+      "quote": "At Ramapo, we currently have four (4) active NPHC chapters: Alpha Kappa Alpha Sorority Inc., Omega Psi Phi Fraternity, Inc., Zeta Phi Beta Sorority Inc., and Sigma Gamma Rho Sorority, Inc.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The National Pan-Hellenic Council (NPHC) page names its four active chapters, this one among them. That council is Archway's National Pan-Hellenic Conference group, whose Archway site is archway.ramapo.edu/NPHC/."
+    },
+    {
+      "node": "Zeta Phi Beta Sorority, Inc.",
+      "listed_by": "National Pan-Hellenic Conference",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/nphc/",
+      "section": "National Pan-Hellenic Council (NPHC)",
+      "quote": "At Ramapo, we currently have four (4) active NPHC chapters: Alpha Kappa Alpha Sorority Inc., Omega Psi Phi Fraternity, Inc., Zeta Phi Beta Sorority Inc., and Sigma Gamma Rho Sorority, Inc.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The National Pan-Hellenic Council (NPHC) page names its four active chapters, this one among them. That council is Archway's National Pan-Hellenic Conference group, whose Archway site is archway.ramapo.edu/NPHC/."
+    },
+    {
+      "node": "Sigma Gamma Rho Sorority, Inc.",
+      "listed_by": "National Pan-Hellenic Conference",
+      "url": "https://www.ramapo.edu/greek/chapters-councils/nphc/",
+      "section": "National Pan-Hellenic Council (NPHC)",
+      "quote": "At Ramapo, we currently have four (4) active NPHC chapters: Alpha Kappa Alpha Sorority Inc., Omega Psi Phi Fraternity, Inc., Zeta Phi Beta Sorority Inc., and Sigma Gamma Rho Sorority, Inc.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The National Pan-Hellenic Council (NPHC) page names its four active chapters, this one among them. That council is Archway's National Pan-Hellenic Conference group, whose Archway site is archway.ramapo.edu/NPHC/."
     }
   ],
-  "placements": []
+  "placements": [
+    {
+      "node": "Office of Violence Prevention",
+      "building": "Academic Building C",
+      "room": "C-216",
+      "url": "https://www.ramapo.edu/csi/ovp/",
+      "section": "Office of Violence Prevention",
+      "quote": "Location: C-216 (near the fishbowl) Phone: (201) 684-7430 Email: ovp@ramapo.edu",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The office's own page gives its location; C is Academic Building C's reviewed room prefix. The Archway group has no contact of its own to place it."
+    },
+    {
+      "node": "Wellness Is Now",
+      "building": "Academic Building E",
+      "room": "E-211A",
+      "url": "https://www.ramapo.edu/health-promotion/peer-education/",
+      "section": "WIN Outreach Presentation Request Form (https://www.ramapo.edu/health-promotion/outreach-request-form/)",
+      "quote": "The Wellness Is Now office is located at the beginning of second-floor E-wing, E-211A.",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The program's own page gives its office; E is Academic Building E's reviewed room prefix. (The heading is the page's, a form link included.)"
+    },
+    {
+      "node": "School of Social Sciences and Social Work",
+      "building": "Anisfield School of Business (ASB)",
+      "room": "ASB-431",
+      "url": "https://www.ramapo.edu/myadvisor/",
+      "section": "Faculty Members / Advisors by School",
+      "quote": "School of Social Sciences and Social Work Office: ASB-431 Phone: (201) 684-7625",
+      "reviewed_at": "2026-11-03",
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The advising page gives each school's office; ASB is the Anisfield School of Business building's reviewed room prefix. The campus map's place for this office still uses the former school name (School of Social Science and Human Services), which two schools carry as an alias, so it placed neither."
+    }
+  ]
 }
