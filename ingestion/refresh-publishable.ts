@@ -19,7 +19,7 @@ import {
   runIsolatedRefresh,
   type KeptSource,
 } from './refresh-isolation';
-import { ALLOW_SITE_FETCH_ENV, noteSiteDownloads, SITE_DOWNLOADS_NOTE, siteFetchAllowed } from './site-guard';
+import { ALLOW_SITE_FETCH_ENV, noteSiteDownloads, siteFetchAllowed, startSiteDownloadsNote } from './site-guard';
 
 /**
  * Collector commands that can renew each non-static publishable source.
@@ -304,7 +304,7 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
       `${restored.artifactsDownloaded} artifact(s) and ${restored.documentsDownloaded} document(s) ` +
       `(the rest matched the last publish's saved copy).`
   );
-  fs.rmSync(SITE_DOWNLOADS_NOTE, { force: true });
+  startSiteDownloadsNote();
   const before = evaluateSourceProvenance(SOURCES);
   const early = spreadHeavySources(before);
   if (early.length) {
@@ -386,7 +386,7 @@ async function rebuildFromCapturedPages(): Promise<void> {
       `${restored.artifactsDownloaded} artifact(s) and ${restored.documentsDownloaded} document(s) ` +
       `(the rest matched the last publish's saved copy).`
   );
-  fs.rmSync(SITE_DOWNLOADS_NOTE, { force: true });
+  startSiteDownloadsNote();
   noteSiteDownloads(`Dev build: no collector ran; built from production's captured pages (${restored.version}).`);
   const aged = evaluateSourceProvenance(SOURCES)
     .filter((state) => state.status === 'stale' || state.status === 'unknown');

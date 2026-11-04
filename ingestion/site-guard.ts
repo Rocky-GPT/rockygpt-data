@@ -83,9 +83,23 @@ export async function paceRamapoRequest(input: string | URL): Promise<void> {
  */
 export const SITE_DOWNLOADS_NOTE = path.join('data', 'review', 'site-downloads.txt');
 
-/** Prints a line and adds it to the run's note of what was read from Ramapo's sites. */
-export function noteSiteDownloads(line: string, notePath = path.join(process.cwd(), SITE_DOWNLOADS_NOTE)): void {
+/**
+ * Set by the refresh to the note's path for itself and the collectors it starts. Anything else
+ * (the test suite, a collector run by hand) only prints its lines, so the note holds the run's
+ * real counts and nothing from the tests that run after it.
+ */
+export const SITE_DOWNLOADS_NOTE_ENV = 'ROCKYGPT_SITE_DOWNLOADS_NOTE';
+
+/** Starts the run's note afresh and has this process and the collectors it starts write to it. */
+export function startSiteDownloadsNote(notePath = path.join(process.cwd(), SITE_DOWNLOADS_NOTE)): void {
+  fs.rmSync(notePath, { force: true });
+  process.env[SITE_DOWNLOADS_NOTE_ENV] = notePath;
+}
+
+/** Prints a line and, during a refresh, adds it to the run's note of what was read from Ramapo's sites. */
+export function noteSiteDownloads(line: string, notePath = process.env[SITE_DOWNLOADS_NOTE_ENV]): void {
   console.log(line);
+  if (!notePath) return;
   try {
     fs.mkdirSync(path.dirname(notePath), { recursive: true });
     fs.appendFileSync(notePath, `${line}\n`);
