@@ -52,6 +52,17 @@ test('a schedule page gives each game once, with its date, side, place and resul
   assert.deepEqual([parsed.games[2].site, parsed.games[2].time, parsed.games[2].note], ['neutral', 'TBD', 'NJAC Tournament']);
 });
 
+test('the season record is read by its labels, whatever markup holds them', () => {
+  // As the live pages show it (2026-11-04): each label, then its value, with percentage lines between.
+  const page = `<html><body><nav><a>Home</a><a>Schedule</a></nav><div class="schedule-records"><div><div>Overall</div><div>8-7-3</div></div>
+    <div><div>Overall PCT</div><div>.528</div></div><div><div>Conf</div><div>3-4-2</div></div><div><div>Conf. PCT</div><div></div></div>
+    <div><div>Streak</div><div>L3</div></div><div><div>Home</div><div>4-0-3</div></div><div><div>Away</div><div>3-6</div></div>
+    <div><div>Neutral</div><div>1-1</div></div></div></body></html>`;
+  assert.deepEqual(parseSchedule(page).record, { Overall: '8-7-3', Conf: '3-4-2', Streak: 'L3', Home: '4-0-3', Away: '3-6', Neutral: '1-1' });
+  // With no record part, the page's own text is read; a menu "Home" with no count after it is not.
+  assert.deepEqual(parseSchedule('<html><body><a>Home</a><p>News</p><span>Overall</span> <span>2-1</span></body></html>').record, { Overall: '2-1' });
+});
+
 test('a coaches page gives each coach once, with the email and phone it links', () => {
   assert.deepEqual(parseCoaches(coaches), [
     { name: 'DJ Pinton', title: 'Head Coach', email: 'dpinton@ramapo.edu', phone: '201-684-7198' },

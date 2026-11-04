@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import type { AnyNode } from 'domhandler';
 import type { CampusIdentity, CampusIdentityRelationship, IdentityEvidence } from './campus-identities';
 import { campusBuildingId, type CampusBuildingsArtifact } from './campus-buildings';
 import type { IdentityCoverageIssue } from './compile-campus-identities';
@@ -89,6 +90,37 @@ function ownText(_$: cheerio.CheerioAPI, node: { text(): string }): string {
   return text(node.text());
 }
 
+const RECORD_LABEL = /^(Overall|Conf\.?|Conference|Home|Away|Neutral|Streak):?$/i;
+const RECORD_VALUE = /^\d+-\d+(?:-\d+)?$/;
+const STREAK_VALUE = /^[WLT]\d+$/i;
+
+/**
+ * The season record a schedule page shows above its games: each label the site writes (Overall,
+ * Conf, Home, Away, Neutral, Streak) with the value right after it, by the page's own text in
+ * order, so it does not depend on the markup around them. Read from the page's record parts
+ * (any element whose class names a record) first, the whole page when those give none. A label
+ * whose next text is not a win-loss(-tie) count (a streak: W3, L1) is not read, so a percentage
+ * line or a menu item named "Home" is skipped.
+ */
+function seasonRecord($: cheerio.CheerioAPI): Record<string, string> {
+  const read = (scope: cheerio.Cheerio<AnyNode>) => {
+    const leaves = scope.find('*').addBack().toArray()
+      .filter(node => node.type === 'tag' && !$(node).children().length)
+      .map(node => text($(node).text())).filter(Boolean);
+    const record: Record<string, string> = {};
+    leaves.forEach((leaf, index) => {
+      const label = RECORD_LABEL.exec(leaf)?.[1].replace(/\.$/, '');
+      const value = leaves[index + 1] ?? '';
+      if (!label || label in record) return;
+      if (/^streak$/i.test(label) ? STREAK_VALUE.test(value) : RECORD_VALUE.test(value)) record[label] = value;
+    });
+    return record;
+  };
+  const parts = $('[class*="record"]').filter((_, node) => !$(node).parents('[class*="record"]').length);
+  const fromParts = read(parts);
+  return Object.keys(fromParts).length ? fromParts : read($('body'));
+}
+
 /**
  * A team's schedule page (Sidearm's list view): one entry per game. Each game's date, time,
  * home/away, opponent, place and result are read from the entry's own parts. The page repeats the
@@ -98,11 +130,7 @@ export function parseSchedule(html: string): ParsedSchedule {
   const $ = cheerio.load(html);
   const title = text($('title').first().text()).replace(/\s+-\s+Ramapo College.*$/i, '');
   const season = seasonOf(title);
-  const record: Record<string, string> = {};
-  $('.sidearm-schedule-record li').each((_, item) => {
-    const parts = $(item).find('span').toArray().map(span => ownText($, $(span))).filter(Boolean);
-    if (parts.length >= 2 && parts[1]) record[parts[0].replace(/:$/, '')] = parts.slice(1).join(' ');
-  });
+  const record = seasonRecord($);
   const games: AthleticsGame[] = [];
   const seen = new Set<string>();
   $('li.sidearm-schedule-game').each((_, item) => {
