@@ -7,7 +7,8 @@ counts can be compared with production's (and with a laptop build) straight from
 
 A link is one relationship from a node's doc to another node (by id, or by a record that another
 node links), the way the link-count reports count them. --show prints every link, in and out, of
-each node whose name matches exactly (case does not matter).
+each node whose name matches exactly (case does not matter). Each varsity team's line says how
+many games and coaches its record holds, so a change in what the athletics pages give shows here.
 """
 
 import argparse
@@ -31,6 +32,9 @@ def main(argv: list[str] | None = None) -> int:
     connection = lb.Connection(database)
     try:
         rows = list(connection.execute("MATCH (e:Entity) RETURN e.id, e.kind, e.name, e.doc"))
+        teams = list(connection.execute(
+            "MATCH (e:Entity)-[:HAS_RECORD]->(r:Record) WHERE r.collection = 'teams'"
+            " RETURN e.name, r.doc ORDER BY e.name"))
     finally:
         connection.close()
     nodes = {row[0]: (row[1], row[2], _loads(row[3])) for row in rows}
@@ -67,6 +71,14 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  nodes {kind}: {count}")
     for kind, count in collections.Counter(kind for _, kind, _ in edges).most_common():
         print(f"  links {kind}: {count}")
+
+    for name, doc in teams:
+        record = _loads(doc)
+        games = record.get("games") or []
+        played = sum(1 for game in games if game.get("result"))
+        print(f"  team {name}: {record.get('season') or 'no season'}, {len(games)} games"
+              f" ({played} with a result), {len(record.get('coaches') or [])} coaches,"
+              f" record {record.get('record') or {}}")
 
     wanted = {name.strip().lower() for name in args.show.split(";") if name.strip()}
     for name in sorted(wanted):
