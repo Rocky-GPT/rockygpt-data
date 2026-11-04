@@ -122,6 +122,19 @@ function seasonRecord($: cheerio.CheerioAPI): Record<string, string> {
 }
 
 /**
+ * A game's start time when its date line does not hold it: from the entry's own time part (an
+ * element whose class names a time), else from the entry's text without its opponent, place,
+ * result and note, so an opponent "TBA" is not read as the time.
+ */
+function gameTime($: cheerio.CheerioAPI, entry: cheerio.Cheerio<AnyNode>): string {
+  const own = entry.find('[class*="time"]').toArray().map(node => TIME.exec(text($(node).text()))?.[1]).find(Boolean);
+  if (own) return own;
+  const rest = entry.clone();
+  rest.find('[class*="opponent-name"], [class*="opponent-text"], [class*="location"], [class*="result"], [class*="tournament"], [class*="promotion"]').remove();
+  return TIME.exec(text(rest.text()))?.[1] ?? '';
+}
+
+/**
  * A team's schedule page (Sidearm's list view): one entry per game. Each game's date, time,
  * home/away, opponent, place and result are read from the entry's own parts. The page repeats the
  * games as cards; a game read twice is kept once.
@@ -147,12 +160,13 @@ export function parseSchedule(html: string): ParsedSchedule {
     const venue = placeParts.slice(1).join(' ');
     const resultText = ownText($, entry.find('.sidearm-schedule-game-result').first()).replace(/\s*,\s*/, ', ');
     const outcome = /^([WLT])\b/.exec(resultText)?.[1] ?? '';
-    const note = ownText($, entry.find('[class*="tournament"], .sidearm-schedule-game-opponent-text-promotion').first());
+    const note = ownText($, entry.find('[class*="tournament"], [class*="promotion"]').first());
     const site = classes.some(c => /home/.test(c)) ? 'home' : classes.some(c => /neutral/.test(c)) ? 'neutral'
       : classes.some(c => /away/.test(c)) ? 'away' : atVs === 'at' ? 'away' : atVs === 'vs' || atVs === 'vs.' ? 'home' : '';
     const dateLabel = dateText.replace(TIME, '').replace(/\s+/g, ' ').trim();
+    const time = TIME.exec(dateText)?.[1] ?? gameTime($, entry);
     const game: AthleticsGame = {
-      date: gameDate(dateLabel, season), date_label: dateLabel, time: TIME.exec(dateText)?.[1].replace(/\s+/g, ' ') ?? '',
+      date: gameDate(dateLabel, season), date_label: dateLabel, time: time.replace(/\s+/g, ' '),
       site, opponent, location, venue, outcome, result: resultText, note,
       conference: classes.some(c => /conference/.test(c)),
     };

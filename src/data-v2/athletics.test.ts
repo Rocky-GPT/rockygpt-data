@@ -63,6 +63,23 @@ test('the season record is read by its labels, whatever markup holds them', () =
   assert.deepEqual(parseSchedule('<html><body><a>Home</a><p>News</p><span>Overall</span> <span>2-1</span></body></html>').record, { Overall: '2-1' });
 });
 
+test('a game\'s time and tournament are read from their own parts when the date line has no time', () => {
+  // As the live pages show it (2026-11-04): the tournament first, the date, then the time on its own.
+  const page = `<html><body><ul><li class="sidearm-schedule-game sidearm-schedule-away-game">
+    <div class="sidearm-schedule-game-promotion">Rick Martin/Hampton Inn Classic</div>
+    <div class="sidearm-schedule-game-opponent-date"><span>Nov 13 (Fri)</span></div>
+    <div class="sidearm-schedule-game-time"><span>7:00 PM</span></div>
+    <div class="sidearm-schedule-game-location"><span>Westfield, MA</span> <span>The Woodward Center</span></div>
+    <div class="sidearm-schedule-game-opponent-name"><span class="sidearm-schedule-game-at-vs">at</span> <a>Westfield State University</a></div>
+  </li><li class="sidearm-schedule-game sidearm-schedule-neutral-game">
+    <div class="sidearm-schedule-game-opponent-date"><span>Feb 20 (Fri)</span></div>
+    <div class="sidearm-schedule-game-opponent-name"><a>TBA</a></div>
+  </li></ul></body></html>`;
+  const [first, second] = parseSchedule(page).games;
+  assert.deepEqual([first.date_label, first.time, first.note, first.venue], ['Nov 13 (Fri)', '7:00 PM', 'Rick Martin/Hampton Inn Classic', 'The Woodward Center']);
+  assert.deepEqual([second.opponent, second.time], ['TBA', '']);
+});
+
 test('a coaches page gives each coach once, with the email and phone it links', () => {
   assert.deepEqual(parseCoaches(coaches), [
     { name: 'DJ Pinton', title: 'Head Coach', email: 'dpinton@ramapo.edu', phone: '201-684-7198' },
