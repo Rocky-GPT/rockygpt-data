@@ -26048,6 +26048,64 @@
           }
         }
       ]
+    },
+    {
+      "name": "Office of Violence Prevention",
+      "phone": "(201) 684-7430",
+      "category": "Student Life",
+      "email": "ovp@ramapo.edu",
+      "department": "Office of Violence Prevention",
+      "office": "C-216",
+      "website": "https://www.ramapo.edu/csi/ovp/",
+      "helpsWith": [
+        "Sexual violence prevention education: affirmative consent, active upstander intervention and healthy relationships",
+        "Becoming a Violence Intervention Peer (VIP)",
+        "Violence prevention events and volunteering",
+        "Links to reporting options and support for survivors"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ramapo.edu/csi/ovp/",
+          "section": "Office of Violence Prevention",
+          "fields": [
+            "phone",
+            "email",
+            "office"
+          ]
+        }
+      ],
+      "contactReviewExclusions": [
+        {
+          "field": "phone",
+          "value": "2016847709",
+          "reason": "Named personal contact of Andrea Oliver, LSW, the office's Coordinator, whose own office is C-214. A named staff line is not the office's general contact; the office's shared (201) 684-7430, ovp@ramapo.edu and Room C-216 are recorded.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csi/ovp/",
+            "section": "Professional Staff",
+            "text_sha256": "ca59808810780cc2ed0b40a0233b0d5a4cee5d215ab16cd4ff91d5be85fdfff3"
+          }
+        },
+        {
+          "field": "email",
+          "value": "oliver7a@ramapo.edu",
+          "reason": "Named personal contact of Andrea Oliver, LSW, the office's Coordinator, whose own office is C-214. A named staff line is not the office's general contact; the office's shared (201) 684-7430, ovp@ramapo.edu and Room C-216 are recorded.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csi/ovp/",
+            "section": "Professional Staff",
+            "text_sha256": "ca59808810780cc2ed0b40a0233b0d5a4cee5d215ab16cd4ff91d5be85fdfff3"
+          }
+        },
+        {
+          "field": "office",
+          "value": "C214",
+          "reason": "Named personal contact of Andrea Oliver, LSW, the office's Coordinator, whose own office is C-214. A named staff line is not the office's general contact; the office's shared (201) 684-7430, ovp@ramapo.edu and Room C-216 are recorded.",
+          "evidence": {
+            "url": "https://www.ramapo.edu/csi/ovp/",
+            "section": "Professional Staff",
+            "text_sha256": "ca59808810780cc2ed0b40a0233b0d5a4cee5d215ab16cd4ff91d5be85fdfff3"
+          }
+        }
+      ]
     }
   ],
   "other": [

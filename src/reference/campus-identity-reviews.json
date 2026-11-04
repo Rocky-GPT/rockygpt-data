@@ -1272,6 +1272,12 @@
       "contact": "office:yearbook",
       "reviewed_at": "2026-10-15",
       "note": "Approved by Dan's 2026-10-15 yes to the topic plan: Student Media sends students to this group, and the group's own contact is published on the college's Student Media pages (checked against the captured sections)."
+    },
+    {
+      "group": "Office of Violence Prevention",
+      "contact": "office:office-of-violence-prevention",
+      "reviewed_at": "2026-11-04",
+      "note": "Approved by Dan on 2026-11-04 (his standing \"say okay\" for this fix): the office's own page (https://www.ramapo.edu/csi/ovp/, section \"Office of Violence Prevention\") publishes this contact, checked against the captured section, and the Archway group of the same name (archway.ramapo.edu/OVP/) is the same office."
     }
   ]
 }
