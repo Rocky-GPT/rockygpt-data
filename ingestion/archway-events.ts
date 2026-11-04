@@ -498,15 +498,26 @@ export interface PreviousEventDetails {
   signalByUrl: Map<string, EventDetailSignal>;
 }
 
-/** An event's listing row as compared night to night, without the collection times it carries. */
+/**
+ * An event's listing row as compared night to night, without the collection times it carries and
+ * in a fixed key order: a saved event comes back from validateArchwayEvents in its own order.
+ */
 function listingFingerprint(event: ArchwayEvent): string {
-  return JSON.stringify(event, (key, value: unknown) => (key === 'collectedAt' ? undefined : value));
+  return JSON.stringify(event, (key, value: unknown) => {
+    if (key === 'collectedAt') return undefined;
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
+    return Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)));
+  });
 }
 
 /**
  * The event pages tonight's run can reuse from last night's capture instead of downloading, by
  * lookup URL: the event is listed exactly as before, its page was read successfully, and that
- * page is younger than EVENT_DETAIL_REUSE_HOURS.
+ * page is younger than EVENT_DETAIL_REUSE_HOURS. Last night's events were saved with their
+ * pages' facts added (withDetailPageFacts), so tonight's listing gets the same pages' facts
+ * before the two are compared; compared bare, no event ever matched (0 of 195 reused, November 4).
+ * The page's place stands in for the file's, so an event that only changes place keeps last
+ * night's page until it is EVENT_DETAIL_REUSE_HOURS old.
  */
 export function reusableEventDetails(
   events: readonly ArchwayEvent[],
@@ -524,7 +535,7 @@ export function reusableEventDetails(
   }
   const pageByUrl = new Map(previous.pages.map((page) => [normalizeEventUrlForLookup(page.url), page]));
   const listedTonight = new Map<string, string[]>();
-  for (const event of events) {
+  for (const event of withDetailPageFacts([...events], previous)) {
     if (!event.url) continue;
     const key = normalizeEventUrlForLookup(event.url);
     listedTonight.set(key, [...listedTonight.get(key) ?? [], listingFingerprint(event)]);
@@ -821,7 +832,7 @@ export function whereFromDetailPage(page: RawPageV1): string | undefined {
  * page words it. The files spell some places differently ("and" for "&"), write "undefined" for
  * none and hide private and online places behind sign-in, where the page says which it is.
  */
-export function withDetailPageFacts(events: ArchwayEvent[], details: RawDatasetV1): ArchwayEvent[] {
+export function withDetailPageFacts(events: ArchwayEvent[], details: Pick<RawDatasetV1, 'pages'>): ArchwayEvent[] {
   const facts = new Map<string, { ticket?: string; where?: string }>();
   for (const page of details.pages) {
     if (page.sourceType !== 'detail' || page.statusCode !== 200) continue;

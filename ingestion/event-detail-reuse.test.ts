@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { EVENT_DETAIL_REUSE_HOURS, reusableEventDetails } from './archway-events';
+import { EVENT_DETAIL_REUSE_HOURS, reusableEventDetails, withDetailPageFacts } from './archway-events';
 import type { RawPageV1 } from './raw-types';
+import { validateArchwayEvents } from './schema';
 import type { ArchwayEvent } from './schema';
 
 const now = new Date('2026-11-03T12:00:00Z');
@@ -42,4 +43,25 @@ test('an event listed the same as last night reuses its page; a new, changed, fa
 
 test('nothing is reused without last night\'s capture', () => {
   assert.equal(reusableEventDetails([event(1)], null, now).size, 0);
+});
+
+test('last night\'s events, saved with their pages\' place and ticket, still match tonight\'s bare listing', () => {
+  // The calendar file spells the place its own way and has no ticket; the page says both.
+  const withWhere = (id: number): RawPageV1 => ({
+    ...page(id, 20),
+    sections: [
+      { heading: '', text: 'Nov 4 FREE' },
+      { heading: 'Where', text: 'Friends Hall & Lounge' },
+    ],
+  });
+  const listing = [event(1, { location: 'Friends Hall and Lounge', tags: ['Social'] }), event(2), event(3)];
+  const pages = [withWhere(1), withWhere(2), withWhere(3)];
+  const enriched = withDetailPageFacts(listing, { pages });
+  assert.equal(enriched[0].location, 'Friends Hall & Lounge');
+  assert.equal(enriched[0].ticketStatus, 'FREE');
+  // Saved to disk and read back, as the next night's run does.
+  const saved = validateArchwayEvents(JSON.parse(JSON.stringify(enriched)));
+  const tonight = [listing[0], listing[1], event(3, { time: '9:00 PM' })];
+  const reusable = reusableEventDetails(tonight, { events: saved, pages, signalByUrl: new Map() }, now);
+  assert.deepEqual([...reusable.keys()].sort(), [url(1), url(2)].sort());
 });
