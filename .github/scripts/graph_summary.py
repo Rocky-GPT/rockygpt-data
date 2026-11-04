@@ -76,9 +76,12 @@ def main(argv: list[str] | None = None) -> int:
         record = _loads(doc)
         games = record.get("games") or []
         played = sum(1 for game in games if game.get("result"))
+        coming = next((game for game in games if not game.get("result")), None)
         print(f"  team {name}: {record.get('season') or 'no season'}, {len(games)} games"
               f" ({played} with a result), {len(record.get('coaches') or [])} coaches,"
-              f" record {record.get('record') or {}}")
+              f" record {record.get('record') or {}}"
+              + (f", first unplayed {coming.get('date_label')} {coming.get('time') or 'no time'}"
+                 f" {coming.get('note') or ''}".rstrip() if coming else ""))
 
     wanted = {name.strip().lower() for name in args.show.split(";") if name.strip()}
     for name in sorted(wanted):
