@@ -319,8 +319,9 @@ test('a reviewed website is kept only when it is a plain ramapo.edu page this ru
 test('every reviewed website is a plain ramapo.edu page, except the one Athletics site the college links', () => {
   const sites = OFFICE_DIRECTORY_CONTACTS.filter(entry => entry.website !== undefined);
   // The 34 reviewed offices, the four dining venues, the Bookstore, and the units, centers,
-  // residence hall desks, Dining Services, school offices and smaller units added or reviewed 2026-10-14.
-  assert.equal(sites.length, 106);
+  // residence hall desks, Dining Services, school offices and smaller units added or reviewed 2026-10-14,
+  // and the Office of Violence Prevention (2026-11-04).
+  assert.equal(sites.length, 107);
   const catalog = page('https://catalog.ramapo.edu/quicklinks/studentservices', [['Directory of Student Services', 'Athletics https://ramapoathletics.com/']]);
   const all = pages(catalog, ...sites.map(entry => page(entry.website as string, [['x', 'y']])));
   for (const entry of sites) assert.equal(checkWebsite(entry.website, all, entry.websiteEvidence).issue, undefined, entry.name);
@@ -368,4 +369,27 @@ test('a reviewed contact preference publishes only while its section still ranks
   const plain = new Map([[pageKey(url), { ...page, sections: [{ heading: 'Workday Adaptive Planning', text: 'You can email us.' }] }]]);
   assert.match(checkContactPreference({ ...preference, quote: 'You can email us' }, plain).issue!, /does not rank email first/);
   assert.deepEqual(checkContactPreference(undefined, pages), {});
+});
+
+test('the Office of Violence Prevention publishes the contact its own page gives, and its coordinator\'s own line stays out', () => {
+  // Its home page as captured on 2026-11-03 (the page's third section, a statement, gives no contact).
+  const url = 'https://www.ramapo.edu/csi/ovp/';
+  const captured = pages(page(url, [
+    ['Office of Violence Prevention', 'The Office of Violence Prevention (OVP) engages the Ramapo community in evidence-based education that cultivates affirmative consent, active upstander intervention, and healthy relationships to challenge rape culture and prevent sexual violence. We believe violence prevention is an act of community care. By fostering a culture of mutual respect, shared responsibility, and relational accountability, we empower every community member to help create the conditions for collective well-being so that everyone can thrive. Location: C-216 (near the fishbowl) Phone: (201) 684-7430 Email: ovp@ramapo.edu Instagram: @rcnj_ovp'],
+    ['Professional Staff', 'Andrea Oliver, LSW Coordinator Office: C-214 Phone: (201) 684-7709 E-mail: oliver7a@ramapo.edu (mailto:oliver7a@ramapo.edu) Ramapo College of New Jersey (RCNJ) and the Center for Student Involvement (CSI) make no guarantees about the external resources or organizations listed as assistance options. While CSI has done initial vetting related to resources listed, RCNJ and CSI are not responsible for the quality, accuracy, safety, or outcomes of services provided by these external organizations. It is the responsibility of students to research and evaluate the integrity of any organization or resource they choose to utilize. Students are advised to exercise caution and good judgment when engaging with external resources. For additional support or information, please contact the Center for Student Involvement.'],
+  ]));
+  const office = buildStructuredDirectoryContacts([], captured).find(contact => contact.name === 'Office of Violence Prevention')!;
+  // The record key its reviewed Archway contact names (campus-identity-reviews.json archway_contacts).
+  assert.equal(office.sourceRecordKey, 'office:office-of-violence-prevention');
+  assert.deepEqual([office.phone, office.email, office.office], ['(201) 684-7430', 'ovp@ramapo.edu', 'C-216']);
+  assert.deepEqual(office.evidence?.withheld, []);
+  assert.deepEqual(office.evidence?.source_urls, [url]);
+  assert.equal(office.evidence?.website?.url, url);
+  // The coordinator's own phone, address and room are reviewed exclusions, so nothing on the page is left unreviewed.
+  assert.equal(office.evidence?.contact_review?.status, 'no_unrecorded_values_in_scanned_sections');
+  assert.deepEqual(office.evidence?.contact_review?.excluded.map(item => item.value), ['2016847709', 'oliver7a@ramapo.edu', 'C214']);
+  // A page without the office's block publishes none of it.
+  const without = pages(page(url, [['Professional Staff', 'Andrea Oliver, LSW Coordinator Office: C-214']]));
+  const bare = buildStructuredDirectoryContacts([], without).find(contact => contact.name === 'Office of Violence Prevention')!;
+  assert.deepEqual([bare.phone, bare.email, bare.office], [undefined, undefined, undefined]);
 });

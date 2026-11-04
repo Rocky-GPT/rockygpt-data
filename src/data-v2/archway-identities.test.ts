@@ -285,3 +285,16 @@ test('a Berrie Center show is an event identity by its own page path, with no Ar
   assert.equal(result.unresolved.filter(i => i.entity === show.title).length, 0);
   assert.notEqual(berrieEventIdentityId('901'), archwayIdentityId('event', '901'));
 });
+
+test('every reviewed Archway desk contact is a directory contact named exactly like its group', async () => {
+  // linkReviewedArchwayContacts joins a contact only to the group of its own name; a mismatch would leave the desk unlinked.
+  const { archway_contacts: desks } = (await import('../reference/campus-identity-reviews.json')).default as { archway_contacts: Array<{ group: string; contact: string }> };
+  const { buildStructuredDirectoryContacts } = await import('../directory/structured-contacts');
+  const offices = buildStructuredDirectoryContacts([]).filter(contact => contact.type === 'office');
+  for (const desk of desks) {
+    assert.deepEqual(offices.filter(contact => contact.sourceRecordKey === desk.contact).map(contact => contact.name), [desk.group], desk.contact);
+  }
+  assert.equal(new Set(desks.map(desk => desk.contact)).size, desks.length);
+  // Since 2026-11-04 the Office of Violence Prevention's own page gives its group a phone, email and room.
+  assert.ok(desks.some(desk => desk.group === 'Office of Violence Prevention' && desk.contact === 'office:office-of-violence-prevention'));
+});

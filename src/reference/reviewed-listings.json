@@ -551,7 +551,7 @@
       "section": "Office of Violence Prevention",
       "quote": "Location: C-216 (near the fishbowl) Phone: (201) 684-7430 Email: ovp@ramapo.edu",
       "reviewed_at": "2026-11-03",
-      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The office's own page gives its location; C is Academic Building C's reviewed room prefix. The Archway group has no contact of its own to place it."
+      "note": "Read by Claude on 2026-11-03; Dan approved it on 2026-11-03. The office's own page gives its location; C is Academic Building C's reviewed room prefix. Since 2026-11-04 the office's reviewed contact (directory-contacts.json) gives the same room from the same section, so both place it."
     },
     {
       "node": "Wellness Is Now",
