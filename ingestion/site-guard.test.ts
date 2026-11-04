@@ -10,6 +10,8 @@ import {
   assertSiteFetchAllowed,
   isRamapoHost,
   noteSiteDownloads,
+  SITE_DOWNLOADS_NOTE_ENV,
+  startSiteDownloadsNote,
   RAMAPO_CONCURRENCY,
   RAMAPO_REQUEST_GAP_MS,
   SiteFetchBlockedError,
@@ -116,4 +118,24 @@ test('a download note line is printed and kept for the end of the run', () => {
     noteSiteDownloads('Event pages: 180 of 240 reused', note);
     assert.equal(fs.readFileSync(note, 'utf8'), 'office-pages: 2300 of 2320 pages unchanged\nEvent pages: 180 of 240 reused\n');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('outside a refresh the line is only printed; a refresh starts the note for its collectors', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-site-note-'));
+  const note = path.join(dir, 'review', 'site-downloads.txt');
+  const before = process.env[SITE_DOWNLOADS_NOTE_ENV];
+  try {
+    delete process.env[SITE_DOWNLOADS_NOTE_ENV];
+    noteSiteDownloads('a test run');
+    assert.equal(fs.existsSync(note), false);
+    fs.mkdirSync(path.dirname(note), { recursive: true });
+    fs.writeFileSync(note, 'last night\n');
+    startSiteDownloadsNote(note);
+    assert.equal(process.env[SITE_DOWNLOADS_NOTE_ENV], note);
+    noteSiteDownloads('Collectors run tonight: fetch:menu.');
+    assert.equal(fs.readFileSync(note, 'utf8'), 'Collectors run tonight: fetch:menu.\n');
+  } finally {
+    if (before === undefined) delete process.env[SITE_DOWNLOADS_NOTE_ENV]; else process.env[SITE_DOWNLOADS_NOTE_ENV] = before;
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
