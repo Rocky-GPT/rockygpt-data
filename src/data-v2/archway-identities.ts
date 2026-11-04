@@ -3,6 +3,7 @@ import type { CampusIdentity } from './campus-identities';
 import type { CoverageKind, IdentityCoverageIssue, IdentitySnapshot } from './compile-campus-identities';
 import { noteAlias, type AliasLedger } from './identity-aliases';
 import reviewedCaptures from '../reference/archway-event-identity-captures.json';
+import { berrieEventId } from '../berrie-event-url';
 
 type Row = Record<string, unknown>;
 export interface ArchwayIdentityInputs { clubs?: unknown; eventDetails?: unknown }
@@ -27,6 +28,15 @@ export const normalizeName = (v: string): string => v.split(/\s+/).filter(Boolea
 export function archwayIdentityId(kind: 'club' | 'event', sourceId: string): string {
   const namespace = Buffer.from('274b5890c7d249c3aefddc216ea0cd85', 'hex');
   const bytes = createHash('sha1').update(namespace).update(`archway:${kind}:${sourceId}`).digest().subarray(0, 16);
+  bytes[6] = (bytes[6] & 0x0f) | 0x50; bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = bytes.toString('hex');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+/** A Berrie Center show's ID: the same kind of name-based UUID, from the path of its own page
+ * after /berriecenter/event/ ("as-you-like-it/2026-11-13"). Do not change this string. */
+export function berrieEventIdentityId(pagePath: string): string {
+  const namespace = Buffer.from('274b5890c7d249c3aefddc216ea0cd85', 'hex');
+  const bytes = createHash('sha1').update(namespace).update(`ramapo:berrie-event:${pagePath}`).digest().subarray(0, 16);
   bytes[6] = (bytes[6] & 0x0f) | 0x50; bytes[8] = (bytes[8] & 0x3f) | 0x80;
   const hex = bytes.toString('hex');
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
@@ -241,18 +251,23 @@ export function compileArchwayIdentities(snapshot: IdentitySnapshot, inputs: Arc
     const entity: CampusIdentity = { id: archwayIdentityId('club', groupId), kind, name: text(row.name).slice(0, 240), aliases: [], links: [{ collection: 'clubs', source_key: text(row.source_key), source_record_keys: [text(row.source_record_key)], source_record_ids: [text(row.id)] }] };
     entities.push(entity); groupEntities.set(groupId, entity);
   }
-  const eventRows = snapshot.events || []; const byEventId = uniqueBy(eventRows, row => archwayEventId(row.event_url));
+  // An Archway event by its occurrence ID; a Berrie Center show by its own page's path.
+  const occurrenceId = (row: Row): string => { const archway = archwayEventId(row.event_url); if (archway) return archway; const berrie = berrieEventId(row.event_url); return berrie ? `berrie:${berrie}` : ''; };
+  const eventRows = snapshot.events || []; const byEventId = uniqueBy(eventRows, occurrenceId);
   const organizers = eventOrganizersArtifact(snapshot, inputs);
   for (const row of eventRows) {
-    const eventId = archwayEventId(row.event_url); const date = campusDate(row.starts_at);
+    const eventId = occurrenceId(row); const date = campusDate(row.starts_at);
     const issue = (coverage: CoverageKind, reason: string) => unresolved.push({ entity: text(row.title), collection: 'events', record: text(row.source_record_key), reason, kind: coverage });
     if (!eventId || byEventId.get(eventId)?.length !== 1 || !UUID.test(text(row.id))) { issue('unlinked_record', 'Missing or nonunique explicit Archway event occurrence ID; title similarity and date alone cannot establish a stable identity.'); continue; }
     const title = text(row.title);
-    const entity: CampusIdentity = { id: archwayIdentityId('event', eventId), kind: 'event', name: `${title.slice(0, 215)} (${date || 'date not published'})`, aliases: title.length <= 240 ? [title] : [], links: [{ collection: 'events', source_key: text(row.source_key), source_record_keys: [text(row.source_record_key)], source_record_ids: [text(row.id)] }] };
+    const berrie = eventId.startsWith('berrie:');
+    const entity: CampusIdentity = { id: berrie ? berrieEventIdentityId(eventId.slice('berrie:'.length)) : archwayIdentityId('event', eventId), kind: 'event', name: `${title.slice(0, 215)} (${date || 'date not published'})`, aliases: title.length <= 240 ? [title] : [], links: [{ collection: 'events', source_key: text(row.source_key), source_record_keys: [text(row.source_record_key)], source_record_ids: [text(row.id)] }] };
     for (const alias of entity.aliases) noteAlias(ledger, entity.id, alias, { basis: 'event_title', evidence: { collection: 'events', source_key: text(row.source_key), source_record_key: text(row.source_record_key), source_record_id: text(row.id), field: 'title' } });
     if (!date) issue('note', 'Event occurrence identity is explicit but its date is not published; the profile must keep the date unknown.');
     const assertions = organizers.events.filter(e => e.source_record_id === row.id);
     const groupIds = new Set(assertions.map(e => e.organizer_group_id));
+    // A show page names its organizer only as text; linkEventOrganizers matches that name.
+    if (berrie) { entities.push(entity); continue; }
     if (groupIds.size !== 1) issue('missing_connection', assertions.length ? 'Explicit captured organizer assertions conflict; no organizer identity relationship is approved.' : 'No captured explicit organizer group ID and linked group page; organizer and location names remain source text, not identity links.');
     else {
       const assertion = assertions[0]; const target = groupEntities.get(assertion.organizer_group_id)?.id || ownedGroups.get(assertion.organizer_group_id);
