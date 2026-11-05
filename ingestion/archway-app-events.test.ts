@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { appEventFacts, appEventUrl, placeFromApp, ticketStatusFromApp, withAppFacts, type AppEvent } from './archway-app-events';
+import { appEventFacts, appEventUrl, appOnlyEvents, placeFromApp, ticketStatusFromApp, withAppFacts, type AppEvent } from './archway-app-events';
 
 const id = (n: number) => Buffer.from(`ramapo:Event:${n}`).toString('base64');
 const priced = (...amounts: Array<number | [number, boolean]>): AppEvent => ({
@@ -51,5 +51,26 @@ test("the app's facts go onto the calendar files' events; the app's place wins",
   ], facts);
   assert.deepEqual(events.map((event) => [event.ticketStatus, event.location]), [
     ['FREE', 'Friends Hall & Lounge'], ['$5 - $10', 'Sharp Theater'], [undefined, undefined],
+  ]);
+});
+
+test("the app's events no calendar file lists are added, shaped like the files' events", () => {
+  const listed = { title: 'Listed', date: 'Thu, Nov 5, 2026', url: 'https://archway.ramapo.edu/rsvp_boot?id=1' };
+  const added = appOnlyEvents([
+    { id: id(1), name: 'Listed', startDate: '2026-11-05T18:00:00Z', status: 'APPROVED' },
+    { id: id(3), name: ' Late  show ', startDate: '2026-11-07T01:00:00Z', endDate: '2026-11-07T03:30:00Z', status: 'APPROVED',
+      hostGroup: { name: 'Resident Hall Association ' }, descriptionText: 'Free pizza!<br>Bring a friend.',
+      location: { kind: 'ON_CAMPUS', name: 'Pavilion' }, ...priced(0) },
+    { id: id(2), name: 'DONUT STRESS', startDate: '2026-11-05T18:00:00Z', endDate: '2026-11-05T19:00:00Z', status: 'APPROVED' },
+    { id: id(4), name: 'Waiting', startDate: '2026-11-08T18:00:00Z', status: 'PENDING' },
+    { id: id(5), name: 'Request form', startDate: '2026-11-08T18:00:00Z', status: 'APPROVED',
+      descriptionText: 'Organization: Hillel<br>Event Name: Kosher Sushi Night' },
+    { id: id(6), name: '', startDate: '2026-11-08T18:00:00Z', status: 'APPROVED' },
+  ], [listed]);
+  assert.deepEqual(added, [
+    { title: 'DONUT STRESS', date: 'Thu, Nov 5, 2026', time: '1 PM', endTime: '2 PM', url: 'https://archway.ramapo.edu/rsvp_boot?id=2' },
+    { title: 'Late show', date: 'Fri, Nov 6, 2026', time: '8 PM', endTime: '10:30 PM', organizer: 'Resident Hall Association',
+      location: 'Pavilion', description: 'Free pizza! Bring a friend.', url: 'https://archway.ramapo.edu/rsvp_boot?id=3', ticketStatus: 'FREE' },
+    { title: 'Request form', date: 'Sun, Nov 8, 2026', time: '1 PM', url: 'https://archway.ramapo.edu/rsvp_boot?id=5' },
   ]);
 });

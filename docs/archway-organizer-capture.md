@@ -18,7 +18,10 @@ files: title, time, place, host, tags and description, and the food note read fr
 title and description. The ticket line ("FREE", "$5 - $10") and the place as Archway names it come
 from the app's own `Events` list (`POST /api/v2/graphql`, no sign-in, 40 events a request, about six
 requests a night; `ingestion/archway-app-events.ts`); if it cannot be read, the events go out
-without them. The
+without them. The same list also adds the approved events no group calendar file lists (about 20
+of 207 on November 5, most likely from groups the Subscribe page does not name), with their host by name only,
+since a group's ID comes only from its own calendar file. Without them the first release after the
+switch lost 28 of 253 event identities and failed the continuity check. The
 `events-detail` capture holds one page per calendar file that lists a published event, linking to
 those events; the coverage gate counts an event backed when its file lists it.
 
