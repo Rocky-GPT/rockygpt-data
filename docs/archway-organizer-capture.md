@@ -7,9 +7,17 @@
 authenticated browser listing fallback is gone (the `/events` page fills itself from that same
 endpoint). A file's own group is the organizer identity (`sourceUrl` is that file's address) only
 when the entry's ORGANIZER is that group; the compiler still checks the ID against the club
-directory, so a co-host's file never links another group's event. Event pages still add the
-description, food note and ticket line. A normal day reads only the groups that had events in the
+directory, so a co-host's file never links another group's event. A normal day reads only the groups that had events in the
 last capture; Mondays read every group.
+
+**Since November 5, 2026 the event pages are not read.** Archway moved them into a browser app
+("CampusGroups"): `rsvp_boot?id=N` and `rsvp?id=N` redirect through the group's path to
+`/w/_/_/events/<base64 of "ramapo:Event:N">`, which answers every reader with the same empty
+1,016-byte shell that fills itself with JavaScript. Every event fact now comes from the calendar
+files: title, time, place, host, tags and description, and the food note read from the entry's own
+title and description. The ticket line ("FREE", "$5 - $10") is no longer known. The
+`events-detail` capture holds one page per calendar file that lists a published event, linking to
+those events; the coverage gate counts an event backed when its file lists it.
 
 The rest of this note is the September 22 history of the listing-based capture.
 

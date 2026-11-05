@@ -72,3 +72,14 @@ test('event quality counts successful group redirects and rejects unrelated occu
   assert.ok(eventQualityErrors([events[0], { ...events[1], url: pages[0].url }])
     .some(error => error.includes('share the same URL')));
 });
+
+test('a calendar file read tonight backs the events it lists; links on any other page do not', () => {
+  const events = [1, 2, 3, 4].map(id => ({ title: `Event ${id}`, date: '2026-11-20', time: '7 PM',
+    description: 'A campus event.', url: `https://archway.ramapo.edu/rsvp_boot?id=${id}` }));
+  const file = { sourceType: 'detail', statusCode: 200, url: 'https://archway.ramapo.edu/ical/ramapo/ical_club_12.ics',
+    links: events.map(event => event.url.replace('rsvp_boot', 'rsvp')) };
+  assert.deepEqual(eventDetailCoverageErrors(events, { pages: [file] }), []);
+  assert.match(eventDetailCoverageErrors(events, { pages: [{ ...file, statusCode: 404 }] })[0], /0\/4 current event URLs/);
+  assert.match(eventDetailCoverageErrors(events, { pages: [{ ...file, url: 'https://archway.ramapo.edu/events' }] })[0],
+    /0\/4 current event URLs/);
+});

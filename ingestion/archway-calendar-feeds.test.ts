@@ -1,11 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
-  campusDateLabel, campusTimeLabel, feedEvent, feedLocation, feedTags, groupFeedUrl, groupsToRead,
+  calendarFilePages, campusDateLabel, campusTimeLabel, feedEvent, feedLocation, feedTags, groupFeedUrl, groupsToRead,
   mergeFeedEvents, ownerName, parseFeedIndex, parseIcs,
 } from './archway-calendar-feeds';
-import { ticketStatusFromDetailPage, withDetailPageFacts } from './archway-events';
-import type { RawDatasetV1, RawPageV1 } from './raw-types';
 
 // The shape of Archway's group files, as read from ical_club_36419.ics on November 3, 2026.
 const roukema = [
@@ -107,17 +105,22 @@ test("a file's owner is the organizer on most of its entries", () => {
   assert.equal(ownerName(roukema), 'Roukema Center for International Education');
 });
 
-test('the event page supplies the ticket line and its own Where line', () => {
-  const page = { url: 'https://archway.ramapo.edu/ccec/rsvp_boot?id=1411135', sourceType: 'detail', statusCode: 200,
-    fetchedAt: now, title: 't', links: [], externalLinks: [], lists: [], tables: [], contacts: [], documents: [],
-    sections: [{ heading: 'Service Opportunity', text: 'Oct 30 FREE' }, { heading: 'Where', text: 'Mahwah Senior Center' }],
-  } as unknown as RawPageV1;
-  assert.equal(ticketStatusFromDetailPage(page), 'FREE');
-  assert.equal(ticketStatusFromDetailPage({ ...page, sections: [{ heading: 'h', text: 'Nov 7 $5 - $10' }] }), '$5 - $10');
-  assert.equal(ticketStatusFromDetailPage({ ...page, sections: [{ heading: 'h', text: 'FREE pizza for everyone' }] }), undefined);
-  const dataset = { pages: [page] } as unknown as RawDatasetV1;
-  const [event] = withDetailPageFacts([{ title: 't', date: 'Fri, Oct 30, 2026', location: 'Mahwah Senior Ctr',
-    url: 'https://archway.ramapo.edu/rsvp_boot?id=1411135' }], dataset);
-  assert.equal(event.ticketStatus, 'FREE');
-  assert.equal(event.location, 'Mahwah Senior Center');
+
+test("tonight's capture is one page per calendar file that lists a published event, linking to its events", () => {
+  const fetchedAt = '2026-11-05T11:32:00.000Z';
+  const files = [
+    { groupId: '36419', url: groupFeedUrl('36419'), name: 'Roukema Center for International Education', text: roukema, fetchedAt },
+    { groupId: '9', url: groupFeedUrl('9'), text: 'BEGIN:VCALENDAR\nEND:VCALENDAR', fetchedAt },
+  ];
+  const events = mergeFeedEvents(files, fetchedAt, new Date('2026-11-03T12:00:00Z'));
+  assert.ok(events.length > 0);
+  const pages = calendarFilePages(files, events);
+  assert.equal(pages.length, 1);
+  assert.equal(pages[0].url, groupFeedUrl('36419'));
+  assert.equal(pages[0].sourceType, 'detail');
+  assert.equal(pages[0].statusCode, 200);
+  assert.equal(pages[0].title, 'Roukema Center for International Education');
+  assert.deepEqual(pages[0].links, [...new Set(events.map(event => event.url!))].sort());
+  // An entry that is not among tonight's events (already over, say) is not linked.
+  assert.deepEqual(calendarFilePages(files, events.slice(1)).flatMap(page => page.links).includes(events[0].url!), false);
 });
