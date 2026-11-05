@@ -110,13 +110,31 @@ export function ticketStatusFromApp(event: AppEvent): string | undefined {
   return low === high ? dollars(low) : `${dollars(low)} - ${dollars(high)}`;
 }
 
-/** The place as the app names it, when it is shown to everyone and named. */
+/**
+ * The place as the app names it to a reader who is not signed in, unless it is still to be decided.
+ * The app leaves a place it keeps from such readers out of its answer, so a name it gives is shown
+ * to everyone, whatever its privacy setting is called: on November 5 the calendar files hid
+ * "CPA Lodge Main Lobby" and "Fish Bowl" behind sign-in while Archway's public pages had shown them.
+ */
 export function placeFromApp(event: AppEvent): string | undefined {
   const location = event.location;
   if (!location || location.isToBeDetermined) return undefined;
-  if (location.eventLocationPrivacy && location.eventLocationPrivacy !== 'PUBLIC') return undefined;
   const name = location.name?.replace(/\s+/g, ' ').trim();
   return name || undefined;
+}
+
+/** How the app's events name their places, for the run's note: privacy setting by count, with names given. */
+export function appPlaceSummary(events: readonly AppEvent[]): string {
+  const counts = new Map<string, { events: number; named: number }>();
+  for (const event of events) {
+    const key = event.location ? event.location.eventLocationPrivacy ?? 'no setting' : 'no place';
+    const count = counts.get(key) ?? { events: 0, named: 0 };
+    count.events += 1;
+    if (placeFromApp(event)) count.named += 1;
+    counts.set(key, count);
+  }
+  return [...counts.entries()].sort((a, b) => b[1].events - a[1].events)
+    .map(([key, count]) => `${key} ${count.events} (${count.named} named)`).join(', ');
 }
 
 /** The facts the app gives for each event, by lookup URL. */
@@ -260,7 +278,8 @@ export async function addAppFacts(events: ArchwayEvent[]): Promise<{ events: Arc
     const added = refused ? [] : appOnlyEvents(read.events, events);
     noteSiteDownloads(`Archway events app: ${read.requests} requests, ${read.events.length} events` +
       `${read.totalCount !== undefined ? ` of ${read.totalCount}` : ''}; ${matched} of ${events.length} calendar-file events matched, ` +
-      `${priced} with a ticket line; ${added.length} events no calendar file lists added` +
+      `${priced} with a ticket line; ${added.length} events no calendar file lists added; ` +
+      `places by privacy: ${appPlaceSummary(read.events)}` +
       `${refused ? ` (fuller query refused, so none added: ${refused})` : ''}.`);
     return { events: [...enriched, ...added], facts };
   } catch (error) {
