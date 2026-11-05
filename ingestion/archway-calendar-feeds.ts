@@ -17,6 +17,7 @@
 
 import pLimit from 'p-limit';
 import { canonicalArchwayEventUrl } from '../src/archway-event-url';
+import { sanitizeEventDescription } from './event-description';
 import { fetchWithPolicy } from './http-client';
 import type { RawPageV1 } from './raw-types';
 import { noteSiteDownloads, paceRamapoRequest, RAMAPO_CONCURRENCY } from './site-guard';
@@ -201,8 +202,10 @@ export function feedEvent(
   if (!title || !start || !url) return null;
   const end = parseIcsInstant(first(entry, 'DTEND'));
   const organizer = organizerName(first(entry, 'ORGANIZER'));
+  // The file's description is the organizer's HTML (line breaks as <br>), or Archway's internal
+  // request form when the organizer wrote none; keep only readable text that is meant for students.
   const description = first(entry, 'DESCRIPTION')
-    ? unescapeIcsText(first(entry, 'DESCRIPTION')!.value).replace(/\s+/g, ' ').trim()
+    ? sanitizeEventDescription(unescapeIcsText(first(entry, 'DESCRIPTION')!.value)) ?? ''
     : '';
   const tags = feedTags(entry);
   const sameDay = end && campusDateLabel(end.at) === campusDateLabel(start.at);
