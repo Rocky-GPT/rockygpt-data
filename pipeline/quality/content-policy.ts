@@ -390,18 +390,21 @@ export function eventDetailCoverageErrors(
   );
   if (eventUrls.size < 4) return [];
 
-  const successfulDetailUrls = new Set(
-    pages
-      .filter(
-        (page) =>
-          page.sourceType === 'detail' &&
-          typeof page.statusCode === 'number' &&
-          page.statusCode >= 200 &&
-          page.statusCode < 400
-      )
-      .map((page) => canonicalUrl(page.url))
-      .filter(Boolean)
+  const successfulPages = pages.filter(
+    (page) =>
+      page.sourceType === 'detail' &&
+      typeof page.statusCode === 'number' &&
+      page.statusCode >= 200 &&
+      page.statusCode < 400
   );
+  // An event is backed by its own page, or (since November 5, 2026, when Archway's event pages
+  // became a browser app) by the group calendar file read tonight that lists it.
+  const successfulDetailUrls = new Set([
+    ...successfulPages.map((page) => canonicalUrl(page.url)),
+    ...successfulPages
+      .filter((page) => /^https:\/\/archway\.ramapo\.edu\/ical\//.test(text(page.url)))
+      .flatMap((page) => (Array.isArray(page.links) ? page.links : []).map((link) => canonicalUrl(link))),
+  ].filter(Boolean));
   const matched = Array.from(eventUrls).filter((url) => successfulDetailUrls.has(url)).length;
   const coverage = matched / eventUrls.size;
   if (coverage >= MIN_EVENT_DETAIL_COVERAGE) return [];
