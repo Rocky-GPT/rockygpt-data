@@ -22,11 +22,11 @@ export function buildArchwayEventDetailPage(options: {
   const source = archwayUrl(options.url);
   const requestedId = eventId(archwayUrl(options.requestedUrl));
   if (options.statusCode !== 200 || !requestedId || eventId(source) !== requestedId) {
-    throw new Error('Archway detail did not return the requested event occurrence.');
+    throw new Error(`Archway detail did not return the requested event occurrence (HTTP ${options.statusCode}, ended at ${source ? source.pathname + source.search : options.url}).`);
   }
   const $ = load(options.html);
   if (!$('#event_host, .rsvp__event-org').length || /sign in or register/i.test($('title').text())) {
-    throw new Error('Archway detail is not an event page (possibly a sign-in response).');
+    throw new Error(`Archway detail is not an event page (possibly a sign-in response; title "${clean($('title').text()).slice(0, 80)}").`);
   }
   const organizers: NonNullable<RawPageV1['archwayOrganizers']> = [];
   const bylines = $('.rsvp__event-org').toArray().map(el => clean($(el).text()));
