@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { calendarFileDataset, listingEventSignals, rebuildEventsFromRaw } from './archway-events';
+import { applyDetailSignalsToEvents, calendarFileDataset, listingEventSignals, rebuildEventsFromRaw } from './archway-events';
 import type { ArchwayEvent } from './schema';
 
 const event = (id: number, extra: Partial<ArchwayEvent> = {}): ArchwayEvent => ({
@@ -33,4 +33,13 @@ test('a rebuild from a calendar-file capture keeps the food note the entry gives
   assert.equal(rebuilt.offersFreeFood, true);
   assert.equal(rebuilt.foodCategory, 'snacks');
   assert.equal(rebuilt.description, 'Trivia night with free snacks for every team.');
+});
+
+test('an event nothing adds to still goes out with readable text only', () => {
+  const [form, html] = applyDetailSignalsToEvents([
+    event(4, { description: 'Organization: Hillel<br>Event Name: Kosher Sushi Night<br>Expected Headcount: 40' }),
+    event(5, { description: 'Line one<br>line two' }),
+  ], new Map());
+  assert.equal('description' in form, false);
+  assert.equal(html.description, 'Line one line two');
 });
