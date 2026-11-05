@@ -267,14 +267,16 @@ export function applyDetailSignalsToEvents(
   signalByUrl: Map<string, EventDetailSignal>
 ): ArchwayEvent[] {
   return events.map((event) => {
-    if (!event.url) return event;
+    // Every event goes out with readable text only, whether or not a page or entry added to it.
+    const description = sanitizeEventDescription(event.description);
+    const readable = { ...event, description };
+    if (!description) delete readable.description;
+    if (!event.url) return readable;
     const details = signalByUrl.get(normalizeEventUrlForLookup(event.url));
-    if (!details) return event;
+    if (!details) return readable;
     return {
       ...event,
-      description:
-        sanitizeEventDescription(details.description) ??
-        sanitizeEventDescription(event.description),
+      description: sanitizeEventDescription(details.description) ?? description,
       offersFreeFood:
         details.offersFreeFood !== undefined ? details.offersFreeFood : event.offersFreeFood,
       foodCategory: details.foodCategory || event.foodCategory,
