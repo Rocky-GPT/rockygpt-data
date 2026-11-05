@@ -87,7 +87,10 @@ export async function verifyIdentityContinuity(client: Pick<PoolClient, 'query'>
   const report = compareIdentityRegistries(previous, candidate, seed, pastEventIds, { ...evidence, candidateCourses: courseRows?.rows[0]?.payload, convenerReplacements });
   if (baselineNote) report.baseline_note = baselineNote;
   if (report.failures.length) {
-    throw new Error(`Staging verification failed: identity continuity: ${report.failures.join('; ')}.`);
+    // Name what went missing, so the run's log says which records to look for.
+    const named = report.lost.slice(0, 15).map(loss => `${loss.kind} "${loss.name}"`).join(', ');
+    throw new Error(`Staging verification failed: identity continuity: ${report.failures.join('; ')}.` +
+      (named ? ` Missing: ${named}${report.lost.length > 15 || report.lost_truncated ? ', ...' : ''}.` : ''));
   }
   return report;
 }
