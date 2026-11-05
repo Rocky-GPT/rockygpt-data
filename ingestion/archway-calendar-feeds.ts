@@ -18,6 +18,7 @@
 import pLimit from 'p-limit';
 import { canonicalArchwayEventUrl } from '../src/archway-event-url';
 import { fetchWithPolicy } from './http-client';
+import type { RawPageV1 } from './raw-types';
 import { noteSiteDownloads, paceRamapoRequest, RAMAPO_CONCURRENCY } from './site-guard';
 import { validateArchwayEvents, type ArchwayEvent } from './schema';
 
@@ -159,8 +160,8 @@ export function feedLocation(value: string | undefined): string | undefined {
     // A map pin's coordinates after the room ("Mansion York Room, 41.081276,-74.175518").
     .replace(/,\s*-?\d{1,3}\.\d+\s*,\s*-?\d{1,3}\.\d+\s*$/, '')
     .replace(/\s+/g, ' ').trim();
-  // Archway writes "undefined" for no place, and hides private and online places behind sign-in;
-  // the event page's own Where line says which (withDetailPageFacts).
+  // Archway writes "undefined" for no place, and hides private and online places behind sign-in:
+  // such an event has no place rather than a wrong one.
   if (!place || place === '-' || /^undefined$/i.test(place) || /^sign in to\b/i.test(place)) return undefined;
   return place;
 }
@@ -272,7 +273,12 @@ export function groupsToRead(
 }
 
 /** Reads the Subscribe page, then each chosen group's calendar file, gently. */
-export async function fetchCalendarFeedEvents(previous: ArchwayEvent[] | null): Promise<ArchwayEvent[]> {
+/** A group calendar file as read tonight. */
+export interface CalendarFileCapture { groupId: string; url: string; name?: string; text: string; fetchedAt: string }
+
+export async function fetchCalendarFeedEvents(
+  previous: ArchwayEvent[] | null
+): Promise<{ events: ArchwayEvent[]; files: CalendarFileCapture[] }> {
   const collectedAt = new Date().toISOString();
   await paceRamapoRequest(ARCHWAY_FEED_INDEX_URL);
   const indexResponse = await fetchWithPolicy(ARCHWAY_FEED_INDEX_URL, {}, {
@@ -304,7 +310,7 @@ export async function fetchCalendarFeedEvents(previous: ArchwayEvent[] | null): 
         failures.push(`${group.groupId} (HTTP ${response.status}, ${response.headers.get('content-type') ?? 'no type'})`);
         return null;
       }
-      return { ...group, url, text };
+      return { ...group, url, text, fetchedAt: new Date().toISOString() };
     } catch (error) {
       failed += 1;
       failures.push(`${group.groupId} (${error instanceof Error ? error.message : String(error)})`);
@@ -319,8 +325,31 @@ export async function fetchCalendarFeedEvents(previous: ArchwayEvent[] | null): 
   }
   // Names come from the files themselves: a file's own events name its group as organizer.
   const named = feeds.map((feed) => ({ ...feed, groupName: feed.name ?? ownerName(feed.text) }));
-  const events = mergeFeedEvents(named, collectedAt);
-  return validateArchwayEvents(events);
+  const events = validateArchwayEvents(mergeFeedEvents(named, collectedAt));
+  return { events, files: named.map(({ groupId, url, groupName, text, fetchedAt }) =>
+    ({ groupId, url, ...(groupName ? { name: groupName } : {}), text, fetchedAt })) };
+}
+
+/**
+ * The capture behind tonight's events: one page per calendar file that lists at least one of them,
+ * linking to the events it lists. Since November 5, 2026 Archway's event pages are an app that
+ * fills itself in the browser (an empty "CampusGroups" shell to any other reader), so the files are
+ * the source of every event fact and the event pages are no longer downloaded.
+ */
+export function calendarFilePages(files: readonly CalendarFileCapture[], events: readonly ArchwayEvent[]): RawPageV1[] {
+  const listed = new Set(events.map((event) => event.url).filter((url): url is string => Boolean(url)));
+  const pages: RawPageV1[] = [];
+  for (const file of files) {
+    const links = [...new Set(parseIcs(file.text)
+      .map((entry) => canonicalArchwayEventUrl(first(entry, 'URL')?.value.trim()))
+      .filter((url): url is string => Boolean(url) && listed.has(url!)))].sort();
+    if (!links.length) continue;
+    pages.push({
+      url: file.url, sourceType: 'detail', fetchedAt: file.fetchedAt, statusCode: 200, title: file.name ?? null,
+      links, externalLinks: [], sections: [], lists: [], tables: [], contacts: [], documents: [],
+    });
+  }
+  return pages;
 }
 
 /** The group a file belongs to: the organizer named on most of its entries. */
