@@ -89,8 +89,10 @@ export async function verifyIdentityContinuity(client: Pick<PoolClient, 'query'>
   if (report.failures.length) {
     // Name what went missing, so the run's log says which records to look for.
     const named = report.lost.slice(0, 15).map(loss => `${loss.kind} "${loss.name}"`).join(', ');
+    const links = (report.lost_relationships ?? []).slice(0, 25).map(lost => `"${lost.from}" ${lost.type} "${lost.to}"`).join(', ');
     throw new Error(`Staging verification failed: identity continuity: ${report.failures.join('; ')}.` +
-      (named ? ` Missing: ${named}${report.lost.length > 15 || report.lost_truncated ? ', ...' : ''}.` : ''));
+      (named ? ` Missing: ${named}${report.lost.length > 15 || report.lost_truncated ? ', ...' : ''}.` : '') +
+      (links ? ` Missing links: ${links}${(report.lost_relationships ?? []).length > 25 ? ', ...' : ''}.` : ''));
   }
   return report;
 }
