@@ -10,11 +10,15 @@
  * ~190 event pages read before. Archway's robots.txt (November 5) disallows only /upload/,
  * /student_docs/, /downloads/, /mobile_ws/v17/, /mobile_ws/v18/ and *ajax_widget_new.
  *
- * The calendar files stay the list of events (and their descriptions); the app only adds facts to
- * the events they list. If the app cannot be read, tonight's events go out without those facts.
+ * The calendar files stay the main list of events (and their descriptions); the app adds facts to
+ * the events they list, and adds the events no group calendar file lists (about 20 of 207 on
+ * November 5: groups the Subscribe page does not name). If the app cannot be read, tonight's events
+ * go out as the calendar files give them.
  */
 
 import { canonicalArchwayEventUrl } from '../src/archway-event-url';
+import { campusDateLabel, campusTimeLabel } from './archway-calendar-feeds';
+import { sanitizeEventDescription } from './event-description';
 import { fetchWithPolicy } from './http-client';
 import { noteSiteDownloads, paceRamapoRequest } from './site-guard';
 import type { ArchwayEvent } from './schema';
@@ -25,8 +29,7 @@ const PAGE_SIZE = 40;
 /** A ceiling on pages read in one night (about 208 events were upcoming on November 5). */
 const MAX_PAGES = 15;
 
-/** The fields of the app's own `Events` query this collector uses, nothing tied to a viewer. */
-export const EVENTS_QUERY = `query Events($first: Int, $after: String, $filter: EventFilterInput) {
+const eventsQuery = (eventFields: string) => `query Events($first: Int, $after: String, $filter: EventFilterInput) {
   events(first: $first, after: $after, filter: $filter) {
     totalCount
     pageInfo { endCursor hasNextPage }
@@ -36,16 +39,33 @@ export const EVENTS_QUERY = `query Events($first: Int, $after: String, $filter: 
         name
         startDate
         location { kind name isToBeDetermined eventLocationPrivacy }
-        registration { paidOptionsWithheldReason options { price { amount currency isFlexible } } }
+        registration { paidOptionsWithheldReason options { price { amount currency isFlexible } } }${eventFields}
       }
     }
   }
 }`;
 
+/**
+ * The fields of the app's own `Events` query this collector uses, nothing tied to a viewer: the
+ * ticket line and place for every event, and what an event no calendar file lists needs (its end,
+ * status, description and host), field names as the app's own event page asks for them.
+ */
+export const EVENTS_QUERY = eventsQuery(`
+        endDate
+        status
+        descriptionText
+        hostGroup { name }`);
+/** The ticket line and place alone, if the app ever refuses the fuller query. */
+export const EVENTS_PRICE_QUERY = eventsQuery('');
+
 export interface AppEvent {
   id?: string;
   name?: string;
   startDate?: string;
+  endDate?: string | null;
+  status?: string | null;
+  descriptionText?: string | null;
+  hostGroup?: { name?: string | null } | null;
   location?: { kind?: string | null; name?: string | null; isToBeDetermined?: boolean | null; eventLocationPrivacy?: string | null } | null;
   registration?: { paidOptionsWithheldReason?: string | null; options?: Array<{ price?: { amount?: number | null; currency?: string | null; isFlexible?: boolean | null } | null }> | null } | null;
 }
@@ -131,13 +151,16 @@ export function withAppFacts(events: readonly ArchwayEvent[], facts: ReadonlyMap
   });
 }
 
+/** The app answered but refused the query (a field it does not know), as opposed to not answering. */
+class AppQueryError extends Error {}
+
 interface EventsPage {
   data?: { events?: { totalCount?: number; pageInfo?: { endCursor?: string | null; hasNextPage?: boolean }; edges?: Array<{ node?: AppEvent }> } };
   errors?: Array<{ message?: string }>;
 }
 
 /** Every live or upcoming event the app lists, read one page of 40 at a time, gently. */
-export async function fetchAppEvents(): Promise<{ events: AppEvent[]; requests: number; totalCount?: number }> {
+export async function fetchAppEvents(query = EVENTS_QUERY): Promise<{ events: AppEvent[]; requests: number; totalCount?: number }> {
   const events: AppEvent[] = [];
   let after: string | undefined;
   let totalCount: number | undefined;
@@ -150,13 +173,13 @@ export async function fetchAppEvents(): Promise<{ events: AppEvent[]; requests: 
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
         operationName: 'Events',
-        query: EVENTS_QUERY,
+        query,
         variables: { first: PAGE_SIZE, ...(after ? { after } : {}), filter: { timeRange: 'LIVE_OR_UPCOMING' } },
       }),
     }, { expectedContentTypes: ['application/json'], retryNonIdempotent: true, perHostConcurrency: 1 });
     if (!response.ok) throw new Error(`Archway's events app answered HTTP ${response.status}.`);
     const body = JSON.parse(response.text()) as EventsPage;
-    if (body.errors?.length) throw new Error(`Archway's events app: ${body.errors.map((error) => error.message).join('; ')}`);
+    if (body.errors?.length) throw new AppQueryError(`Archway's events app: ${body.errors.map((error) => error.message).join('; ')}`);
     const connection = body.data?.events;
     if (!connection) throw new Error("Archway's events app returned no events list.");
     totalCount = connection.totalCount ?? totalCount;
@@ -169,20 +192,74 @@ export async function fetchAppEvents(): Promise<{ events: AppEvent[]; requests: 
 }
 
 /**
- * Tonight's events with what the app adds. A failed read leaves the events as the calendar files
- * give them and says so in the run's note.
+ * An event no group calendar file lists, as the app gives it: approved, named, with a start, in
+ * the same shape the calendar files give (campus date and time labels). Its host is named, not
+ * identified: Archway's group ID comes only from a group's own calendar file.
+ */
+export function appOnlyEvent(event: AppEvent): ArchwayEvent | null {
+  const url = appEventUrl(event.id);
+  const title = event.name?.replace(/\s+/g, ' ').trim();
+  const start = event.startDate ? new Date(event.startDate) : undefined;
+  if (!url || !title || !start || Number.isNaN(start.getTime())) return null;
+  if (event.status !== 'APPROVED') return null;
+  const end = event.endDate ? new Date(event.endDate) : undefined;
+  const sameDay = end && !Number.isNaN(end.getTime()) && campusDateLabel(end) === campusDateLabel(start);
+  const organizer = event.hostGroup?.name?.replace(/\s+/g, ' ').trim();
+  const location = placeFromApp(event);
+  const description = sanitizeEventDescription(event.descriptionText);
+  const ticketStatus = ticketStatusFromApp(event);
+  return {
+    title,
+    date: campusDateLabel(start),
+    time: campusTimeLabel(start),
+    ...(sameDay ? { endTime: campusTimeLabel(end!) } : {}),
+    ...(organizer ? { organizer } : {}),
+    ...(location ? { location } : {}),
+    ...(description ? { description } : {}),
+    url,
+    ...(ticketStatus ? { ticketStatus } : {}),
+  };
+}
+
+/** The app's events that no calendar file lists, in start order. */
+export function appOnlyEvents(appEvents: readonly AppEvent[], fileEvents: readonly ArchwayEvent[]): ArchwayEvent[] {
+  const listed = new Set(fileEvents.flatMap((event) => event.url ? [canonicalArchwayEventUrl(event.url) ?? event.url] : []));
+  const added = new Map<string, { event: ArchwayEvent; starts: number }>();
+  for (const appEvent of appEvents) {
+    const event = appOnlyEvent(appEvent);
+    if (!event || listed.has(event.url!) || added.has(event.url!)) continue;
+    added.set(event.url!, { event, starts: Date.parse(appEvent.startDate!) });
+  }
+  return [...added.values()].sort((a, b) => a.starts - b.starts || a.event.title.localeCompare(b.event.title))
+    .map(({ event }) => event);
+}
+
+/**
+ * Tonight's events with what the app adds: facts on the calendar files' events, and the events no
+ * file lists. A failed read leaves the events as the calendar files give them and says so in the
+ * run's note; if the app refuses the fuller query, its ticket lines and places still come through.
  */
 export async function addAppFacts(events: ArchwayEvent[]): Promise<{ events: ArchwayEvent[]; facts: Map<string, AppEventFacts> }> {
   try {
-    const read = await fetchAppEvents();
+    let read: Awaited<ReturnType<typeof fetchAppEvents>>;
+    let refused: string | undefined;
+    try {
+      read = await fetchAppEvents(EVENTS_QUERY);
+    } catch (error) {
+      if (!(error instanceof AppQueryError)) throw error;
+      refused = error.message;
+      read = await fetchAppEvents(EVENTS_PRICE_QUERY);
+    }
     const facts = appEventFacts(read.events);
     const enriched = withAppFacts(events, facts);
     const matched = events.filter((event) => event.url && facts.has(canonicalArchwayEventUrl(event.url) ?? event.url)).length;
     const priced = enriched.filter((event) => event.ticketStatus).length;
+    const added = refused ? [] : appOnlyEvents(read.events, events);
     noteSiteDownloads(`Archway events app: ${read.requests} requests, ${read.events.length} events` +
       `${read.totalCount !== undefined ? ` of ${read.totalCount}` : ''}; ${matched} of ${events.length} calendar-file events matched, ` +
-      `${priced} with a ticket line.`);
-    return { events: enriched, facts };
+      `${priced} with a ticket line; ${added.length} events no calendar file lists added` +
+      `${refused ? ` (fuller query refused, so none added: ${refused})` : ''}.`);
+    return { events: [...enriched, ...added], facts };
   } catch (error) {
     noteSiteDownloads(`Archway events app not read (${error instanceof Error ? error.message : String(error)}); ` +
       'events go out with the calendar files\' facts only.');
