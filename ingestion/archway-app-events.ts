@@ -136,8 +136,11 @@ export function appEventFacts(events: readonly AppEvent[]): Map<string, AppEvent
 }
 
 /**
- * The calendar files' events with the app's ticket line and place. The app's place wins: the files
- * spell places their own way and hide private and online ones behind sign-in.
+ * The calendar files' events with the app's ticket line, and the app's place where the file gives
+ * none (a file hides a private place behind sign-in). A file's place is kept: it is written the way
+ * Archway's old public listing wrote it, which the reviewed event places and the graph's place
+ * links read; the app names the same rooms its own way ("Fishbowl Lounge" lost its link on
+ * November 5 when the app's name replaced the file's).
  */
 export function withAppFacts(events: readonly ArchwayEvent[], facts: ReadonlyMap<string, AppEventFacts>): ArchwayEvent[] {
   return events.map((event) => {
@@ -146,7 +149,7 @@ export function withAppFacts(events: readonly ArchwayEvent[], facts: ReadonlyMap
     return {
       ...event,
       ...(found.ticketStatus && !event.ticketStatus ? { ticketStatus: found.ticketStatus } : {}),
-      ...(found.location ? { location: found.location } : {}),
+      ...(found.location && !event.location ? { location: found.location } : {}),
     };
   });
 }

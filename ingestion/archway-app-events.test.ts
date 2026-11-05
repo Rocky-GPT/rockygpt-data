@@ -39,7 +39,7 @@ test('the place is the name the app shows everyone', () => {
   assert.equal(placeFromApp({ location: { kind: 'ON_CAMPUS', name: 'Room 1', eventLocationPrivacy: 'REGISTERED_ONLY' } }), undefined);
 });
 
-test("the app's facts go onto the calendar files' events; the app's place wins", () => {
+test("the app's facts go onto the calendar files' events; a file's own place is kept", () => {
   const facts = appEventFacts([
     { id: id(1), ...priced(0), location: { name: 'Friends Hall & Lounge', kind: 'ON_CAMPUS' } },
     { id: id(2), ...priced(5, 10) },
@@ -48,9 +48,10 @@ test("the app's facts go onto the calendar files' events; the app's place wins",
     { title: 'One', date: 'Friday, November 20 2026', location: 'Friends Hall and Lounge', url: 'https://archway.ramapo.edu/rsvp_boot?id=1' },
     { title: 'Two', date: 'Friday, November 20 2026', location: 'Sharp Theater', url: 'https://archway.ramapo.edu/rsvp_boot?id=2' },
     { title: 'Three', date: 'Friday, November 20 2026', url: 'https://archway.ramapo.edu/rsvp_boot?id=3' },
-  ], facts);
+    { title: 'Four', date: 'Friday, November 20 2026', url: 'https://archway.ramapo.edu/rsvp_boot?id=4' },
+  ], new Map([...facts, ['https://archway.ramapo.edu/rsvp_boot?id=4', { location: 'Pavilion' }]]));
   assert.deepEqual(events.map((event) => [event.ticketStatus, event.location]), [
-    ['FREE', 'Friends Hall & Lounge'], ['$5 - $10', 'Sharp Theater'], [undefined, undefined],
+    ['FREE', 'Friends Hall and Lounge'], ['$5 - $10', 'Sharp Theater'], [undefined, undefined], [undefined, 'Pavilion'],
   ]);
 });
 
