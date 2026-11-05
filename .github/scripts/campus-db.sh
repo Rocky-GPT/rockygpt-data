@@ -35,8 +35,13 @@ case "${1:-}" in
   start)
     docker run -d --name campus-db -e POSTGRES_PASSWORD=job-build -e POSTGRES_DB=campus \
       -p 127.0.0.1:5432:5432 postgres:17 >/dev/null
-    for _ in $(seq 60); do docker exec campus-db pg_isready -U postgres -d campus -q && break; sleep 1; done
-    docker exec campus-db pg_isready -U postgres -d campus
+    # The image first runs a setup server on the socket only, then restarts. Wait on TCP, which
+    # only the final server listens on, so the checks below never meet the restart.
+    for _ in $(seq 60); do
+      docker exec campus-db pg_isready -h 127.0.0.1 -U postgres -d campus -q && break
+      sleep 1
+    done
+    docker exec campus-db pg_isready -h 127.0.0.1 -U postgres -d campus
     # The campus schema's one extension lives outside the dumped schema.
     sql 'CREATE EXTENSION IF NOT EXISTS pgcrypto'
     ;;
