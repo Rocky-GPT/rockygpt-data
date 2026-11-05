@@ -15,7 +15,10 @@ last capture; Mondays read every group.
 `/w/_/_/events/<base64 of "ramapo:Event:N">`, which answers every reader with the same empty
 1,016-byte shell that fills itself with JavaScript. Every event fact now comes from the calendar
 files: title, time, place, host, tags and description, and the food note read from the entry's own
-title and description. The ticket line ("FREE", "$5 - $10") is no longer known. The
+title and description. The ticket line ("FREE", "$5 - $10") and the place as Archway names it come
+from the app's own `Events` list (`POST /api/v2/graphql`, no sign-in, 40 events a request, about six
+requests a night; `ingestion/archway-app-events.ts`); if it cannot be read, the events go out
+without them. The
 `events-detail` capture holds one page per calendar file that lists a published event, linking to
 those events; the coverage gate counts an event backed when its file lists it.
 
