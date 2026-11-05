@@ -89,7 +89,23 @@ export async function verifyIdentityContinuity(client: Pick<PoolClient, 'query'>
   if (report.failures.length) {
     // Name what went missing, so the run's log says which records to look for.
     const named = report.lost.slice(0, 15).map(loss => `${loss.kind} "${loss.name}"`).join(', ');
-    const links = (report.lost_relationships ?? []).slice(0, 25).map(lost => `"${lost.from}" ${lost.type} "${lost.to}"`).join(', ');
+    // An event's place link comes from its listing's location: show the active release's words and
+    // the candidate's, so a lost held_at link says what changed.
+    const lostLinks = (report.lost_relationships ?? []).slice(0, 25);
+    const locations = async (id: string | undefined): Promise<Map<string, string>> => {
+      if (!id || !lostLinks.some(lost => lost.type === 'held_at')) return new Map();
+      const rows = await client.query(
+        "SELECT payload FROM rockygpt_v2.release_artifacts WHERE dataset_version_id=$1::uuid AND artifact_key='events'", [id]);
+      const listing: unknown = rows.rows[0]?.payload;
+      return new Map((Array.isArray(listing) ? listing : []).flatMap((event: { title?: unknown; location?: unknown }) =>
+        typeof event?.title === 'string' ? [[event.title.trim(), typeof event.location === 'string' ? event.location : '']] : []));
+    };
+    const [wasAt, nowAt] = await Promise.all([locations(active?.id), locations(datasetId)]);
+    const links = lostLinks.map(lost => {
+      const title = lost.from.replace(/ \([^()]*\)$/, '');
+      const words = lost.type === 'held_at' ? ` (was "${wasAt.get(title) ?? '?'}", now "${nowAt.get(title) ?? '?'}")` : '';
+      return `"${lost.from}" ${lost.type} "${lost.to}"${words}`;
+    }).join(', ');
     throw new Error(`Staging verification failed: identity continuity: ${report.failures.join('; ')}.` +
       (named ? ` Missing: ${named}${report.lost.length > 15 || report.lost_truncated ? ', ...' : ''}.` : '') +
       (links ? ` Missing links: ${links}${(report.lost_relationships ?? []).length > 25 ? ', ...' : ''}.` : ''));
