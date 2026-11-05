@@ -12,7 +12,7 @@
  *
  * The calendar files stay the main list of events (and their descriptions); the app adds facts to
  * the events they list, and adds the events no group calendar file lists (about 20 of 207 on
- * November 5: groups the Subscribe page does not name). If the app cannot be read, tonight's events
+ * November 5, most likely groups the Subscribe page does not name). If the app cannot be read, tonight's events
  * go out as the calendar files give them.
  */
 
