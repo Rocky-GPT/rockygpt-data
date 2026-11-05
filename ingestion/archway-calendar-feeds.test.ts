@@ -44,6 +44,18 @@ test('a group file entry reads as the listing wrote events', () => {
   });
 });
 
+test("a file's HTML line breaks and Archway's internal request form never reach the events", () => {
+  const withDescription = (description: string) => roukema.replace(
+    /DESCRIPTION:[^\r]*\r\n hments\./, `DESCRIPTION:${description}`);
+  const [html] = parseIcs(withDescription('Free sushi!<br>Bring a friend.&lt;br /&gt;All welcome.'));
+  assert.equal(feedEvent(html, { groupId: '36419', url: groupFeedUrl('36419') }, now)!.description,
+    'Free sushi! Bring a friend. All welcome.');
+  const [form] = parseIcs(withDescription('Organization: Hillel<br>Event Name: Kosher Sushi Night<br>Expected Headcount: 40'));
+  const event = feedEvent(form, { groupId: '36419', url: groupFeedUrl('36419') }, now)!;
+  assert.equal(event.description, undefined);
+  assert.equal('description' in event, false);
+});
+
 test('campus labels follow New York time across daylight saving', () => {
   assert.equal(campusDateLabel(new Date('2026-10-31T03:30:00Z')), 'Fri, Oct 30, 2026');
   assert.equal(campusTimeLabel(new Date('2026-10-31T03:30:00Z')), '11:30 PM');
