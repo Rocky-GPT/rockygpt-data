@@ -5,6 +5,7 @@ import { load } from 'cheerio';
 import { assertRawCollectionCandidate } from './raw-collector';
 import { noteSiteDownloads } from './site-guard';
 import { ARCHWAY_FEED_INDEX_URL, calendarFilePages, fetchCalendarFeedEvents } from './archway-calendar-feeds';
+import { addAppFacts } from './archway-app-events';
 import {
   assertCollectionCount,
   isRawOnlyMode,
@@ -604,12 +605,16 @@ async function fetchArchwayEvents() {
   // The list comes from the groups' calendar files (archway-calendar-feeds.ts), never from
   // /mobile_ws/, which Archway's robots.txt disallows (Dan, November 3, 2026). The event pages
   // are not read: since November 5, 2026 they are an app that fills itself in the browser, and
-  // any other reader gets the same empty shell, so the files' own entries are the whole source.
+  // any other reader gets the same empty shell. The app's own list (about six requests) adds the
+  // ticket line and the place; everything else comes from the files' own entries.
   console.log("Reading Archway's group calendar files...");
-  const { events, files } = await fetchCalendarFeedEvents(readPreviousRawEvents());
-  if (!events.length) {
+  const feed = await fetchCalendarFeedEvents(readPreviousRawEvents());
+  if (!feed.events.length) {
     throw new Error("Archway's group calendar files hold no upcoming events.");
   }
+  const { files } = feed;
+  // The ticket line and the place as Archway's events app gives them (archway-app-events.ts).
+  const { events } = await addAppFacts(feed.events);
   const result: EventDetailScrapeResult = {
     dataset: calendarFileDataset(calendarFilePages(files, events)),
     signalByUrl: listingEventSignals(events),
