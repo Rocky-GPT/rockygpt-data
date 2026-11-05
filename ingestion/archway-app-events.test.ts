@@ -32,11 +32,13 @@ test('the ticket line reads like the app\'s own event card, in dollars', () => {
   assert.equal(ticketStatusFromApp({ registration: { options: [{ price: { amount: 5, currency: 'EUR' } }] } }), undefined);
 });
 
-test('the place is the name the app shows everyone', () => {
+test('the place is the name the app gives a reader who is not signed in', () => {
   assert.equal(placeFromApp({ location: { kind: 'ON_CAMPUS', name: 'Mackin First floor lounge ' } }), 'Mackin First floor lounge');
   assert.equal(placeFromApp({ location: { kind: 'ON_CAMPUS', name: null } }), undefined);
   assert.equal(placeFromApp({ location: { kind: 'ON_CAMPUS', name: 'Room 1', isToBeDetermined: true } }), undefined);
-  assert.equal(placeFromApp({ location: { kind: 'ON_CAMPUS', name: 'Room 1', eventLocationPrivacy: 'REGISTERED_ONLY' } }), undefined);
+  assert.equal(placeFromApp({ location: { kind: 'ON_CAMPUS', name: 'CPA Lodge Main Lobby', eventLocationPrivacy: 'REGISTERED_ONLY' } }),
+    'CPA Lodge Main Lobby', 'a name the app gives a signed-out reader is shown to everyone');
+  assert.equal(placeFromApp({ location: { kind: 'ON_CAMPUS', name: null, eventLocationPrivacy: 'REGISTERED_ONLY' } }), undefined);
 });
 
 test("the app's facts go onto the calendar files' events; a file's own place is kept", () => {
