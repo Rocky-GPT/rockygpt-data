@@ -601,6 +601,28 @@ function failedDetailPage(url: string, statusCode: number | null = null): RawPag
   };
 }
 
+/**
+ * Why tonight's event pages failed, counted by reason with one example each, added to the run's
+ * download note. A failed page used to say only "no response", which hid why every page failed
+ * after the switch to the calendar files (November 4 and 5, 2026).
+ */
+export function noteEventDetailFailures(failures: ReadonlyArray<{ url: string; reason: string }>, downloaded: number): void {
+  if (!failures.length) return;
+  const byReason = new Map<string, { count: number; example: string }>();
+  for (const { url, reason } of failures) {
+    const seen = byReason.get(reason);
+    byReason.set(reason, { count: (seen?.count ?? 0) + 1, example: seen?.example ?? url });
+  }
+  const reasons = [...byReason.entries()].sort((a, b) => b[1].count - a[1].count).slice(0, 5)
+    .map(([reason, { count, example }]) => `${count} x ${reason} (e.g. ${example})`);
+  noteSiteDownloads(`Event pages failed: ${failures.length} of ${downloaded} downloaded. Why: ${reasons.join('; ')}.`);
+}
+
+/** The reason a page failed, short: the error's own message, or the answer Archway gave. */
+function failureReason(error: unknown): string {
+  return (error instanceof Error ? error.message : String(error)).replace(/\s+/g, ' ').slice(0, 200);
+}
+
 function buildEventDetailScrapeResult(
   pages: RawPageV1[],
   signalByUrl: Map<string, EventDetailSignal>
@@ -639,6 +661,7 @@ export async function scrapePublicEventDetailRaw(
   const limit = pLimit(RAMAPO_CONCURRENCY);
   const signalByUrl = new Map<string, EventDetailSignal>();
   const reused = planEventDetails(events, detailUrls, signalByUrl);
+  const failures: { url: string; reason: string }[] = [];
   const pages = await Promise.all(
     detailUrls.map((url) => reused.get(url) ??
       limit(async () => {
@@ -652,28 +675,35 @@ export async function scrapePublicEventDetailRaw(
               perHostConcurrency: RAMAPO_CONCURRENCY,
             }
           );
-          const finalPath = new URL(response.url || url).pathname.toLowerCase();
+          const finalUrl = new URL(response.url || url);
+          const finalPath = finalUrl.pathname.toLowerCase();
           if (
             !response.ok ||
             finalPath.startsWith('/home_login') ||
             finalPath.startsWith('/login_only')
           ) {
+            failures.push({ url, reason: `HTTP ${response.status}, ended at ${finalUrl.pathname}` });
             return failedDetailPage(url, response.ok ? null : response.status);
           }
           const html = response.text();
-          if (!html) return failedDetailPage(url);
+          if (!html) {
+            failures.push({ url, reason: `HTTP ${response.status}, empty page at ${finalUrl.pathname}` });
+            return failedDetailPage(url);
+          }
           const page = buildArchwayEventDetailPage({ requestedUrl: url, url: response.url || url, html, statusCode: response.status });
           const signal = extractEventDetailSignalFromHtml(html);
           if (hasEventSignal(signal)) {
             signalByUrl.set(normalizeEventUrlForLookup(url), signal);
           }
           return page;
-        } catch {
+        } catch (error) {
+          failures.push({ url, reason: failureReason(error) });
           return failedDetailPage(url);
         }
       })
     )
   );
+  noteEventDetailFailures(failures, detailUrls.length - reused.size);
   return buildEventDetailScrapeResult(pages, signalByUrl);
 }
 
@@ -689,6 +719,7 @@ async function scrapeEventDetailRaw(
   const limit = pLimit(RAMAPO_CONCURRENCY);
   const signalByUrl = new Map<string, EventDetailSignal>();
   const reused = planEventDetails(events, detailUrls, signalByUrl);
+  const failures: { url: string; reason: string }[] = [];
   const pages = await Promise.all(
     detailUrls.map((url) => reused.get(url) ??
       limit(async () => {
@@ -699,6 +730,7 @@ async function scrapeEventDetailRaw(
           const html = await response.text();
 
           if (!html) {
+            failures.push({ url, reason: `HTTP ${statusCode}, empty page at ${new URL(response.url()).pathname}` });
             return failedDetailPage(url);
           }
 
@@ -714,13 +746,15 @@ async function scrapeEventDetailRaw(
           }
 
           return page;
-        } catch {
+        } catch (error) {
+          failures.push({ url, reason: failureReason(error) });
           return failedDetailPage(url);
         }
       })
     )
   );
 
+  noteEventDetailFailures(failures, detailUrls.length - reused.size);
   return buildEventDetailScrapeResult(pages, signalByUrl);
 }
 

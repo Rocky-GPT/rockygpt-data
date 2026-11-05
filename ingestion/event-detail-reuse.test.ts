@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 
-import { EVENT_DETAIL_REUSE_HOURS, reusableEventDetails, withDetailPageFacts } from './archway-events';
+import { EVENT_DETAIL_REUSE_HOURS, noteEventDetailFailures, reusableEventDetails, withDetailPageFacts } from './archway-events';
+import { SITE_DOWNLOADS_NOTE_ENV } from './site-guard';
 import type { RawPageV1 } from './raw-types';
 import { validateArchwayEvents } from './schema';
 import type { ArchwayEvent } from './schema';
@@ -64,4 +68,25 @@ test('last night\'s events, saved with their pages\' place and ticket, still mat
   const tonight = [listing[0], listing[1], event(3, { time: '9:00 PM' })];
   const reusable = reusableEventDetails(tonight, { events: saved, pages, signalByUrl: new Map() }, now);
   assert.deepEqual([...reusable.keys()].sort(), [url(1), url(2)].sort());
+});
+
+test('failed event pages are counted by reason in the run note, with one example each', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-event-fail-'));
+  const note = path.join(dir, 'site-downloads.txt');
+  const before = process.env[SITE_DOWNLOADS_NOTE_ENV];
+  try {
+    process.env[SITE_DOWNLOADS_NOTE_ENV] = note;
+    noteEventDetailFailures([
+      { url: url(1), reason: 'HTTP 200, ended at /home_login' },
+      { url: url(2), reason: 'HTTP 200, ended at /home_login' },
+      { url: url(3), reason: 'Request timed out after 15000ms.' },
+    ], 10);
+    noteEventDetailFailures([], 10);
+    assert.equal(fs.readFileSync(note, 'utf8'),
+      `Event pages failed: 3 of 10 downloaded. Why: 2 x HTTP 200, ended at /home_login (e.g. ${url(1)}); ` +
+      `1 x Request timed out after 15000ms. (e.g. ${url(3)}).\n`);
+  } finally {
+    if (before === undefined) delete process.env[SITE_DOWNLOADS_NOTE_ENV]; else process.env[SITE_DOWNLOADS_NOTE_ENV] = before;
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
