@@ -72,6 +72,8 @@ export interface IdentityContinuityReport {
   lost_truncated: boolean;
   kind_changes: { id: string; from: string; to: string }[];
   lost_relationships_by_type: Record<string, number>;
+  /** The first relationships that disappeared, by node and target names, to trace a failure. */
+  lost_relationships?: { from: string; type: string; to: string }[];
   failures: string[];
 }
 
@@ -215,6 +217,7 @@ export function compareIdentityRegistries(
   report.lost = lost.slice(0, REPORTED_LOSSES);
   report.lost_truncated = lost.length > REPORTED_LOSSES;
 
+  const previousNames = new Map(previous.entities.map(entity => [entity.id, entity.name]));
   const candidateRelationships = new Set(candidate.entities.flatMap(entity =>
     (entity.relationships || []).map(relation => relationshipKey(entity.id, relation))));
   const comparable: Record<string, number> = {};
@@ -235,6 +238,13 @@ export function compareIdentityRegistries(
           continue;
         }
         report.lost_relationships_by_type[relation.type] = (report.lost_relationships_by_type[relation.type] || 0) + 1;
+        const lostRelationships = report.lost_relationships ??= [];
+        if (lostRelationships.length < REPORTED_LOSSES) {
+          const to = 'target_entity_id' in relation
+            ? previousNames.get(relation.target_entity_id) ?? relation.target_entity_id
+            : `${relation.target_record.collection}:${relation.target_record.source_record_key}`;
+          lostRelationships.push({ from: entity.name, type: relation.type, to });
+        }
       }
     }
   }
