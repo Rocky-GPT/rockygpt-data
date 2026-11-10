@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { applyRenderedClosures, type RenderedDiningHours } from './dining-rendered';
+import { applyRenderedClosures, openMoreHours, type RenderedDiningHours } from './dining-rendered';
 
 const state = (hours: Record<string, unknown>[]) => ({ composition: { subject: { regions: [{ fragments: [{ content: { main: {
   name: 'The Atrium', openingHours: { standardHours: [
@@ -23,4 +23,23 @@ test('an empty range is Closed only where the rendered page prints Closed for th
   // A range that has times or a label is never touched.
   const labelled = state([{ allDay: false, label: 'Brunch' }]);
   assert.deepEqual(applyRenderedClosures(labelled, rendered(['Closed'])), []);
+});
+
+test('a hidden "More hours" button is left alone and one that will not open is passed over', async () => {
+  const clicked: string[] = [];
+  const button = (name: string, visible: boolean, opens = true) => ({
+    isVisible: async () => visible,
+    click: async ({ timeout }: { timeout: number }) => {
+      assert.ok(timeout <= 5_000, 'a button gets seconds to open, not the run');
+      if (!opens) throw new Error(`Timeout ${timeout}ms exceeded.`);
+      clicked.push(name);
+    },
+  });
+  // The production failure of 2026-11-10: the first button on the page was hidden, and waiting on
+  // it stopped the whole dining source.
+  const result = await openMoreHours([button('hidden', false), button('first', true), button('stuck', true, false), button('last', true)]);
+  assert.deepEqual(result, { opened: 2, hidden: 1, stuck: 1 });
+  // Last one first, so a button that goes away when opened does not move the ones still to open.
+  assert.deepEqual(clicked, ['last', 'first']);
+  assert.deepEqual(await openMoreHours([]), { opened: 0, hidden: 0, stuck: 0 });
 });
