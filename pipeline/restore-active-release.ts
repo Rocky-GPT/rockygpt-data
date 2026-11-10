@@ -3,6 +3,8 @@ import path from 'node:path';
 import { Pool, type PoolClient } from 'pg';
 import {
   downloadRawArtifactBundle,
+  listArchivedCaptures,
+  type ArchivedCapture,
   type RawArtifactBundleEnvelope,
 } from './raw-artifacts';
 import { SOURCE_RAW_DATASETS } from './quality/provenance';
@@ -64,6 +66,14 @@ export interface RestoreActiveReleaseOptions {
     rawUri: string,
     expectedRawHash?: string
   ) => Promise<RawArtifactBundleEnvelope>;
+  /**
+   * The nightly refresh only: restore a source's pages from a newer archived capture no release
+   * holds yet (the last run collected them, then its publish failed), so they are not downloaded
+   * from Ramapo's sites again. See reusableCapture.
+   */
+  reuseUnpublishedCaptures?: boolean;
+  listCaptures?: (sourceKey: string) => Promise<ArchivedCapture[]>;
+  now?: Date;
 }
 
 type RestoreEnvironment = Readonly<Record<string, string | undefined>>;
@@ -82,6 +92,55 @@ export interface RestoreActiveReleaseSummary {
   rawSourcesRestored: number;
   rawFilesRestored: number;
   rawSourcesRequiringRefresh: string[];
+  /** Sources restored from a capture newer than the active release's, and when each was collected. */
+  rawSourcesReused: Array<{ sourceKey: string; collectedAt: string }>;
+}
+
+/**
+ * Sources a run may restore from an archived capture the active release does not hold. Each is
+ * collected as pages only (raw-collector.ts), and normalize:raw and generate:context rebuild all
+ * it publishes from those pages, so the archived bundle is everything its collector wrote. They
+ * are also nearly all of a night's requests to Ramapo's sites (3,631 pages on November 10, 2026).
+ */
+export const REUSABLE_CAPTURE_SOURCES: readonly string[] = [
+  'public-safety', 'campus-directory', 'transportation', 'housing', 'health', 'counseling',
+  'office-pages', 'academic-sites',
+];
+
+/**
+ * How old an unpublished capture may be and still stand in for a new download. A day and a half
+ * covers the next night's run and any run started by hand after a fix. A capture that old has
+ * already failed to publish twice, so the run after that collects the source again: if the pages
+ * themselves were the problem, a fresh download gets its chance.
+ */
+export const REUSABLE_CAPTURE_MAX_AGE_HOURS = 36;
+
+/**
+ * The capture to restore in place of the active release's, or null to keep the release's.
+ *
+ * A publish archives every source's raw files after the quality gates and before its own last
+ * gates. When one of those stops it, the pages it collected belong to no release, and the next run
+ * used to restore the last release's older pages, find them due, and download every page again
+ * (November 8 to 10, 2026: 9,743 pages over three nights, none of them published). The newest
+ * archived capture is used instead when it is newer than the release's and no older than
+ * REUSABLE_CAPTURE_MAX_AGE_HOURS.
+ */
+export function reusableCapture(
+  release: { collectedAt: string },
+  archived: readonly ArchivedCapture[],
+  now: Date
+): ArchivedCapture | null {
+  const releaseAt = Date.parse(release.collectedAt);
+  const newest = archived
+    .filter((capture) => Number.isFinite(Date.parse(capture.collectedAt)))
+    .sort((left, right) => Date.parse(right.collectedAt) - Date.parse(left.collectedAt))[0];
+  if (!newest) return null;
+  const at = Date.parse(newest.collectedAt);
+  // The release's own bundle carries the same time, give or take the database's rounding.
+  if (!(at - releaseAt > 1000)) return null;
+  const ageHours = (now.getTime() - at) / 3_600_000;
+  if (ageHours < 0 || ageHours > REUSABLE_CAPTURE_MAX_AGE_HOURS) return null;
+  return newest;
 }
 
 /**
@@ -427,6 +486,59 @@ async function loadActiveRelease(
   }
 }
 
+/**
+ * Each source's archived capture to restore: the active release's, or for a reusable source a
+ * newer one no release holds yet. Finding or reading the newer one must never stop a refresh, so
+ * any trouble with it falls back to the release's own capture (and the source is collected again
+ * if it is due).
+ */
+export async function withUnpublishedCaptures(
+  artifacts: ReadonlyArray<ActiveSourceArtifact>,
+  options: {
+    listCaptures: (sourceKey: string) => Promise<ArchivedCapture[]>;
+    downloadBundle: NonNullable<RestoreActiveReleaseOptions['downloadBundle']>;
+    now: Date;
+    log?: (line: string) => void;
+  }
+): Promise<{
+  artifacts: ActiveSourceArtifact[];
+  reused: Array<{ sourceKey: string; collectedAt: string }>;
+  downloadBundle: NonNullable<RestoreActiveReleaseOptions['downloadBundle']>;
+}> {
+  const log = options.log ?? ((line: string) => console.warn(line));
+  const fetched = new Map<string, RawArtifactBundleEnvelope>();
+  const reused: Array<{ sourceKey: string; collectedAt: string }> = [];
+  const chosen: ActiveSourceArtifact[] = [];
+  for (const artifact of artifacts) {
+    if (!artifact.rawUri || !REUSABLE_CAPTURE_SOURCES.includes(artifact.sourceKey)) {
+      chosen.push(artifact);
+      continue;
+    }
+    try {
+      const newer = reusableCapture(artifact, await options.listCaptures(artifact.sourceKey), options.now);
+      if (!newer || newer.rawUri === artifact.rawUri) {
+        chosen.push(artifact);
+        continue;
+      }
+      const bundle = await options.downloadBundle(newer.rawUri, newer.rawHash);
+      if (bundle.sourceKey !== artifact.sourceKey) throw new Error(`the bundle belongs to ${bundle.sourceKey}`);
+      fetched.set(newer.rawUri, bundle);
+      chosen.push({ ...artifact, ...newer });
+      reused.push({ sourceKey: artifact.sourceKey, collectedAt: newer.collectedAt });
+    } catch (error) {
+      log(`Could not reuse a newer capture of ${artifact.sourceKey}; restoring the release's own: ` +
+        `${error instanceof Error ? error.message : String(error)}`);
+      chosen.push(artifact);
+    }
+  }
+  return {
+    artifacts: chosen,
+    reused,
+    downloadBundle: async (rawUri, expectedRawHash) =>
+      fetched.get(rawUri) ?? options.downloadBundle(rawUri, expectedRawHash),
+  };
+}
+
 export async function downloadPinnedRawBundles(
   artifacts: ReadonlyArray<ActiveSourceArtifact>,
   downloadBundle: NonNullable<RestoreActiveReleaseOptions['downloadBundle']>
@@ -497,11 +609,16 @@ export async function restoreActiveRelease(
       client.release();
     }
 
+    const downloadBundle = options.downloadBundle ?? downloadRawArtifactBundle;
+    const captures = rawRestoreEnabled && options.reuseUnpublishedCaptures
+      ? await withUnpublishedCaptures(loaded.rawArtifacts, {
+          listCaptures: options.listCaptures ?? listArchivedCaptures,
+          downloadBundle,
+          now: options.now ?? new Date(),
+        })
+      : { artifacts: loaded.rawArtifacts, reused: [], downloadBundle };
     const downloadedRaw = rawRestoreEnabled
-      ? await downloadPinnedRawBundles(
-          loaded.rawArtifacts,
-          options.downloadBundle ?? downloadRawArtifactBundle
-        )
+      ? await downloadPinnedRawBundles(captures.artifacts, captures.downloadBundle)
       : [];
     const restored = restoreActiveReleaseFiles({
       rootDir,
@@ -535,6 +652,9 @@ export async function restoreActiveRelease(
       rawSourcesRestored: downloadedRaw.length - rawSourcesRequiringRefresh.length,
       rawFilesRestored,
       rawSourcesRequiringRefresh,
+      rawSourcesReused: captures.reused.filter(
+        (entry) => !rawSourcesRequiringRefresh.includes(entry.sourceKey)
+      ),
     };
   } finally {
     await pool.end();

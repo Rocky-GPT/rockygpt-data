@@ -296,7 +296,11 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
   if (unknown.length) throw new Error(`Unknown option: ${unknown.join(', ')}`);
   if (argv.includes('--from-captured-pages')) return rebuildFromCapturedPages();
   assertRefreshCoverage();
-  const restored = await restoreActiveRelease({ requireRawArtifacts: true, allowIncompleteRawArtifacts: true });
+  // Pages a run collected but could not publish are restored in place of the release's older
+  // ones, so a failed publish does not send the next run back to Ramapo's sites for them.
+  const restored = await restoreActiveRelease({
+    requireRawArtifacts: true, allowIncompleteRawArtifacts: true, reuseUnpublishedCaptures: true,
+  });
   console.log(
     `Bootstrapped ${restored.version}: ${restored.artifactFilesWritten} release artifact file(s), ` +
       `${restored.documentsRestored} context document(s), and ${restored.rawFilesRestored} raw file(s) ` +
@@ -305,6 +309,10 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
       `(the rest matched the last publish's saved copy).`
   );
   startSiteDownloadsNote();
+  for (const entry of restored.rawSourcesReused) {
+    noteSiteDownloads(`${entry.sourceKey}: reused the pages a run collected ${entry.collectedAt} and could not publish; ` +
+      'not downloaded again unless the source is due tonight.');
+  }
   const before = evaluateSourceProvenance(SOURCES);
   const early = spreadHeavySources(before);
   if (early.length) {
