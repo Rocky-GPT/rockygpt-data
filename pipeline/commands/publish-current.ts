@@ -20,6 +20,7 @@ import { validateCampusIdentities, type CampusIdentities } from '../../src/data-
 import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
 import { checkSiteOwners, officeSectionPages, withoutSiteFrame, type SiteOwners } from '../../src/data-v2/office-sections';
 import { pageEntries, readHowtoCapture } from '../../ingestion/howto-entries';
+import { howtoPagesShortfall } from '../howto-store';
 import { catalogPolicyPages, checkCatalogPoliciesOwner, type CatalogPoliciesCapture,
   type CatalogPoliciesOwner } from '../../src/data-v2/catalog-policies';
 import { readSkippedSections } from '../../ingestion/folder-sites';
@@ -744,7 +745,8 @@ async function insertReleaseArtifacts(
 
 async function verifyStagingDataset(
   client: PoolClient,
-  datasetId: string
+  datasetId: string,
+  testBuild = false
 ): Promise<Record<string, number>> {
   const result = await client.query<{
     critical_facts: string;
@@ -759,6 +761,7 @@ async function verifyStagingDataset(
     programs: string;
     document_chunks: string;
     release_artifacts: string;
+    howto_pages: string;
   }>(
     `SELECT
        (SELECT count(*) FROM rockygpt_v2.critical_facts WHERE dataset_version_id = $1::uuid) AS critical_facts,
@@ -775,7 +778,9 @@ async function verifyStagingDataset(
         JOIN rockygpt_v2.documents d ON d.id = c.document_id
         WHERE d.dataset_version_id = $1::uuid) AS document_chunks,
        (SELECT count(*) FROM rockygpt_v2.release_artifacts
-        WHERE dataset_version_id = $1::uuid) AS release_artifacts`,
+        WHERE dataset_version_id = $1::uuid) AS release_artifacts,
+       (SELECT count(*) FROM rockygpt_v2.office_sections
+        WHERE dataset_version_id = $1::uuid AND jsonb_array_length(howto_entries) > 0) AS howto_pages`,
     [datasetId]
   );
   const counts = Object.fromEntries(
@@ -807,8 +812,12 @@ async function verifyStagingDataset(
     programs: string;
     academic_dates: string;
     document_chunks: string;
+    howto_pages: string;
   }>(
     `SELECT
+       (SELECT count(*) FROM rockygpt_v2.office_sections s JOIN rockygpt_v2.dataset_versions v
+        ON v.id = s.dataset_version_id
+        WHERE v.status = 'active' AND jsonb_array_length(s.howto_entries) > 0) AS howto_pages,
        (SELECT count(*) FROM rockygpt_v2.campus_contacts c JOIN rockygpt_v2.dataset_versions v
         ON v.id = c.dataset_version_id WHERE v.status = 'active') AS campus_contacts,
        (SELECT count(*) FROM rockygpt_v2.clubs c JOIN rockygpt_v2.dataset_versions v
@@ -839,6 +848,11 @@ async function verifyStagingDataset(
       );
     }
   }
+  // The how-to tasks come from the model's readings of the pages (ingestion/howto-entries.ts).
+  // A dev build never calls the model, so after a change to what is read it has few by design.
+  const howtoShortfall = howtoPagesShortfall(counts.howto_pages || 0, Number(previous?.howto_pages || 0));
+  if (howtoShortfall && !testBuild) throw new Error(`Staging verification failed: ${howtoShortfall}`);
+  if (howtoShortfall) console.warn(`::warning::This dev build: ${howtoShortfall}`);
 
   const sourceChunks = await client.query<{
     source_key: string;
@@ -1129,7 +1143,7 @@ async function main(): Promise<void> {
     // Verification reads the committed-but-inactive candidate. Activation is
     // a separate short pointer-swap transaction, so readers never see partial
     // data and a failed gate leaves the previous release untouched.
-    const verifiedCounts = await verifyStagingDataset(client, datasetId);
+    const verifiedCounts = await verifyStagingDataset(client, datasetId, testBuild);
     step('verify record counts');
     const identityContinuity = await verifyIdentityContinuity(client, datasetId, identitySeed, { catalog: rawCatalog });
     step('verify identity continuity');

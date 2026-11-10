@@ -115,6 +115,38 @@ nothing is sent, and a run stops before spending more than `--max-usd` (default 
 The daily refresh runs it after publishing and keeps the list in a "[Page check] Pages
 to review" issue once the `TYPESAFE_API_KEY` repository secret is set.
 
+## How-to tasks
+
+`ingestion/howto-entries.ts` has gpt-6-luna read each office page (the office sites and
+the catalog's academic policies) and list its how-to tasks, each step quoted from the
+page. Publish checks every quote against the page and stores the tasks in
+`office_sections.howto_entries`, which the Brain reads.
+
+A page is read once, and again only when its own words or the reading instructions
+change. Measured on 2026-11-10: about $0.00066 a page, about $1.70 for all 2,552 pages,
+and 0 to about 35 changed pages a night (a few cents). The readings are kept between
+runs in the file store under `raw/howto-entries/` (`pipeline/howto-store.ts`).
+
+- The daily refresh restores the readings, reads the new and changed pages, and archives
+  the result. A run stops sending before it could spend more than `HOWTO_MAX_USD`
+  (repository variable, default $0.50); the pages left over wait for the next run.
+- A dev build restores the readings and never calls the model.
+- The first read of every page is a one-off: run Daily Data Update by hand with
+  `howto_read_all` on and `howto_max_usd` raised. Until then a scheduled run reads
+  nothing.
+- A publish that would leave under half of the live release's pages with tasks is stopped
+  (a dev build only warns). That happens when the readings could not be restored, or
+  when most pages wait to be read again after a change to the reading instructions:
+  run Daily Data Update by hand with `howto_max_usd` raised.
+
+The "Measure how-to page reads" workflow counts the pages that changed between archived
+captures and can read a small sample to re-measure the cost; it keeps no reading.
+
+```sh
+# The key is passed for the run only, never read from .env.
+HOWTO_OPENAI_API_KEY=… DOTENV_CONFIG_PATH=/dev/null npx tsx ingestion/howto-entries.ts --limit 20 --spread --max-usd 0.10
+```
+
 ## Service boundary
 
 **This repository no longer runs a deployed service.** Ingestion and

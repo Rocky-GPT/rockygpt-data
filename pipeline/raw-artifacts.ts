@@ -31,6 +31,9 @@ export const SOURCE_RAW_ARTIFACT_FILES: Record<string, string[]> = {
   'academic-sites': ['academic-sites.raw.json', 'academic-sites-sources.raw.json'],
   'athletics-schedules': ['athletics-schedules.raw.json'],
   'athletics-coaches': ['athletics-coaches.raw.json'],
+  // Not a site's capture and not a published source: the model's how-to readings of the office
+  // pages, kept between runs by pipeline/howto-store.ts under the same kind of key.
+  'howto-entries': ['howto-entries.raw.json'],
 };
 
 export interface ArchivedRawArtifact {
