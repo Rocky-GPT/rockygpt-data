@@ -1795,6 +1795,28 @@
             "text_sha256": "51e482735ea3504735f6b192e1dfec99d46440f6b26e8dff29b3ba690bc21901"
           },
           "reason": "The 2026-11-02 capture of the staff directory added two women's basketball assistant coaches (Clayton Barker, Richard Larcara) with no email or phone. The contact block and every other staff line, including each excluded coach and staff number, are unchanged, so the reviewed absences (no general email, office, hours or preferred contact) and the exclusions are re-bound to the new text. Not reviewed by Dan."
+        },
+        {
+          "reviewed_at": "2026-11-10T19:30:00.000Z",
+          "kind": "exclusions_rebound",
+          "url": "https://ramapoathletics.com/staff-directory",
+          "section": "Staff Directory",
+          "text_sha256": "29e674804903c6fc03652c964bd76c521939ce5f2991d49e7ca34f9ab32918f4",
+          "previous_evidence": {
+            "text_sha256": "eed60e44eaa1180a3db52cb4820694905999675139de1485f0dd351b36691ab3"
+          },
+          "reason": "The 2026-11-10 capture of the staff directory lists one women's basketball assistant coach as Ricky Larcara instead of Richard Larcara, still with no email or phone. The contact block and every other staff line, including each excluded coach and staff number, are unchanged, so the reviewed absences (no general email, office, hours or preferred contact) and the exclusions are re-bound to the new text. Not reviewed by Dan."
+        },
+        {
+          "reviewed_at": "2026-11-10T19:30:00.000Z",
+          "kind": "exclusions_rebound",
+          "url": "https://www.ramapo.edu/consumer-information/",
+          "section": "Student Life",
+          "text_sha256": "59e32881399a0645c39344eb027918c32ca03e7e9d383800b91010bd77c1162b",
+          "previous_evidence": {
+            "text_sha256": "21ebb4c4975c88d69d51cd8d282185cc8a4295bbfa6e737c01d78de2183bcfe1"
+          },
+          "reason": "The 2026-11-10 capture of the section no longer links to the Policy and Procedure for Non-Academic Complaints. The Athletics line (the participation rates report and the Athletics Department phone (201) 684-7674) and every other line are unchanged, so the reviewed absences are re-bound to the new text. Not reviewed by Dan."
         }
       ]
     },
@@ -3561,6 +3583,21 @@
       "notes": [
         "Main office is SC-202 / 7593 / csi@. The homepage also describes Bookstore, Dining, Roadrunner Central, J. Lee\u2019s, event rooms and named staff; those must not become undifferentiated CSI contacts.",
         "Roadrunner Central Hours of Operation explicitly directs visitors to CSI Main Office and includes its summer Monday\u2013Thursday 8:00am\u20135:15pm schedule, missing from input graph."
+      ],
+      "review_updates": [
+        {
+          "reviewed_at": "2026-11-10T19:30:00.000Z",
+          "kind": "exclusions_rebound",
+          "url": "https://www.ramapo.edu/csi/roadrunner-central/",
+          "section": "NJ Devils vs Edmonton Oilers",
+          "previous_section": "Six",
+          "blockStart": "Reminder: Students may purchase no more than 1 guest ticket",
+          "text_sha256": "a02aecb7f6e197fa6d90dead7f62d6160ae2359664e3d2011632bdd56e2d3bb9",
+          "previous_evidence": {
+            "text_sha256": "25148464feac7834986a72dc8b7b32e2532ddaa1a428d24cd48155d995475638"
+          },
+          "reason": "The 2026-11-10 capture of the Roadrunner Central page files the ticket rules and the \"Comments, Questions, Concerns? Email csi@ramapo.edu or call 201-684-7593.\" line under the heading \"NJ Devils vs Edmonton Oilers\" instead of \"Six\": the page's sectioning puts this block, which has no heading of its own, under the newest past event. The block is word for word the same. Its citations now find it by its opening words (blockStart) and bind its text without the heading above it, so a new show no longer unbinds them. Not reviewed by Dan."
+        }
       ]
     },
     {
@@ -7987,6 +8024,19 @@
       ],
       "notes": [
         "The website contains a generic college postal address and lab prose saying call us without a phone number. These cues must not erase the manual scope-bound not-published decisions or be fabricated into a direct room/number."
+      ],
+      "review_updates": [
+        {
+          "reviewed_at": "2026-11-10T19:30:00.000Z",
+          "kind": "exclusions_rebound",
+          "url": "https://www.ramapo.edu/igg/bootcamp/",
+          "section": "The Investigative Genetic Genealogy (IGG) Bootcamp",
+          "text_sha256": "0707a1d84a3869ca599914e7bde55af1434b557d9847fd5df23cae1dbadfde11",
+          "previous_evidence": {
+            "text_sha256": "f7a7c424ec24df7d5c68bb782fb50694cc2e0e6fd3a58c0626b674ab26b426e1"
+          },
+          "reason": "The 2026-11-10 capture of the bootcamp section replaced the sold-out June 22-26, 2026 dates with July 6-9, 2027, a $2000 price, meal and schedule details and a 15-person limit. Its only contact is still \"Questions? Email Cairenn Binder: cbinder@ramapo.edu\"; it still gives no center phone, room, office hours or ranked contact preference, so the reviewed absences are re-bound to the new text. Not reviewed by Dan."
+        }
       ]
     },
     {
@@ -12966,6 +13016,19 @@
           "decision": "excluded",
           "reason": "Dan (2026-10-14): drop values that are nonsense next to the office's own current page. The college phone listing keeps an old line; Roadrunner Central's own page routes to CSI at 201-684-7593.",
           "saved_as": "contactReviewExclusions"
+        },
+        {
+          "reviewed_at": "2026-11-10T19:30:00.000Z",
+          "kind": "exclusions_rebound",
+          "url": "https://www.ramapo.edu/csi/roadrunner-central/",
+          "section": "NJ Devils vs Edmonton Oilers",
+          "previous_section": "Six",
+          "blockStart": "Reminder: Students may purchase no more than 1 guest ticket",
+          "text_sha256": "a02aecb7f6e197fa6d90dead7f62d6160ae2359664e3d2011632bdd56e2d3bb9",
+          "previous_evidence": {
+            "text_sha256": "25148464feac7834986a72dc8b7b32e2532ddaa1a428d24cd48155d995475638"
+          },
+          "reason": "The 2026-11-10 capture of the Roadrunner Central page files the ticket rules and the \"Comments, Questions, Concerns? Email csi@ramapo.edu or call 201-684-7593.\" line under the heading \"NJ Devils vs Edmonton Oilers\" instead of \"Six\": the page's sectioning puts this block, which has no heading of its own, under the newest past event. The block is word for word the same. Its citations now find it by its opening words (blockStart) and bind its text without the heading above it, so a new show no longer unbinds them. Not reviewed by Dan."
         }
       ]
     },
