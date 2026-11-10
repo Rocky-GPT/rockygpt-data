@@ -250,34 +250,57 @@ function runEventDetailCoverageGate(cwd: string, errors: string[]): void {
   }
 }
 
-function runProvenanceGate(
-  cwd: string,
-  errors: string[],
-  warnings: string[],
-  enforce: boolean
-): void {
-  const states = evaluateSourceProvenance(
-    SOURCES,
-    new Date(),
-    path.join(cwd, 'data', 'raw')
-  );
-  // A test build (the cloud dev graph, a laptop build) is made from production's capture, which
-  // has none of a source added since; it builds without it (provenance.ts notCapturedYet).
-  const testBuild = process.env.ROCKYGPT_BUILD_TARGET === 'dev' || process.env.ROCKYGPT_TEST_BUILD_FROM_CAPTURED_PAGES === '1';
+/**
+ * What the provenance gate says about the sources that are not fresh.
+ *
+ * A test build (the workflow's dev build, a laptop build) is made from the pages production
+ * captured last and downloads nothing, so a source past its freshness window is the build's
+ * given, not a fault: the build lists it and goes on, and its publish skips the age check too
+ * (pipeline/test-build.ts). Refusing it here stopped every dev build once production's pages were
+ * more than a day and a half old, which is when production is stuck and a fix most needs a dev
+ * build (November 10, 2026). A source with no collection record is still refused, unless it was
+ * added since the capture (provenance.ts notCapturedYet).
+ */
+export function provenanceIssues(
+  states: ReadonlyArray<{ key: string; status: string; detail: string }>,
+  options: { testBuild: boolean; enforce: boolean; notCaptured: (key: string) => boolean }
+): { errors: string[]; warnings: string[] } {
+  const errors: string[] = [];
+  const warnings: string[] = [];
   for (const state of states) {
     if (state.status !== 'stale' && state.status !== 'unknown') continue;
-    if (state.status === 'unknown' && testBuild && notCapturedYet(state.key, path.join(cwd, 'data', 'raw'))) {
-      const note = `Source ${state.key} was added since the captured pages were collected; built without it.`;
-      console.warn(note);
-      warnings.push(note);
+    if (state.status === 'unknown' && options.testBuild && options.notCaptured(state.key)) {
+      warnings.push(`Source ${state.key} was added since the captured pages were collected; built without it.`);
+      continue;
+    }
+    if (state.status === 'stale' && options.testBuild) {
+      warnings.push(`Source ${state.key} is past its freshness window (${state.detail}); a test build uses production's captured pages as they are.`);
       continue;
     }
     const message =
       state.status === 'stale'
         ? `Source ${state.key} is stale: ${state.detail}`
         : `Source ${state.key} has unknown collection age: ${state.detail}`;
-    (enforce ? errors : warnings).push(message);
+    (options.enforce ? errors : warnings).push(message);
   }
+  return { errors, warnings };
+}
+
+function runProvenanceGate(
+  cwd: string,
+  errors: string[],
+  warnings: string[],
+  enforce: boolean
+): void {
+  const rawDir = path.join(cwd, 'data', 'raw');
+  const found = provenanceIssues(evaluateSourceProvenance(SOURCES, new Date(), rawDir), {
+    testBuild: process.env.ROCKYGPT_BUILD_TARGET === 'dev' || process.env.ROCKYGPT_TEST_BUILD_FROM_CAPTURED_PAGES === '1',
+    enforce,
+    notCaptured: (key) => notCapturedYet(key, rawDir),
+  });
+  for (const warning of found.warnings) console.warn(warning);
+  errors.push(...found.errors);
+  warnings.push(...found.warnings);
 }
 
 export function buildRawGates(cwd: string): RawGate[] {
