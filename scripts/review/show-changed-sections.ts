@@ -12,13 +12,16 @@
  * the RAW_ARTIFACT_* settings the publish uses). It reads the archive only: it never fetches a
  * college page. --before also restores, beside them, the newest bundles archived before that
  * time (the pages the last review saw) and prints what changed in each section, line by line.
- * It then runs the publish's completed-office-review gate on the newest captures.
+ * It then runs the publish's completed-office-review gate on the newest captures, and lists
+ * how many captured pages carry a change marker and the archived captures a nightly refresh
+ * could restore in place of a new download.
  */
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
-import { downloadRawArtifactBundle, SOURCE_RAW_ARTIFACT_FILES } from '../../pipeline/raw-artifacts';
+import { downloadRawArtifactBundle, listArchivedCaptures, SOURCE_RAW_ARTIFACT_FILES } from '../../pipeline/raw-artifacts';
+import { REUSABLE_CAPTURE_MAX_AGE_HOURS, REUSABLE_CAPTURE_SOURCES } from '../../pipeline/restore-active-release';
 import { checkCompletedOfficeReviews } from '../../pipeline/office-review-gate';
 import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
 import {
@@ -118,6 +121,20 @@ function printValidators(rawDir: string): void {
   }
 }
 
+/** The newest archived capture of each source a refresh may restore instead of downloading again. */
+async function printReusableCaptures(): Promise<void> {
+  console.log(`\nNewest archived capture of each page-only source (a nightly refresh restores it in place of a new download `
+    + `when it is newer than the active release's and at most ${REUSABLE_CAPTURE_MAX_AGE_HOURS} hours old):`);
+  for (const sourceKey of REUSABLE_CAPTURE_SOURCES) {
+    const captures = (await listArchivedCaptures(sourceKey)).sort((left, right) => Date.parse(right.collectedAt) - Date.parse(left.collectedAt));
+    const newest = captures[0];
+    console.log(newest
+      ? `  ${sourceKey}: collected ${newest.collectedAt}, ${((Date.now() - Date.parse(newest.collectedAt)) / 3_600_000).toFixed(1)} hours ago `
+        + `(${captures.length} archived; the one before: ${captures[1]?.collectedAt ?? 'none'})`
+      : `  ${sourceKey}: nothing archived`);
+  }
+}
+
 function main(): Promise<void> | void {
   const args = process.argv.slice(2);
   const beforeAt = args.indexOf('--before');
@@ -202,7 +219,10 @@ function main(): Promise<void> | void {
     for (const office of check.blocking) console.log(`BLOCKS PUBLISH: ${office}`);
     console.log(check.blocking.length ? `\nThe publish would stop: ${check.blocking.length} office(s).`
       : `\nThe office review gate passes${check.changed.length ? `, leaving out facts of ${check.changed.length} office(s)` : ''}.`);
-    if (fromR2) printValidators(rawDir);
+    if (fromR2) {
+      printValidators(rawDir);
+      await printReusableCaptures();
+    }
     if (check.blocking.length) process.exitCode = 1;
   };
   return run();
