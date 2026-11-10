@@ -31,8 +31,9 @@ import {
 interface ReviewedEntry { url: string; section: string; near?: string; reviewed?: { text_sha256: string } }
 interface ReviewedSection { url: string; section: string; near?: string; blockStart?: string; hashes: Set<string>; uses: string[] }
 
-/** Restores each source's newest archived bundle (stored before `before`, when given) into rawDir. */
-async function restoreNewestBundles(rawDir: string, before?: number): Promise<void> {
+/** Restores each source's newest archived bundle (stored before `before`, when given) into rawDir;
+ * with `pagesOnly`, without the pages' HTML twins (the *-sources files), which only a reparse needs. */
+export async function restoreNewestBundles(rawDir: string, before?: number, pagesOnly = false): Promise<void> {
   const bucket = process.env.RAW_ARTIFACT_BUCKET;
   if (!bucket) throw new Error('RAW_ARTIFACT_BUCKET is required for --from-r2.');
   const client = new S3Client({
@@ -58,6 +59,7 @@ async function restoreNewestBundles(rawDir: string, before?: number): Promise<vo
     if (!newest) continue;
     const bundle = await downloadRawArtifactBundle(`s3://${bucket}/${newest.key}`);
     for (const entry of bundle.entries) {
+      if (pagesOnly && entry.file.endsWith('-sources.raw.json')) continue;
       const body = typeof entry.content === 'string' ? entry.content : JSON.stringify(entry.content);
       fs.writeFileSync(path.join(rawDir, entry.file), body);
     }

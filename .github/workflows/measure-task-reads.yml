@@ -1,0 +1,60 @@
+name: Measure how-to page reads
+
+# How many office pages would a nightly how-to read send to the model, and what does a page cost?
+# The count compares archived captures: it fetches no college page and calls no model. The
+# optional sample has the model read that many pages, spaced evenly across the sites, and stops
+# before it could spend more than max_usd; its replies are not kept.
+on:
+  workflow_dispatch:
+    inputs:
+      times:
+        description: Times to compare, oldest first, separated by spaces ("now" = the newest capture)
+        required: false
+        default: '2026-11-09 2026-11-10 now'
+      sample:
+        description: Pages for the model to read as a cost sample (0 = none; this spends money)
+        required: false
+        default: '0'
+      max_usd:
+        description: The most the sample may spend, in dollars
+        required: false
+        default: '0.50'
+  # TEMPORARY, for the first measurement from this branch; removed before this file merges.
+  push:
+    branches: [claude/project-thread-gsatn5]
+    paths: ['.github/workflows/measure-task-reads.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      TIMES: ${{ github.event_name == 'push' && '2026-10-22 2026-11-08 2026-11-09 2026-11-10 now' || inputs.times }}
+      SAMPLE: ${{ github.event_name == 'push' && '50' || inputs.sample }}
+      MAX_USD: ${{ github.event_name == 'push' && '0.50' || inputs.max_usd }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Count the pages to read from one capture to the next
+        env:
+          RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          RAW_ARTIFACT_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          RAW_ARTIFACT_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: |
+          read -r -a times <<< "$TIMES"
+          npx tsx scripts/review/measure-task-reads.ts "${times[@]}" --keep-newest
+      - name: Read a sample of pages with the model
+        if: ${{ env.SAMPLE != '0' && env.SAMPLE != '' }}
+        env:
+          HOWTO_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DOTENV_CONFIG_PATH: /dev/null
+        run: npx tsx ingestion/howto-entries.ts --limit "$SAMPLE" --spread --max-usd "$MAX_USD"
