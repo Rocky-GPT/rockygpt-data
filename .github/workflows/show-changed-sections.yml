@@ -1,14 +1,21 @@
 name: Show changed office review sections
 
-# When a publish stops with "Completed office review needs attention", this prints the
-# office's reviewed sections whose text changed, with their current text and hash, read
-# from the newest archived captures. It reads the archive only and fetches no college page.
+# When a publish leaves out reviewed office facts because their pages changed (or stops with
+# "Completed office review needs attention"), this prints each office's reviewed sections whose
+# text changed, with their current text and hash, read from the newest archived captures. With a
+# date it also prints what changed since the pages archived before it. It reads the archive only
+# and fetches no college page.
 on:
   workflow_dispatch:
     inputs:
       office:
-        description: Reviewed contact name, exactly as in directory-contacts.json
-        required: true
+        description: Reviewed contact names, exactly as in directory-contacts.json, separated by ";" (empty = every office the gate lists)
+        required: false
+        default: ''
+      before:
+        description: Also show what changed since the pages archived before this date, for example 2026-11-08 (optional)
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -16,7 +23,7 @@ permissions:
 jobs:
   show:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
@@ -26,10 +33,15 @@ jobs:
       - run: npm ci
       - name: Show the changed sections
         env:
-          OFFICE: ${{ inputs.office || 'Athletics' }}
+          OFFICE: ${{ inputs.office }}
+          BEFORE: ${{ inputs.before }}
           RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
           RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
           RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
           RAW_ARTIFACT_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
           RAW_ARTIFACT_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
-        run: npx tsx scripts/review/show-changed-sections.ts "$OFFICE" --from-r2
+        run: |
+          args=(--from-r2)
+          if [[ -n "$OFFICE" ]]; then args=("$OFFICE" "${args[@]}"); fi
+          if [[ -n "$BEFORE" ]]; then args+=(--before "$BEFORE"); fi
+          npx tsx scripts/review/show-changed-sections.ts "${args[@]}"
