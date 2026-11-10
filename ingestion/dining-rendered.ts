@@ -7,32 +7,64 @@ import type { Browser } from 'playwright';
 
 export interface RenderedDayGroup { days: string; hours: string[] }
 export interface RenderedVenue { name: string; regular: RenderedDayGroup[] }
-export interface RenderedDiningHours { sourceUrl: string; renderedAt: string; venues: RenderedVenue[] }
+/** What happened to the page's "More hours" buttons: opened, hidden (left alone), or would not open. */
+export interface MoreHoursResult { opened: number; hidden: number; stuck: number }
+export interface RenderedDiningHours { sourceUrl: string; renderedAt: string; venues: RenderedVenue[]; moreHours?: MoreHoursResult }
 
 const text = (value: string | null | undefined) => (value ?? '').replace(/\s+/g, ' ').trim();
 
-/** Every venue's "Regular Hours" groups exactly as the page prints them after "More hours" is opened. */
+/** How long the page's own script gets to draw the venues after the network goes quiet. */
+const DRAW_TIMEOUT_MS = 30_000;
+/** How long one "More hours" button gets to open. A person's click is instant. */
+const OPEN_TIMEOUT_MS = 5_000;
+
+/** The part of a page button this needs. */
+export interface MoreHoursButton { isVisible(): Promise<boolean>; click(options: { timeout: number }): Promise<void> }
+
+/**
+ * Opens each "More hours" button a person could click, last one first so a button that goes away
+ * when opened does not move the ones still to open. Opening is a means, not the goal: the page often
+ * prints every venue's regular hours with no button at all, and at times carries a button that is
+ * hidden. A hidden button cannot be clicked, so it is left alone, and one that will not open is
+ * counted and passed over. The caller reads whatever regular hours the page then shows.
+ */
+export async function openMoreHours(buttons: MoreHoursButton[]): Promise<MoreHoursResult> {
+  const result: MoreHoursResult = { opened: 0, hidden: 0, stuck: 0 };
+  for (const button of [...buttons].reverse()) {
+    if (!(await button.isVisible())) { result.hidden++; continue; }
+    await button.click({ timeout: OPEN_TIMEOUT_MS }).then(() => { result.opened++; }, () => { result.stuck++; });
+  }
+  return result;
+}
+
+/** Every venue's "Regular Hours" groups exactly as the page prints them, with "More hours" opened where it can be. */
 export async function captureRenderedDiningHours(browser: Browser, url: string): Promise<RenderedDiningHours> {
   const page = await browser.newPage();
   try {
     await page.goto(url, { waitUntil: 'networkidle' });
-    for (const more of await page.locator('.more-hours').all()) await more.click();
-    await page.waitForTimeout(1000);
+    // The page's own script draws the venues; a quiet network does not mean they are drawn yet.
+    await page.locator('h2.location-name').first().waitFor({ state: 'attached', timeout: DRAW_TIMEOUT_MS });
+    const moreHours = await openMoreHours(await page.locator('.more-hours').all());
+    if (moreHours.opened) await page.waitForTimeout(1000);
     const venues = await page.evaluate(() => [...document.querySelectorAll('h2.location-name')].map((heading) => {
       // The venue's own block: the nearest container holding this heading (not the whole page).
       const block = heading.closest('[class*="Hoursstyles__LocationHoursContainer"]');
       const regular = [...(block?.querySelectorAll('h3') ?? [])].find((h3) => h3.textContent?.trim() === 'Regular Hours');
-      const groups = [...(regular?.parentElement?.querySelectorAll('.hours-detail-container') ?? [])].map((group) => {
-        const label = group.querySelector('.days-label');
-        label?.querySelectorAll('.sr-only').forEach((hidden) => hidden.remove());
-        return { days: label?.textContent ?? '', hours: [...group.querySelectorAll('.open-hours-container span')].map((span) => span.textContent ?? '') };
-      });
+      // Only the groups printed after the "Regular Hours" heading: a venue's special hours come before it.
+      const groups = [...(regular?.parentElement?.querySelectorAll('.hours-detail-container') ?? [])]
+        .filter((group) => Boolean(regular && (regular.compareDocumentPosition(group) & Node.DOCUMENT_POSITION_FOLLOWING)))
+        .map((group) => {
+          const label = group.querySelector('.days-label');
+          label?.querySelectorAll('.sr-only').forEach((hidden) => hidden.remove());
+          return { days: label?.textContent ?? '', hours: [...group.querySelectorAll('.open-hours-container span')].map((span) => span.textContent ?? '') };
+        });
       return { name: heading.textContent ?? '', regular: groups };
     }));
     return {
       sourceUrl: url, renderedAt: new Date().toISOString(),
       venues: venues.map((venue) => ({ name: text(venue.name), regular: venue.regular.map((group) => ({
         days: text(group.days), hours: group.hours.map(text).filter(Boolean) })) })),
+      moreHours,
     };
   } finally {
     await page.close();
