@@ -1,0 +1,32 @@
+name: Check Sodexo's dining sources
+
+# TEMPORARY, on this branch only: two production runs lost the dining source to Sodexo's site
+# (a hidden button, then a menu service that timed out). This runs the two dining collectors
+# once, to see whether Sodexo answers now, before another production run is started.
+# It fetches no ramapo.edu page and publishes nothing.
+on:
+  push:
+    branches: [claude/project-thread-gsatn5]
+    paths:
+      - '.github/workflows/check-dining-sources.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install chromium
+      - name: Run the menu collector
+        run: npm run fetch:menu
+      - name: Run the dining hours collector
+        if: ${{ always() }}
+        run: npm run fetch:dining-hours
