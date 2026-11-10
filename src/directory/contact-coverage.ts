@@ -65,7 +65,7 @@ export function reviewContactCoverage(entry: ContactReviewEntry,
     for (const section of page.sections) evidence.push({ url: page.url, section: section.heading, fields: [...CONTACT_FIELDS] });
   }
   const sections = [...new Map(evidence.map(item => [
-    JSON.stringify([pageKey(item.url), item.section.toLowerCase(), item.near ?? '']), item,
+    JSON.stringify([pageKey(item.url), item.section.toLowerCase(), item.near ?? '', item.blockStart ?? '']), item,
   ])).values()];
   const unavailable = sections.flatMap(item => {
     const found = evidenceText(item, pages);

@@ -26,7 +26,7 @@ import {
 } from '../../src/directory/contact-evidence';
 
 interface ReviewedEntry { url: string; section: string; near?: string; reviewed?: { text_sha256: string } }
-interface ReviewedSection { url: string; section: string; near?: string; hashes: Set<string>; uses: string[] }
+interface ReviewedSection { url: string; section: string; near?: string; blockStart?: string; hashes: Set<string>; uses: string[] }
 
 /** Restores each source's newest archived bundle (stored before `before`, when given) into rawDir. */
 async function restoreNewestBundles(rawDir: string, before?: number): Promise<void> {
@@ -72,8 +72,9 @@ function reviewedSections(entry: unknown): ReviewedSection[] {
     const hash = (record as Partial<ReviewedEntry>).reviewed?.text_sha256 ?? (typeof record.text_sha256 === 'string' ? record.text_sha256 : undefined);
     if (typeof record.url === 'string' && typeof record.section === 'string') {
       const near = typeof record.near === 'string' ? record.near : undefined;
-      const key = `${pageKey(record.url)}\n${record.section}\n${near ?? ''}`;
-      const item = found.get(key) ?? { url: record.url, section: record.section, near, hashes: new Set<string>(), uses: [] };
+      const blockStart = typeof record.blockStart === 'string' ? record.blockStart : undefined;
+      const key = `${pageKey(record.url)}\n${record.section}\n${near ?? ''}\n${blockStart ?? ''}`;
+      const item = found.get(key) ?? { url: record.url, section: record.section, near, blockStart, hashes: new Set<string>(), uses: [] };
       if (hash) item.hashes.add(hash);
       item.uses.push(trail.join('.'));
       found.set(key, item);
@@ -84,9 +85,14 @@ function reviewedSections(entry: unknown): ReviewedSection[] {
   return [...found.values()];
 }
 
+const cited = (item: ReviewedSection) => ({ url: item.url, section: item.section, near: item.near, blockStart: item.blockStart, fields: [] });
+/** How a citation names its place on the page. */
+const place = (item: ReviewedSection) => `"${item.section}"${item.blockStart ? ` (the block starting "${item.blockStart}")` : ''}${item.near ? ` near "${item.near}"` : ''}`;
+
 /** Lines only the old text has (-) and lines only the new text has (+), in page order. */
 function changedLines(before: string, after: string): string[] {
-  const lines = (text: string) => text.split('\n').map(line => line.trim()).filter(Boolean);
+  // A captured section is one long line: break it at list items and sentences so one changed name shows as one line.
+  const lines = (text: string) => text.split(/\n|(?<=;) |(?<=[.?!]) (?=[A-Z*])/).map(line => line.trim()).filter(Boolean);
   const count = (list: string[]) => list.reduce((map, line) => map.set(line, (map.get(line) ?? 0) + 1), new Map<string, number>());
   const old = lines(before);
   const now = lines(after);
@@ -146,12 +152,12 @@ function main(): Promise<void> | void {
       let changed = 0;
       const shownPages = new Set<string>();
       for (const item of reviewedSections(entry)) {
-        const found = evidenceText({ url: item.url, section: item.section, near: item.near, fields: [] }, pages, { wholeSection: true });
+        const found = evidenceText(cited(item), pages, { wholeSection: true });
         if ('reason' in found) {
           changed += 1;
-          console.log(`\n## MISSING ${item.url} "${item.section}"${item.near ? ` near "${item.near}"` : ''}: ${found.reason}`);
+          console.log(`\n## MISSING ${item.url} ${place(item)}: ${found.reason}`);
           console.log(`cited by ${item.uses.join(', ')}`);
-          const was = earlier && evidenceText({ url: item.url, section: item.section, near: item.near, fields: [] }, earlier, { wholeSection: true });
+          const was = earlier && evidenceText(cited(item), earlier, { wholeSection: true });
           if (was && 'text' in was) console.log(`----- the section as last archived before the change -----\n${was.text}\n----- end -----`);
           // A renamed heading keeps its text: show the page as it reads now, once.
           const page = pages.get(pageKey(item.url));
@@ -166,15 +172,15 @@ function main(): Promise<void> | void {
         if (!item.hashes.size) continue;
         const now = contactSectionHash(found.text);
         // An exclusion with a `near` phrase was reviewed as the short window after it, not the rest of the section.
-        const window = evidenceText({ url: item.url, section: item.section, near: item.near, fields: [] }, pages);
+        const window = evidenceText(cited(item), pages);
         const accepted = new Set([now, ...('text' in window ? [contactSectionHash(window.text)] : [])]);
         if ([...item.hashes].every(hash => accepted.has(hash))) continue;
         changed += 1;
-        console.log(`\n## CHANGED ${item.url} "${item.section}"${item.near ? ` near "${item.near}"` : ''} (captured ${pages.get(pageKey(item.url))?.fetchedAt})`);
+        console.log(`\n## CHANGED ${item.url} ${place(item)} (captured ${pages.get(pageKey(item.url))?.fetchedAt})`);
         console.log(`reviewed sha256: ${[...item.hashes].join(', ')}`);
         console.log(`current  sha256: ${now}`);
         console.log(`cited by ${item.uses.length} review entr${item.uses.length === 1 ? 'y' : 'ies'}`);
-        const was = earlier && evidenceText({ url: item.url, section: item.section, near: item.near, fields: [] }, earlier, { wholeSection: true });
+        const was = earlier && evidenceText(cited(item), earlier, { wholeSection: true });
         if (was && 'text' in was) {
           const wasHash = contactSectionHash(was.text);
           console.log(`earlier  sha256: ${wasHash}${item.hashes.has(wasHash) ? ' (the reviewed text)' : ' (not the reviewed text)'}`);
