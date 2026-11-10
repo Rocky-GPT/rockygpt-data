@@ -7,9 +7,13 @@ import {
   ABSENCE_FIELDS,
   CONTACT_FIELDS,
   checkAbsences,
+  checkContactAdditions,
+  checkContactNotes,
   checkContactPreference,
   checkContactValues,
   checkWebsite,
+  contactSectionHash,
+  evidenceText,
   findUnrecordedValues,
   loadCapturedPages,
   pageKey,
@@ -392,4 +396,52 @@ test('the Office of Violence Prevention publishes the contact its own page gives
   const without = pages(page(url, [['Professional Staff', 'Andrea Oliver, LSW Coordinator Office: C-214']]));
   const bare = buildStructuredDirectoryContacts([], without).find(contact => contact.name === 'Office of Violence Prevention')!;
   assert.deepEqual([bare.phone, bare.email, bare.office], [undefined, undefined, undefined]);
+});
+
+const TICKETS = 'https://www.ramapo.edu/csi/roadrunner-central/';
+const RULES = '*Reminder: Students may purchase no more than 1 guest ticket. Comments, Questions, Concerns? Email csi@ramapo.edu or call 201-684-7593.';
+const BLOCK = 'Reminder: Students may purchase no more than 1 guest ticket';
+/** The ticket page as the college keeps it: a block with no heading of its own after the newest past event. */
+const ticketPage = (newestPastEvent: string, rules = RULES) => pages(page(TICKETS, [
+  ['Roadrunner Central', 'A one stop shop for movie tickets.'], ['Lost Boys', 'November 12th at 7:00 pm. Past Events and Trips'],
+  [newestPastEvent, rules]]));
+
+test('a block with no heading of its own is found by its opening words, whatever heading the page files it under', () => {
+  const cited = { url: TICKETS, section: 'Six', blockStart: BLOCK };
+  const before = evidenceText({ ...cited, fields: [] }, ticketPage('Six'));
+  const after = evidenceText({ ...cited, fields: [] }, ticketPage('NJ Devils vs Edmonton Oilers'));
+  // The same words under a new heading are the same reviewed text; the heading reported is tonight's.
+  assert.deepEqual(before, { text: RULES.slice(1), heading: 'Six' });
+  assert.deepEqual(after, { text: RULES.slice(1), heading: 'NJ Devils vs Edmonton Oilers' });
+  // By heading alone, the next show unbinds it.
+  assert.deepEqual(evidenceText({ url: TICKETS, section: 'Six', fields: [] }, ticketPage('NJ Devils vs Edmonton Oilers')),
+    { reason: `${TICKETS} has no section "Six".` });
+
+  const email = [{ field: 'email' as const, value: 'csi@ramapo.edu', label: 'Comments, Questions, Concerns?',
+    evidence: [{ ...cited, near: 'Comments, Questions, Concerns?', fields: ['email' as const] }] }];
+  const note = [{ text: 'Comments, Questions, Concerns? Email csi@ramapo.edu or call 201-684-7593.', evidence: cited }];
+  const absence = [{ field: 'prefers_email' as const, evidence: [{ ...cited,
+    reviewed: { text_sha256: contactSectionHash(RULES.slice(1)), reason: 'Listing a method is not ranking it.' } }] }];
+  for (const event of ['Six', 'NJ Devils vs Edmonton Oilers']) {
+    const captured = ticketPage(event);
+    assert.deepEqual(checkContactAdditions(email, captured).confirmed.map(item => [item.value, item.section]), [['csi@ramapo.edu', event]]);
+    assert.deepEqual(checkContactNotes(note, captured).confirmed.map(item => item.section), [event]);
+    const checked = checkAbsences(absence, {}, captured);
+    assert.deepEqual(checked.issues, []);
+    assert.equal(checked.confirmed[0].checks[0].section, event);
+  }
+  // The block's own words changing is still a change: the reviewed absence waits for a review.
+  const reworded = ticketPage('Six', `${RULES} Email is the best way to reach us.`);
+  assert.match(checkAbsences(absence, {}, reworded).issues[0].reason, /^The reviewed section "Six" of .* changed; review this absence again\.$/);
+});
+
+test('a block is cited only while exactly one section holds its opening words', () => {
+  const cited = { url: TICKETS, section: 'Six', blockStart: BLOCK, fields: [] };
+  const gone = ticketPage('Six', 'Tickets are sold at the Center for Student Involvement.');
+  assert.deepEqual(evidenceText(cited, gone),
+    { reason: `${TICKETS} has no section with the block starting "${BLOCK}".` });
+  const twice = pages(page(TICKETS, [['Six', RULES], ['Hadestown', RULES]]));
+  assert.deepEqual(evidenceText(cited, twice),
+    { reason: `${TICKETS} has 2 sections with the block starting "${BLOCK}"; it must have exactly one.` });
+  assert.deepEqual(checkContactNotes([{ text: 'Email csi@ramapo.edu', evidence: cited }], twice).confirmed, []);
 });

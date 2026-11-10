@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { gunzipSync, gzipSync } from 'node:zlib';
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 /** Every raw input that can influence one published source snapshot. */
 export const SOURCE_RAW_ARTIFACT_FILES: Record<string, string[]> = {
@@ -173,6 +173,40 @@ export async function downloadRawArtifactBundle(
   }
   const bytes = await response.Body.transformToByteArray();
   return decodeRawArtifactBundle(bytes, expectedRawHash);
+}
+
+/** One archived bundle of a source's raw files, as its object key names it. */
+export interface ArchivedCapture { rawUri: string; rawHash: string; collectedAt: string }
+
+/**
+ * Reads a bundle's collection time and hash back from the key archiveSourceRawArtifact gave it:
+ * raw/<source>/<collection time with - for : and .>/<sha256>.json.gz. Any other key gives null.
+ */
+export function archivedCaptureFromKey(bucket: string, sourceKey: string, objectKey: string): ArchivedCapture | null {
+  const match = /^raw\/([^/]+)\/(\d{4}-\d{2}-\d{2}T\d{2})-(\d{2})-(\d{2})-(\d{3}Z)\/([0-9a-f]{64})\.json\.gz$/.exec(objectKey);
+  if (!match || match[1] !== sourceKey) return null;
+  const collectedAt = `${match[2]}:${match[3]}:${match[4]}.${match[5]}`;
+  if (!Number.isFinite(Date.parse(collectedAt))) return null;
+  return { rawUri: `s3://${bucket}/${objectKey}`, rawHash: match[6], collectedAt };
+}
+
+/** Every archived bundle of one source. A publish archives its captures before its last gates, so a bundle may belong to no release. */
+export async function listArchivedCaptures(sourceKey: string): Promise<ArchivedCapture[]> {
+  const storage = objectClient();
+  if (!storage) throw new Error('Raw artifact storage is not configured.');
+  const captures: ArchivedCapture[] = [];
+  let token: string | undefined;
+  do {
+    const page = await storage.client.send(new ListObjectsV2Command({
+      Bucket: storage.bucket, Prefix: `raw/${sourceKey}/`, ContinuationToken: token,
+    }));
+    for (const object of page.Contents ?? []) {
+      const capture = object.Key ? archivedCaptureFromKey(storage.bucket, sourceKey, object.Key) : null;
+      if (capture) captures.push(capture);
+    }
+    token = page.IsTruncated ? page.NextContinuationToken : undefined;
+  } while (token);
+  return captures;
 }
 
 export async function archiveSourceRawArtifact(

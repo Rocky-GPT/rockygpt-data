@@ -363,10 +363,11 @@ jobs:
               --jq '.[] | select(.title == "[Data Refresh] Daily refresh failing") | .number' \
               | head -n 1
           )"
-          # Published, but some source kept the active release's copy or some reviewed topic was
-          # withheld because its page changed: the incident stays open with the reasons.
+          # Published, but some source kept the active release's copy, or some reviewed topic or
+          # reviewed office fact was left out because its page changed: the incident stays open
+          # with the reasons.
           reports=()
-          for report in data/review/refresh-kept-sources.md data/review/refresh-withheld-topics.md; do
+          for report in data/review/refresh-kept-sources.md data/review/refresh-withheld-topics.md data/review/refresh-changed-offices.md; do
             if [[ -f "$report" ]]; then reports+=("$report"); fi
           done
           if (( ${#reports[@]} )); then
@@ -454,6 +455,18 @@ jobs:
         if: ${{ always() }}
         continue-on-error: true
         run: cat data/review/site-downloads.txt 2>/dev/null || echo 'No collector wrote a download note.'
+
+      # Also at the end of the log, for every target: a dev build posts no incident, so this is
+      # the one place that says which sources, topics or reviewed office facts it went out without.
+      - name: Show what the publish left out
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          found=0
+          for report in data/review/refresh-kept-sources.md data/review/refresh-withheld-topics.md data/review/refresh-changed-offices.md; do
+            if [[ -f "$report" ]]; then found=1; cat "$report"; echo; fi
+          done
+          if (( ! found )); then echo 'No report: the publish left nothing out, or it did not get that far.'; fi
 
   # The Brain finds programs, courses, people, events and how-to sections by meaning only with
   # the active release's meaning index. Built from whichever release is active, so it runs even
