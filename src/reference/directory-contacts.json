@@ -8798,14 +8798,14 @@
         {
           "field": "hours",
           "scope": "Routine IGG center opening hours",
-          "reason": "Reviewed current home, staff, lab, outreach, certificate and bootcamp pages. Program/bootcamp dates and course schedules do not publish routine office opening hours.",
+          "reason": "Reviewed current home, staff, lab, outreach, certificate and bootcamp pages. Program/bootcamp dates and course schedules do not publish routine office opening hours. Re-scoped 2026-11-10 (not reviewed by Dan): the bootcamp section now gives the 2027 bootcamp's own dates and start time (July 6-9, 12 noon). They are an event's schedule, not center opening hours, but they read as times, so this claim no longer cites that section and rests on the home, staff and certificate sections.",
           "evidence": [
             {
               "url": "https://www.ramapo.edu/igg/",
               "section": "Ramapo College",
               "reviewed": {
                 "text_sha256": "69fa2706a14254f27f606b2a0e5f643bc1723416d6c9e2d2c268ffb16135eaba",
-                "reason": "Reviewed current home, staff, lab, outreach, certificate and bootcamp pages. Program/bootcamp dates and course schedules do not publish routine office opening hours."
+                "reason": "Reviewed current home, staff, lab, outreach, certificate and bootcamp pages. Program/bootcamp dates and course schedules do not publish routine office opening hours. Re-scoped 2026-11-10 (not reviewed by Dan): the bootcamp section now gives the 2027 bootcamp's own dates and start time (July 6-9, 12 noon). They are an event's schedule, not center opening hours, but they read as times, so this claim no longer cites that section and rests on the home, staff and certificate sections."
               }
             },
             {
@@ -8813,7 +8813,7 @@
               "section": "Staff",
               "reviewed": {
                 "text_sha256": "ef2ffa764348f7cdfebc1910cf128b4be11910e520f5aa8ba07c8f2c38d442db",
-                "reason": "Reviewed current home, staff, lab, outreach, certificate and bootcamp pages. Program/bootcamp dates and course schedules do not publish routine office opening hours."
+                "reason": "Reviewed current home, staff, lab, outreach, certificate and bootcamp pages. Program/bootcamp dates and course schedules do not publish routine office opening hours. Re-scoped 2026-11-10 (not reviewed by Dan): the bootcamp section now gives the 2027 bootcamp's own dates and start time (July 6-9, 12 noon). They are an event's schedule, not center opening hours, but they read as times, so this claim no longer cites that section and rests on the home, staff and certificate sections."
               }
             },
             {
@@ -8821,15 +8821,7 @@
               "section": "Contact",
               "reviewed": {
                 "text_sha256": "c1b8190e12268a26d99359eb195037beec3d2db7eafb79eeb45d900eb634e63a",
-                "reason": "Reviewed current home, staff, lab, outreach, certificate and bootcamp pages. Program/bootcamp dates and course schedules do not publish routine office opening hours."
-              }
-            },
-            {
-              "url": "https://www.ramapo.edu/igg/bootcamp/",
-              "section": "The Investigative Genetic Genealogy (IGG) Bootcamp",
-              "reviewed": {
-                "text_sha256": "0707a1d84a3869ca599914e7bde55af1434b557d9847fd5df23cae1dbadfde11",
-                "reason": "Reviewed current home, staff, lab, outreach, certificate and bootcamp pages. Program/bootcamp dates and course schedules do not publish routine office opening hours. Re-bound 2026-11-10 (not reviewed by Dan): the bootcamp section replaced the sold-out June 22-26, 2026 dates with July 6-9, 2027, a $2000 price, meal and schedule details and a 15-person limit; its only contact is still \"Questions? Email Cairenn Binder: cbinder@ramapo.edu\", and it still gives no center phone, room, office hours or ranked contact preference."
+                "reason": "Reviewed current home, staff, lab, outreach, certificate and bootcamp pages. Program/bootcamp dates and course schedules do not publish routine office opening hours. Re-scoped 2026-11-10 (not reviewed by Dan): the bootcamp section now gives the 2027 bootcamp's own dates and start time (July 6-9, 12 noon). They are an event's schedule, not center opening hours, but they read as times, so this claim no longer cites that section and rests on the home, staff and certificate sections."
               }
             }
           ]
