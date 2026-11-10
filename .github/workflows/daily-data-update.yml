@@ -34,6 +34,14 @@ on:
         description: 'Node names to list every link of in the run log, separated by ";" (optional)'
         type: string
         default: ''
+      howto_read_all:
+        description: 'Make the one-off first read of every office page for how-to tasks (about $1.70; the owner OKs it first)'
+        type: boolean
+        default: false
+      howto_max_usd:
+        description: 'The most the how-to page read may spend in this run, in dollars (blank = the nightly cap)'
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -186,6 +194,30 @@ jobs:
           RAW_ARTIFACT_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
           RAW_ARTIFACT_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
         run: npm run refresh:publishable -- --from-captured-pages
+
+      # gpt-6-luna lists each office page's how-to tasks (ingestion/howto-entries.ts). A page is
+      # read once, and again only when its own words change: 0 to about 35 pages a night, a few
+      # cents. The readings live in the file store between runs (pipeline/howto-store.ts), and a
+      # run stops sending before it could spend more than HOWTO_MAX_USD. Production reads every
+      # night. A dev build restores the readings in its step above and reads nothing, unless a
+      # run started by hand asks for the one-off first read of every page (howto_read_all).
+      - name: Read new and changed office pages for how-to tasks
+        if: ${{ env.TARGET == 'production' || inputs.howto_read_all }}
+        env:
+          HOWTO_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          HOWTO_MAX_USD: ${{ inputs.howto_max_usd || vars.HOWTO_MAX_USD || '0.50' }}
+          HOWTO_CONCURRENCY: ${{ inputs.howto_read_all && '12' || '4' }}
+          READ_ALL: ${{ inputs.howto_read_all && '1' || '' }}
+          RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          RAW_ARTIFACT_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          RAW_ARTIFACT_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+          DOTENV_CONFIG_PATH: /dev/null
+        run: |
+          args=(--store)
+          if [[ -n "$READ_ALL" ]]; then args+=(--first-read); fi
+          npx tsx ingestion/howto-entries.ts "${args[@]}"
 
       # Data owns deterministic collector, validity, contract, and HTTP
       # regression tests. Model-answer accuracy remains in rockygpt-evals.
@@ -455,6 +487,12 @@ jobs:
         if: ${{ always() }}
         continue-on-error: true
         run: cat data/review/site-downloads.txt 2>/dev/null || echo 'No collector wrote a download note.'
+
+      # How many office pages the model read for how-to tasks this run, and what that cost.
+      - name: Show what the how-to read did
+        if: ${{ always() }}
+        continue-on-error: true
+        run: cat data/review/howto-reads.txt 2>/dev/null || echo 'No how-to read note. The run did not get that far.'
 
       # Also at the end of the log, for every target: a dev build posts no incident, so this is
       # the one place that says which sources, topics or reviewed office facts it went out without.

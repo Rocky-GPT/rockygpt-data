@@ -21,6 +21,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
 import { downloadRawArtifactBundle, listArchivedCaptures, SOURCE_RAW_ARTIFACT_FILES } from '../../pipeline/raw-artifacts';
+import { HOWTO_STORE_SOURCE } from '../../pipeline/howto-store';
 import { REUSABLE_CAPTURE_MAX_AGE_HOURS, REUSABLE_CAPTURE_SOURCES } from '../../pipeline/restore-active-release';
 import { checkCompletedOfficeReviews } from '../../pipeline/office-review-gate';
 import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
@@ -45,6 +46,8 @@ export async function restoreNewestBundles(rawDir: string, before?: number, page
   });
   fs.mkdirSync(rawDir, { recursive: true });
   for (const sourceKey of Object.keys(SOURCE_RAW_ARTIFACT_FILES)) {
+    // The model's how-to readings share the store but are no site's capture (pipeline/howto-store.ts).
+    if (sourceKey === HOWTO_STORE_SOURCE) continue;
     let newest: { key: string; at: number } | null = null;
     let token: string | undefined;
     do {

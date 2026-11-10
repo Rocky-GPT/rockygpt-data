@@ -3,7 +3,8 @@ name: Measure how-to page reads
 # How many office pages would a nightly how-to read send to the model, and what does a page cost?
 # The count compares archived captures: it fetches no college page and calls no model. The
 # optional sample has the model read that many pages, spaced evenly across the sites, and stops
-# before it could spend more than max_usd; its replies are not kept.
+# before it could spend more than max_usd; its replies are not kept (the nightly job's readings,
+# kept in the file store, are neither used nor changed here).
 on:
   workflow_dispatch:
     inputs:
@@ -19,10 +20,6 @@ on:
         description: The most the sample may spend, in dollars
         required: false
         default: '0.50'
-  # TEMPORARY, for the first measurement from this branch; removed before this file merges.
-  push:
-    branches: [claude/project-thread-gsatn5]
-    paths: ['.github/workflows/measure-task-reads.yml']
 
 permissions:
   contents: read
@@ -32,9 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
-      TIMES: ${{ github.event_name == 'push' && '2026-10-22 2026-11-08 2026-11-09 2026-11-10 now' || inputs.times }}
-      SAMPLE: ${{ github.event_name == 'push' && '50' || inputs.sample }}
-      MAX_USD: ${{ github.event_name == 'push' && '0.50' || inputs.max_usd }}
+      TIMES: ${{ inputs.times }}
+      SAMPLE: ${{ inputs.sample }}
+      MAX_USD: ${{ inputs.max_usd }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6

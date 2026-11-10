@@ -3,6 +3,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { SOURCES } from '../src/data-v2/source-seeds';
 import { restoreActiveRelease } from '../pipeline/restore-active-release';
+import { restoredLine, restoreHowtoReadings, writeHowtoNote } from '../pipeline/howto-store';
 import { facultyQualityErrors } from '../pipeline/quality/content-policy';
 import {
   evaluateSourceProvenance,
@@ -401,6 +402,11 @@ async function rebuildFromCapturedPages(): Promise<void> {
   if (aged.length) {
     console.log(`Past their freshness window (built anyway): ${aged.map((state) => `${state.key} (${state.detail})`).join('; ')}.`);
   }
+  // The model's how-to readings of these pages, made by production's runs: a dev build restores
+  // them and never calls the model, so a page production has not read yet has no tasks here.
+  const readings = restoredLine(await restoreHowtoReadings(path.join(process.cwd(), 'data', 'raw')));
+  console.log(readings);
+  writeHowtoNote([readings]);
   rebuildProjections();
 }
 

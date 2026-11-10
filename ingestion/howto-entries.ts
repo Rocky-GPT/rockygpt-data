@@ -9,12 +9,18 @@
  * The key is never read from .env (production): pass it for this run only.
  *   HOWTO_OPENAI_API_KEY=… [HOWTO_OPENAI_PROJECT=…] [HOWTO_OPENAI_MODEL=gpt-6-luna] \
  *     DOTENV_CONFIG_PATH=/dev/null npx tsx ingestion/howto-entries.ts [--only folder,folder] [--limit N]
- *       [--spread] [--max-usd 0.50]
+ *       [--spread] [--max-usd 0.50] [--store [--first-read] | --restore-only]
  *
  * --limit reads the first N due pages; with --spread, N pages spaced evenly across them (a sample
  * of every site, to measure what a page costs). A run stops sending before it could spend more
  * than --max-usd (HOWTO_MAX_USD, default $0.50): a page is sent only while its worst case (its
  * whole text and the longest reply allowed) still fits, and the pages left over wait for the next run.
+ *
+ * --store (the nightly job) first joins in the readings the file store keeps
+ * (pipeline/howto-store.ts), then archives the result when a page was read; without the key it
+ * restores and reads nothing. While no page has a reading at all it reads nothing either, unless
+ * --first-read is passed: the first read of every page is a one-off, started by hand.
+ * --restore-only (the dev build) restores and never calls the model.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -25,6 +31,7 @@ import { loadCapturedPages } from '../src/directory/contact-evidence';
 import { officeSectionPages, type OfficeSectionsPage } from '../src/data-v2/office-sections';
 import { catalogPolicyPages, type CatalogPoliciesCapture } from '../src/data-v2/catalog-policies';
 import { HOWTO_PROMPT, HOWTO_SCHEMA, entriesKey, pageInput, verifiedEntries, type HowtoEntry } from '../src/data-v2/howto-entries';
+import { restoredLine, restoreHowtoReadings, saveHowtoReadings, writeHowtoNote } from '../pipeline/howto-store';
 
 export const HOWTO_RAW = path.join(process.cwd(), 'data', 'raw', 'howto-entries.raw.json');
 
@@ -86,6 +93,8 @@ const NUSD_PER_DOLLAR = 1_000_000_000;
 /** The first reply's length limit, and the limit of the one longer try a cut-off reply gets. */
 const REPLY_TOKENS = 8000;
 const LONG_REPLY_TOKENS = 24000;
+/** With --store, the readings are archived each time this many more pages have been read. */
+const ARCHIVE_EVERY = 250;
 /** A try whose reply ran out of room, and a page the cap had no room for. */
 const CUT = Symbol('cut');
 const WAITS = Symbol('waits');
@@ -155,9 +164,37 @@ async function ask(page: OfficeSectionsPage, model: string, maxOutput: number): 
 }
 
 async function main(): Promise<void> {
-  if (!process.env.HOWTO_OPENAI_API_KEY) throw new Error('Pass HOWTO_OPENAI_API_KEY for this run (never from .env).');
-  const model = process.env.HOWTO_OPENAI_MODEL || 'gpt-6-luna';
   const argument = (name: string) => { const at = process.argv.indexOf(name); return at > 0 ? process.argv[at + 1] : undefined; };
+  const rawDir = path.dirname(HOWTO_RAW);
+  const store = process.argv.includes('--store');
+  const restoreOnly = process.argv.includes('--restore-only');
+  const notes: string[] = [];
+  /** Prints a line and keeps it for the note; `warn` also marks it in the workflow run's summary. */
+  const say = (line: string, warn = false) => { console.log(`${warn ? '::warning::' : ''}${line}`); notes.push(line); };
+  const finish = () => writeHowtoNote(notes);
+  let storedDigest: string | null = null;
+  if (store || restoreOnly) {
+    const held = await restoreHowtoReadings(rawDir);
+    storedDigest = held.storedDigest;
+    say(restoredLine(held));
+    // The first read of every page costs far more than a night's (about $1.70 against a few
+    // cents), so a scheduled run never starts it by itself, a few hundred pages a night.
+    if (store && !held.pages && !process.argv.includes('--first-read')) {
+      say('How-to readings: no page was read. The first read of every page is a one-off the owner starts: '
+        + 'run Daily Data Update by hand with howto_read_all on.');
+      finish();
+      return;
+    }
+  }
+  if (restoreOnly) { finish(); return; }
+  if (!process.env.HOWTO_OPENAI_API_KEY) {
+    if (!store) throw new Error('Pass HOWTO_OPENAI_API_KEY for this run (never from .env).');
+    // The nightly job without its key still publishes with the readings it restored.
+    say('How-to readings: HOWTO_OPENAI_API_KEY is not set, so no page was read; a page that changed has no how-to tasks until it is.', true);
+    finish();
+    return;
+  }
+  const model = process.env.HOWTO_OPENAI_MODEL || 'gpt-6-luna';
   const only = argument('--only')?.split(',');
   const limit = Number(argument('--limit') ?? Infinity);
   const maxUsd = Number(argument('--max-usd') ?? (process.env.HOWTO_MAX_USD?.trim() || 0.5));
@@ -169,10 +206,24 @@ async function main(): Promise<void> {
   const pages = howtoPages().filter(page => !only || only.includes(page.folder));
   const changed = pages.filter(page => capture.pages[page.key]?.key !== entriesKey(page.url, page.sections));
   const due = pickPages(changed, limit, process.argv.includes('--spread'));
-  console.log(`${pages.length} pages; ${changed.length} new or changed since they were last read `
+  say(`How-to readings: ${pages.length} pages; ${changed.length} new or changed since they were last read `
     + `(${pages.length - changed.length} unchanged); reading ${due.length}, spending at most $${maxUsd.toFixed(2)}.`);
   let input = 0, output = 0, done = 0, entries = 0, skipped = 0, waiting = 0;
   const queue = pLimit(Number(process.env.HOWTO_CONCURRENCY) || 4);
+  /** Writes the readings so far and, with --store, archives them; one write at a time. */
+  let keeping: Promise<void> = Promise.resolve();
+  const keep = (last: boolean): Promise<void> => (keeping = keeping.then(async () => {
+    writeJsonFile(HOWTO_RAW, capture);
+    if (!store) return;
+    try {
+      const kept = await saveHowtoReadings(rawDir, storedDigest);
+      storedDigest = kept.digest;
+      if (kept.saved) say(`How-to readings: archived the readings of ${kept.pages} pages.`);
+    } catch (error) {
+      // This run's publish still has the readings on disk; the next run pays for these pages again.
+      say(`How-to readings: not archived: ${error instanceof Error ? error.message : error}`, last);
+    }
+  }));
   /** One try at a page under the budget: the model's reply, CUT when it ran out of room, or
    * WAITS when the cap has no room left for the page. */
   const attempt = async (page: OfficeSectionsPage, maxOutput: number): Promise<unknown> => {
@@ -206,13 +257,17 @@ async function main(): Promise<void> {
     done++;
     entries += verifiedEntries(reply, page.sections).length;
     if (done % 50 === 0) { writeJsonFile(HOWTO_RAW, capture); console.log(`${done}/${due.length} read`); }
+    // A long first read is archived as it goes, so a run that is cut short keeps what it paid for.
+    if (store && done % ARCHIVE_EVERY === 0) await keep(false);
   })));
-  writeJsonFile(HOWTO_RAW, capture);
+  await keep(true);
   writeRawFileProvenance('howto-entries', HOWTO_RAW, { recordCount: Object.keys(capture.pages).length });
-  console.log(`Read ${done} pages (${skipped} skipped): ${entries} verified entries; ${input} input and ${output} output tokens; `
+  say(`How-to readings: read ${done} page${done === 1 ? '' : 's'} (${skipped} skipped):${entries} verified entries; ${input} input and ${output} output tokens; `
     + `$${budget.spentUsd.toFixed(4)} at ${rates.input} and ${rates.output} billionths of a dollar per input and output token`
     + `${done ? `, $${(budget.spentUsd / done).toFixed(5)} a page read` : ''}.`);
-  if (waiting) console.log(`${waiting} pages wait for the next run: the $${maxUsd.toFixed(2)} cap had no room left for them.`);
+  if (waiting) say(`How-to readings: ${waiting} pages wait for the next run: the $${maxUsd.toFixed(2)} cap had no room left for them.`, true);
+  if (skipped) say(`How-to readings: ${skipped} pages could not be read (see "Skipped" above) and have no how-to tasks until a later run reads them.`, true);
+  finish();
 }
 
 if (process.argv[1]?.endsWith('howto-entries.ts')) {
