@@ -13,14 +13,29 @@ async function main(): Promise<void> {
   const browser = await chromium.launch({ headless: true });
   try {
     const page = await browser.newPage();
+    // tsx wraps named functions in __name(), which a page does not have.
+    await page.addInitScript({ content: 'window.__name = (fn) => fn;' });
+    const started = Date.now();
     await page.goto(URL, { waitUntil: 'networkidle' });
     console.log(`Rendered ${URL} at ${new Date().toISOString()}; title "${await page.title()}"; viewport ${JSON.stringify(page.viewportSize())}.`);
 
     const buttons = page.locator('.more-hours');
+    /** What is on the page at this moment, without clicking anything. */
+    const sample = async (label: string) => {
+      const count = await buttons.count();
+      let seen = 0;
+      for (let index = 0; index < count; index++) if (await buttons.nth(index).isVisible()) seen++;
+      const venues = await page.locator('h2.location-name').count();
+      const groups = await page.locator('.hours-detail-container').count();
+      const regular = await page.locator('h3', { hasText: 'Regular Hours' }).count();
+      console.log(`${label} (${((Date.now() - started) / 1000).toFixed(1)} s after the load began): ${count} "More hours" button(s), ${seen} visible; `
+        + `${venues} venue heading(s); ${regular} "Regular Hours" heading(s); ${groups} day group(s) in the page.`);
+    };
+    await sample('At network idle');
+    for (const wait of [500, 1000, 2000, 4000]) { await page.waitForTimeout(wait); await sample(`After ${wait} ms more`); }
     const count = await buttons.count();
     const visible: boolean[] = [];
     for (let index = 0; index < count; index++) visible.push(await buttons.nth(index).isVisible());
-    console.log(`"More hours" buttons: ${count}; Playwright sees ${visible.filter(Boolean).length} as visible.`);
 
     const described = await page.evaluate(() => {
       const squash = (value: string | null | undefined) => (value ?? '').replace(/\s+/g, ' ').trim();
@@ -70,6 +85,14 @@ async function main(): Promise<void> {
     }
     console.log(`\n== Dialogs, banners and the like: ${described.overlays.length} ==`);
     for (const overlay of described.overlays) console.log(`    ${overlay}`);
+
+    console.log('\n== After clicking each visible "More hours" button ==');
+    for (let index = 0; index < count; index++) {
+      if (!visible[index]) continue;
+      await buttons.nth(index).click({ timeout: 5000 }).catch((error: Error) => console.log(`    click #${index + 1} failed: ${error.message.split('\n')[0]}`));
+    }
+    await page.waitForTimeout(1000);
+    await sample('After the clicks');
   } finally {
     await browser.close();
   }
