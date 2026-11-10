@@ -31,10 +31,28 @@ resource-list or footer values into office facts. Named places, PDF-only details
 outside the bounded scan still require manual review.
 
 The completed 34-office review is retained in
-`src/reference/office-contact-review.json` and saved with each release. Publication
-stops when one of these reviewed offices has a withheld value, an unconfirmed absence,
-a missing source section, an unreviewed discovery or a changed exclusion. It does not
-assign newly discovered values automatically.
+`src/reference/office-contact-review.json` and saved with each release. When a page
+changes under one of these offices (a withheld value, an unconfirmed absence, a missing
+source section, a contact note or preference its section no longer states), publication
+goes ahead without the facts that night's pages no longer back, never with the older
+reading, and lists the office in `data/review/refresh-changed-offices.md`, which the
+daily job posts on the data-refresh incident until the office is reviewed again. Every
+other office and source publishes. Publication still stops for a mistake in the reviewed
+files themselves: a reviewed name that is not exactly one office contact, or a field
+nobody reviewed that is empty. It does not assign newly discovered values automatically.
+
+The "Show changed office review sections" workflow prints each listed office's changed
+sections from the archived captures, with what changed since an earlier date, and
+downloads nothing from the college's sites. When the office's contact details did not
+change, re-bind the reviewed entries to the new text hash and record it under the
+office's `review_updates`.
+
+A citation names a page and one section heading. A block with no heading of its own (the
+ticket rules and contact line at the foot of the Roadrunner Central page, which the
+page's sectioning files under its newest past event) is cited with `blockStart`, its
+opening words: the block is the one section holding those words, read from them on, so
+a new heading above it does not unbind its reviewed facts. Its own words changing still
+does.
 
 Reviewed exclusions in `contactReviewExclusions` name the field, value, source section,
 reason and exact section-text SHA256. A changed section invalidates the decision. Missing

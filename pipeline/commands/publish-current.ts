@@ -7,7 +7,7 @@ import 'dotenv/config';
 import { Pool, type PoolClient } from 'pg';
 import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
 import { loadCapturedPages } from '../../src/directory/contact-evidence';
-import { checkCompletedOfficeReviews } from '../office-review-gate';
+import { changedOfficesReport, CHANGED_OFFICES_REPORT, checkCompletedOfficeReviews } from '../office-review-gate';
 import { parseStopDescriptions, parseTransportationSchedules } from '../../ingestion/transportation-schedule';
 import { validateRawDatasetV1 } from '../../ingestion/raw-types';
 import { normalizeMenuWeek } from '../../ingestion/menu-data';
@@ -522,6 +522,16 @@ async function insertStructured(
   for (const office of officeCheck.toReview) console.warn(`Completed office review needs another review (not blocking): ${office}`);
   if (officeCheck.blocking.length) {
     throw new Error(`Completed office review needs attention before publication:\n${officeCheck.blocking.join('\n')}`);
+  }
+  // A reviewed office whose page changed publishes only what tonight's pages still state (the
+  // builder above already left the rest out) and waits for another review; every other office and
+  // source goes out. The workflow posts the list on the data-refresh incident.
+  const officeReport = changedOfficesReport(officeCheck.changed);
+  fs.rmSync(CHANGED_OFFICES_REPORT, { force: true });
+  if (officeReport) {
+    fs.mkdirSync(path.dirname(CHANGED_OFFICES_REPORT), { recursive: true });
+    fs.writeFileSync(CHANGED_OFFICES_REPORT, officeReport);
+    console.warn(officeReport);
   }
   for (const contact of directoryContacts) {
     const name = cleanText(contact.name);

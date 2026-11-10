@@ -33,6 +33,14 @@ export interface ContactEvidence {
    * its kind after this phrase, so a neighbour's number can't stand in for it.
    */
   near?: string;
+  /**
+   * For a block with no heading of its own, which the page's sectioning files under whatever
+   * heading comes before it: its opening words. Roadrunner Central's ticket rules and contact
+   * line sit under the newest past event, a heading that changes with every show, so a citation
+   * by heading broke each time. The block is then the one section holding these words, read
+   * from them on, and `section` only records the heading it sat under when it was reviewed.
+   */
+  blockStart?: string;
   fields: ContactField[];
 }
 
@@ -54,7 +62,7 @@ export interface ReviewedContactAddition {
 export interface ReviewedContactNote {
   /** A verbatim sentence or phrase, checked against the cited captured section. */
   text: string;
-  evidence: Pick<ContactEvidence, 'url' | 'section' | 'near'>;
+  evidence: Pick<ContactEvidence, 'url' | 'section' | 'near' | 'blockStart'>;
 }
 
 /**
@@ -78,7 +86,7 @@ export interface ConfirmedContactNote {
 /** A source-scoped exclusion must be re-reviewed when its captured section changes. */
 export interface ReviewedContactExclusion {
   field: ContactField; value: string; reason: string;
-  evidence: Pick<ContactEvidence, 'url' | 'section' | 'near'> & { text_sha256: string };
+  evidence: Pick<ContactEvidence, 'url' | 'section' | 'near' | 'blockStart'> & { text_sha256: string };
 }
 
 export function contactSectionHash(text: string): string {
@@ -228,20 +236,43 @@ export function statesValue(field: ContactField, value: string, text: string, fi
   return place.length > 0 && alphanumeric(text).includes(place);
 }
 
-/** The text an evidence entry points at, or why there is none in this capture. */
+/**
+ * The text an evidence entry points at and the heading it sits under in this capture, or why
+ * there is none.
+ */
 export function evidenceText(evidence: ContactEvidence, pages: ReadonlyMap<string, CapturedPage>,
-  options: { wholeSection?: boolean } = {}): { text: string } | { reason: string } {
+  options: { wholeSection?: boolean } = {}): { text: string; heading: string } | { reason: string } {
   const page = pages.get(pageKey(evidence.url));
   if (!page) return { reason: `${evidence.url} was not captured in this run.` };
-  const sections = page.sections.filter(section => sameHeading(section.heading, evidence.section));
-  if (!sections.length) return { reason: `${evidence.url} has no section "${evidence.section}".` };
-  const text = sections.map(section => `${section.heading}\n${section.text}`).join('\n');
-  if (!evidence.near) return { text };
+  let heading = evidence.section;
+  let text: string;
+  if (evidence.blockStart?.trim()) {
+    const opening = evidence.blockStart.trim().toLowerCase();
+    const holding = page.sections.filter(section => section.text.toLowerCase().includes(opening));
+    // Two sections with the same opening words are two blocks: nothing says which was reviewed.
+    if (holding.length !== 1) {
+      return { reason: `${evidence.url} has ${holding.length || 'no'} section${holding.length > 1 ? 's' : ''} with the block starting "${evidence.blockStart.trim()}"${holding.length ? '; it must have exactly one' : ''}.` };
+    }
+    heading = holding[0].heading;
+    // The heading above the block belongs to another item, so it is no part of the reviewed text.
+    text = holding[0].text.slice(holding[0].text.toLowerCase().indexOf(opening));
+  } else {
+    const sections = page.sections.filter(section => sameHeading(section.heading, evidence.section));
+    if (!sections.length) return { reason: `${evidence.url} has no section "${evidence.section}".` };
+    text = sections.map(section => `${section.heading}\n${section.text}`).join('\n');
+  }
+  if (!evidence.near) return { text, heading };
   const start = text.toLowerCase().indexOf(evidence.near.toLowerCase());
-  if (start < 0) return { reason: `Section "${evidence.section}" of ${evidence.url} doesn't mention "${evidence.near}".` };
+  if (start < 0) return { reason: `Section "${heading}" of ${evidence.url} doesn't mention "${evidence.near}".` };
   // A value is only published if it is within a short window after the phrase; an absence is only
   // believed if nothing in the rest of the section states one, however far from the phrase.
-  return { text: options.wholeSection ? text.slice(start) : text.slice(start, start + evidence.near.length + NEAR_WINDOW) };
+  return { text: options.wholeSection ? text.slice(start) : text.slice(start, start + evidence.near.length + NEAR_WINDOW), heading };
+}
+
+/** The heading a citation sits under in this capture: its own, or the one above a block found by its opening words. */
+function headingNow(evidence: Pick<ContactEvidence, 'url' | 'section' | 'blockStart'>, pages: ReadonlyMap<string, CapturedPage>): string {
+  const found = evidenceText({ ...evidence, near: undefined, fields: [] }, pages);
+  return 'heading' in found ? found.heading : evidence.section;
 }
 
 /**
@@ -266,7 +297,7 @@ export function checkContactValues(values: ContactValues, evidence: readonly Con
       const found = evidenceText(entry, pages);
       if ('reason' in found) { reasons.push(found.reason); return false; }
       if (statesValue(field, value, found.text, Boolean(entry.near))) return true;
-      reasons.push(`Section "${entry.section}" of ${entry.url} doesn't state it.`);
+      reasons.push(`Section "${found.heading}" of ${entry.url} doesn't state it.`);
       return false;
     });
     if (supporting) {
@@ -299,7 +330,7 @@ export function checkContactAdditions(entries: readonly ReviewedContactAddition[
       continue;
     }
     confirmed.push({ field: entry.field, value: entry.value, label: entry.label,
-      url: support.url, section: support.section, checked_at: pages.get(pageKey(support.url))!.fetchedAt });
+      url: support.url, section: headingNow(support, pages), checked_at: pages.get(pageKey(support.url))!.fetchedAt });
   }
   return { confirmed, withheld };
 }
@@ -314,7 +345,7 @@ export function checkContactNotes(entries: readonly ReviewedContactNote[],
       issues.push({ text: entry.text, reason: 'reason' in found ? found.reason : 'The cited section does not state this contact instruction.' });
       continue;
     }
-    confirmed.push({ text: entry.text, url: entry.evidence.url, section: entry.evidence.section,
+    confirmed.push({ text: entry.text, url: entry.evidence.url, section: found.heading,
       checked_at: pages.get(pageKey(entry.evidence.url))!.fetchedAt });
   }
   return { confirmed, issues };
@@ -361,7 +392,7 @@ export function findUnrecordedValues(values: ContactValues, evidence: readonly C
     if ('reason' in found) continue;
     for (const field of CONTACT_FIELDS) {
       const missing = unique(extract[field](found.text)).filter(value => !recorded[field].has(value));
-      if (missing.length) unrecorded.push({ field, found: missing, url: entry.url, section: entry.section });
+      if (missing.length) unrecorded.push({ field, found: missing, url: entry.url, section: found.heading });
     }
   }
   return unrecorded;
@@ -427,7 +458,7 @@ export interface AbsenceClaim {
   /** What was looked for; for example a ranked preference or a shared general-office mailbox. */
   scope?: string;
   reason?: string;
-  evidence: Array<Pick<ContactEvidence, 'url' | 'section' | 'near'> & {
+  evidence: Array<Pick<ContactEvidence, 'url' | 'section' | 'near' | 'blockStart'> & {
     /** Explicit review of this exact captured text, required to distinguish benign cue words. */
     reviewed?: { text_sha256: string; reason: string };
   }>;
@@ -517,7 +548,7 @@ export function checkAbsences(claims: readonly AbsenceClaim[], values: AbsenceVa
       const stated = statedValues(claim.field, found.text);
       const reviewed = entry.reviewed?.reason.trim() && entry.reviewed.text_sha256 === contactSectionHash(found.text);
       if (entry.reviewed && !reviewed) {
-        issues.push({ field: claim.field, kind: 'unconfirmed', reason: `The reviewed section "${entry.section}" of ${entry.url} changed; review this absence again.` });
+        issues.push({ field: claim.field, kind: 'unconfirmed', reason: `The reviewed section "${found.heading}" of ${entry.url} changed; review this absence again.` });
         ok = false;
         continue;
       }
@@ -533,14 +564,14 @@ export function checkAbsences(claims: readonly AbsenceClaim[], values: AbsenceVa
       const scopedEmail = claim.field === 'email' && /(?:shared|general)[\s\S]*mailbox/i.test(claim.scope ?? '')
         && actual.length > 0 && actual.every(value => scopedContacts.some(contact => contact.field === 'email'
           && contact.value.toLowerCase() === value.toLowerCase()
-          && pageKey(contact.url) === pageKey(entry.url) && sameHeading(contact.section, entry.section)));
+          && pageKey(contact.url) === pageKey(entry.url) && sameHeading(contact.section, found.heading)));
       if (stated.length && (!reviewed || actual.length && !scopedEmail)) {
         issues.push({ field: claim.field, kind: 'contradicted',
-          reason: `Section "${entry.section}" of ${entry.url} states ${stated.join(', ')}.` });
+          reason: `Section "${found.heading}" of ${entry.url} states ${stated.join(', ')}.` });
         ok = false;
         continue;
       }
-      checks.push({ url: entry.url, section: entry.section, checked_at: pages.get(pageKey(entry.url))!.fetchedAt,
+      checks.push({ url: entry.url, section: found.heading, checked_at: pages.get(pageKey(entry.url))!.fetchedAt,
         ...(reviewed ? { text_sha256: entry.reviewed!.text_sha256 } : {}),
         ...(referralSection && healthReferral ? { official_link: { url: healthReferral.url, section: referralSection.heading,
           checked_at: healthReferral.fetchedAt } } : {}) });
