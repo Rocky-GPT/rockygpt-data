@@ -8,7 +8,8 @@ winning pages a page answer reads in place of a left-out one (the page writer is
 "ai", so the sections are chosen as production chooses them).
 
 It also counts the tasks whose only deadline is written in numbers ("by 9/23/26") and has passed:
-the date rule reads those since the first run of this check.
+the date rule reads those since the first run of this check. Third run: a card whose own date
+has passed no longer brings its winning task in for an older term.
 """
 
 import asyncio
