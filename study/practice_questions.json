@@ -1,65 +1,365 @@
 {
-  "about": "Practice questions for the answer cards' clear-match rule (step 4). Written 2026-11-11; not the blind 60. `want` is a pattern the right card's task name or page address should match; null means no card should answer (not a how-to, two asks, or nothing the campus pages cover).",
-  "questions": [
-    {"q": "how do i get a parking permit", "want": "parking permit"},
-    {"q": "where do i pick up my parking permit", "want": "pick up.*permit|parking permit"},
-    {"q": "i lost my parking permit what do i do", "want": "lost|replace"},
-    {"q": "my friend is visiting this weekend, where do they get a parking pass", "want": "visitor|temporary"},
-    {"q": "how do i change my meal plan", "want": "meal plan"},
-    {"q": "can i get a refund on my meal plan", "want": "meal plan"},
-    {"q": "how do i retake a class i failed", "want": "retake|repeat|failed"},
-    {"q": "how do i ask my professor for an incomplete", "want": "incomplete"},
-    {"q": "how do i send my transcript to another school", "want": "transcript"},
-    {"q": "how long does it take to get an official transcript", "want": "transcript"},
-    {"q": "how do i make a counseling appointment", "want": "counsel"},
-    {"q": "what do i do if i'm having a mental health emergency", "want": "emergency|crisis"},
-    {"q": "can i retake the math placement test", "want": "placement|retest|retake"},
-    {"q": "how do i withdraw from a class", "want": "withdraw"},
-    {"q": "how do i declare my major", "want": "declar|major"},
-    {"q": "how do i apply for graduation", "want": "graduat"},
-    {"q": "i lost my student id, how do i get a new one", "want": "id card|\\bID\\b|identification"},
-    {"q": "how do i get accommodations for a disability", "want": "accommodat|disab"},
-    {"q": "how do i apply for housing on campus", "want": "housing"},
-    {"q": "how do i appeal a parking ticket", "want": "appeal|ticket|citation|summons"},
-    {"q": "how do i set up a payment plan for tuition", "want": "payment plan"},
-    {"q": "how do i waive the student health insurance", "want": "insurance|waive"},
-    {"q": "how do i apply for financial aid", "want": "financial aid|fafsa"},
-    {"q": "how do i register for classes", "want": "register"},
-    {"q": "how do i report a bias incident", "want": "bias|report"},
-    {"q": "how do i reserve a study room in the library", "want": "study room|reserve|library"},
-    {"q": "how do i get a tutor", "want": "tutor"},
-    {"q": "how do i sign up to study abroad", "want": "study abroad|abroad"},
-    {"q": "how do i change my major", "want": "major"},
-    {"q": "where do i send my immunization records", "want": "immuniz|health record|vaccin"},
-    {"q": "how does my club book a room for an event", "want": "reserve|room|space|event"},
-    {"q": "how do i get credit for an internship", "want": "internship|co-op"},
-    {"q": "how do i apply for a scholarship", "want": "scholarship"},
-    {"q": "how do i connect to the campus wifi", "want": "wi-?fi|wireless|network"},
-    {"q": "how do i reset my ramapo password", "want": "password"},
-    {"q": "how do i take a leave of absence", "want": "leave of absence"},
-    {"q": "what do i have to do to check out of my dorm", "want": "check.?out"},
-    {"q": "how do i request a single room", "want": "single|room"},
-    {"q": "how do i get an enrollment verification letter", "want": "verif"},
-    {"q": "how do i order my cap and gown", "want": "cap|gown|regalia|commencement"},
-    {"q": "who is the dean of students", "want": null},
-    {"q": "when is spring break", "want": null},
-    {"q": "what's for lunch today", "want": null},
-    {"q": "what time does the library close", "want": null},
-    {"q": "where is the bookstore", "want": null},
-    {"q": "parking", "want": null},
-    {"q": "how much is tuition", "want": null},
-    {"q": "tell me about the nursing program", "want": null},
-    {"q": "what clubs are there for gaming", "want": null},
-    {"q": "who teaches calculus", "want": null},
-    {"q": "is ramapo a good school", "want": null},
-    {"q": "what's the phone number for public safety", "want": null},
-    {"q": "how do i get a parking permit and how do i change my meal plan", "want": null},
-    {"q": "how do i get a job at google", "want": null},
-    {"q": "how do i make pasta", "want": null},
-    {"q": "what is the campus wifi called", "want": null},
-    {"q": "when is the last day to withdraw", "want": null},
-    {"q": "how many credits do i need to graduate", "want": null},
-    {"q": "what are the gym hours", "want": null},
-    {"q": "help", "want": null}
-  ]
+ "about": "Practice questions for the answer cards' clear-match rule (step 4). Written 2026-11-11; not the blind 60. `want` is a pattern the right card's task name or page address should match; null means no card should answer (not a how-to, two asks, or nothing the campus pages cover).",
+ "questions": [
+  {
+   "q": "how do i get a parking permit",
+   "want": "parking permit"
+  },
+  {
+   "q": "where do i pick up my parking permit",
+   "want": "pick up.*permit|parking permit"
+  },
+  {
+   "q": "i lost my parking permit what do i do",
+   "want": "lost|replace"
+  },
+  {
+   "q": "my friend is visiting this weekend, where do they get a parking pass",
+   "want": "visitor|temporary"
+  },
+  {
+   "q": "how do i change my meal plan",
+   "want": "meal plan"
+  },
+  {
+   "q": "can i get a refund on my meal plan",
+   "want": "meal plan"
+  },
+  {
+   "q": "how do i retake a class i failed",
+   "want": "retake|repeat|failed"
+  },
+  {
+   "q": "how do i ask my professor for an incomplete",
+   "want": "incomplete"
+  },
+  {
+   "q": "how do i send my transcript to another school",
+   "want": "transcript"
+  },
+  {
+   "q": "how long does it take to get an official transcript",
+   "want": "transcript"
+  },
+  {
+   "q": "how do i make a counseling appointment",
+   "want": "counsel"
+  },
+  {
+   "q": "what do i do if i'm having a mental health emergency",
+   "want": "emergency|crisis"
+  },
+  {
+   "q": "can i retake the math placement test",
+   "want": "placement|retest|retake"
+  },
+  {
+   "q": "how do i withdraw from a class",
+   "want": "withdraw"
+  },
+  {
+   "q": "how do i declare my major",
+   "want": "declar|major"
+  },
+  {
+   "q": "how do i apply for graduation",
+   "want": "graduat"
+  },
+  {
+   "q": "i lost my student id, how do i get a new one",
+   "want": "id card|\\bID\\b|identification"
+  },
+  {
+   "q": "how do i get accommodations for a disability",
+   "want": "accommodat|disab"
+  },
+  {
+   "q": "how do i apply for housing on campus",
+   "want": "housing"
+  },
+  {
+   "q": "how do i appeal a parking ticket",
+   "want": "appeal|ticket|citation|summons"
+  },
+  {
+   "q": "how do i set up a payment plan for tuition",
+   "want": "payment plan"
+  },
+  {
+   "q": "how do i waive the student health insurance",
+   "want": "insurance|waive"
+  },
+  {
+   "q": "how do i apply for financial aid",
+   "want": "financial aid|fafsa"
+  },
+  {
+   "q": "how do i register for classes",
+   "want": "register"
+  },
+  {
+   "q": "how do i report a bias incident",
+   "want": "bias|report"
+  },
+  {
+   "q": "how do i reserve a study room in the library",
+   "want": "study room|reserve|library"
+  },
+  {
+   "q": "how do i get a tutor",
+   "want": "tutor"
+  },
+  {
+   "q": "how do i sign up to study abroad",
+   "want": "study abroad|abroad"
+  },
+  {
+   "q": "how do i change my major",
+   "want": "major"
+  },
+  {
+   "q": "where do i send my immunization records",
+   "want": "immuniz|health record|vaccin"
+  },
+  {
+   "q": "how does my club book a room for an event",
+   "want": "reserve|room|space|event"
+  },
+  {
+   "q": "how do i get credit for an internship",
+   "want": "internship|co-op"
+  },
+  {
+   "q": "how do i apply for a scholarship",
+   "want": "scholarship"
+  },
+  {
+   "q": "how do i connect to the campus wifi",
+   "want": "wi-?fi|wireless|network"
+  },
+  {
+   "q": "how do i reset my ramapo password",
+   "want": "password"
+  },
+  {
+   "q": "how do i take a leave of absence",
+   "want": "leave of absence"
+  },
+  {
+   "q": "what do i have to do to check out of my dorm",
+   "want": "check.?out"
+  },
+  {
+   "q": "how do i request a single room",
+   "want": "single|room"
+  },
+  {
+   "q": "how do i get an enrollment verification letter",
+   "want": "verif"
+  },
+  {
+   "q": "how do i order my cap and gown",
+   "want": "cap|gown|regalia|commencement"
+  },
+  {
+   "q": "how do i get my 1098-T tax form",
+   "want": "1098"
+  },
+  {
+   "q": "the class i need is full, how do i get in",
+   "want": "full|closed|override|waitlist|wait list|permission"
+  },
+  {
+   "q": "how do i add a minor",
+   "want": "minor"
+  },
+  {
+   "q": "how do i become an RA",
+   "want": "resident assistant|\\bRA\\b"
+  },
+  {
+   "q": "how do i join a club",
+   "want": "club|organization"
+  },
+  {
+   "q": "how do i start a new club",
+   "want": "club|organization"
+  },
+  {
+   "q": "how do i get a job on campus",
+   "want": "job|employ"
+  },
+  {
+   "q": "how do i make an appointment with my advisor",
+   "want": "advis"
+  },
+  {
+   "q": "how do i find out who my advisor is",
+   "want": "advis"
+  },
+  {
+   "q": "something is broken in my dorm room, who do i tell",
+   "want": "work order|maintenance|repair|facilit"
+  },
+  {
+   "q": "how do i print something on campus",
+   "want": "print"
+  },
+  {
+   "q": "can i borrow a laptop from the library",
+   "want": "laptop|borrow|loan"
+  },
+  {
+   "q": "how do i apply for work study",
+   "want": "work.?study"
+  },
+  {
+   "q": "how do i transfer credits from another college",
+   "want": "transfer"
+  },
+  {
+   "q": "how do i appeal an academic dismissal",
+   "want": "dismiss|appeal"
+  },
+  {
+   "q": "how do i appeal a grade",
+   "want": "grade appeal|appeal"
+  },
+  {
+   "q": "how do i get tickets for commencement",
+   "want": "ticket|commencement"
+  },
+  {
+   "q": "can my friend stay overnight in my dorm",
+   "want": "guest|overnight|visitor"
+  },
+  {
+   "q": "how do i request an emotional support animal",
+   "want": "animal"
+  },
+  {
+   "q": "how do i schedule a campus tour",
+   "want": "tour|visit"
+  },
+  {
+   "q": "how do i apply as a transfer student",
+   "want": "transfer"
+  },
+  {
+   "q": "how do i make an appointment at health services",
+   "want": "health"
+  },
+  {
+   "q": "how do i take a class pass/fail",
+   "want": "pass"
+  },
+  {
+   "q": "how do i audit a class",
+   "want": "audit"
+  },
+  {
+   "q": "how do i report sexual harassment",
+   "want": "title ix|harass|sexual|report"
+  },
+  {
+   "q": "how do i apply to the honors program",
+   "want": "honors"
+  },
+  {
+   "q": "how do i get my diploma mailed to me",
+   "want": "diploma"
+  },
+  {
+   "q": "how do i change my name on my school records",
+   "want": "name"
+  },
+  {
+   "q": "how do i update my home address",
+   "want": "address"
+  },
+  {
+   "q": "how do i add money to my dining dollars",
+   "want": "dining|flex|dollars|meal"
+  },
+  {
+   "q": "who is the dean of students",
+   "want": null
+  },
+  {
+   "q": "when is spring break",
+   "want": null
+  },
+  {
+   "q": "what's for lunch today",
+   "want": null
+  },
+  {
+   "q": "what time does the library close",
+   "want": null
+  },
+  {
+   "q": "where is the bookstore",
+   "want": null
+  },
+  {
+   "q": "parking",
+   "want": null
+  },
+  {
+   "q": "how much is tuition",
+   "want": null
+  },
+  {
+   "q": "tell me about the nursing program",
+   "want": null
+  },
+  {
+   "q": "what clubs are there for gaming",
+   "want": null
+  },
+  {
+   "q": "who teaches calculus",
+   "want": null
+  },
+  {
+   "q": "is ramapo a good school",
+   "want": null
+  },
+  {
+   "q": "what's the phone number for public safety",
+   "want": null
+  },
+  {
+   "q": "how do i get a parking permit and how do i change my meal plan",
+   "want": null
+  },
+  {
+   "q": "how do i get a job at google",
+   "want": null
+  },
+  {
+   "q": "how do i make pasta",
+   "want": null
+  },
+  {
+   "q": "what is the campus wifi called",
+   "want": null
+  },
+  {
+   "q": "when is the last day to withdraw",
+   "want": null
+  },
+  {
+   "q": "how many credits do i need to graduate",
+   "want": null
+  },
+  {
+   "q": "what are the gym hours",
+   "want": null
+  },
+  {
+   "q": "help",
+   "want": null
+  }
+ ]
 }

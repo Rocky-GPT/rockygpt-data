@@ -2,13 +2,16 @@
 question? Reads the downloaded dev graph's meaning index and cards.
 
 Part 1 pays for nothing: every task's written questions are already vectors in the index, so one
-is taken out and asked as if a student typed it. Three ways: only that one vector taken out
-("easy"), all of its task's written questions taken out ("hard": the card must be found by the
-task's own page words or by its other pages), and every vector of its whole card taken out
-("gone": the right card does not exist, so any card that fires is a wrong answer).
+is taken out and asked as if a student typed it ("easy": only that vector is taken out; "gone":
+every vector of its whole card is taken out, so the right card does not exist). Where the build's
+question cache was restored, the fires on another card are printed with the question's words, to
+be judged by reading.
 
 Part 2 embeds the practice questions (one call, a fraction of a cent) and prints each one's best
 cards.
+
+A card's score is its best vector's, less the how-to read's own penalties: a card whose date has
+passed (MEANING_PAST_TERM) and a card on an old page (MEANING_OLD_PAGE).
 """
 
 import collections
@@ -16,6 +19,7 @@ import datetime
 import json
 import os
 import re
+import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -23,12 +27,15 @@ from pathlib import Path
 import numpy as np
 from rockygpt_brain import card_answer
 from rockygpt_brain.retrieval import answer_cards
+from rockygpt_brain.retrieval.entity_facts import MEANING_OLD_PAGE, MEANING_PAST_TERM
 from rockygpt_brain.retrieval.graph_store import GraphOnlyFacts
 
 TODAY = datetime.date(2026, 11, 11)
 SAMPLE = 3000
-TOPS = (0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80)
+TOPS = (0.70, 0.75, 0.80, 0.85)
 MARGINS = (0.0, 0.02, 0.04, 0.06, 0.08, 0.10, 0.15)
+RULES = ((0.75, 0.04), (0.80, 0.04), (0.80, 0.06), (0.80, 0.10), (0.85, 0.04))
+SHOWN = (0.80, 0.04)  # The rule whose fires are printed for reading.
 EMBED_USD_PER_TOKEN = 0.13 / 1_000_000  # text-embedding-3-large
 
 
@@ -51,8 +58,8 @@ def embed(texts: list[str], model: str, dimensions: int) -> tuple[list[list[floa
 def grid(title: str, rows: list[tuple[bool, float, float]], gone: bool = False) -> None:
     """rows: (the top card is the question's own, top score, top minus second)."""
     print(f"\n-- {title}: {len(rows)} questions; "
-          + ("share that fires (every fire is wrong)" if gone
-             else "share that fires / of those, share whose card is the right one"))
+          + ("share that fires (the right card does not exist)" if gone
+             else "share that fires / of those, share whose card is the question's own"))
     print("top>=   " + "".join(f"margin>={m:<9.2f}" for m in MARGINS))
     for top in TOPS:
         cells = []
@@ -64,13 +71,33 @@ def grid(title: str, rows: list[tuple[bool, float, float]], gone: bool = False) 
         print(f"{top:<8.2f}" + "".join(cells))
 
 
+def written_questions(facts: GraphOnlyFacts, index) -> dict[int, list[str]]:  # type: ignore[no-untyped-def]
+    """Each unit's written questions, in the order of its question vectors, from the build's
+    question cache; empty when the cache was not restored."""
+    path = Path(".meaning-cache/questions.json")
+    if not path.exists():
+        print("no question cache restored: fires are printed without the question's words")
+        return {}
+    sys.path.insert(0, "brain/scripts")
+    import build_meaning_index as build
+    cache = json.loads(path.read_text())
+    _, _, units, _ = build.collect(facts)
+    assert [(u["record_id"], u["index"]) for u in units] == [
+        (u.record_id, u.index) for u in index.units], "the cache's units are not the index's"
+    found = {n: cache.get(build._digest(unit["heading"], unit["text"]), [])
+             for n, unit in enumerate(units) if unit["entry"]}
+    print(f"question cache: {len(cache)} entries; {sum(1 for q in found.values() if q)} of "
+          f"{len(found)} tasks have their questions' words")
+    return found
+
+
 def main() -> None:
     directory = Path(".published")
     facts = GraphOnlyFacts(directory)
     index = facts.meaning_index()
     found = facts.answer_cards()
     assert index is not None and found is not None, "no index or no cards beside the release"
-    version, _, tasks, _names = answer_cards.join_input(facts, TODAY)
+    version, _, tasks, names = answer_cards.join_input(facts, TODAY)
     by_key = {(t.record_id, t.key): t for t in tasks}
     cards = found["cards"]
     print(f"release {version}; {len(cards)} cards; {len(tasks)} tasks; index {index.model} "
@@ -78,33 +105,46 @@ def main() -> None:
 
     unit_at = {(u.record_id, u.index): n for n, u in enumerate(index.units)}
     unit_card = np.full(len(index.units), -1, dtype=np.int64)
-    missing = 0
     for at, card in enumerate(cards):
         for member in card["members"]:
-            n = unit_at.get((member["record_id"], member["key"]))
-            if n is None:
-                missing += 1
-            else:
-                unit_card[n] = at
+            unit_card[unit_at[(member["record_id"], member["key"])]] = at
     owner = np.asarray(index.owner, dtype=np.int64)
     offsets = np.asarray(index.offsets, dtype=np.int64)
     count = len(owner)
     vector_card = unit_card[owner]
-    print(f"card tasks with no unit in the index: {missing}; vectors of card tasks: "
-          f"{int((vector_card >= 0).sum())} ({int(((vector_card >= 0) & (offsets == -1)).sum())} "
-          f"written questions); vectors of other units (sections): {int((vector_card < 0).sum())}")
-    members = collections.Counter(len(c["members"]) for c in cards)
-    print(f"cards of one task: {members[1]}; of two or more: {len(cards) - members[1]}")
+    in_card = vector_card >= 0
+    penalty = np.asarray(
+        [(MEANING_PAST_TERM if card["status"] == "date_passed" else 0.0)
+         + (MEANING_OLD_PAGE if "old_page" in (card.get("notes") or []) else 0.0)
+         for card in cards], dtype=np.float32)
+    print(f"cards with a penalty: {int((penalty > 0).sum())} "
+          f"(date passed {sum(1 for c in cards if c['status'] == 'date_passed')}, old page "
+          f"{sum(1 for c in cards if 'old_page' in (c.get('notes') or []))})")
+
+    def winner(at: int):  # type: ignore[no-untyped-def]
+        member = cards[at]["members"][0]
+        return by_key[(member["record_id"], member["key"])]
+
+    def name(at: int) -> str:
+        card, task = cards[at], winner(at)
+        path = re.sub(r"^https?://[^/]+", "", task.url).rstrip("/")
+        owners = "; ".join(names[o][0] for o in card["owners"] if o in names) or "nobody"
+        return (f"[{card['status']}, {len(card['members'])}p, {task.steps}s, {owners[:40]}] "
+                f"{task.name!r} {path}")
+
+    def answerable(at: int) -> bool:
+        return (cards[at]["status"] in ("ready", "date_passed")
+                and winner(at).steps <= card_answer.MAX_STEPS)
 
     def card_scores(values: np.ndarray, keep: np.ndarray) -> np.ndarray:
         best = np.full(len(cards), -2.0, dtype=np.float32)
         np.maximum.at(best, vector_card[keep], values[keep])
-        return best
+        return best - penalty
 
     def top_two(best: np.ndarray) -> tuple[int, float, float]:
         first = int(best.argmax())
         score = float(best[first])
-        best[first] = -2.0
+        best[first] = -3.0
         return first, score, float(best.max())
 
     def unit_vector(k: int) -> np.ndarray:
@@ -112,11 +152,22 @@ def main() -> None:
         return vector / (float(np.linalg.norm(vector)) or 1.0)
 
     # Part 1: written questions asked back, one in every few so about SAMPLE are asked.
-    in_card = vector_card >= 0
+    words = written_questions(facts, index)
+    nth: dict[int, int] = {}
+    seen: collections.Counter[int] = collections.Counter()
+    for k in np.flatnonzero(offsets == -1).tolist():
+        nth[k] = seen[int(owner[k])]
+        seen[int(owner[k])] += 1
+
+    def asked_words(k: int) -> str:
+        listed = words.get(int(owner[k])) or []
+        return listed[nth[k]] if nth[k] < len(listed) else "?"
+
     asked = np.flatnonzero(in_card & (offsets == -1))
     asked = asked[:: max(1, len(asked) // SAMPLE)]
-    easy, hard, gone, sections = [], [], [], []
-    by_status: dict[str, list[tuple[bool, float, float]]] = collections.defaultdict(list)
+    easy, gone = [], []
+    other_fires: list[str] = []
+    gone_fires: list[str] = []
     for k in asked.tolist():
         values = index._all_scores(unit_vector(k))[:count]
         own = int(vector_card[k])
@@ -124,25 +175,24 @@ def main() -> None:
         keep[k] = False
         first, score, second = top_two(card_scores(values, keep))
         easy.append((first == own, score, score - second))
-        keep = in_card & ~((owner == owner[k]) & (offsets == -1))
-        first, score, second = top_two(card_scores(values, keep))
-        hard.append((first == own, score, score - second))
-        by_status[cards[own]["status"]].append(hard[-1])
-        # The best unit that is no task (a headed section), beside the best card.
-        sections.append(float(values[~in_card].max()) - score)
+        if first != own and score >= SHOWN[0] and score - second >= SHOWN[1] and answerable(first):
+            other_fires.append(f"Q: {asked_words(k)}\n     own: {name(own)}\n     top: "
+                               f"{score:.3f} +{score - second:.3f} {name(first)}")
         keep = in_card & (vector_card != own)
         first, score, second = top_two(card_scores(values, keep))
         gone.append((False, score, score - second))
+        if score >= SHOWN[0] and score - second >= SHOWN[1] and answerable(first):
+            gone_fires.append(f"Q: {asked_words(k)}\n     own (taken out): {name(own)}\n     "
+                              f"top: {score:.3f} +{score - second:.3f} {name(first)}")
     grid("EASY (only the asked question taken out)", easy)
-    grid("HARD (the task's written questions taken out)", hard)
-    for status, rows in sorted(by_status.items()):
-        right = sum(r for r, _, _ in rows)
-        print(f"   hard, own card {status}: {len(rows)} asked, top card right for "
-              f"{100 * right / len(rows):.1f}%")
     grid("GONE (the whole right card taken out)", gone, gone=True)
-    ahead = sum(1 for gap in sections if gap > 0)
-    print(f"\nhard: a section that is no task scores above the best card for "
-          f"{100 * ahead / len(sections):.1f}% of the questions")
+    for title, fires in (("EASY fires on another card", other_fires),
+                         ("GONE fires", gone_fires)):
+        step = max(1, len(fires) // 45)
+        print(f"\n-- {title} at top>={SHOWN[0]} margin>={SHOWN[1]}, cards code can answer from: "
+              f"{len(fires)} of {len(asked)}; every {step}th shown")
+        for line in fires[::step]:
+            print(line)
 
     # Part 2: the practice questions.
     practice = json.loads((Path(__file__).parent / "practice_questions.json").read_text())
@@ -150,14 +200,6 @@ def main() -> None:
     vectors, tokens = embed([item["q"] for item in questions], index.model, index.dimensions)
     print(f"\nembedded {len(questions)} practice questions: {tokens} tokens, "
           f"${tokens * EMBED_USD_PER_TOKEN:.6f}")
-
-    def line(at: int, score: float) -> str:
-        card = cards[at]
-        winner = by_key[(card["members"][0]["record_id"], card["members"][0]["key"])]
-        path = re.sub(r"^https?://[^/]+", "", winner.url).rstrip("/")
-        return (f"{score:.3f} [{card['status']}, {len(card['members'])} pages, "
-                f"{winner.steps} steps] {winner.name!r} {path}")
-
     rows = []
     for item, vector in zip(questions, vectors, strict=True):
         query = np.asarray(vector, dtype=np.float32)
@@ -166,31 +208,30 @@ def main() -> None:
         best = card_scores(values, in_card)
         order = np.argsort(-best)[:4].tolist()
         top, second = float(best[order[0]]), float(best[order[1]])
-        section = float(values[~in_card].max())
-        card = cards[order[0]]
-        winner = by_key[(card["members"][0]["record_id"], card["members"][0]["key"])]
+        task = winner(order[0])
         want = item["want"]
         right = (None if want is None
-                 else bool(re.search(want, f"{winner.name} {winner.url}", re.IGNORECASE)))
-        ok = card["status"] in ("ready", "date_passed") and winner.steps <= card_answer.MAX_STEPS
-        rows.append((want is not None, right, top, top - second, ok))
+                 else bool(re.search(want, f"{task.name} {task.url}", re.IGNORECASE)))
+        rows.append((item["q"], want is not None, right, top, top - second,
+                     answerable(order[0]), name(order[0])))
         print(f"\nQ: {item['q']}   (want: {want})")
-        print(f"   top {top:.3f}  margin {top - second:.3f}  best section {section:.3f}  "
-              f"right card: {right}  code could answer: {ok}")
-        for at in order[:3]:
-            print("   " + line(at, float(best[at])))
+        print(f"   top {top:.3f}  margin {top - second:.3f}  best section "
+              f"{float(values[~in_card].max()):.3f}  topic right: {right}  "
+              f"code could answer: {answerable(order[0])}")
+        for at in order:
+            print(f"   {float(best[at]):.3f} {name(at)}")
 
-    print("\n-- practice set: fires on should-match (right / wrong card) and on look-alikes, "
-          "only cards code can answer from")
-    print("top>=   margin>=  should-match fires  right  wrong   look-alike fires")
-    for top in TOPS:
-        for margin in MARGINS:
-            hit = [(right, ok) for should, right, score, gap, ok in rows
-                   if should and score >= top and gap >= margin and ok]
-            false = sum(1 for should, _, score, gap, ok in rows
-                        if not should and score >= top and gap >= margin and ok)
-            print(f"{top:<8.2f}{margin:<10.2f}{len(hit):<20d}"
-                  f"{sum(1 for r, _ in hit if r):<7d}{sum(1 for r, _ in hit if not r):<8d}{false}")
+    for top, margin in RULES:
+        fired = [row for row in rows if row[3] >= top and row[4] >= margin and row[5]]
+        should = [row for row in fired if row[1]]
+        print(f"\n-- practice set, rule top>={top} margin>={margin}: fires on {len(should)} of "
+              f"{sum(1 for row in rows if row[1])} how-to questions (topic right for "
+              f"{sum(1 for row in should if row[2])}) and on {len(fired) - len(should)} of "
+              f"{sum(1 for row in rows if not row[1])} look-alikes")
+        if (top, margin) == SHOWN:
+            for row in fired:
+                print(f"   {'how-to    ' if row[1] else 'look-alike'} {row[3]:.3f} +{row[4]:.3f} "
+                      f"{row[0]!r} -> {row[6]}")
 
 
 if __name__ == "__main__":

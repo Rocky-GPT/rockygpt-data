@@ -1,6 +1,6 @@
 # Temporary, on this work branch only: measures when one answer card clearly matches a question
 # (answer cards, step 4), on the dev graph's own vectors. It writes nothing. Its one paid call
-# embeds 60 short practice questions (about a hundredth of a cent). Removed before this branch
+# embeds 90 short practice questions (about a hundredth of a cent). Removed before this branch
 # merges.
 name: Study when a question clearly matches one answer card
 
@@ -48,6 +48,18 @@ jobs:
         uses: actions/checkout@v7
         with:
           path: data
+
+      # Read only (this action never saves): the words of the questions the build wrote for each
+      # task, so a fire can be judged by reading.
+      - name: Restore the build's question cache
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: .meaning-cache
+          key: study-never-saved-${{ github.run_id }}
+          restore-keys: |
+            dev-meaning-cache-
+            meaning-cache-
 
       - name: Measure the clear-match rule
         env:
