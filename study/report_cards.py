@@ -1,8 +1,10 @@
 """Temporary study for answer cards, step 3 (never merged): prints what the cards built beside
 the downloaded dev graph hold. Reads only."""
 
+import base64
 import collections
 import datetime
+import gzip
 import json
 import random
 import re
@@ -104,5 +106,52 @@ def main() -> None:
               f"  {urlsplit(first.url).path} | {urlsplit(second.url).path}"[:400])
 
 
+def sample() -> None:
+    """A small real slice of the Brain's own list, for looking at the dev UI's cards view: about
+    45 cards with their pages (each page cut to the tasks in those cards) and every task in full."""
+    directory = Path(".published")
+    facts = GraphOnlyFacts(directory)
+    full = answer_cards.listing(facts)
+    tasks = {(p["record_id"], t["key"]): (p, t) for p in full["pages"] for t in p["tasks"]}
+    cards = full["cards"]["items"]
+
+    def name(card) -> str:
+        first = card["members"][0]
+        return tasks[(first["record_id"], first["key"])][1]["task"]
+
+    rng = random.Random(3)
+    joined = [c for c in cards if len(c["members"]) > 1]
+    wanted = [c for c in cards if re.search(
+        r"parking permit|meal plan refund|change your .*meal plan|counseling appointment|"
+        r"incomplete grade|official transcript|retake", name(c), re.I)]
+    wanted += rng.sample([c for c in joined if c["status"] == "needs_look"], 5)
+    wanted += rng.sample([c for c in cards if c["status"] == "date_passed"], 4)
+    wanted += rng.sample([c for c in joined if c["status"] == "ready"], 8)
+    wanted += rng.sample([c for c in cards if len(c["members"]) == 1 and c["status"] == "ready"], 8)
+    chosen = list({c["id"]: c for c in wanted}.values())[:60]
+    members = {(m["record_id"], m["key"]) for c in chosen for m in c["members"]}
+    pages = []
+    for page in full["pages"]:
+        kept = [t for t in page["tasks"] if (page["record_id"], t["key"]) in members]
+        if kept:
+            pages.append({**page, "tasks": kept})
+    used = {n for page in pages for n in page["nodes"]} | {o for c in chosen for o in c["owners"]}
+    details = []
+    for record_id, key in sorted(members):
+        page = tasks[(record_id, key)][0]
+        details.append(answer_cards.task(facts, page["nodes"][0], record_id, key))
+    out = {"dataset_version": full["dataset_version"], "identity_hash": full["identity_hash"],
+           "cards": {**full["cards"], "items": chosen}, "totals": full["totals"],
+           "real": {"cards": len(cards), "status": dict(collections.Counter(
+               c["status"] for c in cards)), "joined": len(joined)},
+           "nodes": [n for n in full["nodes"] if n["entity_id"] in used], "pages": pages,
+           "tasks": details}
+    packed = base64.b64encode(gzip.compress(json.dumps(out, default=str).encode())).decode()
+    print(f"sample: {len(chosen)} cards, {len(pages)} pages, {len(details)} tasks, "
+          f"{len(packed):,} characters")
+    print("SAMPLE-GZ " + packed)
+
+
 if __name__ == "__main__":
     main()
+    sample()
