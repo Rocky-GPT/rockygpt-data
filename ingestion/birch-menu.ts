@@ -86,6 +86,15 @@ function easternDateKey(offsetDays = 0): string {
   return shifted.toISOString().slice(0, 10);
 }
 
+/**
+ * How many times one day's menu is asked for. Sodexo's menu service answers at once or not at all:
+ * on November 10, 2026 it left 12 of 28 requests hanging past the 15 second limit, across three
+ * runs, and answered every other one in a fraction of a second. One day that never answers fails
+ * the night's whole dining source. At the usual three tries a night like that fails about 4 runs
+ * in 10 (one of them did, in production); at eight, fewer than 1 in 100.
+ */
+export const MENU_ATTEMPTS = 8;
+
 async function fetchMenuDate(apiUrl: string, date: string): Promise<unknown> {
   const response = await fetchWithPolicy(
     `${apiUrl}?date=${date}`,
@@ -98,6 +107,7 @@ async function fetchMenuDate(apiUrl: string, date: string): Promise<unknown> {
     {
       expectedContentTypes: ['application/json'],
       maxResponseBytes: 8 * 1024 * 1024,
+      attempts: MENU_ATTEMPTS,
     }
   );
   if (!response.ok) {

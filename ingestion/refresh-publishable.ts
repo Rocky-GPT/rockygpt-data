@@ -349,6 +349,12 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
       rootDir: process.cwd(),
       groups: groupScriptsBySource(scripts, SOURCE_REFRESH_SCRIPTS),
       runScript: (script) => runNpmScript(script, false),
+      // A kept copy already past its freshness window cannot be published tonight, so the run
+      // stops there instead of downloading every later source from Ramapo's sites for nothing.
+      unpublishable: (entry) => {
+        const state = evaluateSourceProvenance(SOURCES).find((candidate) => candidate.key === entry.key);
+        return state && (state.status === 'stale' || state.status === 'unknown') ? state.detail : null;
+      },
     });
   } else {
     console.log('All publishable source provenance is fresh; no collection needed.');
