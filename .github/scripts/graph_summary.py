@@ -9,6 +9,11 @@ A link is one relationship from a node's doc to another node (by id, or by a rec
 node links), the way the link-count reports count them. --show prints every link, in and out, of
 each node whose name matches exactly (case does not matter). Each varsity team's line says how
 many games and coaches its record holds, so a change in what the athletics pages give shows here.
+
+The how-to line counts what the meaning index beside the graph can find: the tasks listed from
+the office pages, the pages they are on, and the tasks that have students' questions. A release
+that should carry the task lists shows it here (2026-11-11: the live graph had 0 tasks, the dev
+graph 8,102).
 """
 
 import argparse
@@ -16,8 +21,24 @@ import collections
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 from rockygpt_brain.retrieval.graph_store import _database, _loads, ladybug_module
+from rockygpt_brain.retrieval.meaning import MEANING_SUFFIX
+
+
+def howto_line(meta: dict[str, Any]) -> str:
+    """The how-to tasks a meaning index holds: how many, on how many pages, and how many have
+    students' questions to be found by. The Brain numbers a page's tasks "e0", "e1", ... and its
+    headed sections "0", "1", ...; a question's vector has offset -1 and belongs to its task. A
+    task on a page no office links is not in the index, so it is not counted."""
+    units = meta.get("units") or []
+    tasks = {n for n, unit in enumerate(units) if str(unit[1]).startswith("e")}
+    pages = {str(units[n][0]) for n in tasks}
+    asked = {owner for owner, offset in zip(meta.get("owner") or [], meta.get("offsets") or [])
+             if offset == -1 and owner in tasks}
+    return (f"  how-to tasks: {len(tasks)} on {len(pages)} pages, {len(asked)} with students' "
+            f"questions; {len(units) - len(tasks)} page sections")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -71,6 +92,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  nodes {kind}: {count}")
     for kind, count in collections.Counter(kind for _, kind, _ in edges).most_common():
         print(f"  links {kind}: {count}")
+    meaning = (args.directory / pointer["file"]).with_suffix(MEANING_SUFFIX)
+    print(howto_line(json.loads(meaning.read_text())) if meaning.exists()
+          else "  how-to tasks: no meaning index beside this graph")
 
     for name, doc in teams:
         record = _loads(doc)
