@@ -53,7 +53,19 @@ jobs:
       - name: Rebuild the cards with the branch's rules
         run: python brain/scripts/build_answer_cards.py --dir .published
 
-      - name: Ask the practice questions with the card setting on
+      # Read only (this action never saves): the words of the questions the build wrote for each
+      # task, so a case can be judged by reading.
+      - name: Restore the build's question cache
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: .meaning-cache
+          key: study-never-saved-${{ github.run_id }}
+          restore-keys: |
+            dev-meaning-cache-
+            meaning-cache-
+
+      - name: Read which of a card and its near-copies should answer
         env:
           BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: python data/study/check_card_turns.py
+        run: python data/study/which_copy_answers.py
