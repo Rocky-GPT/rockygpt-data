@@ -8,7 +8,11 @@ import random
 import re
 from pathlib import Path
 
+from urllib.parse import urlsplit
+
 from rockygpt_brain.retrieval import answer_cards, card_join
+from rockygpt_brain.retrieval.card_join import _named, _words
+from rockygpt_brain.retrieval.entity_facts import _stem
 from rockygpt_brain.retrieval.graph_store import GraphOnlyFacts, read_pointer
 
 TODAY = datetime.date(2026, 11, 11)
@@ -62,24 +66,42 @@ def main() -> None:
         for c in sorted(wanted, key=lambda c: -len(c["members"]))[:limit]:
             show(c)
 
-    about(r"^(apply|get|register|obtain|pick up).*parking permit")
-    about(r"(meal|dining) plan", 14)
-    about(r"retak|repeat.*course", 8)
-    about(r"transcript", 6)
-    about(r"declare.*(major|minor)", 6)
-    print("\n== the 12 biggest cards")
-    for c in sorted(cards, key=lambda c: -len(c["members"]))[:12]:
-        show(c)
-    rng = random.Random(11)
-    print("\n== 30 random joined cards")
-    for c in rng.sample(joined, 30):
-        show(c)
-    print("\n== 15 random cards of one task")
-    for c in rng.sample([c for c in cards if len(c["members"]) == 1], 15):
-        show(c)
-    print("\n== 15 random cards that need a look, joined")
-    for c in rng.sample([c for c in joined if c["status"] == "needs_look"], 15):
-        show(c)
+    about(r"^(apply|get|register|obtain|pick up).*parking permit", 3)
+    about(r"(meal|dining) plan refund", 4)
+
+    # Pairs joined although each task's name carries a name the other's name lacks: what in the
+    # other task's listing (who it is for, its section, its page address) allowed the join?
+    def stems(text):
+        return {_stem(w.casefold()) for w in _words(text or "")}
+
+    def where(missing, other):
+        out = []
+        for word in sorted(missing):
+            place = ("for" if word in stems(other.applies_to) else
+                     "section" if word in stems(other.section) else
+                     "url" if word in stems(urlsplit(other.url).path.replace("-", " ").replace("/", " "))
+                     else "LACKS")
+            out.append(f"{word}@{place}")
+        return out
+
+    allowed = []
+    for c in joined:
+        ts = [by_key[(m["record_id"], m["key"])] for m in c["members"]]
+        for x, first in enumerate(ts):
+            for second in ts[x + 1:]:
+                lack_a = _named(first.name) - stems(second.name)
+                lack_b = _named(second.name) - stems(first.name)
+                if lack_a and lack_b:
+                    allowed.append((c, first, second, where(lack_a, second), where(lack_b, first)))
+    kinds = collections.Counter(
+        "+".join(sorted({w.split("@")[1] for w in a + b})) for _, _, _, a, b in allowed)
+    print(f"\n== pairs joined although both names carry a name the other name lacks: "
+          f"{len(allowed)} pairs in {len({id(c) for c, *_ in allowed})} cards; by what allowed it: "
+          f"{dict(kinds.most_common())}")
+    rng = random.Random(7)
+    for c, first, second, a, b in rng.sample(allowed, min(60, len(allowed))):
+        print(f"- {first.name!r} | {second.name!r}\n    {a} / {b}   [{c['status']}]"
+              f"  {urlsplit(first.url).path} | {urlsplit(second.url).path}"[:400])
 
 
 if __name__ == "__main__":
