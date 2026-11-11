@@ -10,8 +10,10 @@ be judged by reading.
 Part 2 embeds the practice questions (one call, a fraction of a cent) and prints each one's best
 cards.
 
-A card's score is its best vector's, less the how-to read's own penalties: a card whose date has
-passed (MEANING_PAST_TERM) and a card on an old page (MEANING_OLD_PAGE).
+A card's score is its best vector's, less the how-to read's own penalty for a term that is over
+(MEANING_PAST_TERM) on a card whose date has passed, so today's card ranks above last year's. An
+old page is not marked down: the second run did, and it cost the counseling card its lead over
+its own neighbours for no gain (a card on an old page has no newer page to lose to).
 """
 
 import collections
@@ -27,15 +29,15 @@ from pathlib import Path
 import numpy as np
 from rockygpt_brain import card_answer
 from rockygpt_brain.retrieval import answer_cards
-from rockygpt_brain.retrieval.entity_facts import MEANING_OLD_PAGE, MEANING_PAST_TERM
+from rockygpt_brain.retrieval.entity_facts import MEANING_PAST_TERM
 from rockygpt_brain.retrieval.graph_store import GraphOnlyFacts
 
 TODAY = datetime.date(2026, 11, 11)
 SAMPLE = 3000
 TOPS = (0.70, 0.75, 0.80, 0.85)
 MARGINS = (0.0, 0.02, 0.04, 0.06, 0.08, 0.10, 0.15)
-RULES = ((0.75, 0.04), (0.80, 0.04), (0.80, 0.06), (0.80, 0.10), (0.85, 0.04))
-SHOWN = (0.80, 0.04)  # The rule whose fires are printed for reading.
+RULES = ((0.80, 0.04), (0.80, 0.06), (0.80, 0.08), (0.80, 0.10), (0.75, 0.08), (0.85, 0.08))
+SHOWN = (0.80, 0.08)  # The rule whose fires are printed for reading.
 EMBED_USD_PER_TOKEN = 0.13 / 1_000_000  # text-embedding-3-large
 
 
@@ -114,12 +116,9 @@ def main() -> None:
     vector_card = unit_card[owner]
     in_card = vector_card >= 0
     penalty = np.asarray(
-        [(MEANING_PAST_TERM if card["status"] == "date_passed" else 0.0)
-         + (MEANING_OLD_PAGE if "old_page" in (card.get("notes") or []) else 0.0)
-         for card in cards], dtype=np.float32)
-    print(f"cards with a penalty: {int((penalty > 0).sum())} "
-          f"(date passed {sum(1 for c in cards if c['status'] == 'date_passed')}, old page "
-          f"{sum(1 for c in cards if 'old_page' in (c.get('notes') or []))})")
+        [MEANING_PAST_TERM if card["status"] == "date_passed" else 0.0 for card in cards],
+        dtype=np.float32)
+    print(f"cards marked down as passed: {int((penalty > 0).sum())}")
 
     def winner(at: int):  # type: ignore[no-untyped-def]
         member = cards[at]["members"][0]
