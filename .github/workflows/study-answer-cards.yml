@@ -1,12 +1,12 @@
-# Temporary, on this work branch only: copies the dev graph's how-to tasks and their vectors into
-# a one-day job artifact, to study how the same task can be joined across pages (answer cards,
-# step 3). It pays for nothing and writes nothing to the store. Removed before this branch merges.
+# Temporary, on this work branch only: reads the dev graph's how-to tasks and their vectors and
+# prints how the same task could be joined across pages (answer cards, step 3). It pays for
+# nothing and writes nothing. Removed before this branch merges.
 name: Study the dev graph's tasks for answer cards
 
 on:
   push:
     branches: [claude/project-thread-gsatn5]
-    paths: ['.github/workflows/study-answer-cards.yml']
+    paths: ['.github/workflows/study-answer-cards.yml', 'study/**']
 
 permissions:
   contents: read
@@ -43,92 +43,10 @@ jobs:
           BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
         run: python -m rockygpt_brain.retrieval.graph_sync .published
 
-      - name: Copy the tasks and their vectors
-        run: |
-          python - <<'EOF'
-          import gzip
-          import json
-          from pathlib import Path
-
-          import numpy
-
-          from rockygpt_brain.retrieval import answer_cards
-          from rockygpt_brain.retrieval.graph_store import GraphOnlyFacts, read_pointer
-          from rockygpt_brain.retrieval.meaning import MEANING_SUFFIX, VECTORS_SUFFIX
-
-          directory = Path(".published")
-          pointer = read_pointer(directory)
-          facts = GraphOnlyFacts(directory)
-          pages = {}
-          nodes = {}
-          with facts.snapshot() as snapshot:
-              for entity in snapshot.entities:
-                  if not answer_cards._links_pages(entity):
-                      continue
-                  for row in answer_cards._pages(snapshot, entity):
-                      record_id = str(row["id"])
-                      page = pages.get(record_id)
-                      if page is None:
-                          page = pages[record_id] = {
-                              **answer_cards._page(row), "nodes": [],
-                              "site_folder": row.get("site_folder"),
-                              "source_key": row.get("source_key"),
-                              "sections": len(row.get("sections") or []),
-                              "tasks": answer_cards._tasks(row)}
-                      if entity["id"] not in page["nodes"]:
-                          page["nodes"].append(entity["id"])
-                      nodes[entity["id"]] = {
-                          "entity_id": entity["id"], "name": entity["name"],
-                          "kind": entity["kind"], "aliases": list(entity.get("aliases") or [])}
-              offices = [{"entity_id": e["id"], "name": e["name"], "kind": e["kind"],
-                          "aliases": list(e.get("aliases") or [])}
-                         for e in snapshot.entities if e.get("kind") == "office"]
-              release = snapshot.dataset_version
-
-          release_file = directory / pointer["file"]
-          meta = json.loads(release_file.with_suffix(MEANING_SUFFIX).read_text())
-          flat = numpy.fromfile(release_file.with_suffix(VECTORS_SUFFIX), dtype=numpy.float32)
-          dimensions = meta["dimensions"]
-          owner = numpy.array(meta["owner"])
-          offsets = numpy.array(meta["offsets"])
-          vectors = flat[:len(owner) * dimensions].reshape(len(owner), dimensions)
-          unit_at = {(str(u[0]), str(u[1])): n for n, u in enumerate(meta["units"])}
-          order = []
-          opening = []
-          asked = []
-          asked_count = []
-          for record_id, page in sorted(pages.items()):
-              for task in page["tasks"]:
-                  n = unit_at.get((record_id, task["key"]))
-                  if n is None:
-                      continue
-                  mine = owner == n
-                  first = vectors[mine & (offsets == 0)]
-                  questions = vectors[mine & (offsets == -1)]
-                  order.append([record_id, task["key"]])
-                  opening.append(first[0])
-                  asked_count.append(len(questions))
-                  mean = questions.mean(axis=0) if len(questions) else first[0]
-                  asked.append(mean / (numpy.linalg.norm(mean) or 1.0))
-          out = Path("study")
-          out.mkdir()
-          with gzip.open(out / "tasks.json.gz", "wt") as handle:
-              json.dump({"release": release, "pages": [pages[k] for k in sorted(pages)],
-                         "nodes": sorted(nodes.values(), key=lambda n: n["entity_id"]),
-                         "offices": offices, "order": order, "asked_count": asked_count}, handle)
-          numpy.array(opening, dtype=numpy.float16).tofile(out / "opening.f16")
-          numpy.array(asked, dtype=numpy.float16).tofile(out / "asked.f16")
-          print(f"release {release}: {len(pages)} pages, "
-                f"{sum(len(p['tasks']) for p in pages.values())} tasks, {len(order)} with vectors, "
-                f"{sum(1 for c in asked_count if c)} with questions")
-          for path in sorted(out.iterdir()):
-              print(f"  {path.name}: {path.stat().st_size:,} bytes")
-          EOF
-
-      - name: Keep the copy for one day
-        uses: actions/upload-artifact@v4
+      - name: Checkout this branch's study script
+        uses: actions/checkout@v7
         with:
-          name: answer-cards-study
-          path: study/
-          retention-days: 1
-          compression-level: 9
+          path: data
+
+      - name: Study the tasks
+        run: python data/study/study_cards.py
