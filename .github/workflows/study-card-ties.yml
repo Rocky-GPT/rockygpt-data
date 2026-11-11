@@ -65,7 +65,12 @@ jobs:
             dev-meaning-cache-
             meaning-cache-
 
-      - name: Read which of a card and its near-copies should answer
+      - name: Read which of a card and its near-copies answers
         env:
           BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python data/study/which_copy_answers.py
+
+      - name: Ask the practice questions with the card setting on
+        env:
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python data/study/check_card_turns.py

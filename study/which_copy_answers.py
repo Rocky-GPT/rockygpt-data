@@ -1,16 +1,13 @@
 """Temporary study (never merged): when a question's best card has near-copies that score within
-the lead, which of them should code answer from?
+the lead, which of them does code answer from?
 
-Today the top-scoring card answers. Read on the practice set, three of six new answers came from
-the weaker page of two ("connect to the campus wifi" from a 2021 FAQ while a near-copy names the
-network). Here every such case is printed with each candidate's page facts and its answer, for
-the practice questions (one embedding call, a hundredth of a cent) and for a sample of the
-questions the build wrote (already vectors: free), so the rule can be picked by reading.
+The Brain's built rule is read here on the downloaded dev graph: the best card answers, unless a
+near-copy within the lead is named ahead of it for its page (card_join.page_ahead) and code can
+answer from that one. Every case where the page said is not the best card's own is printed with
+both answers, for the practice questions (one embedding call, a hundredth of a cent) and for a
+sample of the questions the build wrote (already vectors: free).
 
-Candidate rules, marked on each case:
-  T  the top-scoring card (today)
-  R  the join's own page rank over the candidates: one code can answer from, a current date, the
-     owner's own page, not an old page, the newest date, the most steps
+Marks on each case: T the top-scoring card, S the card whose page is said.
 """
 
 import collections
@@ -114,14 +111,15 @@ def winner(at: int):  # type: ignore[no-untyped-def]
     return by_key[(member["record_id"], member["key"])]
 
 
-def rank(at: int) -> tuple:  # type: ignore[type-arg]
-    """The join's page rank, over cards: lower is better."""
-    card, task = cards[at], winner(at)
-    _, why = read(at)
-    owning = set(card["owners"])
-    return (why is not None, card["status"] != "ready", not owning & set(task.nodes),
-            "old_page" in (card.get("notes") or []), task.updated is None,
-            -(task.updated.toordinal() if task.updated else 0), -task.steps)
+def pick(first: int, over: list[int]) -> int | None:
+    """The card whose page is said (engine._card_answer); None when code does not answer."""
+    if read(first)[1] is not None:
+        return None
+    ahead = set(cards[first].get("ahead") or ())
+    for at in over:
+        if cards[at]["id"] in ahead and read(at)[1] is None:
+            return at
+    return first
 
 
 def describe(at: int, score: float, marks: str) -> str:
@@ -141,18 +139,22 @@ def describe(at: int, score: float, marks: str) -> str:
     return f"{head}\n{body}"
 
 
-def show(question: str, best: np.ndarray, extra: str = "") -> tuple[bool, bool]:
-    """Print one case; (whether it had near-copies in the lead, whether the rules disagree)."""
+def show(question: str, best: np.ndarray, extra: str = "", always: bool = False,
+         ) -> tuple[bool, bool]:
+    """Print one case; (whether code answers with near-copies in the lead, whether the page
+    said is a near-copy's)."""
     first, top, lead, over = decide(best)
     if top < TOP or lead < MARGIN or not over:
         return False, False
-    candidates = [first, *over]
-    ranked = min(candidates, key=lambda at: (rank(at), candidates.index(at)))
-    print(f"\nQ: {question}{extra}   (lead over the rest {lead:.3f})")
-    for at in candidates:
-        marks = ("T" if at == first else "") + ("R" if at == ranked else "")
-        print(describe(at, float(best[at]), marks))
-    return True, ranked != first
+    said = pick(first, over)
+    if said is None:
+        return False, False
+    if always or said != first:
+        print(f"\nQ: {question}{extra}   (lead over the rest {lead:.3f})")
+        for at in [first, *over]:
+            marks = ("T" if at == first else "") + ("S" if at == said else "")
+            print(describe(at, float(best[at]), marks))
+    return True, said != first
 
 
 def unit_vector(k: int) -> np.ndarray:
@@ -190,11 +192,10 @@ def main() -> None:
         query = np.asarray(vector, dtype=np.float32)
         query /= float(np.linalg.norm(query)) or 1.0
         had, changed = show(item["q"], card_scores(index._all_scores(query)[:count], in_card),
-                            f"   (want: {item['want']})")
+                            f"   (want: {item['want']})", always=True)
         seen += had
         differ += changed
-    print(f"\n== PART 1 totals: {seen} cases; the page rank picks another card than the top one "
-          f"in {differ}")
+    print(f"\n== PART 1 totals: {seen} cases; a near-copy's page is said in {differ}")
 
     words = written_questions()
     nth: dict[int, int] = {}
@@ -218,25 +219,25 @@ def main() -> None:
         first, top, lead, over = decide(best)
         if top < TOP or lead < MARGIN:
             continue
+        said = pick(first, over)
+        if said is None:
+            tally["matched, not answered by code"] += 1
+            continue
         own = int(vector_card[k])
-        tally["fires"] += 1
-        candidates = [first, *over]
-        ranked = min(candidates, key=lambda at: (rank(at), candidates.index(at)))
+        tally["answered"] += 1
         tally["top is own"] += first == own
-        tally["rank is own"] += ranked == own
+        tally["said is own"] += said == own
         if over:
-            tally["with near-copies"] += 1
-            tally["rules differ"] += ranked != first
-            tally["own among candidates"] += own in candidates
-            if ranked != first:
-                tally["differ: top is own"] += first == own
-                tally["differ: rank is own"] += ranked == own
-                cases.append((k, best, own))
+            tally["with near-copies in the lead"] += 1
+        if said != first:
+            tally["a near-copy's page said"] += 1
+            tally["then: top is own"] += first == own
+            tally["then: said is own"] += said == own
+            cases.append((k, best, own))
     print(f"\n== PART 2: {len(sample)} written questions asked back (the asked one taken out)")
     print(f"   {json.dumps(dict(tally), sort_keys=True)}")
     step = max(1, len(cases) // SHOWN)
-    print(f"-- cases where the page rank picks another card than the top one: {len(cases)}; "
-          f"every {step}th shown")
+    print(f"-- cases where a near-copy's page is said: {len(cases)}; every {step}th shown")
     for k, best, own in cases[::step]:
         show(asked_words(k), best, f"   (own card's page: "
              f"{re.sub(r'^https?://[^/]+', '', winner(own).url).rstrip('/')})")
