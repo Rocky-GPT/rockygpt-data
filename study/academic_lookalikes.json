@@ -1,0 +1,125 @@
+{
+ "about": "Academic look-alikes for asking the card before the catalog's pick (written 2026-11-11 before any run; not the blind 60). Questions about classes, credits and majors in general that name no program or course. A card may answer one only if its page really answers it; each answer is read.",
+ "questions": [
+  {
+   "q": "how many credits do i need to graduate",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what are the gen ed requirements",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "how many credits is a full time student",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what majors does ramapo offer",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "can i double major",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what gpa do i need to stay in good standing",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "is there a data science major",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "how many credits can i take in one semester",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what math class should i take first",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what is first year seminar",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what courses count as writing intensive",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what is the difference between a ba and a bs",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "how hard is the accounting major",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "when do i have to declare a major",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "how many credits do i need to be a junior",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what classes do i need for a minor",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "does a d count for my major",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "how many classes can i take pass fail",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what happens if i fail a class",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what is academic probation",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "do summer classes count toward my gpa",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "what is a prerequisite",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "can i take graduate classes as an undergrad",
+   "want": null,
+   "group": "academic"
+  },
+  {
+   "q": "how do i know what classes i still need",
+   "want": null,
+   "group": "academic"
+  }
+ ]
+}
