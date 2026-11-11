@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: Rocky-GPT/rockygpt-brain
-          ref: dev
+          ref: claude/project-thread-gsatn5
           path: brain
 
       - name: Setup Python
@@ -49,19 +49,11 @@ jobs:
         with:
           path: data
 
-      # Read only (this action never saves): the words of the questions the build wrote for each
-      # task, so a fire can be judged by reading.
-      - name: Restore the build's question cache
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          path: .meaning-cache
-          key: study-never-saved-${{ github.run_id }}
-          restore-keys: |
-            dev-meaning-cache-
-            meaning-cache-
+      # In the runner's copy only: nothing is published. It calls no model.
+      - name: Rebuild the cards with the branch's rules
+        run: python brain/scripts/build_answer_cards.py --dir .published
 
-      - name: Measure the ties
+      - name: Ask the practice questions with the card setting on
         env:
           BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: python data/study/why_cards_tie.py
+        run: python data/study/check_card_turns.py
