@@ -151,6 +151,23 @@ export function pickPages<T>(pages: readonly T[], count: number, spread: boolean
   return Array.from({ length: Math.max(0, count) }, (_, index) => pages[Math.floor(index * pages.length / count)]);
 }
 
+/**
+ * The model service's refusal when the account's prepaid balance is used up. It comes as HTTP 429
+ * like "slow down", but waiting does not help: every later page would be refused the same way,
+ * and so is everything else that uses the key (the live Brain included).
+ */
+export class NoCreditError extends Error {
+  constructor() { super('the model service says the account has no credit left'); }
+}
+
+/** Whether a failed call's status and body say the account is out of credit (2026-11-11: type
+ * "insufficient_quota", code "credit_balance_exhausted"), not that it is asking too fast. */
+export function isNoCredit(status: number, body: unknown): boolean {
+  if (status !== 429) return false;
+  const error = (body as { error?: { type?: unknown; code?: unknown } } | null)?.error;
+  return [error?.type, error?.code].some(value => value === 'insufficient_quota' || value === 'credit_balance_exhausted');
+}
+
 /** One read of a page. `reply` is null when the model's answer was cut off before its JSON
  * ended; the tokens it used are reported either way. */
 async function ask(page: OfficeSectionsPage, model: string, maxOutput: number): Promise<{ reply: unknown | null; input: number; output: number }> {
@@ -175,6 +192,7 @@ async function ask(page: OfficeSectionsPage, model: string, maxOutput: number): 
       }
       return { reply, input: body.usage?.input_tokens ?? 0, output: body.usage?.output_tokens ?? 0 };
     }
+    if (isNoCredit(response.status, await response.json().catch(() => null))) throw new NoCreditError();
     if (attempt >= 3 || ![429, 500, 502, 503].includes(response.status)) throw new Error(`${page.url}: the model answered ${response.status}`);
     await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
   }
@@ -225,7 +243,9 @@ async function main(): Promise<void> {
   const due = pickPages(changed, limit, process.argv.includes('--spread'));
   say(`How-to readings: ${pages.length} pages; ${changed.length} new or changed since they were last read `
     + `(${pages.length - changed.length} unchanged); reading ${due.length}, spending at most $${maxUsd.toFixed(2)}.`);
-  let input = 0, output = 0, done = 0, entries = 0, waiting = 0;
+  let input = 0, output = 0, done = 0, entries = 0, waiting = 0, unpaid = 0;
+  /** Set by the first page the service refuses for lack of credit; no page is sent after it. */
+  let noCredit = false;
   const missed: MissedPage[] = [];
   const queue = pLimit(Number(process.env.HOWTO_CONCURRENCY) || 4);
   /** Writes the readings so far and, with --store, archives them; one write at a time. */
@@ -261,12 +281,14 @@ async function main(): Promise<void> {
     // A page with many table rows can outrun the reply's length and come back cut off: read it
     // once more with room to spare; a page that still fails keeps no entries, not the run.
     let reply: unknown;
+    if (noCredit) { unpaid++; return; }
     try {
       reply = await attempt(page, REPLY_TOKENS);
       if (reply === CUT) reply = await attempt(page, LONG_REPLY_TOKENS);
       if (reply === WAITS) { waiting++; return; }
       if (reply === CUT) throw new Error(`${page.url}: the reply was cut off twice`);
     } catch (error) {
+      if (error instanceof NoCreditError) { noCredit = true; unpaid++; return; }
       // "fetch failed" alone says nothing: its cause (a reset, a timeout) is the reason.
       const cause = error instanceof Error && error.cause instanceof Error
         ? ` (${(error.cause as NodeJS.ErrnoException).code ?? error.cause.message})` : '';
@@ -290,6 +312,8 @@ async function main(): Promise<void> {
     + `${done ? `, $${(budget.spentUsd / done).toFixed(5)} a page read` : ''}.`);
   if (waiting) say(`How-to readings: ${waiting} pages wait for the next run: the $${maxUsd.toFixed(2)} cap had no room left for them.`, true);
   if (missed.length) say(missedPagesLine(missed), true);
+  if (noCredit) say(`How-to readings: STOPPED, ${unpaid} page${unpaid === 1 ? '' : 's'} not read: the model service says the account has no credit left. `
+    + 'Nothing that uses this key can call the model until credit is added, the live Brain included. The pages read so far are kept; a later run reads the rest.', true);
   finish();
 }
 
