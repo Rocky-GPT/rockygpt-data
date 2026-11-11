@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: Rocky-GPT/rockygpt-brain
-          ref: dev
+          ref: claude/project-thread-gsatn5
           path: brain
 
       - name: Setup Python
@@ -48,5 +48,8 @@ jobs:
         with:
           path: data
 
-      - name: Study the tasks
-        run: python data/study/study_cards.py
+      - name: Build the answer cards
+        run: python brain/scripts/build_answer_cards.py --dir .published --today 2026-11-11
+
+      - name: Report on the cards
+        run: python data/study/report_cards.py
