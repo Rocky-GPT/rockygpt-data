@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { countReads, pageReads, pickPages, ReadBudget } from './howto-entries';
+import { countReads, isNoCredit, missedPagesLine, pageReads, pickPages, ReadBudget } from './howto-entries';
 import type { OfficeSectionsPage } from '../src/data-v2/office-sections';
 
 const page = (key: string, text: string): OfficeSectionsPage => ({ key, folder: 'registrar', url: `https://${key}`,
@@ -69,4 +69,29 @@ test('a sample is the first pages, or spaced evenly across them', () => {
   assert.deepEqual(pickPages(pages, Infinity, true), pages);
   assert.deepEqual(pickPages(pages, 20, false), pages);
   assert.deepEqual(pickPages(pages, 0, true), []);
+});
+
+test('the note says why pages could not be read: each reason, its pages counted, a few of them named', () => {
+  const missed = [
+    { url: 'https://www.ramapo.edu/a', why: 'the reply was cut off twice' },
+    { url: 'https://www.ramapo.edu/b', why: 'the model answered 429' },
+    { url: 'https://www.ramapo.edu/c', why: 'the model answered 429' },
+    { url: 'https://www.ramapo.edu/d', why: 'the model answered 429' },
+    { url: 'https://www.ramapo.edu/e', why: 'the model answered 429' },
+  ];
+  assert.equal(missedPagesLine(missed), 'How-to readings: 5 pages could not be read and have no how-to tasks until a later run reads them. '
+    + 'Why: the model answered 429, 4 pages (https://www.ramapo.edu/b, https://www.ramapo.edu/c, https://www.ramapo.edu/d, ...); '
+    + 'the reply was cut off twice, 1 page (https://www.ramapo.edu/a).');
+  assert.equal(missedPagesLine(missed.slice(0, 1)), 'How-to readings: 1 page could not be read and has no how-to tasks until a later run reads them. '
+    + 'Why: the reply was cut off twice, 1 page (https://www.ramapo.edu/a).');
+});
+
+test('an account with no credit left is told apart from being asked to slow down', () => {
+  // What the service answered on 2026-11-11, when the first read of every page used up the balance.
+  assert.equal(isNoCredit(429, { error: { type: 'insufficient_quota', code: 'credit_balance_exhausted' } }), true);
+  assert.equal(isNoCredit(429, { error: { type: 'insufficient_quota', code: 'insufficient_quota' } }), true);
+  // Asking too fast is worth another try; so is a reply that is not JSON at all.
+  assert.equal(isNoCredit(429, { error: { type: 'tokens', code: 'rate_limit_exceeded' } }), false);
+  assert.equal(isNoCredit(429, null), false);
+  assert.equal(isNoCredit(500, { error: { type: 'insufficient_quota' } }), false);
 });

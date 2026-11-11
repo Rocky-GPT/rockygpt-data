@@ -79,6 +79,23 @@ export function readHowtoCapture(file = HOWTO_RAW): HowtoCapture {
   return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) as HowtoCapture : { dataset: 'howto-entries', pages: {} };
 }
 
+/** A page a run could not read, and why. */
+export interface MissedPage { url: string; why: string }
+
+/**
+ * The note's line for the pages a run could not read: each reason with how many pages it cost and
+ * up to three of them, the reason with the most pages first. The log names every such page where
+ * it happens, thousands of lines above the note; the note is what gets read.
+ */
+export function missedPagesLine(missed: readonly MissedPage[]): string {
+  const byReason = new Map<string, string[]>();
+  for (const { url, why } of missed) byReason.set(why, [...(byReason.get(why) ?? []), url]);
+  const reasons = [...byReason].sort((a, b) => b[1].length - a[1].length).map(([why, urls]) =>
+    `${why}, ${urls.length} page${urls.length === 1 ? '' : 's'} (${urls.slice(0, 3).join(', ')}${urls.length > 3 ? ', ...' : ''})`);
+  return `How-to readings: ${missed.length} page${missed.length === 1 ? '' : 's'} could not be read and `
+    + `${missed.length === 1 ? 'has' : 'have'} no how-to tasks until a later run reads them. Why: ${reasons.join('; ')}.`;
+}
+
 /** A page's verified entries, when the model read this very content; else none. */
 export function pageEntries(capture: HowtoCapture, page: OfficeSectionsPage): HowtoEntry[] {
   const read = capture.pages[page.key];
@@ -134,6 +151,23 @@ export function pickPages<T>(pages: readonly T[], count: number, spread: boolean
   return Array.from({ length: Math.max(0, count) }, (_, index) => pages[Math.floor(index * pages.length / count)]);
 }
 
+/**
+ * The model service's refusal when the account's prepaid balance is used up. It comes as HTTP 429
+ * like "slow down", but waiting does not help: every later page would be refused the same way,
+ * and so is everything else that uses the key (the live Brain included).
+ */
+export class NoCreditError extends Error {
+  constructor() { super('the model service says the account has no credit left'); }
+}
+
+/** Whether a failed call's status and body say the account is out of credit (2026-11-11: type
+ * "insufficient_quota", code "credit_balance_exhausted"), not that it is asking too fast. */
+export function isNoCredit(status: number, body: unknown): boolean {
+  if (status !== 429) return false;
+  const error = (body as { error?: { type?: unknown; code?: unknown } } | null)?.error;
+  return [error?.type, error?.code].some(value => value === 'insufficient_quota' || value === 'credit_balance_exhausted');
+}
+
 /** One read of a page. `reply` is null when the model's answer was cut off before its JSON
  * ended; the tokens it used are reported either way. */
 async function ask(page: OfficeSectionsPage, model: string, maxOutput: number): Promise<{ reply: unknown | null; input: number; output: number }> {
@@ -158,6 +192,7 @@ async function ask(page: OfficeSectionsPage, model: string, maxOutput: number): 
       }
       return { reply, input: body.usage?.input_tokens ?? 0, output: body.usage?.output_tokens ?? 0 };
     }
+    if (isNoCredit(response.status, await response.json().catch(() => null))) throw new NoCreditError();
     if (attempt >= 3 || ![429, 500, 502, 503].includes(response.status)) throw new Error(`${page.url}: the model answered ${response.status}`);
     await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
   }
@@ -208,7 +243,10 @@ async function main(): Promise<void> {
   const due = pickPages(changed, limit, process.argv.includes('--spread'));
   say(`How-to readings: ${pages.length} pages; ${changed.length} new or changed since they were last read `
     + `(${pages.length - changed.length} unchanged); reading ${due.length}, spending at most $${maxUsd.toFixed(2)}.`);
-  let input = 0, output = 0, done = 0, entries = 0, skipped = 0, waiting = 0;
+  let input = 0, output = 0, done = 0, entries = 0, waiting = 0, unpaid = 0;
+  /** Set by the first page the service refuses for lack of credit; no page is sent after it. */
+  let noCredit = false;
+  const missed: MissedPage[] = [];
   const queue = pLimit(Number(process.env.HOWTO_CONCURRENCY) || 4);
   /** Writes the readings so far and, with --store, archives them; one write at a time. */
   let keeping: Promise<void> = Promise.resolve();
@@ -243,14 +281,21 @@ async function main(): Promise<void> {
     // A page with many table rows can outrun the reply's length and come back cut off: read it
     // once more with room to spare; a page that still fails keeps no entries, not the run.
     let reply: unknown;
+    if (noCredit) { unpaid++; return; }
     try {
       reply = await attempt(page, REPLY_TOKENS);
       if (reply === CUT) reply = await attempt(page, LONG_REPLY_TOKENS);
       if (reply === WAITS) { waiting++; return; }
       if (reply === CUT) throw new Error(`${page.url}: the reply was cut off twice`);
     } catch (error) {
-      skipped++;
-      console.log(`Skipped ${page.url}: ${error instanceof Error ? error.message : error}`);
+      if (error instanceof NoCreditError) { noCredit = true; unpaid++; return; }
+      // "fetch failed" alone says nothing: its cause (a reset, a timeout) is the reason.
+      const cause = error instanceof Error && error.cause instanceof Error
+        ? ` (${(error.cause as NodeJS.ErrnoException).code ?? error.cause.message})` : '';
+      const message = `${error instanceof Error ? error.message : error}${cause}`;
+      const why = message.startsWith(`${page.url}: `) ? message.slice(page.url.length + 2) : message;
+      missed.push({ url: page.url, why });
+      console.log(`Skipped ${page.url}: ${why}`);
       return;
     }
     capture.pages[page.key] = { key: entriesKey(page.url, page.sections), url: page.url, model, read_at: new Date().toISOString(), reply };
@@ -262,11 +307,13 @@ async function main(): Promise<void> {
   })));
   await keep(true);
   writeRawFileProvenance('howto-entries', HOWTO_RAW, { recordCount: Object.keys(capture.pages).length });
-  say(`How-to readings: read ${done} page${done === 1 ? '' : 's'} (${skipped} skipped):${entries} verified entries; ${input} input and ${output} output tokens; `
+  say(`How-to readings: read ${done} page${done === 1 ? '' : 's'} (${missed.length} skipped): ${entries} verified entries; ${input} input and ${output} output tokens; `
     + `$${budget.spentUsd.toFixed(4)} at ${rates.input} and ${rates.output} billionths of a dollar per input and output token`
     + `${done ? `, $${(budget.spentUsd / done).toFixed(5)} a page read` : ''}.`);
   if (waiting) say(`How-to readings: ${waiting} pages wait for the next run: the $${maxUsd.toFixed(2)} cap had no room left for them.`, true);
-  if (skipped) say(`How-to readings: ${skipped} pages could not be read (see "Skipped" above) and have no how-to tasks until a later run reads them.`, true);
+  if (missed.length) say(missedPagesLine(missed), true);
+  if (noCredit) say(`How-to readings: STOPPED, ${unpaid} page${unpaid === 1 ? '' : 's'} not read: the model service says the account has no credit left. `
+    + 'Nothing that uses this key can call the model until credit is added, the live Brain included. The pages read so far are kept; a later run reads the rest.', true);
   finish();
 }
 
