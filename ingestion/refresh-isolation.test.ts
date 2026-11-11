@@ -67,6 +67,48 @@ test('a source whose collector fails keeps the release copy while the others ref
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
+test('a kept source that is already past its freshness window stops the run before the later collectors', () => {
+  const root = tree({ 'data/raw/menu.raw.json': 'menu-release', 'data/raw/directory.raw.json': 'directory-release' });
+  const ran: string[] = [];
+  const groups = [
+    { key: 'academic-calendar', scripts: ['fetch:calendar'] },
+    { key: 'dining', scripts: ['fetch:menu', 'fetch:dining-hours'] },
+    { key: 'campus-directory', scripts: ['fetch:directory:raw', 'fetch:reviewed-contacts'] },
+    { key: 'athletics-schedules', scripts: ['fetch:athletics-schedules'] },
+  ];
+  const runScript = (script: string) => {
+    ran.push(script);
+    if (script === 'fetch:menu') {
+      write(root, 'data/raw/menu.raw.json', 'half a menu');
+      throw new Error('npm run fetch:menu failed with exit code 1. Request timed out after 15000ms.');
+    }
+  };
+  try {
+    // The production runs of 2026-11-10: dining's kept copy was 85 hours old against a 36 hour window.
+    assert.throws(
+      () => runIsolatedRefresh({
+        rootDir: root, log: () => {}, groups, runScript,
+        unpublishable: (kept) => (kept.key === 'dining' ? 'collected 85.2h ago (max 36h)' : null),
+      }),
+      (error: Error) => {
+        assert.match(error.message, /^Collection finished without fresh provenance for: dining \(collected 85\.2h ago \(max 36h\); its collector failed: npm run fetch:menu failed/);
+        assert.match(error.message, /Stopped before fetch:directory:raw, fetch:reviewed-contacts, fetch:athletics-schedules: a run that cannot publish downloads nothing more\./);
+        return true;
+      }
+    );
+    assert.deepEqual(ran, ['fetch:calendar', 'fetch:menu']);
+    assert.equal(read(root, 'data/raw/menu.raw.json'), 'menu-release');
+
+    // A kept copy that is still inside its window does not stop anything.
+    ran.length = 0;
+    const kept = runIsolatedRefresh({ rootDir: root, log: () => {}, groups, runScript, unpublishable: () => null });
+    assert.deepEqual(kept.map((entry) => entry.key), ['dining']);
+    assert.deepEqual(ran, ['fetch:calendar', 'fetch:menu', 'fetch:directory:raw', 'fetch:reviewed-contacts', 'fetch:athletics-schedules']);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('a failed source that touched another source\'s refreshed file stops the refresh', () => {
   const root = tree({ 'data/normalized/shared.json': 'release' });
   try {

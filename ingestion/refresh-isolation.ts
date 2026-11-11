@@ -11,6 +11,11 @@
  * removed), so it is published from exactly what the active release already carried. Whether
  * that copy is still fresh enough to publish is left to the provenance check that follows, which
  * still stops the refresh once a kept source passes its freshness window.
+ *
+ * When the kept copy is already past that window the run cannot publish, so it stops at once
+ * (`unpublishable`) instead of collecting every later source first. On November 10, 2026 two
+ * runs lost dining in their second minute, to a hidden button and then to a menu service that
+ * timed out, and each still downloaded about 330 pages from Ramapo's sites before failing.
  */
 import fs from 'node:fs';
 import os from 'node:os';
@@ -100,6 +105,11 @@ export interface IsolatedRefreshOptions {
   groups: readonly SourceRefreshGroup[];
   runScript: (script: string) => void;
   log?: (line: string) => void;
+  /**
+   * Why a source that was just kept cannot be published as it is (its copy is past its freshness
+   * window), or null when it can. A reason stops the refresh before the remaining collectors run.
+   */
+  unpublishable?: (kept: KeptSource) => string | null;
 }
 
 /**
@@ -162,7 +172,18 @@ export function runIsolatedRefresh(options: IsolatedRefreshOptions): KeptSource[
         `Kept the active release's ${group.key} files: ${message} ` +
           `(${touched.length} file(s) put back; the other sources keep refreshing).`
       );
-      kept.push({ key: group.key, scripts: [...group.scripts], failedScript, error: message });
+      const entry: KeptSource = { key: group.key, scripts: [...group.scripts], failedScript, error: message };
+      kept.push(entry);
+      const reason = options.unpublishable?.(entry);
+      if (reason) {
+        const notRun = groups.slice(groups.indexOf(group) + 1).flatMap((later) => later.scripts);
+        throw new Error(
+          `Collection finished without fresh provenance for: ${group.key} (${reason}; its collector failed: ${message}). ` +
+            (notRun.length
+              ? `Stopped before ${notRun.join(', ')}: a run that cannot publish downloads nothing more.`
+              : 'It was the last collector of the run.')
+        );
+      }
     }
     return kept;
   } finally {
