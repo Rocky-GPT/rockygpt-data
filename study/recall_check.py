@@ -154,7 +154,7 @@ def main() -> None:
     links: dict[str, list[str]] = {}
     for unit in index.units:
         held_links = links.setdefault(unit.record_id, [])
-        held_links += [e for e in unit.entities if e not in held_links]
+        held_links += [e for e in unit.entity_ids if e not in held_links]
     marked_rows = {rid: records[rid]["row"] for rid in links if rid in records}
     owners = page_owners({rid: links[rid] for rid in marked_rows},
                          {rid: row.get("site_folder") for rid, row in marked_rows.items()})
