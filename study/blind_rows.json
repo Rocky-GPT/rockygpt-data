@@ -1,0 +1,293 @@
+[
+ {
+  "id": "ec-10",
+  "set": "blind",
+  "group": "page",
+  "question": "when does the student government association meet and can regular students go to the meetings?",
+  "facts": [
+   {
+    "needles": [
+     "(?i)senate",
+     "(?i)monday",
+     "\\b230\\b"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ec-11",
+  "set": "blind",
+  "group": "page",
+  "question": "does ramapo have fraternities and sororities? how do I find out about rush",
+  "facts": [
+   {
+    "needles": [
+     "(?i)recruitment",
+     "(?i)(fraternit|sororit|greek)"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ac-07",
+  "set": "blind",
+  "group": "page",
+  "question": "is there an MBA at ramapo? and is it part time",
+  "facts": [
+   {
+    "needles": [
+     "(?i)(\\bMBA\\b|master of business administration)",
+     "\\b42\\b"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ac-10",
+  "set": "blind",
+  "group": "page",
+  "question": "if I fail a class can I retake it and does the old grade get replaced in my gpa",
+  "facts": [
+   {
+    "needles": [
+     "(?i)grade replacement"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ac-12",
+  "set": "blind",
+  "group": "page",
+  "question": "what GPA do I need to make the dean's list and what happens if im on academic probation",
+  "facts": [
+   {
+    "needles": [
+     "(?i)dean'?s list",
+     "3\\.\\d"
+    ]
+   },
+   {
+    "needles": [
+     "(?i)academic suspension",
+     "(?i)(third|3rd)"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ht-01",
+  "set": "blind",
+  "group": "page",
+  "question": "how do i get a parking permit as a commuter",
+  "facts": [
+   {
+    "needles": [
+     "(?i)parking permit",
+     "(?i)(ID (card )?office|ID card|pick(ed)? ?up)"
+    ]
+   },
+   {
+    "urls": [
+     "ramapo.edu/student-accounts/costinfo/"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ht-04",
+  "set": "blind",
+  "group": "page",
+  "question": "i have a hold on my account and cant register for spring classes. how do i find out what its for and who do i contact to get it removed",
+  "facts": [
+   {
+    "needles": [
+     "(?i)advis(e|ement|ing|or) hold"
+    ]
+   },
+   {
+    "needles": [
+     "(?i)(financial hold|hold flag)"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ht-06",
+  "set": "blind",
+  "group": "page",
+  "question": "I live on campus and my roommate situation is really bad. what's the process to request a room change?",
+  "facts": [
+   {
+    "needles": [
+     "(?i)room change",
+     "(?i)(november 24|nov\\.? 24|11/24)"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ht-07",
+  "set": "blind",
+  "group": "page",
+  "question": "can i switch my meal plan mid semester or is that locked in",
+  "facts": [
+   {
+    "needles": [
+     "(?i)meal plan",
+     "(?i)refund",
+     "(?i)(change|switch)"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ht-08",
+  "set": "blind",
+  "group": "page",
+  "question": "how do i make an appointment at counseling services? is it free for students",
+  "facts": [
+   {
+    "needles": [
+     "(?i)counsel",
+     "(?i)triage"
+    ]
+   },
+   {
+    "needles": [
+     "(?i)counsel",
+     "(?i)(drop-in|drop in|walk-in)"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ht-09",
+  "set": "blind",
+  "group": "page",
+  "question": "I have ADHD and want extra time on exams. How do I register for disability accommodations and who handles that?",
+  "facts": [
+   {
+    "needles": [
+     "(?i)(quick response form|684-7655)"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ht-10",
+  "set": "blind",
+  "group": "page",
+  "question": "someone broke into my car in lot H last night. how do I report it to public safety, is there a number to call",
+  "facts": [
+   {
+    "needles": [
+     "(?i)report",
+     "(?i)(theft|stolen|vehicle|break-in|burglar)"
+    ],
+    "url_has": "publicsafety"
+   }
+  ]
+ },
+ {
+  "id": "ht-13",
+  "set": "blind",
+  "group": "page",
+  "question": "does the career center help with resume reviews and internship searches? how do I book an appointment",
+  "facts": [
+   {
+    "needles": [
+     "(?i)r[e\u00e9]sum[e\u00e9]",
+     "(?i)review"
+    ],
+    "url_has": "career"
+   }
+  ]
+ },
+ {
+  "id": "ht-15",
+  "set": "blind",
+  "group": "page",
+  "question": "which dorm is better for sophomores, and should I take the 19 meal swipe plan or the 14?",
+  "facts": [
+   {
+    "needles": [
+     "(?i)meal plan",
+     "(?i)2026-(20)?27",
+     "\\$\\s?\\d"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "pp-05",
+  "set": "blind",
+  "group": "list",
+  "question": "who teaches biology at ramapo? like is there a list of the bio faculty",
+  "facts": [
+   {
+    "needles": [
+     "(?i)biology",
+     "(?i)(professor|faculty)"
+    ],
+    "url_has": "biology"
+   }
+  ]
+ },
+ {
+  "id": "pp-09",
+  "set": "blind",
+  "group": "list",
+  "question": "can you give me a list of all the professors in the computer science department",
+  "facts": [
+   {
+    "needles": [
+     "Victor Miller"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ac-08",
+  "set": "blind",
+  "group": "list",
+  "question": "how many credits do I need for a business minor and what courses count",
+  "facts": [
+   {
+    "needles": [
+     "(?i)minor",
+     "(?i)(accounting|finance|marketing|management|business)"
+    ],
+    "url_has": "anisfield"
+   }
+  ]
+ },
+ {
+  "id": "pp-11",
+  "set": "blind",
+  "group": "record",
+  "question": "is professor Cindy Jebb a professor or just the president? what's her background",
+  "facts": []
+ },
+ {
+  "id": "pp-13",
+  "set": "blind",
+  "group": "record",
+  "question": "is the dean of the school of science (the one over biology and chemistry) in her office right now? need to drop something off",
+  "facts": []
+ },
+ {
+  "id": "ec-02",
+  "set": "blind",
+  "group": "record",
+  "question": "any events this weekend at ramapo? im a commuter but I'm free sat and sun",
+  "facts": []
+ },
+ {
+  "id": "ec-05",
+  "set": "blind",
+  "group": "record",
+  "question": "is there a watch party for any sports games on campus? like football or the world series or whatever",
+  "facts": []
+ }
+]
