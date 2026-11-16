@@ -65,25 +65,46 @@ export interface RawCollectorOptions {
    */
   listedEditedAt?: (url: string) => string | undefined;
   /**
-   * Days a page may be reused on its sitemap's word before it is downloaded again anyway, in case
-   * a part shared from elsewhere (a sidebar, a list of posts) changed without an edit to the page.
+   * Nights between downloads of a page its sitemap says nobody edited, in case a part shared from
+   * elsewhere (a sidebar, a list of posts) changed without an edit to the page.
    */
   listedReuseDays?: number;
+  /**
+   * Nights between downloads of a page no sitemap gives an edit time for (with retainSourceHtml).
+   * Without it, such a page is downloaded on every collection.
+   */
+  undatedReuseDays?: number;
 }
 
-/** How long a page may be reused on its sitemap's word (listedReuseDays), by default. */
+/** Nights between downloads of a page its sitemap says nobody edited (listedReuseDays), by default. */
 export const LISTED_REUSE_DAYS = 28;
 
+const DAY_MS = 86_400_000;
+const nightOf = (time: number) => Math.floor(time / DAY_MS);
+
+/** A page's own night in a cycle of `nights`, from its address, so a cycle's downloads spread evenly over its nights. */
+export function ownNight(url: string, nights: number): number {
+  return createHash('sha256').update(url).digest().readUInt32BE(0) % nights;
+}
+
 /**
- * Whether a page can be reused on its sitemap's word: the sitemap's edit time is before the last
- * capture downloaded it, and that download is less than reuseDays old.
+ * Whether tonight's collection reuses a page's last download without a request. A page its sitemap
+ * says was edited after that download is downloaded. Any other page is downloaded again once a
+ * cycle, on its own night, so a cycle's downloads do not all fall on one night: every
+ * `listedReuseDays` nights when the sitemap gives an edit time, every `undatedReuseDays` when none
+ * does (no such cycle: downloaded every time). A page whose last download is a whole cycle old (a run
+ * missed its night) is downloaded whatever the night.
  */
-export function listedUnchanged(editedAt: string | undefined, downloadedAt: string | undefined,
-  now: number, reuseDays: number): boolean {
-  const edited = editedAt ? Date.parse(editedAt) : NaN;
-  const downloaded = downloadedAt ? Date.parse(downloadedAt) : NaN;
-  return Number.isFinite(edited) && Number.isFinite(downloaded) && edited < downloaded
-    && now - downloaded < reuseDays * 86_400_000;
+export function reuseTonight(page: { url: string; editedAt?: string; downloadedAt?: string }, now: number,
+  listedReuseDays: number, undatedReuseDays?: number): boolean {
+  const downloaded = page.downloadedAt ? Date.parse(page.downloadedAt) : NaN;
+  if (!Number.isFinite(downloaded)) return false;
+  const edited = page.editedAt ? Date.parse(page.editedAt) : NaN;
+  if (Number.isFinite(edited) && edited >= downloaded) return false;
+  const cycle = Number.isFinite(edited) ? listedReuseDays : undatedReuseDays;
+  if (!cycle || cycle < 1 || now - downloaded >= cycle * DAY_MS) return false;
+  const tonight = nightOf(now);
+  return !(tonight % cycle === ownNight(page.url, cycle) && nightOf(downloaded) < tonight);
 }
 
 export interface PacerClock {
@@ -941,18 +962,20 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
   const capturePath = path.join(path.dirname(options.outputPath), `${options.dataset}-sources.raw.json`);
   const previousPages = options.retainSourceHtml ? previousSourcePages(capturePath) : new Map<string, PreviousSourcePage>();
   let unchangedPages = 0;
-  let listedPages = 0;
+  let reusedPages = 0;
   const reuseDays = options.listedReuseDays ?? LISTED_REUSE_DAYS;
   async function fetchSource(url: string, sourceType: 'seed' | 'detail'): Promise<FetchHtmlResult & { fetchedAt: string }> {
     const previous = previousPages.get(url);
     let fetched: FetchHtmlResult;
-    if (previous && listedUnchanged(options.listedEditedAt?.(url), previous.downloadedAt, Date.now(), reuseDays)) {
-      // The sitemap says nobody edited the page since the last download: no request at all.
+    const editedAt = options.listedEditedAt?.(url);
+    if (previous && reuseTonight({ url, downloadedAt: previous.downloadedAt, ...(editedAt ? { editedAt } : {}) },
+      Date.now(), reuseDays, options.undatedReuseDays)) {
+      // Not edited since the last download, and not this page's night to be downloaded again: no request at all.
       fetched = { url: previous.url, statusCode: previous.statusCode, html: previous.html,
         contentType: previous.contentType, ...(previous.etag ? { etag: previous.etag } : {}),
         ...(previous.lastModified ? { lastModified: previous.lastModified } : {}),
         unchanged: true, downloadedAt: previous.downloadedAt };
-      listedPages += 1;
+      reusedPages += 1;
     } else {
       await pace();
       fetched = await fetchHtmlWithRetry(url, timeoutMs, attempts, previous);
@@ -1073,7 +1096,8 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
     collectionSucceeded = true;
     if (options.retainSourceHtml) {
       noteSiteDownloads(`${options.dataset}: ${unchangedPages} of ${sourcePages.length} pages unchanged since the last capture ` +
-        `(${listedPages} by their sitemap's edit time, not asked; ${unchangedPages - listedPages} asked, not downloaded again); ` +
+        `(${reusedPages} not edited since and not on their night to be downloaded again, not asked; ` +
+        `${unchangedPages - reusedPages} asked, not downloaded again); ` +
         `${sourcePages.length - unchangedPages} downloaded.`);
     }
     return dataset;

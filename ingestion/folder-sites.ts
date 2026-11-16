@@ -70,6 +70,8 @@ const REQUEST_INTERVAL_MS = 1_000;
 // Pages a listed page links to that no sitemap lists (a site's policy pages): 500 left the
 // Provost's policy pages uncollected (October 19, 2026).
 const MAX_UNLISTED_PAGES = 1500;
+/** Nights between downloads of a page no sitemap gives an edit time for: weekly, as before the nightly date check. */
+export const UNDATED_REUSE_DAYS = 7;
 const DOCUMENT = /\.(pdf|docx?|xlsx?|pptx?|csv|txt|jpe?g|png|gif|zip|mp3|mp4)$/i;
 // Listings WordPress builds from posts (archives, feeds) and its own endpoints, not pages.
 const WORDPRESS_LISTING =
@@ -440,8 +442,11 @@ export async function collectFolderSites(source: FolderSiteSource, argv: readonl
     dataset: source.dataset,
     retainSourceHtml: true,
     compressSourceHtml: true,
-    // A page its site's sitemap says nobody edited since the last download is not downloaded again.
+    // Collected every night: a page its site's sitemap says nobody edited since the last download is
+    // downloaded again only on its own night every four weeks; a page no sitemap dates (a site without
+    // a WordPress sitemap, a page found only through a link) on its own night every week.
     listedEditedAt: url => editedAt.get(pageKey(url) ?? ''),
+    undatedReuseDays: UNDATED_REUSE_DAYS,
     seedUrls,
     outputPath,
     allowedHost: SITE_HOST,
