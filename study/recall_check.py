@@ -155,7 +155,10 @@ def main() -> None:
     for unit in index.units:
         held_links = links.setdefault(unit.record_id, [])
         held_links += [e for e in unit.entity_ids if e not in held_links]
-    marked_rows = {rid: records[rid]["row"] for rid in links if rid in records}
+    # The index keys a page by its row's own id, not the graph record's.
+    by_row_id = {str(h["row"].get("id")): h["row"] for h in records.values()
+                 if h["collection"] == "office_sections" and isinstance(h["row"], dict)}
+    marked_rows = {rid: by_row_id[rid] for rid in links if rid in by_row_id}
     owners = page_owners({rid: links[rid] for rid in marked_rows},
                          {rid: row.get("site_folder") for rid, row in marked_rows.items()})
     marks = {rid: page_marks(row, owners.get(rid)) for rid, row in marked_rows.items()}
@@ -169,13 +172,13 @@ def main() -> None:
           f"{sum(1 for rid in marks if owners.get(rid) != links[rid][0])} pages; "
           f"pages with 2+ linking nodes {sum(1 for rid in marks if len(links[rid]) > 1)}")
     print("top owners:", Counter(owners.values()).most_common(12))
-    for rid in sorted(old_pages, key=lambda r: str(records[r]["url"])):
+    for rid in sorted(old_pages, key=lambda r: str(by_row_id[r].get("url"))):
         m = marks[rid]
-        print(f"  NOT CURRENT {records[rid]['url']} until={m.until} previous={m.previous} "
+        print(f"  NOT CURRENT {by_row_id[rid].get('url')} until={m.until} previous={m.previous} "
               f"updated={m.updated} owner={m.owner}")
-    for rid in sorted(marks, key=lambda r: str(records[r]["url"])):
+    for rid in sorted(marks, key=lambda r: str(by_row_id[r].get("url"))):
         if len(links[rid]) > 1:
-            print(f"  OWNER {records[rid]['url']} -> {owners.get(rid)} (links {links[rid]})")
+            print(f"  OWNER {by_row_id[rid].get('url')} -> {owners.get(rid)} (links {links[rid]})")
 
     plain_scores = index.scores
 
