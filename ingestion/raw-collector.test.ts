@@ -440,6 +440,59 @@ test('a page the site says has not changed since the last capture is reused, not
   } finally { globalThis.fetch = original; fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+test("a page the site's own sitemap says nobody edited since the last download is reused without a request", async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-raw-listed-'));
+  const original = globalThis.fetch;
+  const pages: Record<string, string> = {
+    'https://example.edu/finaid/': '<main><h1>Financial Aid</h1><p>File the FAFSA by March 1.</p></main>',
+    'https://example.edu/registrar/': '<main><h1>Registrar</h1><p>Transcripts.</p></main>',
+    'https://example.edu/bursar/': '<main><h1>Bursar</h1><p>Pay your bill.</p></main>',
+  };
+  const sent: string[] = [];
+  globalThis.fetch = async (input) => {
+    sent.push(String(input));
+    return new Response(pages[String(input)], { headers: { 'content-type': 'text/html' } });
+  };
+  // What the sitemaps say: finaid edited long ago, registrar edited after the first download, bursar not listed.
+  const edited: Record<string, string> = { 'https://example.edu/finaid/': '2026-01-05T10:00:00-05:00' };
+  const capturePath = path.join(dir, 'office-sources.raw.json');
+  const collect = (reuseDays?: number) => collectRawDataset({ dataset: 'office', seedUrls: Object.keys(pages),
+    allowedHost: 'example.edu', outputPath: path.join(dir, 'office.raw.json'), attempts: 1, maxDetailPages: 0,
+    retainSourceHtml: true, compressSourceHtml: true, listedEditedAt: url => edited[url],
+    ...(reuseDays === undefined ? {} : { listedReuseDays: reuseDays }) });
+  const capturePage = (url: string) => JSON.parse(fs.readFileSync(capturePath, 'utf8')).pages
+    .find((page: { requestedUrl: string }) => page.requestedUrl === url);
+  try {
+    const first = await collect();
+    assert.equal(sent.length, 3);
+    const firstDownload = capturePage('https://example.edu/finaid/').fetchedAt;
+    pages['https://example.edu/registrar/'] = '<main><h1>Registrar</h1><p>Transcripts and diplomas.</p></main>';
+    edited['https://example.edu/registrar/'] = new Date(Date.now() + 60_000).toISOString();
+    sent.length = 0;
+    const second = await collect();
+    assert.deepEqual(sent.sort(), ['https://example.edu/bursar/', 'https://example.edu/registrar/']);
+    const finaid = capturePage('https://example.edu/finaid/');
+    assert.equal(finaid.unchanged, true);
+    assert.equal(finaid.downloadedAt, firstDownload);
+    assert.equal(sourceHtml(finaid), pages['https://example.edu/finaid/']);
+    assert.equal(capturePage('https://example.edu/registrar/').unchanged, undefined);
+    const sections = (dataset: typeof first, folder: string) => dataset.pages.find(page => page.url.includes(folder))?.sections;
+    assert.deepEqual(sections(second, '/finaid'), sections(first, '/finaid'));
+    assert.ok(JSON.stringify(sections(second, '/registrar')).includes('diplomas'));
+    // Reused again, it still counts from the day it was last downloaded.
+    sent.length = 0;
+    await collect();
+    assert.ok(!sent.includes('https://example.edu/finaid/'));
+    assert.equal(capturePage('https://example.edu/finaid/').downloadedAt, firstDownload);
+    // Past the reuse window, a page is downloaded again whatever its sitemap says, in case a part
+    // shared from elsewhere (a sidebar, a list of posts) changed without an edit to the page.
+    sent.length = 0;
+    await collect(0);
+    assert.ok(sent.includes('https://example.edu/finaid/'));
+    assert.equal(capturePage('https://example.edu/finaid/').downloadedAt, undefined);
+  } finally { globalThis.fetch = original; fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('a page keeps the date its SEO tags say it was last changed', () => {
   const html = (head: string) => `<html><head>${head}</head><body><main><h1>Health Services</h1>`
     + '<p>Open weekdays from 9 to 5 for every student.</p></main></body></html>';
