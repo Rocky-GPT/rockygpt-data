@@ -150,6 +150,24 @@ export function sitemapLocs(xml: string): string[] {
     .replace(/&amp;/g, '&'));
 }
 
+/**
+ * When a WordPress sitemap says each page was last edited, by page key; a page listed twice keeps
+ * the later time, and an entry without a readable time is left out. Only a site's own WordPress
+ * sitemaps carry real edit times: the site-wide sitemap's are the day a crawler made it.
+ */
+export function sitemapEditTimes(xml: string): Map<string, string> {
+  const times = new Map<string, string>();
+  for (const [entry] of xml.matchAll(/<url>[\s\S]*?<\/url>/g)) {
+    const [loc] = sitemapLocs(entry);
+    const lastmod = entry.match(/<lastmod>\s*([^<\s]+)\s*<\/lastmod>/)?.[1];
+    const key = loc ? pageKey(loc) : null;
+    if (!key || !lastmod || !Number.isFinite(Date.parse(lastmod))) continue;
+    const before = times.get(key);
+    if (!before || Date.parse(lastmod) > Date.parse(before)) times.set(key, lastmod);
+  }
+  return times;
+}
+
 /** The post-type sitemaps of a WordPress sitemap index: pages, posts and custom types, not taxonomies or users. */
 export function contentSitemaps(indexXml: string): string[] {
   return sitemapLocs(indexXml).filter(url => /\/wp-sitemap-posts-[a-z0-9_-]+-\d+\.xml$/i.test(url));
@@ -356,7 +374,7 @@ async function fetchSitemap(url: string): Promise<string | null> {
 async function listedSitePages(
   sites: readonly FolderSite[],
   skippedPostTypes: Readonly<Record<string, string>>
-): Promise<{ urls: string[]; skipped: string[]; report: string[] }> {
+): Promise<{ urls: string[]; skipped: string[]; report: string[]; editedAt: Map<string, string> }> {
   const pace = createRequestPacer(REQUEST_INTERVAL_MS);
   const read = async (url: string) => {
     await pace();
@@ -366,6 +384,7 @@ async function listedSitePages(
   const urls: string[] = [];
   const skipped: string[] = [];
   const report: string[] = [];
+  const editedAt = new Map<string, string>();
   for (const site of sites) {
     const index = await read(`${SITE}/${site.folder}/wp-sitemap.xml`);
     const sitemaps = index ? contentSitemaps(index) : [];
@@ -376,6 +395,7 @@ async function listedSitePages(
         const xml = await read(sitemap);
         if (!xml) throw new Error(`${site.folder}: its sitemap ${sitemap} could not be read.`);
         const locs = sitemapLocs(xml);
+        for (const [key, time] of sitemapEditTimes(xml)) editedAt.set(key, time);
         const type = sitemapPostType(sitemap) ?? '';
         const skip = Object.hasOwn(skippedPostTypes, type);
         types.push(`${type} ${locs.length}${skip ? ' skipped' : ''}`);
@@ -393,7 +413,7 @@ async function listedSitePages(
     report.push(`${site.folder}: ${own.length} listed (${sitemaps.length ? `WordPress sitemap: ${types.join(', ')}` : 'site-wide sitemap'})`);
     urls.push(...own);
   }
-  return { urls, skipped, report };
+  return { urls, skipped, report, editedAt };
 }
 
 /** Collects every page of a source's sites into data/raw/<dataset>.raw.json. With --list, only prints the pages. */
@@ -403,7 +423,7 @@ export async function collectFolderSites(source: FolderSiteSource, argv: readonl
   const folders = new Set(sites.map(site => site.folder.toLowerCase()));
   const elsewhere = pagesCollectedElsewhere(source.collectedElsewhere);
   const reviewedSkips = readSkippedPages(source.sitesPath);
-  const { urls, skipped, report } = await listedSitePages(sites, source.skippedPostTypes);
+  const { urls, skipped, report, editedAt } = await listedSitePages(sites, source.skippedPostTypes);
   report.forEach(line => console.log(line));
   const seedUrls = sitePageUrls(urls, folders, new Set([...elsewhere, ...reviewedSkips.keys()]), source.skippedPostTypes);
   if (!seedUrls.length) throw new Error(`The ${source.dataset} sitemaps list no pages to collect.`);
@@ -420,6 +440,8 @@ export async function collectFolderSites(source: FolderSiteSource, argv: readonl
     dataset: source.dataset,
     retainSourceHtml: true,
     compressSourceHtml: true,
+    // A page its site's sitemap says nobody edited since the last download is not downloaded again.
+    listedEditedAt: url => editedAt.get(pageKey(url) ?? ''),
     seedUrls,
     outputPath,
     allowedHost: SITE_HOST,

@@ -33,10 +33,8 @@ import { testBuildFromCapturedPages } from '../test-build';
 import { CRITICAL_FACT_VALIDITY_V2, CRITICAL_FACT_VALUES_V2 } from './check-quality';
 import { recordValidity } from '../../src/data-v2/validity';
 import { sourceKeyForPath } from '../context-sources';
-import {
-  chunkDocumentSections,
-  listMarkdownFiles,
-} from '../../src/data-v2/document-text';
+import { listMarkdownFiles } from '../../src/data-v2/document-text';
+import { chunkCountsBySource, chunkGateError } from '../document-chunk-gate';
 import { SOURCES } from '../../src/data-v2/source-seeds';
 import {
   evaluateSourceProvenance,
@@ -53,24 +51,13 @@ import { RELEASE_SNAPSHOT_FILE, writeReleaseSnapshot } from '../release-snapshot
 
 type JsonRecord = Record<string, unknown>;
 
-interface PreparedChunk {
-  index: number;
-  content: string;
-  contentHash: string;
-  metadata: JsonRecord;
-}
-
 interface PreparedDocument {
   sourceKey: string;
   title: string;
   content: string;
   metadata: JsonRecord;
   collectedAt: string;
-  chunks: PreparedChunk[];
 }
-
-/** Chunks written per statement; a large document is still a handful of statements. */
-const CHUNK_BATCH_SIZE = 500;
 
 interface PreparedArtifact {
   key: string;
@@ -657,63 +644,38 @@ function prepareDocuments(
     const sourceKey = sourceKeyForPath(filePath);
     const title = cleanText(content.match(/^#\s+(.+)$/m)?.[1]) || path.basename(filePath, '.md');
     const metadata = { sourcePath: relativePath };
-    const chunks = chunkDocumentSections(content).map((chunk, index) => ({
-      index,
-      content: chunk.content,
-      contentHash: sha256(chunk.content),
-      metadata: {
-        sourcePath: relativePath,
-        domain: SOURCES.find((source) => source.key === sourceKey)?.domain,
-        canonicalUrl: chunk.canonicalUrl,
-        headingPath: chunk.headingPath,
-        collectedAt: chunk.collectedAt,
-      },
-    }));
     documents.push({
       sourceKey,
       title,
       content,
       metadata,
       collectedAt: collectedAtFor(sourceKey),
-      chunks,
     });
   }
   return documents;
 }
 
+/**
+ * The documents only. Their chunks are no longer stored (11-16): about 24,000 rows a night that
+ * nothing answering students read, since the Brain answers from the graph. The publish's check
+ * still counts chunks, cut from each document's text (document-chunk-gate.ts).
+ */
 async function insertDocuments(
   client: PoolClient,
   datasetId: string,
   sources: Map<string, string>,
   documents: PreparedDocument[]
-): Promise<{ documents: number; chunks: number }> {
-  const stats = { documents: 0, chunks: 0 };
+): Promise<{ documents: number }> {
   for (const prepared of documents) {
-    const document = await client.query<{ id: string }>(
+    await client.query(
       `INSERT INTO rockygpt_v2.documents
        (dataset_version_id, source_id, title, content, metadata, collected_at)
-       VALUES ($1,$2,$3,$4,$5::jsonb,$6) RETURNING id::text`,
+       VALUES ($1,$2,$3,$4,$5::jsonb,$6)`,
       [datasetId, sources.get(prepared.sourceKey), prepared.title, prepared.content,
         JSON.stringify(prepared.metadata), prepared.collectedAt]
     );
-    stats.documents += 1;
-    // One statement per batch of chunks: each database call costs a network round trip
-    // (about 80 ms from the daily workflow to production), and a release has ~24,000 chunks.
-    for (let start = 0; start < prepared.chunks.length; start += CHUNK_BATCH_SIZE) {
-      const batch = prepared.chunks.slice(start, start + CHUNK_BATCH_SIZE);
-      await client.query(
-        `INSERT INTO rockygpt_v2.document_chunks
-         (document_id, chunk_index, content, content_hash, metadata)
-         SELECT $1::uuid, chunk.chunk_index, chunk.content, chunk.content_hash, chunk.metadata::jsonb
-         FROM unnest($2::int[], $3::text[], $4::text[], $5::text[])
-           AS chunk(chunk_index, content, content_hash, metadata)`,
-        [document.rows[0].id, batch.map(chunk => chunk.index), batch.map(chunk => chunk.content),
-          batch.map(chunk => chunk.contentHash), batch.map(chunk => JSON.stringify(chunk.metadata))]
-      );
-      stats.chunks += batch.length;
-    }
   }
-  return stats;
+  return { documents: documents.length };
 }
 
 function prepareReleaseArtifacts(): PreparedArtifact[] {
@@ -744,7 +706,8 @@ async function insertReleaseArtifacts(
 
 async function verifyStagingDataset(
   client: PoolClient,
-  datasetId: string
+  datasetId: string,
+  candidateChunks: ReadonlyMap<string, number>
 ): Promise<Record<string, number>> {
   const result = await client.query<{
     critical_facts: string;
@@ -757,7 +720,6 @@ async function verifyStagingDataset(
     campus_events: string;
     clubs: string;
     programs: string;
-    document_chunks: string;
     release_artifacts: string;
   }>(
     `SELECT
@@ -771,9 +733,6 @@ async function verifyStagingDataset(
        (SELECT count(*) FROM rockygpt_v2.campus_events WHERE dataset_version_id = $1::uuid) AS campus_events,
        (SELECT count(*) FROM rockygpt_v2.clubs WHERE dataset_version_id = $1::uuid) AS clubs,
        (SELECT count(*) FROM rockygpt_v2.programs WHERE dataset_version_id = $1::uuid) AS programs,
-       (SELECT count(*) FROM rockygpt_v2.document_chunks c
-        JOIN rockygpt_v2.documents d ON d.id = c.document_id
-        WHERE d.dataset_version_id = $1::uuid) AS document_chunks,
        (SELECT count(*) FROM rockygpt_v2.release_artifacts
         WHERE dataset_version_id = $1::uuid) AS release_artifacts`,
     [datasetId]
@@ -792,7 +751,6 @@ async function verifyStagingDataset(
     campus_events: 1,
     clubs: 100,
     programs: 50,
-    document_chunks: 100,
     release_artifacts: Object.keys(RELEASE_ARTIFACT_FILES).length + 9,
   };
   for (const [key, minimum] of Object.entries(minimums)) {
@@ -806,7 +764,6 @@ async function verifyStagingDataset(
     clubs: string;
     programs: string;
     academic_dates: string;
-    document_chunks: string;
   }>(
     `SELECT
        (SELECT count(*) FROM rockygpt_v2.campus_contacts c JOIN rockygpt_v2.dataset_versions v
@@ -816,11 +773,7 @@ async function verifyStagingDataset(
        (SELECT count(*) FROM rockygpt_v2.programs p JOIN rockygpt_v2.dataset_versions v
         ON v.id = p.dataset_version_id WHERE v.status = 'active') AS programs,
        (SELECT count(*) FROM rockygpt_v2.academic_dates a JOIN rockygpt_v2.dataset_versions v
-        ON v.id = a.dataset_version_id WHERE v.status = 'active') AS academic_dates,
-       (SELECT count(*) FROM rockygpt_v2.document_chunks c
-        JOIN rockygpt_v2.documents d ON d.id = c.document_id
-        JOIN rockygpt_v2.dataset_versions v ON v.id = d.dataset_version_id
-        WHERE v.status = 'active') AS document_chunks`
+        ON v.id = a.dataset_version_id WHERE v.status = 'active') AS academic_dates`
   );
   const previous = active.rows[0];
   const floors: Record<string, number> = {
@@ -828,7 +781,6 @@ async function verifyStagingDataset(
     clubs: 0.7,
     programs: 0.8,
     academic_dates: 0.7,
-    document_chunks: 0.5,
   };
   for (const [key, ratio] of Object.entries(floors)) {
     const oldCount = Number(previous?.[key as keyof typeof previous] || 0);
@@ -840,40 +792,19 @@ async function verifyStagingDataset(
     }
   }
 
-  const sourceChunks = await client.query<{
-    source_key: string;
-    candidate_chunks: string;
-    active_chunks: string;
-  }>(
-    `SELECT
-       source.source_key,
-       count(chunk.id) FILTER (WHERE document.dataset_version_id = $1::uuid) AS candidate_chunks,
-       count(chunk.id) FILTER (WHERE version.status = 'active') AS active_chunks
-     FROM rockygpt_v2.sources source
-     LEFT JOIN rockygpt_v2.documents document ON document.source_id = source.id
-     LEFT JOIN rockygpt_v2.dataset_versions version ON version.id = document.dataset_version_id
-     LEFT JOIN rockygpt_v2.document_chunks chunk ON chunk.document_id = document.id
-     GROUP BY source.source_key`,
-    [datasetId]
+  // The documents' text, in all and source by source, counted in chunks for both releases.
+  const activeDocuments = await client.query<{ source_key: string; content: string }>(
+    `SELECT source.source_key, document.content
+     FROM rockygpt_v2.documents document
+     JOIN rockygpt_v2.sources source ON source.id = document.source_id
+     JOIN rockygpt_v2.dataset_versions version ON version.id = document.dataset_version_id
+     WHERE version.status = 'active'`
   );
-  const sourceChunkFloors: Record<string, number> = {
-    'archway-events': 0.2,
-    dining: 0.3,
-    'academic-programs': 0.6,
-    faculty: 0.6,
-  };
-  for (const row of sourceChunks.rows) {
-    const previousChunks = Number(row.active_chunks || 0);
-    const candidateChunks = Number(row.candidate_chunks || 0);
-    if (previousChunks < 3) continue;
-    const ratio = sourceChunkFloors[row.source_key] ?? 0.5;
-    if (candidateChunks < previousChunks * ratio) {
-      throw new Error(
-        `Staging verification failed: ${row.source_key} chunks dropped from ${previousChunks} to ${candidateChunks} ` +
-          `(minimum allowed ratio ${ratio}).`
-      );
-    }
-  }
+  const activeChunks = chunkCountsBySource(activeDocuments.rows.map((row) => (
+    { sourceKey: row.source_key, content: row.content })));
+  const chunkError = chunkGateError(candidateChunks, activeChunks);
+  if (chunkError) throw new Error(chunkError);
+  counts.document_chunks = [...candidateChunks.values()].reduce((a, b) => a + b, 0);
   return counts;
 }
 
@@ -1032,7 +963,7 @@ async function main(): Promise<void> {
         : staticVerifiedAt;
 
     // Network and CPU-heavy work happens before the staging transaction. Raw
-    // captures are archived, documents are chunked, and only previously unseen
+    // captures are archived, documents are read, and only previously unseen
     const archived = await archiveRawArtifacts(provenanceStates);
     step('archive raw captures');
     const manifest = await createReleaseManifest(client, {
@@ -1080,7 +1011,7 @@ async function main(): Promise<void> {
       sources,
       preparedDocuments
     );
-    step(`insert ${documents.documents} documents and ${documents.chunks} chunks`);
+    step(`insert ${documents.documents} documents`);
     const sourceArtifactCount = await insertReleaseArtifacts(client, datasetId, artifacts);
     step('insert release artifacts');
     const identityArtifacts = await insertCampusIdentityArtifacts(client, datasetId, identitySeed, rawCatalog, {
@@ -1129,7 +1060,7 @@ async function main(): Promise<void> {
     // Verification reads the committed-but-inactive candidate. Activation is
     // a separate short pointer-swap transaction, so readers never see partial
     // data and a failed gate leaves the previous release untouched.
-    const verifiedCounts = await verifyStagingDataset(client, datasetId);
+    const verifiedCounts = await verifyStagingDataset(client, datasetId, chunkCountsBySource(preparedDocuments));
     step('verify record counts');
     const identityContinuity = await verifyIdentityContinuity(client, datasetId, identitySeed, { catalog: rawCatalog });
     step('verify identity continuity');

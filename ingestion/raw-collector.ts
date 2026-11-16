@@ -57,6 +57,33 @@ export interface RawCollectorOptions {
   compressSourceHtml?: boolean;
   /** Start each request at least this long after the previous one, so a large crawl reads the site gently. */
   requestIntervalMs?: number;
+  /**
+   * When the site's own sitemap says a page was last edited (WordPress lists each page's edit
+   * time), or undefined. With retainSourceHtml, a page the last capture downloaded after that time
+   * is reused without a request: Ramapo's pages send no validators, so this is the one way to know
+   * a page has not changed without downloading it (11-16).
+   */
+  listedEditedAt?: (url: string) => string | undefined;
+  /**
+   * Days a page may be reused on its sitemap's word before it is downloaded again anyway, in case
+   * a part shared from elsewhere (a sidebar, a list of posts) changed without an edit to the page.
+   */
+  listedReuseDays?: number;
+}
+
+/** How long a page may be reused on its sitemap's word (listedReuseDays), by default. */
+export const LISTED_REUSE_DAYS = 28;
+
+/**
+ * Whether a page can be reused on its sitemap's word: the sitemap's edit time is before the last
+ * capture downloaded it, and that download is less than reuseDays old.
+ */
+export function listedUnchanged(editedAt: string | undefined, downloadedAt: string | undefined,
+  now: number, reuseDays: number): boolean {
+  const edited = editedAt ? Date.parse(editedAt) : NaN;
+  const downloaded = downloadedAt ? Date.parse(downloadedAt) : NaN;
+  return Number.isFinite(edited) && Number.isFinite(downloaded) && edited < downloaded
+    && now - downloaded < reuseDays * 86_400_000;
 }
 
 export interface PacerClock {
@@ -98,8 +125,13 @@ interface FetchHtmlResult {
   /** The page's validators, sent back next time so an unchanged page is not downloaded again. */
   etag?: string;
   lastModified?: string;
-  /** The site answered 304 Not Modified: the page is the last capture's, confirmed current at fetchedAt. */
+  /**
+   * The page is the last capture's, confirmed current at fetchedAt: the site answered 304 Not
+   * Modified, or its sitemap said the page was not edited since it was downloaded.
+   */
   unchanged?: boolean;
+  /** For a page reused on its sitemap's word: when its HTML was last downloaded (else fetchedAt). */
+  downloadedAt?: string;
 }
 
 /** The last capture's copy of a page, sent as validators and reused when the site says it has not changed. */
@@ -110,6 +142,8 @@ export interface PreviousSourcePage {
   contentType: string;
   etag?: string;
   lastModified?: string;
+  /** When this HTML was downloaded: the capture's downloadedAt, else its fetchedAt. */
+  downloadedAt?: string;
 }
 
 export interface RawSourceCaptureV1 {
@@ -683,8 +717,10 @@ export function replayRawSourceCapture(capture: RawSourceCaptureV1): RawDatasetV
 }
 
 /**
- * The last capture's pages that can stand in for a 304 answer, by requested URL: a successful
- * page with its HTML intact and a validator to send. A missing or unreadable capture gives none.
+ * The last capture's pages that can stand in for a fresh download, by requested URL: a successful
+ * page with its HTML intact. It is reused when the site answers 304 to its validators, or when
+ * the site's sitemap says it was not edited since it was downloaded. A missing or unreadable
+ * capture gives none.
  */
 export function previousSourcePages(capturePath: string): Map<string, PreviousSourcePage> {
   const pages = new Map<string, PreviousSourcePage>();
@@ -696,7 +732,6 @@ export function previousSourcePages(capturePath: string): Map<string, PreviousSo
   }
   if (capture?.schemaVersion !== 1 || !Array.isArray(capture.pages)) return pages;
   for (const page of capture.pages) {
-    if (!page.etag && !page.lastModified) continue;
     if (page.statusCode === null || page.statusCode < 200 || page.statusCode >= 300) continue;
     let html: string;
     try {
@@ -705,8 +740,10 @@ export function previousSourcePages(capturePath: string): Map<string, PreviousSo
       continue;
     }
     if (!html || createHash('sha256').update(html).digest('hex') !== page.contentHash) continue;
+    const downloadedAt = page.downloadedAt ?? page.fetchedAt;
     pages.set(page.requestedUrl, { url: page.url, statusCode: page.statusCode, html, contentType: page.contentType,
-      ...(page.etag ? { etag: page.etag } : {}), ...(page.lastModified ? { lastModified: page.lastModified } : {}) });
+      ...(page.etag ? { etag: page.etag } : {}), ...(page.lastModified ? { lastModified: page.lastModified } : {}),
+      ...(downloadedAt ? { downloadedAt } : {}) });
   }
   return pages;
 }
@@ -904,9 +941,22 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
   const capturePath = path.join(path.dirname(options.outputPath), `${options.dataset}-sources.raw.json`);
   const previousPages = options.retainSourceHtml ? previousSourcePages(capturePath) : new Map<string, PreviousSourcePage>();
   let unchangedPages = 0;
+  let listedPages = 0;
+  const reuseDays = options.listedReuseDays ?? LISTED_REUSE_DAYS;
   async function fetchSource(url: string, sourceType: 'seed' | 'detail'): Promise<FetchHtmlResult & { fetchedAt: string }> {
-    await pace();
-    const fetched = await fetchHtmlWithRetry(url, timeoutMs, attempts, previousPages.get(url));
+    const previous = previousPages.get(url);
+    let fetched: FetchHtmlResult;
+    if (previous && listedUnchanged(options.listedEditedAt?.(url), previous.downloadedAt, Date.now(), reuseDays)) {
+      // The sitemap says nobody edited the page since the last download: no request at all.
+      fetched = { url: previous.url, statusCode: previous.statusCode, html: previous.html,
+        contentType: previous.contentType, ...(previous.etag ? { etag: previous.etag } : {}),
+        ...(previous.lastModified ? { lastModified: previous.lastModified } : {}),
+        unchanged: true, downloadedAt: previous.downloadedAt };
+      listedPages += 1;
+    } else {
+      await pace();
+      fetched = await fetchHtmlWithRetry(url, timeoutMs, attempts, previous);
+    }
     if (fetched.unchanged) unchangedPages += 1;
     const fetchedAt = new Date().toISOString();
     if (options.retainSourceHtml) {
@@ -1023,7 +1073,8 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
     collectionSucceeded = true;
     if (options.retainSourceHtml) {
       noteSiteDownloads(`${options.dataset}: ${unchangedPages} of ${sourcePages.length} pages unchanged since the last capture ` +
-        `(asked, not downloaded again); ${sourcePages.length - unchangedPages} downloaded.`);
+        `(${listedPages} by their sitemap's edit time, not asked; ${unchangedPages - listedPages} asked, not downloaded again); ` +
+        `${sourcePages.length - unchangedPages} downloaded.`);
     }
     return dataset;
   } finally {
