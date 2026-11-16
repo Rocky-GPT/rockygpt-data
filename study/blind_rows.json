@@ -21,9 +21,8 @@
   "question": "does ramapo have fraternities and sororities? how do I find out about rush",
   "facts": [
    {
-    "needles": [
-     "(?i)recruitment",
-     "(?i)(fraternit|sororit|greek)"
+    "urls": [
+     "ramapo.edu/greek/recruitment/"
     ]
    }
   ]
@@ -31,16 +30,9 @@
  {
   "id": "ac-07",
   "set": "blind",
-  "group": "page",
+  "group": "record",
   "question": "is there an MBA at ramapo? and is it part time",
-  "facts": [
-   {
-    "needles": [
-     "(?i)(\\bMBA\\b|master of business administration)",
-     "\\b42\\b"
-    ]
-   }
-  ]
+  "facts": []
  },
  {
   "id": "ac-10",
@@ -69,8 +61,9 @@
    },
    {
     "needles": [
-     "(?i)academic suspension",
-     "(?i)(third|3rd)"
+     "(?i)suspension",
+     "(?i)(third|3rd|three)",
+     "(?i)probation"
     ]
    }
   ]
@@ -135,8 +128,7 @@
    {
     "needles": [
      "(?i)meal plan",
-     "(?i)refund",
-     "(?i)(change|switch)"
+     "(?i)refund date"
     ]
    }
   ]
@@ -181,11 +173,10 @@
   "question": "someone broke into my car in lot H last night. how do I report it to public safety, is there a number to call",
   "facts": [
    {
-    "needles": [
-     "(?i)report",
-     "(?i)(theft|stolen|vehicle|break-in|burglar)"
-    ],
-    "url_has": "publicsafety"
+    "urls": [
+     "ramapo.edu/publicsafety/report-an-incident/",
+     "ramapo.edu/publicsafety/how-to-report/"
+    ]
    }
   ]
  },
@@ -200,7 +191,7 @@
      "(?i)r[e\u00e9]sum[e\u00e9]",
      "(?i)review"
     ],
-    "url_has": "career"
+    "url_has": "careercenter"
    }
   ]
  },

@@ -24,7 +24,9 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from rockygpt_brain import one_call
 from rockygpt_brain.retrieval.entity_facts import _procedure_units, _procedure_words
+from rockygpt_brain.retrieval.meaning import MeaningScores
 from rockygpt_brain.retrieval.graph_store import GraphOnlyFacts, _loads
 
 HERE = Path(__file__).parent
@@ -148,13 +150,25 @@ def main() -> None:
     texts = {rid: text_of(held) for rid, held in records.items()}
     rows = [*json.loads((HERE / "blind_rows.json").read_text()),
             *json.loads((HERE / "check_rows.json").read_text())]
-    vectors, tokens = embed([r["question"] for r in rows], index.model, index.dimensions)
-    print(f"embedded {len(rows)} questions, {tokens} tokens "
+    parts = [one_call.parts_of(r["question"]) for r in rows]
+    flat = [t for p in parts for t in p]
+    flat_vectors, tokens = embed(flat, index.model, index.dimensions)
+    vectors, part_vectors, at = [], [], 0
+    for p in parts:
+        part_vectors.append(flat_vectors[at:at + len(p)])
+        vectors.append(flat_vectors[at])
+        at += len(p)
+    print(f"embedded {len(rows)} questions in {len(flat)} parts, {tokens} tokens "
           f"(${tokens * 0.13 / 1_000_000:.5f} at text-embedding-3-large prices)")
 
     results = []
-    for row, vector in zip(rows, vectors, strict=True):
+    for row, vector, pvecs in zip(rows, vectors, part_vectors, strict=True):
         scores = index.scores(vector)
+        # What today's Brain reads by meaning: the two-stage read (each part's best, at most 2 a
+        # page, 24 units, policies whole), and the 60-unit pool the one-writer's pick chooses from.
+        read_now = one_call.with_picked(index, pvecs, MeaningScores({}), [], None)[1]
+        pool_now = one_call.chosen_units(index, pvecs, one_call.POOL, per_part=one_call.POOL_PER_PART,
+                                         per_page=one_call.POOL_PER_PAGE)[1]
         meaning_ranked = list(scores.keys())
         wanted = _procedure_words(row["question"])
         weight = {w: math.log(1 + total / doc_count[w]) for w in wanted if doc_count[w]}
@@ -189,6 +203,8 @@ def main() -> None:
                 ranks[name] = first_rank(ranked, unit_url, gold)
             ranks["meaning_sections"] = first_rank(meaning_ranked, unit_url, gold, True)
             ranks["both_sections"] = first_rank(fused_ranked, unit_url, gold, True)
+            ranks["read_now"] = first_rank(read_now, unit_url, gold)
+            ranks["pool_now"] = first_rank(pool_now, unit_url, gold)
             out_facts.append({"gold": sorted(gold)[:6], "gold_count": len(gold),
                               "collections": dict(where), "in_search": len(in_search),
                               "ranks": ranks})
@@ -219,6 +235,8 @@ def main() -> None:
         line = [f"{s}/{g}: {len(group)} questions"]
         line.append(f"gold not in graph {sum(1 for r in group if any(f['gold_count'] == 0 for f in r['facts']))}")
         line.append(f"gold not in page search {sum(1 for r in group if any(f['gold_count'] and not f['in_search'] for f in r['facts']))}")
+        for name in ("read_now", "pool_now"):
+            line.append(f"{name} has it {sum(1 for r in group if all(f['ranks'][name][0] is not None for f in r['facts']))}")
         for name in ("meaning", "words", "both", "meaning_sections", "both_sections"):
             hits = []
             for cut in CUTS:
