@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: Rocky-GPT/rockygpt-brain
-          ref: claude/project-thread-e9o7wp
+          ref: dev
           path: brain
 
       - name: Setup Python
