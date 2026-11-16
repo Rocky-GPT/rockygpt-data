@@ -181,6 +181,9 @@ async def main() -> None:
         print(f"   cards off: {json.dumps(cards_off)}")
         print(f"   cards on:  {json.dumps(cards_on)}")
         print(f"   as one part, gate open: {gate_open}  {json.dumps(one_part['answerCard'])}")
+        if record["said_built"]:
+            for line in str(record["said_built"]).splitlines():
+                print(f"   SAID | {line}")
         for n, item in enumerate(by_part):
             note = item["note"]
             print(f"   part {n} {item['part']!r}\n      -> {item['label']} [{item['status']}] "
@@ -190,6 +193,10 @@ async def main() -> None:
             if item["answer"]:
                 for line in str(item["answer"]).splitlines():
                     print(f"      | {line}")
+    for part in ("A", "B"):
+        rows_of = [r for r in out if r["id"].startswith(part)]
+        said = [r["id"] for r in rows_of if (r["cards_on"]["answerCard"] or {}).get("said")]
+        print(f"\n== part {part}: code answers {len(said)} of {len(rows_of)} from a card: {said}")
     print(f"\n== {gateway.refused} model calls refused, none made; embedded with {gateway.tokens} "
           f"tokens, ${gateway.tokens * EMBED_USD_PER_TOKEN:.6f}")
     blob = base64.b64encode(gzip.compress(json.dumps(out).encode())).decode()
