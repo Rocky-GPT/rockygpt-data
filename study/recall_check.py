@@ -112,13 +112,17 @@ def openings(index: Any) -> dict[tuple[str, str], bytes]:
 
 
 def variant(index: Any, pvecs: Any, today: Any, opening: dict, leads: int, lead_per_page: int,
-            reserve: int, dedupe: bool, cap: int = 20, per_page: int = 2) -> list[tuple[str, str]]:
+            reserve: int, dedupe: bool, cap: int = 20, per_page: int = 2) -> Any:
     from rockygpt_brain.retrieval.section_search import _ranked
-    by_part = [list(_ranked(index, v, today, ())) for v in pvecs]
+    raw_parts = [_ranked(index, v, today, ()) for v in pvecs]
+    by_part = [list(r) for r in raw_parts]
     best: dict[tuple[str, str], float] = {}
-    for part in by_part:
-        for n, key in enumerate(part):
-            best.setdefault(key, -n)
+    at: dict[tuple[str, str], int] = {}
+    for r in raw_parts:
+        for key in r:
+            best[key] = max(best.get(key, -9.0), r[key])
+            if key in r.at:
+                at.setdefault(key, r.at[key])
     chosen: list[tuple[str, str]] = []
     seen_text: set[tuple[str, bytes]] = set()
     on_page: dict[str, int] = {}
@@ -156,7 +160,9 @@ def variant(index: Any, pvecs: Any, today: Any, opening: dict, leads: int, lead_
                 if take(q.pop(0), lead_per_page):
                     break
     interleave(cap)
-    return chosen
+    found = MeaningScores({k: best[k] for k in chosen})
+    found.at = {k: at[k] for k in chosen if k in at}
+    return found, chosen
 
 
 def main() -> None:
@@ -303,12 +309,11 @@ def main() -> None:
                                     ensure_ascii=False)))
         opening = OPENINGS
         for name, (leads, lpp, reserve, dedupe) in VARIANTS.items():
-            keys = variant(index, pvecs, today, opening, leads, lpp, reserve, dedupe)
+            vscores, keys = variant(index, pvecs, today, opening, leads, lpp, reserve, dedupe)
             found[name] = keys
             if row["id"] in DIAG:
-                scores = MeaningScores({k: 1.0 - n / 100 for n, k in enumerate(keys)})
                 g = one_call.gather(facts, index, pvecs, row["question"], index.dataset_version,
-                                    index.identity_hash, chosen=(scores, keys))[0]
+                                    index.identity_hash, chosen=(vscores, keys))[0]
                 gt = json.dumps(g, ensure_ascii=False)
                 pages = Counter(str(index.labels.get(k, ("?", ""))[0]) for k in keys)
                 print(f"VARIANT {name} {row['id']}: " + " ".join(
