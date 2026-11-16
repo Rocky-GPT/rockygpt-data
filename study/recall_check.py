@@ -28,6 +28,7 @@ from rockygpt_brain import one_call
 from rockygpt_brain.retrieval.entity_facts import _procedure_units, _procedure_words
 from rockygpt_brain.retrieval.meaning import MeaningScores
 from rockygpt_brain.retrieval.graph_store import GraphOnlyFacts, _loads
+from rockygpt_brain.retrieval.page_marks import page_marks, page_owners
 
 HERE = Path(__file__).parent
 RRF_K = 60
@@ -148,6 +149,42 @@ def main() -> None:
         return json.dumps(row, ensure_ascii=False, default=str)
 
     texts = {rid: text_of(held) for rid, held in records.items()}
+
+    # Each index page's marks, exactly as the index build sets them (page_marks, Brain step 1).
+    links: dict[str, list[str]] = {}
+    for unit in index.units:
+        held_links = links.setdefault(unit.record_id, [])
+        held_links += [e for e in unit.entities if e not in held_links]
+    marked_rows = {rid: records[rid]["row"] for rid in links if rid in records}
+    owners = page_owners({rid: links[rid] for rid in marked_rows},
+                         {rid: row.get("site_folder") for rid, row in marked_rows.items()})
+    marks = {rid: page_marks(row, owners.get(rid)) for rid, row in marked_rows.items()}
+    import datetime as _dt
+    today = _dt.date(2026, 11, 16)
+    old_pages = {rid for rid, m in marks.items() if not m.current(today)}
+    old_units = sum(1 for u in index.units if u.record_id in old_pages)
+    print(f"\nPAGE MARKS: {len(marks)} index pages, {len(old_pages)} not current "
+          f"({old_units} of {len(index.units)} units); dated {sum(1 for m in marks.values() if m.updated)}")
+    print("owner differs from the first linking node on "
+          f"{sum(1 for rid in marks if owners.get(rid) != links[rid][0])} pages; "
+          f"pages with 2+ linking nodes {sum(1 for rid in marks if len(links[rid]) > 1)}")
+    print("top owners:", Counter(owners.values()).most_common(12))
+    for rid in sorted(old_pages, key=lambda r: str(records[r]["url"])):
+        m = marks[rid]
+        print(f"  NOT CURRENT {records[rid]['url']} until={m.until} previous={m.previous} "
+              f"updated={m.updated} owner={m.owner}")
+    for rid in sorted(marks, key=lambda r: str(records[r]["url"])):
+        if len(links[rid]) > 1:
+            print(f"  OWNER {records[rid]['url']} -> {owners.get(rid)} (links {links[rid]})")
+
+    plain_scores = index.scores
+
+    def current_scores(query):  # type: ignore[no-untyped-def]
+        """The index's scores with not-current pages left out, as step 2's search will."""
+        raw = plain_scores(query)
+        kept = MeaningScores((k, v) for k, v in raw.items() if k[0] not in old_pages)
+        kept.at = {k: v for k, v in raw.at.items() if k[0] not in old_pages}
+        return kept
     rows = [*json.loads((HERE / "blind_rows.json").read_text()),
             *json.loads((HERE / "check_rows.json").read_text())]
     parts = [one_call.parts_of(r["question"]) for r in rows]
@@ -170,6 +207,12 @@ def main() -> None:
         pool_now = one_call.chosen_units(index, pvecs, one_call.POOL, per_part=one_call.POOL_PER_PART,
                                          per_page=one_call.POOL_PER_PAGE)[1]
         meaning_ranked = list(scores.keys())
+        index.scores = current_scores  # type: ignore[method-assign]
+        read_cur = one_call.with_picked(index, pvecs, MeaningScores({}), [], None)[1]
+        pool_cur = one_call.chosen_units(index, pvecs, one_call.POOL, per_part=one_call.POOL_PER_PART,
+                                         per_page=one_call.POOL_PER_PAGE)[1]
+        index.scores = plain_scores  # type: ignore[method-assign]
+        current_ranked = [k for k in meaning_ranked if k[0] not in old_pages]
         wanted = _procedure_words(row["question"])
         weight = {w: math.log(1 + total / doc_count[w]) for w in wanted if doc_count[w]}
         word_scored = []
@@ -205,6 +248,10 @@ def main() -> None:
             ranks["both_sections"] = first_rank(fused_ranked, unit_url, gold, True)
             ranks["read_now"] = first_rank(read_now, unit_url, gold)
             ranks["pool_now"] = first_rank(pool_now, unit_url, gold)
+            ranks["read_cur"] = first_rank(read_cur, unit_url, gold)
+            ranks["pool_cur"] = first_rank(pool_cur, unit_url, gold)
+            ranks["meaning_cur"] = first_rank(current_ranked, unit_url, gold)
+            ranks["meaning_sections_cur"] = first_rank(current_ranked, unit_url, gold, True)
             out_facts.append({"gold": sorted(gold)[:6], "gold_count": len(gold),
                               "collections": dict(where), "in_search": len(in_search),
                               "ranks": ranks})
@@ -235,9 +282,10 @@ def main() -> None:
         line = [f"{s}/{g}: {len(group)} questions"]
         line.append(f"gold not in graph {sum(1 for r in group if any(f['gold_count'] == 0 for f in r['facts']))}")
         line.append(f"gold not in page search {sum(1 for r in group if any(f['gold_count'] and not f['in_search'] for f in r['facts']))}")
-        for name in ("read_now", "pool_now"):
+        for name in ("read_now", "pool_now", "read_cur", "pool_cur"):
             line.append(f"{name} has it {sum(1 for r in group if all(f['ranks'][name][0] is not None for f in r['facts']))}")
-        for name in ("meaning", "words", "both", "meaning_sections", "both_sections"):
+        for name in ("meaning", "meaning_cur", "words", "both", "meaning_sections",
+                     "meaning_sections_cur", "both_sections"):
             hits = []
             for cut in CUTS:
                 hits.append(sum(1 for r in group if all(
