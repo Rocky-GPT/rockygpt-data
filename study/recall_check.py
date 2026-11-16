@@ -96,8 +96,7 @@ def first_rank(ranked: list[tuple[str, str]], unit_url: dict[tuple[str, str], st
 
 # Variants of step 2's search for the writer (11-16, Dan's "Okay, do it"): drop a section whose
 # text another page already gave, and let the leading pages give more than 2 sections.
-VARIANTS = {"merged": (0, 2, 0, False), "dedupe": (0, 2, 0, True),
-            "lead1x6": (1, 6, 4, True), "lead2x5": (2, 5, 6, True), "lead3x4": (3, 4, 6, True)}
+VARIANTS = {"merged": (0, 2, 0, False), "whole": (0, 2, 0, False)}
 
 
 def openings(index: Any) -> dict[tuple[str, str], bytes]:
@@ -310,6 +309,10 @@ def main() -> None:
         opening = OPENINGS
         for name, (leads, lpp, reserve, dedupe) in VARIANTS.items():
             vscores, keys = variant(index, pvecs, today, opening, leads, lpp, reserve, dedupe)
+            if name == "whole":
+                # Said from its start whenever the matched piece (about 1,000 chars) fits in the
+                # 3,000 chars a section is said in.
+                vscores.at = {k: v for k, v in vscores.at.items() if v + 1000 > 3000}
             found[name] = keys
             if row["id"] in DIAG:
                 g = one_call.gather(facts, index, pvecs, row["question"], index.dataset_version,
