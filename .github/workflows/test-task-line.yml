@@ -58,7 +58,7 @@ jobs:
       - name: Read the messages both ways and match the task lines to the cards
         env:
           BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          DRY: '1'
+          DRY: '0'
         run: python data/study/test_task_line.py
 
       - name: Keep the numbers for the jobs that print them
