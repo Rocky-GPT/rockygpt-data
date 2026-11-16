@@ -1,0 +1,1121 @@
+[
+{
+"id": "zl1-01",
+"question": "how do i find out why my financial aid hasnt shown up yet and who do i talk to",
+"facts": [
+{
+"urls": [
+"ramapo.edu/finaid/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "How can I check why my financial aid has not shown up yet, and who should I talk to?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How can I check why my financial aid hasn't shown up yet, and who should I talk to?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How can I find out why my financial aid hasn't shown up yet and who do I talk to?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "How can I find out why my financial aid hasn’t shown up yet and who should I talk to?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How can I find out why my financial aid hasn’t shown up yet, and who do I talk to?",
+"votes": 2,
+"majority": 0
+},
+{
+"text": "How do I check why my financial aid hasn't shown up yet and who do I talk to?",
+"votes": 4,
+"majority": 2
+},
+{
+"text": "How do I check why my financial aid hasn't shown up yet, and who do I talk to?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "How do I check why my financial aid hasn’t shown up yet and who do I talk to?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "How do I check why my financial aid hasn’t shown up yet, and who do I talk to?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How do I find out why my financial aid hasn't shown up yet and who do I talk to?",
+"votes": 3,
+"majority": 1
+},
+{
+"text": "How do I find out why my financial aid hasn't shown up yet, and who do I talk to?",
+"votes": 6,
+"majority": 2
+},
+{
+"text": "How do I find out why my financial aid hasn’t shown up yet and who do I talk to?",
+"votes": 2,
+"majority": 1
+},
+{
+"text": "How do I find out why my financial aid hasn’t shown up yet, and who do I talk to?",
+"votes": 4,
+"majority": 1
+},
+{
+"text": "How to check why my financial aid hasn't shown up yet and who to talk to.",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How to check why my financial aid hasn’t shown up yet and who to talk to",
+"votes": 1,
+"majority": 0
+}
+]
+},
+{
+"id": "zl1-02",
+"question": "How do I set up a payment plan for spring semester tuition? and is there a fee to enroll in it",
+"facts": [
+{
+"urls": [
+"ramapo.edu/student-accounts/options-policies/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "How do I set up a payment plan for spring semester tuition? and is there a fee to enroll in it",
+"votes": 30,
+"majority": 10
+}
+]
+},
+{
+"id": "zl1-03",
+"question": "refund",
+"facts": [
+{
+"urls": [
+"ramapo.edu/student-accounts/future-deadlines/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "How can I get a refund?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How do I get a refund?",
+"votes": 3,
+"majority": 1
+},
+{
+"text": "What is the refund policy?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Where can I get a refund?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "refund",
+"votes": 3,
+"majority": 1
+}
+]
+},
+{
+"id": "zl1-05",
+"question": "whats the deadline to file the FAFSA for next year and what does ramapo need from me besides that",
+"facts": [
+{
+"urls": [
+"ramapo.edu/finaid/new-students/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "What is the deadline to file the FAFSA for next year, and what does Ramapo need from me besides that?",
+"votes": 28,
+"majority": 10
+},
+{
+"text": "What’s the deadline to file the FAFSA for next year, and what does Ramapo need from me besides that?",
+"votes": 2,
+"majority": 0
+}
+]
+},
+{
+"id": "zl1-09",
+"question": "what is the policy on withdrawing from a class after the deadline and does it affect my aid/satisfactory academic progress",
+"facts": [
+{
+"urls": [
+"ramapo.edu/registrar/withdrawing-leave-of-absence/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "What is the policy on withdrawing from a class after the deadline, and does it affect my aid or satisfactory academic progress?",
+"votes": 26,
+"majority": 10
+},
+{
+"text": "what is the policy on withdrawing from a class after the deadline and does it affect my aid/satisfactory academic progress",
+"votes": 4,
+"majority": 0
+}
+]
+},
+{
+"id": "zl1-15",
+"question": "is my 1098-T available yet? need it for taxes and cant find where to get it. also how do i get a copy of last years",
+"facts": [
+{
+"urls": [
+"ramapo.edu/student-accounts/taxinfo/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "How can I check whether my 1098-T is available yet, where can I find it, and how can I get a copy of last year's?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How do I check whether my 1098-T is available and get a copy of last year's?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How do I check whether my 1098-T is available yet and get a copy of last year's?",
+"votes": 6,
+"majority": 0
+},
+{
+"text": "How do I check whether my 1098-T is available yet, where can I find it, and how do I get a copy of last year's?",
+"votes": 2,
+"majority": 0
+},
+{
+"text": "How do I check whether my 1098-T is available yet, where do I get it, and how do I get a copy of last year's?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "How do I check whether my 1098-T is available yet, where do I get it, and how do I get a copy of last year’s?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "How do I check whether my 1098-T is available yet, where to get it, and how to get a copy of last year's?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "How do I check whether my 1098-T is available, where to get it, and how to get a copy of last year's?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How to check whether my 1098-T is available yet and where to get it, and how to get a copy of last year's 1098-T?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How to check whether my 1098-T is available yet and where to get it, and how to get a copy of last year's?",
+"votes": 4,
+"majority": 1
+},
+{
+"text": "How to check whether my 1098-T is available yet, where to get it, and how to get a copy of last year's 1098-T?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How to check whether my 1098-T is available yet, where to get it, and how to get a copy of last year's?",
+"votes": 3,
+"majority": 3
+},
+{
+"text": "Is my 1098-T available yet, and where can I get it? Also, how do I get a copy of last year's?",
+"votes": 2,
+"majority": 0
+},
+{
+"text": "Is my 1098-T available yet? How do I get a copy of last year's?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Is my 1098-T available yet? I need it for taxes and can't find where to get it. Also, how do I get a copy of last year's?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Is my 1098-T available yet? Where can I get it, and how do I get a copy of last year's?",
+"votes": 2,
+"majority": 2
+},
+{
+"text": "Is my 1098-T available yet? Where do I get it, and how do I get a copy of last year's?",
+"votes": 1,
+"majority": 1
+}
+]
+},
+{
+"id": "zl2-01",
+"question": "im a transfer student and i commute, how do i get a parking permit and where do i park",
+"facts": [
+{
+"urls": [
+"ramapo.edu/publicsafety/parking-regulations/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "As a transfer student who commutes, how do I get a parking permit and where do I park?",
+"votes": 2,
+"majority": 1
+},
+{
+"text": "As a transfer student who commutes, how do I get a parking permit, and where do I park?",
+"votes": 2,
+"majority": 0
+},
+{
+"text": "How do I get a parking permit and where do I park?",
+"votes": 7,
+"majority": 3
+},
+{
+"text": "How do I get a parking permit, and where do I park?",
+"votes": 5,
+"majority": 0
+},
+{
+"text": "I'm a transfer student and I commute. How do I get a parking permit, and where do I park?",
+"votes": 2,
+"majority": 2
+},
+{
+"text": "I’m a transfer student and I commute. How do I get a parking permit, and where do I park?",
+"votes": 12,
+"majority": 4
+}
+]
+},
+{
+"id": "zl2-04",
+"question": "how do I find out if my credits from my old community college transferred and who do I talk to if some of them didnt count",
+"facts": [
+{
+"urls": [
+"ramapo.edu/undergraduate/transfer/faqs/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "How do I check whether my credits from my old community college transferred and who do I talk to if some of them didn't count?",
+"votes": 6,
+"majority": 3
+},
+{
+"text": "How do I check whether my credits from my old community college transferred and who do I talk to if some of them didn’t count?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How do I check whether my credits from my old community college transferred, and who do I talk to if some of them didn't count?",
+"votes": 13,
+"majority": 6
+},
+{
+"text": "How do I check whether my credits from my old community college transferred, and who do I talk to if some of them didn’t count?",
+"votes": 5,
+"majority": 0
+},
+{
+"text": "How do I find out if my credits from my old community college transferred and who do I talk to if some of them didn't count?",
+"votes": 4,
+"majority": 1
+},
+{
+"text": "How do I find out if my credits from my old community college transferred, and who do I talk to if some of them didn't count?",
+"votes": 1,
+"majority": 0
+}
+]
+},
+{
+"id": "zl2-08",
+"question": "I'm a commuter student and I have a 3 hour gap between classes. Is there somewhere on campus I can study or hang out, like a commuter lounge, and is there a way to store my stuff?",
+"facts": [
+{
+"urls": [
+"ramapo.edu/library/study-rooms-reservations-and-usage/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "As a commuter student, is there somewhere on campus I can study or hang out during a 3-hour gap between classes, like a commuter lounge, and is there a way to store my stuff?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "As a commuter student, is there somewhere on campus I can study or hang out, like a commuter lounge, and is there a way to store my stuff?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "I'm a commuter student and I have a 3 hour gap between classes. Is there somewhere on campus I can study or hang out, like a commuter lounge, and is there a way to store my stuff?",
+"votes": 2,
+"majority": 0
+},
+{
+"text": "Is there somewhere on campus I can study or hang out, like a commuter lounge, and is there a way to store my stuff?",
+"votes": 26,
+"majority": 10
+}
+]
+},
+{
+"id": "zl2-10",
+"question": "what is the deadline to drop a class without a W and how do i do it",
+"facts": [
+{
+"urls": [
+"ramapo.edu/student-accounts/deadlines/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "What is the deadline to drop a class without a W, and how do I do it myself?",
+"votes": 24,
+"majority": 9
+},
+{
+"text": "what is the deadline to drop a class without a W and how do i do it",
+"votes": 6,
+"majority": 1
+}
+]
+},
+{
+"id": "zl2-11",
+"question": "which office do i go to for financial aid questions and are they open in person or just online",
+"facts": [
+{
+"urls": [
+"ramapo.edu/finaid/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "Which office should I go to for financial aid questions, and are they open in person or just online?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "which office do i go to for financial aid questions and are they open in person or just online",
+"votes": 29,
+"majority": 10
+}
+]
+},
+{
+"id": "zl2-15",
+"question": "what will the parking permit cost next semester",
+"facts": [
+{
+"urls": [
+"ramapo.edu/student-accounts/costinfo/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "What is the parking permit cost next semester?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "what will the parking permit cost next semester",
+"votes": 29,
+"majority": 10
+}
+]
+},
+{
+"id": "zl3-01",
+"question": "my roommate keeps having his girlfriend sleep over like 5 nights a week. is there a guest policy and who do i talk to about it",
+"facts": [
+{
+"urls": [
+"ramapo.edu/reslife/gtcl/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "Is there a guest policy, and who do I talk to about it?",
+"votes": 25,
+"majority": 9
+},
+{
+"text": "Is there a guest policy, and who do I talk to about my roommate having his girlfriend sleep over about 5 nights a week?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Is there a guest policy, and who do I talk to about my roommate having his girlfriend sleep over about five nights a week?",
+"votes": 2,
+"majority": 1
+},
+{
+"text": "Is there a guest policy, and who do I talk to about my roommate's girlfriend sleeping over about 5 nights a week?",
+"votes": 2,
+"majority": 0
+}
+]
+},
+{
+"id": "zl3-07",
+"question": "how do i get a parking permit and how much does it cost",
+"facts": [
+{
+"urls": [
+"ramapo.edu/student-accounts/costinfo/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "how do i get a parking permit and how much does it cost",
+"votes": 30,
+"majority": 10
+}
+]
+},
+{
+"id": "zl3-10",
+"question": "is it too late to withdraw from a class this semester and what happens to my transcript if i do",
+"facts": [
+{
+"urls": [
+"ramapo.edu/student-accounts/deadlines/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "is it too late to withdraw from a class this semester and what happens to my transcript if i do",
+"votes": 30,
+"majority": 10
+}
+]
+},
+{
+"id": "zl3-11",
+"question": "something fell off the ceiling in my bathroom and theres a leak. who do I call at night, public safety or facilities?",
+"facts": [
+{
+"urls": [
+"ramapo.edu/facilities/service-guide/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "Something fell off the ceiling in my bathroom and there's a leak. Who do I call at night, Public Safety or Facilities?",
+"votes": 5,
+"majority": 2
+},
+{
+"text": "Something fell off the ceiling in my bathroom and there's a leak. Who do I call at night, public safety or facilities?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Something fell off the ceiling in my bathroom, and there's a leak. Who do I call at night, Public Safety or Facilities?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "Who do I call at night about something falling off the ceiling in my bathroom and a leak, Public Safety or Facilities?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "Who do I call at night, Public Safety or Facilities, about something falling off the ceiling in my bathroom and a leak?",
+"votes": 2,
+"majority": 0
+},
+{
+"text": "Who do I call at night, Public Safety or Facilities, about something that fell off the ceiling in my bathroom and a leak?",
+"votes": 14,
+"majority": 6
+},
+{
+"text": "Who do I call at night, Public Safety or Facilities, if something fell off the ceiling in my bathroom and there's a leak?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Who do I call at night, Public Safety or Facilities, if something fell off the ceiling in my bathroom and there’s a leak?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Who do I call at night, Public Safety or Facilities, when something fell off the ceiling in my bathroom and there's a leak?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Who do I call at night, Public Safety or Facilities?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Who do I call at night, public safety or facilities, about something falling off the ceiling in my bathroom and a leak?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Who do I call at night, public safety or facilities, about something that fell off the ceiling in my bathroom and a leak?",
+"votes": 1,
+"majority": 0
+}
+]
+},
+{
+"id": "zl3-12",
+"question": "whats my current balance and do i have any holds on my account",
+"facts": [
+{
+"urls": [
+"ramapo.edu/student-accounts/billpolicies/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "How can I check my current balance and whether I have any holds on my account?",
+"votes": 12,
+"majority": 3
+},
+{
+"text": "How do I check my current balance and whether I have any holds on my account?",
+"votes": 16,
+"majority": 6
+},
+{
+"text": "How to check my current balance and whether I have any holds on my account?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "How to check your current balance and whether you have any holds on your account?",
+"votes": 1,
+"majority": 0
+}
+]
+},
+{
+"id": "zl3-13",
+"question": "My RA wrote me up for a candle. what happens now? do i have to go to a hearing",
+"facts": [
+{
+"urls": [
+"ramapo.edu/student-conduct/recommended-judicial-sanctions/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "My RA wrote me up for a candle. what happens now? do i have to go to a hearing",
+"votes": 3,
+"majority": 1
+},
+{
+"text": "What happens now after my RA wrote me up for a candle? Do I have to go to a hearing?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "What happens now? Do I have to go to a hearing?",
+"votes": 26,
+"majority": 9
+}
+]
+},
+{
+"id": "zl4-12",
+"question": "Do I still owe anything to the college? I need to clear my balance before graduation",
+"facts": [
+{
+"urls": [
+"ramapo.edu/student-accounts/billpolicies/"
+]
+}
+],
+"group": "missed",
+"reads": [
+{
+"text": "How can I check whether I owe anything to the college?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How can I check whether I still owe anything to the college?",
+"votes": 12,
+"majority": 4
+},
+{
+"text": "How can I check whether I still owe anything to the college? I need to clear my balance before graduation.",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How do I check whether I owe anything to the college?",
+"votes": 2,
+"majority": 0
+},
+{
+"text": "How do I check whether I still owe anything to the college and clear my balance before graduation?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How do I check whether I still owe anything to the college?",
+"votes": 6,
+"majority": 3
+},
+{
+"text": "How do I check whether I still owe anything to the college? I need to clear my balance before graduation.",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How to check whether I still owe anything to the college and clear my balance before graduation?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How to check whether I still owe anything to the college?",
+"votes": 5,
+"majority": 3
+}
+]
+},
+{
+"id": "zl1-04",
+"question": "I got a credit balance on my student account after my aid posted, how do I get that money sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/student-accounts/deposits/",
+"https://www.ramapo.edu/student-accounts/direct-deposit-questions-answers/",
+"https://www.ramapo.edu/student-accounts/direct-deposit/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": [
+{
+"text": "How do I get the credit balance from my student account sent to me after my aid posted? Do I need to sign up for direct deposit or does it just get mailed?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How do I get the credit balance on my student account after my aid posted sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
+"votes": 3,
+"majority": 3
+},
+{
+"text": "How do I get the credit balance on my student account sent to me after my aid posted? Do I need to sign up for direct deposit or does it get mailed?",
+"votes": 2,
+"majority": 2
+},
+{
+"text": "How do I get the credit balance on my student account sent to me after my aid posted? Do I need to sign up for direct deposit or does it just get mailed?",
+"votes": 2,
+"majority": 0
+},
+{
+"text": "How do I get the credit balance on my student account sent to me after my aid posted? Do I need to sign up for direct deposit, or does it get mailed?",
+"votes": 3,
+"majority": 0
+},
+{
+"text": "How do I get the credit balance on my student account sent to me after my aid posted? Do I need to sign up for direct deposit, or does it just get mailed?",
+"votes": 2,
+"majority": 1
+},
+{
+"text": "How do I get the credit balance on my student account sent to me after my aid posts? Do I need to sign up for direct deposit, or does it get mailed?",
+"votes": 3,
+"majority": 0
+},
+{
+"text": "How do I get the credit balance on my student account sent to me after my aid posts? Do I need to sign up for direct deposit, or does it just get mailed?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How do I get the money from a credit balance on my student account after my aid posted sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "How do I get the money from a credit balance on my student account after my aid posted sent to me? Do I need to sign up for direct deposit, or does it just get mailed?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "How do I get the money from a credit balance on my student account after my aid posted? Do I need to sign up for direct deposit or does it just get mailed?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "How do I get the money from a credit balance on my student account after my aid posted? Do I need to sign up for direct deposit, or does it just get mailed?",
+"votes": 5,
+"majority": 0
+},
+{
+"text": "How do I get the money from a credit balance on my student account sent to me after my aid posted? Do I need to sign up for direct deposit, or does it just get mailed?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "I got a credit balance on my student account after my aid posted, how do I get that money sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
+"votes": 4,
+"majority": 1
+}
+]
+},
+{
+"id": "zl1-08",
+"question": "I need to submit a verification form for fafsa, they said i got selected. where do i upload it and how long does it take",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/finaid/submit-docs/",
+"https://www.ramapo.edu/finaid/financial-aid-forms/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": [
+{
+"text": "Where do I upload a FAFSA verification form, and how long does it take?",
+"votes": 2,
+"majority": 1
+},
+{
+"text": "Where do I upload a verification form for FAFSA, and how long does it take?",
+"votes": 2,
+"majority": 1
+},
+{
+"text": "Where do I upload my FAFSA verification form, and how long does it take?",
+"votes": 16,
+"majority": 5
+},
+{
+"text": "Where do I upload the FAFSA verification form, and how long does it take?",
+"votes": 7,
+"majority": 2
+},
+{
+"text": "Where do I upload the verification form for FAFSA, and how long does it take?",
+"votes": 3,
+"majority": 1
+}
+]
+},
+{
+"id": "zl1-13",
+"question": "how do i add my parent as an authorized user so they can pay my bill",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/student-accounts/users/",
+"https://www.ramapo.edu/student-accounts/billpolicies/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": [
+{
+"text": "how do i add my parent as an authorized user so they can pay my bill",
+"votes": 30,
+"majority": 10
+}
+]
+},
+{
+"id": "zl2-05",
+"question": "I lost my ID card, how do I get a replacement",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/publicsafety/id-cards/",
+"https://www.ramapo.edu/publicsafety/lost-found/",
+"https://www.ramapo.edu/reslife/gtcl/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": [
+{
+"text": "How do I get a replacement ID card?",
+"votes": 28,
+"majority": 9
+},
+{
+"text": "How do I get a replacement for my lost ID card?",
+"votes": 2,
+"majority": 1
+}
+]
+},
+{
+"id": "zl2-09",
+"question": "how do i set up my campus email and wifi login",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/registrar/online-course-information/",
+"https://www.ramapo.edu/graduate/admitted-students/",
+"https://www.ramapo.edu/adult-students/admitted-students/",
+"https://www.ramapo.edu/resnet/secure-wireless/",
+"https://www.ramapo.edu/resnet/register/",
+"https://www.ramapo.edu/resnet/faq/",
+"https://www.ramapo.edu/student-affairs/how-to-access-your-ramapo-e-mail-as-of-february-28th/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": [
+{
+"text": "How do I set up my campus email and Wi-Fi login?",
+"votes": 30,
+"majority": 10
+}
+]
+},
+{
+"id": "zl3-02",
+"question": "how do i switch roommates? we're not getting along at all",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/reslife/gtcl/",
+"https://www.ramapo.edu/reslife/new-student-guide/",
+"https://www.ramapo.edu/reslife/rcp/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": [
+{
+"text": "How do I switch roommates?",
+"votes": 10,
+"majority": 3
+},
+{
+"text": "how do i switch roommates? we're not getting along at all",
+"votes": 20,
+"majority": 7
+}
+]
+},
+{
+"id": "zl3-05",
+"question": "Missed 3 classes last week because I was in the hospital. How do I get my professors to excuse the absences, is there an office that sends a note or something?",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/adult-students/faqs/",
+"https://www.ramapo.edu/oss/disabilities-and-teaching-strategies-accommodations/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": [
+{
+"text": "How do I get my professors to excuse the absences, and is there an office that sends a note or something?",
+"votes": 15,
+"majority": 6
+},
+{
+"text": "How do I get my professors to excuse the absences, is there an office that sends a note or something?",
+"votes": 1,
+"majority": 1
+},
+{
+"text": "How do I get my professors to excuse the absences? Is there an office that sends a note or something?",
+"votes": 7,
+"majority": 1
+},
+{
+"text": "I missed 3 classes last week because I was in the hospital. How do I get my professors to excuse the absences, and is there an office that sends a note or something?",
+"votes": 5,
+"majority": 2
+},
+{
+"text": "I missed 3 classes last week because I was in the hospital. How do I get my professors to excuse the absences? Is there an office that sends a note or something?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "Missed 3 classes last week because I was in the hospital. How do I get my professors to excuse the absences, is there an office that sends a note or something?",
+"votes": 1,
+"majority": 0
+}
+]
+},
+{
+"id": "zl3-14",
+"question": "is the health center open right now?",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": []
+},
+{
+"id": "zl4-06",
+"question": "do I get to keep my ramapo email after I graduate",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/alumni/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": [
+{
+"text": "What is the requirement for keeping your Ramapo email after you graduate, and who can help students decide?",
+"votes": 1,
+"majority": 0
+},
+{
+"text": "do I get to keep my ramapo email after I graduate",
+"votes": 29,
+"majority": 10
+}
+]
+},
+{
+"id": "zl4-10",
+"question": "can alumni still use career services and the library after graduating",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/alumni/benefits/",
+"https://www.ramapo.edu/careercenter/rcnj-first-destination-survey/",
+"https://www.ramapo.edu/adult-students/faqs/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": [
+{
+"text": "can alumni still use career services and the library after graduating",
+"votes": 30,
+"majority": 10
+}
+]
+},
+{
+"id": "zl1-06",
+"question": "how do i get a work study job on campus? i have it in my aid package but idk where to apply",
+"facts": [
+{
+"urls": [
+"https://www.ramapo.edu/on-campus-employment/policies-and-procedures/",
+"https://www.ramapo.edu/on-campus-employment/faqs/",
+"https://www.ramapo.edu/on-campus-employment/"
+],
+"any": true
+}
+],
+"group": "good",
+"reads": [
+{
+"text": "How do I get a work-study job on campus? I have it in my aid package, but I don't know where to apply.",
+"votes": 28,
+"majority": 10
+},
+{
+"text": "How do I get a work-study job on campus? I have it in my aid package, but I don't know where to apply?",
+"votes": 2,
+"majority": 0
+}
+]
+}
+]

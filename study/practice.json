@@ -1,0 +1,542 @@
+[
+{
+"id": "A01",
+"question": "lost my id card somewhere in the rec center yesterday, how do i get a new one and does it cost money",
+"group": "how-to",
+"wants": "replace a lost student ID card"
+},
+{
+"id": "A02",
+"question": "got a parking ticket today and i was literally only parked there for like 10 minutes to drop off a paper. can i fight it??",
+"group": "how-to",
+"wants": "appeal a campus parking ticket"
+},
+{
+"id": "A03",
+"question": "Hello, I need a letter that says I am a full time student for my visa renewal at the embassy. Where can I request this?",
+"group": "how-to",
+"wants": "get an enrollment verification letter"
+},
+{
+"id": "A04",
+"question": "do i have to apply to graduate or does it just happen automatically",
+"group": "how-to",
+"wants": "apply for graduation"
+},
+{
+"id": "A05",
+"question": "is it too late to drop my stats class? its week 9 and im failing and i dont want an F on my transcript",
+"group": "how-to",
+"wants": "withdraw from a class late"
+},
+{
+"id": "A06",
+"question": "how do i switch my major from bio to nursing",
+"group": "how-to",
+"wants": "change my major"
+},
+{
+"id": "A07",
+"question": "my roommate and i are not working out at all. like at all. can i switch rooms in the middle of the semester",
+"group": "how-to",
+"wants": "switch rooms mid-semester"
+},
+{
+"id": "A08",
+"question": "transferred in from bergen cc and half my credits arent showing up on my degree audit, who do i talk to",
+"group": "how-to",
+"wants": "fix missing transfer credits"
+},
+{
+"id": "A09",
+"question": "How do I get extra time on exams? I had a 504 plan in high school for ADHD",
+"group": "how-to",
+"wants": "set up exam accommodations"
+},
+{
+"id": "A10",
+"question": "my laptop just died completely right before finals. does the library lend out laptops or anything",
+"group": "how-to",
+"wants": "borrow a laptop"
+},
+{
+"id": "A11",
+"question": "cant log into my ramapo email it keeps saying wrong password even tho i just changed it",
+"group": "how-to",
+"wants": "reset my college account password"
+},
+{
+"id": "A12",
+"question": "how do i sign up for intramural basketball",
+"group": "how-to",
+"wants": "join an intramural team"
+},
+{
+"id": "A13",
+"question": "why is there a $150 late fee on my bill?? i paid when i got the email. can they take it off",
+"group": "how-to",
+"wants": "get a late fee removed"
+},
+{
+"id": "A14",
+"question": "Can I pay tuition in monthly payments instead of all at once?",
+"group": "how-to",
+"wants": "set up a tuition payment plan"
+},
+{
+"id": "A15",
+"question": "financial aid said i was selected for verification what does that even mean and what do i have to send them",
+"group": "how-to",
+"wants": "complete financial aid verification"
+},
+{
+"id": "A16",
+"question": "need an official transcript sent to an employer asap, how",
+"group": "how-to",
+"wants": "send an official transcript"
+},
+{
+"id": "A17",
+"question": "i want to study abroad in spain next fall where do i even start",
+"group": "how-to",
+"wants": "apply to study abroad"
+},
+{
+"id": "A18",
+"question": "how do i get my ps5 on the dorm wifi it doesnt have a browser to log in",
+"group": "how-to",
+"wants": "connect a game console to wifi"
+},
+{
+"id": "A19",
+"question": "can i lower my meal plan? i literally never use all my swipes, its a waste of money",
+"group": "how-to",
+"wants": "change to a smaller meal plan"
+},
+{
+"id": "A20",
+"question": "Hi, I'm going to be moving back home for spring semester because of money stuff. How do I cancel my housing and will I get charged for it?",
+"group": "how-to",
+"wants": "cancel spring housing"
+},
+{
+"id": "A21",
+"question": "where do i get a parking pass, im a commuter starting in january",
+"group": "how-to",
+"wants": "buy a commuter parking permit"
+},
+{
+"id": "A22",
+"question": "how do i make an appointment with a counselor. kinda going through it rn",
+"group": "how-to",
+"wants": "book a counseling appointment"
+},
+{
+"id": "A23",
+"question": "Is there a way to see a doctor on campus? I've had a fever for 3 days",
+"group": "how-to",
+"wants": "see a nurse or doctor on campus"
+},
+{
+"id": "A24",
+"question": "i missed 2 classes this week bc i was sick, how do i get my absences excused",
+"group": "how-to",
+"wants": "get absences excused for illness"
+},
+{
+"id": "A25",
+"question": "if i retake a class i got a D in does the new grade replace the old one? and how do i do that",
+"group": "how-to",
+"wants": "retake a course to replace the grade"
+},
+{
+"id": "A26",
+"question": "I think my professor graded my final wrong and it dropped my final grade from a B to a C. how do I appeal it?",
+"group": "how-to",
+"wants": "appeal a final grade"
+},
+{
+"id": "A27",
+"question": "how do i get a job on campus? it says i have work study",
+"group": "how-to",
+"wants": "find an on-campus work-study job"
+},
+{
+"id": "A28",
+"question": "I graduate in May and I'm on F-1. How do I apply for OPT and when should I start?",
+"group": "how-to",
+"wants": "apply for OPT work permission"
+},
+{
+"id": "A29",
+"question": "got an internship offer for the summer!! im international tho, what do i need to do so im allowed to work it",
+"group": "how-to",
+"wants": "get authorization for an internship"
+},
+{
+"id": "A30",
+"question": "can you reserve a group study room in the library",
+"group": "how-to",
+"wants": "reserve a library study room"
+},
+{
+"id": "A31",
+"question": "our club wants to book a room in the student center for an event in march, how do we do that",
+"group": "how-to",
+"wants": "book a room for a club event"
+},
+{
+"id": "A32",
+"question": "me and a few friends want to start a new club, whats the process",
+"group": "how-to",
+"wants": "start a new student club"
+},
+{
+"id": "A33",
+"question": "can someone look over my resume before the career fair next week",
+"group": "how-to",
+"wants": "get my resume reviewed"
+},
+{
+"id": "A34",
+"question": "left my airpods in a classroom yesterday, is there a lost and found somewhere",
+"group": "how-to",
+"wants": "find a lost item"
+},
+{
+"id": "A35",
+"question": "my car wont start and im stuck in the parking lot, does public safety do jump starts",
+"group": "how-to",
+"wants": "get a car jump start"
+},
+{
+"id": "A36",
+"question": "can someone walk me to my dorm at night? its really dark on the path and i feel weird walking alone",
+"group": "how-to",
+"wants": "get a safety escort at night"
+},
+{
+"id": "A37",
+"question": "how do i report someone who keeps harassing me in my building. i dont want it to get worse",
+"group": "how-to",
+"wants": "report harassment by another student"
+},
+{
+"id": "A38",
+"question": "I need to take a semester off for family reasons. What do I need to do so I can come back later?",
+"group": "how-to",
+"wants": "take a leave of absence"
+},
+{
+"id": "A39",
+"question": "i left ramapo 2 years ago and i want to come back and finish, do i have to reapply from scratch",
+"group": "how-to",
+"wants": "return after time away"
+},
+{
+"id": "A40",
+"question": "can I take a summer class at my local community college and have it count here",
+"group": "how-to",
+"wants": "take a summer class elsewhere"
+},
+{
+"id": "A41",
+"question": "how do i take 21 credits next semester, it wont let me register for more than 18",
+"group": "how-to",
+"wants": "register for extra credits"
+},
+{
+"id": "A42",
+"question": "the class i need to graduate is full. is there a way to get a permission to get in?",
+"group": "how-to",
+"wants": "get into a full class"
+},
+{
+"id": "A43",
+"question": "it says i have a hold and i cant register for classes. what do i do",
+"group": "how-to",
+"wants": "clear a registration hold"
+},
+{
+"id": "A44",
+"question": "theres a hold on my account for immunization records, where do i upload my shots",
+"group": "how-to",
+"wants": "submit immunization records"
+},
+{
+"id": "A45",
+"question": "where can i get tutoring for calc 1, i have an exam in 2 weeks",
+"group": "how-to",
+"wants": "get tutoring for a course"
+},
+{
+"id": "A46",
+"question": "i did bad on the math placement test bc i didnt study. can i retake it? how do i schedule",
+"group": "how-to",
+"wants": "retake the math placement test"
+},
+{
+"id": "A47",
+"question": "how do i book my midterm at the testing center with my accommodations? professor said to set it up myself",
+"group": "how-to",
+"wants": "schedule an accommodated exam"
+},
+{
+"id": "A48",
+"question": "Im in EOF and i need help buying my books this semester, is there money for that?",
+"group": "how-to",
+"wants": "get help paying for books"
+},
+{
+"id": "A49",
+"question": "I have a credit on my account after my loan came in. How do I get that money refunded to me?",
+"group": "how-to",
+"wants": "get a refund of extra aid"
+},
+{
+"id": "A50",
+"question": "how can i give my mom access so she can pay my bill online",
+"group": "how-to",
+"wants": "let a parent pay my bill"
+},
+{
+"id": "A51",
+"question": "how do i change the name that shows up on canvas and my email to my preferred name",
+"group": "how-to",
+"wants": "change my preferred name"
+},
+{
+"id": "A52",
+"question": "i want to add a minor in psych, how",
+"group": "how-to",
+"wants": "declare a minor"
+},
+{
+"id": "A53",
+"question": "can commuters use the gym at the bradley center? do i need to sign up or something",
+"group": "how-to",
+"wants": "get access to the gym"
+},
+{
+"id": "A54",
+"question": "is there a way to walk on to the mens soccer team or is it too late",
+"group": "how-to",
+"wants": "try out for a varsity team"
+},
+{
+"id": "A55",
+"question": "my car insurance wants proof that im a full time student for the good student discount. where do i get that",
+"group": "how-to",
+"wants": "get proof of full-time enrollment"
+},
+{
+"id": "A56",
+"question": "the heat in my room hasnt worked for 2 days and its freezing. who do i tell",
+"group": "how-to",
+"wants": "report a dorm maintenance problem"
+},
+{
+"id": "A57",
+"question": "can i stay in my dorm over winter break? i cant go home, flights are too expensive",
+"group": "how-to",
+"wants": "stay on campus over winter break"
+},
+{
+"id": "A58",
+"question": "I'm applying to the MBA program. How do my recommenders submit their letters?",
+"group": "how-to",
+"wants": "submit grad application recommendation letters"
+},
+{
+"id": "A59",
+"question": "how do i switch my academic advisor? mine never answers emails",
+"group": "how-to",
+"wants": "change my academic advisor"
+},
+{
+"id": "A60",
+"question": "how do i put money on my account to print? it says my print balance is 0 and my essay is due in an hour",
+"group": "how-to",
+"wants": "add printing money"
+},
+{
+"id": "B01",
+"question": "what time does the library close tonight",
+"group": "other",
+"wants": "fact"
+},
+{
+"id": "B02",
+"question": "is the dining hall open on thanksgiving",
+"group": "other",
+"wants": "fact"
+},
+{
+"id": "B03",
+"question": "how much is tuition for out of state students",
+"group": "other",
+"wants": "fact"
+},
+{
+"id": "B04",
+"question": "where is the registrar office",
+"group": "other",
+"wants": "fact"
+},
+{
+"id": "B05",
+"question": "when is the last day of classes this semester",
+"group": "other",
+"wants": "fact"
+},
+{
+"id": "B06",
+"question": "whats the phone number for campus police",
+"group": "other",
+"wants": "fact"
+},
+{
+"id": "B07",
+"question": "does the shuttle go to the mahwah train station?",
+"group": "other",
+"wants": "fact"
+},
+{
+"id": "B08",
+"question": "when does spring break start",
+"group": "other",
+"wants": "fact"
+},
+{
+"id": "B09",
+"question": "did my fafsa go through yet",
+"group": "other",
+"wants": "own record"
+},
+{
+"id": "B10",
+"question": "whats my gpa right now",
+"group": "other",
+"wants": "own record"
+},
+{
+"id": "B11",
+"question": "how much do i still owe for this semester",
+"group": "other",
+"wants": "own record"
+},
+{
+"id": "B12",
+"question": "did my bio professor submit my final grade yet",
+"group": "other",
+"wants": "own record"
+},
+{
+"id": "B13",
+"question": "am i registered for 12 credits or 11? i cant remember",
+"group": "other",
+"wants": "own record"
+},
+{
+"id": "B14",
+"question": "is the psych major at ramapo actually good",
+"group": "other",
+"wants": "opinion"
+},
+{
+"id": "B15",
+"question": "which dorm is the best for freshmen",
+"group": "other",
+"wants": "opinion"
+},
+{
+"id": "B16",
+"question": "whats the easiest gen ed to take lol",
+"group": "other",
+"wants": "opinion"
+},
+{
+"id": "B17",
+"question": "should i live on campus or commute my first year? im 30 min away",
+"group": "other",
+"wants": "opinion"
+},
+{
+"id": "B18",
+"question": "anything fun happening on campus this weekend",
+"group": "other",
+"wants": "events-people-courses"
+},
+{
+"id": "B19",
+"question": "is there a club for people who like anime",
+"group": "other",
+"wants": "events-people-courses"
+},
+{
+"id": "B20",
+"question": "who teaches organic chemistry in the spring",
+"group": "other",
+"wants": "events-people-courses"
+},
+{
+"id": "B21",
+"question": "are there any creative writing classes at night",
+"group": "other",
+"wants": "events-people-courses"
+},
+{
+"id": "B22",
+"question": "who is the dean of the business school",
+"group": "other",
+"wants": "events-people-courses"
+},
+{
+"id": "B23",
+"question": "when is the next home basketball game",
+"group": "other",
+"wants": "events-people-courses"
+},
+{
+"id": "B24",
+"question": "does ramapo have frats and sororities",
+"group": "other",
+"wants": "events-people-courses"
+},
+{
+"id": "B25",
+"question": "how many credits is the computer science major",
+"group": "other",
+"wants": "events-people-courses"
+},
+{
+"id": "B26",
+"question": "hi",
+"group": "other",
+"wants": "small talk"
+},
+{
+"id": "B27",
+"question": "ok thanks that helped a lot",
+"group": "other",
+"wants": "small talk"
+},
+{
+"id": "B28",
+"question": "can you write my essay on the great gatsby for me",
+"group": "other",
+"wants": "small talk"
+},
+{
+"id": "B29",
+"question": "whats the weather gonna be tomorrow",
+"group": "other",
+"wants": "small talk"
+},
+{
+"id": "B30",
+"question": "wait are you a real person or a bot",
+"group": "other",
+"wants": "small talk"
+}
+]
