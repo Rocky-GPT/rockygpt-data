@@ -39,10 +39,8 @@ BONUSES = (0.0,)
 DIAG = {
     "zl1-15": [r"1098-T Tax Statements", r"Bill (&|and) Payment Suite"],
     "zl1-01": [r"Financial Aid Dashboard"],
-    "zl3-01": [r"(three|3) nights in any (seven|7)", r"(three|3) nights"],
+    "zl3-01": [r"three \(3\) nights \(consecutively or not\) within a seven"],
     "zl3-12": [r"[Hh]old", r"Bill (&|and) Payment Suite"],
-    "zl2-05": [r"[Ll]ost"],
-    "zl2-09": [r"[Rr]egist"],
 }
 
 
@@ -94,6 +92,71 @@ def first_rank(ranked: list[tuple[str, str]], unit_url: dict[tuple[str, str], st
         if url in gold:
             return n, len(pages)
     return None, None
+
+
+# Variants of step 2's search for the writer (11-16, Dan's "Okay, do it"): drop a section whose
+# text another page already gave, and let the leading pages give more than 2 sections.
+VARIANTS = {"merged": (0, 2, 0, False), "dedupe": (0, 2, 0, True),
+            "lead1x6": (1, 6, 4, True), "lead2x5": (2, 5, 6, True), "lead3x4": (3, 4, 6, True)}
+
+
+def openings(index: Any) -> dict[tuple[str, str], bytes]:
+    """Each unit's opening vector (its own text's first piece), by key: identical text, identical bytes."""
+    size = index.dimensions
+    out: dict[tuple[str, str], bytes] = {}
+    for k, unit in enumerate(index.owner):
+        if index.offsets[k] == 0:
+            u = index.units[unit]
+            out.setdefault((u.record_id, u.index), bytes(index._vectors[k * size:(k + 1) * size]))
+    return out
+
+
+def variant(index: Any, pvecs: Any, today: Any, opening: dict, leads: int, lead_per_page: int,
+            reserve: int, dedupe: bool, cap: int = 20, per_page: int = 2) -> list[tuple[str, str]]:
+    from rockygpt_brain.retrieval.section_search import _ranked
+    by_part = [list(_ranked(index, v, today, ())) for v in pvecs]
+    best: dict[tuple[str, str], float] = {}
+    for part in by_part:
+        for n, key in enumerate(part):
+            best.setdefault(key, -n)
+    chosen: list[tuple[str, str]] = []
+    seen_text: set[tuple[str, bytes]] = set()
+    on_page: dict[str, int] = {}
+
+    def take(key: tuple[str, str], limit: int) -> bool:
+        if key in chosen or on_page.get(key[0], 0) >= limit:
+            return False
+        sig = (index.labels.get(key, ("", ""))[1].casefold(), opening.get(key, b""))
+        if dedupe and opening.get(key) and sig in seen_text:
+            return False
+        seen_text.add(sig)
+        on_page[key[0]] = on_page.get(key[0], 0) + 1
+        chosen.append(key)
+        return True
+
+    def interleave(until: int) -> None:
+        for n in range(max((len(r) for r in by_part), default=0)):
+            for keys in by_part:
+                if len(chosen) >= until:
+                    return
+                if n < len(keys):
+                    take(keys[n], per_page)
+
+    interleave(cap - reserve)
+    lead_pages: list[str] = []
+    for key in chosen:
+        if key[0] not in lead_pages:
+            lead_pages.append(key[0])
+    lead_pages = lead_pages[:leads]
+    whole = by_part[0]
+    queues = [[k for k in whole if k[0] == page] for page in lead_pages]
+    while len(chosen) < cap and any(queues):
+        for q in queues:
+            while q and len(chosen) < cap:
+                if take(q.pop(0), lead_per_page):
+                    break
+    interleave(cap)
+    return chosen
 
 
 def main() -> None:
@@ -213,6 +276,7 @@ def main() -> None:
     print(f"embedded {len(rows)} questions in {len(flat)} parts, {tokens} tokens "
           f"(${tokens * 0.13 / 1_000_000:.5f} at text-embedding-3-large prices)")
 
+    OPENINGS = openings(index)
     results = []
     sizes: list[int] = []
     for row, vector, pvecs in zip(rows, vectors, part_vectors, strict=True):
@@ -237,6 +301,19 @@ def main() -> None:
                                 index.identity_hash, chosen=sections(index, pvecs, today))[0]
         sizes.append(len(json.dumps(one_call.messages(row["question"], None, given, today),
                                     ensure_ascii=False)))
+        opening = OPENINGS
+        for name, (leads, lpp, reserve, dedupe) in VARIANTS.items():
+            keys = variant(index, pvecs, today, opening, leads, lpp, reserve, dedupe)
+            found[name] = keys
+            if row["id"] in DIAG:
+                scores = MeaningScores({k: 1.0 - n / 100 for n, k in enumerate(keys)})
+                g = one_call.gather(facts, index, pvecs, row["question"], index.dataset_version,
+                                    index.identity_hash, chosen=(scores, keys))[0]
+                gt = json.dumps(g, ensure_ascii=False)
+                pages = Counter(str(index.labels.get(k, ("?", ""))[0]) for k in keys)
+                print(f"VARIANT {name} {row['id']}: " + " ".join(
+                    f"/{pat}/={'GIVEN' if re.search(pat, gt) else 'no'}" for pat in DIAG[row["id"]])
+                      + f" | chars {len(gt)} | top pages {pages.most_common(3)}")
         if row["id"] in DIAG:
             given_text = json.dumps(given, ensure_ascii=False)
             print(f"\nDIAG {row['id']}: {row['question']}")
@@ -292,6 +369,8 @@ def main() -> None:
             ranks["meaning_cur"] = first_rank(current_ranked, unit_url, gold)
             for b in BONUSES:
                 ranks[f"sections_{b}"] = first_rank(found[b], unit_url, gold)
+            for name in VARIANTS:
+                ranks[f"v_{name}"] = first_rank(found[name], unit_url, gold)
             ranks["meaning_sections_cur"] = first_rank(current_ranked, unit_url, gold, True)
             out_facts.append({"gold": sorted(gold)[:6], "gold_count": len(gold),
                               "collections": dict(where), "in_search": len(in_search),
@@ -328,7 +407,7 @@ def main() -> None:
         line.append(f"gold not in graph {sum(1 for r in group if any(f['gold_count'] == 0 for f in r['facts']))}")
         line.append(f"gold not in page search {sum(1 for r in group if any(f['gold_count'] and not f['in_search'] for f in r['facts']))}")
         for name in ("read_now", "pool_now", "read_cur", "pool_cur",
-                     *[f"sections_{b}" for b in BONUSES]):
+                     *[f"sections_{b}" for b in BONUSES], *[f"v_{n}" for n in VARIANTS]):
             line.append(f"{name} has it {sum(1 for r in group if all(f['ranks'][name][0] is not None for f in r['facts']))}")
         for name in ("meaning", "meaning_cur", "words", "both", "meaning_sections",
                      "meaning_sections_cur", "both_sections"):
