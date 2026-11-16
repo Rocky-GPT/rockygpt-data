@@ -17,6 +17,7 @@ import {
   pagesCollectedElsewhere,
   pastEventPages,
   RAMAPO_SITE_COLLECTORS,
+  sitemapEditTimes,
   sitemapLocs,
   sitemapPostType,
   sitemapXml,
@@ -43,6 +44,21 @@ test('a WordPress sitemap index yields its post-type sitemaps, not taxonomies or
   ]);
   assert.deepEqual(sitemapLocs('<urlset><url><loc> https://www.ramapo.edu/finaid/?a=1&amp;b=2 </loc></url></urlset>'),
     ['https://www.ramapo.edu/finaid/?a=1&b=2']);
+});
+
+test("a WordPress sitemap's edit times are read by page, and a page it lists twice keeps the later", () => {
+  const xml = '<urlset>'
+    + '<url><loc>https://www.ramapo.edu/registrar/</loc><lastmod>2026-09-30T11:40:40-04:00</lastmod></url>'
+    + '<url><loc>http://www.ramapo.edu/registrar/forms/#top</loc><lastmod>2014-11-24T16:08:30-05:00</lastmod></url>'
+    + '<url><loc>https://www.ramapo.edu/registrar/forms</loc><lastmod>2015-01-02T00:00:00-05:00</lastmod></url>'
+    + '<url><loc>https://www.ramapo.edu/registrar/no-date/</loc></url>'
+    + '<url><loc>https://www.ramapo.edu/registrar/bad-date/</loc><lastmod>soon</lastmod></url>'
+    + '</urlset>';
+  const times = sitemapEditTimes(xml);
+  assert.equal(times.get(pageKey('https://www.ramapo.edu/registrar/')!), '2026-09-30T11:40:40-04:00');
+  assert.equal(times.get(pageKey('https://www.ramapo.edu/registrar/forms/')!), '2015-01-02T00:00:00-05:00');
+  assert.equal(times.has(pageKey('https://www.ramapo.edu/registrar/no-date/')!), false);
+  assert.equal(times.has(pageKey('https://www.ramapo.edu/registrar/bad-date/')!), false);
 });
 
 test('only pages in a listed folder are collected, once each, less what other collectors keep', () => {
