@@ -34,7 +34,7 @@ from rockygpt_brain.retrieval.section_search import sections
 HERE = Path(__file__).parent
 RRF_K = 60
 CUTS = (10, 20, 30)
-BONUSES = (0.0, 0.02, 0.04)
+BONUSES = (0.0,)
 
 
 def norm(url: Any) -> str | None:
@@ -205,6 +205,7 @@ def main() -> None:
           f"(${tokens * 0.13 / 1_000_000:.5f} at text-embedding-3-large prices)")
 
     results = []
+    sizes: list[int] = []
     for row, vector, pvecs in zip(rows, vectors, part_vectors, strict=True):
         scores = index.scores(vector)
         # What today's Brain reads by meaning: the two-stage read (each part's best, at most 2 a
@@ -221,7 +222,12 @@ def main() -> None:
         current_ranked = [k for k in meaning_ranked if k[0] not in old_pages]
         # Step 2's search, as merged (the index holds no marks yet, so they are lent to it).
         index.pages = marks_by_rid
-        found = {b: sections(index, pvecs, today, owner_bonus=b) for b in BONUSES}
+        found = {0.0: sections(index, pvecs, today)[1]}
+        # What the "sections" writer would be given: the one call's own messages over them.
+        given = one_call.gather(facts, index, pvecs, row["question"], index.dataset_version,
+                                index.identity_hash, chosen=sections(index, pvecs, today))[0]
+        sizes.append(len(json.dumps(one_call.messages(row["question"], None, given, today),
+                                    ensure_ascii=False)))
         index.pages = {}
         wanted = _procedure_words(row["question"])
         weight = {w: math.log(1 + total / doc_count[w]) for w in wanted if doc_count[w]}
@@ -286,6 +292,10 @@ def main() -> None:
             print(f"   rank unit/page: {rk}")
         print(f"   top pages (both): {r['top_pages_both']}")
 
+    sizes.sort()
+    print(f"\nWRITER INPUT chars over {len(sizes)} questions: min {sizes[0]}, median "
+          f"{sizes[len(sizes) // 2]}, 90th {sizes[int(len(sizes) * 0.9)]}, max {sizes[-1]} "
+          f"(about 4 chars a token)")
     print("\nSUMMARY (a question counts when every fact's page is within the cut; unit rank)")
     for (s, g) in sorted({(r["set"], r["group"]) for r in results}):
         group = [r for r in results if r["set"] == s and r["group"] == g and r["facts"]]
