@@ -16,8 +16,8 @@ Messages: 90 fresh practice messages (60 how-to, 30 other), 30 older how-to ques
 practice messages of every kind (hello, feelings, crisis, can't-know) for the label check.
 Arm A is skipped for the 30 older questions: saved runs already hold their reads.
 
-It writes out/part-0..5.txt: three chunks of one gzip+base64 line with every number, and three
-slices of what code would say from the cards the task lines matched best.
+It writes out/part-0.txt (one gzip+base64 line with every number) and out/part-1.txt and
+part-2.txt (what code would say from the cards a task line led to clearly).
 """
 
 import asyncio
@@ -58,7 +58,7 @@ CAP_NUSD = 120_000_000
 SOFT_NUSD = 85_000_000
 VOTE_SECONDS = 20.0  # The Brain allows 8; slower votes are counted, not lost.
 MESSAGES_AT_ONCE = 4
-PARTS = 3
+SAID_PARTS = 2
 
 TASK_FIELD = """\
 - task: when the question asks how to get one thing done at Ramapo (apply, register, pay, appeal,
@@ -507,22 +507,21 @@ async def main() -> None:
 
     blob = base64.b64encode(gzip.compress(json.dumps(result, separators=(",", ":"),
                                                      ensure_ascii=False).encode(), 9)).decode()
-    size = -(-len(blob) // PARTS)
-    for n in range(PARTS):
-        (out / f"part-{n}.txt").write_text(
-            f"== BLOB {n + 1}/{PARTS} of {len(blob)} characters\n"
-            f"== BLOB_PART {n} {blob[n * size:(n + 1) * size]}\n")
-    answers = [(at, text) for at, text in sorted(said_of.items()) if text]
-    for n in range(PARTS):
-        mine = [pair for k, pair in enumerate(answers) if k % PARTS == n]
+    (out / "part-0.txt").write_text(f"== BLOB of {len(blob)} characters\n== BLOB_PART 0 {blob}\n")
+    # What code would say, only from the cards a task line (or the whole message) led to clearly.
+    led = {m[0] for row in every for m in [row["whole"], *row["lines"].values()]
+           if m is not None and m[4]}
+    answers = [(at, text) for at, text in sorted(said_of.items()) if text and at in led]
+    for n in range(SAID_PARTS):
+        mine = [pair for k, pair in enumerate(answers) if k % SAID_PARTS == n]
         text = []
         for at, said in mine:
             text.append(f"@@ {at} | {table[at][0]}")
             text += ["   " + line.strip()[:400] for line in said.splitlines() if line.strip()]
         text.append(f"== SAID_PART {n}: {len(mine)} of {len(answers)} answers")
-        (out / f"part-{PARTS + n}.txt").write_text("\n".join(text) + "\n")
-    print(f"{len(table)} cards named, {len(answers)} with an answer by code; blob of "
-          f"{len(blob)} characters in {PARTS} parts")
+        (out / f"part-{1 + n}.txt").write_text("\n".join(text) + "\n")
+    print(f"{len(table)} cards named, {len(answers)} answers by code to read; blob of "
+          f"{len(blob)} characters")
 
 
 if __name__ == "__main__":
