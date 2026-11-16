@@ -71,6 +71,15 @@ export function mustRefreshTonight(state: RefreshState, refreshHorizonHours = RE
       state.maxAgeHours - state.ageHours <= refreshHorizonHours);
 }
 
+/**
+ * Sources collected every night whatever their freshness window says (Dan, November 16, 2026). Their
+ * collectors read each site's sitemap and download only the pages edited since the last download (and
+ * each page once in a while on its own night), so a nightly run reads a few pages, not thousands, and a
+ * page edit reaches the bot within a day instead of up to a week. Their freshness window stays a week,
+ * so one failed night keeps the last copy instead of stopping the publish.
+ */
+export const NIGHTLY_SOURCES: ReadonlySet<string> = new Set(['office-pages', 'academic-sites']);
+
 /** The environment variable a run started by hand sets to collect named sources tonight, fresh or not. */
 export const FORCE_SOURCES_ENV = 'REFRESH_FORCE_SOURCES';
 
@@ -97,10 +106,11 @@ export function forcedSources(value: string | undefined): Set<string> {
 export function refreshScriptsForStates(
   states: ReadonlyArray<RefreshState>,
   refreshHorizonHours = REFRESH_HORIZON_HOURS,
-  earlyKeys: ReadonlySet<string> = new Set()
+  forced: ReadonlySet<string> = new Set()
 ): string[] {
   const scripts = states
-    .filter((state) => mustRefreshTonight(state, refreshHorizonHours) || earlyKeys.has(state.key))
+    .filter((state) => mustRefreshTonight(state, refreshHorizonHours) || NIGHTLY_SOURCES.has(state.key)
+      || forced.has(state.key))
     .flatMap((state) => {
       const configured = SOURCE_REFRESH_SCRIPTS[state.key];
       if (!configured) {
@@ -109,51 +119,6 @@ export function refreshScriptsForStates(
       return configured;
     });
   return [...new Set(scripts)];
-}
-
-/**
- * A source whose last capture held at least this many pages is a big download from Ramapo's sites
- * (the office sites hold about 2,300 pages and the school sites about 480).
- */
-export const HEAVY_SOURCE_PAGES = 300;
-/** How many nights ahead the refresh looks for big sources that would come due together. */
-export const SPREAD_LOOKAHEAD_NIGHTS = 7;
-
-/** The night, counted from tonight (0), on which a fresh source must be recollected. */
-export function nightsUntilDue(state: RefreshState, refreshHorizonHours = REFRESH_HORIZON_HOURS): number | null {
-  if (mustRefreshTonight(state, refreshHorizonHours)) return 0;
-  if (state.ageHours === null) return null;
-  return Math.ceil((state.maxAgeHours - state.ageHours - refreshHorizonHours) / 24);
-}
-
-/**
- * Big sources recollected a night early so no two come due on the same night (Dan, November 2,
- * 2026: read Ramapo's sites as gently as possible). The weekly office and school sites were
- * collected together and so kept coming due together, about 2,900 pages in one night.
- *
- * Tonight's run takes at most one big source early, and only when no big source is due tonight
- * and two big sources would otherwise come due on the same later night. It moves the earliest such
- * pair apart by taking one of them tonight; both keep their own cycle afterwards, so they stay
- * apart, and a source taken early costs one extra collection only once.
- */
-export function spreadHeavySources(
-  states: ReadonlyArray<RefreshState & Pick<SourceProvenanceState, 'recordCount'>>,
-  refreshHorizonHours = REFRESH_HORIZON_HOURS
-): string[] {
-  const heavy = states.filter((state) => (state.recordCount ?? 0) >= HEAVY_SOURCE_PAGES
-    && SOURCE_REFRESH_SCRIPTS[state.key]);
-  if (heavy.some((state) => mustRefreshTonight(state, refreshHorizonHours))) return [];
-  const byNight = new Map<number, Array<(typeof heavy)[number]>>();
-  for (const state of heavy) {
-    const night = nightsUntilDue(state, refreshHorizonHours);
-    if (night === null || night < 1 || night > SPREAD_LOOKAHEAD_NIGHTS) continue;
-    byNight.set(night, [...byNight.get(night) ?? [], state]);
-  }
-  const collision = [...byNight.entries()].sort(([a], [b]) => a - b).find(([, due]) => due.length > 1);
-  if (!collision) return [];
-  // Take the smaller one early: the bigger one keeps its night.
-  const [early] = [...collision[1]].sort((a, b) => (a.recordCount ?? 0) - (b.recordCount ?? 0) || a.key.localeCompare(b.key));
-  return [early.key];
 }
 
 /**
@@ -340,11 +305,7 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
   const forced = forcedSources(process.env[FORCE_SOURCES_ENV]);
   if (forced.size) console.log(`Asked to collect tonight whatever their age: ${[...forced].join(', ')}.`);
   const before = evaluateSourceProvenance(SOURCES);
-  const early = spreadHeavySources(before);
-  if (early.length) {
-    noteSiteDownloads(`Collecting ${early.join(', ')} a night early, so no two big sources come due on the same night.`);
-  }
-  const provenanceScripts = refreshScriptsForStates(before, REFRESH_HORIZON_HOURS, new Set([...early, ...forced]));
+  const provenanceScripts = refreshScriptsForStates(before, REFRESH_HORIZON_HOURS, forced);
   const compatibilityScripts = restoredArtifactCompatibilityScripts();
   if (compatibilityScripts.length) {
     console.log(

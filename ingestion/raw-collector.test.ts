@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber, previousSourcePages, withYear} from './raw-collector';
+import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber, ownNight, previousSourcePages, reuseTonight, withYear} from './raw-collector';
 import { type RawDatasetV1, validateRawDatasetV1 } from './raw-types';
 
 const page = (statusCode = 200) => buildRawPageFromHtml({url:'https://example.edu/policy', html:'<main><h1>Policy</h1><p>Source content.</p></main>', sourceType:'seed', allowedHost:'example.edu',statusCode});
@@ -456,10 +456,11 @@ test("a page the site's own sitemap says nobody edited since the last download i
   // What the sitemaps say: finaid edited long ago, registrar edited after the first download, bursar not listed.
   const edited: Record<string, string> = { 'https://example.edu/finaid/': '2026-01-05T10:00:00-05:00' };
   const capturePath = path.join(dir, 'office-sources.raw.json');
-  const collect = (reuseDays?: number) => collectRawDataset({ dataset: 'office', seedUrls: Object.keys(pages),
-    allowedHost: 'example.edu', outputPath: path.join(dir, 'office.raw.json'), attempts: 1, maxDetailPages: 0,
-    retainSourceHtml: true, compressSourceHtml: true, listedEditedAt: url => edited[url],
-    ...(reuseDays === undefined ? {} : { listedReuseDays: reuseDays }) });
+  const collect = (reuseDays?: number, undatedReuseDays?: number) => collectRawDataset({ dataset: 'office',
+    seedUrls: Object.keys(pages), allowedHost: 'example.edu', outputPath: path.join(dir, 'office.raw.json'),
+    attempts: 1, maxDetailPages: 0, retainSourceHtml: true, compressSourceHtml: true, listedEditedAt: url => edited[url],
+    ...(reuseDays === undefined ? {} : { listedReuseDays: reuseDays }),
+    ...(undatedReuseDays === undefined ? {} : { undatedReuseDays }) });
   const capturePage = (url: string) => JSON.parse(fs.readFileSync(capturePath, 'utf8')).pages
     .find((page: { requestedUrl: string }) => page.requestedUrl === url);
   try {
@@ -483,6 +484,13 @@ test("a page the site's own sitemap says nobody edited since the last download i
     sent.length = 0;
     await collect();
     assert.ok(!sent.includes('https://example.edu/finaid/'));
+    // A page no sitemap dates is downloaded on every collection, unless the collector gives it a cycle
+    // too: downloaded tonight already, it is not downloaded again tonight.
+    assert.ok(sent.includes('https://example.edu/bursar/'));
+    sent.length = 0;
+    await collect(undefined, 7);
+    assert.ok(!sent.includes('https://example.edu/bursar/'));
+    assert.equal(capturePage('https://example.edu/bursar/').unchanged, true);
     assert.equal(capturePage('https://example.edu/finaid/').downloadedAt, firstDownload);
     // Past the reuse window, a page is downloaded again whatever its sitemap says, in case a part
     // shared from elsewhere (a sidebar, a list of posts) changed without an edit to the page.
@@ -491,6 +499,62 @@ test("a page the site's own sitemap says nobody edited since the last download i
     assert.ok(sent.includes('https://example.edu/finaid/'));
     assert.equal(capturePage('https://example.edu/finaid/').downloadedAt, undefined);
   } finally { globalThis.fetch = original; fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('a page not edited since its last download is downloaded again once a cycle, on its own night', () => {
+  const day = 86_400_000;
+  const url = 'https://example.edu/finaid/';
+  const own = ownNight(url, 28);
+  // 03:41 on the page's own night, some cycles after 1970.
+  const ownNightRun = (2_000 * 28 + own) * day + 3.7 * 3_600_000;
+  const page = (downloadedAt: number, editedAt?: number) => ({ url, downloadedAt: new Date(downloadedAt).toISOString(),
+    ...(editedAt === undefined ? {} : { editedAt: new Date(editedAt).toISOString() }) });
+  const longAgo = ownNightRun - 300 * day;
+  // Never downloaded, or edited after its last download: downloaded.
+  assert.equal(reuseTonight({ url }, ownNightRun, 28), false);
+  assert.equal(reuseTonight(page(ownNightRun - 3 * day, ownNightRun - day), ownNightRun + day, 28), false);
+  // Not edited: reused on every other night, downloaded on its own night.
+  assert.equal(reuseTonight(page(ownNightRun - day, longAgo), ownNightRun + day, 28), true);
+  assert.equal(reuseTonight(page(ownNightRun - day, longAgo), ownNightRun, 28), false);
+  // Already downloaded on its own night (earlier tonight): reused.
+  assert.equal(reuseTonight(page(ownNightRun - 3_600_000, longAgo), ownNightRun, 28), true);
+  // A run missed its night: a whole cycle old, it is downloaded whatever the night.
+  assert.equal(reuseTonight(page(ownNightRun - 28 * day + day, longAgo), ownNightRun + day, 28), false);
+  // No sitemap date: downloaded every time, unless the collector gives undated pages a cycle.
+  assert.equal(reuseTonight(page(ownNightRun - day), ownNightRun + day, 28), false);
+  const ownWeekNightRun = (3_000 * 7 + ownNight(url, 7)) * day + 3.7 * 3_600_000;
+  assert.equal(reuseTonight(page(ownWeekNightRun - 2 * day), ownWeekNightRun - day, 28, 7), true);
+  assert.equal(reuseTonight(page(ownWeekNightRun - 2 * day), ownWeekNightRun, 28, 7), false);
+  assert.equal(reuseTonight(page(ownWeekNightRun - 7 * day - day), ownWeekNightRun - day, 28, 7), false);
+  // No cycle at all: always downloaded.
+  assert.equal(reuseTonight(page(ownNightRun - day, longAgo), ownNightRun + day, 0), false);
+});
+
+test('the nightly re-downloads of unedited pages spread evenly, each page once a cycle', () => {
+  const day = 86_400_000;
+  const urls = Array.from({ length: 2_800 }, (_, index) => `https://example.edu/office-${index}/`);
+  // All downloaded on one night (as the weekly collection did), then never edited.
+  const first = 20_000 * day + 3.7 * 3_600_000;
+  const downloadedAt = new Map(urls.map(url => [url, first]));
+  const perNight: number[] = [];
+  const downloads = new Map(urls.map(url => [url, 0]));
+  for (let night = 1; night <= 56; night += 1) {
+    const now = first + night * day;
+    let count = 0;
+    for (const url of urls) {
+      const page = { url, editedAt: '2020-01-01T00:00:00Z', downloadedAt: new Date(downloadedAt.get(url)!).toISOString() };
+      if (!reuseTonight(page, now, 28)) {
+        count += 1;
+        downloadedAt.set(url, now);
+        downloads.set(url, downloads.get(url)! + 1);
+      }
+    }
+    perNight.push(count);
+  }
+  // Two cycles: every page downloaded exactly twice, about 100 a night, never thousands at once.
+  assert.ok([...downloads.values()].every(count => count === 2));
+  assert.ok(Math.max(...perNight) < 160, `most in one night: ${Math.max(...perNight)}`);
+  assert.ok(Math.min(...perNight) > 50, `fewest in one night: ${Math.min(...perNight)}`);
 });
 
 test('a page keeps the date its SEO tags say it was last changed', () => {
