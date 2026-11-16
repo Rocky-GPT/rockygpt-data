@@ -143,8 +143,9 @@ def main() -> None:
         if held["collection"] == "office_sections" and isinstance(row.get("sections"), list):
             return " \n".join(f"{s.get('heading') or ''}: {s.get('text') or ''}"
                               for s in row["sections"] if isinstance(s, dict))
-        return json.dumps(row, ensure_ascii=False)
+        return json.dumps(row, ensure_ascii=False, default=str)
 
+    texts = {rid: text_of(held) for rid, held in records.items()}
     rows = [*json.loads((HERE / "blind_rows.json").read_text()),
             *json.loads((HERE / "check_rows.json").read_text())]
     vectors, tokens = embed([r["question"] for r in rows], index.model, index.dimensions)
@@ -176,9 +177,9 @@ def main() -> None:
                 where = Counter(r["collection"] for r in records.values() if r["url"] in gold)
             else:
                 pats = [re.compile(p) for p in fact["needles"]]
-                hits = [r for r in records.values()
+                hits = [r for rid, r in records.items()
                         if (not fact.get("url_has") or fact["url_has"] in (r["url"] or ""))
-                        and all(p.search(text_of(r)) for p in pats)]
+                        and all(p.search(texts[rid]) for p in pats)]
                 where = Counter(r["collection"] for r in hits)
                 gold = {r["url"] for r in hits if r["url"]}
             in_search = sorted(gold & searchable)
@@ -226,7 +227,6 @@ def main() -> None:
                     for f in r["facts"])))
             line.append(f"{name} top10/20/30 = {'/'.join(map(str, hits))}")
         print("  " + "; ".join(line))
-    print("\nRESULTS_JSON " + json.dumps(results))
 
 
 if __name__ == "__main__":
