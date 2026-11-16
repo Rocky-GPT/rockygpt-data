@@ -35,6 +35,15 @@ HERE = Path(__file__).parent
 RRF_K = 60
 CUTS = (10, 20, 30)
 BONUSES = (0.0,)
+# Facts the graders said the sections writer left out (page-writer check, 11-16).
+DIAG = {
+    "zl1-15": [r"1098-T Tax Statements", r"Bill (&|and) Payment Suite"],
+    "zl1-01": [r"Financial Aid Dashboard"],
+    "zl3-01": [r"(three|3) nights in any (seven|7)", r"(three|3) nights"],
+    "zl3-12": [r"[Hh]old", r"Bill (&|and) Payment Suite"],
+    "zl2-05": [r"[Ll]ost"],
+    "zl2-09": [r"[Rr]egist"],
+}
 
 
 def norm(url: Any) -> str | None:
@@ -228,6 +237,20 @@ def main() -> None:
                                 index.identity_hash, chosen=sections(index, pvecs, today))[0]
         sizes.append(len(json.dumps(one_call.messages(row["question"], None, given, today),
                                     ensure_ascii=False)))
+        if row["id"] in DIAG:
+            given_text = json.dumps(given, ensure_ascii=False)
+            print(f"\nDIAG {row['id']}: {row['question']}")
+            for o in given:
+                for sec in o["sections"]:
+                    print(f"   read [{sec['n']}] {o['office']} | {sec.get('page')} | {sec.get('heading')} "
+                          f"| {len(str(sec.get('text') or ''))}+{len(str(sec.get('section_words') or ''))} chars")
+            for pat in DIAG[row["id"]]:
+                hit = re.search(pat, given_text)
+                print(f"   needs /{pat}/: {'GIVEN' if hit else 'NOT GIVEN'}"
+                      + (f" ...{given_text[max(0, hit.start() - 80):hit.end() + 80]}..." if hit else ""))
+                whole = [(r["url"]) for rid, r in records.items()
+                         if r["collection"] == "office_sections" and re.search(pat, texts[rid])]
+                print(f"      in the release on: {whole[:4]}")
         index.pages = {}
         wanted = _procedure_words(row["question"])
         weight = {w: math.log(1 + total / doc_count[w]) for w in wanted if doc_count[w]}
