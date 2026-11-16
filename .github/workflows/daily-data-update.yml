@@ -66,6 +66,10 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      # The hourly check starts the dev build as a run on the dev branch (below).
+      actions: write
     outputs:
       target: ${{ steps.plan.outputs.target }}
       build: ${{ steps.plan.outputs.build }}
@@ -105,6 +109,15 @@ jobs:
             if [[ "$last" == "$data_ref $brain_ref" ]]; then
               build=false
               echo "The dev graph already has data dev ${data_ref:0:7} and Brain dev ${brain_ref:0:7}; nothing to build."
+            else
+              # Scheduled runs belong to main, and GitHub keeps a branch's caches apart: built
+              # here, the dev build could not see the question and embedding caches that dev
+              # pushes save, and paid for them again (11-11: $0.36 for 8,102 tasks' questions).
+              # So the build runs on the dev branch, the same as a push to dev, with dev's own
+              # workflow file, and this run stops here.
+              gh workflow run daily-data-update.yml --repo "$GITHUB_REPOSITORY" --ref dev -f target=dev
+              build=false
+              echo "Started the dev build on the dev branch for data dev ${data_ref:0:7} and Brain dev ${brain_ref:0:7}."
             fi
           fi
           echo "Target dev: data dev ${data_ref:0:7}, Brain dev ${brain_ref:0:7}, build=$build."
@@ -219,10 +232,8 @@ jobs:
           if [[ -n "$READ_ALL" ]]; then args+=(--first-read); fi
           npx tsx ingestion/howto-entries.ts "${args[@]}"
 
-      # Data owns deterministic collector, validity, contract, and HTTP
-      # regression tests. Model-answer accuracy remains in rockygpt-evals.
-      - name: Run deterministic data-service tests
-        run: npm test
+      # The data tests are not run here: they use only committed fixtures, never what this
+      # run collected, and CI already ran them on this same commit when it reached main or dev.
 
       # The dev build's publish runs these same gates, except the age check (its pages are
       # production's last capture, possibly a little past a freshness window).
@@ -234,8 +245,6 @@ jobs:
         if: ${{ env.TARGET == 'production' }}
         env:
           DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_EMBEDDING_MODEL: ${{ vars.OPENAI_EMBEDDING_MODEL || 'text-embedding-3-small' }}
           SOURCE_COMMIT_SHA: ${{ github.sha }}
           RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
           RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
@@ -524,18 +533,9 @@ jobs:
         with:
           ref: ${{ needs.plan.outputs.data_ref }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
+      # No Node here: every step of this job is Python, the database container or the file store.
       - name: Start the job's campus database
         run: .github/scripts/campus-db.sh start
-
 
       - name: Download the dev database
         if: ${{ env.TARGET == 'dev' }}
