@@ -29,10 +29,12 @@ from rockygpt_brain.retrieval.entity_facts import _procedure_units, _procedure_w
 from rockygpt_brain.retrieval.meaning import MeaningScores
 from rockygpt_brain.retrieval.graph_store import GraphOnlyFacts, _loads
 from rockygpt_brain.retrieval.page_marks import page_marks, page_owners
+from rockygpt_brain.retrieval.section_search import sections
 
 HERE = Path(__file__).parent
 RRF_K = 60
 CUTS = (10, 20, 30)
+BONUSES = (0.0, 0.02, 0.04)
 
 
 def norm(url: Any) -> str | None:
@@ -180,6 +182,7 @@ def main() -> None:
         if len(links[rid]) > 1:
             print(f"  OWNER {by_row_id[rid].get('url')} -> {owners.get(rid)} (links {links[rid]})")
 
+    marks_by_rid = marks
     plain_scores = index.scores
 
     def current_scores(query):  # type: ignore[no-untyped-def]
@@ -216,6 +219,10 @@ def main() -> None:
                                          per_page=one_call.POOL_PER_PAGE)[1]
         index.scores = plain_scores  # type: ignore[method-assign]
         current_ranked = [k for k in meaning_ranked if k[0] not in old_pages]
+        # Step 2's search, as merged (the index holds no marks yet, so they are lent to it).
+        index.pages = marks_by_rid
+        found = {b: sections(index, pvecs, today, owner_bonus=b) for b in BONUSES}
+        index.pages = {}
         wanted = _procedure_words(row["question"])
         weight = {w: math.log(1 + total / doc_count[w]) for w in wanted if doc_count[w]}
         word_scored = []
@@ -254,6 +261,8 @@ def main() -> None:
             ranks["read_cur"] = first_rank(read_cur, unit_url, gold)
             ranks["pool_cur"] = first_rank(pool_cur, unit_url, gold)
             ranks["meaning_cur"] = first_rank(current_ranked, unit_url, gold)
+            for b in BONUSES:
+                ranks[f"sections_{b}"] = first_rank(found[b], unit_url, gold)
             ranks["meaning_sections_cur"] = first_rank(current_ranked, unit_url, gold, True)
             out_facts.append({"gold": sorted(gold)[:6], "gold_count": len(gold),
                               "collections": dict(where), "in_search": len(in_search),
@@ -285,7 +294,8 @@ def main() -> None:
         line = [f"{s}/{g}: {len(group)} questions"]
         line.append(f"gold not in graph {sum(1 for r in group if any(f['gold_count'] == 0 for f in r['facts']))}")
         line.append(f"gold not in page search {sum(1 for r in group if any(f['gold_count'] and not f['in_search'] for f in r['facts']))}")
-        for name in ("read_now", "pool_now", "read_cur", "pool_cur"):
+        for name in ("read_now", "pool_now", "read_cur", "pool_cur",
+                     *[f"sections_{b}" for b in BONUSES]):
             line.append(f"{name} has it {sum(1 for r in group if all(f['ranks'][name][0] is not None for f in r['facts']))}")
         for name in ("meaning", "meaning_cur", "words", "both", "meaning_sections",
                      "meaning_sections_cur", "both_sections"):
