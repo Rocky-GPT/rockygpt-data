@@ -1,0 +1,4702 @@
+[
+ {
+  "id": "E01",
+  "set": "fresh-11-17",
+  "message": "I missed the payment deadline because the transfer from my bank at home took 2 weeks. Will my classes be cancelled? How can I pay now",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "school_trouble"
+   ],
+   "limit": "none",
+   "question": "Will my classes be cancelled? How can I pay now?",
+   "topic": "how_to"
+  },
+  "asked": "I missed the payment deadline because the transfer from my bank at home took 2 weeks. Will my classes be cancelled? How can I pay now",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E02",
+  "set": "fresh-11-17",
+  "message": "i need proof of the volunteer hours i did with a club last semester for a scholarship application. who signs that",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Who signs proof of the volunteer hours I did with a club last semester for a scholarship application?",
+   "topic": "person"
+  },
+  "asked": "i need proof of the volunteer hours i did with a club last semester for a scholarship application. who signs that",
+  "votes": [
+   "person",
+   "person",
+   "person"
+  ],
+  "old": "events_clubs",
+  "new": "people"
+ },
+ {
+  "id": "E03",
+  "set": "fresh-11-17",
+  "message": "my landlord wants something that shows my financial aid for this semester bc im paying rent with the refund. can i get an award letter or something official",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "food_or_housing",
+    "money"
+   ],
+   "limit": "none",
+   "question": "Can I get an award letter or something official that shows my financial aid for this semester?",
+   "topic": "how_to"
+  },
+  "asked": "my landlord wants something that shows my financial aid for this semester bc im paying rent with the refund. can i get an award letter or something official",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E04",
+  "set": "fresh-11-17",
+  "message": "Are grad students allowed to go on the short winter break trips abroad? I'd like to sign up for one if there's still room",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are graduate students allowed to go on the short winter break trips abroad, and is there still room to sign up for one?",
+   "topic": "event"
+  },
+  "asked": "Are grad students allowed to go on the short winter break trips abroad? I'd like to sign up for one if there's still room",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "pages",
+  "new": "events_clubs"
+ },
+ {
+  "id": "E05",
+  "set": "fresh-11-17",
+  "message": "i got a text with a login code when i tried to sign in over break, i never set that up?? is this a scam or do i need to do something",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "i got a text with a login code when i tried to sign in over break, i never set that up?? is this a scam or do i need to do something",
+   "topic": "how_to"
+  },
+  "asked": "i got a text with a login code when i tried to sign in over break, i never set that up?? is this a scam or do i need to do something",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E06",
+  "set": "fresh-11-17",
+  "message": "is there like a career test i can take to figure out what to major in? i have to pick classes soon and have no clue",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "stress_or_sadness"
+   ],
+   "limit": "opinion",
+   "question": "What career test can I take to figure out what to major in, and who can help me decide what classes to pick?",
+   "topic": "how_to"
+  },
+  "asked": "is there like a career test i can take to figure out what to major in? i have to pick classes soon and have no clue. What career test can I take to figure out what to major in, and who can help me decide what classes to pick?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E07",
+  "set": "fresh-11-17",
+  "message": "the website where you join clubs keeps saying my account doesnt exist. i wanted to join a couple for spring",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "The website where you join clubs keeps saying my account doesn't exist. I wanted to join a couple for spring.",
+   "topic": "club"
+  },
+  "asked": "The website where you join clubs keeps saying my account doesn't exist. I wanted to join a couple for spring.",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "E08",
+  "set": "fresh-11-17",
+  "message": "got a note on my door about a health and safety inspection next week. what are they checking and do i have to be there",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What are they checking during the health and safety inspection next week, and do I have to be there?",
+   "topic": "how_to"
+  },
+  "asked": "got a note on my door about a health and safety inspection next week. what are they checking and do i have to be there",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "events_clubs",
+  "new": "pages"
+ },
+ {
+  "id": "E09",
+  "set": "fresh-11-17",
+  "message": "they told me i still have to take a placement test even though i already passed english comp at my old school?? why and how do i get out of it",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Why do I still have to take a placement test even though I already passed English comp at my old school, and how do I get out of it?",
+   "topic": "how_to"
+  },
+  "asked": "they told me i still have to take a placement test even though i already passed english comp at my old school?? why and how do i get out of it",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E10",
+  "set": "fresh-11-17",
+  "message": "my transfer orientation is on a day i have work and i cant get it off. is there another date i can switch to",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is there another date I can switch my transfer orientation to?",
+   "topic": "dates"
+  },
+  "asked": "my transfer orientation is on a day i have work and i cant get it off. is there another date i can switch to",
+  "votes": [
+   "event",
+   "dates",
+   "dates"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E11",
+  "set": "fresh-11-17",
+  "message": "just transferred here this fall and i want to study abroad next year. is it too soon to apply? what do i have to do first",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "just transferred here this fall and i want to study abroad next year. is it too soon to apply? what do i have to do first",
+   "topic": "how_to"
+  },
+  "asked": "just transferred here this fall and i want to study abroad next year. is it too soon to apply? what do i have to do first",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E12",
+  "set": "fresh-11-17",
+  "message": "My classes go until almost 10 and every dining spot is closed by then. Can I change my meal plan to just dining dollars or something like that?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Can I change my meal plan to just dining dollars or something like that?",
+   "topic": "how_to"
+  },
+  "asked": "My classes go until almost 10 and every dining spot is closed by then. Can I change my meal plan to just dining dollars or something like that?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E13",
+  "set": "fresh-11-17",
+  "message": "how do i set up direct deposit so my refund goes straight to my bank instead of a check",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "how do i set up direct deposit so my refund goes straight to my bank instead of a check",
+   "topic": "how_to"
+  },
+  "asked": "how do i set up direct deposit so my refund goes straight to my bank instead of a check",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E14",
+  "set": "fresh-11-17",
+  "message": "does EOF have laptops we can borrow? mine died and finals are this week",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "does EOF have laptops we can borrow? mine died and finals are this week",
+   "topic": "how_to"
+  },
+  "asked": "does EOF have laptops we can borrow? mine died and finals are this week",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "events_clubs",
+  "new": "pages"
+ },
+ {
+  "id": "E15",
+  "set": "fresh-11-17",
+  "message": "i missed my advising appointment yesterday 😬 and i think i need it before i can register. can i reschedule",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [
+    "school_trouble"
+   ],
+   "limit": "none",
+   "question": "Can I reschedule my advising appointment?",
+   "topic": "how_to"
+  },
+  "asked": "i missed my advising appointment yesterday 😬 and i think i need it before i can register. can i reschedule",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E16",
+  "set": "fresh-11-17",
+  "message": "I have accommodations for extra time but my two summer finals are on the same day and both are long. Can I take one of them on a different day?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "disability"
+   ],
+   "limit": "none",
+   "question": "Can I take one of my two summer finals on a different day?",
+   "topic": "dates"
+  },
+  "asked": "I have accommodations for extra time but my two summer finals are on the same day and both are long. Can I take one of them on a different day?",
+  "votes": [
+   "dates",
+   "dates",
+   "dates"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E17",
+  "set": "fresh-11-17",
+  "message": "I'm back home in India for winter break. Can I still book a session with a counselor online from here?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Can I still book a session with a counselor online from here?",
+   "topic": "how_to"
+  },
+  "asked": "I'm back home in India for winter break. Can I still book a session with a counselor online from here?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E18",
+  "set": "fresh-11-17",
+  "message": "i got the tb test on monday and was supposed to come back so they can read it but i forgot. do i have to start over",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "health"
+   ],
+   "limit": "none",
+   "question": "i got the tb test on monday and was supposed to come back so they can read it but i forgot. do i have to start over",
+   "topic": "how_to"
+  },
+  "asked": "i got the tb test on monday and was supposed to come back so they can read it but i forgot. do i have to start over",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E19",
+  "set": "fresh-11-17",
+  "message": "my EOF counselor said the grant won't cover my summer class. i dont get why, isnt summer part of the year? is there anything i can do",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "money"
+   ],
+   "limit": "none",
+   "question": "Why won't the EOF grant cover my summer class, and is there anything I can do?",
+   "topic": "how_to"
+  },
+  "asked": "my EOF counselor said the grant won't cover my summer class. i dont get why, isnt summer part of the year? is there anything i can do",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E20",
+  "set": "fresh-11-17",
+  "message": "signed up for the placement test on friday but i have work, how do i move it to another day",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I move my placement test to another day?",
+   "topic": "how_to"
+  },
+  "asked": "signed up for the placement test on friday but i have work, how do i move it to another day",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E21",
+  "set": "fresh-11-17",
+  "message": "my parents gave me a different car over break, how do i change the car on my parking permit before i come back",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I change the car on my parking permit before I come back?",
+   "topic": "how_to"
+  },
+  "asked": "my parents gave me a different car over break, how do i change the car on my parking permit before i come back",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E22",
+  "set": "fresh-11-17",
+  "message": "Two of my classes overlap by 15 minutes on Tuesday. The system let me register but I can't be in both. I need to stay full time for my visa. What should I do?",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [
+    "school_trouble"
+   ],
+   "limit": "opinion",
+   "question": "What does the college publish about the options for resolving a 15-minute class overlap on Tuesday, and who can help me decide while staying full time for my visa?",
+   "topic": "how_to"
+  },
+  "asked": "Two of my classes overlap by 15 minutes on Tuesday. The system let me register but I can't be in both. I need to stay full time for my visa. What should I do? What does the college publish about the options for resolving a 15-minute class overlap on Tuesday, and who can help me decide while staying full time for my visa?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E23",
+  "set": "fresh-11-17",
+  "message": "I work part time in the dining hall and my new landlord wants proof of my job and how much I make. Who in dining can write that?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "money"
+   ],
+   "limit": "none",
+   "question": "Who in dining can write proof of my job and how much I make?",
+   "topic": "person"
+  },
+  "asked": "I work part time in the dining hall and my new landlord wants proof of my job and how much I make. Who in dining can write that?",
+  "votes": [
+   "person",
+   "person",
+   "person"
+  ],
+  "old": "lookup_loop",
+  "new": "people"
+ },
+ {
+  "id": "E24",
+  "set": "fresh-11-17",
+  "message": "My employer reimburses tuition but they need an official paper showing I finished my summer course with a grade. Where do I get that?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Where do I get an official paper showing I finished my summer course with a grade?",
+   "topic": "how_to"
+  },
+  "asked": "My employer reimburses tuition but they need an official paper showing I finished my summer course with a grade. Where do I get that?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E25",
+  "set": "fresh-11-17",
+  "message": "is there scholarship money for grad students going abroad? i want to apply before the deadline if there is",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is there scholarship money for graduate students going abroad? I want to apply before the deadline if there is.",
+   "topic": "how_to"
+  },
+  "asked": "Is there scholarship money for graduate students going abroad? I want to apply before the deadline if there is.",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E26",
+  "set": "fresh-11-17",
+  "message": "I can't find a library book I borrowed and finals are here. What happens if I lost it, do I just pay for it?",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What happens if I lost a library book I borrowed? Do I just pay for it?",
+   "topic": "how_to"
+  },
+  "asked": "I can't find a library book I borrowed and finals are here. What happens if I lost it, do I just pay for it?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E27",
+  "set": "fresh-11-17",
+  "message": "i got a bill from a lab for bloodwork the health center sent out. i thought it was free?? who do i ask about this",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Who should I ask about a bill from a lab for bloodwork the health center sent out?",
+   "topic": "how_to"
+  },
+  "asked": "i got a bill from a lab for bloodwork the health center sent out. i thought it was free?? who do i ask about this",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E28",
+  "set": "fresh-11-17",
+  "message": "signed up for the career fair but now i have an exam that day. how do i cancel so i dont get marked as a no show",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "school_trouble"
+   ],
+   "limit": "none",
+   "question": "How do I cancel my career fair registration so I don't get marked as a no-show?",
+   "topic": "how_to"
+  },
+  "asked": "signed up for the career fair but now i have an exam that day. how do i cancel so i dont get marked as a no show",
+  "votes": [
+   "event",
+   "how_to",
+   "how_to"
+  ],
+  "old": "events_clubs",
+  "new": "pages"
+ },
+ {
+  "id": "E29",
+  "set": "fresh-11-17",
+  "message": "I'm in EOF and signed up to be a peer mentor for the summer program but I just got a job offer. Can I do only part of it or do I have to drop out",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "thinking_of_leaving"
+   ],
+   "limit": "opinion",
+   "question": "What options does the college publish for doing only part of the peer mentor commitment or dropping out of the summer program, and who helps students decide?",
+   "topic": "how_to"
+  },
+  "asked": "I'm in EOF and signed up to be a peer mentor for the summer program but I just got a job offer. Can I do only part of it or do I have to drop out. What options does the college publish for doing only part of the peer mentor commitment or dropping out of the summer program, and who helps students decide?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E30",
+  "set": "fresh-11-17",
+  "message": "my bill says i owe for a meal plan but im a commuter and never picked one. the bill is due friday",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "My bill says I owe for a meal plan, but I'm a commuter and never picked one. The bill is due Friday.",
+   "topic": "how_to"
+  },
+  "asked": "My bill says I owe for a meal plan, but I'm a commuter and never picked one. The bill is due Friday.",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E31",
+  "set": "fresh-11-17",
+  "message": "my friend from home wants to visit and stay over in my room this weekend. do i have to register her somewhere",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "my friend from home wants to visit and stay over in my room this weekend. do i have to register her somewhere",
+   "topic": "how_to"
+  },
+  "asked": "my friend from home wants to visit and stay over in my room this weekend. do i have to register her somewhere",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E32",
+  "set": "fresh-11-17",
+  "message": "i got charged a health center fee for summer but im only taking one online class. can that be taken off",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Can the health center fee be taken off if I'm only taking one online class?",
+   "topic": "how_to"
+  },
+  "asked": "i got charged a health center fee for summer but im only taking one online class. can that be taken off",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E33",
+  "set": "fresh-11-17",
+  "message": "is there a way to do bachelors and masters together in 5 years? i'd want to sign up early if thats a thing",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is there a way to do a bachelor's and master's together in 5 years? I'd want to sign up early if that's a thing.",
+   "topic": "program"
+  },
+  "asked": "Is there a way to do a bachelor's and master's together in 5 years? I'd want to sign up early if that's a thing.",
+  "votes": [
+   "program",
+   "program",
+   "program"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E34",
+  "set": "fresh-11-17",
+  "message": "Everyone keeps talking about Handshake but I don't know what it is. Do I need it to find a job on campus?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What is Handshake, and do I need it to find a job on campus?",
+   "topic": "how_to"
+  },
+  "asked": "Everyone keeps talking about Handshake but I don't know what it is. Do I need it to find a job on campus?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E35",
+  "set": "fresh-11-17",
+  "message": "i got into ramapo and another school and they both want deposits by january 15. can i get an extension on mine so i have more time to decide",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Can I get an extension on my deposit so I have more time to decide?",
+   "topic": "how_to"
+  },
+  "asked": "i got into ramapo and another school and they both want deposits by january 15. can i get an extension on mine so i have more time to decide",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E36",
+  "set": "fresh-11-17",
+  "message": "how do i get assigned an advisor? im undeclared and nobody ever contacted me",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I get assigned an advisor? I'm undeclared and nobody ever contacted me.",
+   "topic": "how_to"
+  },
+  "asked": "How do I get assigned an advisor? I'm undeclared and nobody ever contacted me.",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "people",
+  "new": "pages"
+ },
+ {
+  "id": "E37",
+  "set": "fresh-11-17",
+  "message": "I'm signed up for 2 classes in my masters program for spring but I want to go down to 1 because of work. Is that allowed? I'm afraid of losing my aid",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "money"
+   ],
+   "limit": "none",
+   "question": "I'm signed up for 2 classes in my masters program for spring but I want to go down to 1 because of work. Is that allowed? I'm afraid of losing my aid",
+   "topic": "how_to"
+  },
+  "asked": "I'm signed up for 2 classes in my masters program for spring but I want to go down to 1 because of work. Is that allowed? I'm afraid of losing my aid",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E38",
+  "set": "fresh-11-17",
+  "message": "never been to the gym here in 4 years lol. do i just walk in? do i need to sign something",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Do I just walk in? Do I need to sign something?",
+   "topic": "how_to"
+  },
+  "asked": "never been to the gym here in 4 years lol. do i just walk in? do i need to sign something",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E39",
+  "set": "fresh-11-17",
+  "message": "how do i give back my locker at the gym? im not going to use it next semester",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I give back my locker at the gym? I'm not going to use it next semester.",
+   "topic": "how_to"
+  },
+  "asked": "How do I give back my locker at the gym? I'm not going to use it next semester.",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E40",
+  "set": "fresh-11-17",
+  "message": "i got charged for printing like 200 pages i never printed. i think someone is using my account. how do i fix it",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I fix being charged for printing about 200 pages I never printed because someone may be using my account?",
+   "topic": "how_to"
+  },
+  "asked": "i got charged for printing like 200 pages i never printed. i think someone is using my account. how do i fix it",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E41",
+  "set": "fresh-11-17",
+  "message": "I lost my I-20 and I think my passport was in the same folder. What do I do first?",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What do I do first about losing my I-20 and possibly my passport?",
+   "topic": "how_to"
+  },
+  "asked": "I lost my I-20 and I think my passport was in the same folder. What do I do first?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E42",
+  "set": "fresh-11-17",
+  "message": "my scholarship from my town wants a paper that shows how much housing costs if i move on campus next year. where do i get that",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Where do I get a paper that shows how much housing costs if I move on campus next year?",
+   "topic": "how_to"
+  },
+  "asked": "my scholarship from my town wants a paper that shows how much housing costs if i move on campus next year. where do i get that",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E43",
+  "set": "fresh-11-17",
+  "message": "My parking ticket was due last week and I forgot about it. Now there's a late fee. Can I still pay it online?",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Can I still pay my parking ticket online?",
+   "topic": "how_to"
+  },
+  "asked": "My parking ticket was due last week and I forgot about it. Now there's a late fee. Can I still pay it online?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E44",
+  "set": "fresh-11-17",
+  "message": "I am new international student starting in January. When should I arrive and who do I tell when I land?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "When should I arrive and who do I tell when I land?",
+   "topic": "how_to"
+  },
+  "asked": "I am new international student starting in January. When should I arrive and who do I tell when I land?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E45",
+  "set": "fresh-11-17",
+  "message": "I see a counselor on campus but I'm home in another state for break. Can we still meet on video or is that not allowed?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Can I still meet with my counselor on campus by video while I'm home in another state for break, or is that not allowed?",
+   "topic": "how_to"
+  },
+  "asked": "I see a counselor on campus but I'm home in another state for break. Can we still meet on video or is that not allowed?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E46",
+  "set": "fresh-11-17",
+  "message": "how do i get into the library databases from home? it keeps asking me to log in and my login doesnt work",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I get into the library databases from home? It keeps asking me to log in, and my login doesn't work.",
+   "topic": "how_to"
+  },
+  "asked": "How do I get into the library databases from home? It keeps asking me to log in, and my login doesn't work.",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E47",
+  "set": "fresh-11-17",
+  "message": "the counseling appointment form wont submit, it just keeps spinning. is there another way to make an appointment",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "The counseling appointment form won't submit; it just keeps spinning. Is there another way to make an appointment?",
+   "topic": "how_to"
+  },
+  "asked": "The counseling appointment form won't submit; it just keeps spinning. Is there another way to make an appointment?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E48",
+  "set": "fresh-11-17",
+  "message": "advisor said my stats class from my last school only counts as an elective not for my major. i dont get it, its the same class. can i ask for someone to look at it again",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [
+    "school_trouble"
+   ],
+   "limit": "none",
+   "question": "Can I ask for someone to look at my stats class from my last school again if my advisor said it only counts as an elective, not for my major, even though it's the same class?",
+   "topic": "how_to"
+  },
+  "asked": "advisor said my stats class from my last school only counts as an elective not for my major. i dont get it, its the same class. can i ask for someone to look at it again",
+  "votes": [
+   "program",
+   "how_to",
+   "how_to"
+  ],
+  "old": "people",
+  "new": "programs"
+ },
+ {
+  "id": "E49",
+  "set": "fresh-11-17",
+  "message": "I graduate in May and just found out I should have applied for OPT already?? Is it too late and what do I do",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "I graduate in May and just found out I should have applied for OPT already?? Is it too late and what do I do",
+   "topic": "how_to"
+  },
+  "asked": "I graduate in May and just found out I should have applied for OPT already?? Is it too late and what do I do",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E50",
+  "set": "fresh-11-17",
+  "message": "I stay on campus over winter break and my meal swipes don't work at the dining hall. How do I get food?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "food_or_housing"
+   ],
+   "limit": "none",
+   "question": "How do I get food when I stay on campus over winter break and my meal swipes don't work at the dining hall?",
+   "topic": "how_to"
+  },
+  "asked": "How do I get food when I stay on campus over winter break and my meal swipes don't work at the dining hall?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "lookup_loop",
+  "new": "pages"
+ },
+ {
+  "id": "E51",
+  "set": "fresh-11-17",
+  "message": "I want to drop one class but then I would have only 9 credits. Can I drop it and add a different one this week?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Can I drop one class and add a different one this week if I would then have only 9 credits?",
+   "topic": "how_to"
+  },
+  "asked": "I want to drop one class but then I would have only 9 credits. Can I drop it and add a different one this week?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "events_clubs",
+  "new": "pages"
+ },
+ {
+  "id": "E52",
+  "set": "fresh-11-17",
+  "message": "i need a letter showing ill be living on campus in the fall for my car insurance, they give a discount if the car is far from home. who does that",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Who can provide a letter showing I'll be living on campus in the fall for my car insurance?",
+   "topic": "person"
+  },
+  "asked": "i need a letter showing ill be living on campus in the fall for my car insurance, they give a discount if the car is far from home. who does that",
+  "votes": [
+   "person",
+   "person",
+   "person"
+  ],
+  "old": "pages",
+  "new": "people"
+ },
+ {
+  "id": "E53",
+  "set": "fresh-11-17",
+  "message": "lost my phone and now i cant get the login code for my school account. how do i get back in",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I get back into my school account without my phone to receive the login code?",
+   "topic": "how_to"
+  },
+  "asked": "lost my phone and now i cant get the login code for my school account. how do i get back in",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E54",
+  "set": "fresh-11-17",
+  "message": "my aid for spring looks way lower than fall and i didnt change anything. how do i find out why and fix it",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "money"
+   ],
+   "limit": "my_records",
+   "question": "How do I check why my aid for spring looks way lower than fall and fix it?",
+   "topic": "how_to"
+  },
+  "asked": "my aid for spring looks way lower than fall and i didnt change anything. how do i find out why and fix it. How do I check why my aid for spring looks way lower than fall and fix it?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E55",
+  "set": "fresh-11-17",
+  "message": "I applied to the honors program and got rejected but they said I can reapply? I don't understand what I'm supposed to do differently or when",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "stress_or_sadness"
+   ],
+   "limit": "none",
+   "question": "What am I supposed to do differently to reapply to the honors program, and when can I reapply?",
+   "topic": "program"
+  },
+  "asked": "I applied to the honors program and got rejected but they said I can reapply? I don't understand what I'm supposed to do differently or when",
+  "votes": [
+   "program",
+   "program",
+   "program"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E56",
+  "set": "fresh-11-17",
+  "message": "I went to the testing center to take my final with extra time and they said they have no request from my professor. My exam is tomorrow. What can I do?",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [
+    "school_trouble",
+    "disability"
+   ],
+   "limit": "none",
+   "question": "I went to the testing center to take my final with extra time and they said they have no request from my professor. My exam is tomorrow. What can I do?",
+   "topic": "how_to"
+  },
+  "asked": "I went to the testing center to take my final with extra time and they said they have no request from my professor. My exam is tomorrow. What can I do?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "people",
+  "new": "pages"
+ },
+ {
+  "id": "E57",
+  "set": "fresh-11-17",
+  "message": "trying to sign up for a class for spring and it says prerequisite or test score error. i took the prereq as an AP class in high school. what do i do",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What do I do if I’m trying to sign up for a class for spring and it says prerequisite or test score error, and I took the prerequisite as an AP class in high school?",
+   "topic": "how_to"
+  },
+  "asked": "trying to sign up for a class for spring and it says prerequisite or test score error. i took the prereq as an AP class in high school. what do i do",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E58",
+  "set": "fresh-11-17",
+  "message": "the front desk at the gym said i cant bring my brother in even if i pay. is there a guest pass or something",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is there a guest pass for the gym?",
+   "topic": "how_to"
+  },
+  "asked": "the front desk at the gym said i cant bring my brother in even if i pay. is there a guest pass or something",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E59",
+  "set": "fresh-11-17",
+  "message": "I already have extra test time from the disability office but now I also need help with notes because I hurt my hand. How do I add that?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "health",
+    "disability"
+   ],
+   "limit": "none",
+   "question": "How do I add help with notes because I hurt my hand?",
+   "topic": "how_to"
+  },
+  "asked": "I already have extra test time from the disability office but now I also need help with notes because I hurt my hand. How do I add that?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "E60",
+  "set": "fresh-11-17",
+  "message": "im the treasurer of our club and the form to request money for our event keeps giving an error. the event is in 2 weeks",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I fix the form to request money for our event?",
+   "topic": "how_to"
+  },
+  "asked": "im the treasurer of our club and the form to request money for our event keeps giving an error. the event is in 2 weeks",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "events_clubs",
+  "new": "pages"
+ },
+ {
+  "id": "F01",
+  "set": "fresh-11-17",
+  "message": "Is the health center open on Saturday during finals week?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is the health center open on Saturday during finals week?",
+   "topic": "office"
+  },
+  "asked": "Is the health center open on Saturday during finals week?",
+  "votes": [
+   "office",
+   "office",
+   "office"
+  ],
+  "old": "lookup_loop",
+  "new": "lookup_loop"
+ },
+ {
+  "id": "F02",
+  "set": "fresh-11-17",
+  "message": "just graduated and i kinda miss it here already",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "lonely"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "just graduated and i kinda miss it here already",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "F03",
+  "set": "fresh-11-17",
+  "message": "do you guys do campus tours for high schoolers? my little sister wants to see it",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Do you offer campus tours for high schoolers?",
+   "topic": "how_to"
+  },
+  "asked": "do you guys do campus tours for high schoolers? my little sister wants to see it",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F04",
+  "set": "fresh-11-17",
+  "message": "what laptop should i get for school, mac or windows?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "opinion",
+   "question": "What does the college publish about Mac and Windows laptops, and who helps students decide?",
+   "topic": "how_to"
+  },
+  "asked": "what laptop should i get for school, mac or windows? What does the college publish about Mac and Windows laptops, and who helps students decide?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F05",
+  "set": "fresh-11-17",
+  "message": "is it better to take 15 or 18 credits first semester",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "opinion",
+   "question": "What does the college publish about taking 15 or 18 credits first semester, and who helps students decide?",
+   "topic": "how_to"
+  },
+  "asked": "is it better to take 15 or 18 credits first semester. What does the college publish about taking 15 or 18 credits first semester, and who helps students decide?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F06",
+  "set": "fresh-11-17",
+  "message": "when do fall classes start",
+  "by": "code_understood"
+ },
+ {
+  "id": "F07",
+  "set": "fresh-11-17",
+  "message": "where can i get coffee late at night on campus",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "where can i get coffee late at night on campus",
+   "topic": "dining"
+  },
+  "asked": "where can i get coffee late at night on campus",
+  "votes": [
+   "dining",
+   "dining",
+   "dining"
+  ],
+  "old": "pages",
+  "new": "lookup_loop"
+ },
+ {
+  "id": "F08",
+  "set": "fresh-11-17",
+  "message": "can you just tell me everything is gonna be fine lol",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [
+    "stress_or_sadness"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "can you just tell me everything is gonna be fine lol",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "F09",
+  "set": "fresh-11-17",
+  "message": "what should i get my roommate for christmas, she likes plants",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "off_topic",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "what should i get my roommate for christmas, she likes plants",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "F10",
+  "set": "fresh-11-17",
+  "message": "Is there a club for international students, or for Indian students?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is there a club for international students, or for Indian students?",
+   "topic": "club"
+  },
+  "asked": "Is there a club for international students, or for Indian students?",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "F11",
+  "set": "fresh-11-17",
+  "message": "do i still have a hold from the health center",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "my_records",
+   "question": "How do I check whether I still have a hold from the health center?",
+   "topic": "how_to"
+  },
+  "asked": "do i still have a hold from the health center. How do I check whether I still have a hold from the health center?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F12",
+  "set": "fresh-11-17",
+  "message": "are any buildings open 24 hours during finals",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "are any buildings open 24 hours during finals",
+   "topic": "office"
+  },
+  "asked": "are any buildings open 24 hours during finals",
+  "votes": [
+   "office",
+   "office",
+   "office"
+  ],
+  "old": "lookup_loop",
+  "new": "lookup_loop"
+ },
+ {
+  "id": "F13",
+  "set": "fresh-11-17",
+  "message": "where is the student involvement office",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "where is the student involvement office",
+   "topic": "office"
+  },
+  "asked": "where is the student involvement office",
+  "votes": [
+   "office",
+   "office",
+   "office"
+  ],
+  "old": "lookup_loop",
+  "new": "lookup_loop"
+ },
+ {
+  "id": "F14",
+  "set": "fresh-11-17",
+  "message": "how many credits do i still need for my major",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "my_records",
+   "question": "How do I check how many credits I still need for my major?",
+   "topic": "program"
+  },
+  "asked": "how many credits do i still need for my major. How do I check how many credits I still need for my major?",
+  "votes": [
+   "program",
+   "program",
+   "program"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F15",
+  "set": "fresh-11-17",
+  "message": "whats my school email address",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "my_records",
+   "question": "How do I check my school email address?",
+   "topic": "how_to"
+  },
+  "asked": "whats my school email address. How do I check my school email address?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F16",
+  "set": "fresh-11-17",
+  "message": "Where is the EOF office and are they open over break?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Where is the EOF office and are they open over break?",
+   "topic": "office"
+  },
+  "asked": "Where is the EOF office and are they open over break?",
+  "votes": [
+   "office",
+   "office",
+   "office"
+  ],
+  "old": "lookup_loop",
+  "new": "lookup_loop"
+ },
+ {
+  "id": "F17",
+  "set": "fresh-11-17",
+  "message": "is it worth getting a masters right after graduating or should i work first",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "opinion",
+   "question": "What does the college publish about getting a master's degree right after graduating versus working first, and who helps students decide?",
+   "topic": "how_to"
+  },
+  "asked": "is it worth getting a masters right after graduating or should i work first. What does the college publish about getting a master's degree right after graduating versus working first, and who helps students decide?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F18",
+  "set": "fresh-11-17",
+  "message": "is there a health fair or any free screenings this month",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a health fair or any free screenings this month",
+   "topic": "event"
+  },
+  "asked": "is there a health fair or any free screenings this month",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "F19",
+  "set": "fresh-11-17",
+  "message": "Is there an application fee for grad school here?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is there an application fee for grad school here?",
+   "topic": "how_to"
+  },
+  "asked": "Is there an application fee for grad school here?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F20",
+  "set": "fresh-11-17",
+  "message": "Which clubs do you recommend to meet American students?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "lonely"
+   ],
+   "limit": "opinion",
+   "question": "What does the college publish about clubs that can help students meet American students, and who helps students decide?",
+   "topic": "club"
+  },
+  "asked": "Which clubs do you recommend to meet American students? What does the college publish about clubs that can help students meet American students, and who helps students decide?",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "F21",
+  "set": "fresh-11-17",
+  "message": "Does Ramapo have a soccer team? When do they play?",
+  "by": "code_understood"
+ },
+ {
+  "id": "F22",
+  "set": "fresh-11-17",
+  "message": "how many meal swipes do i have left",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "my_records",
+   "question": "How do I check how many meal swipes I have left?",
+   "topic": "how_to"
+  },
+  "asked": "how many meal swipes do i have left. How do I check how many meal swipes I have left?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F23",
+  "set": "fresh-11-17",
+  "message": "which is better here, the MBA or the masters in accounting",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "opinion",
+   "question": "What does the college publish about the MBA and the master's in accounting, and who helps students decide?",
+   "topic": "program"
+  },
+  "asked": "which is better here, the MBA or the masters in accounting. What does the college publish about the MBA and the master's in accounting, and who helps students decide?",
+  "votes": [
+   "program",
+   "program",
+   "program"
+  ],
+  "old": "programs",
+  "new": "programs"
+ },
+ {
+  "id": "F24",
+  "set": "fresh-11-17",
+  "message": "did my professors get my accommodation letters",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "disability"
+   ],
+   "limit": "my_records",
+   "question": "How can I check whether my professors got my accommodation letters?",
+   "topic": "how_to"
+  },
+  "asked": "did my professors get my accommodation letters. How can I check whether my professors got my accommodation letters?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "people",
+  "new": "pages"
+ },
+ {
+  "id": "F25",
+  "set": "fresh-11-17",
+  "message": "when are the tests to get credit for spanish offered",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "when are the tests to get credit for spanish offered",
+   "topic": "program"
+  },
+  "asked": "when are the tests to get credit for spanish offered",
+  "votes": [
+   "program",
+   "program",
+   "program"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F26",
+  "set": "fresh-11-17",
+  "message": "is my study abroad application approved yet",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "my_records",
+   "question": "How to check whether my study abroad application is approved yet",
+   "topic": "how_to"
+  },
+  "asked": "is my study abroad application approved yet. How to check whether my study abroad application is approved yet",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "F27",
+  "set": "fresh-11-17",
+  "message": "does the library have any workshops on writing research papers this semester",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "does the library have any workshops on writing research papers this semester",
+   "topic": "event"
+  },
+  "asked": "does the library have any workshops on writing research papers this semester",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "F28",
+  "set": "fresh-11-17",
+  "message": "whats your favorite food",
+  "reading": {
+   "social": "about_bot",
+   "danger": "none",
+   "needs": [],
+   "limit": "off_topic",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "whats your favorite food",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "F29",
+  "set": "fresh-11-17",
+  "message": "is there a specific person in student accounts for me or do i just call the main number",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a specific person in student accounts for me or do i just call the main number",
+   "topic": "person"
+  },
+  "asked": "is there a specific person in student accounts for me or do i just call the main number",
+  "votes": [
+   "person",
+   "person",
+   "person"
+  ],
+  "old": "lookup_loop",
+  "new": "people"
+ },
+ {
+  "id": "F30",
+  "set": "fresh-11-17",
+  "message": "how long does the masters in education take",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How long does the master's in education take?",
+   "topic": "program"
+  },
+  "asked": "How long does the master's in education take?",
+  "votes": [
+   "program",
+   "program",
+   "program"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "p-ac-01",
+  "set": "practice-11-03",
+  "message": "does ramapo have a nursing major and how long is it",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "does ramapo have a nursing major and how long is it",
+   "topic": "program"
+  },
+  "asked": "does ramapo have a nursing major and how long is it",
+  "votes": [
+   "program",
+   "program",
+   "program"
+  ],
+  "old": "programs",
+  "new": "programs"
+ },
+ {
+  "id": "p-ac-02",
+  "set": "practice-11-03",
+  "message": "how many credits can i take in a semester without paying extra",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "how many credits can i take in a semester without paying extra",
+   "topic": "how_to"
+  },
+  "asked": "how many credits can i take in a semester without paying extra",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "p-ch-01",
+  "set": "practice-11-03",
+  "message": "yo whats up",
+  "reading": {
+   "social": "greeting",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "yo whats up",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ch-02",
+  "set": "practice-11-03",
+  "message": "good morning rocky!!",
+  "reading": {
+   "social": "greeting",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "good morning rocky!!",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ch-03",
+  "set": "practice-11-03",
+  "message": "are you chatgpt",
+  "reading": {
+   "social": "about_bot",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "are you chatgpt",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ch-04",
+  "set": "practice-11-03",
+  "message": "lmaooo",
+  "reading": {
+   "social": "laugh",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "lmaooo",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ch-05",
+  "set": "practice-11-03",
+  "message": "jdjdjsjskskaka",
+  "reading": {
+   "social": "nonsense",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "jdjdjsjskskaka",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ch-06",
+  "set": "practice-11-03",
+  "message": "whats todays date",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "clock",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "whats todays date",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ch-07",
+  "set": "practice-11-03",
+  "message": "you suck",
+  "reading": {
+   "social": "complaint",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "you suck",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ch-08",
+  "set": "practice-11-03",
+  "message": "bye!! ttyl",
+  "reading": {
+   "social": "goodbye",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "bye!! ttyl",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ck-01",
+  "set": "practice-11-03",
+  "message": "whats my class schedule",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "my_records",
+   "question": "How to check my class schedule",
+   "topic": "how_to"
+  },
+  "asked": "whats my class schedule. How to check my class schedule",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "p-ck-02",
+  "set": "practice-11-03",
+  "message": "solve this: integral of x^2 dx",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "homework",
+   "question": "Where can I get tutoring in calculus?",
+   "topic": "how_to"
+  },
+  "asked": "Where can I get tutoring in calculus?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "p-ck-03",
+  "set": "practice-11-03",
+  "message": "write my personal statement for the nursing program",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "writing",
+   "question": "Where can I get help writing my personal statement for the nursing program?",
+   "topic": "how_to"
+  },
+  "asked": "Where can I get help writing my personal statement for the nursing program?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "programs",
+  "new": "programs"
+ },
+ {
+  "id": "p-ck-04",
+  "set": "practice-11-03",
+  "message": "can you sign me up for my spring classes",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "do_it_for_me",
+   "question": "How do I sign myself up for my spring classes?",
+   "topic": "how_to"
+  },
+  "asked": "can you sign me up for my spring classes. How do I sign myself up for my spring classes?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "p-ck-05",
+  "set": "practice-11-03",
+  "message": "whats the weather gonna be like this weekend",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "live_status",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "whats the weather gonna be like this weekend",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ck-06",
+  "set": "practice-11-03",
+  "message": "which dorm is the best",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "opinion",
+   "question": "What the college publishes about the dorms, and who helps students decide where to live.",
+   "topic": "how_to"
+  },
+  "asked": "which dorm is the best. What the college publishes about the dorms, and who helps students decide where to live.",
+  "votes": [
+   "how_to",
+   "office",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "p-ck-07",
+  "set": "practice-11-03",
+  "message": "whos gonna win the election",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "off_topic",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "whos gonna win the election",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-cr-01",
+  "set": "practice-11-03",
+  "message": "honestly i dont see the point of living anymore",
+  "reading": {
+   "social": "none",
+   "danger": "self_harm",
+   "needs": [
+    "stress_or_sadness"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "honestly i dont see the point of living anymore",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-cr-02",
+  "set": "practice-11-03",
+  "message": "my roommate took a bunch of pills and wont wake up",
+  "reading": {
+   "social": "none",
+   "danger": "medical",
+   "needs": [
+    "roommate_trouble"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "my roommate took a bunch of pills and wont wake up",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-cr-03",
+  "set": "practice-11-03",
+  "message": "some guy keeps following me around campus and i feel unsafe",
+  "reading": {
+   "social": "none",
+   "danger": "danger",
+   "needs": [
+    "harassment",
+    "stress_or_sadness"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "some guy keeps following me around campus and i feel unsafe",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ev-01",
+  "set": "practice-11-03",
+  "message": "what events are happening on campus this thursday",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "what events are happening on campus this thursday",
+   "topic": "event"
+  },
+  "asked": "what events are happening on campus this thursday",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "p-ev-02",
+  "set": "practice-11-03",
+  "message": "is there a chess club or a board game club",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a chess club or a board game club",
+   "topic": "club"
+  },
+  "asked": "is there a chess club or a board game club",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "p-fe-01",
+  "set": "practice-11-03",
+  "message": "i'm so overwhelmed with everything this semester",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "stress_or_sadness"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "i'm so overwhelmed with everything this semester",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-fe-02",
+  "set": "practice-11-03",
+  "message": "i have no one to sit with at lunch",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "lonely"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "i have no one to sit with at lunch",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-fe-03",
+  "set": "practice-11-03",
+  "message": "i think im gonna fail orgo",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "school_trouble",
+    "stress_or_sadness"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "i think im gonna fail orgo",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-fe-04",
+  "set": "practice-11-03",
+  "message": "my professor keeps embarrassing me in front of the class",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "professor_trouble"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "my professor keeps embarrassing me in front of the class",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-fe-05",
+  "set": "practice-11-03",
+  "message": "my suitemate keeps eating my food and wont talk to me about it",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "roommate_trouble"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "my suitemate keeps eating my food and wont talk to me about it",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-fe-06",
+  "set": "practice-11-03",
+  "message": "can i take advil with my antibiotics",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "health"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "can i take advil with my antibiotics",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-fe-07",
+  "set": "practice-11-03",
+  "message": "i cant afford my textbooks this semester",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "money"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "i cant afford my textbooks this semester",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-fe-08",
+  "set": "practice-11-03",
+  "message": "my dog died yesterday and i cant stop crying",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "stress_or_sadness"
+   ],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "my dog died yesterday and i cant stop crying",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "p-ht-01",
+  "set": "practice-11-03",
+  "message": "how do i get my transcript sent to another school",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "how do i get my transcript sent to another school",
+   "topic": "how_to"
+  },
+  "asked": "how do i get my transcript sent to another school",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "p-ht-02",
+  "set": "practice-11-03",
+  "message": "how do i reserve a study room in the library",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "how do i reserve a study room in the library",
+   "topic": "how_to"
+  },
+  "asked": "how do i reserve a study room in the library",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "p-mx-01",
+  "set": "practice-11-03",
+  "message": "heyy quick q where's the career center",
+  "reading": {
+   "social": "greeting",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Where is the career center?",
+   "topic": "office"
+  },
+  "asked": "Where is the career center?",
+  "votes": [
+   "office",
+   "office",
+   "office"
+  ],
+  "old": "code_lookup",
+  "new": "code_lookup"
+ },
+ {
+  "id": "p-mx-02",
+  "set": "practice-11-03",
+  "message": "im freaking out i lost my wallet, is there a lost and found",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is there a lost and found?",
+   "topic": "office"
+  },
+  "asked": "im freaking out i lost my wallet, is there a lost and found",
+  "votes": [
+   "how_to",
+   "office",
+   "office"
+  ],
+  "old": "pages",
+  "new": "lookup_loop"
+ },
+ {
+  "id": "p-pp-01",
+  "set": "practice-11-03",
+  "message": "who's the chair of the psych department",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Who is the chair of the psychology department?",
+   "topic": "person"
+  },
+  "asked": "Who is the chair of the psychology department?",
+  "votes": [
+   "person",
+   "person",
+   "person"
+  ],
+  "old": "people",
+  "new": "people"
+ },
+ {
+  "id": "p-pp-02",
+  "set": "practice-11-03",
+  "message": "who runs the honors program",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "who runs the honors program",
+   "topic": "person"
+  },
+  "asked": "who runs the honors program",
+  "votes": [
+   "person",
+   "person",
+   "person"
+  ],
+  "old": "people",
+  "new": "people"
+ },
+ {
+  "id": "p-sl-01",
+  "set": "practice-11-03",
+  "message": "wen does winter brk start",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "When does winter break start?",
+   "topic": "dates"
+  },
+  "asked": "When does winter break start?",
+  "votes": [
+   "dates",
+   "dates",
+   "dates"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "p-sl-02",
+  "set": "practice-11-03",
+  "message": "where da student center at",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Where is the student center?",
+   "topic": "office"
+  },
+  "asked": "Where is the student center?",
+  "votes": [
+   "office",
+   "office",
+   "office"
+  ],
+  "old": "code_lookup",
+  "new": "code_lookup"
+ },
+ {
+  "id": "p-sl-03",
+  "set": "practice-11-03",
+  "message": "registrar # ?",
+  "by": "code_understood"
+ },
+ {
+  "id": "p-sl-04",
+  "set": "practice-11-03",
+  "message": "wats for lunch at the atrium today",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What is for lunch at the Atrium today?",
+   "topic": "dining"
+  },
+  "asked": "What is for lunch at the Atrium today?",
+  "votes": [
+   "dining",
+   "dining",
+   "dining"
+  ],
+  "old": "code_lookup",
+  "new": "code_lookup"
+ },
+ {
+  "id": "p-sl-05",
+  "set": "practice-11-03",
+  "message": "is there a shuttle 2 the mall",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is there a shuttle to the mall?",
+   "topic": "shuttle"
+  },
+  "asked": "is there a shuttle 2 the mall",
+  "votes": [
+   "shuttle",
+   "shuttle",
+   "shuttle"
+  ],
+  "old": "lookup_loop",
+  "new": "lookup_loop"
+ },
+ {
+  "id": "p-sl-06",
+  "set": "practice-11-03",
+  "message": "anything fun goin on tonite",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is anything fun going on tonight?",
+   "topic": "event"
+  },
+  "asked": "Is anything fun going on tonight?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "p-sl-07",
+  "set": "practice-11-03",
+  "message": "how do i add money 2 my id card",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I add money to my ID card?",
+   "topic": "how_to"
+  },
+  "asked": "how do i add money 2 my id card",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "p-sl-08",
+  "set": "practice-11-03",
+  "message": "is the learning commons open sun",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is the Learning Commons open Sunday?",
+   "topic": "office"
+  },
+  "asked": "Is the Learning Commons open Sunday?",
+  "votes": [
+   "office",
+   "office",
+   "office"
+  ],
+  "old": "code_lookup",
+  "new": "code_lookup"
+ },
+ {
+  "id": "pc-g01",
+  "set": "practice-c-11-03",
+  "message": "what fraternities and sororities are there",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "what fraternities and sororities are there",
+   "topic": "club"
+  },
+  "asked": "what fraternities and sororities are there",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-g02",
+  "set": "practice-c-11-03",
+  "message": "are there any honor societies",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "are there any honor societies",
+   "topic": "club"
+  },
+  "asked": "are there any honor societies",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-g03",
+  "set": "practice-c-11-03",
+  "message": "what cultural clubs are there",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "what cultural clubs are there",
+   "topic": "club"
+  },
+  "asked": "what cultural clubs are there",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-g04",
+  "set": "practice-c-11-03",
+  "message": "what sports clubs are there",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "what sports clubs are there",
+   "topic": "club"
+  },
+  "asked": "what sports clubs are there",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-g05",
+  "set": "practice-c-11-03",
+  "message": "are there any religious clubs",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "are there any religious clubs",
+   "topic": "club"
+  },
+  "asked": "are there any religious clubs",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-g06",
+  "set": "practice-c-11-03",
+  "message": "are there any political clubs",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "are there any political clubs",
+   "topic": "club"
+  },
+  "asked": "are there any political clubs",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-g07",
+  "set": "practice-c-11-03",
+  "message": "are there any music clubs",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "are there any music clubs",
+   "topic": "club"
+  },
+  "asked": "are there any music clubs",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-g08",
+  "set": "practice-c-11-03",
+  "message": "what business clubs are there",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "what business clubs are there",
+   "topic": "club"
+  },
+  "asked": "what business clubs are there",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-g09",
+  "set": "practice-c-11-03",
+  "message": "are there any stem clubs",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "are there any stem clubs",
+   "topic": "club"
+  },
+  "asked": "are there any stem clubs",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-g10",
+  "set": "practice-c-11-03",
+  "message": "are there any gaming clubs",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "are there any gaming clubs",
+   "topic": "club"
+  },
+  "asked": "are there any gaming clubs",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-h01",
+  "set": "practice-c-11-03",
+  "message": "any sports games coming up",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any sports games coming up?",
+   "topic": "team"
+  },
+  "asked": "Are there any sports games coming up?",
+  "votes": [
+   "team",
+   "team",
+   "team"
+  ],
+  "old": "events_clubs",
+  "new": "pages"
+ },
+ {
+  "id": "pc-h02",
+  "set": "practice-c-11-03",
+  "message": "any cultural events coming up",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any cultural events coming up?",
+   "topic": "event"
+  },
+  "asked": "Are there any cultural events coming up?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-h03",
+  "set": "practice-c-11-03",
+  "message": "any wellness events",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any wellness events?",
+   "topic": "event"
+  },
+  "asked": "Are there any wellness events?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-h04",
+  "set": "practice-c-11-03",
+  "message": "any art events",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any art events?",
+   "topic": "event"
+  },
+  "asked": "Are there any art events?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-h05",
+  "set": "practice-c-11-03",
+  "message": "any greek life events",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any Greek life events?",
+   "topic": "event"
+  },
+  "asked": "Are there any Greek life events?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-h06",
+  "set": "practice-c-11-03",
+  "message": "any theater shows",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any theater shows?",
+   "topic": "event"
+  },
+  "asked": "Are there any theater shows?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-h07",
+  "set": "practice-c-11-03",
+  "message": "any decorating events",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any decorating events?",
+   "topic": "event"
+  },
+  "asked": "Are there any decorating events?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-h08",
+  "set": "practice-c-11-03",
+  "message": "any events for commuters",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any events for commuters?",
+   "topic": "event"
+  },
+  "asked": "Are there any events for commuters?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-h09",
+  "set": "practice-c-11-03",
+  "message": "any events about studying abroad",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any events about studying abroad?",
+   "topic": "event"
+  },
+  "asked": "Are there any events about studying abroad?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-h10",
+  "set": "practice-c-11-03",
+  "message": "any service events",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any service events?",
+   "topic": "event"
+  },
+  "asked": "Are there any service events?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v01",
+  "set": "practice-c-11-03",
+  "message": "any tea events",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any tea events?",
+   "topic": "event"
+  },
+  "asked": "Are there any tea events?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v02",
+  "set": "practice-c-11-03",
+  "message": "anything for black solidarity week",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What is happening for Black Solidarity Week?",
+   "topic": "event"
+  },
+  "asked": "anything for black solidarity week",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v03",
+  "set": "practice-c-11-03",
+  "message": "any events about scholarships",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any events about scholarships?",
+   "topic": "event"
+  },
+  "asked": "Are there any events about scholarships?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v04",
+  "set": "practice-c-11-03",
+  "message": "are there any pet therapy events",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "are there any pet therapy events",
+   "topic": "event"
+  },
+  "asked": "are there any pet therapy events",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v05",
+  "set": "practice-c-11-03",
+  "message": "is there a semi formal coming up",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a semi formal coming up",
+   "topic": "event"
+  },
+  "asked": "is there a semi formal coming up",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v06",
+  "set": "practice-c-11-03",
+  "message": "any knitting events",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any knitting events?",
+   "topic": "event"
+  },
+  "asked": "Are there any knitting events?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v07",
+  "set": "practice-c-11-03",
+  "message": "any coding workshops",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any coding workshops?",
+   "topic": "event"
+  },
+  "asked": "Are there any coding workshops?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v08",
+  "set": "practice-c-11-03",
+  "message": "any events with dogs",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any events with dogs?",
+   "topic": "event"
+  },
+  "asked": "Are there any events with dogs?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v09",
+  "set": "practice-c-11-03",
+  "message": "any study sessions",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any study sessions?",
+   "topic": "event"
+  },
+  "asked": "Are there any study sessions?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v10",
+  "set": "practice-c-11-03",
+  "message": "anything about narcan or overdoses",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What is there about Narcan or overdoses?",
+   "topic": "how_to"
+  },
+  "asked": "anything about narcan or overdoses",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "pc-v11",
+  "set": "practice-c-11-03",
+  "message": "any fashion shows",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any fashion shows?",
+   "topic": "event"
+  },
+  "asked": "Are there any fashion shows?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v12",
+  "set": "practice-c-11-03",
+  "message": "any bingo nights",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any bingo nights?",
+   "topic": "event"
+  },
+  "asked": "Are there any bingo nights?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v13",
+  "set": "practice-c-11-03",
+  "message": "any karaoke nights",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any karaoke nights?",
+   "topic": "event"
+  },
+  "asked": "Are there any karaoke nights?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v14",
+  "set": "practice-c-11-03",
+  "message": "any leadership events",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any leadership events?",
+   "topic": "event"
+  },
+  "asked": "Are there any leadership events?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v15",
+  "set": "practice-c-11-03",
+  "message": "any events about sexual health",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any events about sexual health?",
+   "topic": "event"
+  },
+  "asked": "Are there any events about sexual health?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v16",
+  "set": "practice-c-11-03",
+  "message": "any events about saving money",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any events about saving money?",
+   "topic": "event"
+  },
+  "asked": "Are there any events about saving money?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v17",
+  "set": "practice-c-11-03",
+  "message": "any movie screenings",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any movie screenings?",
+   "topic": "event"
+  },
+  "asked": "Are there any movie screenings?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v18",
+  "set": "practice-c-11-03",
+  "message": "any events for international students",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any events for international students?",
+   "topic": "event"
+  },
+  "asked": "Are there any events for international students?",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v19",
+  "set": "practice-c-11-03",
+  "message": "any book clubs meeting",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are any book clubs meeting?",
+   "topic": "club"
+  },
+  "asked": "Are any book clubs meeting?",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-v20",
+  "set": "practice-c-11-03",
+  "message": "any pumpkin carving",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Are there any pumpkin carving events?",
+   "topic": "event"
+  },
+  "asked": "any pumpkin carving",
+  "votes": [
+   "event",
+   "event",
+   "event"
+  ],
+  "old": "pages",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w01",
+  "set": "practice-c-11-03",
+  "message": "is there an anime club",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there an anime club",
+   "topic": "club"
+  },
+  "asked": "is there an anime club",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w02",
+  "set": "practice-c-11-03",
+  "message": "is there a club for nurses",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for nurses",
+   "topic": "club"
+  },
+  "asked": "is there a club for nurses",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w03",
+  "set": "practice-c-11-03",
+  "message": "is there a club for future teachers",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for future teachers",
+   "topic": "club"
+  },
+  "asked": "is there a club for future teachers",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w04",
+  "set": "practice-c-11-03",
+  "message": "is there a cheerleading team",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a cheerleading team",
+   "topic": "team"
+  },
+  "asked": "is there a cheerleading team",
+  "votes": [
+   "team",
+   "team",
+   "team"
+  ],
+  "old": "events_clubs",
+  "new": "pages"
+ },
+ {
+  "id": "pc-w05",
+  "set": "practice-c-11-03",
+  "message": "is there a club for veterans",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for veterans",
+   "topic": "club"
+  },
+  "asked": "is there a club for veterans",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w06",
+  "set": "practice-c-11-03",
+  "message": "is there a club for transfer students",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for transfer students",
+   "topic": "club"
+  },
+  "asked": "is there a club for transfer students",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w07",
+  "set": "practice-c-11-03",
+  "message": "is there a club for latino students",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for latino students",
+   "topic": "club"
+  },
+  "asked": "is there a club for latino students",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w08",
+  "set": "practice-c-11-03",
+  "message": "is there an lgbtq club",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there an lgbtq club",
+   "topic": "club"
+  },
+  "asked": "is there an lgbtq club",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w09",
+  "set": "practice-c-11-03",
+  "message": "is there a ballet club",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a ballet club",
+   "topic": "club"
+  },
+  "asked": "is there a ballet club",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w10",
+  "set": "practice-c-11-03",
+  "message": "is there a club for marketing",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for marketing",
+   "topic": "club"
+  },
+  "asked": "is there a club for marketing",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w11",
+  "set": "practice-c-11-03",
+  "message": "is there a club for fantasy books",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for fantasy books",
+   "topic": "club"
+  },
+  "asked": "is there a club for fantasy books",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w12",
+  "set": "practice-c-11-03",
+  "message": "is there a club for people interested in space",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for people interested in space",
+   "topic": "club"
+  },
+  "asked": "is there a club for people interested in space",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w13",
+  "set": "practice-c-11-03",
+  "message": "is there a hockey team",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a hockey team",
+   "topic": "team"
+  },
+  "asked": "is there a hockey team",
+  "votes": [
+   "team",
+   "team",
+   "team"
+  ],
+  "old": "events_clubs",
+  "new": "pages"
+ },
+ {
+  "id": "pc-w14",
+  "set": "practice-c-11-03",
+  "message": "is there a martial arts club",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a martial arts club",
+   "topic": "club"
+  },
+  "asked": "is there a martial arts club",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w15",
+  "set": "practice-c-11-03",
+  "message": "is there a baking club",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a baking club",
+   "topic": "club"
+  },
+  "asked": "is there a baking club",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w16",
+  "set": "practice-c-11-03",
+  "message": "is there a club for comic books",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for comic books",
+   "topic": "club"
+  },
+  "asked": "is there a club for comic books",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w17",
+  "set": "practice-c-11-03",
+  "message": "is there a lacrosse team",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a lacrosse team",
+   "topic": "team"
+  },
+  "asked": "is there a lacrosse team",
+  "votes": [
+   "team",
+   "team",
+   "team"
+  ],
+  "old": "events_clubs",
+  "new": "pages"
+ },
+ {
+  "id": "pc-w18",
+  "set": "practice-c-11-03",
+  "message": "is there a club for future nurses or doctors",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for future nurses or doctors",
+   "topic": "club"
+  },
+  "asked": "is there a club for future nurses or doctors",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w19",
+  "set": "practice-c-11-03",
+  "message": "is there a club for people who like hiking and camping",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for people who like hiking and camping",
+   "topic": "club"
+  },
+  "asked": "is there a club for people who like hiking and camping",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "pc-w20",
+  "set": "practice-c-11-03",
+  "message": "is there a club for musicians",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is there a club for musicians",
+   "topic": "club"
+  },
+  "asked": "is there a club for musicians",
+  "votes": [
+   "club",
+   "club",
+   "club"
+  ],
+  "old": "events_clubs",
+  "new": "events_clubs"
+ },
+ {
+  "id": "zl1-01",
+  "set": "missed",
+  "message": "how do i find out why my financial aid hasnt shown up yet and who do i talk to",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "money"
+   ],
+   "limit": "my_records",
+   "question": "How do I check why my financial aid hasn't shown up yet and who do I talk to?",
+   "topic": "how_to"
+  },
+  "asked": "how do i find out why my financial aid hasnt shown up yet and who do i talk to. How do I check why my financial aid hasn't shown up yet and who do I talk to?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "person"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl1-02",
+  "set": "missed",
+  "message": "How do I set up a payment plan for spring semester tuition? and is there a fee to enroll in it",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I set up a payment plan for spring semester tuition? and is there a fee to enroll in it",
+   "topic": "how_to"
+  },
+  "asked": "How do I set up a payment plan for spring semester tuition? and is there a fee to enroll in it",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl1-03",
+  "set": "missed",
+  "message": "refund",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "",
+   "topic": "how_to"
+  },
+  "asked": "refund",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "by": "code_reply"
+ },
+ {
+  "id": "zl1-04",
+  "set": "good",
+  "message": "I got a credit balance on my student account after my aid posted, how do I get that money sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "my_records",
+   "question": "How do I get the credit balance on my student account after my aid posted sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
+   "topic": "how_to"
+  },
+  "asked": "I got a credit balance on my student account after my aid posted, how do I get that money sent to me? Do I need to sign up for direct deposit or does it just get mailed? How do I get the credit balance on my student account after my aid posted sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl1-05",
+  "set": "missed",
+  "message": "whats the deadline to file the FAFSA for next year and what does ramapo need from me besides that",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What is the deadline to file the FAFSA for next year, and what does Ramapo need from me besides that?",
+   "topic": "how_to"
+  },
+  "asked": "What is the deadline to file the FAFSA for next year, and what does Ramapo need from me besides that?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl1-06",
+  "set": "good",
+  "message": "how do i get a work study job on campus? i have it in my aid package but idk where to apply",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I get a work-study job on campus? I have it in my aid package, but I don't know where to apply.",
+   "topic": "how_to"
+  },
+  "asked": "how do i get a work study job on campus? i have it in my aid package but idk where to apply",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl1-08",
+  "set": "good",
+  "message": "I need to submit a verification form for fafsa, they said i got selected. where do i upload it and how long does it take",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Where do I upload a verification form for FAFSA, and how long does it take?",
+   "topic": "how_to"
+  },
+  "asked": "I need to submit a verification form for fafsa, they said i got selected. where do i upload it and how long does it take",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl1-09",
+  "set": "missed",
+  "message": "what is the policy on withdrawing from a class after the deadline and does it affect my aid/satisfactory academic progress",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What is the policy on withdrawing from a class after the deadline, and does it affect my aid or satisfactory academic progress?",
+   "topic": "how_to"
+  },
+  "asked": "What is the policy on withdrawing from a class after the deadline, and does it affect my aid or satisfactory academic progress?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl1-13",
+  "set": "good",
+  "message": "how do i add my parent as an authorized user so they can pay my bill",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "how do i add my parent as an authorized user so they can pay my bill",
+   "topic": "how_to"
+  },
+  "asked": "how do i add my parent as an authorized user so they can pay my bill",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl1-15",
+  "set": "missed",
+  "message": "is my 1098-T available yet? need it for taxes and cant find where to get it. also how do i get a copy of last years",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "my_records",
+   "question": "How to check whether my 1098-T is available yet, where to get it, and how to get a copy of last year's?",
+   "topic": "how_to"
+  },
+  "asked": "is my 1098-T available yet? need it for taxes and cant find where to get it. also how do i get a copy of last years. How to check whether my 1098-T is available yet, where to get it, and how to get a copy of last year's?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl2-01",
+  "set": "missed",
+  "message": "im a transfer student and i commute, how do i get a parking permit and where do i park",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I get a parking permit and where do I park?",
+   "topic": "how_to"
+  },
+  "asked": "im a transfer student and i commute, how do i get a parking permit and where do i park",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl2-04",
+  "set": "missed",
+  "message": "how do I find out if my credits from my old community college transferred and who do I talk to if some of them didnt count",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "how do I find out if my credits from my old community college transferred and who do I talk to if some of them didnt count",
+   "topic": "how_to"
+  },
+  "asked": "how do I find out if my credits from my old community college transferred and who do I talk to if some of them didnt count",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl2-05",
+  "set": "good",
+  "message": "I lost my ID card, how do I get a replacement",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I get a replacement for my lost ID card?",
+   "topic": "how_to"
+  },
+  "asked": "How do I get a replacement for my lost ID card?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl2-08",
+  "set": "missed",
+  "message": "I'm a commuter student and I have a 3 hour gap between classes. Is there somewhere on campus I can study or hang out, like a commuter lounge, and is there a way to store my stuff?",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "Is there somewhere on campus I can study or hang out, like a commuter lounge, and is there a way to store my stuff?",
+   "topic": "how_to"
+  },
+  "asked": "I'm a commuter student and I have a 3 hour gap between classes. Is there somewhere on campus I can study or hang out, like a commuter lounge, and is there a way to store my stuff?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl2-09",
+  "set": "good",
+  "message": "how do i set up my campus email and wifi login",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "How do I set up my campus email and Wi-Fi login?",
+   "topic": "how_to"
+  },
+  "asked": "how do i set up my campus email and wifi login",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl2-10",
+  "set": "missed",
+  "message": "what is the deadline to drop a class without a W and how do i do it",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "what is the deadline to drop a class without a W and how do i do it",
+   "topic": "how_to"
+  },
+  "asked": "what is the deadline to drop a class without a W and how do i do it",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl2-11",
+  "set": "missed",
+  "message": "which office do i go to for financial aid questions and are they open in person or just online",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "which office do i go to for financial aid questions and are they open in person or just online",
+   "topic": "office"
+  },
+  "asked": "which office do i go to for financial aid questions and are they open in person or just online",
+  "votes": [
+   "office",
+   "office",
+   "office"
+  ],
+  "old": "lookup_loop",
+  "new": "lookup_loop"
+ },
+ {
+  "id": "zl2-15",
+  "set": "missed",
+  "message": "what will the parking permit cost next semester",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "what will the parking permit cost next semester",
+   "topic": "how_to"
+  },
+  "asked": "what will the parking permit cost next semester",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl3-01",
+  "set": "missed",
+  "message": "my roommate keeps having his girlfriend sleep over like 5 nights a week. is there a guest policy and who do i talk to about it",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "roommate_trouble"
+   ],
+   "limit": "none",
+   "question": "Is there a guest policy, and who do I talk to about it?",
+   "topic": "how_to"
+  },
+  "asked": "my roommate keeps having his girlfriend sleep over like 5 nights a week. is there a guest policy and who do i talk to about it",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl3-02",
+  "set": "good",
+  "message": "how do i switch roommates? we're not getting along at all",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [
+    "roommate_trouble"
+   ],
+   "limit": "none",
+   "question": "How do I switch roommates?",
+   "topic": "how_to"
+  },
+  "asked": "how do i switch roommates? we're not getting along at all",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl3-05",
+  "set": "good",
+  "message": "Missed 3 classes last week because I was in the hospital. How do I get my professors to excuse the absences, is there an office that sends a note or something?",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [
+    "health",
+    "school_trouble"
+   ],
+   "limit": "none",
+   "question": "How do I get my professors to excuse the absences, and is there an office that sends a note or something?",
+   "topic": "how_to"
+  },
+  "asked": "Missed 3 classes last week because I was in the hospital. How do I get my professors to excuse the absences, is there an office that sends a note or something?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "people",
+  "new": "pages"
+ },
+ {
+  "id": "zl3-07",
+  "set": "missed",
+  "message": "how do i get a parking permit and how much does it cost",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "how do i get a parking permit and how much does it cost",
+   "topic": "how_to"
+  },
+  "asked": "how do i get a parking permit and how much does it cost",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl3-10",
+  "set": "missed",
+  "message": "is it too late to withdraw from a class this semester and what happens to my transcript if i do",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "is it too late to withdraw from a class this semester and what happens to my transcript if i do",
+   "topic": "how_to"
+  },
+  "asked": "is it too late to withdraw from a class this semester and what happens to my transcript if i do",
+  "votes": [
+   "dates",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl3-11",
+  "set": "missed",
+  "message": "something fell off the ceiling in my bathroom and theres a leak. who do I call at night, public safety or facilities?",
+  "reading": {
+   "social": "upset",
+   "danger": "none",
+   "needs": [
+    "food_or_housing"
+   ],
+   "limit": "none",
+   "question": "Who do I call at night, Public Safety or Facilities, about something that fell off the ceiling in my bathroom and a leak?",
+   "topic": "how_to"
+  },
+  "asked": "something fell off the ceiling in my bathroom and theres a leak. who do I call at night, public safety or facilities?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "lookup_loop",
+  "new": "pages"
+ },
+ {
+  "id": "zl3-12",
+  "set": "missed",
+  "message": "whats my current balance and do i have any holds on my account",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "my_records",
+   "question": "How do I check my current balance and whether I have any holds on my account?",
+   "topic": "how_to"
+  },
+  "asked": "whats my current balance and do i have any holds on my account. How do I check my current balance and whether I have any holds on my account?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl3-13",
+  "set": "missed",
+  "message": "My RA wrote me up for a candle. what happens now? do i have to go to a hearing",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "What happens now that my RA wrote me up for a candle? Do I have to go to a hearing?",
+   "topic": "how_to"
+  },
+  "asked": "What happens now that my RA wrote me up for a candle? Do I have to go to a hearing?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl3-14",
+  "set": "good",
+  "message": "is the health center open right now?",
+  "by": "code_understood"
+ },
+ {
+  "id": "zl4-06",
+  "set": "good",
+  "message": "do I get to keep my ramapo email after I graduate",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "do I get to keep my ramapo email after I graduate",
+   "topic": "how_to"
+  },
+  "asked": "do I get to keep my ramapo email after I graduate",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl4-10",
+  "set": "good",
+  "message": "can alumni still use career services and the library after graduating",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "none",
+   "question": "can alumni still use career services and the library after graduating",
+   "topic": "how_to"
+  },
+  "asked": "can alumni still use career services and the library after graduating",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ },
+ {
+  "id": "zl4-12",
+  "set": "missed",
+  "message": "Do I still owe anything to the college? I need to clear my balance before graduation",
+  "reading": {
+   "social": "none",
+   "danger": "none",
+   "needs": [],
+   "limit": "my_records",
+   "question": "How do I check whether I still owe anything to the college?",
+   "topic": "how_to"
+  },
+  "asked": "Do I still owe anything to the college? I need to clear my balance before graduation. How do I check whether I still owe anything to the college?",
+  "votes": [
+   "how_to",
+   "how_to",
+   "how_to"
+  ],
+  "old": "pages",
+  "new": "pages"
+ }
+]
