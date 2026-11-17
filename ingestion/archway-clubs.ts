@@ -53,7 +53,7 @@ const STANDARD_CLUB_TAB_PATHS = [
   'contact-us',
 ] as const;
 
-type ClubSeedRecord = ArchwayClub & {
+export type ClubSeedRecord = ArchwayClub & {
   clubId?: string;
   mission?: string;
   memberBenefits?: string;
@@ -833,7 +833,40 @@ async function crawlClubScopePages(
   return pages;
 }
 
+/** A club's pages are read again at least this often, even when its card has not changed. */
+export const CLUB_DETAIL_REREAD_DAYS = 180;
+
+/**
+ * The detail pages an earlier run read for a club whose card (name and Archway address) is
+ * unchanged, read within CLUB_DETAIL_REREAD_DAYS and with at least one page that loaded. A new
+ * or renamed club, or one read too long ago, gets undefined and is crawled again.
+ */
+export function reusableClubPages(club: ClubSeedRecord, previousClubs: readonly ClubSeedRecord[],
+  previous: RawDatasetV1 | null, now = new Date()): RawPageV1[] | undefined {
+  const scope = buildClubScope(club);
+  if (!scope || !previous) return undefined;
+  const before = previousClubs.find(candidate => candidate.websiteUrl === club.websiteUrl);
+  if (!before || before.name !== club.name) return undefined;
+  const pages = previous.pages.filter(page => page.sourceType === 'detail' && isUrlWithinClubScope(page.url, scope));
+  const loaded = pages.filter(page => page.statusCode !== null && page.statusCode >= 200 && page.statusCode < 300);
+  if (!loaded.length) return undefined;
+  const oldest = Math.min(...pages.map(page => Date.parse(page.fetchedAt)));
+  if (!Number.isFinite(oldest) || now.getTime() - oldest > CLUB_DETAIL_REREAD_DAYS * 86_400_000) return undefined;
+  return pages;
+}
+
+function readPreviousJson<T>(file: string): T | null {
+  try {
+    return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) as T : null;
+  } catch {
+    return null;
+  }
+}
+
 async function collectClubDetailRaw(clubs: ClubSeedRecord[], listHtml: string): Promise<RawDatasetV1> {
+  // The club list is read every week; a club's own pages only when it is new, renamed or due.
+  const previousClubs = readPreviousJson<ClubSeedRecord[]>(RAW_JSON_PATH) ?? [];
+  const previousDetail = readPreviousJson<RawDatasetV1>(DETAIL_RAW_JSON_PATH);
   const detailLimit = parsePositiveInt(process.env.ARCHWAY_CLUB_DETAIL_LIMIT, clubs.length);
   const detailConcurrency = parsePositiveInt(
     process.env.ARCHWAY_CLUB_DETAIL_CONCURRENCY,
@@ -856,6 +889,11 @@ async function collectClubDetailRaw(clubs: ClubSeedRecord[], listHtml: string): 
   const perClubPages = await Promise.all(
     scopeEntries.map((entry) =>
       crawlLimit(async () => {
+        const reused = reusableClubPages(entry.club, Array.isArray(previousClubs) ? previousClubs : [], previousDetail);
+        if (reused) {
+          processed += 1;
+          return reused;
+        }
         const pages = await crawlClubScopePages(entry.scope, maxPagesPerClub, timeoutMs);
         processed += 1;
         if (processed % 10 === 0 || processed === scopeEntries.length) {

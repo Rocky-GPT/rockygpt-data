@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { isClubCalendarExportUrl, rebuildClubsFromRaw, toNormalizedClub } from './archway-clubs';
+import { isClubCalendarExportUrl, rebuildClubsFromRaw, reusableClubPages, toNormalizedClub } from './archway-clubs';
 import { validateArchwayClubs } from './schema';
 import type { RawDatasetV1, RawPageV1 } from './raw-types';
 
@@ -52,4 +52,18 @@ test('offline rebuild retains complete mission, benefits and membership text fro
   assert.deepEqual(club.groupmeGroups, seeds[0].groupmeGroups);
   assert.equal('signupPrompt' in club, false);
   assert.equal('rawCardText' in club, false);
+});
+
+test('an unchanged club keeps the pages read for it; a new, renamed or long-unread club is read again', () => {
+  const club = { name: 'Sports Club', category: 'Student Organization', sourceUrl: 'https://archway.ramapo.edu/club_signup?view=all&', websiteUrl: 'https://archway.ramapo.edu/Sport/' };
+  const page: RawPageV1 = { url: 'https://archway.ramapo.edu/Sport/contact-us/', sourceType: 'detail', fetchedAt: '2026-11-17T04:00:00Z', statusCode: 200, title: 'Contact', links: [], externalLinks: [], sections: [], lists: [], tables: [], contacts: [], documents: [] };
+  const other = { ...page, url: 'https://archway.ramapo.edu/Other/' };
+  const previous: RawDatasetV1 = { version: '1.0', dataset: 'clubs-detail', collectedAt: page.fetchedAt, seedUrls: [], stats: { pagesFetched: 2, pagesFailed: 0, externalLinksSeen: 0 }, pages: [page, other] };
+  const now = new Date('2026-11-24T04:00:00Z');
+  assert.deepEqual(reusableClubPages(club, [club], previous, now), [page]);
+  assert.equal(reusableClubPages(club, [], previous, now), undefined, 'new club');
+  assert.equal(reusableClubPages(club, [{ ...club, name: 'Sports Club of Ramapo' }], previous, now), undefined, 'renamed');
+  assert.equal(reusableClubPages(club, [club], previous, new Date('2027-06-01T00:00:00Z')), undefined, 'read too long ago');
+  assert.equal(reusableClubPages(club, [club], { ...previous, pages: [{ ...page, statusCode: 404 }] }, now), undefined, 'no page loaded');
+  assert.equal(reusableClubPages(club, [club], null, now), undefined, 'no earlier read');
 });
