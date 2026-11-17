@@ -70,26 +70,30 @@ jobs:
       - name: Switch releases in a 512 MB, half-processor box, case by case
         run: |
           set +e
-          run_case() {  # name image graph writer asking
+          run_case() {  # name image graph writer asking mode
             rm -rf sw && cp -r "$3" sw && chmod -R u+w sw
             GRAPH_DIR=sw WORK_DIR=sw PREPARE_ONLY=1 python data/study3/switch_box.py > /dev/null 2>&1
             chmod -R a+rwX sw
             docker rm -f box > /dev/null 2>&1
             docker run --name box --memory=512m --memory-swap=512m --cpus=0.5 \
-              -e WRITER="$4" -e BRAIN_REF="$2" -e AT_ONCE="$5" -e BEFORE=30 -e SWITCHES=2 \
+              -e WRITER="$4" -e BRAIN_REF="$2" -e AT_ONCE="$5" -e MODE="$6" -e BEFORE=30 -e SWITCHES=2 \
               -e GRAPH_DIR=/graph -e WORK_DIR=/graph \
               -v "$PWD/sw:/graph" -v "$PWD/data/study3:/study:ro" \
               "$2" python /study/switch_box.py > "out-$1.txt" 2>&1
             docker inspect box --format 'BOX RESULT: ran out of memory {{.State.OOMKilled}}; exit code {{.State.ExitCode}}' >> "out-$1.txt"
           }
-          run_case 1-live-nobody-asking box-main .graph-live ai 0
-          run_case 2-live-two-asking box-main .graph-live ai 2
-          run_case 3-dev-nobody-asking box-dev .graph-dev sections 0
-          run_case 4-dev-two-asking box-dev .graph-dev sections 2
+          # Today's way (a second engine beside the first) and the fix being tried (pause, drop, read).
+          run_case 1-live-two-asking-today box-main .graph-live ai 2 double
+          run_case 2-dev-two-asking-today box-dev .graph-dev sections 2 double
+          run_case 3-dev-one-asking-today box-dev .graph-dev sections 1 double
+          run_case 4-dev-two-asking-pause box-dev .graph-dev sections 2 pause
+          run_case 5-live-two-asking-pause box-main .graph-live ai 2 pause
+          run_case 6-dev-four-asking-pause box-dev .graph-dev sections 4 pause
+          run_case 7-dev-two-asking-today-again box-dev .graph-dev sections 2 double
           echo "SUMMARY START"
           for f in out-*.txt; do
             echo "CASE $f"
-            grep -E "^release|^after warm|^BEFORE|^SWITCH|^AFTER|^FINISHED|^BOX RESULT|Error|error:" "$f" | cut -c1-560 | head -12
+            grep -E "^release|^after warm|^BEFORE|^PAUSE|^SWITCH|^AFTER|^FINISHED|^BOX RESULT|Traceback|^[A-Za-z]*Error" "$f" | cut -c1-520
           done
           echo "SUMMARY END"
           exit 0

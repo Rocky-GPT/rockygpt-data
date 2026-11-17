@@ -12,6 +12,7 @@ inside its own graph folder copy.
 
 import asyncio
 import datetime
+import gc
 import inspect
 import json
 import os
@@ -20,20 +21,25 @@ import statistics
 import threading
 import time
 import types
+import weakref
 from pathlib import Path
 from typing import Any
 
 import mem_box as m
 import rockygpt_brain
-from rockygpt_brain.api.releases import Releases
+from rockygpt_brain.api.releases import Releases, give_back_memory
 from rockygpt_brain.contract import ChatRequest
 from rockygpt_brain.engine import ChatEngine
 from rockygpt_brain.provider import Gateway
-from rockygpt_brain.retrieval.graph_store import GraphOnlyFacts
+from rockygpt_brain.retrieval.graph_store import GraphOnlyFacts, checked_release, read_pointer
 from rockygpt_brain.settings import Prices, ProviderSettings
 from rockygpt_brain.turn import intake
 
 AT_ONCE = int(os.environ.get("AT_ONCE", "2"))
+# "double" is what the Brain does today: read the new release in a second engine while the first
+# keeps answering. "pause" is the fix being tried: let the answers in flight finish, hold new ones,
+# drop the old engine, read the new release, and carry on.
+MODE = os.environ.get("MODE", "double")
 
 
 def split() -> str:
@@ -82,7 +88,7 @@ async def main() -> None:
         m.say(f"prepared {folder}: {sorted(p.name for p in folder.iterdir())}")
         return
     m.say(f"writer {m.WRITER}; brain code {os.environ.get('BRAIN_REF', '?')}; {AT_ONCE} asking "
-          f"at once; box: {m.box()}")
+          f"at once; mode {MODE}; box: {m.box()}")
     facts = GraphOnlyFacts(folder)
     index = facts.meaning_index()
     assert index is not None
@@ -103,8 +109,8 @@ async def main() -> None:
                       transport=m.StandIn(prices.model, index.dimensions))
     options = {"output": "written", "howto_one_call": True, "page_writer": m.WRITER}
     accepted = inspect.signature(ChatEngine.__init__).parameters
-    state = types.SimpleNamespace(engine=ChatEngine(
-        gateway, facts, **{k: v for k, v in options.items() if k in accepted}))
+    kept = {k: v for k, v in options.items() if k in accepted}
+    state = types.SimpleNamespace(engine=ChatEngine(gateway, facts, **kept))
     state.engine.warm()
     dimensions = index.dimensions
     del facts, index  # Only the engine holds its release now, as in the live app.
@@ -114,21 +120,31 @@ async def main() -> None:
     pointers = [other_copy(folder, first, "0000000000000001"), first]
 
     seconds: list[float] = []
+    waits: list[float] = []
     stop = False
     position = 0
+    in_flight = 0
+    gate = asyncio.Event()
+    gate.set()
 
     async def asker() -> None:
-        nonlocal position
+        nonlocal position, in_flight
         while not stop:
             row = rows[position % len(rows)]
             position += 1
             request = ChatRequest.model_validate(
                 {"messages": [{"role": "user", "content": row["question"]}]})
+            asked = time.monotonic()
+            await gate.wait()  # In "pause" mode a new question waits here during the switch.
             begun = time.monotonic()
+            waits.append(begun - asked)
+            in_flight += 1
             try:
                 await state.engine.answer(intake(request), request)
             except Exception:  # noqa: BLE001  Only the time is kept.
                 pass
+            finally:
+                in_flight -= 1
             seconds.append(time.monotonic() - begun)
 
     askers = [asyncio.create_task(asker()) for _ in range(AT_ONCE)]
@@ -161,7 +177,37 @@ async def main() -> None:
             releases.give_back()
             result["after_give_back_mb"] = f"{m.held_mb()} MB ({split()})"
 
-        thread = threading.Thread(target=switch)
+        def swap() -> None:
+            """The fix being tried: no engine is held while the new release is read."""
+            begun = time.monotonic()
+            old = weakref.ref(state.engine)
+            state.engine = None
+            for _ in range(100):
+                gc.collect()
+                if old() is None:
+                    break
+                time.sleep(0.05)
+            give_back_memory()
+            result["old_gone"] = old() is None
+            result["lowest_mb"] = f"{m.held_mb()} MB ({split()})"
+            facts = checked_release(folder, read_pointer(folder))
+            engine = ChatEngine(gateway, facts, **kept)
+            del facts
+            engine.warm()
+            state.engine = engine
+            result["switched"] = True
+            result["took"] = round(time.monotonic() - begun, 1)
+            result["at_switch_mb"] = m.held_mb()
+            give_back_memory()
+            result["after_give_back_mb"] = f"{m.held_mb()} MB ({split()})"
+
+        paused = time.monotonic()
+        if MODE == "pause":
+            gate.clear()
+            while in_flight:
+                await asyncio.sleep(0.02)
+        drained = round(time.monotonic() - paused, 1)
+        thread = threading.Thread(target=swap if MODE == "pause" else switch)
         thread.start()
         top, top_split = 0, ""
         while thread.is_alive():
@@ -169,6 +215,13 @@ async def main() -> None:
             if now > top:
                 top, top_split = now, split()
             await asyncio.sleep(0.05)
+        gate.set()
+        pause = round(time.monotonic() - paused, 1)
+        if MODE == "pause":
+            m.say(f"PAUSE {number + 1}: new questions waited {pause} s in all ({drained} s for the "
+                  f"answers in flight to finish, then {result.get('took')} s to drop the old "
+                  f"release and read the new one); old engine gone {result.get('old_gone')}; "
+                  f"lowest held {result.get('lowest_mb')}")
         during = seconds[mark:] or [0.0]
         m.say(f"SWITCH {number + 1}: switched {result.get('switched')}; reading the new release "
               f"took {result.get('took')} s while {len(during)} answers finished (their code "
@@ -179,7 +232,8 @@ async def main() -> None:
         await answered(BEFORE)
     stop = True
     await asyncio.gather(*askers)
-    m.say(f"AFTER: holds {m.held_mb()} MB ({split()}); peak {m.peak_mb()} MB; box: {m.box()}")
+    m.say(f"AFTER: holds {m.held_mb()} MB ({split()}); peak {m.peak_mb()} MB; longest a question "
+          f"waited to start {round(max(waits or [0.0]), 1)} s; box: {m.box()}")
     m.say("FINISHED without running out of memory")
 
 
