@@ -34,4 +34,4 @@ jobs:
           echo "page: $page"
           sleep 1
           curl -sSL -A 'Mozilla/5.0' "https://catalog.ramapo.edu$page" -o page.html -w '%{http_code} %{url_effective} %{size_download}\n'
-          node study6/catalog_shape.mjs index.html page.html
+          node study6/catalog_shape.mjs page.html "${page##*/}"
