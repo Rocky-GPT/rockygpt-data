@@ -162,8 +162,9 @@ def main(argv: list[str] | None = None) -> int:
     print(f"{'ok   ' if library else 'FAIL '} must Library (Main Building) hours for {today}: "
           + ("; ".join(library) if library else "none cover today"))
 
-    menus = [doc for collection, doc in records if collection in ("menu", "menu_board_items")
-             and _day(doc.get("dated") or doc.get("date") or doc.get("day")) == today]
+    # A menu item's day is its validity window (menu_items valid_from/valid_until).
+    menus = [doc for collection, doc in records if collection == "menu"
+             and _day(doc.get("valid_from")) is not None and covers(doc, today)]
     print(f"{'ok   ' if menus else 'warn '} menu for {today}: {len(menus)} rows"
           + ("" if menus else " (the menu site may have nothing posted today)"))
 
