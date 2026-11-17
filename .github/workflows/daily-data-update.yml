@@ -5,8 +5,8 @@ name: Daily Data Update
 # production: main's code collects what is stale from Ramapo's sites, publishes to the job's
 #   campus database (a Postgres inside the runner, loaded from last run's dump in campus-db/ and
 #   saved back there), builds the release graph and shares it under brain-graph/, which the live
-#   Brain follows. Neon's campus tables are neither read nor written (only once, to start the
-#   chain, when campus-db/ is empty).
+#   Brain follows. Neon's campus tables are neither read nor written; a run with no dump in
+#   campus-db/ stops.
 # dev: dev's code (data dev + Brain dev) rebuilds from the pages production captured last, with
 #   no download from Ramapo's sites, in the same kind of database (loaded from production's newest
 #   dump, never saved back), and
@@ -17,7 +17,9 @@ on:
   schedule:
     # Every day at 03:41 UTC (10:41 PM EST / 11:41 PM EDT the evening before). GitHub starts
     # scheduled runs late: at '0 11' they began 3 to 6 hours late (10-21..11-01), and at
-    # '41 10' 7 to 10 hours late (11-02, 11-03), so this lands around breakfast New York time.
+    # '41 10' 7 to 10 hours late (11-02, 11-03). So a scheduled task outside GitHub starts the
+    # production run at 03:41 UTC with the run button, and this schedule is only a spare: the
+    # plan job skips it when that run already started (audit item 10, 11-17).
     - cron: '41 3 * * *'
     # Dev graph: hourly check; builds only when data dev or Brain dev moved since the last one.
     - cron: '17 * * * *'
@@ -99,6 +101,23 @@ jobs:
           else
             target=production
           fi
+          if [[ "$target" == production && "$EVENT" == schedule ]]; then
+            # GitHub starts this schedule 7 to 8.4 hours late (audit 11-17), so a scheduled task
+            # outside GitHub presses the run button at 03:41 UTC instead (audit item 10). The late
+            # schedule still comes as a spare: it builds only when no production run started in
+            # the 18 hours before it and none is running.
+            since="$(date -u -d '18 hours ago' +%Y-%m-%dT%H:%M:%SZ)"
+            recent="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow daily-data-update.yml \
+              --branch main --event workflow_dispatch --limit 20 \
+              --json createdAt,status,conclusion \
+              --jq "[.[] | select(.createdAt >= \"$since\") | select(.status != \"completed\" or .conclusion == \"success\")] | length")"
+            if [[ "${recent:-0}" != 0 ]]; then
+              echo "A production run started by hand or by the outside timer since $since; this late schedule builds nothing."
+              { echo target=production; echo build=false
+                echo "data_ref=$GITHUB_SHA"; echo brain_ref=main; } >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
           if [[ "$target" == production ]]; then
             { echo target=production; echo build=true
               echo "data_ref=$GITHUB_SHA"; echo brain_ref=main; } >> "$GITHUB_OUTPUT"
@@ -169,8 +188,8 @@ jobs:
           key: release-snapshot-${{ github.run_id }}
           restore-keys: release-snapshot-
 
-      # The job's campus database, loaded with production's newest dump from the file store. Only
-      # when there is none yet (the first run) does the refresh below read Neon's active release.
+      # The job's campus database, loaded with production's newest dump from the file store. The run
+      # stops when there is none.
       - name: Start the job's campus database
         run: .github/scripts/campus-db.sh start
 
@@ -189,7 +208,7 @@ jobs:
         env:
           ARCHWAY_USERNAME: ${{ secrets.ARCHWAY_USERNAME }}
           ARCHWAY_PASSWORD: ${{ secrets.ARCHWAY_PASSWORD }}
-          DATABASE_URL: ${{ steps.campus-db.outputs.loaded == 'true' && env.JOB_DATABASE_URL || secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
           RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
           RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
           RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
@@ -208,7 +227,7 @@ jobs:
         if: ${{ env.TARGET == 'dev' }}
         env:
           ROCKYGPT_BUILD_TARGET: dev
-          DATABASE_URL: ${{ steps.campus-db.outputs.loaded == 'true' && env.JOB_DATABASE_URL || secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
           RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
           RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
           RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
@@ -559,7 +578,7 @@ jobs:
         run: .github/scripts/campus-db.sh restore campus-dev.dump
 
       # Production builds from the release its campus database holds: today's when today's
-      # publish saved it, else the last good one. Neon only when the file store has none yet.
+      # publish saved it, else the last good one.
       - name: Load production's campus database from the file store
         id: campus-db
         if: ${{ env.TARGET == 'production' }}
@@ -601,7 +620,7 @@ jobs:
 
       - name: Build the release graph from the campus database
         env:
-          DATABASE_URL: ${{ (env.TARGET == 'dev' || steps.campus-db.outputs.loaded == 'true') && env.JOB_DATABASE_URL || secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
         run: python brain/scripts/build_graph.py --out .published --read-seconds 900
 
       - name: Build the meaning index

@@ -2,10 +2,14 @@
  * The college's academic policies, as the course catalog publishes them. The Provost's own policy
  * addresses on www.ramapo.edu (/provost/policy/used-name/) redirect to the catalog's academic
  * policies page, which says the Office of the Provost is responsible for every academic policy and
- * links one catalog page holding all of them as tabs. That page is a Coursedog app: its published
- * tabs are in the page's own data (__NUXT_DATA__), each with a name, an anchor and its HTML. Each
- * policy is one office_sections row (folder CATALOG_POLICIES_FOLDER) with its headed sections, cited
- * to its own tab on the catalog page; the identity compile links them to the reviewed owner.
+ * links one catalog page holding all of them as tabs. The catalog is a Coursedog app. Until
+ * November 2026 that page's server HTML carried its tabs (__NUXT_DATA__); now the index's own
+ * script asks Coursedog for the page when a visitor opens a policy, and a plain request for the
+ * same address is refused (401). So the collector opens the index in a browser and keeps the
+ * page record the index's script receives: its published widgets, each tab with a name, an
+ * anchor and its HTML. Each policy is one office_sections row (folder CATALOG_POLICIES_FOLDER)
+ * with its headed sections, cited to its own anchor on the index; the identity compile links them
+ * to the reviewed owner.
  */
 import { createHash } from 'crypto';
 import { load } from 'cheerio';
@@ -47,33 +51,31 @@ export function indexText(indexHtml: string): string {
   return $('main').text().replace(/\s+/g, ' ').trim() || $('body').text().replace(/\s+/g, ' ').trim();
 }
 
+/** Whether a response the index's script received is the catalog page record of pageId. */
+export function isCatalogPageRecord(url: string, pageId: string): boolean {
+  return new RegExp(`/catalogPages/[^/?#]+/${pageId}(?:[?#]|$)`).test(url);
+}
+
 /**
- * The published tabs of the catalog page: its widgets, never its temporaryWidgets (unpublished
- * edits). Nuxt's payload is a flat array whose objects point at other entries by index.
+ * The published tabs of the catalog page record: its widgets, never its temporaryWidgets
+ * (unpublished edits).
  */
-export function publishedPolicies(pageHtml: string, slug: string): { policies: CatalogPolicy[]; publishedAt: string | null } {
-  const raw = /<script type="application\/json"[^>]*id="__NUXT_DATA__"[^>]*>([\s\S]*?)<\/script>/.exec(pageHtml)?.[1];
-  if (!raw) throw new Error('The catalog page has no __NUXT_DATA__ payload.');
-  const payload = JSON.parse(raw) as unknown[];
-  const at = (index: unknown): unknown => (typeof index === 'number' ? payload[index] : index);
-  const page = payload.find((entry): entry is Record<string, number> =>
-    !!entry && typeof entry === 'object' && !Array.isArray(entry) && 'widgets' in entry && 'temporaryWidgets' in entry
-    && at((entry as Record<string, unknown>).slug) === slug);
-  if (!page) throw new Error(`The catalog payload has no page ${slug}.`);
-  if (at(page.published) !== true) throw new Error(`Catalog page ${slug} is not published.`);
+export function publishedPolicies(record: unknown, pageId: string): { policies: CatalogPolicy[]; publishedAt: string | null } {
+  if (!record || typeof record !== 'object' || Array.isArray(record)) throw new Error(`Catalog page ${pageId} is not a record.`);
+  const page = record as Record<string, unknown>;
+  if (page.id !== pageId && page.slug !== pageId) throw new Error(`The catalog record is page ${String(page.id)}, not ${pageId}.`);
+  if (page.published !== true) throw new Error(`Catalog page ${pageId} is not published.`);
   const policies: CatalogPolicy[] = [];
-  for (const widgetIndex of at(page.widgets) as number[]) {
-    const widget = at(widgetIndex) as Record<string, number>;
-    if (at(widget.type) !== 'tabs') continue;
-    for (const tabIndex of at(widget.data) as number[]) {
-      const tab = at(tabIndex) as Record<string, number>;
-      const [id, name, anchor, html] = [at(tab.id), at(tab.name), at(tab.anchor), at(tab.content)];
-      if (typeof name !== 'string' || typeof anchor !== 'string' || typeof html !== 'string') continue;
-      policies.push({ id: String(id), name: name.trim(), anchor, html });
+  for (const widget of Array.isArray(page.widgets) ? page.widgets as Record<string, unknown>[] : []) {
+    if (widget?.type !== 'tabs' || !Array.isArray(widget.data)) continue;
+    for (const tab of widget.data as Record<string, unknown>[]) {
+      const { id, name, anchor, content } = tab ?? {};
+      if (typeof name !== 'string' || typeof anchor !== 'string' || typeof content !== 'string') continue;
+      policies.push({ id: String(id), name: name.trim(), anchor, html: content });
     }
   }
-  if (!policies.length) throw new Error(`Catalog page ${slug} has no published policy tabs.`);
-  const published = at(page.publishedAt);
+  if (!policies.length) throw new Error(`Catalog page ${pageId} has no published policy tabs.`);
+  const published = page.publishedAt;
   return { policies, publishedAt: typeof published === 'number' ? new Date(published).toISOString() : null };
 }
 
@@ -85,7 +87,8 @@ export function catalogPolicyPages(capture: CatalogPoliciesCapture): OfficeSecti
   for (const policy of capture.policies) {
     if (seen.has(policy.anchor)) throw new Error(`Two catalog policies share the anchor ${policy.anchor}.`);
     seen.add(policy.anchor);
-    const url = `${base}#${policy.anchor}`;
+    // The index opens the policy at its anchor; the catalog page's own address no longer does.
+    const url = `${capture.index.url}#${policy.anchor}`;
     const parsed = buildRawPageFromHtml({ url: base, html: `<main>${policy.html}</main>`, sourceType: 'seed',
       allowedHost: 'catalog.ramapo.edu' });
     const sections = parsed.sections

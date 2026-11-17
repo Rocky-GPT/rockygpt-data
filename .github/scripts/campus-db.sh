@@ -4,8 +4,8 @@
 # and writes no campus table in Neon; Neon keeps only the Brain's ledger, feedback and chat logs.
 #
 #   campus-db.sh start          start the job's database (127.0.0.1:5432, database campus)
-#   campus-db.sh load           load production's newest dump from the file store, if there is one
-#                               (writes loaded=true|false to $GITHUB_OUTPUT)
+#   campus-db.sh load           load production's newest dump from the file store; stops when there
+#                               is none (writes loaded=true to $GITHUB_OUTPUT)
 #   campus-db.sh dump FILE      dump the campus schema to FILE
 #   campus-db.sh restore FILE   load a dump made by `dump`
 #   campus-db.sh save           dump the database, upload it, then move the pointer to it, and keep
@@ -48,9 +48,9 @@ case "${1:-}" in
 
   load)
     if ! s3 cp "s3://${BUCKET:?}/${PREFIX}${POINTER}" campus-db-active.json 2>/dev/null; then
-      echo "No campus database in the file store yet (${PREFIX}${POINTER}); this run starts the chain."
-      echo loaded=false >> "${GITHUB_OUTPUT:-/dev/null}"
-      exit 0
+      # The chain once started from Neon's campus tables; nothing reads them now (audit 11-17).
+      echo "No campus database in the file store (${PREFIX}${POINTER}); nothing to build from." >&2
+      exit 1
     fi
     file="$(jq -er .file campus-db-active.json)"
     s3 cp "s3://$BUCKET/${PREFIX}${file}" campus.dump

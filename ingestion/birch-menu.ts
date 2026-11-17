@@ -5,6 +5,10 @@ import { collectMenuDates, normalizeMenuWeek } from './menu-data';
 
 const DEFAULT_API_URL = 'https://api-prd.sodexomyway.net/v0.2/data/menu/97508001/1411019';
 const BIRCH_PAGE_URL = 'https://ramapo.sodexomyway.com/en-us/locations/birch-tree-inn';
+/**
+ * Sodexo's public site key, not a secret: ramapo.sodexomyway.com's own script sends it with every
+ * menu request a visitor's browser makes (its API_KEY setting, checked 2026-11-17).
+ */
 const API_KEY = '68717828-b754-420d-9488-4c37cb7d7ef7';
 const RAW_JSON_OUTPUT_PATH = path.join(process.cwd(), 'data', 'raw', 'menu.raw.json');
 const RAW_WEEK_JSON_OUTPUT_PATH = path.join(process.cwd(), 'data', 'raw', 'menu-week.raw.json');
