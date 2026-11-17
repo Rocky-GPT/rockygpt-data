@@ -1,28 +1,26 @@
-// Temporary diagnostic (removed before merge): the academic policies page as a browser shows it.
+// Temporary diagnostic (removed before merge): the policies page's data as the browser receives it.
 import { chromium } from 'playwright';
 const browser = await chromium.launch();
 const page = await browser.newPage();
-const calls = [];
-page.on('response', (r) => { if (/coursedog\.com\/api/.test(r.url())) calls.push(`${r.status()} ${r.url().slice(0, 140)}`); });
+const bodies = new Map();
+page.on('response', async (r) => {
+  const u = r.url();
+  if (/catalogPages\//.test(u) && r.status() === 200 && !bodies.has(u.split('?')[0])) {
+    try { bodies.set(u.split('?')[0], await r.json()); } catch {}
+  }
+});
 await page.goto('https://catalog.ramapo.edu/quicklinks/academicpolicies', { waitUntil: 'networkidle' });
-await page.waitForTimeout(3000);
-const main = async () => (await page.locator('#main-content').innerText().catch(() => '')).replace(/\s+/g, ' ');
-let t = await main();
-console.log('rendered main text', t.length, t.slice(0, 300));
-console.log('api calls', calls.length); calls.slice(0, 8).forEach((c) => console.log('  ', c));
-const accessors = page.locator('[data-page-id]');
-console.log('data-page-id elements', await accessors.count());
-const first = accessors.first();
-console.log('first outer', (await first.evaluate((e) => e.outerHTML)).slice(0, 400));
-await first.click().catch((e) => console.log('click failed', String(e).slice(0, 100)));
-await page.waitForTimeout(3000);
-t = await main();
-console.log('after click main text', t.length);
-console.log('api calls now', calls.length); calls.slice(-4).forEach((c) => console.log('  ', c));
-const dialog = await page.locator('[role=dialog], .modal').first().innerText().catch(() => '');
-console.log('dialog text', dialog.length, dialog.replace(/\s+/g, ' ').slice(0, 600));
-await page.goto('https://catalog.ramapo.edu/quicklinks/academicpolicies#academic-integrity', { waitUntil: 'networkidle' });
-await page.waitForTimeout(3000);
-t = await main();
-console.log('anchor main text', t.length, t.slice(0, 200));
+await page.waitForTimeout(2000);
 await browser.close();
+for (const [u, d] of bodies) {
+  console.log('==', u.replace(/.*catalogPages\//, ''), 'keys:', Object.keys(d).join(','));
+  for (const k of ['id', 'slug', 'title', 'name', 'type', 'published', 'publishedAt', 'lastEditedAt', 'url', 'pageId']) if (k in d) console.log('  ', k, JSON.stringify(d[k]).slice(0, 100));
+  const ws = d.widgets || []; console.log('  widgets', ws.length, ws.map((w) => w.type).join(','), '| temporaryWidgets', (d.temporaryWidgets || []).length);
+  for (const w of ws) {
+    if (w.type !== 'tabs') { console.log('   widget', w.type, Object.keys(w).join(','), JSON.stringify(w.data)?.slice(0, 200)); continue; }
+    const tabs = w.data || [];
+    console.log('   tabs', tabs.length, 'tab keys:', Object.keys(tabs[0] || {}).join(','));
+    for (const t of tabs.slice(0, 3)) console.log('    ', JSON.stringify({ id: t.id, name: t.name, anchor: t.anchor, content: (t.content || '').length }));
+    const sizes = tabs.map((t) => (t.content || '').length); console.log('    total html', sizes.reduce((a, b) => a + b, 0), 'empty', sizes.filter((s) => !s).length);
+  }
+}
