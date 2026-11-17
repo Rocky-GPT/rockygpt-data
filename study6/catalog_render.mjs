@@ -1,0 +1,28 @@
+// Temporary diagnostic (removed before merge): the academic policies page as a browser shows it.
+import { chromium } from 'playwright';
+const browser = await chromium.launch();
+const page = await browser.newPage();
+const calls = [];
+page.on('response', (r) => { if (/coursedog\.com\/api/.test(r.url())) calls.push(`${r.status()} ${r.url().slice(0, 140)}`); });
+await page.goto('https://catalog.ramapo.edu/quicklinks/academicpolicies', { waitUntil: 'networkidle' });
+await page.waitForTimeout(3000);
+const main = async () => (await page.locator('#main-content').innerText().catch(() => '')).replace(/\s+/g, ' ');
+let t = await main();
+console.log('rendered main text', t.length, t.slice(0, 300));
+console.log('api calls', calls.length); calls.slice(0, 8).forEach((c) => console.log('  ', c));
+const accessors = page.locator('[data-page-id]');
+console.log('data-page-id elements', await accessors.count());
+const first = accessors.first();
+console.log('first outer', (await first.evaluate((e) => e.outerHTML)).slice(0, 400));
+await first.click().catch((e) => console.log('click failed', String(e).slice(0, 100)));
+await page.waitForTimeout(3000);
+t = await main();
+console.log('after click main text', t.length);
+console.log('api calls now', calls.length); calls.slice(-4).forEach((c) => console.log('  ', c));
+const dialog = await page.locator('[role=dialog], .modal').first().innerText().catch(() => '');
+console.log('dialog text', dialog.length, dialog.replace(/\s+/g, ' ').slice(0, 600));
+await page.goto('https://catalog.ramapo.edu/quicklinks/academicpolicies#academic-integrity', { waitUntil: 'networkidle' });
+await page.waitForTimeout(3000);
+t = await main();
+console.log('anchor main text', t.length, t.slice(0, 200));
+await browser.close();

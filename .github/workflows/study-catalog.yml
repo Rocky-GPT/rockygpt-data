@@ -6,7 +6,7 @@ name: Study catalog policies failure
 on:
   push:
     branches: [claude/project-thread-n73jiu]
-    paths: ['.github/workflows/study-catalog.yml', 'study6/catalog_shape.mjs', 'study6/catalog_api.sh']
+    paths: ['.github/workflows/study-catalog.yml', 'study6/catalog_shape.mjs', 'study6/catalog_api.sh', 'study6/catalog_render.mjs']
 
 permissions:
   contents: read
@@ -25,5 +25,6 @@ jobs:
       - name: Run the collector
         continue-on-error: true
         run: npm run fetch:catalog-policies 2>&1 | tail -40
-      - name: Find the API the catalog app reads its pages from
-        run: bash study6/catalog_api.sh
+      - run: npx playwright install chromium
+      - name: The policies page as a browser shows it
+        run: node study6/catalog_render.mjs
