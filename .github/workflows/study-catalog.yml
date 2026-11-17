@@ -1,0 +1,33 @@
+# Temporary, on this work branch only (2026-11-17): the catalog policies collector has failed
+# for six nights and the run log cuts its error. This runs it once and prints the whole error and
+# the shape of the pages it reads. Free: two page requests, no model calls. Removed before merge.
+name: Study catalog policies failure
+
+on:
+  push:
+    branches: [claude/project-thread-n73jiu]
+    paths: ['.github/workflows/study-catalog.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --silent
+      - name: Run the collector
+        continue-on-error: true
+        run: npm run fetch:catalog-policies 2>&1 | tail -40
+      - name: Show what the index and its catalog page look like
+        run: |
+          url=$(grep -o "CATALOG_POLICIES_INDEX = '[^']*'" src/data-v2/catalog-policies.ts | cut -d\' -f2)
+          echo "index: $url"
+          curl -sSL -A 'Mozilla/5.0' "$url" -o index.html -w '%{http_code} %{url_effective} %{size_download}\n'
+          grep -o 'href="[^"]*catalog[^"]*"' index.html | sort -u | head -20
