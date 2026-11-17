@@ -9,6 +9,7 @@ import {
   coursesArtifactRequiresRefresh,
   refreshScriptsForStates,
   forcedSources,
+  keptPastWindowKeys,
   SOURCE_REFRESH_SCRIPTS,
   spreadHeavySources,
 } from './refresh-publishable';
@@ -197,4 +198,18 @@ test('a run started by hand can collect named sources tonight, however fresh the
   assert.equal(forcedSources(undefined).size, 0);
   // A misspelt name stops the run instead of passing for a collection that never happened.
   assert.throws(() => forcedSources('campus-hour'), /names no such source: campus-hour/);
+});
+
+test('only a source whose collector failed tonight and whose copy is past its window publishes from its last copy', () => {
+  const states = [
+    { key: 'dining', status: 'stale' },
+    { key: 'housing', status: 'stale' },
+    { key: 'faculty', status: 'unknown' },
+    { key: 'public-safety', status: 'fresh' },
+  ];
+  const kept = [{ key: 'dining' }, { key: 'faculty' }, { key: 'public-safety' }];
+  // Housing is stale but its collector did not fail (it did not run): still an error later.
+  // Faculty failed with no known age: never excused. Public safety failed inside its window.
+  assert.deepEqual(keptPastWindowKeys(states, kept), ['dining']);
+  assert.deepEqual(keptPastWindowKeys(states, []), []);
 });

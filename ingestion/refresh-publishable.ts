@@ -6,6 +6,7 @@ import { restoreActiveRelease } from '../pipeline/restore-active-release';
 import { facultyQualityErrors } from '../pipeline/quality/content-policy';
 import {
   evaluateSourceProvenance,
+  KEPT_PAST_WINDOW_FILE,
   SOURCE_RAW_DATASETS,
   type SourceProvenanceState,
 } from '../pipeline/quality/provenance';
@@ -374,11 +375,12 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
       rootDir: process.cwd(),
       groups: groupScriptsBySource(scripts, SOURCE_REFRESH_SCRIPTS),
       runScript: (script) => runNpmScript(script, false),
-      // A kept copy already past its freshness window cannot be published tonight, so the run
-      // stops there instead of downloading every later source from Ramapo's sites for nothing.
+      // A kept copy of unknown age can never publish, so the run stops there instead of
+      // downloading every later source from Ramapo's sites for nothing. A kept copy that is only
+      // past its window publishes with the rest (keptPastWindowKeys below).
       unpublishable: (entry) => {
         const state = evaluateSourceProvenance(SOURCES).find((candidate) => candidate.key === entry.key);
-        return state && (state.status === 'stale' || state.status === 'unknown') ? state.detail : null;
+        return state?.status === 'unknown' ? state.detail : null;
       },
     });
   } else {
@@ -386,7 +388,15 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
   }
 
   const after = evaluateSourceProvenance(SOURCES);
-  const nonFresh = after.filter((state) => state.status === 'stale' || state.status === 'unknown');
+  const keptLast = keptPastWindowKeys(after, kept);
+  fs.rmSync(KEPT_PAST_WINDOW_FILE, { force: true });
+  if (keptLast.length) {
+    fs.mkdirSync(path.dirname(KEPT_PAST_WINDOW_FILE), { recursive: true });
+    fs.writeFileSync(KEPT_PAST_WINDOW_FILE, `${JSON.stringify(keptLast)}\n`);
+    console.warn(`Past their freshness window and not collected tonight, published from the last copy: ${keptLast.join(', ')}.`);
+  }
+  const nonFresh = after.filter((state) => (state.status === 'stale' || state.status === 'unknown')
+    && !keptLast.includes(state.key));
   if (nonFresh.length) {
     throw new Error(
       `Collection finished without fresh provenance for: ${nonFresh
@@ -407,6 +417,20 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
   }
 
   rebuildProjections();
+}
+
+/**
+ * The sources whose collector failed tonight while their copy was already past its freshness window.
+ * Dan's rule since November 17, 2026 (the overnight audit plan, decision 2): they keep the last
+ * published copy and every other source publishes, instead of one late source holding back all the
+ * new data. A source of unknown age, or a stale source whose collector did not fail, still stops it.
+ */
+export function keptPastWindowKeys(
+  states: ReadonlyArray<{ key: string; status: string }>,
+  kept: ReadonlyArray<{ key: string }>
+): string[] {
+  const failed = new Set(kept.map((entry) => entry.key));
+  return states.filter((state) => state.status === 'stale' && failed.has(state.key)).map((state) => state.key);
 }
 
 function rebuildProjections(): void {

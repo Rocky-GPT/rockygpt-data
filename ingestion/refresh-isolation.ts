@@ -8,14 +8,14 @@
  *
  * Before the collectors run, the restored release's files are copied aside. A source whose
  * collector fails has every file it wrote put back from that copy (and every file it created
- * removed), so it is published from exactly what the active release already carried. Whether
- * that copy is still fresh enough to publish is left to the provenance check that follows, which
- * still stops the refresh once a kept source passes its freshness window.
+ * removed), so it is published from exactly what the active release already carried.
  *
- * When the kept copy is already past that window the run cannot publish, so it stops at once
- * (`unpublishable`) instead of collecting every later source first. On November 10, 2026 two
- * runs lost dining in their second minute, to a hidden button and then to a menu service that
- * timed out, and each still downloaded about 330 pages from Ramapo's sites before failing.
+ * A kept copy past its freshness window is published too, with a warning (Dan's rule since
+ * November 17, 2026; ingestion/refresh-publishable.ts keptPastWindowKeys). Before that one such
+ * source stopped every publish: on November 10, 2026 two runs lost dining in their second minute,
+ * to a hidden button and then to a menu service that timed out, and nothing new went out. A kept
+ * copy that can never publish (unknown age) still stops the run at once (`unpublishable`) instead
+ * of collecting every later source first.
  */
 import fs from 'node:fs';
 import os from 'node:os';
@@ -106,8 +106,8 @@ export interface IsolatedRefreshOptions {
   runScript: (script: string) => void;
   log?: (line: string) => void;
   /**
-   * Why a source that was just kept cannot be published as it is (its copy is past its freshness
-   * window), or null when it can. A reason stops the refresh before the remaining collectors run.
+   * Why a source that was just kept cannot be published as it is (its copy has no known age), or
+   * null when it can. A reason stops the refresh before the remaining collectors run.
    */
   unpublishable?: (kept: KeptSource) => string | null;
 }
@@ -196,19 +196,20 @@ export const KEPT_SOURCES_REPORT = path.join('data', 'review', 'refresh-kept-sou
 /** The note the workflow posts on the data-refresh incident when a run kept any source. */
 export function keptSourcesReport(
   kept: readonly KeptSource[],
-  states: ReadonlyArray<{ key: string; detail: string }>,
+  states: ReadonlyArray<{ key: string; detail: string; status?: string }>,
   releaseVersion: string
 ): string {
   const lines = [
     `This run published every other source, but could not collect ${kept.length} source(s). ` +
-      `Each keeps its copy from release ${releaseVersion} until it is fixed or passes its freshness window.`,
+      `Each keeps its copy from release ${releaseVersion} until it is fixed.`,
     '',
   ];
   for (const entry of kept) {
     const state = states.find((candidate) => candidate.key === entry.key);
     lines.push(
       `- **${entry.key}**: \`npm run ${entry.failedScript}\` failed: ${entry.error}` +
-        (state ? ` Kept data: ${state.detail}.` : '')
+        (state ? ` Kept data: ${state.detail}.` : '') +
+        (state?.status === 'stale' ? ' **Past its freshness window: students get this old copy until the collector is fixed.**' : '')
     );
   }
   return `${lines.join('\n')}\n`;

@@ -18,6 +18,7 @@ import {
 } from './content-policy';
 import {
   evaluateSourceProvenance,
+  keptPastWindow,
   notCapturedYet,
   type SourceProvenanceState,
 } from './provenance';
@@ -385,8 +386,12 @@ export function validateCurrentDatasetV2(
     now,
     path.join(cwd, 'data/raw')
   );
+  const keptLast = keptPastWindow(cwd);
   for (const state of sourceStates) {
-    if (state.status === 'stale') {
+    if (state.status === 'stale' && keptLast.has(state.key)) {
+      warnings.push(`Source ${state.key} is past its freshness window (${state.detail}); its collector failed ` +
+        "tonight, so the last published copy goes out with every other source's new data.");
+    } else if (state.status === 'stale') {
       const message =
         `Source ${state.key} is stale: ${state.detail}. ` +
         'Refresh the source before publishing.';
