@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { KEPT_PAST_WINDOW_FILE } from './provenance';
 import { validateCurrentDatasetV2 } from './validate';
 
 // A captured calendar a year old: stale for a release, fine for a laptop test build.
@@ -43,4 +44,15 @@ test('a test build is built without a source added since the capture, but a rele
   // Two weeks on, production has had its chance to collect it: a missing capture stops a test build too.
   const later = validateCurrentDatasetV2({}, { cwd, now: new Date('2026-11-20T00:00:00Z'), allowStaleSources: true });
   assert.ok(later.errors.some(e => e.startsWith('Source athletics-schedules has unknown collection age')));
+});
+
+test('a release publishes a stale source tonight\'s refresh could not collect, from its last copy, with a warning', () => {
+  const cwd = oldCapture();
+  fs.mkdirSync(path.join(cwd, path.dirname(KEPT_PAST_WINDOW_FILE)), { recursive: true });
+  fs.writeFileSync(path.join(cwd, KEPT_PAST_WINDOW_FILE), JSON.stringify(['academic-calendar', 'housing']));
+  const summary = validateCurrentDatasetV2({}, { cwd, now: new Date('2026-11-02T00:00:00Z') });
+  assert.ok(!summary.errors.some(e => e.startsWith('Source academic-calendar')));
+  assert.ok(summary.warnings.some(w => w.startsWith('Source academic-calendar is past its freshness window')));
+  // A source with no collection record is never excused by the list.
+  assert.ok(summary.errors.some(e => e.startsWith('Source housing has unknown collection age')));
 });

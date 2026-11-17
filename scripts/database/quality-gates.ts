@@ -7,7 +7,7 @@ import {
   eventQualityErrors,
   facultyQualityErrors,
 } from '../../pipeline/quality/content-policy';
-import { evaluateSourceProvenance, notCapturedYet } from '../../pipeline/quality/provenance';
+import { evaluateSourceProvenance, keptPastWindow, notCapturedYet } from '../../pipeline/quality/provenance';
 import { SOURCES } from '../../src/data-v2/source-seeds';
 import {
   countDiningLocations,
@@ -263,12 +263,20 @@ function runEventDetailCoverageGate(cwd: string, errors: string[]): void {
  */
 export function provenanceIssues(
   states: ReadonlyArray<{ key: string; status: string; detail: string }>,
-  options: { testBuild: boolean; enforce: boolean; notCaptured: (key: string) => boolean }
+  options: {
+    testBuild: boolean; enforce: boolean; notCaptured: (key: string) => boolean;
+    /** Sources tonight's refresh could not collect past their window; their last copy publishes. */
+    keptLast?: ReadonlySet<string>;
+  }
 ): { errors: string[]; warnings: string[] } {
   const errors: string[] = [];
   const warnings: string[] = [];
   for (const state of states) {
     if (state.status !== 'stale' && state.status !== 'unknown') continue;
+    if (state.status === 'stale' && options.keptLast?.has(state.key)) {
+      warnings.push(`Source ${state.key} is past its freshness window (${state.detail}); its collector failed tonight, so the last published copy goes out with the rest.`);
+      continue;
+    }
     if (state.status === 'unknown' && options.testBuild && options.notCaptured(state.key)) {
       warnings.push(`Source ${state.key} was added since the captured pages were collected; built without it.`);
       continue;
@@ -297,6 +305,7 @@ function runProvenanceGate(
     testBuild: process.env.ROCKYGPT_BUILD_TARGET === 'dev' || process.env.ROCKYGPT_TEST_BUILD_FROM_CAPTURED_PAGES === '1',
     enforce,
     notCaptured: (key) => notCapturedYet(key, rawDir),
+    keptLast: keptPastWindow(cwd),
   });
   for (const warning of found.warnings) console.warn(warning);
   errors.push(...found.errors);
