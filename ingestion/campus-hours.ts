@@ -900,7 +900,7 @@ export function parseConflictingOfficeHours(name: string, label: RegExp, against
             season: 'Fall/Spring', source_statements: [first, second] } } } };
 }
 
-export function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedAt: string): LocationHours {
+function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedAt: string): LocationHours {
     let scheduleText = text;
     if (office.extract) {
         scheduleText = text.match(office.extract)?.[0] ?? '';
