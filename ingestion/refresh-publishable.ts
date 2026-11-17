@@ -80,12 +80,37 @@ export function mustRefreshTonight(state: RefreshState, refreshHorizonHours = RE
  */
 export const NIGHTLY_SOURCES: ReadonlySet<string> = new Set(['office-pages', 'academic-sites']);
 
+/** The environment variable a run started by hand sets to collect named sources tonight, fresh or not. */
+export const FORCE_SOURCES_ENV = 'REFRESH_FORCE_SOURCES';
+
+/**
+ * The sources a run was asked to collect tonight whatever their freshness window says, from a list
+ * separated by commas or spaces ("campus-hours, archway-clubs"). Campus hours and clubs sit on a
+ * 180-day window, and on November 17, 2026 every hours record dated from October 23 and every club
+ * from July 16 while the library's page already listed its Thanksgiving closure: until then the only
+ * way to read them sooner was a code change. An unknown name stops the run, so a typo never passes
+ * for a collection that did not happen.
+ */
+export function forcedSources(value: string | undefined): Set<string> {
+  const keys = (value ?? '').split(/[\s,]+/).map((key) => key.trim()).filter(Boolean);
+  const unknown = keys.filter((key) => !SOURCE_REFRESH_SCRIPTS[key]);
+  if (unknown.length) {
+    throw new Error(
+      `${FORCE_SOURCES_ENV} names no such source: ${unknown.join(', ')}. ` +
+        `Sources: ${Object.keys(SOURCE_REFRESH_SCRIPTS).join(', ')}.`
+    );
+  }
+  return new Set(keys);
+}
+
 export function refreshScriptsForStates(
   states: ReadonlyArray<RefreshState>,
-  refreshHorizonHours = REFRESH_HORIZON_HOURS
+  refreshHorizonHours = REFRESH_HORIZON_HOURS,
+  forced: ReadonlySet<string> = new Set()
 ): string[] {
   const scripts = states
-    .filter((state) => mustRefreshTonight(state, refreshHorizonHours) || NIGHTLY_SOURCES.has(state.key))
+    .filter((state) => mustRefreshTonight(state, refreshHorizonHours) || NIGHTLY_SOURCES.has(state.key)
+      || forced.has(state.key))
     .flatMap((state) => {
       const configured = SOURCE_REFRESH_SCRIPTS[state.key];
       if (!configured) {
@@ -277,8 +302,10 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
     noteSiteDownloads(`${entry.sourceKey}: reused the pages a run collected ${entry.collectedAt} and could not publish; ` +
       'not downloaded again unless the source is due tonight.');
   }
+  const forced = forcedSources(process.env[FORCE_SOURCES_ENV]);
+  if (forced.size) console.log(`Asked to collect tonight whatever their age: ${[...forced].join(', ')}.`);
   const before = evaluateSourceProvenance(SOURCES);
-  const provenanceScripts = refreshScriptsForStates(before);
+  const provenanceScripts = refreshScriptsForStates(before, REFRESH_HORIZON_HOURS, forced);
   const compatibilityScripts = restoredArtifactCompatibilityScripts();
   if (compatibilityScripts.length) {
     console.log(

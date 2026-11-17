@@ -8,6 +8,7 @@ import {
   refreshScriptsForArtifactCompatibility,
   coursesArtifactRequiresRefresh,
   refreshScriptsForStates,
+  forcedSources,
   NIGHTLY_SOURCES,
   SOURCE_REFRESH_SCRIPTS,
 } from './refresh-publishable';
@@ -138,4 +139,25 @@ test('the office and school sites are collected every night, even when fresh, an
   for (const key of NIGHTLY_SOURCES) {
     assert.equal(SOURCES.find(source => source.key === key)?.freshnessHours, week);
   }
+});
+
+test('a run started by hand can collect named sources tonight, however fresh they are', () => {
+  // On November 17, 2026 every hours record dated from October 23 and every club from July 16, both
+  // inside their 180-day window, while the library's page listed its Thanksgiving closure.
+  const halfYear = 4_320;
+  const states = [
+    { key: 'campus-hours', status: 'fresh' as const, ageHours: 600, maxAgeHours: halfYear },
+    { key: 'archway-clubs', status: 'fresh' as const, ageHours: 2_950, maxAgeHours: halfYear },
+    { key: 'faculty', status: 'fresh' as const, ageHours: 600, maxAgeHours: halfYear },
+  ];
+  assert.deepEqual(refreshScriptsForStates(states), []);
+  const forced = forcedSources(' campus-hours,archway-clubs ');
+  assert.deepEqual([...forced], ['campus-hours', 'archway-clubs']);
+  assert.deepEqual(refreshScriptsForStates(states, 24, forced), ['fetch:hours', 'fetch:clubs']);
+  // Spaces work as separators too, and nothing named means nothing forced.
+  assert.deepEqual([...forcedSources('campus-hours archway-clubs')], ['campus-hours', 'archway-clubs']);
+  assert.equal(forcedSources('').size, 0);
+  assert.equal(forcedSources(undefined).size, 0);
+  // A misspelt name stops the run instead of passing for a collection that never happened.
+  assert.throws(() => forcedSources('campus-hour'), /names no such source: campus-hour/);
 });
