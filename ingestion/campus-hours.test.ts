@@ -6,7 +6,7 @@ import {
   OFFICE_HOURS_PAGES, hoursPageText, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, parseUnstatedDayHours, parseWeeklyHours,
   parseColumnHours, BERRIE_SEASON_URL, joinAdjacentDays,
 } from './campus-hours';
-import { attachReviewedHoursAbsences } from './reviewed-hours-absence';
+import { attachReviewedHoursAbsences, changedHoursReport } from './reviewed-hours-absence';
 import { createHash } from 'node:crypto';
 import { buildRawPageFromHtml } from './raw-collector';
 import { partitionHoursForPublication, recordValidity } from '../src/data-v2/validity';
@@ -542,8 +542,26 @@ test('a reviewed hours omission attaches only while its captured section is unch
   assert.equal(claims[0].checks[0].checked_at, collectedAt);
   // Another record, or a review of another page, is left alone.
   assert.deepEqual(attach([{ ...record, name: 'Payroll' }], [])[0], { ...record, name: 'Payroll' });
-  // A changed section, a missing capture, or a day the capture does state each stop the collector.
-  assert.throws(() => attach([record], capture('(201) 684-7001')), /Reviewed hours section changed/);
+  // A changed section leaves out only that schedule's note and says so; the hours still publish.
+  const heard: string[] = [];
+  const saved = reviewData.schedules.splice(0, reviewData.schedules.length, review);
+  try {
+    assert.deepEqual(attachReviewedHoursAbsences([record] as never, capture('(201) 684-7001'), line => heard.push(line)), [record]);
+  } finally {
+    reviewData.schedules.splice(0, reviewData.schedules.length, ...saved);
+  }
+  assert.deepEqual(heard, [`**Registrar**: section "${url} — ${reviewed.heading}" changed.`]);
+  assert.match(changedHoursReport(heard)!, /Registrar/);
+  assert.equal(changedHoursReport([]), null);
+  // A review with nothing to claim needs no check, so its page may change freely.
+  const empty = { ...review, missing_weekdays: [], missing_validity: [] };
+  const kept = reviewData.schedules.splice(0, reviewData.schedules.length, empty);
+  try {
+    assert.deepEqual(attachReviewedHoursAbsences([record] as never, []), [record]);
+  } finally {
+    reviewData.schedules.splice(0, reviewData.schedules.length, ...kept);
+  }
+  // A missing capture, or a day the capture does state, still stop the collector.
   assert.throws(() => attach([record], []), /needs one source capture/);
   assert.throws(() => attach([{ ...record, hours: { ...record.hours, Saturday: '9:00am-1:00pm' } }], capture('(201) 684-7000')),
     /contradict the captured schedule/);
