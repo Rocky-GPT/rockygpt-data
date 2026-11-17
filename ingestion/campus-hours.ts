@@ -296,6 +296,38 @@ function parsedWeek(section: string): Record<string, string> {
     return hours;
 }
 
+const SPECIAL_DATE = String.raw`(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}`;
+const SPECIAL_LINE = new RegExp(String.raw`^(${SPECIAL_DATE})(?:\s*-\s*(${SPECIAL_DATE}))?:\s*(.+)$`, 'i');
+
+/**
+ * The dated lines under a section's "Special Hours" heading, as the page states them ("Nov 25 -
+ * Nov 28: CLOSED", "Nov 29: 4:00pm-12:00am"). The weekly schedule stays the week; these go into
+ * the note beside it, so whoever is told the week is told its exceptions too (the library's page
+ * listed its Thanksgiving closure on November 17, 2026, and until then any special hours stopped
+ * every campus hours record from refreshing). Anything under the heading that is not a date, or
+ * two, with CLOSED or one time range still stops the collector: an exception is never guessed.
+ */
+export function specialHoursLines(section: string): string[] {
+    const lines = section.split('\n');
+    const at = lines.findIndex((line) => /^Special Hours:?$/i.test(line));
+    if (at < 0) {
+        if (/Special Hours/i.test(section)) throw new Error('special hours are not under a heading of their own');
+        return [];
+    }
+    const found: string[] = [];
+    let rest = at + 1;
+    for (; rest < lines.length; rest += 1) {
+        const match = lines[rest].match(SPECIAL_LINE);
+        if (!match) break;
+        const when = match[2] ? `${match[1]} - ${match[2]}` : match[1];
+        found.push(`${when}: ${/^CLOSED$/i.test(match[3].trim()) ? 'CLOSED' : scheduleFromLine(match[3])}`);
+    }
+    // What follows the dated lines must not be more special hours in a shape this cannot read.
+    const unread = lines.slice(rest).find((line) => new RegExp(`^${SPECIAL_DATE}`, 'i').test(line) || /Special Hours/i.test(line));
+    if (!found.length || unread) throw new Error(`special hours line is unrecognized: "${unread ?? lines[at + 1] ?? ''}"`);
+    return found;
+}
+
 export function parseLibraryHours(pageText: string): LocationHours[] {
     const text = normalizePageText(pageText);
     const circulation = sectionBetween(text, 'CIRCULATION DESK HOURS', 'RESEARCH HELP HOURS');
@@ -308,9 +340,15 @@ export function parseLibraryHours(pageText: string): LocationHours[] {
         if (!term || !dates || !readValidityFromNotes(`${term} ${dates}`).window) {
             throw new Error(`Library source has no explicit applicability dates for ${name}`);
         }
-        // Exceptions require dated records, never a silent weekly fallback.
-        if (/Special Hours/i.test(section)) throw new Error(`Library source has unparsed special hours for ${name}`);
-        return { name, hours: parsedWeek(section), notes: `${term} ${dates}` };
+        // Exceptions are never a silent weekly fallback: each dated line is read or the collector stops.
+        let special: string[];
+        try {
+            special = specialHoursLines(section);
+        } catch (error) {
+            throw new Error(`Library source has unparsed special hours for ${name}: ${error instanceof Error ? error.message : String(error)}`);
+        }
+        return { name, hours: parsedWeek(section),
+            notes: `${term} ${dates}${special.length ? `. Special Hours: ${special.join('; ')}` : ''}` };
     };
     const library = parse('Library (Main Building)', circulation);
     const closingNote = text.split('\n').find((line) => /^Please note that the front doors/i.test(line));

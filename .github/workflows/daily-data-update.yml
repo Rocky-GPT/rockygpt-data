@@ -42,6 +42,10 @@ on:
         description: 'The most the how-to page read may spend in this run, in dollars (blank = the nightly cap)'
         type: string
         default: ''
+      force_sources:
+        description: 'Production only: sources to collect in this run however fresh they are, separated by commas (e.g. campus-hours,archway-clubs)'
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -192,6 +196,9 @@ jobs:
           RAW_ARTIFACT_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
           RAW_ARTIFACT_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
           RAW_ARTIFACT_REQUIRED: '1'
+          # A run started by hand may name sources to collect whatever their window says
+          # (ingestion/refresh-publishable.ts forcedSources); an unknown name stops the run.
+          REFRESH_FORCE_SOURCES: ${{ inputs.force_sources }}
         run: npm run refresh:publishable
 
       # Dev build: production's newest captured pages, this checkout's code, the job's database
