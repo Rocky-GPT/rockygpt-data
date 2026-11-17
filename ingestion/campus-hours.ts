@@ -1,5 +1,5 @@
 import path from 'path';
-import { mkdirSync, rmSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { load } from 'cheerio';
 import { fetchWithPolicy } from './http-client';
 import {
@@ -25,6 +25,8 @@ export const GENERAL_CAMPUS_HOURS_URL = 'https://www.ramapo.edu/about/campus-hou
 export const BERRIE_SEASON_URL = 'https://www.ramapo.edu/berriecenter/plan-your-visit/';
 const SOURCE_CAPTURE_PATH = path.join(process.cwd(), 'data', 'raw', 'hours-sources.raw.json');
 const OMISSIONS_PATH = path.join(process.cwd(), 'data', 'normalized', 'hours-omissions.json');
+/** Where the nightly job finds the pages whose hours no longer read and kept their last read. */
+export const KEPT_HOURS_REPORT = path.join('data', 'review', 'refresh-kept-hours.md');
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 type DayName = (typeof DAYS)[number];
@@ -423,6 +425,8 @@ export interface HoursSourceCapture {
     sourceUrl: string;
     collectedAt: string;
     html: string;
+    /** Set only while collecting: why tonight's fetch of this page failed. Never saved. */
+    unreadable?: string;
 }
 
 async function fetchHoursSource(sourceUrl: string): Promise<HoursSourceCapture> {
@@ -461,6 +465,8 @@ export interface OfficeHoursPage {
     against?: RegExp;
     /** Source-published scope, retained even when its calendar boundaries are absent. */
     season?: string;
+    /** The label is the page's term heading (TERM_HEADING), and the term it names is the season. */
+    termHeading?: boolean;
     /** Explicit date statement on the same source page; never the academic calendar. */
     starts?: RegExp;
     /** A reviewed service clause inside a longer paragraph; never another service's clock. */
@@ -469,6 +475,17 @@ export interface OfficeHoursPage {
     appendStatements?: RegExp[];
     applicabilityIssue?: { status: 'unknown' | 'conflicting'; reason: string };
 }
+/** A heading that is only a term and its year: "FALL 2026", "Spring 2027", "Summer Semester 2027". */
+export const TERM_HEADING = /^(Fall|Spring|Summer|Winter)(?: Semester)? (20\d{2})$/i;
+
+/** The term a page's own heading names, as "Fall 2026"; one heading only. */
+export function termOfHeading(text: string): string {
+    const found = text.split('\n').map(line => line.trim()).map(line => line.match(TERM_HEADING)).filter(Boolean);
+    if (found.length !== 1) throw new Error(`Expected one term heading, found ${found.length}`);
+    const [, term, year] = found[0]!;
+    return `${term[0].toUpperCase()}${term.slice(1).toLowerCase()} ${year}`;
+}
+
 export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'Registrar', url: 'https://www.ramapo.edu/registrar/', label: /^Fall\s*\/\s*Spring Hours:/i, season: 'Fall/Spring' },
     { name: 'Student Accounts', url: 'https://www.ramapo.edu/student-accounts/', label: /^Academic Year:/i, season: 'Academic Year' },
@@ -509,8 +526,8 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'Roadrunner Central', url: 'https://www.ramapo.edu/csi/roadrunner-central/', kind: 'week',
         label: /^Please visit the Center for Student Involvement Main Office, located in SC202, for assistance during the following hours during the semester:$/i,
         season: 'During the semester' },
-    // The page's heading names the term, so the label does too: a new term's page stops the collector.
-    { name: 'Photography Lab', url: 'https://www.ramapo.edu/photolab/hours/', kind: 'week', label: /^FALL 2026$/i, season: 'Fall 2026' },
+    // The page's heading names the term ("FALL 2026"); the term it names is the schedule's season.
+    { name: 'Photography Lab', url: 'https://www.ramapo.edu/photolab/hours/', kind: 'week', label: TERM_HEADING, termHeading: true },
     { name: 'Counseling Center', url: 'https://www.ramapo.edu/counseling/', label: /^Academic Year Hours:/i, season: 'Academic Year' },
     { name: 'Counseling Center (Drop-In)', url: 'https://www.ramapo.edu/counseling/', kind: 'week',
         label: /^(?=Monday-Friday)/i,
@@ -552,7 +569,7 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
     { name: 'Military and Veterans Success', url: 'https://www.ramapo.edu/military/veterans-lounge-advisement/',
         label: /^Hours of Operation:/i },
     { name: "Women's Center & LGBTQ+ Services", url: 'https://www.ramapo.edu/womenscenter/', kind: 'week',
-        label: /^Fall 2026$/i, season: 'Fall 2026' },
+        label: TERM_HEADING, termHeading: true },
     // One unit, two published schedules: the Multicultural Center room and the ABC office.
     { name: 'The Multicultural Center', url: 'https://www.ramapo.edu/multicultural-center/', label: /^(?=Monday-Friday:$)/i },
     { name: 'Office of Access, Belonging and Community', url: 'https://www.ramapo.edu/oabc/contact-us/',
@@ -924,11 +941,12 @@ function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedA
         : office.kind === 'conflict' ? parseConflictingOfficeHours(office.name, office.label, office.against!, scheduleText)
         : office.kind === 'days-unstated' ? parseUnstatedDayHours(office.name, office.label, scheduleText)
         : parseOfficeHours(office.name, office.label, scheduleText, collectedAt, []);
-    if (office.season) {
+    const season = office.termHeading ? termOfHeading(scheduleText) : office.season;
+    if (season) {
         record.normalization_metadata = { evidence: { schedule: {
-            ...record.normalization_metadata?.evidence?.schedule, season: office.season,
+            ...record.normalization_metadata?.evidence?.schedule, season,
         } } };
-        record.notes = `${office.season}: ${record.notes}`;
+        record.notes = `${season}: ${record.notes}`;
     }
     if (office.applicabilityIssue) {
         record.normalization_metadata = { evidence: { schedule: {
@@ -1041,16 +1059,106 @@ export function buildCampusHourLocations(locations: LocationHours[], now = new D
     return campusHoursPublication(locations, now).publishable;
 }
 
+/**
+ * Reads one captured page with every parser that reads it, and throws what the first one throws.
+ * The same reading campusHoursFromCaptures does, one page at a time.
+ */
+export function readHoursCapture(capture: HoursSourceCapture): void {
+    if (capture.unreadable) throw new Error(capture.unreadable);
+    if (!capture.html.trim()) throw new Error(`Hours page is empty: ${capture.sourceUrl}`);
+    const text = hoursPageText(capture.html);
+    if (capture.sourceUrl === ATHLETICS_HOURS_URL) parseAthleticsFacilityHours(text);
+    if (capture.sourceUrl === LIBRARY_HOURS_URL) parseLibraryHours(text);
+    if (capture.sourceUrl === GENERAL_CAMPUS_HOURS_URL) parseGeneralCampusHours(text);
+    if (capture.sourceUrl === BERRIE_SEASON_URL
+        && !/The Box Office is open from (late August to early May)\./i.test(text)) {
+        throw new Error('Reviewed Berrie Box Office seasonal statement changed');
+    }
+    for (const office of OFFICE_HOURS_PAGES.filter(office => office.url === capture.sourceUrl)) {
+        configuredOfficeHours(office, text, capture.collectedAt);
+    }
+}
+
+export interface KeptHoursPage { url: string; error: string; keptFrom: string }
+
+/**
+ * One page that no longer reads keeps its last good capture, so the other pages' hours still
+ * refresh. A page with no earlier capture that reads stops the collector, as before.
+ */
+export function keepReadableCaptures(fresh: HoursSourceCapture[], previous: HoursSourceCapture[]):
+    { captures: HoursSourceCapture[]; kept: KeptHoursPage[] } {
+    const kept: KeptHoursPage[] = [];
+    const captures = fresh.map((capture) => {
+        try {
+            readHoursCapture(capture);
+            return capture;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            const earlier = previous.find((candidate) => candidate.sourceUrl === capture.sourceUrl);
+            if (!earlier) throw error;
+            try {
+                readHoursCapture(earlier);
+            } catch {
+                throw error;
+            }
+            kept.push({ url: capture.sourceUrl, error: message, keptFrom: earlier.collectedAt });
+            return earlier;
+        }
+    });
+    return { captures, kept };
+}
+
+/** The pages that kept their last read, as a review note, or null when every page read. */
+export function keptHoursReport(kept: readonly KeptHoursPage[]): string | null {
+    if (!kept.length) return null;
+    return ['These hours pages no longer read, so each kept the hours of its last good read. Every other',
+        'page refreshed. Look at each page and update its reader in `ingestion/campus-hours.ts`:', '',
+        ...kept.map(page => `- ${page.url} (kept the read of ${page.keptFrom.slice(0, 10)}): ${page.error}`), ''].join('\n');
+}
+
+function previousCaptures(): HoursSourceCapture[] {
+    if (!existsSync(SOURCE_CAPTURE_PATH)) return [];
+    try {
+        const saved = JSON.parse(readFileSync(SOURCE_CAPTURE_PATH, 'utf8')) as { captures?: HoursSourceCapture[] };
+        return Array.isArray(saved.captures) ? saved.captures : [];
+    } catch {
+        return [];
+    }
+}
+
+/** A page that could not be fetched tonight; keepReadableCaptures keeps its last read. */
+function unfetched(sourceUrl: string, error: unknown): HoursSourceCapture {
+    const message = error instanceof Error ? error.message : String(error);
+    return { sourceUrl, collectedAt: new Date().toISOString(), html: '', unreadable: message };
+}
+
+async function fetchOrNote(sourceUrl: string): Promise<HoursSourceCapture> {
+    try {
+        return await fetchHoursSource(sourceUrl);
+    } catch (error) {
+        return unfetched(sourceUrl, error);
+    }
+}
+
 async function fetchCampusHours() {
-    const captures = await Promise.all([
-        fetchHoursSource(ATHLETICS_HOURS_URL), fetchHoursSource(LIBRARY_HOURS_URL),
-        fetchHoursSource(GENERAL_CAMPUS_HOURS_URL),
+    const fresh = await Promise.all([
+        fetchOrNote(ATHLETICS_HOURS_URL), fetchOrNote(LIBRARY_HOURS_URL), fetchOrNote(GENERAL_CAMPUS_HOURS_URL),
     ]);
     // Two offices can share one page; it is fetched and archived once.
     for (const url of new Set([...OFFICE_HOURS_PAGES.map((office) => office.url), BERRIE_SEASON_URL])) {
-        captures.push(await fetchHoursSource(url));
+        fresh.push(await fetchOrNote(url));
     }
-    const fetchedAt = new Date(Math.min(...captures.map((capture) => Date.parse(capture.collectedAt)))).toISOString();
+    const { captures, kept } = keepReadableCaptures(fresh, previousCaptures());
+    const keptReport = keptHoursReport(kept);
+    rmSync(KEPT_HOURS_REPORT, { force: true });
+    if (keptReport) {
+        console.warn(keptReport);
+        mkdirSync(path.dirname(KEPT_HOURS_REPORT), { recursive: true });
+        writeFileSync(KEPT_HOURS_REPORT, keptReport);
+    }
+    // When tonight's read ran. A page that kept an earlier read keeps that read's own time on its
+    // records, and the report above names it every night until its reader is fixed.
+    const fetchedAt = new Date(Math.min(...fresh.map((capture) => Date.parse(capture.collectedAt)))).toISOString();
     const capturedSources = { version: 1, captures };
     const locations = campusHoursFromCaptures(captures, true);
     const publication = campusHoursPublication(locations);
