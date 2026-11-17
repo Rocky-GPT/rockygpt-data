@@ -7,8 +7,8 @@ import { pageKey, readSites, readSkippedPages, siteFolder, sitePages } from './f
 import { type AskJev, JEV_MODEL, JEV_URL, jevAnswers, jevClient } from './jev';
 import { OFFICE_PAGES } from './office-pages';
 import {
-  type CheckedSource, checkPages, estimatedTokens, LABELS, MAX_TEXT_CHARS, PAGE_QUESTION, pageState, pageText, QUESTION_ID, readKeptPages,
-  RECHECK_DAYS, reviewMarkdown, skippedPageLine, type Verdict,
+  AUTO_LEAVE_OUT_LABELS, type CheckedSource, checkPages, estimatedTokens, keptPageLine, LABELS, leftOutAutomatically, MAX_TEXT_CHARS,
+  PAGE_QUESTION, pageState, pageText, QUESTION_ID, readKeptPages, RECHECK_DAYS, reviewMarkdown, skippedPageLine, type Verdict,
 } from './page-check';
 import { buildRawPageFromHtml } from './raw-collector';
 import type { RawDatasetV1 } from './raw-types';
@@ -36,13 +36,13 @@ const source = (pages: RawDatasetV1['pages'], kept: string[] = []): CheckedSourc
 });
 
 /** Answers by the page's title, as Jev would label it, and records what it was sent. */
-function fakeJev(labels: Record<string, string>, sent: unknown[] = [], inputTokens = 1_000): AskJev {
+function fakeJev(labels: Record<string, string>, sent: unknown[] = [], inputTokens = 1_000, sure = 0.93): AskJev {
   return async (state, questions) => {
     sent.push(state);
     const { title } = state as { title: string };
     const choice = labels[title] ?? 'keep';
     const options = Object.keys(questions.page.criteria);
-    const probabilities = Object.fromEntries(options.map(option => [option, option === choice ? 0.93 : 0.07 / (options.length - 1)]));
+    const probabilities = Object.fromEntries(options.map(option => [option, option === choice ? sure : (1 - sure) / (options.length - 1)]));
     return { model: JEV_MODEL, answers: { page: { choice, probabilities, confidence: 0.91 } }, inputTokens };
   };
 }
@@ -204,15 +204,53 @@ test('kept pages are in their list\'s folders, with a reason, and not also skipp
 test('the review list groups flags by site, most likely first, and fits in a GitHub issue', async () => {
   const many = Array.from({ length: 400 }, (_, index) => page(`test-${index}/`, `Test Copy ${index}`, '<p>Sample text for a test copy of the tickets page.</p>'));
   const labels = Object.fromEntries(many.map(p => [p.title!, 'test_copy']));
-  const result = await checkPages({ sources: [source(many)], verdicts: {}, ask: fakeJev(labels), now: NOW, maxNanodollars: 1e9 });
+  // 89% sure: below the bar, so every flag waits for a person.
+  const result = await checkPages({ sources: [source(many)], verdicts: {}, ask: fakeJev(labels, [], 1_000, 0.89), now: NOW, maxNanodollars: 1e9 });
+  assert.equal(result.leftOut.length, 0);
   const markdown = reviewMarkdown(result);
   assert.ok(markdown.length <= 60_000);
   assert.match(markdown, /^# Pages to review\n/);
   assert.match(markdown, /Jev flagged 400 of 400 published/);
+  assert.doesNotMatch(markdown, /^# Left out automatically$/m);
+  assert.match(markdown, /^# Waiting for a person$/m);
   assert.equal(markdown.match(/^## /gm)?.length, 1);
   assert.match(markdown, /^## Berrie Center for Performing and Visual Arts · src\/reference\/academic-sites\.json$/m);
-  assert.match(markdown, /- \*\*Test copy\*\* \(93%\): \[Test Copy \d+ - Berrie Center\]\(https:\/\/www\.ramapo\.edu\/berriecenter\/test-\d+\/\)/);
+  assert.match(markdown, /- \*\*Test copy\*\* \(89%\): \[Test Copy \d+ - Berrie Center\]\(https:\/\/www\.ramapo\.edu\/berriecenter\/test-\d+\/\)/);
   assert.match(markdown, /\d+ more flagged pages are not shown here/);
+});
+
+test('clear cases at 90% or more are left out, with the keptPages line that brings each back', async () => {
+  const all = [PAGES.tickets, PAGES.season, PAGES.test, PAGES.gallery];
+  const labels = { ...LABELED, 'Gallery - Berrie Center': 'named_students' };
+  const result = await checkPages({ sources: [source(all)], verdicts: {}, ask: fakeJev(labels), now: NOW, maxNanodollars: 1e9 });
+  assert.deepEqual(result.flagged.map(flag => flag.label).sort(), ['named_students', 'past_event', 'test_copy']);
+  // Named students wait for a person however sure Jev is.
+  assert.deepEqual(result.leftOut.map(flag => flag.label).sort(), ['past_event', 'test_copy']);
+  assert.equal(keptPageLine(result.leftOut[0]), `{"url": "${result.leftOut[0].url}", "reason": "Reviewed: the site's own information."}`);
+  const markdown = reviewMarkdown(result);
+  assert.match(markdown, /2 are clear cases .* and are left out of what the bot reads; 1 wait for a person/);
+  const [left, waiting] = markdown.split('# Waiting for a person');
+  assert.match(left, /^# Left out automatically$/m);
+  assert.match(left, /keptPages/);
+  assert.match(left, new RegExp(`\\{"url": "${PAGES.test.url}", "reason": "Reviewed`));
+  assert.match(waiting, /\*\*Named students\*\* \(93%\): \[Gallery/);
+  assert.match(waiting, /"reason": "About individual named students/);
+
+  // A person's keptPages line brings a page back: the check leaves it alone.
+  const undone = await checkPages({
+    sources: [source(all, [PAGES.test.url])], verdicts: result.verdicts, now: NOW, maxNanodollars: 0,
+  });
+  assert.deepEqual(undone.leftOut.map(flag => flag.label), ['past_event']);
+});
+
+test('only the clear kinds, at 90% or more, are left out without a person', () => {
+  assert.deepEqual([...AUTO_LEAVE_OUT_LABELS].sort(), ['login_wall', 'not_found', 'out_of_date', 'past_event', 'placeholder', 'test_copy']);
+  assert.ok([...AUTO_LEAVE_OUT_LABELS].every(label => LABELS[label]?.reason));
+  assert.equal(leftOutAutomatically({ label: 'placeholder', probability: 0.9 }), true);
+  assert.equal(leftOutAutomatically({ label: 'placeholder', probability: 0.899 }), false);
+  assert.equal(leftOutAutomatically({ label: 'faculty_list', probability: 1 }), false);
+  assert.equal(leftOutAutomatically({ label: 'named_students', probability: 1 }), false);
+  assert.equal(leftOutAutomatically({ label: 'keep', probability: 1 }), false);
 });
 
 test('Jev\'s answers are checked against the question', () => {
