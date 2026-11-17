@@ -1,0 +1,72 @@
+# Temporary, on this work branch only: the free check for audit plan item 13 (2026-11-17). The
+# Brain before (dev 191043a, BRAIN_PAGE_WRITER=direct as production) and after the removals answer
+# the 224 practice messages with a dry model; every request and answer is hashed and compared.
+name: Study 8 same requests
+
+on:
+  push:
+    branches: [claude/project-thread-ywfxp0]
+    paths: ['.github/workflows/study8-same.yml', 'study8/same_requests.py']
+
+permissions:
+  contents: write
+
+jobs:
+  same:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Checkout the Brain before
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: 191043a0
+          path: before
+          fetch-depth: 0
+      - name: Checkout the Brain after
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: 27ee05d465abe0fa8c9acd2dc7279ea28fdb027a
+          path: after
+          fetch-depth: 0
+      - name: Install both
+        run: |
+          for t in before after; do
+            python -m venv "$t-venv"
+            "$t-venv/bin/pip" install --quiet --require-hashes -r "$t/requirements.lock"
+            "$t-venv/bin/pip" install --quiet --no-deps -e "./$t[graph]"
+          done
+      - name: Download the live graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: after-venv/bin/python -m rockygpt_brain.retrieval.graph_sync .published > /dev/null
+      - name: Checkout this branch
+        uses: actions/checkout@v7
+        with:
+          path: data
+      - name: Answer with both and compare
+        env:
+          BRAIN_PAGE_WRITER: direct
+        run: |
+          OUT=before.json before-venv/bin/python data/study8/same_requests.py 2>&1 | grep -v '^provider_failure\|^brain_'
+          OUT=after.json after-venv/bin/python data/study8/same_requests.py 2>&1 | grep -v '^provider_failure\|^brain_'
+          python - <<'PY'
+          import json
+          a, b = json.load(open("before.json")), json.load(open("after.json"))
+          sent = sum(len(r["sent"]) for r in a.values())
+          same_sent = sum(a[k]["sent"] == b[k]["sent"] for k in a)
+          same_body = sum(a[k]["body"] == b[k]["body"] for k in a)
+          print(f"messages {len(a)}; requests before {sent}; messages with identical requests {same_sent}; identical answers {same_body}")
+          for k in a:
+              if a[k] != b[k]:
+                  print("DIFF", k, a[k]["by"], b[k]["by"], a[k]["sent"], b[k]["sent"])
+          PY
