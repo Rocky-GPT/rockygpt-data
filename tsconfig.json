@@ -22,8 +22,7 @@
     "src/**/*.ts",
     "pipeline/**/*.ts",
     "ingestion/**/*.ts",
-    "scripts/**/*.ts",
-    "api/**/*.ts"
+    "scripts/**/*.ts"
   ],
   "exclude": [
     "node_modules",

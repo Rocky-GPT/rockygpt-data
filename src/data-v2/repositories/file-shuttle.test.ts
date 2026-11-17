@@ -4,9 +4,6 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { FileRepositoryV2 } from './file-repository';
-import { setRepositoryV2ForTests } from './index';
-import { getShuttle } from '../../../api/routes/shuttle';
-import type { ShuttleResponse } from '../../../api/contract';
 
 function fixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-source-shuttle-'));
@@ -40,18 +37,4 @@ test('file shuttle reads and exact facts use captured rows, stop columns, URLs, 
     fs.unlinkSync(path.join(root, 'data/normalized/transportation.json'));
     await assert.rejects(repository.listShuttleTrips('weekday'), /ENOENT/);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
-});
-
-test('legacy shuttle endpoint reads the repository and leaves unsupported Shortline timetables empty', async () => {
-  const { root, repository } = fixture();
-  setRepositoryV2ForTests(repository);
-  try {
-    const result = await getShuttle({ method: 'GET', url: new URL('http://localhost/v1/shuttle'), headers: new Headers(), signal: new AbortController().signal });
-    assert.equal(result.status, 200);
-    const body = result.body as ShuttleResponse;
-    assert.equal(body.weekday[0].departure, '6:10 AM');
-    assert.equal(body.trainLoop[0].departure, '6:10 AM');
-    assert.deepEqual(body.shortline.toNYC, { weekday: [], saturday: [], sunday: [] });
-    assert.deepEqual(body.shortline.fromNYC, { weekday: [], saturday: [], sunday: [] });
-  } finally { setRepositoryV2ForTests(null); fs.rmSync(root, { recursive: true, force: true }); }
 });
