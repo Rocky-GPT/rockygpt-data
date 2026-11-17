@@ -29,7 +29,7 @@ jobs:
           - arm: live
             ref: main
           - arm: direct
-            ref: 5509d7e8
+            ref: 5509d7e22f2b7cee41646bee5f6732203ed5bd9d
     steps:
       - name: Checkout the Brain
         uses: actions/checkout@v7
