@@ -30,8 +30,11 @@ jobs:
           url=$(grep -o "CATALOG_POLICIES_INDEX = '[^']*'" src/data-v2/catalog-policies.ts | cut -d\' -f2)
           echo "index: $url"
           curl -sSL -A 'Mozilla/5.0' "$url" -o index.html -w '%{http_code} %{url_effective} %{size_download}\n'
-          page=$(grep -o '/pages/[A-Za-z0-9]*' index.html | head -1)
-          echo "page: $page"
-          sleep 1
-          curl -sSL -A 'Mozilla/5.0' "https://catalog.ramapo.edu$page" -o page.html -w '%{http_code} %{url_effective} %{size_download}\n'
-          node study6/catalog_shape.mjs index.html
+          node study6/catalog_shape.mjs links index.html | head -70
+          n=0
+          for link in $(grep -E '^(https://catalog.ramapo.edu)?/' links.txt | head -3); do
+            case "$link" in http*) url="$link";; *) url="https://catalog.ramapo.edu$link";; esac
+            n=$((n+1)); sleep 1
+            curl -sSL -A 'Mozilla/5.0' "$url" -o "sub$n.html" -w "%{http_code} %{url_effective} %{size_download}\n"
+          done
+          node study6/catalog_shape.mjs pages sub*.html

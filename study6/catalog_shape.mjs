@@ -1,21 +1,36 @@
-// Temporary diagnostic (removed before merge): where the policy text sits in the catalog page.
-import { readFileSync } from 'fs';
+// Temporary diagnostic (removed before merge): the catalog's policy subpages and their shape.
+import { readFileSync, writeFileSync } from 'fs';
 import { load } from 'cheerio';
-const html = readFileSync(process.argv[2], 'utf8');
-const raw = /<script type="application\/json"[^>]*id="__NUXT_DATA__"[^>]*>([\s\S]*?)<\/script>/.exec(html)?.[1];
-const p = JSON.parse(raw);
-const at = i => (typeof i === 'number' ? p[i] : i);
-const isObj = e => e && typeof e === 'object' && !Array.isArray(e);
-p.forEach((e, i) => { if (isObj(e) && 'content' in e) console.log(`content obj ${i}: keys=${Object.keys(e).join(',')} content=${JSON.stringify(at(e.content))?.slice(0, 300)}`); });
-const longStrings = p.map((e, i) => [i, e]).filter(([, e]) => typeof e === 'string' && e.length > 2000);
-console.log('long strings in payload:', longStrings.length, longStrings.slice(0, 8).map(([i, s]) => `${i}:${s.length}:${JSON.stringify(s.slice(0, 120))}`).join('\n  '));
-const $ = load(html);
-$('script, style, noscript').remove();
-console.log('visible text chars', $('body').text().replace(/\s+/g, ' ').length);
-const ids = []; $('[id]').each((_, el) => ids.push(`${el.tagName}#${$(el).attr('id')}`));
-console.log('ids', ids.length, ids.slice(0, 80).join(' '));
-const hit = html.indexOf('integrity-of-degree-programs');
-console.log('around anchor:', html.slice(Math.max(0, hit - 600), hit + 400).replace(/\s+/g, ' '));
-const heads = []; $('h1,h2,h3,[role=tab],button').each((_, el) => heads.push(`${el.tagName}:${$(el).text().replace(/\s+/g, ' ').trim().slice(0, 60)}`));
-console.log('heads/tabs', heads.length, heads.slice(0, 60).join(' | '));
-for (const m of html.matchAll(/https?:\/\/[a-z0-9.-]*coursedog[a-z0-9.\/_-]*api[^"'\s]*/gi)) { console.log('api url', m[0]); }
+const mode = process.argv[2];
+if (mode === 'links') {
+  const $ = load(readFileSync(process.argv[3], 'utf8'));
+  const links = new Set();
+  $('#main-content a[href]').each((_, a) => links.add($(a).attr('href')));
+  console.log('main-content links', links.size);
+  for (const l of links) console.log('LINK', l);
+  writeFileSync('links.txt', [...links].join('\n'));
+} else {
+  for (const file of process.argv.slice(3)) {
+    const html = readFileSync(file, 'utf8');
+    const $ = load(html);
+    const raw = /<script type="application\/json"[^>]*id="__NUXT_DATA__"[^>]*>([\s\S]*?)<\/script>/.exec(html)?.[1];
+    const p = raw ? JSON.parse(raw) : [];
+    const isObj = e => e && typeof e === 'object' && !Array.isArray(e);
+    const at = i => (typeof i === 'number' ? p[i] : i);
+    const html2k = p.map((e, i) => [i, e]).filter(([, e]) => typeof e === 'string' && /<(p|h[1-6]|ul|li)\b/.test(e) && e.length > 300);
+    console.log(`== ${file}: ${html.length} chars; payload strings with HTML: ${html2k.length} (${html2k.map(([i, s]) => `${i}:${s.length}`).slice(0, 6).join(' ')})`);
+    for (const [i] of html2k.slice(0, 2)) {
+      for (const [j, parent] of p.map((e, k) => [k, e]).filter(([, e]) => isObj(e) && Object.values(e).includes(i)).slice(0, 2)) {
+        console.log(`  parent ${j}: ${Object.entries(parent).map(([k, v]) => `${k}=${JSON.stringify(at(v))?.slice(0, 80)}`).join(' | ')}`);
+      }
+    }
+    const pageObjs = p.filter(e => isObj(e) && ('slug' in e || 'pageId' in e) && ('title' in e || 'name' in e));
+    for (const o of pageObjs.slice(0, 4)) console.log('  page-like', Object.entries(o).map(([k, v]) => `${k}=${JSON.stringify(at(v))?.slice(0, 60)}`).join(' | ').slice(0, 900));
+    const main = $('#tab-content-panel').length ? $('#tab-content-panel') : $('#main-content');
+    main.find('script,style').remove();
+    console.log('  main text', main.text().replace(/\s+/g, ' ').trim().length, ':', main.text().replace(/\s+/g, ' ').trim().slice(0, 700));
+    const hs = []; main.find('h1,h2,h3,h4').each((_, el) => hs.push(`${el.tagName}:${$(el).text().trim().slice(0, 50)}`));
+    console.log('  headings', hs.slice(0, 20).join(' | '));
+    console.log('  meta', $('meta[property="article:modified_time"]').attr('content'), $('link[rel=canonical]').attr('href'));
+  }
+}
