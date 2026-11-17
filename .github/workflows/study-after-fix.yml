@@ -1,10 +1,11 @@
-# Temporary, on this work branch only: the last paid measurement for the overnight audit of
-# 2026-11-17. It asks the same 30 older how-to practice questions (not the frozen blind 60) three
-# times each, one at a time, with the Brain's code before and after the two speed fixes, once with
-# the Brain's own page answer at "low" thinking effort and once with the audit's one-call writer
-# over the Brain's own search. It prints only timing summaries. Nothing in the bot changes and
-# nothing is written anywhere. Each job keeps its own spend cap of 20 cents (four jobs, 80 cents
-# at the very most; about 30 cents expected). Removed before anything from this branch merges.
+# Temporary, on this work branch only: a paid measurement for the overnight audit of 2026-11-17.
+# It asks the same 30 older how-to practice questions (not the frozen blind 60) twice each, one at
+# a time, with the dev Brain's page answer at "low" thinking effort and with the audit's one-call
+# writer over the Brain's own search, and times when the reply's first whole sentence has arrived
+# from the model: what a student would wait for if answers were shown as they are written. It
+# prints only timing summaries. Nothing in the bot changes and nothing is written anywhere. Each
+# job keeps its own spend cap of 12 cents (about 8 cents expected in all). Removed before anything
+# from this branch merges.
 name: Study the answers after the fix
 
 on:
@@ -24,20 +25,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Brain page answer at low effort, before the fixes
-            ref: c8d62950e8bc38422b0cca3de48561b6edb2a172
+          - name: Brain page answer at low effort, dev code, time to the first sentence
+            ref: 959a8299d738761061100b0997d3b53fc7503545
             script: writer_tries.py
             arms: sections-low
-          - name: Brain page answer at low effort, both fixes
-            ref: 3f88721ab62039391a12af3916620084f1d68a97
-            script: writer_tries.py
-            arms: sections-low
-          - name: One-call writer over the Brain's search, before the fixes
-            ref: c8d62950e8bc38422b0cca3de48561b6edb2a172
-            script: tiny_bot.py
-            arms: tiny-read
-          - name: One-call writer over the Brain's search, both fixes
-            ref: 3f88721ab62039391a12af3916620084f1d68a97
+          - name: One-call writer over the Brain's search, dev code, time to the first sentence
+            ref: 959a8299d738761061100b0997d3b53fc7503545
             script: tiny_bot.py
             arms: tiny-read
     steps:
@@ -73,14 +66,14 @@ jobs:
         with:
           path: data
 
-      - name: Ask the 30 practice questions three times, one at a time
+      - name: Ask the 30 practice questions twice, one at a time
         env:
           BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           DRY: '0'
           ARMS: ${{ matrix.arms }}
-          TRIES: '3'
+          TRIES: '2'
           AT_ONCE: '1'
           ROWS: '0'
-          CAP_USD: '0.20'
+          CAP_USD: '0.12'
           SCRIPT: ${{ matrix.script }}
         run: python "data/study2/$SCRIPT" 2>&1 | grep -v '^provider_failure\|^brain_'

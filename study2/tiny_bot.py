@@ -41,6 +41,8 @@ ARMS = [a for a in os.environ.get("ARMS", "tiny,tiny-8,tiny-read").split(",") if
 TRIES = int(os.environ.get("TRIES", "3") or 3)
 LIMIT = int(os.environ.get("LIMIT", "0") or 0)
 EMBED_MODEL, EMBED_NUSD = "text-embedding-3-large", 130
+# Where a sentence ends: its mark and then a space, a line end or the end of the text so far.
+SENTENCE_END = re.compile(r"[.!?](?:\s|$)|\n")
 
 TINY_PROMPT = """You are RockyGPT, a campus assistant for Ramapo College students. Answer the \
 student's question using only the numbered sections of the college's own pages given below.
@@ -106,6 +108,8 @@ async def tiny_answer(client: Any, facts: Any, index: Any, prices: dict[str, int
                          {"role": "user", "content": f"Question: {question}\n\nSections:\n{listed}"}]}
     begun = time.monotonic()
     first: float | None = None
+    sentence: float | None = None  # Seconds from the question to its first whole sentence.
+    so_far = ""
     usage: dict[str, Any] = {}
     if DRY:
         text = "This is a dry run reply [1]."
@@ -117,6 +121,10 @@ async def tiny_answer(client: Any, facts: Any, index: Any, prices: dict[str, int
             kind = getattr(event, "type", "")
             if first is None and kind == "response.output_text.delta":
                 first = time.monotonic() - begun
+            if sentence is None and kind == "response.output_text.delta":
+                so_far += str(getattr(event, "delta", "") or "")
+                if SENTENCE_END.search(so_far, 40):
+                    sentence = time.monotonic() - started
             if kind in ("response.completed", "response.incomplete", "response.failed"):
                 final = event.response
         if final is None:
@@ -142,6 +150,7 @@ async def tiny_answer(client: Any, facts: Any, index: Any, prices: dict[str, int
         text += "\n\nSources: " + " ".join(f"[{c['id'][8:]}]({c['url']})" for c in citations)
     return {"answer": text, "citations": citations, "sections": len(sections),
             "first": round(first, 2) if first is not None else None,
+            "sentence": round(sentence, 2) if sentence is not None else None,
             "sec": round(time.monotonic() - started, 2),
             "timing": {k: round(v, 2) for k, v in timing.items()},
             "in": read_tokens, "cached": cached, "out": written,
@@ -203,8 +212,8 @@ async def main() -> None:
                 "body": {"answer": got["answer"], "citations": got["citations"]},
                 "cites": cites(row, got["citations"]), "err": error,
                 "no_info": "don't have verified" in got["answer"], "chars": len(got["answer"]),
-                **{k: got.get(k) for k in ("sections", "first", "sec", "timing", "in", "cached",
-                                           "out", "think")}})
+                **{k: got.get(k) for k in ("sections", "first", "sentence", "sec", "timing", "in",
+                                           "cached", "out", "think")}})
 
     for arm in ARMS:
         for run in range(1, TRIES + 1):
@@ -226,6 +235,10 @@ async def main() -> None:
               f"middle {middle([r['sec'] for r in mine])}, 90th "
               f"{sorted(r['sec'] for r in mine)[int(len(mine) * 0.9) - 1] if mine else None}; "
               f"first answer word middle {middle([r['first'] for r in mine if r['first']])}; "
+              f"FIRST WHOLE SENTENCE since asking middle "
+              f"{middle([r['sentence'] for r in mine if r.get('sentence')])}, 90th "
+              f"{sorted(r['sentence'] for r in mine if r.get('sentence'))[int(len([r for r in mine if r.get('sentence')]) * 0.9) - 1] if any(r.get('sentence') for r in mine) else None}"
+              f" ({sum(1 for r in mine if r.get('sentence'))} answers); "
               f"embed {middle([r['timing']['embed'] for r in mine])}, read "
               f"{middle([r['timing']['read'] for r in mine])}, model "
               f"{middle([r['timing']['model'] for r in mine])}; sections read middle "

@@ -21,6 +21,7 @@ import contextvars
 import datetime
 import json
 import os
+import re
 import statistics
 import sys
 import time
@@ -46,6 +47,11 @@ LIMIT = int(os.environ.get("LIMIT", "0") or 0)
 
 CALLS: contextvars.ContextVar[list[dict[str, Any]] | None] = contextvars.ContextVar(
     "calls", default=None)
+T0: contextvars.ContextVar[float | None] = contextvars.ContextVar("T0", default=None)
+# The reply's text field in the writer's streamed arguments, and where a sentence ends in it
+# (the arguments are JSON, so a line end shows as a backslash and an n).
+REPLY_TEXT = re.compile(r'"text"\s*:\s*"')
+REPLY_SENTENCE_END = re.compile(r'[.!?](?:\s|\\n|"|$)|\\n')
 EFFORT: contextvars.ContextVar[str | None] = contextvars.ContextVar("effort", default=None)
 CAP: contextvars.ContextVar[int | None] = contextvars.ContextVar("cap", default=None)
 
@@ -117,6 +123,9 @@ class TimedTransport:
             request = {**request, "reasoning": {"effort": effort}}
         started = time.monotonic()
         first: float | None = None
+        text_at: float | None = None      # When the reply's own text began (after the parts).
+        sentence_at: float | None = None  # When the reply's first whole sentence had arrived.
+        so_far = ""
         final: Any = None
         stream = await self._client.responses.create(**request, stream=True,
                                                      timeout=remaining_seconds)
@@ -125,6 +134,14 @@ class TimedTransport:
             if first is None and kind in ("response.function_call_arguments.delta",
                                           "response.output_text.delta"):
                 first = time.monotonic() - started
+            if (name == "write_answer" and sentence_at is None
+                    and kind == "response.function_call_arguments.delta"):
+                so_far += str(getattr(event, "delta", "") or "")
+                opened = REPLY_TEXT.search(so_far)
+                if opened and text_at is None:
+                    text_at = time.monotonic() - started
+                if opened and REPLY_SENTENCE_END.search(so_far, opened.end() + 40):
+                    sentence_at = time.monotonic() - started
             if kind in ("response.completed", "response.incomplete", "response.failed"):
                 final = event.response
         total = time.monotonic() - started
@@ -137,6 +154,9 @@ class TimedTransport:
             calls.append({
                 "tool": name, "effort": (request.get("reasoning") or {}).get("effort"),
                 "first": round(first, 2) if first is not None else None,
+                "at": round(started - (T0.get() or started), 2),
+                "text_at": round(text_at, 2) if text_at is not None else None,
+                "sentence_at": round(sentence_at, 2) if sentence_at is not None else None,
                 "sec": round(total, 2), "in": usage.get("input_tokens"),
                 "cached": (usage.get("input_tokens_details") or {}).get("cached_tokens"),
                 "out": usage.get("output_tokens"),
@@ -214,6 +234,7 @@ def cites(row: dict[str, Any], citations: list[dict[str, Any]], answer: str) -> 
 async def ask(engine: ChatEngine, row: dict[str, Any], arm: str, run: int) -> dict[str, Any]:
     calls: list[dict[str, Any]] = []
     CALLS.set(calls)
+    T0.set(time.monotonic())
     EFFORT.set({"sections-low": "low", "sections-none": "none", "ai-low": "low"}.get(arm))
     CAP.set(10 if arm == "sections-10" else None)
     request = ChatRequest.model_validate({"messages": [{"role": "user",
@@ -256,12 +277,21 @@ def summary(rows: list[dict[str, Any]]) -> list[str]:
         page = [r for r in mine if r["by"] == "one_call"]
         writers = [c for r in page for c in r["calls"] if c["tool"] == "write_answer"]
         firsts = [float(c["first"]) for c in writers if c.get("first") is not None]
+        opening = [next((c for c in r["calls"] if c["tool"] == "write_answer"), None) for r in page]
+        since = [float(c["at"]) + float(c["sentence_at"]) for c in opening
+                 if c and c.get("sentence_at") is not None and c.get("at") is not None]
+        begins = [float(c["text_at"]) for c in opening if c and c.get("text_at") is not None]
+        starts = [float(c["at"]) for c in opening if c and c.get("at") is not None]
         lines.append(
             f"ARM {arm}: asked {len(mine)}, page answers {len(page)}, errors "
             f"{sum(1 for r in mine if r['err'])}; whole answer seconds middle "
             f"{middle([r['sec'] for r in page])}, 90th "
             f"{round(sorted(r['sec'] for r in page)[int(len(page) * 0.9) - 1], 2) if page else None}"
             f"; writer calls {len(writers)}: seconds to first answer word middle {middle(firsts)}"
+            f"; FIRST WHOLE SENTENCE OF THE REPLY since asking middle {middle(since)}, 90th "
+            f"{round(sorted(since)[int(len(since) * 0.9) - 1], 2) if since else None} "
+            f"({len(since)} answers); the reply's text begins middle {middle(begins)} s into the "
+            f"writer call and the writer call starts middle {middle(starts)} s after asking"
             f", writer seconds middle {middle([float(c['sec']) for c in writers])}; tokens middle"
             f" read {middle([float(c['in'] or 0) for c in writers])}"
             f" cached {middle([float(c['cached'] or 0) for c in writers])}"
