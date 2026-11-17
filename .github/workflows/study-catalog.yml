@@ -30,7 +30,7 @@ jobs:
           node -e '
             const c = require("./data/raw/catalog-policies.raw.json");
             console.log("policies", c.policies.length, "published", c.page.publishedAt, "index text", c.index.text.length);
-            for (const p of c.policies.slice(0, 5)) console.log(" ", p.anchor, p.name, p.content.length);
+            for (const p of c.policies.slice(0, 5)) console.log(" ", p.anchor, p.name, p.html.length);
             const s = require("./data/raw/catalog-policies-sources.raw.json");
             for (const p of s.pages) console.log("source", p.url, p.html.length);
           '
