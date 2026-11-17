@@ -41,7 +41,7 @@ DIAG = {
     "zl1-01": [r"Financial Aid Dashboard"],
     "zl3-01": [r"three \(3\) nights \(consecutively or not\) within a seven"],
     "zl3-12": [r"[Hh]old", r"Bill (&|and) Payment Suite"],
-    "zl2-09": [r"Ramapo-Secure"],
+    "zl2-09": [r"Ramapo-Secure", r"exclusively register"],
     "zl1-13": [r"Authorized User"],
 }
 
@@ -348,6 +348,7 @@ def main() -> None:
                 for sec in o["sections"]:
                     print(f"   read [{sec['n']}] {o['office']} | {sec.get('page')} | {sec.get('heading')} "
                           f"| {len(str(sec.get('text') or ''))}+{len(str(sec.get('section_words') or ''))} chars")
+            print(f"   GIVEN chars {len(given_text)}")
             for pat in DIAG[row["id"]]:
                 hit = re.search(pat, given_text)
                 print(f"   needs /{pat}/: {'GIVEN' if hit else 'NOT GIVEN'}"
