@@ -1,0 +1,60 @@
+# Temporary, on this work branch only: a paid check for the overnight audit of 2026-11-17 (about
+# 2 cents, capped at 10). The library's page now lists Thanksgiving special hours and the club list
+# changed since July, but campus hours and clubs are re-read only about twice a year. This asks the
+# dev Brain nine plain questions about them against the live graph file (read only) and prints each
+# answer beside the date its facts were collected. Nothing in the bot changes and nothing is written
+# anywhere. Removed before anything from this branch merges.
+name: Study answers about changed hours
+
+on:
+  push:
+    branches: [claude/project-thread-a2ch07]
+    paths: ['.github/workflows/study-ask-stale.yml', 'study4/ask_stale.py']
+
+permissions:
+  contents: read
+
+jobs:
+  ask:
+    name: Nine questions about hours and clubs that changed
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout the Brain
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: 959a8299d738761061100b0997d3b53fc7503545
+          path: brain
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install the Brain
+        run: |
+          pip install --quiet --require-hashes -r brain/requirements.lock
+          pip install --quiet --no-deps -e './brain[graph]'
+
+      - name: Download the live graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: python -m rockygpt_brain.retrieval.graph_sync .published > /dev/null
+
+      - name: Checkout this branch's test script
+        uses: actions/checkout@v7
+        with:
+          path: data
+
+      - name: Ask the nine questions once
+        env:
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DRY: '0'
+          CAP_USD: '0.10'
+        run: python data/study4/ask_stale.py 2>&1 | grep -v '^provider_failure\|^brain_'
