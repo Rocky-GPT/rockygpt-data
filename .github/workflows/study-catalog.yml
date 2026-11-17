@@ -6,7 +6,7 @@ name: Study catalog policies failure
 on:
   push:
     branches: [claude/project-thread-n73jiu]
-    paths: ['.github/workflows/study-catalog.yml', 'study6/catalog_shape.mjs']
+    paths: ['.github/workflows/study-catalog.yml', 'study6/catalog_shape.mjs', 'study6/catalog_api.sh']
 
 permissions:
   contents: read
@@ -25,16 +25,5 @@ jobs:
       - name: Run the collector
         continue-on-error: true
         run: npm run fetch:catalog-policies 2>&1 | tail -40
-      - name: Show what the index and its catalog page look like
-        run: |
-          url=$(grep -o "CATALOG_POLICIES_INDEX = '[^']*'" src/data-v2/catalog-policies.ts | cut -d\' -f2)
-          echo "index: $url"
-          curl -sSL -A 'Mozilla/5.0' "$url" -o index.html -w '%{http_code} %{url_effective} %{size_download}\n'
-          node study6/catalog_shape.mjs links index.html | head -70
-          n=0
-          for link in $(grep -E '^(https://catalog.ramapo.edu)?/' links.txt | head -3); do
-            case "$link" in http*) url="$link";; *) url="https://catalog.ramapo.edu$link";; esac
-            n=$((n+1)); sleep 1
-            curl -sSL -A 'Mozilla/5.0' "$url" -o "sub$n.html" -w "%{http_code} %{url_effective} %{size_download}\n"
-          done
-          node study6/catalog_shape.mjs pages sub*.html
+      - name: Find the API the catalog app reads its pages from
+        run: bash study6/catalog_api.sh
