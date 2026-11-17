@@ -6,7 +6,7 @@ name: Study catalog policies failure
 on:
   push:
     branches: [claude/project-thread-n73jiu]
-    paths: ['.github/workflows/study-catalog.yml']
+    paths: ['.github/workflows/study-catalog.yml', 'study6/catalog_shape.mjs']
 
 permissions:
   contents: read
@@ -30,4 +30,8 @@ jobs:
           url=$(grep -o "CATALOG_POLICIES_INDEX = '[^']*'" src/data-v2/catalog-policies.ts | cut -d\' -f2)
           echo "index: $url"
           curl -sSL -A 'Mozilla/5.0' "$url" -o index.html -w '%{http_code} %{url_effective} %{size_download}\n'
-          grep -o 'href="[^"]*catalog[^"]*"' index.html | sort -u | head -20
+          page=$(grep -o '/pages/[A-Za-z0-9]*' index.html | head -1)
+          echo "page: $page"
+          sleep 1
+          curl -sSL -A 'Mozilla/5.0' "https://catalog.ramapo.edu$page" -o page.html -w '%{http_code} %{url_effective} %{size_download}\n'
+          node study6/catalog_shape.mjs index.html page.html
