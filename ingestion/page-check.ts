@@ -4,10 +4,16 @@
  * Jev reads each office and school site page as its context document writes it and says what
  * kind of page it is. Pages it does not call the site's own information (test copies, past
  * events, clearly old details, placeholders, pages about named students, faculty lists,
- * "page not found" and login pages) wait in data/review/page-check.md for a person, each with
- * the skippedPages line that would leave it out. The check leaves nothing out itself: a page
- * stays published until a person adds that line to its list. A flag the person rejects goes
- * in the list's keptPages, and the check leaves those pages alone.
+ * "page not found" and login pages) are flagged in data/review/page-check.md.
+ *
+ * The clear cases are left out without a person (Dan, the audit of November 17, 2026): a flag
+ * of a kind in AUTO_LEAVE_OUT_LABELS that Jev gives AUTO_LEAVE_OUT_PROBABILITY or more, for the
+ * page's current text. The publish leaves such a page out of the office pages the Brain reads
+ * (pagesLeftOut), and the review list shows it under "Left out automatically" with the
+ * keptPages line that brings it back: the undo list. Every other flag (named students, faculty
+ * lists, and anything Jev is less sure of) waits for a person, with the skippedPages line that
+ * would leave it out. A flag the person rejects goes in the list's keptPages, and the check
+ * leaves those pages alone.
  *
  * Jev is sent only the pages it has not judged, whose text changed, or whose verdict is
  * RECHECK_DAYS old; its verdicts are kept in data/review/page-check-verdicts.json. Without
@@ -102,6 +108,16 @@ export const PAGE_QUESTION: ChoiceQuestion = {
 // Verdicts given to another question, or by another model, are asked again.
 export const QUESTION_ID = sha(JSON.stringify({ model: JEV_MODEL, question: PAGE_QUESTION }));
 export const RECHECK_DAYS = 30;
+/**
+ * The kinds of flag that leave a page out without a person, at AUTO_LEAVE_OUT_PROBABILITY or
+ * more. On November 16, 2026, 74 of the 175 flags the review list showed were 90% sure or more;
+ * a person could not keep up with 619 flags. Named students and faculty lists stay with a
+ * person: whether a page is mainly about them is a judgment, and both kinds hold real facts.
+ */
+export const AUTO_LEAVE_OUT_LABELS: ReadonlySet<string> = new Set([
+  'test_copy', 'past_event', 'out_of_date', 'placeholder', 'not_found', 'login_wall',
+]);
+export const AUTO_LEAVE_OUT_PROBABILITY = 0.9;
 // About 3,000 tokens: enough to tell what a page is, and a small, even cost per page.
 export const MAX_TEXT_CHARS = 12_000;
 const CONCURRENCY = 4;
@@ -154,8 +170,16 @@ export interface CheckResult {
   stoppedAtLimit: boolean;
   /** Pages with no verdict at all for their current text. */
   unjudged: number;
+  /** Every page whose verdict for its current text is not keep, including those left out. */
   flagged: Flag[];
+  /** The flagged pages left out without a person (leftOutAutomatically). */
+  leftOut: Flag[];
   verdicts: Record<string, Verdict>;
+}
+
+/** Whether a flag is a clear case, left out without a person. */
+export function leftOutAutomatically({ label, probability }: Pick<Flag, 'label' | 'probability'>): boolean {
+  return AUTO_LEAVE_OUT_LABELS.has(label) && probability >= AUTO_LEAVE_OUT_PROBABILITY;
 }
 
 function sha(text: string): string {
@@ -277,6 +301,7 @@ export async function checkPages(input: {
     stoppedAtLimit,
     unjudged: pages.filter(({ key, hash }) => !current(key, hash)).length,
     flagged,
+    leftOut: flagged.filter(leftOutAutomatically),
     verdicts,
   };
   if (failure !== undefined) throw Object.assign(new Error(`Jev stopped the check: ${String(failure instanceof Error ? failure.message : failure)}`), { result });
@@ -291,36 +316,59 @@ export function skippedPageLine({ skippedPage: { url, reason } }: Flag): string 
   return `{"url": ${JSON.stringify(url)}, "reason": ${JSON.stringify(reason)}}`;
 }
 
-/** The review list: flagged pages under their site and list, most likely first, cut to fit an issue. */
+/** The keptPages line that brings back a page left out automatically; the reason is the person's to fill. */
+export function keptPageLine({ url }: Flag): string {
+  return `{"url": ${JSON.stringify(url)}, "reason": "Reviewed: the site's own information."}`;
+}
+
+/**
+ * The review list, cut to fit an issue: first the pages left out automatically, each with the
+ * keptPages line that brings it back (the undo list), then the flags waiting for a person, each
+ * with the skippedPages line that would leave it out. Both under their site and list, most
+ * likely first.
+ */
 export function reviewMarkdown(result: CheckResult): string {
+  const auto = new Set(result.leftOut);
+  const waiting = result.flagged.filter(flag => !auto.has(flag));
   let markdown = [
     '# Pages to review',
     '',
     `Jev flagged ${result.flagged.length} of ${result.pages} published office and school pages. `
-      + 'A flagged page stays published until a person adds it to its list.',
+      + `${result.leftOut.length} are clear cases (${[...AUTO_LEAVE_OUT_LABELS].map(label => LABELS[label].name.toLowerCase()).join(', ')}, `
+      + `${Math.round(AUTO_LEAVE_OUT_PROBABILITY * 100)}% sure or more) and are left out of what the bot reads; `
+      + `${waiting.length} wait for a person and stay published until then.`,
     '',
-    '- **Leave it out:** copy its line into `skippedPages` in the list named above it. Fix the reason if it is off.',
-    '- **Keep it:** copy its line into `keptPages` in the same list, with your own reason. The check leaves kept pages alone.',
+    '- **Bring back a page left out:** copy its line into `keptPages` in the list named above it, with your own reason.',
+    '- **Leave out a page waiting for review:** copy its line into `skippedPages` in the list named above it. Fix the reason if it is off.',
+    '- **Keep a page waiting for review:** copy its line into `keptPages` in the same list, with your own reason. The check leaves kept pages alone.',
     ...result.unjudged ? ['', `${result.unjudged} pages have not been checked yet.`] : [],
     '',
   ].join('\n');
   const heading = (flag: Flag) => `${flag.site} · ${flag.list}`;
-  const sites = [...new Set(result.flagged.map(heading))];
-  const ordered = [...result.flagged].sort((a, b) =>
-    sites.indexOf(heading(a)) - sites.indexOf(heading(b)) || b.probability - a.probability);
-  let shown = 0;
-  for (const flag of ordered) {
-    const entry = `${shown && heading(ordered[shown - 1]) === heading(flag) ? '' : `\n## ${heading(flag)}\n\n`}`
-      + `- **${LABELS[flag.label].name}** (${Math.round(flag.probability * 100)}%): [${escaped(flag.title)}](${flag.url})\n`
-      + `  \`${skippedPageLine(flag)}\`\n`;
-    // Leaves room for the line saying how many are not shown.
-    if (markdown.length + entry.length > MAX_REVIEW_CHARS - 100) break;
-    markdown += entry;
-    shown += 1;
-  }
-  if (shown < ordered.length) {
-    markdown += `\n${ordered.length - shown} more flagged pages are not shown here. They appear as these are reviewed.\n`;
-  }
+  const section = (title: string, flags: readonly Flag[], line: (flag: Flag) => string, notShown: string, limit: number) => {
+    if (!flags.length) return;
+    markdown += `\n# ${title}\n`;
+    const sites = [...new Set(flags.map(heading))];
+    const ordered = [...flags].sort((a, b) =>
+      sites.indexOf(heading(a)) - sites.indexOf(heading(b)) || b.probability - a.probability);
+    let shown = 0;
+    for (const flag of ordered) {
+      const entry = `${shown && heading(ordered[shown - 1]) === heading(flag) ? '' : `\n## ${heading(flag)}\n\n`}`
+        + `- **${LABELS[flag.label].name}** (${Math.round(flag.probability * 100)}%): [${escaped(flag.title)}](${flag.url})\n`
+        + `  \`${line(flag)}\`\n`;
+      // Leaves room for the lines saying how many are not shown.
+      if (markdown.length + entry.length > limit - 300) break;
+      markdown += entry;
+      shown += 1;
+    }
+    if (shown < ordered.length) markdown += `\n${ordered.length - shown} ${notShown}\n`;
+  };
+  section('Left out automatically', result.leftOut, keptPageLine,
+    'more pages are left out and not shown here (data/review/page-check.json lists them all).',
+    // The undo list takes at most half the issue, so the pages waiting for a person always show.
+    waiting.length ? MAX_REVIEW_CHARS / 2 : MAX_REVIEW_CHARS);
+  section('Waiting for a person', waiting, skippedPageLine,
+    'more flagged pages are not shown here. They appear as these are reviewed.', MAX_REVIEW_CHARS);
   return markdown;
 }
 
@@ -354,6 +402,24 @@ function readSource(source: FolderSiteSource, folders: ReadonlySet<string>): Che
       source.skippedPostTypes, excluded, skippedSections),
     kept: readKeptPages(source.sitesPath),
   };
+}
+
+/**
+ * The office and school pages the publish leaves out because past verdicts call them clear cases
+ * (leftOutAutomatically), as folder-site page keys. Nothing is sent to Jev. Without verdicts
+ * (data/review/page-check-verdicts.json, restored from the last check) or normalized pages,
+ * nothing is left out.
+ */
+export async function pagesLeftOut(): Promise<Map<string, Flag>> {
+  const verdicts = readVerdicts();
+  if (!Object.keys(verdicts).length) {
+    console.warn('No page check verdicts, so no page is left out automatically.');
+    return new Map();
+  }
+  const sources = [OFFICE_PAGES, ACADEMIC_SITES].map(source => readSource(source, new Set()))
+    .filter((source): source is CheckedSource => source !== null);
+  const { leftOut } = await checkPages({ sources, verdicts, maxNanodollars: 0 });
+  return new Map(leftOut.map(flag => [pageKey(flag.url)!, flag]));
 }
 
 export async function main(argv: readonly string[] = process.argv): Promise<void> {
@@ -404,7 +470,8 @@ export async function main(argv: readonly string[] = process.argv): Promise<void
     fs.writeFileSync(VERDICTS_PATH, `${JSON.stringify({ version: 1, pages: verdicts }, null, 2)}\n`);
     fs.writeFileSync(path.join(REVIEW_DIR, 'page-check.json'), `${JSON.stringify({ ...result, verdicts: undefined }, null, 2)}\n`);
     fs.writeFileSync(path.join(REVIEW_DIR, 'page-check.md'), reviewMarkdown(result));
-    console.log(`${result.flagged.length} pages are flagged for review: ${path.relative(process.cwd(), path.join(REVIEW_DIR, 'page-check.md'))}`);
+    console.log(`${result.flagged.length} pages are flagged; ${result.leftOut.length} of them are clear cases the next `
+      + `publish leaves out: ${path.relative(process.cwd(), path.join(REVIEW_DIR, 'page-check.md'))}`);
   }
   if (failure !== undefined) throw failure;
 }
