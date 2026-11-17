@@ -1,0 +1,86 @@
+# Temporary, on this work branch only: the last paid measurement for the overnight audit of
+# 2026-11-17. It asks the same 30 older how-to practice questions (not the frozen blind 60) three
+# times each, one at a time, with the Brain's code before and after the two speed fixes, once with
+# the Brain's own page answer at "low" thinking effort and once with the audit's one-call writer
+# over the Brain's own search. It prints only timing summaries. Nothing in the bot changes and
+# nothing is written anywhere. Each job keeps its own spend cap of 20 cents (four jobs, 80 cents
+# at the very most; about 30 cents expected). Removed before anything from this branch merges.
+name: Study the answers after the fix
+
+on:
+  push:
+    branches: [claude/project-thread-a2ch07]
+    paths: ['.github/workflows/study-after-fix.yml', 'study2/**']
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Brain page answer at low effort, before the fixes
+            ref: c8d62950e8bc38422b0cca3de48561b6edb2a172
+            script: writer_tries.py
+            arms: sections-low
+          - name: Brain page answer at low effort, both fixes
+            ref: 3f88721ab62039391a12af3916620084f1d68a97
+            script: writer_tries.py
+            arms: sections-low
+          - name: One-call writer over the Brain's search, before the fixes
+            ref: c8d62950e8bc38422b0cca3de48561b6edb2a172
+            script: tiny_bot.py
+            arms: tiny-read
+          - name: One-call writer over the Brain's search, both fixes
+            ref: 3f88721ab62039391a12af3916620084f1d68a97
+            script: tiny_bot.py
+            arms: tiny-read
+    steps:
+      - name: Checkout the Brain
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: ${{ matrix.ref }}
+          path: brain
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install the Brain
+        run: |
+          pip install --quiet --require-hashes -r brain/requirements.lock
+          pip install --quiet --no-deps -e './brain[graph]'
+
+      - name: Download the dev graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph-dev/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: python -m rockygpt_brain.retrieval.graph_sync .published > /dev/null
+
+      - name: Checkout this branch's test script
+        uses: actions/checkout@v7
+        with:
+          path: data
+
+      - name: Ask the 30 practice questions three times, one at a time
+        env:
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DRY: '0'
+          ARMS: ${{ matrix.arms }}
+          TRIES: '3'
+          AT_ONCE: '1'
+          ROWS: '0'
+          CAP_USD: '0.20'
+          SCRIPT: ${{ matrix.script }}
+        run: python "data/study2/$SCRIPT" 2>&1 | grep -v '^provider_failure\|^brain_'
