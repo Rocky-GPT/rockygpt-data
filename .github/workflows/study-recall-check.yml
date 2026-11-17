@@ -53,4 +53,4 @@ jobs:
         env:
           BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          python data/study/recall_check.py
+          python data/study/list_check.py .published
