@@ -1,28 +1,38 @@
-# Temporary, on this work branch only: one measurement for the overnight audit of 2026-11-17.
-# It asks the Brain's real answer code 30 older how-to practice questions on the dev graph and
-# times every model call from the inside (seconds to the model's first answer word, seconds in
-# all, tokens read, thought and written), for today's production writer and for the sections
-# writer at three thinking levels. Nothing in the bot changes and nothing is written anywhere.
-# The script keeps its own spend cap (study/writer_speed.py, 60 cents). DRY=1 makes no model
-# call at all. Removed before anything from this branch merges.
-name: Study the writer speed
+# Temporary, on this work branch only: the second measurement for the overnight audit of
+# 2026-11-17. The first one showed the page writer spends most of its seconds thinking before its
+# first answer word. This one asks the same 30 older how-to practice questions five times with the
+# sections writer as built and five times with its writer call at "low" thinking effort (and once
+# with production's writer at "low"), and prints every answer whole so the two sets can be graded
+# side by side later with no new spend. Nothing in the bot changes and nothing is written
+# anywhere. Each job keeps its own spend cap (study/writer_tries.py); the caps add up to 82 cents.
+# Removed before anything from this branch merges.
+name: Study the writer tries
 
 on:
   push:
     branches: [claude/project-thread-a2ch07]
-    paths: ['.github/workflows/study-writer-speed.yml', 'study/**']
+    paths: ['.github/workflows/study-writer-tries.yml', 'study/**']
 
 permissions:
   contents: read
-
-concurrency:
-  group: study-writer-speed
-  cancel-in-progress: false
 
 jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arm: sections
+            tries: '5'
+            cap: '0.40'
+          - arm: sections-low
+            tries: '5'
+            cap: '0.30'
+          - arm: ai-low
+            tries: '1'
+            cap: '0.12'
     steps:
       - name: Checkout the Brain
         uses: actions/checkout@v7
@@ -56,8 +66,11 @@ jobs:
         with:
           path: data
 
-      - name: Ask the 30 practice questions each way and time every model call
+      - name: Ask the 30 practice questions and print every answer
         env:
           BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           DRY: '0'
-        run: python data/study/writer_speed.py 2>&1 | grep -v '^provider_failure\|^brain_' 
+          ARMS: ${{ matrix.arm }}
+          TRIES: ${{ matrix.tries }}
+          CAP_USD: ${{ matrix.cap }}
+        run: python data/study/writer_tries.py 2>&1 | grep -v '^provider_failure\|^brain_'

@@ -1,17 +1,16 @@
 """Temporary paid measurement for the overnight audit of 2026-11-17 (never merged).
 
-Dan asked how much speed the model gives and where an answer's seconds go. This script asks the
-Brain's real answer code 30 older how-to practice questions (rockygpt-evals
-page-writer-check-2026-11-16; the frozen blind 60 is not used) on the dev graph, a few ways, and
-times every model call from the inside: seconds until the model's first answer word, seconds in
-all, and the tokens read, thought and written.
+Second run. The first run showed the page writer spends most of its seconds thinking before its
+first answer word, and that asked to think at "low" effort a whole answer took 6.4 s instead of
+15.0 s. Whether the answers stay as good is not known. This run asks the same 30 older how-to
+practice questions (rockygpt-evals page-writer-check-2026-11-16; the frozen blind 60 is not used)
+TRIES times with one arm, and prints every answer whole, so the two sets of answers can be graded
+side by side later with no new spend.
 
-Arms (one try a question each):
-  ai            production's setting today (BRAIN_PAGE_WRITER=ai, the two-stage writer)
-  sections      the new sections writer as built (the model's default thinking effort, medium)
+Arms (ARMS picks one a job):
+  sections      the sections writer as built (the model's default thinking effort, medium)
   sections-low  the same, the writer call asked to think at "low" effort
-  sections-none the same, the writer call asked not to think ("none")
-  sections-10   the sections writer given 10 sections instead of 20 (default effort)
+  ai-low        production's writer today (two-stage "ai"), its writer call at "low" effort
 
 Nothing in the bot changes and nothing is written anywhere. The ledger is kept in memory and
 refuses every call once the spend could pass CAP_NUSD. DRY=1 makes no model call at all.
@@ -38,11 +37,11 @@ from rockygpt_brain.settings import Prices, ProviderSettings
 from rockygpt_brain.spending import Reservation, SpendingError
 from rockygpt_brain.turn import intake
 
-CAP_NUSD = 600_000_000  # $0.60: the most this script may spend, held calls counted at worst case.
+CAP_NUSD = int(float(os.environ.get("CAP_USD", "0.30")) * 1_000_000_000)  # This job's most.
 AT_ONCE = 3
 DRY = os.environ.get("DRY") == "1"
-ARMS = [a for a in os.environ.get(
-    "ARMS", "ai,sections,sections-low,sections-none,sections-10").split(",") if a]
+ARMS = [a for a in os.environ.get("ARMS", "sections-low").split(",") if a]
+TRIES = int(os.environ.get("TRIES", "1") or 1)
 LIMIT = int(os.environ.get("LIMIT", "0") or 0)
 
 CALLS: contextvars.ContextVar[list[dict[str, Any]] | None] = contextvars.ContextVar(
@@ -212,10 +211,10 @@ def cites(row: dict[str, Any], citations: list[dict[str, Any]], answer: str) -> 
     return any(w in g or g in w for w in wanted for g in given if g)
 
 
-async def ask(engine: ChatEngine, row: dict[str, Any], arm: str) -> dict[str, Any]:
+async def ask(engine: ChatEngine, row: dict[str, Any], arm: str, run: int) -> dict[str, Any]:
     calls: list[dict[str, Any]] = []
     CALLS.set(calls)
-    EFFORT.set({"sections-low": "low", "sections-none": "none"}.get(arm))
+    EFFORT.set({"sections-low": "low", "sections-none": "none", "ai-low": "low"}.get(arm))
     CAP.set(10 if arm == "sections-10" else None)
     request = ChatRequest.model_validate({"messages": [{"role": "user",
                                                         "content": row["question"]}]})
@@ -228,7 +227,11 @@ async def ask(engine: ChatEngine, row: dict[str, Any], arm: str) -> dict[str, An
         body, trace, error = {}, {}, type(failure).__name__
     answer = str(body.get("answer") or "")
     return {
-        "id": row["id"], "arm": arm, "group": row.get("group"),
+        "id": row["id"], "arm": arm, "group": row.get("group"), "run": run,
+        "question": row["question"],
+        "answered_at": datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds"),
+        "body": {key: body.get(key) for key in ("answer", "status", "citations",
+                                                "datasetVersion")},
         "sec": round(time.monotonic() - started, 2), "status": body.get("status"),
         "by": trace.get("decidedBy"), "writer": trace.get("pageWriter"),
         "second": bool(trace.get("oneCallSecondLook")),
@@ -319,33 +322,28 @@ async def main() -> None:
     done: list[dict[str, Any]] = []
     gate = asyncio.Semaphore(AT_ONCE)
 
-    async def one(row: dict[str, Any], arm: str) -> None:
+    async def one(row: dict[str, Any], arm: str, run: int) -> None:
         async with gate:
-            engine = engines["ai" if arm == "ai" else "sections"]
+            engine = engines["ai" if arm.startswith("ai") else "sections"]
             # A task of its own, so the arm's settings never leak into another question.
-            done.append(await asyncio.create_task(ask(engine, row, arm)))
+            done.append(await asyncio.create_task(ask(engine, row, arm, run)))
 
     for arm in ARMS:
-        started = time.monotonic()
-        await asyncio.gather(*(one(row, arm) for row in rows))
-        print(f"arm {arm} done in {round(time.monotonic() - started)} s; spent so far "
-              f"${ledger.spent / 1e9:.4f} in {ledger.calls} calls; unsure {ledger.unsure}")
+        for run in range(1, TRIES + 1):
+            started = time.monotonic()
+            await asyncio.gather(*(one(row, arm, run) for row in rows))
+            print(f"arm {arm} try {run} done in {round(time.monotonic() - started)} s; spent so "
+                  f"far ${ledger.spent / 1e9:.4f} in {ledger.calls} calls; unsure {ledger.unsure}")
     await gateway.close()
-    print("=== ROWS (numbers only)")
+    print("=== ROWS (every answer whole)")
     for r in done:
-        print("ROW " + json.dumps({k: v for k, v in r.items() if k != "answer"},
-                                  separators=(",", ":")))
+        print("SAVE " + json.dumps({k: v for k, v in r.items() if k != "answer"},
+                                   ensure_ascii=False, separators=(",", ":")))
     print("=== SUMMARY")
     for line in summary(done):
         print(line)
     print(f"TOTAL spent ${ledger.spent / 1e9:.4f} in {ledger.calls} settled calls; "
           f"held ${sum(ledger.held.values()) / 1e9:.4f}; unsure {ledger.unsure}")
-    print("=== REPLIES of the first 5 questions, every arm")
-    for row in rows[:5]:
-        for r in done:
-            if r["id"] == row["id"]:
-                print(f"--- {r['id']} [{r['arm']}] {r['sec']} s")
-                print(r["answer"][:2200])
     sys.stdout.flush()
 
 
