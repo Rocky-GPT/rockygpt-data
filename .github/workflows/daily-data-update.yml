@@ -44,9 +44,10 @@ permissions:
   issues: write
 
 # A dev build never waits behind, or holds up, the production run; a newer dev push replaces an
-# older dev build still running.
+# older dev build still running. The hourly check has a group of its own: in the dev builds' group,
+# the dev build it starts cancelled the check itself, so every check that built showed as cancelled.
 concurrency:
-  group: ${{ (github.event_name == 'push' || github.event.schedule == '17 * * * *' || inputs.target == 'dev') && 'daily-data-update-dev' || 'daily-data-update' }}
+  group: ${{ github.event.schedule == '17 * * * *' && 'daily-data-update-dev-check' || (github.event_name == 'push' || inputs.target == 'dev') && 'daily-data-update-dev' || 'daily-data-update' }}
   cancel-in-progress: ${{ github.event_name == 'push' || github.event.schedule == '17 * * * *' || inputs.target == 'dev' }}
 
 env:
