@@ -1,4 +1,5 @@
 import path from 'path';
+import { mkdirSync, rmSync, writeFileSync } from 'fs';
 import { load } from 'cheerio';
 import { fetchWithPolicy } from './http-client';
 import {
@@ -11,7 +12,7 @@ import { validateCampusHours, type LocationHours } from './schema';
 import { publicPath } from '../src/paths';
 import { partitionHoursForPublication, readValidityFromNotes } from '../src/data-v2/validity';
 import { withheldHoursRecord } from './unverified-hours';
-import { attachReviewedHoursAbsences } from './reviewed-hours-absence';
+import { attachReviewedHoursAbsences, CHANGED_HOURS_REPORT, changedHoursReport } from './reviewed-hours-absence';
 
 const RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'hours.raw.json');
 const PUBLIC_JSON_PATH = publicPath('data', 'hours.json');
@@ -1014,7 +1015,16 @@ export function campusHoursFromCaptures(captures: HoursSourceCapture[], requireG
         // Keep the primary record's actual capture time. The FAQ retains its
         // own check time/hash; dataset freshness still uses the oldest capture.
     }
-    return attachReviewedHoursAbsences(records, captures);
+    const changed: string[] = [];
+    const attached = attachReviewedHoursAbsences(records, captures, line => changed.push(line));
+    const report = changedHoursReport(changed);
+    rmSync(CHANGED_HOURS_REPORT, { force: true });
+    if (report) {
+        console.warn(report);
+        mkdirSync(path.dirname(CHANGED_HOURS_REPORT), { recursive: true });
+        writeFileSync(CHANGED_HOURS_REPORT, report);
+    }
+    return attached;
 }
 
 export function campusHoursPublication(records: LocationHours[], now = new Date()) {

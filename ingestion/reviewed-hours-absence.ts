@@ -1,5 +1,6 @@
 /** Only manually reviewed, unchanged source sections can establish a missing hours field. */
 import { createHash } from 'node:crypto';
+import path from 'node:path';
 import reviewData from '../src/reference/office-hours-review.json';
 import { buildRawPageFromHtml } from './raw-collector';
 import type { HoursSourceCapture } from './campus-hours';
@@ -18,7 +19,26 @@ interface Review {
 const reviews = reviewData.schedules as Review[];
 const hash = (text: string): string => createHash('sha256').update(text).digest('hex');
 
-export function attachReviewedHoursAbsences(records: LocationHours[], captures: HoursSourceCapture[]): LocationHours[] {
+/** Where the nightly job finds the schedules whose reviewed "not published" note was left out. */
+export const CHANGED_HOURS_REPORT = path.join('data', 'review', 'refresh-changed-hours.md');
+
+class SectionChanged extends Error {}
+
+/** The left-out notes as a review note, or null when every reviewed section still holds. */
+export function changedHoursReport(changed: readonly string[]): string | null {
+  if (!changed.length) return null;
+  return ['Left out these reviewed "not published" hours notes because their page sections changed. Each',
+    'schedule still publishes the hours its page prints tonight; review it again in',
+    '`src/reference/office-hours-review.json`:', '', ...changed.map(line => `- ${line}`), ''].join('\n');
+}
+
+/**
+ * Attaches each reviewed "the page does not publish this" note while its page section is unchanged.
+ * A changed section leaves out only that schedule's note: one edited page must not hold back
+ * every schedule's hours. `onChanged` hears each one (the collector writes the review note).
+ */
+export function attachReviewedHoursAbsences(records: LocationHours[], captures: HoursSourceCapture[],
+  onChanged: (line: string) => void = () => {}): LocationHours[] {
   const pages = new Map<string, ReturnType<typeof buildRawPageFromHtml>>();
   const check = (ref: Review['checks'][number]): ReviewedHoursAbsence['checks'][number] => {
     const sources = captures.filter(source => source.sourceUrl === ref.url);
@@ -34,7 +54,7 @@ export function attachReviewedHoursAbsences(records: LocationHours[], captures: 
     const sections = pages.get(ref.url)!.sections.filter(section => section.heading === ref.section
       && hash(`${section.heading}\n${section.text}`) === ref.section_sha256);
     if (sections.length !== 1) {
-      throw new Error(`Reviewed hours section changed; review omissions before publication: ${ref.url} — ${ref.section}`);
+      throw new SectionChanged(`${ref.url} — ${ref.section}`);
     }
     return { url: ref.url, section: ref.section, checked_at: source.collectedAt, html_sha256: hash(source.html) };
   };
@@ -44,7 +64,16 @@ export function attachReviewedHoursAbsences(records: LocationHours[], captures: 
     if (!matches.length) return record;
     if (matches.length !== 1) throw new Error(`Duplicate reviewed hours omissions: ${record.name}`);
     const review = matches[0];
-    const checks = review.checks.map(check);
+    // Nothing to claim, so nothing for a page edit to break.
+    if (!review.missing_weekdays.length && !review.missing_validity.length) return record;
+    let checks: ReviewedHoursAbsence['checks'];
+    try {
+      checks = review.checks.map(check);
+    } catch (error) {
+      if (!(error instanceof SectionChanged)) throw error;
+      onChanged(`**${record.name}**: section "${error.message}" changed.`);
+      return record;
+    }
     if (!checks.some(proof => proof.url === record.sourceUrl && proof.checked_at === record.collectedAt)) {
       throw new Error(`Reviewed hours omission is not bound to its source record: ${record.name}`);
     }
