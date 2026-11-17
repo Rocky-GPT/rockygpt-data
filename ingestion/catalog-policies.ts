@@ -13,7 +13,7 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
-import { assertSiteFetchAllowed } from './site-guard';
+import { assertSiteFetchAllowed, paceRamapoRequest } from './site-guard';
 import { writeJsonFile, writeRawFileProvenance } from './pipeline-utils';
 import { CATALOG_POLICIES_INDEX, indexText, isCatalogPageRecord, policiesPageUrl, publishedPolicies,
   type CatalogPoliciesCapture } from '../src/data-v2/catalog-policies';
@@ -37,6 +37,7 @@ async function pageRecord(pageId: string): Promise<{ record: unknown; text: stri
     const page = await browser.newPage({ userAgent: DEFAULT_USER_AGENT });
     const received = page.waitForResponse(response => isCatalogPageRecord(response.url(), pageId)
       && response.status() === 200, { timeout: RECORD_TIMEOUT_MS });
+    await paceRamapoRequest(CATALOG_POLICIES_INDEX);
     await page.goto(CATALOG_POLICIES_INDEX, { waitUntil: 'domcontentloaded', timeout: RECORD_TIMEOUT_MS });
     const response = await received;
     const text = await response.text();
