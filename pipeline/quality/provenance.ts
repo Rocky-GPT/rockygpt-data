@@ -233,3 +233,25 @@ export function notCapturedYet(key: string, rawDir = 'data/raw', now = new Date(
     (dataset) => !fs.existsSync(path.join(dir, RAW_DATASET_FILES[dataset] ?? `${dataset}.raw.json`))
   );
 }
+
+/**
+ * The sources tonight's refresh could not collect although their copy was past its freshness
+ * window, written by the refresh (ingestion/refresh-publishable.ts) for the quality gates and the
+ * publish that follow it in the same run.
+ *
+ * Until November 17, 2026 one such source stopped the whole publish: while production's dining was
+ * older than its 36-hour window, any hiccup at the menu service kept every other source's new data
+ * out too (November 8 to 10). Dan chose to publish the rest (the overnight audit plan, decision 2):
+ * the source keeps the last published copy, named in the run's report and on the data-refresh
+ * incident, and every other source publishes. A source of unknown age is never excused this way.
+ */
+export const KEPT_PAST_WINDOW_FILE = path.join('data', 'review', 'refresh-kept-past-window.json');
+
+export function keptPastWindow(cwd = process.cwd()): Set<string> {
+  try {
+    const keys: unknown = JSON.parse(fs.readFileSync(path.join(cwd, KEPT_PAST_WINDOW_FILE), 'utf8'));
+    return new Set(Array.isArray(keys) ? keys.filter((key): key is string => typeof key === 'string') : []);
+  } catch {
+    return new Set();
+  }
+}
