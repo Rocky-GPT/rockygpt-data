@@ -132,8 +132,43 @@ test('library capture keeps term bounds and withholds a repeated research schedu
   assert.equal(agreed.normalization_metadata, undefined);
   assert.throws(() => parseLibraryHours(library.replace('Mon-Thu: 7:45am', 'Unrecognized: 7:45am')),
     /missing or unrecognized days/);
+  // A dated exception is kept beside the week it changes, as the page states it.
+  const labor = parseLibraryHours(library.replace('RESEARCH HELP HOURS',
+    'Special Hours\nSep 7: CLOSED\nRESEARCH HELP HOURS')).find((row) => row.name === 'Library (Main Building)')!;
+  assert.equal(labor.notes, 'Fall Semester (Aug. 26 - Dec. 15, 2026). Special Hours: Sep 7: CLOSED');
+  assert.equal(labor.hours.Monday, '7:45am-12:00am');
+  // Special hours in a shape the reader does not know still stop the collector.
   assert.throws(() => parseLibraryHours(library.replace('RESEARCH HELP HOURS',
-    'Special Hours\nSep 7: CLOSED\nRESEARCH HELP HOURS')), /unparsed special hours/);
+    'Special Hours\nThanksgiving week: shorter days\nRESEARCH HELP HOURS')), /unparsed special hours/);
+  assert.throws(() => parseLibraryHours(library.replace('RESEARCH HELP HOURS',
+    'Special Hours\nSep 7: CLOSED\nSep 8: by appointment\nRESEARCH HELP HOURS')), /unparsed special hours|No hour ranges/);
+  assert.throws(() => parseLibraryHours(library.replace('RESEARCH HELP HOURS',
+    'Special Hours for Labor Day: closed\nRESEARCH HELP HOURS')), /unparsed special hours/);
+});
+
+test('the library page of November 17, 2026 reads with its Thanksgiving special hours kept in the note', () => {
+  // The page text as the collector's own reader printed it that day (the hours part).
+  const page = ['Library Hours', 'CIRCULATION DESK HOURS', 'Fall Semester', '(Aug. 26 - Dec. 15, 2026)',
+    'Mon-Thu: 7:45am - 12:00am', 'Fri: 7:45am - 6:00pm', 'Sat: 10:00am - 6:00pm', 'Sun: 12:00pm - 12:00am',
+    'Special Hours', 'Nov 25 - Nov 28: CLOSED', 'Nov 29: 4:00pm - 12:00am',
+    'RESEARCH HELP HOURS', 'Fall Semester', '(Aug. 26 - Dec. 15, 2026)',
+    'Mon-Thu: 9:00am - 9:00pm', 'Fri: 9:00am - 4:00pm', 'Sat & Sun: 3:00pm - 6:00pm',
+    'Special Hours', 'Nov 25 - Nov 28: CLOSED', 'Nov 29: 4:00pm - 12:00am',
+    'GAME LAB HOURS', 'Fall Semester', '(Aug. 26 - Dec. 15, 2026)',
+    'Mon-Thu: 9:00am - 8:00pm', 'Fri: 9:00am - 6:00pm', 'Sat & Sun: CLOSED',
+    'Please Note: Everyday from 11:00am - 2:00pm students in gaming classes have priority access.',
+    'If we are offline, please email your questions to refdesk@ramapo.edu and we will get back to you as soon as possible.',
+    'Please note that the front doors will be locked fifteen minutes before closing time.'].join('\n');
+  const rows = parseLibraryHours(page);
+  const main = rows.find((row) => row.name === 'Library (Main Building)')!;
+  assert.equal(main.hours.Wednesday, '7:45am-12:00am');
+  assert.equal(main.notes, 'Fall Semester (Aug. 26 - Dec. 15, 2026). Special Hours: Nov 25 - Nov 28: CLOSED; '
+    + 'Nov 29: 4:00pm-12:00am. Please note that the front doors will be locked fifteen minutes before closing time.');
+  const help = rows.find((row) => row.name === 'Research Help Desk')!;
+  assert.equal(help.availabilityIssue, undefined);
+  assert.match(help.notes!, /Special Hours: Nov 25 - Nov 28: CLOSED; Nov 29: 4:00pm-12:00am$/);
+  assert.equal(rows.find((row) => row.name === 'Game Lab')!.notes,
+    'Fall Semester (Aug. 26 - Dec. 15, 2026). Please Note: Everyday from 11:00am - 2:00pm students in gaming classes have priority access.');
 });
 
 // The synthetic captures below carry none of the real pages' reviewed sections, so a reviewed omission
