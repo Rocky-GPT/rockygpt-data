@@ -21,13 +21,13 @@ function oldCapture(): string {
 
 test('a stale source stops a release', () => {
   const cwd = oldCapture();
-  const summary = validateCurrentDatasetV2({}, { cwd, now: new Date('2026-11-02T00:00:00Z') });
+  const summary = validateCurrentDatasetV2({ cwd, now: new Date('2026-11-02T00:00:00Z') });
   assert.ok(summary.errors.some(e => e.startsWith('Source academic-calendar is stale')));
 });
 
 test('a test build only warns about a stale source and still stops on unknown age', () => {
   const cwd = oldCapture();
-  const summary = validateCurrentDatasetV2({}, { cwd, now: new Date('2026-11-02T00:00:00Z'), allowStaleSources: true });
+  const summary = validateCurrentDatasetV2({ cwd, now: new Date('2026-11-02T00:00:00Z'), allowStaleSources: true });
   assert.ok(!summary.errors.some(e => e.includes('is stale')));
   assert.ok(summary.warnings.some(w => w.startsWith('Source academic-calendar is stale')));
   assert.ok(summary.errors.some(e => e.includes('unknown collection age')));
@@ -36,13 +36,13 @@ test('a test build only warns about a stale source and still stops on unknown ag
 test('a test build is built without a source added since the capture, but a release is not', () => {
   const cwd = oldCapture();
   const now = new Date('2026-11-04T00:00:00Z');
-  const build = validateCurrentDatasetV2({}, { cwd, now, allowStaleSources: true });
+  const build = validateCurrentDatasetV2({ cwd, now, allowStaleSources: true });
   assert.ok(build.warnings.some(w => w.startsWith('Source athletics-schedules was added since')));
   assert.ok(!build.errors.some(e => e.startsWith('Source athletics-schedules')));
-  const release = validateCurrentDatasetV2({}, { cwd, now });
+  const release = validateCurrentDatasetV2({ cwd, now });
   assert.ok(release.errors.some(e => e.startsWith('Source athletics-schedules has unknown collection age')));
   // Two weeks on, production has had its chance to collect it: a missing capture stops a test build too.
-  const later = validateCurrentDatasetV2({}, { cwd, now: new Date('2026-11-20T00:00:00Z'), allowStaleSources: true });
+  const later = validateCurrentDatasetV2({ cwd, now: new Date('2026-11-20T00:00:00Z'), allowStaleSources: true });
   assert.ok(later.errors.some(e => e.startsWith('Source athletics-schedules has unknown collection age')));
 });
 
@@ -50,7 +50,7 @@ test('a release publishes a stale source tonight\'s refresh could not collect, f
   const cwd = oldCapture();
   fs.mkdirSync(path.join(cwd, path.dirname(KEPT_PAST_WINDOW_FILE)), { recursive: true });
   fs.writeFileSync(path.join(cwd, KEPT_PAST_WINDOW_FILE), JSON.stringify(['academic-calendar', 'housing']));
-  const summary = validateCurrentDatasetV2({}, { cwd, now: new Date('2026-11-02T00:00:00Z') });
+  const summary = validateCurrentDatasetV2({ cwd, now: new Date('2026-11-02T00:00:00Z') });
   assert.ok(!summary.errors.some(e => e.startsWith('Source academic-calendar')));
   assert.ok(summary.warnings.some(w => w.startsWith('Source academic-calendar is past its freshness window')));
   // A source with no collection record is never excused by the list.

@@ -2,7 +2,6 @@ import { isMenuArtifact, menuCalories } from '../../src/data-v2/menu-normalizati
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import { execFileSync } from 'child_process';
 import 'dotenv/config';
 import { Pool, type PoolClient } from 'pg';
 import { buildStructuredDirectoryContacts } from '../../src/directory/structured-contacts';
@@ -32,7 +31,6 @@ import { checkTopics, withheldTopicsReport, WITHHELD_TOPICS_REPORT, type Reviewe
 import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository';
 import { assertQualityV2, validateCurrentDatasetV2 } from '../quality/validate';
 import { testBuildFromCapturedPages } from '../test-build';
-import { CRITICAL_FACT_VALIDITY_V2, CRITICAL_FACT_VALUES_V2 } from './check-quality';
 import { recordValidity } from '../../src/data-v2/validity';
 import { sourceKeyForPath } from '../context-sources';
 import { listMarkdownFiles } from '../../src/data-v2/document-text';
@@ -115,66 +113,6 @@ async function sourceIds(client: PoolClient): Promise<Map<string, string>> {
     ids.set(source.key, result.rows[0].id);
   }
   return ids;
-}
-
-async function insertCriticalFacts(
-  client: PoolClient,
-  datasetId: string,
-  sources: Map<string, string>,
-  collectedAtFor: (sourceKey: string) => string,
-  verifiedAtFor: (factKey: string, sourceKey: string) => string
-): Promise<number> {
-  const sourceByKey: Record<string, string> = {
-    safety: 'public-safety',
-    password: 'password-reset',
-    // The Registrar's pages are captured with the campus directory.
-    registrar: 'campus-directory',
-    printing: 'information-technology-services',
-    tuition: 'tuition-costs',
-    calendar: 'academic-calendar',
-    shuttle: 'transportation',
-  };
-  let count = 0;
-  for (const [factKey, factValue] of Object.entries(CRITICAL_FACT_VALUES_V2)) {
-    const sourceKey = sourceByKey[factKey.split('.')[0]];
-    const validity = CRITICAL_FACT_VALIDITY_V2[factKey] || {};
-    await client.query(
-      `INSERT INTO rockygpt_v2.critical_facts
-       (dataset_version_id, source_id, source_record_key, fact_key, fact_value,
-        verified_at, collected_at, valid_from, valid_until, content_hash)
-       VALUES ($1,$2,$3,$3,$4,$5,$6,$7,$8,$9)`,
-      [datasetId, sources.get(sourceKey), factKey, factValue, verifiedAtFor(factKey, sourceKey),
-        collectedAtFor(sourceKey), validity.validFrom || null, validity.validUntil || null,
-        sha256(`${factKey}:${factValue}`)]
-    );
-    count += 1;
-  }
-  return count;
-}
-
-function repositoryStaticVerificationTime(): string {
-  if (process.env.CRITICAL_FACTS_VERIFIED_AT) {
-    const configured = new Date(process.env.CRITICAL_FACTS_VERIFIED_AT);
-    if (!Number.isFinite(configured.getTime())) {
-      throw new Error('CRITICAL_FACTS_VERIFIED_AT must be an ISO timestamp.');
-    }
-    return configured.toISOString();
-  }
-  try {
-    const committed = execFileSync(
-      'git',
-      ['log', '-1', '--format=%cI', '--', 'pipeline/commands/check-quality.ts'],
-      { cwd: process.cwd(), encoding: 'utf8' }
-    ).trim();
-    const parsed = new Date(committed);
-    if (Number.isFinite(parsed.getTime())) return parsed.toISOString();
-  } catch {
-    // The explicit error below prevents a publication timestamp from silently
-    // impersonating a source verification event.
-  }
-  throw new Error(
-    'Cannot establish critical-fact verification time. Set CRITICAL_FACTS_VERIFIED_AT.'
-  );
 }
 
 async function insertStructured(
@@ -723,7 +661,6 @@ async function verifyStagingDataset(
   testBuild = false
 ): Promise<Record<string, number>> {
   const result = await client.query<{
-    critical_facts: string;
     campus_contacts: string;
     campus_hours: string;
     dining_hours: string;
@@ -737,7 +674,6 @@ async function verifyStagingDataset(
     howto_pages: string;
   }>(
     `SELECT
-       (SELECT count(*) FROM rockygpt_v2.critical_facts WHERE dataset_version_id = $1::uuid) AS critical_facts,
        (SELECT count(*) FROM rockygpt_v2.campus_contacts WHERE dataset_version_id = $1::uuid) AS campus_contacts,
        (SELECT count(*) FROM rockygpt_v2.campus_hours WHERE dataset_version_id = $1::uuid) AS campus_hours,
        (SELECT count(*) FROM rockygpt_v2.dining_hours WHERE dataset_version_id = $1::uuid) AS dining_hours,
@@ -757,7 +693,6 @@ async function verifyStagingDataset(
     Object.entries(result.rows[0]).map(([key, value]) => [key, Number(value)])
   );
   const minimums: Record<string, number> = {
-    critical_facts: Object.keys(CRITICAL_FACT_VALUES_V2).length,
     campus_contacts: 10,
     campus_hours: 20,
     dining_hours: 7,
@@ -958,12 +893,12 @@ async function main(): Promise<void> {
   );
   const datasetId = created.rows[0].id;
   const client = await pool.connect();
-  let quality = validateCurrentDatasetV2(CRITICAL_FACT_VALUES_V2);
+  let quality = validateCurrentDatasetV2();
   let transactionStarted = false;
   let releaseId: string | null = null;
 
   try {
-    quality = validateCurrentDatasetV2(CRITICAL_FACT_VALUES_V2, {
+    quality = validateCurrentDatasetV2({
       enforceFreshness: !testBuild,
       enforceProvenance: true,
       allowStaleSources: testBuild,
@@ -973,19 +908,13 @@ async function main(): Promise<void> {
     step('check source freshness and provenance');
     const sources = await sourceIds(client);
     // PROB-002: records carry their source's real collection instant, never
-    // the publication instant. Repository-static sources (critical facts,
-    // seeded contacts, the checked-in shuttle timetable) use the publication
+    // the publication instant. Repository-static sources (seeded contacts, the checked-in shuttle timetable) use the publication
     // instant because their truth is versioned by this Git revision.
     const publishedAt = new Date().toISOString();
     const provenanceStates: SourceProvenanceState[] = evaluateSourceProvenance(SOURCES);
     const provenanceByKey = new Map(provenanceStates.map((state) => [state.key, state]));
     const collectedAtFor = (sourceKey: string): string =>
       provenanceByKey.get(sourceKey)?.fetchedAt ?? publishedAt;
-    const staticVerifiedAt = repositoryStaticVerificationTime();
-    const verifiedAtFor = (factKey: string, sourceKey: string): string =>
-      factKey.startsWith('safety.') || factKey.startsWith('calendar.')
-        ? collectedAtFor(sourceKey)
-        : staticVerifiedAt;
 
     // Network and CPU-heavy work happens before the staging transaction. Raw
     // captures are archived, documents are read, and only previously unseen
@@ -1020,14 +949,6 @@ async function main(): Promise<void> {
       `UPDATE rockygpt_v2.releases SET status = 'validating' WHERE id = $1::uuid`,
       [releaseId]
     );
-    const criticalCount = await insertCriticalFacts(
-      client,
-      datasetId,
-      sources,
-      collectedAtFor,
-      verifiedAtFor
-    );
-    step('insert critical facts');
     const structured = await insertStructured(client, datasetId, sources, collectedAtFor);
     step('insert structured records');
     const documents = await insertDocuments(
@@ -1054,7 +975,6 @@ async function main(): Promise<void> {
     });
     step('compile and insert campus identities');
     const releaseArtifactCount = sourceArtifactCount + identityArtifacts.count;
-    if (criticalCount !== Object.keys(CRITICAL_FACT_VALUES_V2).length) throw new Error('Critical fact verification failed.');
 
     // PROB-002: source runs record each source's authentic collection event,
     // its own record count, and a content-derived hash — never one shared
@@ -1074,7 +994,7 @@ async function main(): Promise<void> {
           source.url,
           state?.recordCount ?? null,
           archived.get(source.key)?.rawHash ?? state?.contentHash ??
-            sha256(`static:${source.key}:${JSON.stringify(CRITICAL_FACT_VALUES_V2)}`),
+            sha256(`static:${source.key}`),
         ]
       );
     }
@@ -1091,7 +1011,6 @@ async function main(): Promise<void> {
     step('verify identity continuity');
     const summary = {
       ...quality,
-      criticalCount,
       structured,
       ...documents,
       releaseArtifactCount,
