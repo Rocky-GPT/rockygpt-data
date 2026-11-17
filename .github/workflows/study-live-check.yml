@@ -1,0 +1,29 @@
+# Temporary, on this work branch only: a free check for the overnight audit of 2026-11-17.
+# Campus hours and the club list are read about twice a year (a 180-day freshness window). This reads
+# the same public pages once (about 80 pages, with the collectors' own slow, polite download helper)
+# and prints what each says today, to compare with the copy the bot holds. It uses no keys, reads no
+# file store and writes nothing anywhere. Removed before anything from this branch merges.
+name: Study hours and clubs today
+
+on:
+  push:
+    branches: [claude/project-thread-a2ch07]
+    paths: ['.github/workflows/study-live-check.yml', 'study4/**']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: What the hours and club pages say today
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci --silent
+      - name: Read the pages once and print what they say
+        run: npx tsx study4/live_check.ts
