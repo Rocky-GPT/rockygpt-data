@@ -41,6 +41,8 @@ DIAG = {
     "zl1-01": [r"Financial Aid Dashboard"],
     "zl3-01": [r"three \(3\) nights \(consecutively or not\) within a seven"],
     "zl3-12": [r"[Hh]old", r"Bill (&|and) Payment Suite"],
+    "zl2-09": [r"Ramapo-Secure"],
+    "zl1-13": [r"Authorized User"],
 }
 
 
@@ -322,6 +324,23 @@ def main() -> None:
                 print(f"VARIANT {name} {row['id']}: " + " ".join(
                     f"/{pat}/={'GIVEN' if re.search(pat, gt) else 'no'}" for pat in DIAG[row["id"]])
                       + f" | chars {len(gt)} | top pages {pages.most_common(3)}")
+        if row["id"] in DIAG:
+            ranked_cur = [k for k in index.scores(vector) if not k[1].startswith("e")
+                          and (index.pages.get(k[0]) is None or index.pages[k[0]].current(today))]
+            for pat in DIAG[row["id"]]:
+                holders = []
+                for n, k in enumerate(ranked_cur):
+                    held = by_row_id.get(k[0])
+                    secs = (held or {}).get("sections") or []
+                    try:
+                        sec = secs[int(k[1])]
+                    except (ValueError, IndexError):
+                        continue
+                    txt = f"{sec.get('heading') or ''}: {sec.get('text') or ''}"
+                    if re.search(pat, txt):
+                        holders.append((n + 1, index.labels.get(k, ("?", "?"))[0],
+                                        sec.get("heading"), len(str(sec.get("text") or ""))))
+                print(f"RANKS {row['id']} /{pat}/: {holders[:8]}")
         if row["id"] in DIAG:
             given_text = json.dumps(given, ensure_ascii=False)
             print(f"\nDIAG {row['id']}: {row['question']}")
