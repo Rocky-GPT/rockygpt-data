@@ -4,7 +4,7 @@ import {
   ATHLETICS_HOURS_URL, LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, campusHoursFromCaptures,
   campusHoursPublication, parseAthleticsFacilityHours, parseLibraryHours, parseGeneralCampusHours,
   OFFICE_HOURS_PAGES, hoursPageText, parseOfficeHours, parseAlwaysOpenHours, parseConflictingOfficeHours, parseUnstatedDayHours, parseWeeklyHours,
-  parseColumnHours, BERRIE_SEASON_URL, joinAdjacentDays,
+  parseColumnHours, BERRIE_SEASON_URL, joinAdjacentDays, keepReadableCaptures, keptHoursReport, termOfHeading,
 } from './campus-hours';
 import { attachReviewedHoursAbsences, changedHoursReport } from './reviewed-hours-absence';
 import { createHash } from 'node:crypto';
@@ -702,4 +702,33 @@ test('hours a page states with no weekdays keep every day unpublished, and "M. -
   assert.deepEqual([summer.hours.Monday, summer.hours.Thursday, summer.hours.Friday], ['8:00am-5:15pm', '8:00am-5:15pm', 'Hours unavailable']);
   // "a.m. to" is not "M. to": a time is never read as a day.
   assert.throws(() => parseOfficeHours('Y', /^Open:/i, 'Open: 8 a.m. to 4 p.m.', '2026-10-15T12:00:00Z', []), /unrecognized/);
+});
+
+test('one hours page that no longer reads keeps its last read; the others refresh', () => {
+  const page = (sourceUrl: string, text: string, collectedAt: string) => ({ sourceUrl, collectedAt,
+    html: `<body>${text.split('\n').map((line) => `<p>${line}</p>`).join('')}</body>` });
+  const before = [page(ATHLETICS_HOURS_URL, athletics, '2026-11-10T04:00:00Z'), page(LIBRARY_HOURS_URL, library, '2026-11-10T04:00:00Z')];
+  const tonight = [page(ATHLETICS_HOURS_URL, athletics, '2026-11-17T04:00:00Z'),
+    page(LIBRARY_HOURS_URL, 'CIRCULATION DESK HOURS\nWe moved our hours to a new page.', '2026-11-17T04:00:00Z')];
+  const { captures, kept } = keepReadableCaptures(tonight, before);
+  assert.equal(captures[0].collectedAt, '2026-11-17T04:00:00Z');
+  assert.equal(captures[1], before[1]);
+  assert.deepEqual(kept.map(page => [page.url, page.keptFrom]), [[LIBRARY_HOURS_URL, '2026-11-10T04:00:00Z']]);
+  assert.match(keptHoursReport(kept)!, /library-hours\/ \(kept the read of 2026-11-10\)/);
+  assert.equal(keptHoursReport([]), null);
+
+  // A page that could not be fetched keeps its last read the same way.
+  const unfetched = { sourceUrl: LIBRARY_HOURS_URL, collectedAt: '2026-11-17T04:00:00Z', html: '', unreadable: 'HTTP 503' };
+  assert.equal(keepReadableCaptures([tonight[0], unfetched], before).kept[0].error, 'HTTP 503');
+  // With no earlier read that still reads, the collector stops as before.
+  assert.throws(() => keepReadableCaptures(tonight, []), /Library|library|schedule|heading/);
+  assert.throws(() => keepReadableCaptures([tonight[0], unfetched], [tonight[1]]), /HTTP 503/);
+});
+
+test('a page headed by its term reads in any term, and the term it names is the season', () => {
+  assert.equal(termOfHeading('Hours\nFALL 2026\nMonday 9 AM - 5 PM'), 'Fall 2026');
+  assert.equal(termOfHeading('SPRING 2027\nMonday 9 AM - 5 PM'), 'Spring 2027');
+  assert.equal(termOfHeading('Summer Semester 2027'), 'Summer 2027');
+  assert.throws(() => termOfHeading('FALL 2026\nSPRING 2027'), /found 2/);
+  assert.throws(() => termOfHeading('Hours'), /found 0/);
 });
