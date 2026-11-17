@@ -1,0 +1,61 @@
+# Temporary, on this work branch only: a paid measurement for the overnight audit of 2026-11-17.
+# A from-scratch page answerer (study/tiny_bot.py: one search, one nine-line prompt, one model
+# call) answers the same 30 older how-to practice questions the Brain's writer was timed on, three
+# times an arm, and prints every answer whole so they can be graded beside the Brain's with no new
+# spend. Nothing in the bot changes and nothing is written anywhere. The script stops calling the
+# model before its spend could pass 40 cents. Removed before anything from this branch merges.
+name: Study the tiny bot
+
+on:
+  push:
+    branches: [claude/project-thread-a2ch07]
+    paths: ['.github/workflows/study-tiny-bot.yml', 'study/**']
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout the Brain
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: dev
+          path: brain
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install the Brain
+        run: |
+          pip install --require-hashes -r brain/requirements.lock
+          pip install --no-deps -e './brain[graph]'
+
+      - name: Download the dev graph
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph-dev/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: python -m rockygpt_brain.retrieval.graph_sync .published
+
+      - name: Checkout this branch's test script
+        uses: actions/checkout@v7
+        with:
+          path: data
+
+      - name: Ask the 30 practice questions with the tiny bot and print every answer
+        env:
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DRY: '0'
+          ARMS: tiny,tiny-8,tiny-read
+          TRIES: '3'
+          CAP_USD: '0.40'
+        run: python data/study/tiny_bot.py 2>&1 | grep -v '^provider_failure\|^brain_'
