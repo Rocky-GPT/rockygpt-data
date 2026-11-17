@@ -5,8 +5,8 @@ name: Daily Data Update
 # production: main's code collects what is stale from Ramapo's sites, publishes to the job's
 #   campus database (a Postgres inside the runner, loaded from last run's dump in campus-db/ and
 #   saved back there), builds the release graph and shares it under brain-graph/, which the live
-#   Brain follows. Neon's campus tables are neither read nor written (only once, to start the
-#   chain, when campus-db/ is empty).
+#   Brain follows. Neon's campus tables are neither read nor written; a run with no dump in
+#   campus-db/ stops.
 # dev: dev's code (data dev + Brain dev) rebuilds from the pages production captured last, with
 #   no download from Ramapo's sites, in the same kind of database (loaded from production's newest
 #   dump, never saved back), and
@@ -188,8 +188,8 @@ jobs:
           key: release-snapshot-${{ github.run_id }}
           restore-keys: release-snapshot-
 
-      # The job's campus database, loaded with production's newest dump from the file store. Only
-      # when there is none yet (the first run) does the refresh below read Neon's active release.
+      # The job's campus database, loaded with production's newest dump from the file store. The run
+      # stops when there is none.
       - name: Start the job's campus database
         run: .github/scripts/campus-db.sh start
 
@@ -208,7 +208,7 @@ jobs:
         env:
           ARCHWAY_USERNAME: ${{ secrets.ARCHWAY_USERNAME }}
           ARCHWAY_PASSWORD: ${{ secrets.ARCHWAY_PASSWORD }}
-          DATABASE_URL: ${{ steps.campus-db.outputs.loaded == 'true' && env.JOB_DATABASE_URL || secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
           RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
           RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
           RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
@@ -227,7 +227,7 @@ jobs:
         if: ${{ env.TARGET == 'dev' }}
         env:
           ROCKYGPT_BUILD_TARGET: dev
-          DATABASE_URL: ${{ steps.campus-db.outputs.loaded == 'true' && env.JOB_DATABASE_URL || secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
           RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
           RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
           RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
@@ -578,7 +578,7 @@ jobs:
         run: .github/scripts/campus-db.sh restore campus-dev.dump
 
       # Production builds from the release its campus database holds: today's when today's
-      # publish saved it, else the last good one. Neon only when the file store has none yet.
+      # publish saved it, else the last good one.
       - name: Load production's campus database from the file store
         id: campus-db
         if: ${{ env.TARGET == 'production' }}
@@ -620,7 +620,7 @@ jobs:
 
       - name: Build the release graph from the campus database
         env:
-          DATABASE_URL: ${{ (env.TARGET == 'dev' || steps.campus-db.outputs.loaded == 'true') && env.JOB_DATABASE_URL || secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
         run: python brain/scripts/build_graph.py --out .published --read-seconds 900
 
       - name: Build the meaning index
