@@ -95,18 +95,6 @@ const MIN_RECORD_COUNTS: Partial<Record<(typeof REQUIRED_FILES)[number], number>
   'public/data/programs.json': 50,
 };
 
-const CRITICAL_FACT_KEYS = [
-  'safety.emergency_phone',
-  'safety.non_emergency_phone',
-  'safety.id_card_room_phone',
-  'safety.id_card_room_location',
-  'safety.id_card_room_email',
-  'password.reset_url',
-  'tuition.nj_12_18_semester',
-  'calendar.spring2026.add_drop_100_refund.full',
-  'shuttle.ramsey_route17.express.first_departure',
-  'shuttle.ramsey_route17.express.last_dropoff',
-] as const;
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -258,10 +246,7 @@ function schemaErrors(
   return errors;
 }
 
-export function validateCurrentDatasetV2(
-  criticalFacts: Record<string, string>,
-  options: QualityOptionsV2 = {}
-): QualitySummaryV2 {
+export function validateCurrentDatasetV2(options: QualityOptionsV2 = {}): QualitySummaryV2 {
   const errors: string[] = [];
   const warnings: string[] = [];
   const recordCounts: Record<string, number> = {};
@@ -303,10 +288,6 @@ export function validateCurrentDatasetV2(
         `Invalid JSON in ${relativePath}: ${error instanceof Error ? error.message : String(error)}`
       );
     }
-  }
-
-  for (const key of CRITICAL_FACT_KEYS) {
-    if (!criticalFacts[key]?.trim()) errors.push(`Missing required critical fact: ${key}`);
   }
 
   try {

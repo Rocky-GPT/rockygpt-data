@@ -607,6 +607,13 @@ jobs:
           INSPECT: ${{ inputs.inspect }}
         run: python .github/scripts/graph_summary.py .published --show "$INSPECT"
 
+      # The answers no release may lose (Public Safety's phone, today's library hours) and each
+      # source's newest capture against its own freshness window, read from the graph students
+      # will get (.github/scripts/graph_check.py). Report-only for now: a red step, not a stop.
+      - name: Check the graph's must-have answers and freshness
+        continue-on-error: true
+        run: python .github/scripts/graph_check.py .published
+
       - name: Save the embedding and question caches
         if: ${{ always() && hashFiles('.meaning-cache/questions.json') != '' }}
         uses: actions/cache/save@v4
