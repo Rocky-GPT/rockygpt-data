@@ -52,6 +52,7 @@ QUESTIONS = [
     "who researches machine learning",
     "which professors study climate change",
     "who is the psychology convener",
+    "who teaches computer science 2",
 ]
 
 
