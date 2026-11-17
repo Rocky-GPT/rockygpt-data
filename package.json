@@ -9,13 +9,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json && npm run build:assets",
     "prepare": "npm run build",
-    "dev": "NODE_ENV=development tsx watch api/server.ts",
-    "start": "node dist/api/server.js",
     "build:assets": "node scripts/copy-assets.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
     "test": "node scripts/run-tests.mjs",
-    "contract:validate": "node scripts/validate-openapi.mjs",
     "data:schema": "tsx pipeline/commands/apply-schema.ts",
     "data:quality": "tsx pipeline/commands/check-quality.ts",
     "data:publish": "tsx pipeline/commands/publish-current.ts",
@@ -55,11 +52,8 @@
     "fetch:academic-sites": "tsx ingestion/academic-sites.ts",
     "fetch:athletics-schedules": "tsx ingestion/athletics.ts schedules",
     "fetch:athletics-coaches": "tsx ingestion/athletics.ts coaches",
-    "normalize:campus-hours": "tsx scripts/backfill-campus-hours.ts",
-    "normalize:contacts": "tsx scripts/backfill-contact-fields.ts",
     "check:contacts": "tsx scripts/check-contact-evidence.ts",
     "normalize:raw": "npm run normalize:reviewed-contact-documents && tsx ingestion/normalize-raw.ts",
-    "normalize:calendar:concepts": "tsx scripts/backfill-calendar-concepts.ts",
     "generate:menu:md": "tsx ingestion/generate-menu-md.ts",
     "generate:dining-hours:md": "tsx ingestion/generate-dining-hours-md.ts",
     "generate:events:md": "tsx ingestion/generate-events-md.ts",
@@ -80,7 +74,6 @@
     "generate:academic-sites:md": "tsx ingestion/generate-academic-sites-md.ts",
     "generate:context:core6": "npm run generate:transportation:md && npm run generate:directory:md && npm run generate:housing:md && npm run generate:health:md && npm run generate:counseling:md && npm run generate:safety:md",
     "generate:context": "npm run generate:menu:md && npm run generate:dining-hours:md && npm run generate:events:md && npm run generate:hours:md && npm run generate:clubs:md && npm run generate:calendar:md && npm run generate:faculty:md && npm run generate:programs:md && npm run generate:major-pages:md && npm run generate:major-page-links:md && npm run generate:office-pages:md && npm run generate:academic-sites:md && npm run generate:context:core6",
-    "redact:data": "tsx ingestion/redact-personal-data.ts",
     "quality:raw": "tsx scripts/database/quality-gates.ts --raw",
     "check:pages": "tsx ingestion/page-check.ts",
     "refresh": "npm run fetch:menu && npm run fetch:dining-hours && npm run fetch:events:live && npm run fetch:hours && npm run fetch:clubs && npm run data:quality",
@@ -94,8 +87,7 @@
     "refresh:raw": "RAW_ONLY=1 npm run fetch:menu && RAW_ONLY=1 npm run fetch:dining-hours && RAW_ONLY=1 npm run fetch:events:live && RAW_ONLY=1 npm run fetch:hours && RAW_ONLY=1 npm run fetch:clubs && RAW_ONLY=1 npm run fetch:calendar && RAW_ONLY=1 npm run fetch:faculty && RAW_ONLY=1 npm run fetch:programs:catalog && RAW_ONLY=1 npm run refresh:raw:core6 && npm run quality:raw",
     "refresh:publishable": "tsx ingestion/refresh-publishable.ts",
     "refresh:context": "npm run normalize:raw && npm run generate:context",
-    "refresh:context:publish": "npm run refresh:context && npm run data:quality && npm run data:publish",
-    "images:menu:stock": "tsx scripts/replace-menu-images.ts"
+    "refresh:context:publish": "npm run refresh:context && npm run data:quality && npm run data:publish"
   },
   "dependencies": {
     "cheerio": "^1.2.0",
@@ -113,8 +105,7 @@
     "playwright": "^1.58.0",
     "tsx": "^4.21.0",
     "typescript": "^5",
-    "typescript-eslint": "^8",
-    "yaml": "2.8.1"
+    "typescript-eslint": "^8"
   },
   "repository": {
     "type": "git",

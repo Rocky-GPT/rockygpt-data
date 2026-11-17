@@ -6,14 +6,7 @@ Nutrition belongs to a dated menu occurrence. Never collapse it into one value p
 
 Database migration `020_menu_nutrition.sql` makes calories integers and adds `portion_size`. Unexpected non-integral historical values stop migration rather than being silently discarded.
 
-For an existing release, with a data-owner `DATABASE_URL`:
-
-```sh
-node --import tsx scripts/normalize-menu.ts
-node --import tsx scripts/normalize-menu.ts --apply --backup /absolute/new-backup.json
-```
-
-The script matches the release's own menu-week snapshot by exact occurrence keys using the publisher's text normalization. It backs up affected menu rows, menu artifacts, and menu document/search passages before modifying them. It preserves record IDs, timestamps, and venue links. Known non-food records remain stored for audit but are excluded from student-facing retrieval and normalized artifacts. The same message is removed from menu prose and search passages.
+Known non-food records are excluded from student-facing retrieval and normalized artifacts. (The one-off script that cleaned releases published before migration 020 was removed on 2026-11-17.)
 
 Dietary source booleans may be explicitly false; absence is unknown. A missing allergen field is unknown, while a published empty list means none listed. Neither is an allergy-safety guarantee.
 

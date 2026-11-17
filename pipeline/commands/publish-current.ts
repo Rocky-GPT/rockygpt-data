@@ -23,7 +23,8 @@ import { pageEntries, readHowtoCapture } from '../../ingestion/howto-entries';
 import { howtoPagesShortfall } from '../howto-store';
 import { catalogPolicyPages, checkCatalogPoliciesOwner, type CatalogPoliciesCapture,
   type CatalogPoliciesOwner } from '../../src/data-v2/catalog-policies';
-import { readSkippedSections } from '../../ingestion/folder-sites';
+import { pageKey as folderPageKey, readSkippedSections } from '../../ingestion/folder-sites';
+import { pagesLeftOut } from '../../ingestion/page-check';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
 import { menuDocuments, menuListings } from '../../src/data-v2/menu-documents';
@@ -328,9 +329,18 @@ async function insertStructured(
   const howto = readHowtoCapture();
   const officePages = officeSectionPages(capturedPages, officeFolders, readSkippedSections('src/reference/office-sites.json'));
   const unframed = new Map(withoutSiteFrame(officePages).map(page => [page.key, page]));
+  // Pages the last page check called clear cases (a test copy, a past event, out of date, a
+  // placeholder, "not found" or a login page, 90% sure or more) are not published; the review
+  // issue lists them with the keptPages line that brings each back.
+  const leftOut = await pagesLeftOut();
+  let leftOutCount = 0;
   for (const page of officePages) {
     const kept = unframed.get(page.key);
     if (!kept) continue;
+    if (leftOut.has(folderPageKey(page.url) ?? '')) {
+      leftOutCount += 1;
+      continue;
+    }
     await client.query(
       `INSERT INTO rockygpt_v2.office_sections
        (dataset_version_id, source_id, source_record_key, site_folder, url, sections, collected_at, content_hash, howto_entries,
@@ -342,6 +352,7 @@ async function insertStructured(
     );
     counts.office_sections = (counts.office_sections || 0) + 1;
   }
+  console.log(`Left out ${leftOutCount} office and school pages the page check calls clear cases.`);
   // The academic policies, from the course catalog: one row per policy, linked by the compile to
   // the reviewed owner while its quote is still on the captured index page.
   const catalogPolicies = readJson<CatalogPoliciesCapture>('data/raw/catalog-policies.raw.json');

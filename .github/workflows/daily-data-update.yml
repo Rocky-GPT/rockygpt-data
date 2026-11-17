@@ -249,6 +249,17 @@ jobs:
         if: ${{ env.TARGET == 'production' }}
         run: npm run data:quality
 
+      # The publish leaves out the office and school pages the last page check called clear
+      # cases (ingestion/page-check.ts, pagesLeftOut). Production's verdicts; a dev build reads
+      # them too, so it leaves out the same pages. Without them nothing is left out.
+      - name: Restore page check verdicts
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: data/review/page-check-verdicts.json
+          key: page-check-${{ github.run_id }}
+          restore-keys: page-check-
+
       - name: Atomically publish verified dataset
         if: ${{ env.TARGET == 'production' }}
         env:
@@ -318,19 +329,11 @@ jobs:
         run: .github/scripts/campus-db.sh save
 
       # After publishing, Jev labels the office and school pages that are new, changed or a
-      # month past their last check, and flagged pages wait in an issue for a person. A
-      # flagged page stays published until its skippedPages line is added. Without the
-      # TYPESAFE_API_KEY secret nothing is sent; a run spends at most PAGE_CHECK_MAX_USD
-      # (default $1).
-      - name: Restore page check verdicts
-        if: ${{ env.TARGET == 'production' }}
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          path: data/review/page-check-verdicts.json
-          key: page-check-${{ github.run_id }}
-          restore-keys: page-check-
-
+      # month past their last check (verdicts restored before the publish). Clear cases are
+      # left out by the next publish; the rest wait in an issue for a person, and stay
+      # published until a skippedPages line is added. The issue lists both, with the line that
+      # undoes each. Without the TYPESAFE_API_KEY secret nothing is sent; a run spends at most
+      # PAGE_CHECK_MAX_USD (default $1).
       - name: Check new and changed pages with Jev
         if: ${{ env.TARGET == 'production' }}
         continue-on-error: true
