@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
-const roots = ['api', 'ingestion', 'pipeline', 'src'];
+const roots = ['ingestion', 'pipeline', 'src'];
 const tests = [];
 
 function visit(directory) {

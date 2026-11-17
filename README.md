@@ -33,21 +33,9 @@ Only explicit retirement markers set `status: retired`; an absent marker does no
 establish active employment. Existing phone entries keep their numbers, labels,
 extensions, and contact preferences.
 
-To preview or update an existing active release using `DATABASE_URL` from `.env`:
-
-```sh
-npm run normalize:contacts -- --report /tmp/contact-review.json
-npm run normalize:contacts -- --apply --backup /tmp/contacts-before.json --report /tmp/contact-review.json
-```
-
-The default is read-only. Applying requires a new backup file, applies migration
-018, and updates only the active release in one transaction. IDs and contact
-methods remain unchanged. A second preview should report zero changed records.
-Original strings and review flags live in `normalization_metadata`; source and
-collection timestamps remain ingestion metadata, separate from the clean export.
-Shared numbers involving retired people, missing contact methods, unfinished
-titles, and unusual trailing name accents are flagged for source review, never
-silently corrected or merged.
+Contacts that are flagged for source review are never silently corrected or
+merged. `npm run check:contacts` prints each captured contact's evidence (fields
+withheld, extra contacts, absences) through the same builder the publisher uses.
 
 ## Campus opening intervals
 
@@ -57,16 +45,8 @@ next-day closings have `close_day_offset: 1`. An empty array means explicitly
 closed. Missing, ambiguous, overlapping, or partially parsed text stays NULL
 (unknown), never closed. Original `schedule` text and effective dates are retained.
 
-```sh
-npm run normalize:campus-hours -- --report /tmp/campus-hours-review.json
-npm run normalize:campus-hours -- --apply --backup /tmp/campus-hours-before.json --report /tmp/campus-hours-review.json
-```
-
-The default is read-only; applying migration 019 and backfilling the active
-release requires a new backup file and happens in one transaction. It preserves
-IDs, facility/day rows, source schedules, timestamps, and validity bounds. Future
-publication uses the same parser. This describes weekly hours; it does not verify
-holiday exceptions or establish that a weekly schedule applies to a given date.
+This describes weekly hours; it does not verify holiday exceptions or establish
+that a weekly schedule applies to a given date.
 
 ## Campus identity links
 
@@ -128,17 +108,9 @@ answered `/v1/...` was deleted on 2026-08-28 once those endpoints reached
 parity, and its blueprint was removed with it so applying one cannot bring it
 back. Restoring it would mean writing a new blueprint deliberately.
 
-The HTTP server in `api/` stays for local development only. It backs the web
-app's `/ids`, `/data-explorer` and collector-status pages, which read further
-into the database than the brain exposes, and it registers those routes only
-when `NODE_ENV=development`. Its contract is
-[`api/openapi.yaml`](api/openapi.yaml).
-
-**Nothing starts it for you.** `run-local.sh` brings up the brain and the web
-app only, so those three pages report that they cannot connect until you run
-`npm run dev` here as well, on :8100. Whether that gap is worth closing or the
-pages are worth retiring is an open question — until it is answered, this
-server is the only reason the `api/` directory exists.
+The local HTTP server that used to live in `api/` (the retired `/v1` and `/v2`
+contract, and the dev site's data-explorer pages) was removed on 2026-11-17 with
+the rest of the code the nightly job never loads. Git keeps it.
 
 This package stays private on purpose: nothing should import repository or
 ingestion source across application boundaries.
@@ -146,21 +118,3 @@ ingestion source across application boundaries.
 Browser-shaped artifacts are staged under this repository's ignored `public/`
 directory and published into PostgreSQL. The pipeline never writes into a
 client repository.
-
-The rest of the surface — `POST /v2/capabilities/shuttle/query`,
-`POST /v2/retrieve`, and the structured `/v1/search` routes for menus, events,
-campus and dining hours, and courses — is the retired public contract. It still
-runs when this server is started, and the `rockygpt-evals` suites still read
-their expected values from it, but no deployed client reaches any of it. The
-behaviour below is recorded for whoever decides what happens to that surface.
-
-DATA, rather than the caller, owned repository matching, dataset identity, and
-public source records. Retrieved document text is explicitly marked
-`contentTrust: "untrusted"`.
-
-Shuttle entity misses are distinct from an authoritative empty time window:
-unknown route/stop constraints use `no_match` with `entity_no_match`, while no
-remaining or currently active service uses `empty` with `no_remaining` or
-`not_current`. A `current/at_time` query checks only its service date and, when
-needed, the immediately prior date for a cross-midnight trip; the response
-lists both under `appliedFilters.serviceDatesConsidered`.

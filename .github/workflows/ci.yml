@@ -33,8 +33,5 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Unit and HTTP regression tests
+      - name: Unit tests
         run: npm test
-
-      - name: Validate OpenAPI contract and runtime coverage
-        run: npm run contract:validate

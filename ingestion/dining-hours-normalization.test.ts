@@ -3,7 +3,6 @@ import test from 'node:test';
 import { validateDiningHoursState } from './schema';
 import { formatHoursList, toContextDiningHours } from './generate-dining-hours-md';
 import { formatDiningRange } from '../src/data-v2/dining-seasons';
-import { resolveGeneralHours, resolveLocationHoursForToday } from '../api/routes/dining-hours';
 
 function normalized(ranges: unknown[]) {
   return validateDiningHoursState({ composition: { subject: { regions: [{ fragments: [{
@@ -23,9 +22,6 @@ test('an explicit source CLOSED value survives normalization and every rendering
     assert.equal(hours[0].closed, true);
     assert.equal(formatHoursList(hours), 'Closed');
     assert.equal(formatDiningRange({ ...hours[0] }), 'Closed');
-    assert.equal(resolveGeneralHours(fragment).schedule[0].hours[0].time, 'Closed');
-    assert.equal(resolveLocationHoursForToday(fragment, new Date('2026-09-21T18:00:00Z'),
-      'America/New_York').hours[0].time, 'Closed');
   }
 });
 
@@ -34,12 +30,6 @@ test('offline normalization replays the actual source shape and rejects unsuppor
   assert.deepEqual(validateDiningHoursState(state), state);
   assert.throws(() => validateDiningHoursState({ error: 'API format changed' }));
   assert.throws(() => validateDiningHoursState([]));
-});
-
-test('a general-hours label retains its explicit closure when the label is displayed separately', () => {
-  const fragment = normalized([{ allDay: 'true', label: 'Closed' }])
-    .composition.subject.regions[0].fragments[0];
-  assert.equal(resolveGeneralHours(fragment).schedule[0].hours[0].time, 'Closed');
 });
 
 test('missing clocks and unexplained all-day flags never become open-all-day or closed facts', () => {
