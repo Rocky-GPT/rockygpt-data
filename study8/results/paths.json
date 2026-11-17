@@ -6,14 +6,12 @@
   "reading": {
    "social": "none",
    "danger": "none",
-   "needs": [
-    "school_trouble"
-   ],
-   "limit": "none",
-   "question": "Will my classes be cancelled? How can I pay now?",
+   "needs": [],
+   "limit": "prediction",
+   "question": "What is the requirement, and how can I pay now?",
    "topic": "how_to"
   },
-  "asked": "I missed the payment deadline because the transfer from my bank at home took 2 weeks. Will my classes be cancelled? How can I pay now",
+  "asked": "I missed the payment deadline because the transfer from my bank at home took 2 weeks. Will my classes be cancelled? How can I pay now. What is the requirement, and how can I pay now?",
   "votes": [
    "how_to",
    "how_to",
@@ -32,16 +30,16 @@
    "needs": [],
    "limit": "none",
    "question": "Who signs proof of the volunteer hours I did with a club last semester for a scholarship application?",
-   "topic": "person"
+   "topic": "how_to"
   },
   "asked": "i need proof of the volunteer hours i did with a club last semester for a scholarship application. who signs that",
   "votes": [
-   "person",
-   "person",
-   "person"
+   "how_to",
+   "how_to",
+   "how_to"
   ],
   "old": "events_clubs",
-  "new": "people"
+  "new": "pages"
  },
  {
   "id": "E03",
@@ -50,10 +48,7 @@
   "reading": {
    "social": "none",
    "danger": "none",
-   "needs": [
-    "food_or_housing",
-    "money"
-   ],
+   "needs": [],
    "limit": "none",
    "question": "Can I get an award letter or something official that shows my financial aid for this semester?",
    "topic": "how_to"
@@ -76,17 +71,17 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "Are graduate students allowed to go on the short winter break trips abroad, and is there still room to sign up for one?",
-   "topic": "event"
+   "question": "Are grad students allowed to go on the short winter break trips abroad? I'd like to sign up for one if there's still room",
+   "topic": "how_to"
   },
   "asked": "Are grad students allowed to go on the short winter break trips abroad? I'd like to sign up for one if there's still room",
   "votes": [
-   "event",
-   "event",
-   "event"
+   "how_to",
+   "how_to",
+   "how_to"
   ],
   "old": "pages",
-  "new": "events_clubs"
+  "new": "pages"
  },
  {
   "id": "E05",
@@ -120,10 +115,10 @@
     "stress_or_sadness"
    ],
    "limit": "opinion",
-   "question": "What career test can I take to figure out what to major in, and who can help me decide what classes to pick?",
+   "question": "What career tests can I take to figure out what to major in, and who helps students decide?",
    "topic": "how_to"
   },
-  "asked": "is there like a career test i can take to figure out what to major in? i have to pick classes soon and have no clue. What career test can I take to figure out what to major in, and who can help me decide what classes to pick?",
+  "asked": "is there like a career test i can take to figure out what to major in? i have to pick classes soon and have no clue. What career tests can I take to figure out what to major in, and who helps students decide?",
   "votes": [
    "how_to",
    "how_to",
@@ -162,7 +157,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "What are they checking during the health and safety inspection next week, and do I have to be there?",
+   "question": "What are they checking, and do I have to be there?",
    "topic": "how_to"
   },
   "asked": "got a note on my door about a health and safety inspection next week. what are they checking and do i have to be there",
@@ -181,7 +176,9 @@
   "reading": {
    "social": "none",
    "danger": "none",
-   "needs": [],
+   "needs": [
+    "school_trouble"
+   ],
    "limit": "none",
    "question": "Why do I still have to take a placement test even though I already passed English comp at my old school, and how do I get out of it?",
    "topic": "how_to"
@@ -200,21 +197,21 @@
   "set": "fresh-11-17",
   "message": "my transfer orientation is on a day i have work and i cant get it off. is there another date i can switch to",
   "reading": {
-   "social": "none",
+   "social": "upset",
    "danger": "none",
    "needs": [],
    "limit": "none",
    "question": "Is there another date I can switch my transfer orientation to?",
-   "topic": "dates"
+   "topic": "event"
   },
   "asked": "my transfer orientation is on a day i have work and i cant get it off. is there another date i can switch to",
   "votes": [
    "event",
-   "dates",
-   "dates"
+   "how_to",
+   "event"
   ],
   "old": "pages",
-  "new": "pages"
+  "new": "events_clubs"
  },
  {
   "id": "E11",
@@ -225,10 +222,10 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "just transferred here this fall and i want to study abroad next year. is it too soon to apply? what do i have to do first",
+   "question": "I just transferred here this fall and I want to study abroad next year. Is it too soon to apply? What do I have to do first?",
    "topic": "how_to"
   },
-  "asked": "just transferred here this fall and i want to study abroad next year. is it too soon to apply? what do i have to do first",
+  "asked": "I just transferred here this fall and I want to study abroad next year. Is it too soon to apply? What do I have to do first?",
   "votes": [
    "how_to",
    "how_to",
@@ -242,7 +239,7 @@
   "set": "fresh-11-17",
   "message": "My classes go until almost 10 and every dining spot is closed by then. Can I change my meal plan to just dining dollars or something like that?",
   "reading": {
-   "social": "none",
+   "social": "upset",
    "danger": "none",
    "needs": [],
    "limit": "none",
@@ -311,7 +308,7 @@
     "school_trouble"
    ],
    "limit": "none",
-   "question": "Can I reschedule my advising appointment?",
+   "question": "i missed my advising appointment yesterday 😬 and i think i need it before i can register. can i reschedule",
    "topic": "how_to"
   },
   "asked": "i missed my advising appointment yesterday 😬 and i think i need it before i can register. can i reschedule",
@@ -334,7 +331,7 @@
     "disability"
    ],
    "limit": "none",
-   "question": "Can I take one of my two summer finals on a different day?",
+   "question": "I have accommodations for extra time but my two summer finals are on the same day and both are long. Can I take one of them on a different day?",
    "topic": "dates"
   },
   "asked": "I have accommodations for extra time but my two summer finals are on the same day and both are long. Can I take one of them on a different day?",
@@ -401,7 +398,7 @@
     "money"
    ],
    "limit": "none",
-   "question": "Why won't the EOF grant cover my summer class, and is there anything I can do?",
+   "question": "Why won't my EOF grant cover my summer class, and is there anything I can do?",
    "topic": "how_to"
   },
   "asked": "my EOF counselor said the grant won't cover my summer class. i dont get why, isnt summer part of the year? is there anything i can do",
@@ -421,11 +418,11 @@
    "social": "none",
    "danger": "none",
    "needs": [],
-   "limit": "none",
+   "limit": "do_it_for_me",
    "question": "How do I move my placement test to another day?",
    "topic": "how_to"
   },
-  "asked": "signed up for the placement test on friday but i have work, how do i move it to another day",
+  "asked": "signed up for the placement test on friday but i have work, how do i move it to another day. How do I move my placement test to another day?",
   "votes": [
    "how_to",
    "how_to",
@@ -460,16 +457,16 @@
   "set": "fresh-11-17",
   "message": "Two of my classes overlap by 15 minutes on Tuesday. The system let me register but I can't be in both. I need to stay full time for my visa. What should I do?",
   "reading": {
-   "social": "upset",
+   "social": "none",
    "danger": "none",
    "needs": [
     "school_trouble"
    ],
-   "limit": "opinion",
-   "question": "What does the college publish about the options for resolving a 15-minute class overlap on Tuesday, and who can help me decide while staying full time for my visa?",
+   "limit": "none",
+   "question": "What should I do about two of my classes overlapping by 15 minutes on Tuesday when I need to stay full time for my visa?",
    "topic": "how_to"
   },
-  "asked": "Two of my classes overlap by 15 minutes on Tuesday. The system let me register but I can't be in both. I need to stay full time for my visa. What should I do? What does the college publish about the options for resolving a 15-minute class overlap on Tuesday, and who can help me decide while staying full time for my visa?",
+  "asked": "Two of my classes overlap by 15 minutes on Tuesday. The system let me register but I can't be in both. I need to stay full time for my visa. What should I do?",
   "votes": [
    "how_to",
    "how_to",
@@ -488,18 +485,18 @@
    "needs": [
     "money"
    ],
-   "limit": "none",
-   "question": "Who in dining can write proof of my job and how much I make?",
-   "topic": "person"
+   "limit": "do_it_for_me",
+   "question": "How can I get proof of my job and how much I make from someone in dining?",
+   "topic": "how_to"
   },
-  "asked": "I work part time in the dining hall and my new landlord wants proof of my job and how much I make. Who in dining can write that?",
+  "asked": "I work part time in the dining hall and my new landlord wants proof of my job and how much I make. Who in dining can write that? How can I get proof of my job and how much I make from someone in dining?",
   "votes": [
-   "person",
-   "person",
-   "person"
+   "how_to",
+   "how_to",
+   "how_to"
   ],
   "old": "lookup_loop",
-  "new": "people"
+  "new": "pages"
  },
  {
   "id": "E24",
@@ -531,10 +528,10 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "Is there scholarship money for graduate students going abroad? I want to apply before the deadline if there is.",
+   "question": "is there scholarship money for grad students going abroad? i want to apply before the deadline if there is",
    "topic": "how_to"
   },
-  "asked": "Is there scholarship money for graduate students going abroad? I want to apply before the deadline if there is.",
+  "asked": "is there scholarship money for grad students going abroad? i want to apply before the deadline if there is",
   "votes": [
    "how_to",
    "how_to",
@@ -573,7 +570,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "Who should I ask about a bill from a lab for bloodwork the health center sent out?",
+   "question": "Who do I ask about a bill from a lab for bloodwork the health center sent out?",
    "topic": "how_to"
   },
   "asked": "i got a bill from a lab for bloodwork the health center sent out. i thought it was free?? who do i ask about this",
@@ -596,13 +593,13 @@
     "school_trouble"
    ],
    "limit": "none",
-   "question": "How do I cancel my career fair registration so I don't get marked as a no-show?",
+   "question": "How do I cancel my career fair registration so I don’t get marked as a no-show?",
    "topic": "how_to"
   },
   "asked": "signed up for the career fair but now i have an exam that day. how do i cancel so i dont get marked as a no show",
   "votes": [
-   "event",
    "how_to",
+   "event",
    "how_to"
   ],
   "old": "events_clubs",
@@ -619,10 +616,10 @@
     "thinking_of_leaving"
    ],
    "limit": "opinion",
-   "question": "What options does the college publish for doing only part of the peer mentor commitment or dropping out of the summer program, and who helps students decide?",
+   "question": "What does the college publish about whether I can do only part of the summer program or have to drop out, and who helps students decide?",
    "topic": "how_to"
   },
-  "asked": "I'm in EOF and signed up to be a peer mentor for the summer program but I just got a job offer. Can I do only part of it or do I have to drop out. What options does the college publish for doing only part of the peer mentor commitment or dropping out of the summer program, and who helps students decide?",
+  "asked": "I'm in EOF and signed up to be a peer mentor for the summer program but I just got a job offer. Can I do only part of it or do I have to drop out. What does the college publish about whether I can do only part of the summer program or have to drop out, and who helps students decide?",
   "votes": [
    "how_to",
    "how_to",
@@ -661,7 +658,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "my friend from home wants to visit and stay over in my room this weekend. do i have to register her somewhere",
+   "question": "Do I have to register my friend from home somewhere to visit and stay over in my room this weekend?",
    "topic": "how_to"
   },
   "asked": "my friend from home wants to visit and stay over in my room this weekend. do i have to register her somewhere",
@@ -681,11 +678,11 @@
    "social": "none",
    "danger": "none",
    "needs": [],
-   "limit": "none",
-   "question": "Can the health center fee be taken off if I'm only taking one online class?",
+   "limit": "do_it_for_me",
+   "question": "How can I get a health center fee for summer taken off if I’m only taking one online class?",
    "topic": "how_to"
   },
-  "asked": "i got charged a health center fee for summer but im only taking one online class. can that be taken off",
+  "asked": "i got charged a health center fee for summer but im only taking one online class. can that be taken off. How can I get a health center fee for summer taken off if I’m only taking one online class?",
   "votes": [
    "how_to",
    "how_to",
@@ -703,10 +700,10 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "Is there a way to do a bachelor's and master's together in 5 years? I'd want to sign up early if that's a thing.",
+   "question": "Is there a way to do bachelor's and master's together in 5 years? I'd want to sign up early if that's a thing.",
    "topic": "program"
   },
-  "asked": "Is there a way to do a bachelor's and master's together in 5 years? I'd want to sign up early if that's a thing.",
+  "asked": "Is there a way to do bachelor's and master's together in 5 years? I'd want to sign up early if that's a thing.",
   "votes": [
    "program",
    "program",
@@ -762,7 +759,7 @@
   "set": "fresh-11-17",
   "message": "how do i get assigned an advisor? im undeclared and nobody ever contacted me",
   "reading": {
-   "social": "upset",
+   "social": "none",
    "danger": "none",
    "needs": [],
    "limit": "none",
@@ -810,7 +807,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "Do I just walk in? Do I need to sign something?",
+   "question": "Can I just walk into the gym? Do I need to sign something?",
    "topic": "how_to"
   },
   "asked": "never been to the gym here in 4 years lol. do i just walk in? do i need to sign something",
@@ -852,7 +849,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "How do I fix being charged for printing about 200 pages I never printed because someone may be using my account?",
+   "question": "How do I fix being charged for printing about 200 pages I never printed because I think someone is using my account?",
    "topic": "how_to"
   },
   "asked": "i got charged for printing like 200 pages i never printed. i think someone is using my account. how do i fix it",
@@ -873,7 +870,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "What do I do first about losing my I-20 and possibly my passport?",
+   "question": "What do I do first about my lost I-20 and possibly lost passport?",
    "topic": "how_to"
   },
   "asked": "I lost my I-20 and I think my passport was in the same folder. What do I do first?",
@@ -936,7 +933,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "When should I arrive and who do I tell when I land?",
+   "question": "When should I arrive, and who do I tell when I land?",
    "topic": "how_to"
   },
   "asked": "I am new international student starting in January. When should I arrive and who do I tell when I land?",
@@ -957,7 +954,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "Can I still meet with my counselor on campus by video while I'm home in another state for break, or is that not allowed?",
+   "question": "Can we still meet on video or is that not allowed?",
    "topic": "how_to"
   },
   "asked": "I see a counselor on campus but I'm home in another state for break. Can we still meet on video or is that not allowed?",
@@ -1022,12 +1019,12 @@
     "school_trouble"
    ],
    "limit": "none",
-   "question": "Can I ask for someone to look at my stats class from my last school again if my advisor said it only counts as an elective, not for my major, even though it's the same class?",
+   "question": "Can I ask for someone to look at it again?",
    "topic": "how_to"
   },
   "asked": "advisor said my stats class from my last school only counts as an elective not for my major. i dont get it, its the same class. can i ask for someone to look at it again",
   "votes": [
-   "program",
+   "how_to",
    "how_to",
    "how_to"
   ],
@@ -1039,7 +1036,7 @@
   "set": "fresh-11-17",
   "message": "I graduate in May and just found out I should have applied for OPT already?? Is it too late and what do I do",
   "reading": {
-   "social": "none",
+   "social": "upset",
    "danger": "none",
    "needs": [],
    "limit": "none",
@@ -1062,14 +1059,12 @@
   "reading": {
    "social": "none",
    "danger": "none",
-   "needs": [
-    "food_or_housing"
-   ],
+   "needs": [],
    "limit": "none",
-   "question": "How do I get food when I stay on campus over winter break and my meal swipes don't work at the dining hall?",
+   "question": "How do I get food?",
    "topic": "how_to"
   },
-  "asked": "How do I get food when I stay on campus over winter break and my meal swipes don't work at the dining hall?",
+  "asked": "I stay on campus over winter break and my meal swipes don't work at the dining hall. How do I get food?",
   "votes": [
    "how_to",
    "how_to",
@@ -1109,16 +1104,16 @@
    "needs": [],
    "limit": "none",
    "question": "Who can provide a letter showing I'll be living on campus in the fall for my car insurance?",
-   "topic": "person"
+   "topic": "how_to"
   },
   "asked": "i need a letter showing ill be living on campus in the fall for my car insurance, they give a discount if the car is far from home. who does that",
   "votes": [
-   "person",
-   "person",
-   "person"
+   "how_to",
+   "how_to",
+   "how_to"
   ],
   "old": "pages",
-  "new": "people"
+  "new": "pages"
  },
  {
   "id": "E53",
@@ -1129,7 +1124,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "How do I get back into my school account without my phone to receive the login code?",
+   "question": "How do I get back into my school account without my phone to get the login code?",
    "topic": "how_to"
   },
   "asked": "lost my phone and now i cant get the login code for my school account. how do i get back in",
@@ -1146,16 +1141,16 @@
   "set": "fresh-11-17",
   "message": "my aid for spring looks way lower than fall and i didnt change anything. how do i find out why and fix it",
   "reading": {
-   "social": "none",
+   "social": "upset",
    "danger": "none",
    "needs": [
     "money"
    ],
    "limit": "my_records",
-   "question": "How do I check why my aid for spring looks way lower than fall and fix it?",
+   "question": "How do I check why my financial aid for spring looks much lower than fall and how to fix it?",
    "topic": "how_to"
   },
-  "asked": "my aid for spring looks way lower than fall and i didnt change anything. how do i find out why and fix it. How do I check why my aid for spring looks way lower than fall and fix it?",
+  "asked": "my aid for spring looks way lower than fall and i didnt change anything. how do i find out why and fix it. How do I check why my financial aid for spring looks much lower than fall and how to fix it?",
   "votes": [
    "how_to",
    "how_to",
@@ -1172,15 +1167,16 @@
    "social": "none",
    "danger": "none",
    "needs": [
+    "school_trouble",
     "stress_or_sadness"
    ],
    "limit": "none",
-   "question": "What am I supposed to do differently to reapply to the honors program, and when can I reapply?",
+   "question": "What am I supposed to do differently or when to reapply to the honors program?",
    "topic": "program"
   },
   "asked": "I applied to the honors program and got rejected but they said I can reapply? I don't understand what I'm supposed to do differently or when",
   "votes": [
-   "program",
+   "how_to",
    "program",
    "program"
   ],
@@ -1195,11 +1191,10 @@
    "social": "upset",
    "danger": "none",
    "needs": [
-    "school_trouble",
     "disability"
    ],
    "limit": "none",
-   "question": "I went to the testing center to take my final with extra time and they said they have no request from my professor. My exam is tomorrow. What can I do?",
+   "question": "What can I do if the testing center has no request from my professor for my final with extra time, and my exam is tomorrow?",
    "topic": "how_to"
   },
   "asked": "I went to the testing center to take my final with extra time and they said they have no request from my professor. My exam is tomorrow. What can I do?",
@@ -1220,7 +1215,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "What do I do if I’m trying to sign up for a class for spring and it says prerequisite or test score error, and I took the prerequisite as an AP class in high school?",
+   "question": "What do I do if I’m trying to sign up for a class for spring and it says prerequisite or test score error, even though I took the prerequisite as an AP class in high school?",
    "topic": "how_to"
   },
   "asked": "trying to sign up for a class for spring and it says prerequisite or test score error. i took the prereq as an AP class in high school. what do i do",
@@ -1237,11 +1232,11 @@
   "set": "fresh-11-17",
   "message": "the front desk at the gym said i cant bring my brother in even if i pay. is there a guest pass or something",
   "reading": {
-   "social": "none",
+   "social": "upset",
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "Is there a guest pass for the gym?",
+   "question": "Is there a guest pass or something?",
    "topic": "how_to"
   },
   "asked": "the front desk at the gym said i cant bring my brother in even if i pay. is there a guest pass or something",
@@ -1286,7 +1281,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "How do I fix the form to request money for our event?",
+   "question": "The form to request money for our event keeps giving an error.",
    "topic": "how_to"
   },
   "asked": "im the treasurer of our club and the form to request money for our event keeps giving an error. the event is in 2 weeks",
@@ -1436,11 +1431,9 @@
   "set": "fresh-11-17",
   "message": "can you just tell me everything is gonna be fine lol",
   "reading": {
-   "social": "upset",
+   "social": "none",
    "danger": "none",
-   "needs": [
-    "stress_or_sadness"
-   ],
+   "needs": [],
    "limit": "none",
    "question": "",
    "topic": "how_to"
@@ -1587,10 +1580,10 @@
    "danger": "none",
    "needs": [],
    "limit": "my_records",
-   "question": "How do I check my school email address?",
+   "question": "How can I check my school email address?",
    "topic": "how_to"
   },
-  "asked": "whats my school email address. How do I check my school email address?",
+  "asked": "whats my school email address. How can I check my school email address?",
   "votes": [
    "how_to",
    "how_to",
@@ -1629,10 +1622,10 @@
    "danger": "none",
    "needs": [],
    "limit": "opinion",
-   "question": "What does the college publish about getting a master's degree right after graduating versus working first, and who helps students decide?",
+   "question": "What does the college publish about getting a master’s degree right after graduating versus working first, and who helps students decide?",
    "topic": "how_to"
   },
-  "asked": "is it worth getting a masters right after graduating or should i work first. What does the college publish about getting a master's degree right after graduating versus working first, and who helps students decide?",
+  "asked": "is it worth getting a masters right after graduating or should i work first. What does the college publish about getting a master’s degree right after graduating versus working first, and who helps students decide?",
   "votes": [
    "how_to",
    "how_to",
@@ -1694,10 +1687,10 @@
     "lonely"
    ],
    "limit": "opinion",
-   "question": "What does the college publish about clubs that can help students meet American students, and who helps students decide?",
+   "question": "What the college publishes about clubs to meet American students, and who helps students decide which clubs to join.",
    "topic": "club"
   },
-  "asked": "Which clubs do you recommend to meet American students? What does the college publish about clubs that can help students meet American students, and who helps students decide?",
+  "asked": "Which clubs do you recommend to meet American students? What the college publishes about clubs to meet American students, and who helps students decide which clubs to join.",
   "votes": [
    "club",
    "club",
@@ -1726,7 +1719,7 @@
   },
   "asked": "how many meal swipes do i have left. How do I check how many meal swipes I have left?",
   "votes": [
-   "how_to",
+   "dining",
    "how_to",
    "how_to"
   ],
@@ -1765,10 +1758,10 @@
     "disability"
    ],
    "limit": "my_records",
-   "question": "How can I check whether my professors got my accommodation letters?",
+   "question": "How do I check whether my professors got my accommodation letters?",
    "topic": "how_to"
   },
-  "asked": "did my professors get my accommodation letters. How can I check whether my professors got my accommodation letters?",
+  "asked": "did my professors get my accommodation letters. How do I check whether my professors got my accommodation letters?",
   "votes": [
    "how_to",
    "how_to",
@@ -1787,13 +1780,13 @@
    "needs": [],
    "limit": "none",
    "question": "when are the tests to get credit for spanish offered",
-   "topic": "program"
+   "topic": "how_to"
   },
   "asked": "when are the tests to get credit for spanish offered",
   "votes": [
    "program",
-   "program",
-   "program"
+   "how_to",
+   "how_to"
   ],
   "old": "pages",
   "new": "pages"
@@ -1807,10 +1800,10 @@
    "danger": "none",
    "needs": [],
    "limit": "my_records",
-   "question": "How to check whether my study abroad application is approved yet",
+   "question": "How to check whether my study abroad application is approved yet?",
    "topic": "how_to"
   },
-  "asked": "is my study abroad application approved yet. How to check whether my study abroad application is approved yet",
+  "asked": "is my study abroad application approved yet. How to check whether my study abroad application is approved yet?",
   "votes": [
    "how_to",
    "how_to",
@@ -1869,17 +1862,17 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "is there a specific person in student accounts for me or do i just call the main number",
-   "topic": "person"
+   "question": "Is there a specific person in Student Accounts for me, or should I just call the main number?",
+   "topic": "how_to"
   },
-  "asked": "is there a specific person in student accounts for me or do i just call the main number",
+  "asked": "Is there a specific person in Student Accounts for me, or should I just call the main number?",
   "votes": [
+   "how_to",
    "person",
-   "person",
-   "person"
+   "how_to"
   ],
   "old": "lookup_loop",
-  "new": "people"
+  "new": "pages"
  },
  {
   "id": "F30",
@@ -1933,12 +1926,12 @@
    "needs": [],
    "limit": "none",
    "question": "how many credits can i take in a semester without paying extra",
-   "topic": "how_to"
+   "topic": "program"
   },
   "asked": "how many credits can i take in a semester without paying extra",
   "votes": [
-   "how_to",
-   "how_to",
+   "program",
+   "program",
    "how_to"
   ],
   "old": "pages",
@@ -2113,10 +2106,10 @@
    "danger": "none",
    "needs": [],
    "limit": "my_records",
-   "question": "How to check my class schedule",
+   "question": "How to check my class schedule?",
    "topic": "how_to"
   },
-  "asked": "whats my class schedule. How to check my class schedule",
+  "asked": "whats my class schedule. How to check my class schedule?",
   "votes": [
    "how_to",
    "how_to",
@@ -2217,10 +2210,10 @@
    "danger": "none",
    "needs": [],
    "limit": "opinion",
-   "question": "What the college publishes about the dorms, and who helps students decide where to live.",
+   "question": "What the college publishes about the dorms, and who helps students decide.",
    "topic": "how_to"
   },
-  "asked": "which dorm is the best. What the college publishes about the dorms, and who helps students decide where to live.",
+  "asked": "which dorm is the best. What the college publishes about the dorms, and who helps students decide.",
   "votes": [
    "how_to",
    "office",
@@ -2301,7 +2294,6 @@
    "social": "none",
    "danger": "danger",
    "needs": [
-    "harassment",
     "stress_or_sadness"
    ],
    "limit": "none",
@@ -2586,10 +2578,10 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "Where is the career center?",
+   "question": "Where's the career center?",
    "topic": "office"
   },
-  "asked": "Where is the career center?",
+  "asked": "Where's the career center?",
   "votes": [
    "office",
    "office",
@@ -2612,9 +2604,9 @@
   },
   "asked": "im freaking out i lost my wallet, is there a lost and found",
   "votes": [
-   "how_to",
    "office",
-   "office"
+   "office",
+   "how_to"
   ],
   "old": "pages",
   "new": "lookup_loop"
@@ -2628,10 +2620,10 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "Who is the chair of the psychology department?",
+   "question": "Who is the chair of the psych department?",
    "topic": "person"
   },
-  "asked": "Who is the chair of the psychology department?",
+  "asked": "Who is the chair of the psych department?",
   "votes": [
    "person",
    "person",
@@ -2760,16 +2752,16 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "Is anything fun going on tonight?",
+   "question": "What fun things are going on tonight?",
    "topic": "event"
   },
-  "asked": "Is anything fun going on tonight?",
+  "asked": "anything fun goin on tonite",
   "votes": [
    "event",
    "event",
    "event"
   ],
-  "old": "events_clubs",
+  "old": "pages",
   "new": "events_clubs"
  },
  {
@@ -3043,7 +3035,7 @@
    "team"
   ],
   "old": "events_clubs",
-  "new": "pages"
+  "new": "events_clubs"
  },
  {
   "id": "pc-h02",
@@ -3432,10 +3424,10 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "What is there about Narcan or overdoses?",
+   "question": "Is there anything about Narcan or overdoses?",
    "topic": "how_to"
   },
-  "asked": "anything about narcan or overdoses",
+  "asked": "Is there anything about Narcan or overdoses?",
   "votes": [
    "how_to",
    "how_to",
@@ -3726,7 +3718,7 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "is there a cheerleading team",
+   "question": "Does Ramapo have a cheerleading team?",
    "topic": "team"
   },
   "asked": "is there a cheerleading team",
@@ -3736,7 +3728,7 @@
    "team"
   ],
   "old": "events_clubs",
-  "new": "pages"
+  "new": "events_clubs"
  },
  {
   "id": "pc-w05",
@@ -3925,7 +3917,7 @@
    "team"
   ],
   "old": "events_clubs",
-  "new": "pages"
+  "new": "events_clubs"
  },
  {
   "id": "pc-w14",
@@ -4009,7 +4001,7 @@
    "team"
   ],
   "old": "events_clubs",
-  "new": "pages"
+  "new": "events_clubs"
  },
  {
   "id": "pc-w18",
@@ -4081,9 +4073,7 @@
   "reading": {
    "social": "none",
    "danger": "none",
-   "needs": [
-    "money"
-   ],
+   "needs": [],
    "limit": "my_records",
    "question": "How do I check why my financial aid hasn't shown up yet and who do I talk to?",
    "topic": "how_to"
@@ -4092,7 +4082,7 @@
   "votes": [
    "how_to",
    "how_to",
-   "person"
+   "how_to"
   ],
   "old": "pages",
   "new": "pages"
@@ -4127,16 +4117,17 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "",
+   "question": "How do I get a refund?",
    "topic": "how_to"
   },
-  "asked": "refund",
+  "asked": "How do I get a refund?",
   "votes": [
    "how_to",
    "how_to",
    "how_to"
   ],
-  "by": "code_reply"
+  "old": "pages",
+  "new": "pages"
  },
  {
   "id": "zl1-04",
@@ -4146,11 +4137,11 @@
    "social": "none",
    "danger": "none",
    "needs": [],
-   "limit": "my_records",
-   "question": "How do I get the credit balance on my student account after my aid posted sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
+   "limit": "none",
+   "question": "How do I get a credit balance on my student account after my aid posted sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
    "topic": "how_to"
   },
-  "asked": "I got a credit balance on my student account after my aid posted, how do I get that money sent to me? Do I need to sign up for direct deposit or does it just get mailed? How do I get the credit balance on my student account after my aid posted sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
+  "asked": "I got a credit balance on my student account after my aid posted, how do I get that money sent to me? Do I need to sign up for direct deposit or does it just get mailed?",
   "votes": [
    "how_to",
    "how_to",
@@ -4272,11 +4263,11 @@
    "social": "none",
    "danger": "none",
    "needs": [],
-   "limit": "my_records",
-   "question": "How to check whether my 1098-T is available yet, where to get it, and how to get a copy of last year's?",
+   "limit": "live_status",
+   "question": "How do I check whether my 1098-T is available yet and get a copy of last year's?",
    "topic": "how_to"
   },
-  "asked": "is my 1098-T available yet? need it for taxes and cant find where to get it. also how do i get a copy of last years. How to check whether my 1098-T is available yet, where to get it, and how to get a copy of last year's?",
+  "asked": "is my 1098-T available yet? need it for taxes and cant find where to get it. also how do i get a copy of last years. How do I check whether my 1098-T is available yet and get a copy of last year's?",
   "votes": [
    "how_to",
    "how_to",
@@ -4294,10 +4285,10 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "How do I get a parking permit and where do I park?",
+   "question": "I'm a transfer student and I commute. How do I get a parking permit and where do I park?",
    "topic": "how_to"
   },
-  "asked": "im a transfer student and i commute, how do i get a parking permit and where do i park",
+  "asked": "I'm a transfer student and I commute. How do I get a parking permit and where do I park?",
   "votes": [
    "how_to",
    "how_to",
@@ -4336,10 +4327,10 @@
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "How do I get a replacement for my lost ID card?",
+   "question": "How do I get a replacement ID card?",
    "topic": "how_to"
   },
-  "asked": "How do I get a replacement for my lost ID card?",
+  "asked": "I lost my ID card, how do I get a replacement",
   "votes": [
    "how_to",
    "how_to",
@@ -4364,7 +4355,7 @@
   "votes": [
    "how_to",
    "how_to",
-   "how_to"
+   "office"
   ],
   "old": "pages",
   "new": "pages"
@@ -4421,16 +4412,16 @@
    "needs": [],
    "limit": "none",
    "question": "which office do i go to for financial aid questions and are they open in person or just online",
-   "topic": "office"
+   "topic": "how_to"
   },
   "asked": "which office do i go to for financial aid questions and are they open in person or just online",
   "votes": [
+   "how_to",
    "office",
-   "office",
-   "office"
+   "how_to"
   ],
   "old": "lookup_loop",
-  "new": "lookup_loop"
+  "new": "pages"
  },
  {
   "id": "zl2-15",
@@ -4487,7 +4478,7 @@
     "roommate_trouble"
    ],
    "limit": "none",
-   "question": "How do I switch roommates?",
+   "question": "how do i switch roommates? we're not getting along at all",
    "topic": "how_to"
   },
   "asked": "how do i switch roommates? we're not getting along at all",
@@ -4558,7 +4549,7 @@
   },
   "asked": "is it too late to withdraw from a class this semester and what happens to my transcript if i do",
   "votes": [
-   "dates",
+   "how_to",
    "how_to",
    "how_to"
   ],
@@ -4570,13 +4561,11 @@
   "set": "missed",
   "message": "something fell off the ceiling in my bathroom and theres a leak. who do I call at night, public safety or facilities?",
   "reading": {
-   "social": "upset",
+   "social": "none",
    "danger": "none",
-   "needs": [
-    "food_or_housing"
-   ],
+   "needs": [],
    "limit": "none",
-   "question": "Who do I call at night, Public Safety or Facilities, about something that fell off the ceiling in my bathroom and a leak?",
+   "question": "Who do I call at night, public safety or facilities?",
    "topic": "how_to"
   },
   "asked": "something fell off the ceiling in my bathroom and theres a leak. who do I call at night, public safety or facilities?",
@@ -4614,14 +4603,14 @@
   "set": "missed",
   "message": "My RA wrote me up for a candle. what happens now? do i have to go to a hearing",
   "reading": {
-   "social": "none",
+   "social": "upset",
    "danger": "none",
    "needs": [],
    "limit": "none",
-   "question": "What happens now that my RA wrote me up for a candle? Do I have to go to a hearing?",
+   "question": "What happens now? Do I have to go to a hearing?",
    "topic": "how_to"
   },
-  "asked": "What happens now that my RA wrote me up for a candle? Do I have to go to a hearing?",
+  "asked": "My RA wrote me up for a candle. what happens now? do i have to go to a hearing",
   "votes": [
    "how_to",
    "how_to",
