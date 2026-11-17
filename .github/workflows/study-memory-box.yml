@@ -1,10 +1,10 @@
 # Temporary, on this work branch only: a free measurement for the overnight audit of 2026-11-17.
 # The live Brain runs in a box with 512 MB of memory and half a processor. This builds the Brain's
-# own image, gives it a box of that size, and has it answer 120 practice messages (not the frozen
-# blind 60) one at a time and then four at a time, with a stand-in for the model, so it costs
-# nothing. It prints how much memory the Brain holds and whether the box ran out. It reads a graph
-# file from the file store and writes nothing anywhere. Removed before anything from this branch
-# merges.
+# own image at three commits, gives each a box of that size, and has it answer 120 practice
+# messages (not the frozen blind 60) one, four and eight at a time, with a stand-in for the model,
+# so it costs nothing. It prints how much memory the Brain holds and whether the box ran out. It
+# reads graph files from the file store and writes nothing anywhere. Removed before anything from
+# this branch merges.
 name: Study the memory box
 
 on:
@@ -17,50 +17,28 @@ permissions:
 
 jobs:
   box:
-    name: ${{ matrix.name }}
+    name: Memory box, one job, all cases
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: dev code before the fixes, dev graph, sections writer (repeat)
-            ref: c8d62950e8bc38422b0cca3de48561b6edb2a172
-            prefix: brain-graph-dev/
-            writer: sections
-            pools: ''
-          - name: first fix only, dev graph, sections writer
-            ref: 7151d570ea92e0031a03ba31f7a0dd91de1d6dd4
-            prefix: brain-graph-dev/
-            writer: sections
-            pools: ''
-          - name: first fix only, dev graph, live writer
-            ref: 7151d570ea92e0031a03ba31f7a0dd91de1d6dd4
-            prefix: brain-graph-dev/
-            writer: ai
-            pools: ''
-          - name: both fixes, dev graph, sections writer
-            ref: 3f88721ab62039391a12af3916620084f1d68a97
-            prefix: brain-graph-dev/
-            writer: sections
-            pools: ''
-          - name: both fixes, dev graph, live writer
-            ref: 3f88721ab62039391a12af3916620084f1d68a97
-            prefix: brain-graph-dev/
-            writer: ai
-            pools: ''
-          - name: both fixes, dev graph, sections writer, two memory pools
-            ref: 3f88721ab62039391a12af3916620084f1d68a97
-            prefix: brain-graph-dev/
-            writer: sections
-            pools: '2'
+    timeout-minutes: 75
     steps:
-      - name: Checkout the Brain
+      - name: Checkout the Brain with the first fix only
         uses: actions/checkout@v7
         with:
           repository: Rocky-GPT/rockygpt-brain
-          ref: ${{ matrix.ref }}
-          path: brain
+          ref: 7151d570ea92e0031a03ba31f7a0dd91de1d6dd4
+          path: brain-a
+      - name: Checkout the Brain with both fixes
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: 3f88721ab62039391a12af3916620084f1d68a97
+          path: brain-ab
+      - name: Checkout the live Brain
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: main
+          path: brain-main
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -69,42 +47,51 @@ jobs:
 
       - name: Install the Brain
         run: |
-          pip install --require-hashes -r brain/requirements.lock
-          pip install --no-deps -e './brain[graph]'
+          pip install --quiet --require-hashes -r brain-ab/requirements.lock
+          pip install --quiet --no-deps -e './brain-ab[graph]'
 
-      - name: Download the graph file (read only)
+      - name: Download the dev and live graph files (read only)
         env:
-          BRAIN_GRAPH_STORE_PREFIX: ${{ matrix.prefix }}
           BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
           BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
           BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
           BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
           BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
         run: |
-          python -m rockygpt_brain.retrieval.graph_sync .published
-          ls -l .published
-          chmod -R a+rwX .published
+          BRAIN_GRAPH_STORE_PREFIX=brain-graph-dev/ python -m rockygpt_brain.retrieval.graph_sync .graph-dev > /dev/null
+          BRAIN_GRAPH_STORE_PREFIX=brain-graph/ python -m rockygpt_brain.retrieval.graph_sync .graph-live > /dev/null
+          chmod -R a+rwX .graph-dev .graph-live
 
       - name: Checkout this branch's test script
         uses: actions/checkout@v7
         with:
           path: data
 
-      - name: Build the Brain's own image
-        run: docker build --quiet -t brain-box brain
+      - name: Build the Brain's own image at each commit
+        run: |
+          docker build --quiet -t box-a brain-a
+          docker build --quiet -t box-ab brain-ab
+          docker build --quiet -t box-main brain-main
 
-      - name: Answer 120 practice messages in a 512 MB, half-processor box
-        env:
-          WRITER: ${{ matrix.writer }}
-          POOLS: ${{ matrix.pools }}
-          BRAIN_REF: ${{ matrix.ref }}
+      - name: Answer 120 practice messages in a 512 MB, half-processor box, case by case
         run: |
           set +e
-          extra=()
-          if [[ -n "$POOLS" ]]; then extra=(-e "MALLOC_ARENA_MAX=$POOLS"); fi
-          docker run --name box --memory=512m --memory-swap=512m --cpus=0.5 \
-            -e WRITER -e BRAIN_REF -e AT_ONCE=1,4 -e LIMIT=120 -e GRAPH_DIR=/graph "${extra[@]}" \
-            -v "$PWD/.published:/graph" -v "$PWD/data/study:/study:ro" \
-            brain-box python /study/mem_box.py 2>&1 | grep -v '^provider_failure\|^brain_'
-          docker inspect box --format 'BOX RESULT: ran out of memory {{.State.OOMKilled}}; exit code {{.State.ExitCode}}'
+          run_case() {  # name image graph writer
+            docker rm -f box > /dev/null 2>&1
+            docker run --name box --memory=512m --memory-swap=512m --cpus=0.5 \
+              -e WRITER="$4" -e BRAIN_REF="$2" -e AT_ONCE=1,4,8 -e LIMIT=120 -e GRAPH_DIR=/graph \
+              -v "$PWD/$3:/graph" -v "$PWD/data/study:/study:ro" \
+              "$2" python /study/mem_box.py > "out-$1.txt" 2>&1
+            docker inspect box --format 'BOX RESULT: ran out of memory {{.State.OOMKilled}}; exit code {{.State.ExitCode}}' >> "out-$1.txt"
+          }
+          run_case 1-first-fix-sections box-a .graph-dev sections
+          run_case 2-both-fixes-sections box-ab .graph-dev sections
+          run_case 3-both-fixes-live-writer box-ab .graph-dev ai
+          run_case 4-live-code-live-graph box-main .graph-live ai
+          echo "SUMMARY START"
+          for f in out-*.txt; do
+            echo "CASE $f"
+            grep -E "^release|^after warm|^LAP|^FINISHED|^BOX RESULT" "$f" | cut -c1-330
+          done
+          echo "SUMMARY END"
           exit 0
