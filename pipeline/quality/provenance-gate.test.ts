@@ -35,3 +35,16 @@ test('where the gate only warns, nothing is an error', () => {
   assert.deepEqual(found.errors, []);
   assert.equal(found.warnings.length, 3);
 });
+
+test('a source the night could not collect past its window publishes from its last copy, nothing else is excused', () => {
+  // Dan's rule since November 17, 2026: one late source no longer holds back every other source.
+  const keptLast = new Set(['dining', 'housing']);
+  const found = provenanceIssues(states, { testBuild: false, enforce: true, notCaptured, keptLast });
+  // Housing has no collection record at all: being named does not excuse an unknown age.
+  assert.deepEqual(found.errors, [
+    'Source athletics-coaches has unknown collection age: no collection record',
+    'Source housing has unknown collection age: no collection record',
+  ]);
+  assert.equal(found.warnings.length, 1);
+  assert.match(found.warnings[0], /^Source dining is past its freshness window \(collected 80\.9h ago \(max 36h\)\); its collector failed tonight/);
+});
