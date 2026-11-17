@@ -623,9 +623,12 @@ jobs:
           DATABASE_URL: ${{ env.JOB_DATABASE_URL }}
         run: python brain/scripts/build_graph.py --out .published --read-seconds 900
 
+      # Every Brain reads the 8-bit vectors (.meaning.i8 and .scales) since 11-17, so the float
+      # copy (.meaning.f32, four times the size) is no longer built or shared (audit item 17).
       - name: Build the meaning index
         env:
           BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MEANING_FLOATS: "0"
         run: python brain/scripts/build_meaning_index.py --dir .published --cache .meaning-cache
 
       # Every office and venue card, looked up the ways a student asks, must read as the Brain's
