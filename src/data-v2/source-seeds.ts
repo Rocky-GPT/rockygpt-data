@@ -39,9 +39,11 @@ export const SOURCES: SourceSeed[] = [
   { key: 'tuition-costs', title: 'Tuition & Costs', url: 'https://www.ramapo.edu/admissions/financial-aid-tuition/tuition-costs/', trustTier: 'official_primary', freshnessHours: 720, domain: 'financial_aid' },
   { key: 'academic-calendar', title: 'Academic Calendar', url: 'https://www.ramapo.edu/academic-calendars/', trustTier: 'official_primary', freshnessHours: 168, domain: 'calendar' },
   { key: 'dining', title: 'Ramapo Dining', url: 'https://ramapo.sodexomyway.com/', trustTier: 'official_primary', freshnessHours: DAILY_SOURCE_FRESHNESS_HOURS, domain: 'dining' },
-  { key: 'campus-hours', title: 'Campus Hours', url: 'https://www.ramapo.edu/about/campus-hours/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'hours' },
+  // Weekly, like the office pages: holiday closures reach the bot within a week (was 180 days).
+  { key: 'campus-hours', title: 'Campus Hours', url: 'https://www.ramapo.edu/about/campus-hours/', trustTier: 'official_primary', freshnessHours: 168, domain: 'hours' },
   { key: 'archway-events', title: 'Archway Events', url: 'https://archway.ramapo.edu/events', trustTier: 'official_primary', freshnessHours: DAILY_SOURCE_FRESHNESS_HOURS, domain: 'events' },
-  { key: 'archway-clubs', title: 'Archway Student Organizations', url: 'https://archway.ramapo.edu/club_signup?view=all&', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'clubs' },
+  // The club list weekly; a club's own pages only when it is new or renamed, or every 180 days.
+  { key: 'archway-clubs', title: 'Archway Student Organizations', url: 'https://archway.ramapo.edu/club_signup?view=all&', trustTier: 'official_primary', freshnessHours: 168, domain: 'clubs' },
   { key: 'academic-programs', title: 'Ramapo Programs', url: 'https://www.ramapo.edu/majors-minors/', trustTier: 'official_primary', freshnessHours: 4_320, domain: 'programs' },
   { key: 'campus-directory', title: 'Campus Directory', url: 'https://www.ramapo.edu/campus-directory/', trustTier: 'official_primary', freshnessHours: 168, domain: 'directory' },
   { key: 'transportation', title: 'Transportation Services', url: 'https://www.ramapo.edu/about/transportation-services/ramapo-roadrunner-express-shuttle/', trustTier: 'official_primary', freshnessHours: 168, domain: 'transportation' },

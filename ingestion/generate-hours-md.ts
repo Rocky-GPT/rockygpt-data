@@ -95,7 +95,7 @@ function generateMarkdown() {
     source_url: "https://www.ramapo.edu/about/campus-hours/",
     title: "Campus Hours",
     trust_tier: "official_primary",
-    freshness_sla_hours: 4_320
+    freshness_sla_hours: 168
   });
 
   let markdown = frontmatter + '# Ramapo College Campus Hours\n\n';

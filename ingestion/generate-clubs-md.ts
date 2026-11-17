@@ -73,7 +73,7 @@ function generateMarkdown() {
     source_url: "https://archway.ramapo.edu/organizations",
     title: "Archway Events & Clubs",
     trust_tier: "official_secondary",
-    freshness_sla_hours: 4_320
+    freshness_sla_hours: 168
   });
 
   let markdown = frontmatter + '# Student Organizations at Ramapo College\n\n';
