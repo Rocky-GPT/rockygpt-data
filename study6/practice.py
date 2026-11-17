@@ -37,7 +37,7 @@ from typing import Any
 from rockygpt_brain.contract import ChatRequest
 from rockygpt_brain.engine import ChatEngine
 from rockygpt_brain.provider import Gateway
-from rockygpt_brain.retrieval import section_search
+import rockygpt_brain
 from rockygpt_brain.retrieval.graph_store import GraphOnlyFacts
 from rockygpt_brain.settings import Prices, ProviderSettings
 from rockygpt_brain.spending import Reservation, SpendingError
@@ -60,17 +60,7 @@ REPLY_SENTENCE_END = re.compile(r'[.!?](?:\s|\\n|"|$)|\\n')
 EFFORT: contextvars.ContextVar[str | None] = contextvars.ContextVar("effort", default=None)
 CAP: contextvars.ContextVar[int | None] = contextvars.ContextVar("cap", default=None)
 
-_sections = section_search.sections
 
-
-def _sections_capped(*args: Any, **kwargs: Any) -> Any:
-    cap = CAP.get()
-    if cap is not None and "cap" not in kwargs:
-        kwargs["cap"] = cap
-    return _sections(*args, **kwargs)
-
-
-section_search.sections = _sections_capped  # type: ignore[assignment]
 
 
 class MemoryLedger:
@@ -241,7 +231,6 @@ async def ask(engine: ChatEngine, row: dict[str, Any], arm: str, run: int) -> di
     CALLS.set(calls)
     T0.set(time.monotonic())
     EFFORT.set("low")
-    CAP.set(10 if arm == "sections-10" else None)
     request = ChatRequest.model_validate({"messages": [{"role": "user",
                                                         "content": row["question"]}]})
     started = time.monotonic()
@@ -331,7 +320,7 @@ async def main() -> None:
     rows = json.loads((here / "questions.json").read_text())
     if LIMIT:
         rows = rows[:LIMIT]
-    release = json.loads((Path(section_search.__file__).parent.parent
+    release = json.loads((Path(rockygpt_brain.__file__).parent
                           / "provider-release.json").read_text())
     far = datetime.datetime(2027, 1, 1, tzinfo=datetime.UTC)
     prices = Prices(release["model"], release["input_nusd_per_token"],

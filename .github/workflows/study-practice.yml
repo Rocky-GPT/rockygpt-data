@@ -28,8 +28,6 @@ jobs:
         include:
           - arm: live
             ref: main
-          - arm: direct
-            ref: 5509d7e22f2b7cee41646bee5f6732203ed5bd9d
     steps:
       - name: Checkout the Brain
         uses: actions/checkout@v7
@@ -73,7 +71,7 @@ jobs:
           TRIES: '2'
           ROWS: '0'
           OUT: ${{ github.workspace }}/rows-${{ matrix.arm }}.json
-        run: python data/study6/practice.py 2>&1 | grep -v '^provider_failure\|^brain_'
+        run: set -o pipefail; python data/study6/practice.py 2>&1 | grep -v '^provider_failure\|^brain_'
 
       - name: Commit the rows to this branch
         run: |
