@@ -1,23 +1,14 @@
 #!/usr/bin/env bash
-# Temporary diagnostic (removed before merge): the catalog page through Coursedog's API, and
-# whether the dining menu key is published on the dining site.
+# Temporary diagnostic (removed before merge): what the catalog's public sitemap lists, whether
+# its server-rendered pages hold policy text, and how the dining site's script holds its menu key.
 set -u
-API=https://app.coursedog.com/api/v1/ca/ramapo_banner_ethos/catalogPages/M5oLMPPyryupPuSnHx7w
-echo "--- robots"; curl -sS https://app.coursedog.com/robots.txt | head -20; curl -sS https://catalog.ramapo.edu/robots.txt | head -10
-curl -sSL -A 'Mozilla/5.0' https://catalog.ramapo.edu/quicklinks/academicpolicies -o page.html
-echo "--- data-page-id in page"; grep -o 'data-page-id="[^"]*"' page.html | sort | uniq -c | head
-curl -sS "$API/R532kjMfIcfnIkM0srb3" -o api.json -w '%{http_code} %{size_download}\n'
-node -e '
-const d=JSON.parse(require("fs").readFileSync("api.json","utf8"));
-console.log("keys", Object.keys(d).join(","));
-for (const k of ["id","slug","title","name","published","publishedAt","lastEditedAt","url"]) console.log(k, JSON.stringify(d[k])?.slice(0,100));
-const ws=d.widgets||[]; console.log("widgets", ws.length, ws.map(w=>w.type).join(","));
-for (const w of ws.slice(0,6)) { const data=w.data; console.log(" widget", w.type, Array.isArray(data)?"array "+data.length:typeof data, JSON.stringify(Array.isArray(data)?data[0]:data)?.slice(0,400)); }
-const tw=d.temporaryWidgets||[]; console.log("temporaryWidgets", tw.length);
-'
-echo "--- dining key"
-curl -sSL -A 'Mozilla/5.0' https://ramapo.sodexomyway.com/en-us/locations/birch-tree-inn -o birch.html -w '%{http_code} %{size_download}\n'
-KEY=68717828-b754-420d-9488-4c37cb7d7ef7
-grep -c "$KEY" birch.html; grep -oE '.{0,60}'"$KEY"'.{0,20}' birch.html | head -3
-grep -oE '"[A-Za-z]*[Aa]pi[Kk]ey"\s*:\s*"[^"]{0,60}"' birch.html | head -5
-for js in $(grep -oE 'src="[^"]+\.js[^"]*"' birch.html | cut -d'"' -f2 | head -20); do case "$js" in http*) u="$js";; //*) u="https:$js";; *) u="https://ramapo.sodexomyway.com$js";; esac; if curl -sSL "$u" | grep -q "$KEY"; then echo "key in $u"; fi; done
+curl -sSL -A 'Mozilla/5.0' https://catalog.ramapo.edu/sitemap.xml -o sitemap.xml -w '%{http_code} %{size_download}\n'
+grep -o '<loc>[^<]*</loc>' sitemap.xml | sed 's/<[^>]*>//g' > locs.txt
+wc -l < locs.txt; sed -E 's#https?://[^/]+(/[^/?#]*).*#\1#' locs.txt | sort | uniq -c | sort -rn | head
+grep -i 'polic\|/pages/' locs.txt | head -20
+for u in $(grep -i '/pages/\|polic' locs.txt | head -3); do
+  sleep 1; curl -sSL -A 'Mozilla/5.0' "$u" -o p.html -w "$u %{http_code} %{size_download}\n"
+  node -e 'const {load}=require("cheerio");const $=load(require("fs").readFileSync("p.html","utf8"));$("script,style").remove();const t=$("#main-content").text().replace(/\s+/g," ").trim();console.log("  text",t.length,":",t.slice(0,300))'
+done
+echo "--- dining key context"
+curl -sSL https://ramapo.sodexomyway.com/static/js/main.eee9cc65.js | grep -oE '.{0,160}68717828-b754-420d-9488-4c37cb7d7ef7.{0,80}' | head -3
