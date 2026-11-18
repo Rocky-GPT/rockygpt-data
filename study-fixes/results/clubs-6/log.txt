@@ -1,0 +1,83 @@
+release v2-20261118051419 questions 8
+=== 01-c | wen does hillel meet
+--- by=one_call status=answered sec=4.86 err=None read: needs=[] limit=none topic=club asked=read q='When does Hillel meet?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+Hillel holds weekly meetings with kosher food, but the page doesn’t specify a day or time. Contact the Center for Student Involvement for current meeting details. [1]
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [27]
+
+Sources: [1](https://www.ramapo.edu/clubs/organization/hillel/) [27](https://www.ramapo.edu/campus-directory/)
+
+=== 02-c | what time does the black student union meet
+--- by=one_call status=answered sec=5.11 err=None read: needs=[] limit=none topic=club asked=read q='what time does the black student union meet' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+I don’t have verified information about the Black Student Union’s meeting time. Contact the Center for Student Involvement. [1]
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [30]
+
+Sources: [1](https://www.ramapo.edu/clubs/organization/black-student-union/) [30](https://www.ramapo.edu/campus-directory/)
+
+=== 03-c | when does the investment club meet
+--- by=one_call status=answered sec=10.06 err=None read: needs=[] limit=none topic=club asked=read q='when does the investment club meet' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_units', 'pick_units', 'pick_units', 'write_answer', 'embedding', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+The directory has no club named “investment club”; its nearest match is Roadrunner Financial Group (Student Organization): [https://archway.ramapo.edu/RFG/](https://archway.ramapo.edu/RFG/). [1] Its directory entry doesn’t give a meeting time. [1] A college club page says RFG holds weekly meetings in the ASB trading lab, but gives no day or time; contact the Center for Student Involvement for details. [3]
+
+- **Anisfield School of Business**: Phone: Phone (201) 684-7379; Phone (201) 684-7380; Phone (201) 684-7378; Fax (201) 684-7957. Email: asb@ramapo.edu. Office: ASB-333. [25]
+- **Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [25]
+
+Sources: [1](https://archway.ramapo.edu/RFG/) [3](https://www.ramapo.edu/clubs/organization/roadrunner-financial-group/) [25](https://www.ramapo.edu/campus-directory/)
+
+=== 04-c | where does the hiking club meet
+--- by=one_call status=answered sec=6.69 err=None read: needs=[] limit=none topic=club asked=read q='where does the hiking club meet' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_units', 'pick_units', 'pick_units', 'write_answer', 'embedding', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+The page doesn’t give a meeting location. It says the Hiking Club visits local county and state parks and reservations and holds hikes of various difficulties. Contact Ramapo Green at ramapogreen@ramapo.edu, or the Hiking Club at hiking@ramapo.edu, to ask where it meets. [10]
+
+**Ramapo Green**: Email: ramapogreen@ramapo.edu. [29]
+
+Sources: [10](https://www.ramapo.edu/ramapo-green/clubs/) [29](https://www.ramapo.edu/campus-directory/)
+
+=== 05-c | what time is the poetry club
+--- by=one_call status=answered sec=4.49 err=None read: needs=[] limit=none topic=club asked=read q='what time is the poetry club' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+No club in the directory has “poetry” in its name. The Literature Club meets to workshop student creative writing and discuss literature-related topics, but the directory doesn’t list a meeting time. Check its page: [https://archway.ramapo.edu/Lit/](https://archway.ramapo.edu/Lit/) [1]. Contact the Center for Student Involvement for help.
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [44]
+
+Sources: [1](https://archway.ramapo.edu/Lit/) [44](https://www.ramapo.edu/campus-directory/)
+
+=== 06-c | when does the gaming club meet n where
+--- by=one_call status=answered sec=3.25 err=None read: needs=[] limit=none topic=club asked=read q='When does the gaming club meet and where?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+The directory lists 8 game and gaming clubs. [1][2][3][4][5][6][7][8] I don’t have verified information about when or where their meetings are. Contact the Center for Student Involvement for help.
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [35]
+
+Sources: [1](https://archway.ramapo.edu/GNCulture/) [2](https://archway.ramapo.edu/espo/) [3](https://archway.ramapo.edu/RCES/) [4](https://archway.ramapo.edu/gaming/) [5](https://archway.ramapo.edu/SMASH/) [6](https://archway.ramapo.edu/rhythm/) [7](https://archway.ramapo.edu/FFNS/) [8](https://archway.ramapo.edu/trading/) [35](https://www.ramapo.edu/campus-directory/)
+
+=== 07-c | does the jewish student union have meetings
+--- by=one_call status=answered sec=2.53 err=None read: needs=[] limit=none topic=club asked=read q='does the jewish student union have meetings' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+Yes. Hillel holds weekly meetings with kosher food. It also has dinners at students’ apartments and attends concerts. [1]
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [27]
+
+Sources: [1](https://www.ramapo.edu/clubs/organization/hillel/) [27](https://www.ramapo.edu/campus-directory/)
+
+=== 08-c | when do the dance team practice
+--- by=one_call status=answered sec=3.08 err=None read: needs=[] limit=none topic=team asked=read q='When does the dance team practice?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'team', 'by': 'read'}
+--- lookups=[]
+I don’t have verified information about when the dance team practices. The Center for Student Involvement may be able to help.
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [31]
+
+Sources: [31](https://www.ramapo.edu/campus-directory/)
+
+TOTAL spent $0.0116 in 53 calls
