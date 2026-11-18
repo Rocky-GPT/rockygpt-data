@@ -1,5 +1,6 @@
 import path from 'path';
 import { collectRawDataset } from './raw-collector';
+import { editDatedReuse } from './page-dates';
 
 const OUTPUT_PATH = path.join(process.cwd(), 'data', 'raw', 'health.raw.json');
 const SEED_URLS = [
@@ -20,6 +21,8 @@ async function run() {
   const dataset = await collectRawDataset({
     dataset: 'health',
     retainSourceHtml: true,
+    // Collected every night; only pages edited since their last download are asked for (11-18).
+    ...editDatedReuse(),
     seedUrls: SEED_URLS,
     outputPath: OUTPUT_PATH,
     allowedHosts: ALLOWED_HOSTS,
