@@ -87,7 +87,9 @@ def main(argv: list[str] | None = None) -> int:
     for name in sorted(wanted):
         matches = [node for node, (_, label, _) in nodes.items() if (label or "").lower() == name]
         if not matches:
-            print(f"show {name!r}: no node by that name")
+            near = sorted({label for _, label, _ in nodes.values() if name in (label or "").lower()})
+            print(f"show {name!r}: no node by that name"
+                  + (f"; names with it: {'; '.join(near[:20])}" if near else "; none has it in its name"))
         for node in matches:
             kind, label, _ = nodes[node]
             print(f"show {label} ({kind}):")

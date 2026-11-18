@@ -5,6 +5,7 @@ import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import siteOwners from '../reference/office-site-owners.json';
 import policyUnitOwners from '../reference/policy-unit-owners.json';
 import catalogPoliciesOwner from '../reference/catalog-policies-owner.json';
+import { linkHoursOffices } from './hours-offices';
 import { compileArchwayIdentities, linkReviewedArchwayContacts, linkReviewedArchwayGroups, normalizeName, type ArchwayIdentityInputs, type EventOrganizersArtifact, type ReviewedArchwayContact, type ReviewedArchwayGroup } from './archway-identities';
 import { validateCampusIdentities, type CampusIdentities, type CampusIdentity, type CampusIdentityLink, type IdentityCollection } from './campus-identities';
 import { campusBuildingsArtifact, compileBuildingIdentities, type CampusBuildingsArtifact } from './campus-buildings';
@@ -495,6 +496,8 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
   // Nodes only another office's page knows: a desk known by that office's hours page, a person the
   // directory files under an office, each shuttle route under the office that publishes its
   // timetable, and the reviewed listings of one office's page naming another (reviewed-listings.json).
+  // Hours no node holds take the office name their own page gives them (hours-offices.ts).
+  linkHoursOffices(entities, snapshot.campus_hours ?? [], unresolved);
   linkHoursDesks(entities, snapshot.campus_hours ?? []);
   linkDirectoryPeople(entities, candidates.filter(c => c.collection === 'contacts').map(c => ({ ...c.row, source_key: c.source, source_record_key: c.key })));
   linkRouteOffice(entities);
