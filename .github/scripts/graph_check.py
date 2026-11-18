@@ -17,6 +17,7 @@ Checks, each printed as one line:
           cover today (Eastern time). These are the answers no release may lose.
   menu    Today's dining menu is in the graph. Only a warning: the menu site has gaps between
           terms and on holidays.
+  hours   Hours records no office holds (a warning): they are in the graph but reach no answer.
 
 It exits 1 when a must check fails or a source is past its window, 0 otherwise. The workflow step
 is report-only for now (continue-on-error), so a failure shows as a red step without stopping the
@@ -27,7 +28,7 @@ import argparse
 import collections
 import json
 import sys
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -161,6 +162,15 @@ def main(argv: list[str] | None = None) -> int:
     failed |= not library
     print(f"{'ok   ' if library else 'FAIL '} must Library (Main Building) hours for {today}: "
           + ("; ".join(library) if library else "none cover today"))
+
+    # Hours no office holds reach no answer: on 11-17 the Multicultural Center's and the Veterans
+    # Lounge's hours were collected but their offices, named from an old club list, were gone.
+    held_hours = {str(doc.get("name") or "") for _, collection, doc in held
+                  if collection == "campus_hours"}
+    orphans = sorted({str(doc.get("name") or "") for collection, doc in records
+                      if collection == "campus_hours"} - held_hours)
+    print(f"{'ok   ' if not orphans else 'warn '} hours held by no office: {len(orphans)}"
+          + (": " + "; ".join(orphans) if orphans else ""))
 
     # A menu item's day is its validity window (menu_items valid_from/valid_until).
     menus = [doc for collection, doc in records if collection == "menu"

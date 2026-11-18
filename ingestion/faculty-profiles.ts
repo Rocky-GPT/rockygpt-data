@@ -7,7 +7,6 @@ import { fetchWithPolicy } from './http-client';
 import {
   assertCollectionCount,
   isRawOnlyMode,
-  runGeneratorScript,
   writeJsonFile,
   writeRawProvenance,
 } from './pipeline-utils';
@@ -36,7 +35,6 @@ function captureSource(response: { url: string; status: number; headers: Headers
 
 const JSON_OUTPUT_PATH = path.join(process.cwd(), 'data', 'normalized', 'faculty.json');
 const IMAGES_DIR = publicPath('images', 'faculty');
-const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-faculty-md.ts');
 
 // Ensure directories exist
 if (!fs.existsSync(path.dirname(JSON_OUTPUT_PATH))) fs.mkdirSync(path.dirname(JSON_OUTPUT_PATH), { recursive: true });
@@ -329,7 +327,6 @@ async function main() {
   writeJsonFile(JSON_OUTPUT_PATH, normalizedFaculty);
   console.log(`Saved normalized faculty data to ${JSON_OUTPUT_PATH}`);
 
-  runGeneratorScript(MARKDOWN_GENERATOR_PATH);
 }
 
 void main().catch((error: unknown) => {

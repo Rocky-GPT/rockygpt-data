@@ -58,11 +58,9 @@ test('legacy release restoration removes an optional manifest left by another re
     rootDir,
     release: { datasetId: 'dataset', releaseId: 'release', version: 'legacy-release', activatedAt: '2026-09-23T12:00:00Z' },
     artifacts,
-    documents: [{ content: '# Source document', metadata: { sourcePath: 'hours/source.md' } }],
   });
   assert.equal(fs.existsSync(omissionsPath), false);
   assert.equal(summary.artifactsRestored, artifacts.length);
-  assert.equal(fs.readFileSync(path.join(rootDir, 'data/context/hours/source.md'), 'utf8'), '# Source document');
 });
 
 test('a release made before the office reviews keeps the committed review files', (t) => {
@@ -77,28 +75,18 @@ test('a release made before the office reviews keeps the committed review files'
     artifacts: Object.keys(RELEASE_ARTIFACT_TARGETS)
       .filter((key) => !reviews.includes(key))
       .map((key) => ({ key, payload: [] })),
-    documents: [{ content: '# Source document', metadata: { sourcePath: 'hours/source.md' } }],
   });
   for (const reviewPath of reviewPaths) assert.ok(fs.existsSync(reviewPath), `${reviewPath} was removed.`);
 });
 
 // Published artifacts that come back without a release artifact target: the
-// search vocabulary is committed, and context markdown is restored from the
-// release's documents.
-const RESTORED_ANOTHER_WAY = new Set([
-  'search-vocabulary',
-  'menu-context',
-  'transportation',
-  'dining-hours-context',
-]);
+// search vocabulary is committed.
+const RESTORED_ANOTHER_WAY = new Set(['search-vocabulary']);
 
 test('the restore writes every file the publisher saves', () => {
   for (const [key, relativePath] of Object.entries(RELEASE_ARTIFACT_FILES)) {
     if (RESTORED_ANOTHER_WAY.has(key)) {
-      assert.ok(
-        relativePath.startsWith('src/') || relativePath.startsWith('data/context/'),
-        `${key} is exempt from restore but ${relativePath} is neither committed nor a context document.`
-      );
+      assert.ok(relativePath.startsWith('src/'), `${key} is exempt from restore but ${relativePath} is not committed.`);
       continue;
     }
     assert.ok(

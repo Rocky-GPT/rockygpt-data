@@ -9,7 +9,6 @@ import { addAppFacts } from './archway-app-events';
 import {
   assertCollectionCount,
   isRawOnlyMode,
-  runGeneratorScript,
   writeJsonFile,
   writeRawProvenance,
 } from './pipeline-utils';
@@ -25,7 +24,6 @@ const DETAIL_RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'events-det
 const SIGNAL_RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'events-signals.raw.json');
 const PUBLIC_JSON_PATH = publicPath('data', 'events.json');
 const RAG_JSON_PATH = path.join(process.cwd(), 'data', 'normalized', 'events.json');
-const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-events-md.ts');
 
 export type EventDetailSignal = {
   offersFreeFood?: boolean;
@@ -377,7 +375,6 @@ function writeNormalizedEventArtifacts(
     `Saved normalized events from ${sourceLabel} to ${PUBLIC_JSON_PATH} and ${RAG_JSON_PATH} (${detailFoodFlags} detail food flags, ${detailDescriptions} detail descriptions)`
   );
 
-  runGeneratorScript(MARKDOWN_GENERATOR_PATH);
 }
 
 function tryBuildFromRawCache(): boolean {

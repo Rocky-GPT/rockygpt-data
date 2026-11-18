@@ -6,7 +6,6 @@ import test from 'node:test';
 import { fromSnapshot, restoreActiveReleaseFiles, RELEASE_ARTIFACT_TARGETS } from './restore-active-release';
 import {
   inJsonbKeyOrder,
-  md5,
   readReleaseSnapshot,
   sha256,
   writeReleaseSnapshot,
@@ -33,7 +32,6 @@ test('only what the database holds with the same hash is taken from the saved co
   const snapshot = {
     version: 'v2-yesterday',
     artifacts: { courses, faculty: '[{"name":"Old"}]', clubs: 'not json' },
-    documents: { 'hours/library.md': '# Library\n\nOpen 8-5.', 'hours/gym.md': '# Gym' },
   };
   const kept = fromSnapshot(
     snapshot,
@@ -42,22 +40,13 @@ test('only what the database holds with the same hash is taken from the saved co
       { artifact_key: 'faculty', content_hash: sha256('[{"name":"New"}]') },
       { artifact_key: 'clubs', content_hash: sha256('not json') },
       { artifact_key: 'events', content_hash: sha256('[]') },
-    ],
-    [
-      { source_path: 'hours/library.md', content_md5: md5('# Library\n\nOpen 8-5.') },
-      { source_path: 'hours/gym.md', content_md5: md5('# Gym, changed') },
-      { source_path: 'hours/new.md', content_md5: md5('# New') },
-      { source_path: null, content_md5: md5('') },
     ]
   );
   assert.deepEqual(kept.artifacts, [
     { key: 'courses', payload: { 'CMPS 147': { name: 'Computer Science I', credits: 4 } } },
   ]);
-  assert.deepEqual(kept.documents, [
-    { sourcePath: 'hours/library.md', content: '# Library\n\nOpen 8-5.' },
-  ]);
-  assert.deepEqual(fromSnapshot(null, [{ artifact_key: 'courses', content_hash: sha256(courses) }], []),
-    { artifacts: [], documents: [] });
+  assert.deepEqual(fromSnapshot(null, [{ artifact_key: 'courses', content_hash: sha256(courses) }]),
+    { artifacts: [] });
 });
 
 test('a restore from the saved copy writes the same files as one from the database', (t) => {
@@ -72,20 +61,17 @@ test('a restore from the saved copy writes the same files as one from the databa
     rootDir: path.join(root, 'database'),
     release,
     artifacts: Object.keys(published).map((key) => ({ key, payload: JSON.parse(fromDatabase) })),
-    documents: [{ content: '# Library', metadata: { sourcePath: 'hours/library.md' } }],
   });
   const kept = fromSnapshot(
-    { version: 'v', artifacts: published, documents: { 'hours/library.md': '# Library' } },
-    Object.entries(published).map(([key, text]) => ({ artifact_key: key, content_hash: sha256(text) })),
-    [{ source_path: 'hours/library.md', content_md5: md5('# Library') }]
+    { version: 'v', artifacts: published },
+    Object.entries(published).map(([key, text]) => ({ artifact_key: key, content_hash: sha256(text) }))
   );
   restoreActiveReleaseFiles({
     rootDir: path.join(root, 'snapshot'),
     release,
     artifacts: kept.artifacts,
-    documents: kept.documents.map(({ sourcePath, content }) => ({ content, metadata: { sourcePath } })),
   });
-  for (const relativePath of [...Object.values(RELEASE_ARTIFACT_TARGETS).flat(), 'data/context/hours/library.md']) {
+  for (const relativePath of Object.values(RELEASE_ARTIFACT_TARGETS).flat()) {
     if (relativePath.startsWith('src/')) continue;
     assert.equal(
       fs.readFileSync(path.join(root, 'snapshot', relativePath), 'utf8'),
@@ -100,10 +86,10 @@ test('the saved copy is read back, and an unreadable one is ignored', (t) => {
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const file = path.join(root, '.release-snapshot', 'release.json');
   assert.equal(readReleaseSnapshot(file), null);
-  const snapshot = { version: 'v', artifacts: { courses: '{}' }, documents: { 'a.md': '# A' } };
+  const snapshot = { version: 'v', artifacts: { courses: '{}' } };
   writeReleaseSnapshot(file, snapshot);
   assert.deepEqual(readReleaseSnapshot(file), snapshot);
-  fs.writeFileSync(file, '{"version":"v","artifacts":{"courses":1},"documents":{}}');
+  fs.writeFileSync(file, '{"version":"v","artifacts":{"courses":1}}');
   assert.equal(readReleaseSnapshot(file), null);
   fs.writeFileSync(file, '{"version":');
   assert.equal(readReleaseSnapshot(file), null);

@@ -3,10 +3,10 @@
  * the next refresh restores the active release without downloading it from the database again.
  *
  * Neon's free plan allows 5 GB of network transfer a month, and every nightly refresh used to
- * download the whole active release (its artifacts and context documents) only to put back the
+ * download the whole active release (its artifacts) only to put back the
  * files the previous night's publish had just uploaded. The publisher now saves exactly what it
- * uploaded here. The restore reads only the database's content hashes and takes each artifact or
- * document from this copy when its hash matches, so the database stays the truth: anything
+ * uploaded here. The restore reads only the database's content hashes and takes each artifact
+ * from this copy when its hash matches, so the database stays the truth: anything
  * missing here, or different, is still read from the database.
  */
 import crypto from 'node:crypto';
@@ -19,13 +19,10 @@ export interface ReleaseSnapshot {
   version: string;
   /** artifact key -> the exact text the publisher hashed (release_artifacts.content_hash). */
   artifacts: Record<string, string>;
-  /** context document sourcePath -> the exact content the publisher stored. */
-  documents: Record<string, string>;
 }
 
 export const sha256 = (text: string): string =>
   crypto.createHash('sha256').update(text).digest('hex');
-export const md5 = (text: string): string => crypto.createHash('md5').update(text).digest('hex');
 
 export function writeReleaseSnapshot(file: string, snapshot: ReleaseSnapshot): void {
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -41,10 +38,8 @@ export function readReleaseSnapshot(file: string): ReleaseSnapshot | null {
     const isTextMap = (map: unknown): map is Record<string, string> =>
       Boolean(map) && typeof map === 'object' &&
       Object.values(map as object).every((text) => typeof text === 'string');
-    if (typeof value.version !== 'string' || !isTextMap(value.artifacts) || !isTextMap(value.documents)) {
-      return null;
-    }
-    return { version: value.version, artifacts: value.artifacts, documents: value.documents };
+    if (typeof value.version !== 'string' || !isTextMap(value.artifacts)) return null;
+    return { version: value.version, artifacts: value.artifacts };
   } catch {
     return null;
   }
