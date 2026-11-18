@@ -224,7 +224,9 @@ async def ask(engine: ChatEngine, row: dict[str, Any], arm: str, run: int) -> di
         body, trace = result.body, result.trace or {}
         error = None
     except Exception as failure:  # noqa: BLE001  Every question is asked; the name is kept.
+        import traceback
         body, trace, error = {}, {}, type(failure).__name__
+        print("FAILED", row["id"], "".join(traceback.format_exception(failure))[-2500:])
     answer = str(body.get("answer") or "")
     return {
         "id": row["id"], "arm": arm, "group": row.get("area") or row.get("group"), "run": run,
