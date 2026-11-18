@@ -1,0 +1,45 @@
+name: Keyword search reach check (one-off)
+
+# TEMPORARY (tool review 2026-11-18, item 4): measures whether keyword search beside meaning
+# search reaches more keyed pages. Embeds each question once (~$0.001). Removed before merge.
+on:
+  push:
+    branches: [claude/project-thread-uhq1n6]
+    paths: ['.github/workflows/keyword-reach-check.yml', 'scripts/review/keyword_reach.py']
+
+permissions:
+  contents: read
+
+jobs:
+  reach:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-brain, ref: dev, path: brain }
+      - uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-evals, ref: dev, path: evals }
+      - uses: actions/setup-python@v6
+        with: { python-version: '3.13' }
+      - name: Install the Brain
+        run: |
+          python -m venv venv
+          venv/bin/pip install --quiet --require-hashes -r brain/requirements.lock
+          venv/bin/pip install --quiet --no-deps -e "./brain[graph]"
+      - name: Download the live graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: venv/bin/python -m rockygpt_brain.retrieval.graph_sync graph > /dev/null
+      - name: Meaning vs keywords vs both
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_PROJECT: proj_aMhXgndK2e9EUQZpXbLFh4yV
+        run: |
+          venv/bin/python scripts/review/keyword_reach.py graph evals/steady-ruler/open/open-half.json | tee reach.txt
+          { echo '```'; tail -40 reach.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
