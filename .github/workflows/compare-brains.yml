@@ -29,10 +29,6 @@ on:
       max_usd:
         description: Most both Brains together may spend, in dollars (their own ledger stops them)
         default: '1.00'
-  push:
-    # Temporary: the wiring check on this work branch only, two questions. Removed before merge.
-    branches: [claude/project-thread-uhq1n6]
-    paths: ['.github/workflows/compare-brains.yml']
 
 permissions:
   contents: read
@@ -59,9 +55,9 @@ jobs:
       OLD_REF: ${{ inputs.old_ref || 'main' }}
       NEW_REF: ${{ inputs.new_ref || 'dev' }}
       SET: ${{ inputs.set || 'steady-ruler/open/open-half.json' }}
-      ONLY: ${{ github.event_name == 'push' && 'o18b-pp-01,o18b-gn-01' || inputs.only }}
+      ONLY: ${{ inputs.only }}
       REPEAT: ${{ inputs.repeat || '1' }}
-      MAX_USD: ${{ inputs.max_usd || '0.10' }}
+      MAX_USD: ${{ inputs.max_usd || '1.00' }}
       PROMPTFOO_DISABLE_TELEMETRY: '1'
       PROMPTFOO_DISABLE_UPDATE: '1'
     steps:
