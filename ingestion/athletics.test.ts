@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { ATHLETICS_GAP_MS, robotsAllows, robotsRules, trimPage } from './athletics';
+import type { AthleticsPage } from '../src/data-v2/athletics';
+import { ATHLETICS_GAP_MS, inSeasonOrDue, OFF_SEASON_KEEP_DAYS, robotsAllows, robotsRules, trimPage } from './athletics';
 
 // The athletics site's rules for every robot, as its robots.txt printed them on 2026-11-03.
 const robots = `User-agent: Googlebot
@@ -39,4 +40,34 @@ test('a saved page keeps its title, text and JSON-LD, but not scripts, styles or
   assert.match(html, /SportsEvent/);
   assert.match(html, /<p>Game day<\/p>/);
   assert.doesNotMatch(html, /track\(\)|<style|<img|<svg|<!--/);
+});
+
+// One Sidearm schedule game, as the live list prints it (enough for parseSchedule's date).
+const gameItem = (date: string) => `<li class="sidearm-schedule-game sidearm-schedule-home-game">
+  <div class="sidearm-schedule-game-opponent-date"><span>${date}</span> <span>1:00 PM</span></div>
+  <div class="sidearm-schedule-game-opponent-text"><div class="sidearm-schedule-game-opponent-name"><a href="#">Kean University</a></div></div>
+  <div class="sidearm-schedule-game-location"><span class="sidearm-schedule-game-conference-vs"><span class="sidearm-schedule-game-at-vs">vs</span></span>
+    <span>Mahwah, NJ</span> <span>Bradley Center</span></div></li>`;
+const schedulePage = (season: string, dates: string[], fetchedAt: string, status = 200): AthleticsPage => ({
+  team: 'baseball', url: 'https://ramapoathletics.com/sports/baseball/schedule', status, fetchedAt,
+  html: `<html><head><title>${season} Baseball Schedule - Ramapo College of New Jersey Athletics</title></head><body>
+    <ul class="sidearm-schedule-games-container">${dates.map(gameItem).join('')}</ul></body></html>`,
+});
+
+test('an out-of-season team keeps its last copy for a week, an in-season one is read every night', () => {
+  const now = new Date('2026-11-18T08:00:00Z');
+  const spring = schedulePage('2026', ['Mar 3 (Tue)', 'May 2 (Sat)'], '2026-11-15T08:00:00Z');
+  assert.equal(inSeasonOrDue(spring, now), false);
+  assert.equal(inSeasonOrDue({ ...spring, fetchedAt: '2026-11-10T08:00:00Z' }, now), true, `${OFF_SEASON_KEEP_DAYS} days old`);
+  assert.equal(inSeasonOrDue(schedulePage('2026-2027', ['Nov 16 (Mon)'], '2026-11-17T08:00:00Z'), now), true, 'a result two days ago');
+  assert.equal(inSeasonOrDue(schedulePage('2026-2027', ['Dec 1 (Tue)'], '2026-11-17T08:00:00Z'), now), true, 'a game within two weeks');
+  assert.equal(inSeasonOrDue(schedulePage('2026-2027', ['Jan 20 (Wed)'], '2026-11-17T08:00:00Z'), now), false, 'the next game is two months off');
+});
+
+test('a team with no good last copy, or one whose games could not be read, is read again', () => {
+  const now = new Date('2026-11-18T08:00:00Z');
+  assert.equal(inSeasonOrDue(undefined, now), true);
+  assert.equal(inSeasonOrDue(schedulePage('2026', ['Mar 3 (Tue)'], '2026-11-17T08:00:00Z', 404), now), true);
+  assert.equal(inSeasonOrDue(schedulePage('2026', [], '2026-11-17T08:00:00Z'), now), true);
+  assert.equal(inSeasonOrDue({ ...schedulePage('2026', ['Mar 3 (Tue)'], '2026-11-17T08:00:00Z'), html: undefined }, now), true);
 });

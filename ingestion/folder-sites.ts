@@ -699,21 +699,3 @@ export function readPublishedPages(source: FolderSiteSource, now = new Date()) {
   return { dataset, sites, shells, pastEvents, excluded, skippedSections: readSkippedSections(source.sitesPath) };
 }
 
-/** Writes a source's documents (readPublishedPages) into outputDir, replacing what was there. */
-export function writeSiteDocuments(source: FolderSiteSource, outputDir: string): void {
-  const { dataset, sites, shells, pastEvents, excluded, skippedSections } = readPublishedPages(source);
-  const documents = siteDocuments(dataset, sites, source.skippedPostTypes, excluded, skippedSections);
-  // Rewrite the folder, so a site that no longer has pages leaves no document behind.
-  fs.rmSync(outputDir, { recursive: true, force: true });
-  fs.mkdirSync(outputDir, { recursive: true });
-  let pages = 0;
-  for (const [file, document] of documents) {
-    fs.writeFileSync(path.join(outputDir, file), document.markdown);
-    pages += document.pages;
-  }
-  const folders = new Set(sites.map(site => site.folder.toLowerCase()));
-  const unplaced = dataset.pages.filter(page => succeeded(page) && !siteFolder(page.url, folders));
-  unplaced.forEach(page => console.warn(`Not in a listed folder after redirects, so not written: ${page.url}`));
-  console.log(`Wrote ${pages} pages of ${documents.size} sites to ${path.relative(process.cwd(), outputDir)}; `
-    + `left out ${shells.size} image, file and password-protected pages and ${pastEvents.size} pages of events that have ended.`);
-}

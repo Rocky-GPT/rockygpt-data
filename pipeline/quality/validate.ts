@@ -352,13 +352,6 @@ export function validateCurrentDatasetV2(options: QualityOptionsV2 = {}): Qualit
 
   errors.push(...collectPublishableArtifactErrors(cwd));
 
-  const contextRoot = path.join(cwd, 'data/context');
-  const markdownFiles = fs.existsSync(contextRoot)
-    ? fs.readdirSync(contextRoot, { recursive: true }).filter((entry) => String(entry).endsWith('.md'))
-    : [];
-  recordCounts.documents = markdownFiles.length;
-  if (markdownFiles.length < 10) errors.push('Expected at least 10 clean context documents.');
-
   // PROB-002: source-native provenance. Filesystem mtime is not source
   // truth; a source without a valid collector-written sidecar has unknown
   // age, and unknown is never rendered as zero hours.

@@ -6,7 +6,9 @@
  *   npm run fetch:athletics-coaches     each team's coaches page (weekly source)
  *
  * The site's robots.txt asks every robot for 30 seconds between requests, so this reads one page
- * at a time, ATHLETICS_GAP_MS apart: 16 schedule pages take about 8 minutes. It reads robots.txt
+ * at a time, ATHLETICS_GAP_MS apart: 16 schedule pages took about 8 minutes every night. A team
+ * out of season (no game in the days around today on its last copy) keeps that copy for up to
+ * OFF_SEASON_KEEP_DAYS, so a night reads only the teams in season (inSeasonOrDue). It reads robots.txt
  * first and stops if the team pages are no longer allowed or a longer delay is asked for. Player
  * rosters are never read. A page that fails keeps last capture's copy when there is one.
  *
@@ -20,12 +22,41 @@ import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
 import { writeJsonFile, writeRawFileProvenance } from './pipeline-utils';
 import { noteSiteDownloads } from './site-guard';
 import reviewedTeams from '../src/reference/athletics-teams.json';
-import { ATHLETICS_COACHES_SOURCE, ATHLETICS_SCHEDULES_SOURCE, athleticsCapture, type AthleticsCapture,
+import { ATHLETICS_COACHES_SOURCE, ATHLETICS_SCHEDULES_SOURCE, athleticsCapture, parseSchedule, type AthleticsCapture,
   type AthleticsPage, type ReviewedAthletics } from '../src/data-v2/athletics';
 
 const RAW_DIR = path.join(process.cwd(), 'data', 'raw');
 /** The robots.txt crawl delay (30 s), never less. */
 export const ATHLETICS_GAP_MS = 30_000;
+/** How long an out-of-season team's schedule copy is kept before it is read again. */
+export const OFF_SEASON_KEEP_DAYS = 7;
+/** A game this many days before or after today puts the team in season (results, next games). */
+export const SEASON_DAYS_BEFORE = 3;
+export const SEASON_DAYS_AFTER = 14;
+const DAY_MS = 86_400_000;
+
+/**
+ * Whether tonight must read a team's schedule page: when there is no good last copy, when that
+ * copy is OFF_SEASON_KEEP_DAYS old, when it lists no game date at all that could be read, or when
+ * one of its games falls from SEASON_DAYS_BEFORE days ago to SEASON_DAYS_AFTER days ahead. A
+ * season's first schedule posted while the team was out of season is read within the week.
+ */
+export function inSeasonOrDue(previous: AthleticsPage | undefined, now: Date): boolean {
+  if (!previous || previous.status !== 200 || !previous.html) return true;
+  const age = now.getTime() - Date.parse(previous.fetchedAt);
+  if (!(age >= 0 && age < OFF_SEASON_KEEP_DAYS * DAY_MS)) return true;
+  let dates: number[];
+  try {
+    dates = parseSchedule(previous.html).games.map(game => Date.parse(`${game.date}T12:00:00Z`)).filter(Number.isFinite);
+  } catch {
+    return true;
+  }
+  if (!dates.length) return true;
+  const from = now.getTime() - SEASON_DAYS_BEFORE * DAY_MS - DAY_MS;
+  const until = now.getTime() + SEASON_DAYS_AFTER * DAY_MS + DAY_MS;
+  return dates.some(date => date >= from && date <= until);
+}
+
 const PAGES = { schedules: { dataset: ATHLETICS_SCHEDULES_SOURCE, path: 'schedule' }, coaches: { dataset: ATHLETICS_COACHES_SOURCE, path: 'coaches' } } as const;
 
 /** The rules of a robots.txt group for every robot (`User-agent: *`). */
@@ -88,9 +119,17 @@ async function main(kind: keyof typeof PAGES): Promise<void> {
   const pages: AthleticsPage[] = [];
   let read = 0;
   let kept = 0;
+  let reused = 0;
+  const now = new Date();
   for (const team of reviewed.teams) {
     const url = `${reviewed.site}/sports/${team.slug}/${pagePath}`;
     if (!robotsAllows(rules, new URL(url).pathname)) throw new Error(`${reviewed.site}/robots.txt no longer allows ${url}.`);
+    const last = previous?.pages.find(p => p.team === team.slug && p.url === url);
+    if (kind === 'schedules' && last && !inSeasonOrDue(last, now)) {
+      pages.push(last);
+      reused += 1;
+      continue;
+    }
     await sleep(ATHLETICS_GAP_MS);
     const fetchedAt = new Date().toISOString();
     let page: AthleticsPage;
@@ -112,12 +151,13 @@ async function main(kind: keyof typeof PAGES): Promise<void> {
     }
     pages.push(page);
   }
-  if (!read) throw new Error(`No ${kind} page could be read from ${reviewed.site}.`);
+  if (!read && !reused) throw new Error(`No ${kind} page could be read from ${reviewed.site}.`);
   const generatedAt = new Date().toISOString();
   const capture: AthleticsCapture = { schemaVersion: 1, dataset, generatedAt, site: reviewed.site, pages };
   writeJsonFile(rawFile, capture);
-  writeRawFileProvenance(dataset, rawFile, { sourceUrl: reviewed.site, recordCount: read, fetchedAt: generatedAt });
-  noteSiteDownloads(`${dataset}: read ${read} of ${reviewed.teams.length} pages from ${reviewed.site}${kept ? `, kept last copy of ${kept}` : ''} (${ATHLETICS_GAP_MS / 1000} s apart).`);
+  writeRawFileProvenance(dataset, rawFile, { sourceUrl: reviewed.site, recordCount: read + reused, fetchedAt: generatedAt });
+  noteSiteDownloads(`${dataset}: read ${read} of ${reviewed.teams.length} pages from ${reviewed.site}${kept ? `, kept last copy of ${kept}` : ''}`
+    + `${reused ? `, ${reused} out of season kept their copy under ${OFF_SEASON_KEEP_DAYS} days old` : ''} (${ATHLETICS_GAP_MS / 1000} s apart).`);
 }
 
 if (process.argv[1]?.endsWith('athletics.ts')) {

@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
-import { execSync } from 'child_process';
 
 function ensureParentDirectory(filePath: string): void {
   const parent = path.dirname(filePath);
@@ -67,11 +66,6 @@ export function writeRawFileProvenance(
 
 export function isRawOnlyMode(): boolean {
   return process.env.RAW_ONLY === '1' || process.env.RAW_ONLY === 'true';
-}
-
-export function runGeneratorScript(scriptPath: string): void {
-  console.log(`Running generator: ${scriptPath}`);
-  execSync(`npx tsx "${scriptPath}"`, { stdio: 'inherit' });
 }
 
 export function sortByName<T>(items: T[], nameGetter: (item: T) => string): T[] {
