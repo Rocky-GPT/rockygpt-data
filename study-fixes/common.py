@@ -244,6 +244,7 @@ async def ask(engine: ChatEngine, row: dict[str, Any], arm: str, run: int) -> di
         "n_cited": len(body.get("citations") or []), "err": error, "calls": calls,
         "answer": answer, "read": trace.get("read"), "trace_keys": sorted(trace),
         "lookups": trace.get("lookups"), "path": trace.get("path"),
+        "trace": {k: v for k, v in trace.items() if k not in ("read", "lookups")},
     }
 
 
