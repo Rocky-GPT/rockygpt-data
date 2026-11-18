@@ -19,6 +19,13 @@
  * publication the day after its event ends on campus (pastEventPages), with no list line to add.
  *
  * Requests go one at a time, one a second.
+ *
+ * The sitemaps are read every night, but only the lists that hold pages this source keeps. A
+ * site's sitemap index and its lists of skipped post types only say what exists and what to skip,
+ * and they rarely change, so they are read once a week, on each site's own night, and kept in
+ * data/raw/<dataset>-sitemaps.json between runs (with every kept page's edit time, which the
+ * smaller Ramapo site collectors read too). About 400 sitemap requests a night became about 180
+ * (11-18).
  */
 
 import fs from 'fs';
@@ -27,8 +34,9 @@ import { load } from 'cheerio';
 import { CAMPUS_TIME_ZONE } from '../src/data-v2/event-time';
 import { core6Markdown, core6Pages, type WrittenPage } from './generate-core6-md-utils';
 import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
-import { collectRawDataset, createRequestPacer, type RawSourceCaptureV1, sourceHtml } from './raw-collector';
+import { collectRawDataset, createRequestPacer, ownNight, type RawSourceCaptureV1, sourceHtml } from './raw-collector';
 import { OFFICE_HOURS_PAGES } from './campus-hours';
+import { noteSiteDownloads } from './site-guard';
 import { type RawDatasetV1, validateRawDatasetV1 } from './raw-types';
 
 export interface FolderSite {
@@ -72,6 +80,12 @@ const REQUEST_INTERVAL_MS = 1_000;
 const MAX_UNLISTED_PAGES = 1500;
 /** Nights between downloads of a page no sitemap gives an edit time for: weekly, as before the nightly date check. */
 export const UNDATED_REUSE_DAYS = 7;
+/** Nights between asks of a page that answered "not found" or was not a page: monthly (11-18). */
+export const DEAD_REUSE_DAYS = 28;
+/** Nights between reads of a site's sitemap index and its skipped post types' lists. */
+export const SITEMAP_INDEX_DAYS = 7;
+/** WordPress puts at most this many entries in one list; a full list may have gained a second one. */
+const SITEMAP_MAX_ENTRIES = 2000;
 const DOCUMENT = /\.(pdf|docx?|xlsx?|pptx?|csv|txt|jpe?g|png|gif|zip|mp3|mp4)$/i;
 // Listings WordPress builds from posts (archives, feeds) and its own endpoints, not pages.
 const WORDPRESS_LISTING =
@@ -372,50 +386,155 @@ async function fetchSitemap(url: string): Promise<string | null> {
   }, { attempts: 2 }));
 }
 
+/** One list of a site's WordPress sitemap index, as kept between runs. */
+export interface KeptSitemap {
+  url: string;
+  type: string;
+  /** A skipped post type's list: its pages, kept so the list need not be read every night. */
+  skippedLocs?: string[];
+  /** A kept post type's list that was full, so its site's index is read every night. */
+  full?: boolean;
+}
+
+/** What a source kept of its sites' sitemaps between runs (data/raw/<dataset>-sitemaps.json). */
+export interface SitemapState {
+  version: 1;
+  /** When tonight's kept lists were read, so a reader of editedAt knows how current it is. */
+  readAt: string;
+  /** Per site folder: when its index was last read, and its lists; null = the site has no WordPress sitemap. */
+  sites: Record<string, { indexReadAt: string; sitemaps: KeptSitemap[] | null }>;
+  siteWide?: { readAt: string; locs: string[] };
+  /** Every kept page's edit time from its site's WordPress sitemap, by page key. */
+  editedAt: Record<string, string>;
+}
+
+const DAY_MS = 86_400_000;
+const nightOf = (time: number) => Math.floor(time / DAY_MS);
+
+/** The sitemap state a source kept from its last run, or null when it has none or it cannot be read. */
+export function readSitemapState(filePath: string): SitemapState | null {
+  try {
+    const state = JSON.parse(fs.readFileSync(filePath, 'utf8')) as SitemapState;
+    return state?.version === 1 && state.sites && typeof state.sites === 'object' ? state : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Whether tonight reads a site's sitemap index (and its skipped lists) again: it was never read or
+ * its read is a whole cycle old, it is the site's own night in the cycle, or one of its kept lists
+ * was full (WordPress may have added a second list).
+ */
+export function readIndexTonight(folder: string, kept: SitemapState['sites'][string] | undefined, now: number,
+  days = SITEMAP_INDEX_DAYS): boolean {
+  if (!kept) return true;
+  const readAt = Date.parse(kept.indexReadAt);
+  if (!Number.isFinite(readAt) || now - readAt >= days * DAY_MS || readAt > now) return true;
+  if (kept.sitemaps?.some(sitemap => sitemap.full)) return true;
+  const tonight = nightOf(now);
+  return tonight % days === ownNight(folder, days) && nightOf(readAt) < tonight;
+}
+
 /** Every URL the sites' sitemaps list, the skipped ones apart, with where each site's list came from. */
-async function listedSitePages(
+export async function listedSitePages(
   sites: readonly FolderSite[],
-  skippedPostTypes: Readonly<Record<string, string>>
-): Promise<{ urls: string[]; skipped: string[]; report: string[]; editedAt: Map<string, string> }> {
+  skippedPostTypes: Readonly<Record<string, string>>,
+  kept: SitemapState | null = null,
+  now = Date.now(),
+  fetchXml: (url: string) => Promise<string | null> = fetchSitemap
+): Promise<{ urls: string[]; skipped: string[]; report: string[]; editedAt: Map<string, string>;
+  state: SitemapState; requests: number; keptReads: number }> {
   const pace = createRequestPacer(REQUEST_INTERVAL_MS);
+  let requests = 0;
   const read = async (url: string) => {
     await pace();
-    return fetchSitemap(url);
+    requests += 1;
+    return fetchXml(url);
   };
+  const nowIso = new Date(now).toISOString();
   let siteWide: string[] | undefined;
+  const keptSiteWide = kept?.siteWide && now - Date.parse(kept.siteWide.readAt) < SITEMAP_INDEX_DAYS * DAY_MS
+    ? kept.siteWide : undefined;
+  const state: SitemapState = { version: 1, readAt: nowIso, sites: {}, editedAt: {} };
   const urls: string[] = [];
   const skipped: string[] = [];
   const report: string[] = [];
   const editedAt = new Map<string, string>();
-  for (const site of sites) {
-    const index = await read(`${SITE}/${site.folder}/wp-sitemap.xml`);
-    const sitemaps = index ? contentSitemaps(index) : [];
-    let listed: string[] = [];
+  let keptReads = 0;
+  const siteWideLocs = async (): Promise<string[]> => {
+    if (siteWide) return siteWide;
+    if (keptSiteWide) {
+      siteWide = keptSiteWide.locs;
+      state.siteWide = keptSiteWide;
+      return siteWide;
+    }
+    const xml = await read(SITE_WIDE_SITEMAP);
+    if (!xml) throw new Error(`The site-wide sitemap ${SITE_WIDE_SITEMAP} could not be read.`);
+    siteWide = sitemapLocs(xml);
+    state.siteWide = { readAt: nowIso, locs: siteWide };
+    return siteWide;
+  };
+  // A site's lists: from its index tonight, or from the last read of it (kept) on the other nights.
+  const readSite = async (site: FolderSite, fromKept: SitemapState['sites'][string] | undefined) => {
+    let sitemaps: KeptSitemap[] | null;
+    let indexReadAt = nowIso;
+    if (fromKept) {
+      sitemaps = fromKept.sitemaps;
+      indexReadAt = fromKept.indexReadAt;
+    } else {
+      const index = await read(`${SITE}/${site.folder}/wp-sitemap.xml`);
+      const listed = index ? contentSitemaps(index) : [];
+      sitemaps = listed.length ? listed.map(url => ({ url, type: sitemapPostType(url) ?? '' })) : null;
+    }
+    const own: string[] = [];
+    const siteSkipped: string[] = [];
     const types: string[] = [];
-    if (sitemaps.length) {
+    const keptLists: KeptSitemap[] = [];
+    if (sitemaps) {
       for (const sitemap of sitemaps) {
-        const xml = await read(sitemap);
-        if (!xml) throw new Error(`${site.folder}: its sitemap ${sitemap} could not be read.`);
-        const locs = sitemapLocs(xml);
-        for (const [key, time] of sitemapEditTimes(xml)) editedAt.set(key, time);
-        const type = sitemapPostType(sitemap) ?? '';
-        const skip = Object.hasOwn(skippedPostTypes, type);
-        types.push(`${type} ${locs.length}${skip ? ' skipped' : ''}`);
-        (skip ? skipped : listed).push(...locs);
+        const skip = Object.hasOwn(skippedPostTypes, sitemap.type);
+        let locs: string[];
+        if (skip && fromKept && sitemap.skippedLocs) {
+          locs = sitemap.skippedLocs;
+        } else {
+          const xml = await read(sitemap.url);
+          // A list gone since the index was read: the site changed, so read its index again tonight.
+          if (!xml && fromKept) return null;
+          if (!xml) throw new Error(`${site.folder}: its sitemap ${sitemap.url} could not be read.`);
+          locs = sitemapLocs(xml);
+          if (!skip) {
+            keptReads += 1;
+            for (const [key, time] of sitemapEditTimes(xml)) {
+              const before = editedAt.get(key);
+              if (!before || Date.parse(time) > Date.parse(before)) editedAt.set(key, time);
+            }
+          }
+        }
+        types.push(`${sitemap.type} ${locs.length}${skip ? ' skipped' : ''}`);
+        (skip ? siteSkipped : own).push(...locs);
+        keptLists.push({ url: sitemap.url, type: sitemap.type,
+          ...(skip ? { skippedLocs: locs } : {}), ...(!skip && locs.length >= SITEMAP_MAX_ENTRIES ? { full: true } : {}) });
       }
     } else {
-      if (!siteWide) {
-        const xml = await read(SITE_WIDE_SITEMAP);
-        if (!xml) throw new Error(`The site-wide sitemap ${SITE_WIDE_SITEMAP} could not be read.`);
-        siteWide = sitemapLocs(xml);
-      }
-      listed = siteWide;
+      own.push(...await siteWideLocs());
     }
-    const own = listed.filter(url => siteFolder(url, new Set([site.folder])));
-    report.push(`${site.folder}: ${own.length} listed (${sitemaps.length ? `WordPress sitemap: ${types.join(', ')}` : 'site-wide sitemap'})`);
-    urls.push(...own);
+    return { own, siteSkipped, types, entry: { indexReadAt, sitemaps: sitemaps ? keptLists : null } };
+  };
+  for (const site of sites) {
+    const keptSite = kept?.sites?.[site.folder];
+    const fresh = !readIndexTonight(site.folder, keptSite, now) ? keptSite : undefined;
+    const result = (fresh ? await readSite(site, fresh) : null) ?? await readSite(site, undefined);
+    if (!result) throw new Error(`${site.folder}: its sitemap could not be read.`);
+    state.sites[site.folder] = result.entry;
+    const listed = result.own.filter(url => siteFolder(url, new Set([site.folder])));
+    report.push(`${site.folder}: ${listed.length} listed (${result.entry.sitemaps
+      ? `WordPress sitemap: ${result.types.join(', ')}` : 'site-wide sitemap'})`);
+    urls.push(...listed);
+    skipped.push(...result.siteSkipped);
   }
-  return { urls, skipped, report, editedAt };
+  state.editedAt = Object.fromEntries(editedAt);
+  return { urls, skipped, report, editedAt, state, requests, keptReads };
 }
 
 /** Collects every page of a source's sites into data/raw/<dataset>.raw.json. With --list, only prints the pages. */
@@ -425,8 +544,12 @@ export async function collectFolderSites(source: FolderSiteSource, argv: readonl
   const folders = new Set(sites.map(site => site.folder.toLowerCase()));
   const elsewhere = pagesCollectedElsewhere(source.collectedElsewhere);
   const reviewedSkips = readSkippedPages(source.sitesPath);
-  const { urls, skipped, report, editedAt } = await listedSitePages(sites, source.skippedPostTypes);
+  const statePath = path.join(RAW_DIR, `${source.dataset}-sitemaps.json`);
+  const listing = await listedSitePages(sites, source.skippedPostTypes, readSitemapState(statePath));
+  const { urls, skipped, report, editedAt } = listing;
   report.forEach(line => console.log(line));
+  noteSiteDownloads(`${source.dataset} sitemaps: ${listing.requests} read (${listing.keptReads} lists of kept pages, ` +
+    `${listing.requests - listing.keptReads} indexes and skipped lists on their weekly night), ${sites.length} sites.`);
   const seedUrls = sitePageUrls(urls, folders, new Set([...elsewhere, ...reviewedSkips.keys()]), source.skippedPostTypes);
   if (!seedUrls.length) throw new Error(`The ${source.dataset} sitemaps list no pages to collect.`);
   console.log(`${seedUrls.length} pages to collect; ${skipped.length} listed pages skipped by post type; `
@@ -435,6 +558,8 @@ export async function collectFolderSites(source: FolderSiteSource, argv: readonl
     seedUrls.forEach(url => console.log(url));
     return;
   }
+  // Kept for the next run, and for the smaller Ramapo site collectors' edit times (page-dates.ts).
+  fs.writeFileSync(statePath, `${JSON.stringify(listing.state)}\n`);
   const known = new Set([...elsewhere, ...reviewedSkips.keys(), ...[...seedUrls, ...skipped].map(url => pageKey(url)!)]);
   const skippedPrefixes = new Set(skipped.map(skippedPathPrefix).filter((prefix): prefix is string => prefix !== null)
     .filter(prefix => !POST_PERMALINK.test(`${prefix}x/`)));
@@ -447,6 +572,7 @@ export async function collectFolderSites(source: FolderSiteSource, argv: readonl
     // a WordPress sitemap, a page found only through a link) on its own night every week.
     listedEditedAt: url => editedAt.get(pageKey(url) ?? ''),
     undatedReuseDays: UNDATED_REUSE_DAYS,
+    deadReuseDays: DEAD_REUSE_DAYS,
     seedUrls,
     outputPath,
     allowedHost: SITE_HOST,

@@ -78,7 +78,13 @@ export function mustRefreshTonight(state: RefreshState, refreshHorizonHours = RE
  * page edit reaches the bot within a day instead of up to a week. Their freshness window stays a week,
  * so one failed night keeps the last copy instead of stopping the publish.
  */
-export const NIGHTLY_SOURCES: ReadonlySet<string> = new Set(['office-pages', 'academic-sites']);
+export const NIGHTLY_SOURCES: ReadonlySet<string> = new Set([
+  'office-pages', 'academic-sites',
+  // The smaller www.ramapo.edu sources read the same sitemap dates (page-dates.ts, 11-18). Campus hours
+  // and the directory stay on their weekly window: their pages show hours and names from other
+  // systems, which change without an edit to the page.
+  'public-safety', 'housing', 'counseling', 'transportation', 'health',
+]);
 
 /** The environment variable a run started by hand sets to collect named sources tonight, fresh or not. */
 export const FORCE_SOURCES_ENV = 'REFRESH_FORCE_SOURCES';

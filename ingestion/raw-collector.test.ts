@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber, ownNight, previousSourcePages, reuseTonight, withYear} from './raw-collector';
+import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber, ownNight, previousSourcePages, reuseTonight, withYear, downloadReason, downloadReasonsLine} from './raw-collector';
 import { type RawDatasetV1, validateRawDatasetV1 } from './raw-types';
 
 const page = (statusCode = 200) => buildRawPageFromHtml({url:'https://example.edu/policy', html:'<main><h1>Policy</h1><p>Source content.</p></main>', sourceType:'seed', allowedHost:'example.edu',statusCode});
@@ -569,4 +569,85 @@ test('a page keeps the date its SEO tags say it was last changed', () => {
   assert.equal('modifiedAt' in build(''), false);
   assert.equal('modifiedAt' in build('<meta property="article:modified_time" content="not a date" />'), false);
   assert.equal('modifiedAt' in build('<meta property="article:modified_time" content="2999-01-01T00:00:00Z" />'), false);
+});
+
+test('an address that answered "not found" or held no page is asked again only on its night, and with no cycle every time', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-raw-dead-'));
+  const original = globalThis.fetch;
+  const sent: string[] = [];
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    sent.push(url);
+    if (url.endsWith('/gone/')) return new Response('<main><h1>Page not found</h1></main>', { status: 404, headers: { 'content-type': 'text/html' } });
+    if (url.endsWith('/pic/')) return new Response('PNG', { headers: { 'content-type': 'image/png' } });
+    return new Response('<main><h1>Office</h1><p>Hours.</p></main>', { headers: { 'content-type': 'text/html' } });
+  };
+  const urls = ['https://example.edu/office/', 'https://example.edu/gone/', 'https://example.edu/pic/'];
+  const capturePath = path.join(dir, 'office-sources.raw.json');
+  const collect = (deadReuseDays?: number) => collectRawDataset({ dataset: 'office', seedUrls: urls, allowedHost: 'example.edu',
+    outputPath: path.join(dir, 'office.raw.json'), attempts: 2, maxDetailPages: 0, retainSourceHtml: true,
+    compressSourceHtml: true, listedEditedAt: () => '2020-01-01T00:00:00Z', undatedReuseDays: 7,
+    ...(deadReuseDays === undefined ? {} : { deadReuseDays }) });
+  const capturePage = (url: string) => JSON.parse(fs.readFileSync(capturePath, 'utf8')).pages
+    .find((page: { requestedUrl: string }) => page.requestedUrl === url);
+  try {
+    await collect(28);
+    // The image is asked once, not again on a second attempt: the same address gives the same answer.
+    assert.deepEqual(sent, urls);
+    assert.equal(capturePage('https://example.edu/pic/').failure, 'not-html');
+    assert.equal(capturePage('https://example.edu/gone/').statusCode, 404);
+    const firstAsked = capturePage('https://example.edu/gone/').fetchedAt;
+    sent.length = 0;
+    const second = await collect(28);
+    // Asked tonight already: the same answers, with no request.
+    assert.deepEqual(sent, []);
+    assert.equal(second.pages.find(page => page.url.endsWith('/gone/'))?.statusCode, 404);
+    assert.equal(capturePage('https://example.edu/gone/').downloadedAt, firstAsked);
+    assert.equal(capturePage('https://example.edu/pic/').failure, 'not-html');
+    // Without a cycle for them, they are asked on every collection, as before.
+    sent.length = 0;
+    await collect();
+    assert.deepEqual(sent.sort(), ['https://example.edu/gone/', 'https://example.edu/pic/']);
+  } finally { globalThis.fetch = original; fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a page another collector confirmed current recently is taken from its copy, not asked again", async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-raw-shared-'));
+  const original = globalThis.fetch;
+  const sent: string[] = [];
+  globalThis.fetch = async (input) => {
+    sent.push(String(input));
+    return new Response(`<main><h1>Page</h1><p>${String(input)}</p></main>`, { headers: { 'content-type': 'text/html' } });
+  };
+  const officeCapture = path.join(dir, 'office-sources.raw.json');
+  try {
+    await collectRawDataset({ dataset: 'office', seedUrls: ['https://example.edu/finaid/', 'https://example.edu/registrar/'],
+      allowedHost: 'example.edu', outputPath: path.join(dir, 'office.raw.json'), attempts: 1, maxDetailPages: 0,
+      retainSourceHtml: true, compressSourceHtml: true });
+    sent.length = 0;
+    const contacts = (maxAgeHours: number) => collectRawDataset({ dataset: 'contacts',
+      seedUrls: ['https://example.edu/finaid/', 'https://example.edu/athletics/'], allowedHost: 'example.edu',
+      outputPath: path.join(dir, 'contacts.raw.json'), attempts: 1, maxDetailPages: 0, retainSourceHtml: true,
+      compressSourceHtml: true, sharedCaptures: [{ path: officeCapture, maxAgeHours }] });
+    const shared = await contacts(48);
+    assert.deepEqual(sent, ['https://example.edu/athletics/']);
+    assert.ok(JSON.stringify(shared.pages.find(page => page.url.endsWith('/finaid/'))?.sections).includes('finaid'));
+    // A copy older than the collector accepts is not used: the page is asked for.
+    sent.length = 0;
+    await new Promise(resolve => setTimeout(resolve, 5));
+    await contacts(0.000_001);
+    assert.ok(sent.includes('https://example.edu/finaid/'));
+  } finally { globalThis.fetch = original; fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('each download is counted by why it was asked', () => {
+  const old = '2020-01-01T00:00:00Z';
+  const recent = '2026-11-10T00:00:00Z';
+  assert.equal(downloadReason(undefined, undefined, false), 'new');
+  assert.equal(downloadReason({ downloadedAt: old }, recent, false), 'edited');
+  assert.equal(downloadReason({ downloadedAt: recent }, old, false), 'scheduled');
+  assert.equal(downloadReason({ downloadedAt: recent }, undefined, false), 'undated');
+  assert.equal(downloadReason({ downloadedAt: recent }, undefined, true), 'dead');
+  assert.equal(downloadReasonsLine({ edited: 3, undated: 2 }), '3 edited since the last download, 2 no edit date, on their night');
+  assert.equal(downloadReasonsLine({}), 'none');
 });

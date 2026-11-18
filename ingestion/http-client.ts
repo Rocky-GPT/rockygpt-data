@@ -128,6 +128,12 @@ function collectedResponse(response: Response, body: Uint8Array): CollectedHttpR
   };
 }
 
+/**
+ * The site answered with something other than the page type asked for: a link to an image or a
+ * file at an address without an extension. Asking again gets the same answer, so it is not retried.
+ */
+export class UnexpectedContentTypeError extends Error {}
+
 function validateContentType(
   response: CollectedHttpResponse,
   expectedContentTypes: string[]
@@ -136,7 +142,7 @@ function validateContentType(
   if (!expectedContentTypes.length) return;
   const actual = response.headers.get('content-type')?.toLowerCase() || '';
   if (!expectedContentTypes.some((expected) => actual.includes(expected.toLowerCase()))) {
-    throw new Error(
+    throw new UnexpectedContentTypeError(
       `Unexpected content type "${actual || 'missing'}" for ${response.url}; expected ${expectedContentTypes.join(' or ')}.`
     );
   }
@@ -235,7 +241,7 @@ export async function fetchWithPolicy(
       return response;
     } catch (error) {
       lastError = error;
-      if (!mayRetryMethod || attempt >= attempts || init.signal?.aborted) {
+      if (error instanceof UnexpectedContentTypeError || !mayRetryMethod || attempt >= attempts || init.signal?.aborted) {
         break;
       }
       await wait(backoffMs(attempt, backoffBaseMs));
@@ -243,5 +249,6 @@ export async function fetchWithPolicy(
   }
 
   const message = lastError instanceof Error ? lastError.message : String(lastError);
-  throw new Error(`HTTP collection failed for ${method} ${url.toString()}: ${message}`);
+  const failure = `HTTP collection failed for ${method} ${url.toString()}: ${message}`;
+  throw lastError instanceof UnexpectedContentTypeError ? new UnexpectedContentTypeError(failure) : new Error(failure);
 }

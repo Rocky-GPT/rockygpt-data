@@ -6,8 +6,11 @@ import path from 'node:path';
 
 import { gzipSync } from 'node:zlib';
 
+import { ownNight } from './raw-collector';
 import {
   campusDate,
+  listedSitePages,
+  readIndexTonight,
   contentSitemaps,
   cutSections,
   eventLastDay,
@@ -239,4 +242,59 @@ test('a folder without a sitemap falls back, but a server error stops the collec
   assert.equal(sitemapXml(url, answer(200, '<?xml version="1.0"?><sitemapindex></sitemapindex>')), '<?xml version="1.0"?><sitemapindex></sitemapindex>');
   assert.throws(() => sitemapXml(url, answer(503, 'Busy')), /answered 503/);
   assert.throws(() => sitemapXml(url, answer(429, 'Slow down')), /answered 429/);
+});
+
+test("a site's sitemap index and skipped lists are read weekly on its own night; its kept pages' list every night", async () => {
+  const day = 86_400_000;
+  const sitemaps: Record<string, string | null> = {
+    'https://www.ramapo.edu/finaid/wp-sitemap.xml': '<sitemapindex><sitemap><loc>https://www.ramapo.edu/finaid/wp-sitemap-posts-page-1.xml</loc></sitemap>'
+      + '<sitemap><loc>https://www.ramapo.edu/finaid/wp-sitemap-posts-post-1.xml</loc></sitemap></sitemapindex>',
+    'https://www.ramapo.edu/finaid/wp-sitemap-posts-page-1.xml': '<urlset><url><loc>https://www.ramapo.edu/finaid/</loc><lastmod>2026-11-01T10:00:00-05:00</lastmod></url></urlset>',
+    'https://www.ramapo.edu/finaid/wp-sitemap-posts-post-1.xml': '<urlset><url><loc>https://www.ramapo.edu/finaid/2019/05/news/</loc></url></urlset>',
+    'https://www.ramapo.edu/policies/wp-sitemap.xml': null,
+    'https://www.ramapo.edu/sitemap.xml': '<urlset><url><loc>https://www.ramapo.edu/policies/conduct/</loc></url></urlset>',
+  };
+  const sent: string[] = [];
+  const fetchXml = async (url: string) => { sent.push(url); return sitemaps[url] ?? null; };
+  const sites = [{ folder: 'finaid', name: 'Financial Aid' }, { folder: 'policies', name: 'Policies' }];
+  const skipped = { post: 'news' };
+  // A night that is neither site's own night in the weekly cycle, then the next one like it.
+  let now = 20_000 * day + 3.7 * 3_600_000;
+  const quiet = (time: number) => sites.every(site => ownNight(site.folder, 7) !== Math.floor(time / day) % 7);
+  while (!quiet(now) || !quiet(now + day)) now += day;
+  const first = await listedSitePages(sites, skipped, null, now, fetchXml);
+  assert.equal(first.requests, 5);
+  assert.deepEqual(first.urls, ['https://www.ramapo.edu/finaid/', 'https://www.ramapo.edu/policies/conduct/']);
+  assert.deepEqual(first.skipped, ['https://www.ramapo.edu/finaid/2019/05/news/']);
+  assert.equal(first.state.editedAt['www.ramapo.edu/finaid'], '2026-11-01T10:00:00-05:00');
+  // The next night: only the list of kept pages, with the same pages, skips and dates.
+  sent.length = 0;
+  sitemaps['https://www.ramapo.edu/finaid/wp-sitemap-posts-page-1.xml'] = sitemaps['https://www.ramapo.edu/finaid/wp-sitemap-posts-page-1.xml']!
+    .replace('2026-11-01T10:00:00-05:00', '2026-11-20T09:00:00-05:00');
+  const second = await listedSitePages(sites, skipped, JSON.parse(JSON.stringify(first.state)), now + day, fetchXml);
+  assert.deepEqual(sent, ['https://www.ramapo.edu/finaid/wp-sitemap-posts-page-1.xml']);
+  assert.deepEqual(second.urls, first.urls);
+  assert.deepEqual(second.skipped, first.skipped);
+  assert.equal(second.editedAt.get('www.ramapo.edu/finaid'), '2026-11-20T09:00:00-05:00');
+  assert.equal(second.state.sites.finaid.indexReadAt, first.state.sites.finaid.indexReadAt);
+  // A week after its last read, a site's index is read again whatever the night.
+  sent.length = 0;
+  await listedSitePages(sites, skipped, second.state, now + 7 * day, fetchXml);
+  assert.ok(sent.includes('https://www.ramapo.edu/finaid/wp-sitemap.xml'));
+  assert.ok(sent.includes('https://www.ramapo.edu/sitemap.xml'));
+  // A kept list gone since the index was read: the site's index is read again tonight.
+  sent.length = 0;
+  const moved = JSON.parse(JSON.stringify(first.state));
+  moved.sites.finaid.sitemaps[0].url = 'https://www.ramapo.edu/finaid/wp-sitemap-posts-page-9.xml';
+  const reread = await listedSitePages(sites, skipped, moved, now + day, fetchXml);
+  assert.deepEqual(reread.urls, first.urls);
+  assert.ok(sent.includes('https://www.ramapo.edu/finaid/wp-sitemap.xml'));
+});
+
+test("a site whose kept pages' list is full has its index read every night, in case WordPress began a second list", () => {
+  const now = Date.parse('2026-11-18T03:41:00Z');
+  const kept = { indexReadAt: '2026-11-17T03:41:00Z', sitemaps: [{ url: 'x', type: 'page', full: true }] };
+  assert.equal(readIndexTonight('scholarships', kept, now), true);
+  assert.equal(readIndexTonight('scholarships', undefined, now), true);
+  assert.equal(readIndexTonight('scholarships', { ...kept, indexReadAt: '2026-11-01T03:41:00Z', sitemaps: [] }, now), true);
 });
