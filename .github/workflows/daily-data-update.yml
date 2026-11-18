@@ -330,12 +330,9 @@ jobs:
           path: .release-snapshot
           key: release-snapshot-${{ github.run_id }}
 
-      # A release now holds about 21,700 document chunks, so a week of daily
-      # publishes between Sunday cleanups can outgrow the free database's
-      # 0.5 GB, and a full database also stops the Brain's budget ledger.
-      # Prune right after each publish so the database keeps the active
-      # release and the newest retired one, drops failed publishes at once and
-      # trims settled Brain ledger rows past 60 days; the log shows its size.
+      # Prune the job's database right after each publish, so the dump the
+      # next run starts from keeps the active release and the newest retired
+      # one and drops failed publishes at once; the log shows its size.
       - name: Remove retired datasets beyond the rollback window
         if: ${{ env.TARGET == 'production' }}
         env:
