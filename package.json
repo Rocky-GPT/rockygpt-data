@@ -26,8 +26,6 @@
     "fetch:archway": "npm run fetch:events",
     "fetch:hours": "tsx ingestion/campus-hours.ts",
     "fetch:clubs": "tsx ingestion/archway-clubs.ts",
-    "fetch:groupme-directory": "python3 ingestion/groupme-directory.py",
-    "merge:groupme": "python3 ingestion/merge-groupme-into-clubs.py",
     "fetch:calendar": "tsx ingestion/academic-calendar.ts",
     "fetch:faculty": "tsx ingestion/faculty-profiles.ts",
     "fetch:map:rooms": "tsx ingestion/enrich-map-office-rooms.ts",
