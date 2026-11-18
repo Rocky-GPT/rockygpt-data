@@ -22,6 +22,10 @@ export const REVIEWED_CONTACT_URLS = [...new Set([
   ]),
 ])].filter(url => !/\.pdf$/i.test(new URL(url).pathname)).sort();
 
+const RAW_DIR = path.join(process.cwd(), 'data/raw');
+export const SHARED_CAPTURES = ['office-pages', 'academic-sites']
+  .map(dataset => ({ path: path.join(RAW_DIR, `${dataset}-sources.raw.json`), maxAgeHours: 48 }));
+
 async function run() {
   await collectRawDataset({
     dataset: 'reviewed-contacts',
@@ -36,6 +40,10 @@ async function run() {
     retainSourceHtml: true,
     compressSourceHtml: true,
     requestIntervalMs: 150,
+    // Most of these pages are office or school pages, which those collectors read every night and
+    // download when edited: their copy, confirmed current within two days, is used without asking
+    // the site again (227 of 272 pages on 11-18).
+    sharedCaptures: SHARED_CAPTURES,
   });
   console.log(`Captured ${REVIEWED_CONTACT_URLS.length} reviewed contact source pages.`);
 }
