@@ -26,7 +26,7 @@ import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
 import { writeJsonFile, writeRawFileProvenance } from './pipeline-utils';
 import { buildRawPageFromHtml } from './raw-collector';
 import type { RawPageV1 } from './raw-types';
-import { noteSiteDownloads } from './site-guard';
+import { noteSiteDownloads, robotsFor, type SiteRobots } from './site-guard';
 import reviewedTeams from '../src/reference/athletics-teams.json';
 import { ATHLETICS_COACHES_SOURCE, ATHLETICS_SCHEDULES_SOURCE, athleticsCapture, parseSchedule, type AthleticsCapture,
   type AthleticsPage, type ReviewedAthletics } from '../src/data-v2/athletics';
@@ -67,38 +67,17 @@ export const ATHLETICS_PAGES_DATASET = 'athletics-pages';
 
 const PAGES = { schedules: { dataset: ATHLETICS_SCHEDULES_SOURCE, path: 'schedule' }, coaches: { dataset: ATHLETICS_COACHES_SOURCE, path: 'coaches' } } as const;
 
-/** The rules of a robots.txt group for every robot (`User-agent: *`). */
-export function robotsRules(robots: string): { allow: string[]; disallow: string[]; delaySeconds: number } {
-  const rules = { allow: [] as string[], disallow: [] as string[], delaySeconds: 0 };
-  let inGroup = false;
-  let lastWasAgent = false;
-  for (const raw of robots.split(/\r?\n/)) {
-    const line = raw.replace(/#.*/, '').trim();
-    const match = /^([A-Za-z-]+)\s*:\s*(.*)$/.exec(line);
-    if (!match) continue;
-    const field = match[1].toLowerCase();
-    const value = match[2].trim();
-    if (field === 'user-agent') {
-      // Consecutive User-agent lines share one group.
-      inGroup = (lastWasAgent && inGroup) || value === '*';
-      lastWasAgent = true;
-      continue;
-    }
-    lastWasAgent = false;
-    if (!inGroup) continue;
-    if (field === 'allow' && value) rules.allow.push(value);
-    if (field === 'disallow' && value) rules.disallow.push(value);
-    if (field === 'crawl-delay' && Number.isFinite(Number(value))) rules.delaySeconds = Number(value);
+/**
+ * The site's robots.txt rules (site-guard reads it once a run, with robots-parser). The run stops
+ * when robots.txt cannot be read, or asks for a longer gap than ATHLETICS_GAP_MS.
+ */
+async function athleticsRobots(site: string): Promise<SiteRobots> {
+  const robots = await robotsFor(site);
+  if (robots.unreadable) throw new Error(`${robots.unreadable}; not reading the site without it.`);
+  if (robots.delayMs > ATHLETICS_GAP_MS) {
+    throw new Error(`${site} now asks for ${robots.delayMs / 1000} s between requests; ATHLETICS_GAP_MS is ${ATHLETICS_GAP_MS / 1000} s.`);
   }
-  return rules;
-}
-
-const pattern = (rule: string) => new RegExp(`^${rule.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\\\$$/, '$')}`);
-
-/** Whether a path may be read: the longest matching rule wins, and Allow wins a tie. */
-export function robotsAllows(rules: { allow: string[]; disallow: string[] }, pathname: string): boolean {
-  const longest = (list: string[]) => Math.max(-1, ...list.filter(rule => pattern(rule).test(pathname)).map(rule => rule.length));
-  return longest(rules.allow) >= longest(rules.disallow);
+  return robots;
 }
 
 /** A page's HTML without scripts, styles, images and frames (JSON-LD data is kept). */
@@ -118,12 +97,7 @@ async function main(kind: keyof typeof PAGES): Promise<void> {
   const get = (url: string) => fetchWithPolicy(url, { headers: { 'User-Agent': DEFAULT_USER_AGENT, Accept: 'text/html,text/plain' } },
     { perHostConcurrency: 1, attempts: 2, timeoutMs: 30_000 });
 
-  const robots = await get(`${reviewed.site}/robots.txt`);
-  if (!robots.ok) throw new Error(`${reviewed.site}/robots.txt answered ${robots.status}; not reading the site without it.`);
-  const rules = robotsRules(robots.text());
-  if (rules.delaySeconds * 1000 > ATHLETICS_GAP_MS) {
-    throw new Error(`${reviewed.site} now asks for ${rules.delaySeconds} s between requests; ATHLETICS_GAP_MS is ${ATHLETICS_GAP_MS / 1000} s.`);
-  }
+  const robots = await athleticsRobots(reviewed.site);
   const pages: AthleticsPage[] = [];
   let read = 0;
   let kept = 0;
@@ -131,7 +105,7 @@ async function main(kind: keyof typeof PAGES): Promise<void> {
   const now = new Date();
   for (const team of reviewed.teams) {
     const url = `${reviewed.site}/sports/${team.slug}/${pagePath}`;
-    if (!robotsAllows(rules, new URL(url).pathname)) throw new Error(`${reviewed.site}/robots.txt no longer allows ${url}.`);
+    if (!robots.allows(url)) throw new Error(`${reviewed.site}/robots.txt no longer allows ${url}.`);
     const last = previous?.pages.find(p => p.team === team.slug && p.url === url);
     if (kind === 'schedules' && last && !inSeasonOrDue(last, now)) {
       pages.push(last);
@@ -179,18 +153,13 @@ async function readInfoPages(): Promise<void> {
   const previous = fs.existsSync(rawFile) ? (JSON.parse(fs.readFileSync(rawFile, 'utf8')) as AthleticsPagesCapture).pages ?? [] : [];
   const get = (url: string) => fetchWithPolicy(url, { headers: { 'User-Agent': DEFAULT_USER_AGENT, Accept: 'text/html,text/plain' } },
     { perHostConcurrency: 1, attempts: 2, timeoutMs: 30_000 });
-  const robots = await get(`${reviewed.site}/robots.txt`);
-  if (!robots.ok) throw new Error(`${reviewed.site}/robots.txt answered ${robots.status}; not reading the site without it.`);
-  const rules = robotsRules(robots.text());
-  if (rules.delaySeconds * 1000 > ATHLETICS_GAP_MS) {
-    throw new Error(`${reviewed.site} now asks for ${rules.delaySeconds} s between requests; ATHLETICS_GAP_MS is ${ATHLETICS_GAP_MS / 1000} s.`);
-  }
+  const robots = await athleticsRobots(reviewed.site);
   const pages: RawPageV1[] = [];
   let read = 0;
   let kept = 0;
   for (const { url } of listed) {
     const target = new URL(url);
-    if (!robotsAllows(rules, `${target.pathname}${target.search}`)) {
+    if (!robots.allows(target)) {
       console.warn(`${reviewed.site}/robots.txt does not allow ${url}; not read.`);
       continue;
     }

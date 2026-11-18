@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { AthleticsPage } from '../src/data-v2/athletics';
-import { ATHLETICS_GAP_MS, inSeasonOrDue, OFF_SEASON_KEEP_DAYS, robotsAllows, robotsRules, trimPage } from './athletics';
+import { ATHLETICS_GAP_MS, inSeasonOrDue, OFF_SEASON_KEEP_DAYS, trimPage } from './athletics';
+import { siteRobots } from './site-guard';
 
 // The athletics site's rules for every robot, as its robots.txt printed them on 2026-11-03.
 const robots = `User-agent: Googlebot
@@ -23,14 +24,15 @@ Crawl-delay: 30
 `;
 
 test('the team pages are allowed, and the gap is the crawl delay robots.txt asks for', () => {
-  const rules = robotsRules(robots);
-  assert.equal(rules.delaySeconds * 1000, ATHLETICS_GAP_MS);
-  assert.equal(robotsAllows(rules, '/sports/mens-soccer/schedule'), true);
-  assert.equal(robotsAllows(rules, '/sports/mens-soccer/coaches'), true);
-  assert.equal(robotsAllows(rules, '/services/schedule_txt.ashx'), false);
-  assert.equal(robotsAllows(rules, '/sports/mens-soccer/schedule?print=true'), false);
-  assert.equal(robotsAllows(rules, '/main.js'), false);
-  assert.equal(robotsAllows(robotsRules('User-agent: *\nDisallow: /sports/\n'), '/sports/baseball/schedule'), false);
+  const site = 'https://ramapoathletics.com';
+  const rules = siteRobots(`${site}/robots.txt`, 200, robots);
+  assert.equal(rules.delayMs, ATHLETICS_GAP_MS);
+  assert.equal(rules.allows(`${site}/sports/mens-soccer/schedule`), true);
+  assert.equal(rules.allows(`${site}/sports/mens-soccer/coaches`), true);
+  assert.equal(rules.allows(`${site}/services/schedule_txt.ashx`), false);
+  assert.equal(rules.allows(`${site}/sports/mens-soccer/schedule?print=true`), false);
+  assert.equal(rules.allows(`${site}/main.js`), false);
+  assert.equal(siteRobots(`${site}/robots.txt`, 200, 'User-agent: *\nDisallow: /sports/\n').allows(`${site}/sports/baseball/schedule`), false);
 });
 
 test('a saved page keeps its title, text and JSON-LD, but not scripts, styles or images', () => {
