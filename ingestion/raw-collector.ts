@@ -285,12 +285,18 @@ function textWithLinks($: ReturnType<typeof load>, element: AnyNode, baseUrl: st
   return cleanText(linkedCopy($, element, baseUrl).text());
 }
 
+/** A schedule row: it names a weekday or a clock time ("Monday 4:00–5:00 PM — Ana"). */
+const SCHEDULE_ROW = /\b(?:mon|tues?|wed(?:nes)?|thu(?:rs?)?|fri|sat(?:ur)?|sun)(?:day)?s?\b|\b\d{1,2}(?::\d{2})?\s*[ap]\.?m\b|\bnoon\b/i;
+
 /**
  * An element's text as its lines: each line break (<br>) starts a new line. A paragraph that opens
- * with a bold label over three or more lines ("<strong>Walk-in — No Appointment Required</strong>"
- * then a row per tutor) keeps that label on each row under it, so a row is never read under the
- * label before it (11-18 blind misses, root cause 9: a STEM Center walk-in row was said as
- * appointment-only once the schedule was one run-on line).
+ * with a bold label over three or more lines whose rows are a schedule's ("<strong>Walk-in — No
+ * Appointment Required</strong>" then a row per tutor, each with its day and time) keeps that label
+ * on each row under it, so a row is never read under the label before it (11-18 blind misses, root
+ * cause 9: a STEM Center walk-in row was said as appointment-only once the schedule was one run-on
+ * line). Any other bold opener stays its own line: a staff card's bold name over its title, room
+ * and address is one person, not a label for three (the 11-18 production run lost 38 people's
+ * rooms when the name was carried onto each line).
  */
 function shapedText($: ReturnType<typeof load>, element: AnyNode, baseUrl: string): string {
   const copy = linkedCopy($, element, baseUrl);
@@ -298,9 +304,11 @@ function shapedText($: ReturnType<typeof load>, element: AnyNode, baseUrl: strin
   const lines = copy.text().split('\n').map(cleanText).filter(Boolean);
   const first = copy.contents().toArray().find(child => child.type !== 'text' || cleanText((child as unknown as { data?: string }).data || ''));
   const label = first && $(first).is('strong, b') ? cleanText($(first).text()) : '';
-  if (label && lines.length >= 3 && lines[0] === label) {
+  const rows = lines.slice(1);
+  if (label && lines.length >= 3 && lines[0] === label
+    && rows.filter(line => SCHEDULE_ROW.test(line)).length * 2 >= rows.length) {
     const name = label.replace(/[:\s]+$/, '');
-    return lines.slice(1).map(line => `${name}: ${line}`).join('\n');
+    return rows.map(line => `${name}: ${line}`).join('\n');
   }
   return lines.join('\n');
 }
