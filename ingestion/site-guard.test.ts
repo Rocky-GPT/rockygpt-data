@@ -8,6 +8,8 @@ import { fetchWithPolicy } from './http-client';
 import {
   ALLOW_SITE_FETCH_ENV,
   assertSiteFetchAllowed,
+  BLOCKED_PAGES_NOTE_ENV,
+  everyRobotDisallows,
   forgetSiteRobots,
   isRamapoHost,
   noteSiteDownloads,
@@ -128,6 +130,7 @@ test('outside a refresh the line is only printed; a refresh starts the note for 
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-site-note-'));
   const note = path.join(dir, 'review', 'site-downloads.txt');
   const before = process.env[SITE_DOWNLOADS_NOTE_ENV];
+  const blockedBefore = process.env[BLOCKED_PAGES_NOTE_ENV];
   try {
     delete process.env[SITE_DOWNLOADS_NOTE_ENV];
     noteSiteDownloads('a test run');
@@ -138,8 +141,11 @@ test('outside a refresh the line is only printed; a refresh starts the note for 
     assert.equal(process.env[SITE_DOWNLOADS_NOTE_ENV], note);
     noteSiteDownloads('Collectors run tonight: fetch:menu.');
     assert.equal(fs.readFileSync(note, 'utf8'), 'Collectors run tonight: fetch:menu.\n');
+    assert.equal(process.env[BLOCKED_PAGES_NOTE_ENV], path.join(dir, 'review', 'blocked-pages.jsonl'));
   } finally {
     if (before === undefined) delete process.env[SITE_DOWNLOADS_NOTE_ENV]; else process.env[SITE_DOWNLOADS_NOTE_ENV] = before;
+    if (blockedBefore === undefined) delete process.env[BLOCKED_PAGES_NOTE_ENV];
+    else process.env[BLOCKED_PAGES_NOTE_ENV] = blockedBefore;
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
@@ -180,8 +186,10 @@ test('every Ramapo request is checked against robots.txt, read once a run, and a
     return new Response('ok');
   };
   forgetSiteRobots();
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rocky-blocked-'));
+  const blocked = path.join(dir, 'blocked-pages.jsonl');
   try {
-    await withEnv({ [ALLOW_SITE_FETCH_ENV]: '1' }, async () => {
+    await withEnv({ [ALLOW_SITE_FETCH_ENV]: '1', [BLOCKED_PAGES_NOTE_ENV]: blocked }, async () => {
       await fetchWithPolicy('https://robots-test.ramapo.edu/open', {}, { attempts: 1 });
       await assert.rejects(() => fetchWithPolicy('https://robots-test.ramapo.edu/private/page', {}, { attempts: 3 }),
         RobotsDisallowedError);
@@ -194,4 +202,21 @@ test('every Ramapo request is checked against robots.txt, read once a run, and a
   }
   assert.deepEqual(sent, ['https://robots-test.ramapo.edu/robots.txt', 'https://robots-test.ramapo.edu/open',
     'https://robots-test.ramapo.edu/open-again', 'https://example.edu/private/page']);
+  // The run's blocked list: the site's rules once, and the page it refused.
+  const notes = fs.readFileSync(blocked, 'utf8').trim().split('\n').map(line => JSON.parse(line));
+  fs.rmSync(dir, { recursive: true, force: true });
+  assert.deepEqual(notes, [
+    { type: 'site', site: 'https://robots-test.ramapo.edu', status: 200, refuses: ['/private/'], crawlDelaySeconds: 0 },
+    { type: 'refused', url: 'https://robots-test.ramapo.edu/private/page', reason: 'robots.txt disallows it' },
+  ]);
+});
+
+test('the blocked list shows the lines robots.txt gives every robot, not another robot\'s', () => {
+  const athletics = [
+    'User-agent: Googlebot', 'Disallow: /admin/', '', 'User-agent: *', 'Disallow: /common/',
+    'DisAllow: /site/', 'Disallow: /*print=true* # print views', 'Allow: /', 'Crawl-delay: 30', '',
+  ].join('\n');
+  assert.deepEqual(everyRobotDisallows(athletics), ['/common/', '/site/', '/*print=true*']);
+  assert.deepEqual(everyRobotDisallows(RAMAPO_ROBOTS), ['/catalog_05_06/']);
+  assert.deepEqual(everyRobotDisallows('User-agent: *\nAllow: /\n'), []);
 });

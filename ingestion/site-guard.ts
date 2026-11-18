@@ -118,6 +118,7 @@ async function readSiteRobots(origin: string): Promise<SiteRobots> {
   const robotsUrl = `${origin}/robots.txt`;
   assertSiteFetchAllowed(robotsUrl);
   let status: number | undefined;
+  let text = '';
   for (let attempt = 1; attempt <= ROBOTS_ATTEMPTS; attempt += 1) {
     await paceRamapoRequest(robotsUrl);
     try {
@@ -125,12 +126,64 @@ async function readSiteRobots(origin: string): Promise<SiteRobots> {
         headers: { 'User-Agent': DEFAULT_USER_AGENT, Accept: 'text/plain' }, signal: AbortSignal.timeout(ROBOTS_TIMEOUT_MS),
       });
       status = response.status;
-      if (status < 500 && status !== 429) return siteRobots(robotsUrl, status, await response.text());
+      if (status < 500 && status !== 429) {
+        text = await response.text();
+        break;
+      }
     } catch {
       status = undefined;
     }
   }
-  return siteRobots(robotsUrl, status);
+  const robots = siteRobots(robotsUrl, status, text);
+  noteBlocked({
+    type: 'site', site: origin, status: status ?? null,
+    refuses: robots.unreadable ? ['/ (robots.txt could not be read)'] : everyRobotDisallows(text),
+    crawlDelaySeconds: robots.delayMs / 1000,
+  });
+  return robots;
+}
+
+/**
+ * The Disallow lines robots.txt gives every robot (`User-agent: *`), for the run's list of what is
+ * blocked. Shown to people only: robots-parser alone decides whether a page may be requested.
+ */
+export function everyRobotDisallows(text: string): string[] {
+  const refused: string[] = [];
+  let inGroup = false;
+  let lastWasAgent = false;
+  for (const raw of text.split(/\r?\n/)) {
+    const match = /^\s*([A-Za-z-]+)\s*:\s*(.*?)\s*(?:#.*)?$/.exec(raw);
+    if (!match) continue;
+    const field = match[1].toLowerCase();
+    if (field === 'user-agent') {
+      inGroup = (lastWasAgent && inGroup) || match[2] === '*';
+      lastWasAgent = true;
+      continue;
+    }
+    lastWasAgent = false;
+    if (inGroup && field === 'disallow' && match[2]) refused.push(match[2]);
+  }
+  return [...new Set(refused)];
+}
+
+/** One line of the run's list of what robots.txt blocks (`data/review/blocked-pages.jsonl`). */
+export type BlockedNote =
+  | { type: 'site'; site: string; status: number | null; refuses: string[]; crawlDelaySeconds: number }
+  | { type: 'refused'; url: string; reason: string };
+
+/** The run's list of what robots.txt blocks, kept beside the download note during a refresh. */
+export const BLOCKED_PAGES_NOTE = path.join('data', 'review', 'blocked-pages.jsonl');
+export const BLOCKED_PAGES_NOTE_ENV = 'ROCKYGPT_BLOCKED_PAGES_NOTE';
+
+/** Adds a line to the run's blocked list (during a refresh; otherwise nothing is written). */
+export function noteBlocked(note: BlockedNote, notePath = process.env[BLOCKED_PAGES_NOTE_ENV]): void {
+  if (!notePath) return;
+  try {
+    fs.mkdirSync(path.dirname(notePath), { recursive: true });
+    fs.appendFileSync(notePath, `${JSON.stringify(note)}\n`);
+  } catch {
+    // The list is a convenience; a collection never fails over it.
+  }
 }
 
 /** The robots.txt rules of a Ramapo site, read once a run (only the first caller downloads it). */
@@ -166,7 +219,11 @@ export async function paceRamapoRequest(input: string | URL): Promise<void> {
   let gapMs = RAMAPO_REQUEST_GAP_MS;
   if (!isRobotsFile(url)) {
     const robots = await robotsFor(url);
-    if (!robots.allows(url)) throw new RobotsDisallowedError(url.toString(), robots);
+    if (!robots.allows(url)) {
+      const refused = new RobotsDisallowedError(url.toString(), robots);
+      noteBlocked({ type: 'refused', url: url.toString(), reason: robots.unreadable ?? 'robots.txt disallows it' });
+      throw refused;
+    }
     gapMs = Math.max(gapMs, robots.delayMs);
   }
   const host = url.host.toLowerCase();
@@ -190,9 +247,12 @@ export const SITE_DOWNLOADS_NOTE = path.join('data', 'review', 'site-downloads.t
 export const SITE_DOWNLOADS_NOTE_ENV = 'ROCKYGPT_SITE_DOWNLOADS_NOTE';
 
 /** Starts the run's note afresh and has this process and the collectors it starts write to it. */
-export function startSiteDownloadsNote(notePath = path.join(process.cwd(), SITE_DOWNLOADS_NOTE)): void {
+export function startSiteDownloadsNote(notePath = path.join(process.cwd(), SITE_DOWNLOADS_NOTE),
+  blockedPath = path.join(path.dirname(notePath), path.basename(BLOCKED_PAGES_NOTE))): void {
   fs.rmSync(notePath, { force: true });
+  fs.rmSync(blockedPath, { force: true });
   process.env[SITE_DOWNLOADS_NOTE_ENV] = notePath;
+  process.env[BLOCKED_PAGES_NOTE_ENV] = blockedPath;
 }
 
 /** Prints a line and, during a refresh, adds it to the run's note of what was read from Ramapo's sites. */
