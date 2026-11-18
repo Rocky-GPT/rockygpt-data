@@ -3,7 +3,7 @@ name: Compare two Brains on the same questions
 # Old vs new, the fair way (tool review, 2026-11-18): two Brain versions answer the same frozen
 # question set against the same live graph, one grader (Luna) grades both against the set's
 # answer key, and a paired sign test says whether the difference is real or could be luck.
-# Runs promptfoo (rockygpt-evals compare/). Each Brain is the real server, started as on the
+# Runs promptfoo (rockygpt-evals compare/, see its README). Each Brain is the real server, started as on the
 # laptop, with its own spending ledger in a throwaway database capped at max_usd for both Brains
 # together. The grader's own calls are not in that ledger (about 2 short calls per question).
 # This job spends money: ask Dan before a run over about $1. For the steady ruler, rebuild the
