@@ -3,6 +3,7 @@ import type { PoolClient } from 'pg';
 import { CURRENT_MENU_VENUE_NAME } from './dining-venues';
 import profileUrlAliases from '../reference/campus-identity-url-aliases.json';
 import siteOwners from '../reference/office-site-owners.json';
+import academicSites from '../reference/academic-sites.json';
 import policyUnitOwners from '../reference/policy-unit-owners.json';
 import catalogPoliciesOwner from '../reference/catalog-policies-owner.json';
 import { linkHoursOffices } from './hours-offices';
@@ -485,6 +486,15 @@ export function compileCampusIdentities(seed: CampusIdentities, snapshot: Identi
         source_record_keys: keys.filter(key => (pageSource.get(key) ?? 'office-pages') === source) });
     }
   }
+  // How many school and program site pages an office or topic owns (11-18, blind-miss step 7):
+  // a page no node links is published but never read.
+  const linkedPages = new Set(entities.flatMap(entity => entity.links
+    .filter(link => link.collection === 'office_sections').flatMap(link => link.source_record_keys)));
+  const academicFolders = (academicSites as { sites: Array<{ folder: string }> }).sites.map(site => site.folder);
+  const unowned = academicFolders.map(folder => [folder, (pagesByFolder.get(folder) ?? []).filter(key => !linkedPages.has(key)).length] as const);
+  const schoolPages = academicFolders.reduce((n, folder) => n + (pagesByFolder.get(folder)?.length ?? 0), 0);
+  console.log(`School and program site pages with an owner: ${schoolPages - unowned.reduce((n, [, k]) => n + k, 0)} of ${schoolPages}`
+    + `; none for ${unowned.filter(([, k]) => k).map(([folder, k]) => `${folder} (${k})`).join(', ') || 'no folder'}.`);
   // Clubs: the directory category Archway files each under, and the ramapo.edu club directory's
   // pages (who lists the club, and whether the page says it is inactive).
   const clubCategories = linkClubCategories(entities, snapshot.clubs ?? [], inputs.collectedAt?.['archway-clubs']);
