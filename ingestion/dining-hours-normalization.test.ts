@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validateDiningHoursState } from './schema';
-import { formatHoursList, toContextDiningHours } from './generate-dining-hours-md';
 import { formatDiningRange } from '../src/data-v2/dining-seasons';
 
 function normalized(ranges: unknown[]) {
@@ -12,7 +11,7 @@ function normalized(ranges: unknown[]) {
   }] }] } } });
 }
 
-test('an explicit source CLOSED value survives normalization and every rendering', () => {
+test('an explicit source CLOSED value survives normalization and the range rendering', () => {
   // Sodexo publishes allDay as both a string and a taxonomy object.
   for (const allDay of ['CLOSED', { value: 'CLOSED' }]) {
     const state = normalized([{ allDay, label: 'Summer Break' }]);
@@ -20,7 +19,6 @@ test('an explicit source CLOSED value survives normalization and every rendering
     const fragment = state.composition.subject.regions[0].fragments[0];
     const hours = fragment.content.main.openingHours.standardHours[0].hours;
     assert.equal(hours[0].closed, true);
-    assert.equal(formatHoursList(hours), 'Closed');
     assert.equal(formatDiningRange({ ...hours[0] }), 'Closed');
   }
 });
@@ -37,9 +35,6 @@ test('missing clocks and unexplained all-day flags never become open-all-day or 
     const state = normalized([{ allDay }]);
     const fragment = state.composition.subject.regions[0].fragments[0];
     const hours = fragment.content.main.openingHours.standardHours[0].hours;
-    assert.equal(formatHoursList(hours), 'Hours unavailable');
-    assert.equal(toContextDiningHours(state, new Date('2026-09-21T18:00:00Z'))[0]
-      .sections[0].groups[0].hours, 'Hours unavailable');
+    assert.equal(formatDiningRange({ ...hours[0] }), 'Hours unavailable');
   }
-  assert.equal(formatHoursList([]), 'Hours unavailable');
 });

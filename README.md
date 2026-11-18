@@ -10,7 +10,7 @@ bottom of the dependency graph.
 ## Layout
 
     src/         repository layer, schemas, Postgres access, static data
-    ingestion/   per-source scrapers and the markdown generators
+    ingestion/   per-source scrapers
     pipeline/    validation, quality gates, and publication
     scripts/     database maintenance and one-off utilities
     data/        the artifacts themselves (mostly gitignored, rebuilt)

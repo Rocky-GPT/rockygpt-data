@@ -6,7 +6,6 @@ import { assertSiteFetchAllowed } from './site-guard';
 import {
   assertCollectionCount,
   isRawOnlyMode,
-  runGeneratorScript,
   writeJsonFile,
   writeRawProvenance,
 } from './pipeline-utils';
@@ -20,7 +19,6 @@ const FUTURE_CALENDAR_URL =
 const RAW_JSON_OUTPUT_PATH = path.join(process.cwd(), 'data', 'raw', 'calendar.raw.json');
 const JSON_OUTPUT_PATH = path.join(process.cwd(), 'data', 'normalized', 'calendar.json');
 const PUBLIC_JSON_OUTPUT_PATH = publicPath('data', 'calendar.json');
-const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-calendar-md.ts');
 
 function cleanText(value: string | null | undefined): string {
   return value?.replace(/\s+/g, ' ').trim() || '';
@@ -175,7 +173,6 @@ async function fetchAcademicCalendar(): Promise<void> {
   const normalizedSemesters = calendarWithConcepts(semesters);
   writeJsonFile(JSON_OUTPUT_PATH, normalizedSemesters);
   writeJsonFile(PUBLIC_JSON_OUTPUT_PATH, normalizedSemesters);
-  runGeneratorScript(MARKDOWN_GENERATOR_PATH);
 }
 
 if (process.argv[1]?.endsWith('academic-calendar.ts')) void fetchAcademicCalendar().catch((error: unknown) => {

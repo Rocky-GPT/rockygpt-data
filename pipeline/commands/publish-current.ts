@@ -32,9 +32,6 @@ import { FileRepositoryV2 } from '../../src/data-v2/repositories/file-repository
 import { assertQualityV2, validateCurrentDatasetV2 } from '../quality/validate';
 import { testBuildFromCapturedPages } from '../test-build';
 import { recordValidity } from '../../src/data-v2/validity';
-import { sourceKeyForPath } from '../context-sources';
-import { listMarkdownFiles } from '../../src/data-v2/document-text';
-import { chunkCountsBySource, chunkGateError } from '../document-chunk-gate';
 import { SOURCES } from '../../src/data-v2/source-seeds';
 import {
   evaluateSourceProvenance,
@@ -50,14 +47,6 @@ import { RELEASE_ARTIFACT_FILES } from '../release-artifact-files';
 import { RELEASE_SNAPSHOT_FILE, writeReleaseSnapshot } from '../release-snapshot';
 
 type JsonRecord = Record<string, unknown>;
-
-interface PreparedDocument {
-  sourceKey: string;
-  title: string;
-  content: string;
-  metadata: JsonRecord;
-  collectedAt: string;
-}
 
 interface PreparedArtifact {
   key: string;
@@ -582,52 +571,6 @@ async function insertStructured(
   return counts;
 }
 
-function prepareDocuments(
-  collectedAtFor: (sourceKey: string) => string
-): PreparedDocument[] {
-  const root = path.join(process.cwd(), 'data/context');
-  const documents: PreparedDocument[] = [];
-  for (const filePath of listMarkdownFiles(root)) {
-    const content = fs.readFileSync(filePath, 'utf8').trim();
-    if (!content) continue;
-    const relativePath = path.relative(root, filePath).split(path.sep).join('/');
-    const sourceKey = sourceKeyForPath(filePath);
-    const title = cleanText(content.match(/^#\s+(.+)$/m)?.[1]) || path.basename(filePath, '.md');
-    const metadata = { sourcePath: relativePath };
-    documents.push({
-      sourceKey,
-      title,
-      content,
-      metadata,
-      collectedAt: collectedAtFor(sourceKey),
-    });
-  }
-  return documents;
-}
-
-/**
- * The documents only. Their chunks are no longer stored (11-16): about 24,000 rows a night that
- * nothing answering students read, since the Brain answers from the graph. The publish's check
- * still counts chunks, cut from each document's text (document-chunk-gate.ts).
- */
-async function insertDocuments(
-  client: PoolClient,
-  datasetId: string,
-  sources: Map<string, string>,
-  documents: PreparedDocument[]
-): Promise<{ documents: number }> {
-  for (const prepared of documents) {
-    await client.query(
-      `INSERT INTO rockygpt_v2.documents
-       (dataset_version_id, source_id, title, content, metadata, collected_at)
-       VALUES ($1,$2,$3,$4,$5::jsonb,$6)`,
-      [datasetId, sources.get(prepared.sourceKey), prepared.title, prepared.content,
-        JSON.stringify(prepared.metadata), prepared.collectedAt]
-    );
-  }
-  return { documents: documents.length };
-}
-
 function prepareReleaseArtifacts(): PreparedArtifact[] {
   return Object.entries(RELEASE_ARTIFACT_FILES).map(([key, relativePath]) => {
     const content = fs.readFileSync(path.join(process.cwd(), relativePath), 'utf8');
@@ -657,7 +600,6 @@ async function insertReleaseArtifacts(
 async function verifyStagingDataset(
   client: PoolClient,
   datasetId: string,
-  candidateChunks: ReadonlyMap<string, number>,
   testBuild = false
 ): Promise<Record<string, number>> {
   const result = await client.query<{
@@ -752,19 +694,6 @@ async function verifyStagingDataset(
   if (howtoShortfall && !testBuild) throw new Error(`Staging verification failed: ${howtoShortfall}`);
   if (howtoShortfall) console.warn(`::warning::This dev build: ${howtoShortfall}`);
 
-  // The documents' text, in all and source by source, counted in chunks for both releases.
-  const activeDocuments = await client.query<{ source_key: string; content: string }>(
-    `SELECT source.source_key, document.content
-     FROM rockygpt_v2.documents document
-     JOIN rockygpt_v2.sources source ON source.id = document.source_id
-     JOIN rockygpt_v2.dataset_versions version ON version.id = document.dataset_version_id
-     WHERE version.status = 'active'`
-  );
-  const activeChunks = chunkCountsBySource(activeDocuments.rows.map((row) => (
-    { sourceKey: row.source_key, content: row.content })));
-  const chunkError = chunkGateError(candidateChunks, activeChunks);
-  if (chunkError) throw new Error(chunkError);
-  counts.document_chunks = [...candidateChunks.values()].reduce((a, b) => a + b, 0);
   return counts;
 }
 
@@ -917,7 +846,7 @@ async function main(): Promise<void> {
       provenanceByKey.get(sourceKey)?.fetchedAt ?? publishedAt;
 
     // Network and CPU-heavy work happens before the staging transaction. Raw
-    // captures are archived, documents are read, and only previously unseen
+    // captures are archived, and only previously unseen
     const archived = await archiveRawArtifacts(provenanceStates);
     step('archive raw captures');
     const manifest = await createReleaseManifest(client, {
@@ -930,12 +859,11 @@ async function main(): Promise<void> {
     });
     releaseId = manifest.releaseId;
     step('write release manifest');
-    const preparedDocuments = prepareDocuments(collectedAtFor);
     const artifacts = prepareReleaseArtifacts();
     const identitySeed = readJson<CampusIdentities>('src/reference/campus-identities.json');
     validateCampusIdentities(identitySeed);
     const rawCatalog = readJson<unknown>('data/raw/catalog-programs-api.raw.json');
-    step('prepare documents and artifacts');
+    step('prepare artifacts');
 
     // Build the candidate release transactionally, but do not hold this
     // transaction open across object-storage calls.
@@ -951,13 +879,6 @@ async function main(): Promise<void> {
     );
     const structured = await insertStructured(client, datasetId, sources, collectedAtFor);
     step('insert structured records');
-    const documents = await insertDocuments(
-      client,
-      datasetId,
-      sources,
-      preparedDocuments
-    );
-    step(`insert ${documents.documents} documents`);
     const sourceArtifactCount = await insertReleaseArtifacts(client, datasetId, artifacts);
     step('insert release artifacts');
     const identityArtifacts = await insertCampusIdentityArtifacts(client, datasetId, identitySeed, rawCatalog, {
@@ -1005,14 +926,13 @@ async function main(): Promise<void> {
     // Verification reads the committed-but-inactive candidate. Activation is
     // a separate short pointer-swap transaction, so readers never see partial
     // data and a failed gate leaves the previous release untouched.
-    const verifiedCounts = await verifyStagingDataset(client, datasetId, chunkCountsBySource(preparedDocuments), testBuild);
+    const verifiedCounts = await verifyStagingDataset(client, datasetId, testBuild);
     step('verify record counts');
     const identityContinuity = await verifyIdentityContinuity(client, datasetId, identitySeed, { catalog: rawCatalog });
     step('verify identity continuity');
     const summary = {
       ...quality,
       structured,
-      ...documents,
       releaseArtifactCount,
       identityCoverage: identityArtifacts.coverage,
       identityContinuity,
@@ -1047,8 +967,6 @@ async function main(): Promise<void> {
       writeReleaseSnapshot(path.join(process.cwd(), RELEASE_SNAPSHOT_FILE), {
         version,
         artifacts: Object.fromEntries(artifacts.map((artifact) => [artifact.key, artifact.content])),
-        documents: Object.fromEntries(preparedDocuments.map((document) =>
-          [String(document.metadata.sourcePath), document.content])),
       });
     } catch (error) {
       console.warn(`Could not save the release copy for the next refresh: ${
