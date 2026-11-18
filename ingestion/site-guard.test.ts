@@ -8,14 +8,17 @@ import { fetchWithPolicy } from './http-client';
 import {
   ALLOW_SITE_FETCH_ENV,
   assertSiteFetchAllowed,
+  forgetSiteRobots,
   isRamapoHost,
   noteSiteDownloads,
   SITE_DOWNLOADS_NOTE_ENV,
   startSiteDownloadsNote,
   RAMAPO_CONCURRENCY,
   RAMAPO_REQUEST_GAP_MS,
+  RobotsDisallowedError,
   SiteFetchBlockedError,
   siteFetchAllowed,
+  siteRobots,
 } from './site-guard';
 
 /** Runs with the given environment values, putting the old ones back after. */
@@ -79,7 +82,8 @@ test('a laptop request to Ramapo stops before anything is sent, and other hosts 
   } finally {
     globalThis.fetch = original;
   }
-  assert.deepEqual(sent, ['https://example.edu/finaid/', 'https://guard-allowed.ramapo.edu/finaid/']);
+  assert.deepEqual(sent, ['https://example.edu/finaid/', 'https://guard-allowed.ramapo.edu/robots.txt',
+    'https://guard-allowed.ramapo.edu/finaid/']);
 });
 
 test('Ramapo gets at most two open requests, each started half a second after the last, whatever a collector asks', async () => {
@@ -138,4 +142,56 @@ test('outside a refresh the line is only printed; a refresh starts the note for 
     if (before === undefined) delete process.env[SITE_DOWNLOADS_NOTE_ENV]; else process.env[SITE_DOWNLOADS_NOTE_ENV] = before;
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+// ramapo.edu's rules as its robots.txt printed them on 2026-11-18, and Archway's on 2026-11-05.
+const RAMAPO_ROBOTS = 'User-Agent: *\nDisallow: /catalog_05_06/\n';
+const ARCHWAY_ROBOTS = [
+  'User-agent: *', 'Disallow: /upload/', 'Disallow: /student_docs/', 'Disallow: /downloads/',
+  'Disallow: /mobile_ws/v17/', 'Disallow: /mobile_ws/v18/', 'Disallow: *ajax_widget_new', '',
+].join('\n');
+
+test("robots.txt rules: ramapo.edu's old catalog and Archway's phone-app feeds are refused, the rest is allowed", () => {
+  const ramapo = siteRobots('https://www.ramapo.edu/robots.txt', 200, RAMAPO_ROBOTS);
+  assert.equal(ramapo.allows('https://www.ramapo.edu/registrar/'), true);
+  assert.equal(ramapo.allows('https://www.ramapo.edu/catalog_05_06/index.html'), false);
+  assert.equal(ramapo.delayMs, 0);
+  const archway = siteRobots('https://archway.ramapo.edu/robots.txt', 200, ARCHWAY_ROBOTS);
+  assert.equal(archway.allows('https://archway.ramapo.edu/ics_helper'), true);
+  assert.equal(archway.allows('https://archway.ramapo.edu/mobile_ws/v17/mobile_events_list'), false);
+  assert.equal(archway.allows('https://archway.ramapo.edu/x/ajax_widget_new?id=1'), false);
+});
+
+test('a missing robots.txt allows everything; one that cannot be read refuses everything this run', () => {
+  assert.equal(siteRobots('https://a.ramapo.edu/robots.txt', 404).allows('https://a.ramapo.edu/x'), true);
+  for (const status of [500, 503, 429, undefined]) {
+    const robots = siteRobots('https://a.ramapo.edu/robots.txt', status);
+    assert.equal(robots.allows('https://a.ramapo.edu/x'), false);
+    assert.match(robots.unreadable ?? '', /could not be read/);
+  }
+});
+
+test('every Ramapo request is checked against robots.txt, read once a run, and a refused page is never sent', async () => {
+  const original = globalThis.fetch;
+  const sent: string[] = [];
+  globalThis.fetch = async input => {
+    sent.push(String(input));
+    if (String(input).endsWith('/robots.txt')) return new Response('User-agent: *\nDisallow: /private/\n');
+    return new Response('ok');
+  };
+  forgetSiteRobots();
+  try {
+    await withEnv({ [ALLOW_SITE_FETCH_ENV]: '1' }, async () => {
+      await fetchWithPolicy('https://robots-test.ramapo.edu/open', {}, { attempts: 1 });
+      await assert.rejects(() => fetchWithPolicy('https://robots-test.ramapo.edu/private/page', {}, { attempts: 3 }),
+        RobotsDisallowedError);
+      await fetchWithPolicy('https://robots-test.ramapo.edu/open-again', {}, { attempts: 1 });
+      await fetchWithPolicy('https://example.edu/private/page', {}, { attempts: 1 });
+    });
+  } finally {
+    globalThis.fetch = original;
+    forgetSiteRobots();
+  }
+  assert.deepEqual(sent, ['https://robots-test.ramapo.edu/robots.txt', 'https://robots-test.ramapo.edu/open',
+    'https://robots-test.ramapo.edu/open-again', 'https://example.edu/private/page']);
 });

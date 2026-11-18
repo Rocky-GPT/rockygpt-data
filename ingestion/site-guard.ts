@@ -2,7 +2,7 @@
  * site-guard.ts
  *
  * Ramapo's own sites (*.ramapo.edu, and the college's athletics site ramapoathletics.com) are
- * read as little and as gently as possible (Dan, November 2, 2026). Three rules live here:
+ * read as little and as gently as possible (Dan, November 2, 2026). Four rules live here:
  *
  * 1. Only the daily data run downloads from them. A laptop, or any other machine, reuses the
  *    pages that run captured (npm run data:bootstrap -- --require-raw) and never collects on
@@ -11,15 +11,24 @@
  * 2. At most RAMAPO_CONCURRENCY requests are open to one Ramapo host at a time, whatever a
  *    collector asks for.
  * 3. Each request to a Ramapo host starts at least RAMAPO_REQUEST_GAP_MS after the last one
- *    to that host started.
+ *    to that host started, or the crawl delay the site's robots.txt asks for when that is longer.
+ * 4. Every request to a Ramapo site is checked against that site's robots.txt first (read once a
+ *    run per site, with the robots-parser package). A page robots.txt disallows is not requested.
+ *    Before this rule, only the athletics site's robots.txt was read in code; ramapo.edu's and
+ *    Archway's were read once by a person and copied into comments, so a new "Disallow" line
+ *    would have gone unnoticed (tool review, November 18, 2026).
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
+import robotsParser from 'robots-parser';
 
 export const ALLOW_SITE_FETCH_ENV = 'ROCKYGPT_ALLOW_SITE_FETCH';
 export const RAMAPO_CONCURRENCY = 2;
 export const RAMAPO_REQUEST_GAP_MS = 500;
+/** A browser's user agent, sent unless a request sets its own: requests never name the project. */
+export const DEFAULT_USER_AGENT =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
 
 type GuardEnvironment = Readonly<Record<string, string | undefined>>;
 
@@ -59,20 +68,110 @@ export function assertSiteFetchAllowed(input: string | URL, env: GuardEnvironmen
   if (isRamapoHost(url.hostname) && !siteFetchAllowed(env)) throw new SiteFetchBlockedError(url.toString());
 }
 
+/** What one site's robots.txt says for every robot (`User-agent: *`), since requests never name the project. */
+export interface SiteRobots {
+  /** Whether a page may be requested. */
+  allows(url: string | URL): boolean;
+  /** The crawl delay it asks for, in milliseconds (0 when none). */
+  delayMs: number;
+  /** Why every page is refused, when robots.txt could not be read. */
+  unreadable?: string;
+}
+
+/**
+ * The rules of a robots.txt file. RFC 9309: a missing file (any 4xx but 429) allows everything,
+ * and an unreachable one (5xx, 429, no answer) is read as "disallow everything" for this run.
+ */
+export function siteRobots(robotsUrl: string, status: number | undefined, text = ''): SiteRobots {
+  if (status !== undefined && status >= 200 && status < 300) {
+    const robot = robotsParser(robotsUrl, text);
+    return {
+      allows: url => robot.isAllowed(url.toString()) !== false,
+      delayMs: Math.max(0, (robot.getCrawlDelay() ?? 0) * 1000),
+    };
+  }
+  if (status !== undefined && status >= 400 && status < 500 && status !== 429) {
+    return { allows: () => true, delayMs: 0 };
+  }
+  const unreadable = `${robotsUrl} could not be read (${status ?? 'no answer'})`;
+  return { allows: () => false, delayMs: 0, unreadable };
+}
+
+export class RobotsDisallowedError extends Error {
+  constructor(url: string, robots: SiteRobots) {
+    super(robots.unreadable
+      ? `Not downloading ${url}: ${robots.unreadable}, so every page of that site is left alone this run.`
+      : `Not downloading ${url}: the site's robots.txt does not allow it.`);
+    this.name = 'RobotsDisallowedError';
+  }
+}
+
+const ROBOTS_TIMEOUT_MS = 15_000;
+const ROBOTS_ATTEMPTS = 2;
+const robotsByOrigin = new Map<string, Promise<SiteRobots>>();
+
+function isRobotsFile(url: URL): boolean {
+  return url.pathname === '/robots.txt';
+}
+
+async function readSiteRobots(origin: string): Promise<SiteRobots> {
+  const robotsUrl = `${origin}/robots.txt`;
+  assertSiteFetchAllowed(robotsUrl);
+  let status: number | undefined;
+  for (let attempt = 1; attempt <= ROBOTS_ATTEMPTS; attempt += 1) {
+    await paceRamapoRequest(robotsUrl);
+    try {
+      const response = await fetch(robotsUrl, {
+        headers: { 'User-Agent': DEFAULT_USER_AGENT, Accept: 'text/plain' }, signal: AbortSignal.timeout(ROBOTS_TIMEOUT_MS),
+      });
+      status = response.status;
+      if (status < 500 && status !== 429) return siteRobots(robotsUrl, status, await response.text());
+    } catch {
+      status = undefined;
+    }
+  }
+  return siteRobots(robotsUrl, status);
+}
+
+/** The robots.txt rules of a Ramapo site, read once a run (only the first caller downloads it). */
+export function robotsFor(input: string | URL): Promise<SiteRobots> {
+  const url = input instanceof URL ? input : new URL(input);
+  const origin = url.origin.toLowerCase();
+  let robots = robotsByOrigin.get(origin);
+  if (!robots) {
+    robots = readSiteRobots(origin);
+    robotsByOrigin.set(origin, robots);
+  }
+  return robots;
+}
+
+/** Forgets every site's robots.txt, so the next request reads it again (tests). */
+export function forgetSiteRobots(): void {
+  robotsByOrigin.clear();
+}
+
 // When the next request to each Ramapo host may start.
 const nextStartByHost = new Map<string, number>();
 
 /**
- * Waits until a request to this host may start: RAMAPO_REQUEST_GAP_MS after the last one to the
- * same Ramapo host started. Other hosts do not wait. Every collector's requests share the gap,
- * the browser-driven ones (Playwright) included.
+ * Checks a request to a Ramapo host against the site's robots.txt, then waits until it may
+ * start: RAMAPO_REQUEST_GAP_MS (or the site's longer crawl delay) after the last request to the
+ * same host started. Other hosts pass at once. Every collector's requests share the gap, the
+ * browser-driven ones (Playwright) included. A page robots.txt disallows throws
+ * RobotsDisallowedError before anything is sent.
  */
 export async function paceRamapoRequest(input: string | URL): Promise<void> {
   const url = input instanceof URL ? input : new URL(input);
   if (!isRamapoHost(url.hostname)) return;
+  let gapMs = RAMAPO_REQUEST_GAP_MS;
+  if (!isRobotsFile(url)) {
+    const robots = await robotsFor(url);
+    if (!robots.allows(url)) throw new RobotsDisallowedError(url.toString(), robots);
+    gapMs = Math.max(gapMs, robots.delayMs);
+  }
   const host = url.host.toLowerCase();
   const start = Math.max(Date.now(), nextStartByHost.get(host) ?? 0);
-  nextStartByHost.set(host, start + RAMAPO_REQUEST_GAP_MS);
+  nextStartByHost.set(host, start + gapMs);
   const wait = start - Date.now();
   if (wait > 0) await new Promise<void>(resolve => setTimeout(resolve, wait));
 }

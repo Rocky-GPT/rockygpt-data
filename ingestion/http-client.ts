@@ -1,5 +1,7 @@
 import { limit, type Limit } from './limit';
-import { assertSiteFetchAllowed, isRamapoHost, paceRamapoRequest, RAMAPO_CONCURRENCY } from './site-guard';
+import {
+  assertSiteFetchAllowed, DEFAULT_USER_AGENT, isRamapoHost, paceRamapoRequest, RAMAPO_CONCURRENCY, RobotsDisallowedError,
+} from './site-guard';
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_ATTEMPTS = 3;
@@ -8,8 +10,7 @@ const DEFAULT_PER_HOST_CONCURRENCY = 8;
 const DEFAULT_BACKOFF_MS = 400;
 const MAX_BACKOFF_MS = 30_000;
 // A browser's user agent, sent unless a request sets its own: requests never name the project.
-export const DEFAULT_USER_AGENT =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+export { DEFAULT_USER_AGENT };
 const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const IDEMPOTENT_METHODS = new Set(['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']);
 
@@ -241,6 +242,8 @@ export async function fetchWithPolicy(
       return response;
     } catch (error) {
       lastError = error;
+      // A page robots.txt refuses is not asked for again, and the refusal reaches the collector as it is.
+      if (error instanceof RobotsDisallowedError) throw error;
       if (error instanceof UnexpectedContentTypeError || !mayRetryMethod || attempt >= attempts || init.signal?.aborted) {
         break;
       }
