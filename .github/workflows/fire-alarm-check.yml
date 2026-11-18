@@ -1,0 +1,104 @@
+name: One-off check, fire alarm tests read as a fire
+
+# Temporary (fire alarm thread, 2026-11-18): removed once its result is read. Luna's read on
+# 76 messages, 3 rounds, old Brain (dev) vs new (the fix branch), then both real Brains asked
+# 34 of them with the rocky CLI. About $0.30 at most (ledger capped at $1).
+on:
+  push:
+    branches: [claude/project-thread-5shipx]
+    paths: ['.github/workflows/fire-alarm-check.yml', 'scripts/review/fire-alarm-check/**']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: ledger
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres -d ledger"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-brain, ref: dev, path: brain-old }
+      - uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-brain, ref: claude/project-thread-5shipx, path: brain-new }
+      - uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-workspace, ref: main, path: workspace }
+      - uses: actions/setup-python@v6
+        with: { python-version: '3.13' }
+      - name: Install both Brains
+        run: |
+          for side in old new; do
+            python -m venv "venv-$side"
+            "venv-$side/bin/pip" install --quiet --require-hashes -r "brain-$side/requirements.lock"
+            "venv-$side/bin/pip" install --quiet --no-deps -e "./brain-$side[graph]"
+          done
+      - name: Luna's read, old vs new, 3 rounds
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_PROJECT: proj_aMhXgndK2e9EUQZpXbLFh4yV
+        run: |
+          cd scripts/review/fire-alarm-check
+          for side in old new; do "$GITHUB_WORKSPACE/venv-$side/bin/python" read_check.py messages.json "$side" 3; done
+          python summary.py messages.json
+
+      - name: Download the live graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: |
+          venv-new/bin/python -m rockygpt_brain.retrieval.graph_sync graph-new > /dev/null
+          cp -r graph-new graph-old
+      - name: Throwaway spending ledger, capped at $1
+        run: |
+          admin=postgresql://postgres@127.0.0.1:5432/ledger
+          for file in brain-new/migrations/*.sql; do psql -q -v ON_ERROR_STOP=1 "$admin" -f "$file"; done
+          psql -q -v ON_ERROR_STOP=1 "$admin" <<SQL
+          UPDATE brain_ops.accounts SET cap_nusd = 1000000000 WHERE environment = 'development';
+          CREATE ROLE ci_brain LOGIN PASSWORD 'ci';
+          GRANT brain_development TO ci_brain;
+          SQL
+      - name: Start both Brains with production's pinned settings
+        env:
+          BRAIN_ENVIRONMENT: development
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          BRAIN_LEDGER_DATABASE_URL: postgresql://ci_brain:ci@127.0.0.1:5432/ledger
+        run: |
+          export BRAIN_OPENAI_PROJECT=proj_aMhXgndK2e9EUQZpXbLFh4yV BRAIN_OUTPUT=written \
+            BRAIN_HOWTO_ONE_CALL=1 BRAIN_OPENAI_DECIDE_EFFORT=low BRAIN_WRITER_MAX_OUTPUT_TOKENS=6000 \
+            BRAIN_OPENAI_EMBED_MODEL=text-embedding-3-large BRAIN_OPENAI_EMBED_INPUT_NUSD_PER_TOKEN=130 \
+            BRAIN_OPENAI_EMBED_PRICE_VALID_UNTIL=2026-12-25T00:00:00+00:00
+          port=8101
+          for side in old new; do
+            (cd "brain-$side" && BRAIN_GRAPH_ONLY_DIR="$GITHUB_WORKSPACE/graph-$side" \
+              nohup "$GITHUB_WORKSPACE/venv-$side/bin/uvicorn" rockygpt_brain.api.app:app \
+              --host 127.0.0.1 --port "$port" > "$GITHUB_WORKSPACE/brain-$side.log" 2>&1 &)
+            port=$((port + 1))
+          done
+          for port in 8101 8102; do
+            for i in $(seq 1 90); do
+              curl -fsS "http://127.0.0.1:$port/readiness" > /dev/null 2>&1 && break
+              sleep 2
+            done
+            curl -fsS "http://127.0.0.1:$port/readiness" || { tail -40 brain-*.log; exit 1; }
+            echo
+          done
+      - name: Ask both Brains with the rocky CLI
+        run: |
+          python workspace/rocky bulk file scripts/review/fire-alarm-check/ask.txt --brain 8101 --out old.json --parallel 3
+          python workspace/rocky bulk file scripts/review/fire-alarm-check/ask.txt --brain 8102 --out new.json --parallel 3
+          venv-new/bin/python scripts/review/fire-alarm-check/show_answers.py old.json new.json
+          psql -tA postgresql://postgres@127.0.0.1:5432/ledger -c "SELECT 'Brains spent about \$' || round(sum(spent_nusd)/1e9, 4) FROM brain_ops.accounts" || true
