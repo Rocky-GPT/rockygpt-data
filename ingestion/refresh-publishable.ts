@@ -22,6 +22,7 @@ import {
   runIsolatedRefresh,
   type KeptSource,
 } from './refresh-isolation';
+import { replayPageDatasets } from './replay-raw';
 import { ALLOW_SITE_FETCH_ENV, noteSiteDownloads, siteFetchAllowed, startSiteDownloadsNote } from './site-guard';
 
 /**
@@ -440,6 +441,9 @@ export function keptPastWindowKeys(
 }
 
 function rebuildProjections(): void {
+  // The parsed pages first: every page source is read again from its saved HTML with this
+  // checkout's reader, so a source not collected tonight carries no older reader's sections.
+  for (const line of replayPageDatasets()) console.log(line);
   // Rebuild every projection from its complete source capture, including
   // event/club detail pages; never relabel old normalized content as fresh.
   runNpmScript('quality:raw', false);
