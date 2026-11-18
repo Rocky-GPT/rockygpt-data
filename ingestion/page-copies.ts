@@ -28,9 +28,11 @@ export function pageCopies(captures: readonly RawSourceCaptureV1[]): Map<string,
   for (const capture of captures) {
     for (const page of capture.pages) {
       if (page.statusCode !== 200 || page.failure) continue;
-      const copy = { html: sourceHtml(page), fetchedAt: page.downloadedAt || page.fetchedAt };
+      // The reviewed contact documents' capture keeps PDFs (pdfGzip) in the same shape: not a page copy.
+      if (typeof page.html !== 'string' && typeof page.htmlGzip !== 'string') continue;
+      const copy = { html: sourceHtml(page) ?? '', fetchedAt: page.downloadedAt || page.fetchedAt };
       if (!copy.html.trim()) continue;
-      for (const url of [page.url, page.requestedUrl]) {
+      for (const url of [page.url, page.requestedUrl].filter((value): value is string => typeof value === 'string' && value !== '')) {
         const key = pageKey(url);
         const known = copies.get(key);
         if (!known || Date.parse(copy.fetchedAt) > Date.parse(known.fetchedAt)) copies.set(key, copy);
