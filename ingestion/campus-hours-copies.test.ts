@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { LIBRARY_HOURS_URL, OFFICE_HOURS_PAGES, rereadFromPageCopies, type HoursSourceCapture } from './campus-hours';
-import { pageKey, type PageCopy } from './page-copies';
+import { pageCopies, pageKey, type PageCopy } from './page-copies';
+import type { RawSourceCaptureV1 } from './raw-collector';
 import { PAGE_COPY_SOURCES, readsPageCopiesOnly, refreshScriptsForStates } from './refresh-publishable';
 
 // Audit 2026-11-17, item 9: an office's hours are re-read the night its page changes, from the
@@ -51,4 +52,20 @@ test('hours run every night after the page collectors, and read only page copies
   assert.equal(readsPageCopiesOnly('campus-hours', states, new Set(['campus-hours']), []), false);
   assert.equal(readsPageCopiesOnly('campus-hours', states, new Set(), ['fetch:hours']), false);
   assert.equal(readsPageCopiesOnly('office-pages', states, new Set(), []), false);
+});
+
+test('a captured page without its HTML is not a copy', () => {
+  // 11-18 04:44Z: the first nightly read stopped on "Cannot read properties of undefined (reading
+  // 'trim')", because reviewed-contact-documents-sources.raw.json keeps PDFs (pdfGzip), never HTML.
+  const capture = {
+    schemaVersion: 1 as const, dataset: 'office-pages', generatedAt: '2026-11-18T04:00:00Z', collectionSucceeded: true,
+    pages: [
+      { url: crw.url, statusCode: 200, contentType: 'text/html', sourceType: 'detail' as const, fetchedAt: '2026-11-18T04:00:00Z', contentHash: 'x' },
+      { url: 'https://www.ramapo.edu/other/', requestedUrl: undefined, statusCode: 200, contentType: 'text/html', html: page('x'),
+        sourceType: 'detail' as const, fetchedAt: '2026-11-18T04:00:00Z', contentHash: 'y' },
+    ],
+  } as unknown as RawSourceCaptureV1;
+  const copies = pageCopies([capture]);
+  assert.equal(copies.has(pageKey(crw.url)), false);
+  assert.equal(copies.has(pageKey('https://www.ramapo.edu/other/')), true);
 });
