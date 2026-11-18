@@ -262,6 +262,14 @@ jobs:
       # The data tests are not run here: they use only committed fixtures, never what this
       # run collected, and CI already ran them on this same commit when it reached main or dev.
 
+      # Each hours reader on tonight's copy of its page, which the office and school page
+      # collectors already downloaded: no extra request to Ramapo's sites. Hours are read weekly,
+      # so this names a page whose wording changed before that read has to keep its old hours.
+      # Report-only (data/review/hours-spot-check.md).
+      - name: Spot check the hours pages
+        continue-on-error: true
+        run: npx tsx ingestion/hours-spot-check.ts
+
       # The dev build's publish runs these same gates, except the age check (its pages are
       # production's last capture, possibly a little past a freshness window).
       - name: Run data quality gates
