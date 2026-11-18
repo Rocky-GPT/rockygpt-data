@@ -1,0 +1,185 @@
+name: Compare two Brains on the same questions
+
+# Old vs new, the fair way (tool review, 2026-11-18): two Brain versions answer the same frozen
+# question set against the same live graph, one grader (Luna) grades both against the set's
+# answer key, and a paired sign test says whether the difference is real or could be luck.
+# Runs promptfoo (rockygpt-evals compare/, see its README). Each Brain is the real server, started as on the
+# laptop, with its own spending ledger in a throwaway database capped at max_usd for both Brains
+# together. The grader's own calls are not in that ledger (about 2 short calls per question).
+# This job spends money: ask Dan before a run over about $1. For the steady ruler, rebuild the
+# run_day keys first (steady-ruler/README.md); this job grades with one grader, not two.
+on:
+  workflow_dispatch:
+    inputs:
+      old_ref:
+        description: Brain version to compare from (branch, tag or commit)
+        default: main
+      new_ref:
+        description: Brain version to compare to
+        default: dev
+      set:
+        description: Questions in rockygpt-evals, a blind-set folder or a keyed .json file
+        default: steady-ruler/open/open-half.json
+      only:
+        description: Ask only these ids, comma separated (empty = the whole set)
+        default: ''
+      repeat:
+        description: Times each side answers each question (most tries decide)
+        default: '1'
+      max_usd:
+        description: Most both Brains together may spend, in dollars (their own ledger stops them)
+        default: '1.00'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: compare-brains
+  cancel-in-progress: false
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: ledger
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres -d ledger"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      OLD_REF: ${{ inputs.old_ref || 'main' }}
+      NEW_REF: ${{ inputs.new_ref || 'dev' }}
+      SET: ${{ inputs.set || 'steady-ruler/open/open-half.json' }}
+      ONLY: ${{ inputs.only }}
+      REPEAT: ${{ inputs.repeat || '1' }}
+      MAX_USD: ${{ inputs.max_usd || '1.00' }}
+      PROMPTFOO_DISABLE_TELEMETRY: '1'
+      PROMPTFOO_DISABLE_UPDATE: '1'
+    steps:
+      - name: Checkout the old Brain
+        uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-brain, ref: '${{ env.OLD_REF }}', path: brain-old }
+      - name: Checkout the new Brain
+        uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-brain, ref: '${{ env.NEW_REF }}', path: brain-new }
+      - name: Checkout the question sets and the comparison
+        uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-evals, ref: dev, path: evals }
+
+      - uses: actions/setup-python@v6
+        with: { python-version: '3.13' }
+      - uses: actions/setup-node@v6
+        with: { node-version: '22' }
+
+      - name: Install both Brains, each in its own environment
+        run: |
+          for side in old new; do
+            python -m venv "venv-$side"
+            "venv-$side/bin/pip" install --quiet --require-hashes -r "brain-$side/requirements.lock"
+            "venv-$side/bin/pip" install --quiet --no-deps -e "./brain-$side[graph]"
+          done
+          npm install --no-audit --no-fund --prefix tools promptfoo@0.126.0 > /dev/null
+
+      - name: Download the live graph (read only), one copy for each Brain
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: |
+          venv-new/bin/python -m rockygpt_brain.retrieval.graph_sync graph-new > /dev/null
+          cp -r graph-new graph-old
+
+      - name: Make a throwaway spending ledger, capped at max_usd
+        run: |
+          admin=postgresql://postgres@127.0.0.1:5432/ledger
+          for file in brain-new/migrations/*.sql; do psql -q -v ON_ERROR_STOP=1 "$admin" -f "$file"; done
+          cap=$(python -c "import os; print(int(float(os.environ['MAX_USD']) * 1_000_000_000))")
+          psql -q -v ON_ERROR_STOP=1 "$admin" <<SQL
+          UPDATE brain_ops.accounts SET cap_nusd = $cap WHERE environment = 'development';
+          CREATE ROLE ci_brain LOGIN PASSWORD 'ci';
+          GRANT brain_development TO ci_brain;
+          SQL
+
+      - name: Start both Brains
+        env:
+          BRAIN_ENVIRONMENT: development
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          BRAIN_LEDGER_DATABASE_URL: postgresql://ci_brain:ci@127.0.0.1:5432/ledger
+        run: |
+          # Production's pinned settings (rockygpt-infra config/environment-sync.json), minus the
+          # file store: each Brain reads its own downloaded copy and never follows a new release.
+          export BRAIN_OPENAI_PROJECT=proj_aMhXgndK2e9EUQZpXbLFh4yV BRAIN_OUTPUT=written \
+            BRAIN_HOWTO_ONE_CALL=1 BRAIN_OPENAI_DECIDE_EFFORT=low BRAIN_WRITER_MAX_OUTPUT_TOKENS=6000 \
+            BRAIN_OPENAI_EMBED_MODEL=text-embedding-3-large BRAIN_OPENAI_EMBED_INPUT_NUSD_PER_TOKEN=130 \
+            BRAIN_OPENAI_EMBED_PRICE_VALID_UNTIL=2026-12-25T00:00:00+00:00
+          port=8101
+          for side in old new; do
+            (cd "brain-$side" && BRAIN_GRAPH_ONLY_DIR="$GITHUB_WORKSPACE/graph-$side" \
+              nohup "$GITHUB_WORKSPACE/venv-$side/bin/uvicorn" rockygpt_brain.api.app:app \
+              --host 127.0.0.1 --port "$port" > "$GITHUB_WORKSPACE/brain-$side.log" 2>&1 &)
+            echo "$(echo "$side" | tr a-z A-Z)_BRAIN_URL=http://127.0.0.1:$port" >> "$GITHUB_ENV"
+            port=$((port + 1))
+          done
+          for port in 8101 8102; do
+            for i in $(seq 1 90); do
+              curl -fsS "http://127.0.0.1:$port/readiness" > /dev/null 2>&1 && break
+              sleep 2
+            done
+            curl -fsS "http://127.0.0.1:$port/readiness" || { tail -40 brain-*.log; exit 1; }
+            echo
+          done
+
+      - name: Ask both Brains and grade them
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          cd evals/compare
+          export SET="$GITHUB_WORKSPACE/evals/$SET"
+          "$GITHUB_WORKSPACE/tools/node_modules/.bin/promptfoo" eval -c promptfooconfig.yaml \
+            --repeat "$REPEAT" --no-cache --no-table --no-write -o "$GITHUB_WORKSPACE/results.json" \
+            || [ $? -eq 100 ]  # 100 = some answers graded wrong, which is a result, not a broken run
+
+      - name: Each answer and its grade
+        if: always()
+        run: |
+          python - <<'PY' | tee answers.txt
+          import json
+          data = json.load(open("results.json"))["results"]
+          for row in sorted(data.get("results", data), key=lambda r: (r["testCase"]["vars"]["id"], r["provider"].get("label", ""))):
+              answer = ((row.get("response") or {}).get("output") or row.get("error") or "")
+              reason = (row.get("gradingResult") or {}).get("reason") or ""
+              print(f"{row['testCase']['vars']['id']} {row['provider'].get('label')}: {'PASS' if row['success'] else 'FAIL'}")
+              print("  answer:", " ".join(str(answer).split())[:400])
+              print("  grade: ", " ".join(str(reason).split())[:400])
+          PY
+
+      - name: Old vs new, paired
+        if: always()
+        run: |
+          python evals/compare/paired.py results.json --json summary.json | tee paired.txt
+          { echo '## Old vs new'; echo "old \`$OLD_REF\`, new \`$NEW_REF\`, set \`$SET\`, repeat $REPEAT"
+            echo '```'; cat paired.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          admin=postgresql://postgres@127.0.0.1:5432/ledger
+          psql -At "$admin" -c "SELECT 'Brains spent \$' || round(coalesce(sum(cost_nusd),0)/1e9, 4) FROM brain_ops.operations" \
+            | tee -a "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Keep the answers and grades
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: compare-brains
+          path: |
+            results.json
+            summary.json
+            paired.txt
+            answers.txt
+            brain-*.log
+          retention-days: 30
