@@ -1,0 +1,172 @@
+release v2-20261118051419 questions 18
+=== 01-s5 | when does the chess club meet n where
+--- by=one_call status=answered sec=3.92 err=None read: needs=[] limit=none topic=club asked=read q='When does the chess club meet and where?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+I don't have verified information about when or where the chess club meets. The club directory lists no chess club. The Center for Student Involvement may be able to help. [28]
+
+Sources: [28](https://archway.ramapo.edu/CSI/)
+
+=== 02-s5 | where does the anime club meet
+--- by=one_call status=answered sec=7.45 err=None read: needs=[] limit=none topic=club asked=read q='where does the anime club meet' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_units', 'pick_units', 'pick_units', 'write_answer', 'embedding', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+The directory does not list an “Anime Club”; the nearest match is Geek and Nerd Culture, a Student Organization: [https://archway.ramapo.edu/GNCulture/](https://archway.ramapo.edu/GNCulture/) [1]. Its pages describe anime-related activities but do not say where it meets. [3][6] Contact the Center for Student Involvement to ask where the group meets.
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [28]
+
+Sources: [1](https://archway.ramapo.edu/GNCulture/) [3](https://www.ramapo.edu/clubs/organization/geek-nerd-culture-club/) [6](https://www.ramapo.edu/clubs/organization/geek-nerd-culture-club/) [28](https://www.ramapo.edu/campus-directory/)
+
+=== 03-s5 | wen does hillel meet
+--- by=model status=unavailable sec=7.14 err=None read: needs=[] limit=none topic=club asked=read q='When does Hillel meet?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', '3-tools'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+I don't have verified information about that. I can look up published contact details and hours for Ramapo offices, the posted shuttle timetable, and dining hours and menus.
+
+=== 04-s5 | what time does the black student union meet
+--- by=model status=unavailable sec=4.12 err=None read: needs=[] limit=none topic=club asked=read q='what time does the black student union meet' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+I don't have verified information about that. I can look up published contact details and hours for Ramapo offices, the posted shuttle timetable, and dining hours and menus.
+
+=== 05-s5 | how do i contact the ski club
+--- by=one_call status=answered sec=4.03 err=None read: needs=[] limit=none topic=club asked=read q='how do i contact the ski club' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+Email the Ski and Snowboard Club at skiclub@ramapo.edu. [2] You can also find it in the club directory: [https://archway.ramapo.edu/ski/](https://archway.ramapo.edu/ski/). [1]
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [35]
+
+Sources: [1](https://archway.ramapo.edu/ski/) [2](https://www.ramapo.edu/clubs/organization/ramapo-ski-snowboard-club/) [35](https://www.ramapo.edu/campus-directory/)
+
+=== 06-s5 | is the fitness center open this weekend
+--- by=model status=clarification sec=4.32 err=None read: needs=[] limit=none topic=office asked=read q='is the fitness center open this weekend' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[]
+Which office do you mean: Lodge Fitness Center \(College Park Apartments\), Sharp Fitness Center \(Weight Room\)?
+
+=== 07-s5 | registrar hours this week? r they open fri
+--- by=model status=unavailable sec=8.92 err=None read: needs=[] limit=none topic=office asked=own_words q="What are the Registrar's hours this week? Are they open Friday?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Registrar", "fields": ["hours"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:0458a32a-e19c-49e9-8170-1a08a17d1658", "label": "Registrar", "kind": "office", "entity_id": "0458a32a-e19c-49e9-8170-1a08a17d1658", "aliases": ["Dropping a Course", "Enrollment Verification", "Office of the Registrar", "Official Transcripts"]}], "as_of"
+Registrar (Fall/Spring) hours: Monday to Friday: 8:30am-4:30pm; Saturday and Sunday: not published (checked November 17, 2026). Registrar (Summer) hours: Monday to Thursday: 8:00am-5:15pm; Friday: CLOSED; Saturday and Sunday: not published (checked November 17, 2026). [1]
+
+The page does not say which dates this schedule covers. [1]
+
+Sources: [1](https://www.ramapo.edu/registrar/)
+
+=== 08-s5 | whats the library hours next week
+--- by=model status=answered sec=4.18 err=None read: needs=[] limit=none topic=office asked=read q='What are the library hours next week?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Library", "fields": ["hours"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:00a23005-150e-4640-b07e-0cb350c4bb6f", "label": "Library", "kind": "office", "entity_id": "00a23005-150e-4640-b07e-0cb350c4bb6f", "aliases": ["Course Reserves", "Interlibrary Loan", "Potter Library", "Study Rooms"]}], "as_of": "2026-11-18T10:06:04-05:00",
+Library (Main Building) hours: Monday to Thursday: 7:45am-12:00am; Friday: 7:45am-6:00pm; Saturday: 10:00am-6:00pm; Sunday: 12:00pm-12:00am. The page adds: "Fall Semester (Aug. 26 - Dec. 15, 2026). Special Hours: Nov 25 - Nov 28: CLOSED; Nov 29: 4:00pm-12:00am. Please note that the front doors will be locked fifteen minutes before closing time. Circulation services will also cease at that time to give the staff a chance to perform proper closing procedures." [1]
+
+Sources: [1](https://www.ramapo.edu/library/library-hours/)
+
+=== 09-s5 | is the career center open late any day
+--- by=model status=answered sec=3.91 err=None read: needs=[] limit=none topic=office asked=read q='is the career center open late any day' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Cahill Career Development Center", "fields": ["hours"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:30adf6c0-33f9-4349-873d-18ae7e504766", "label": "Cahill Career Development Center", "kind": "office", "entity_id": "30adf6c0-33f9-4349-873d-18ae7e504766", "aliases": ["Cahill Career Center", "Career Center", "Career Fair", "Career
+Cahill Career Development Center hours: Monday to Friday: 8:30am-4:30pm; Saturday and Sunday: not published (checked November 17, 2026). [1] Cahill Career Development Center (Summer) hours: Monday to Thursday: 8:00am-5:15pm; Friday to Sunday: not published (checked November 17, 2026). [2]
+
+The page does not say which dates this schedule covers. [1][2]
+
+Sources: [1](https://www.ramapo.edu/careercenter/) [2](https://www.ramapo.edu/careercenter/)
+
+=== 10-s5 | library summer hours
+--- by=model status=partial sec=4.48 err=None read: needs=[] limit=none topic=office asked=read q="What are the library's summer hours?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Library", "fields": ["hours"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:00a23005-150e-4640-b07e-0cb350c4bb6f", "label": "Library", "kind": "office", "entity_id": "00a23005-150e-4640-b07e-0cb350c4bb6f", "aliases": ["Course Reserves", "Interlibrary Loan", "Potter Library", "Study Rooms"]}], "as_of": "2026-11-18T10:06:08-05:00",
+Library (Main Building) hours: Monday to Thursday: 7:45am-12:00am; Friday: 7:45am-6:00pm; Saturday: 10:00am-6:00pm; Sunday: 12:00pm-12:00am. The page adds: "Fall Semester (Aug. 26 - Dec. 15, 2026). Special Hours: Nov 25 - Nov 28: CLOSED; Nov 29: 4:00pm-12:00am. Please note that the front doors will be locked fifteen minutes before closing time. Circulation services will also cease at that time to give the staff a chance to perform proper closing procedures." [1]
+
+I don't have verified information about that part.
+
+Sources: [1](https://www.ramapo.edu/library/library-hours/)
+
+=== 11-s5 | is the shuttle running next thursday
+--- by=code status=answered sec=0.11 err=None read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=[{"tool": "shuttle_lookup", "traversedBy": "code", "status": "ok", "result_count": 4, "arguments": {"stop": null, "route": null, "day": "thursday", "which": "next", "after": null, "by": null, "times": false, "back": false}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "shuttle", "label": "Shuttle", "kind": "category"}], "as_of": "2026-11-18T10:06:09-05:00", "dataset_version": "v2-20261118051419", "identity_hash": "70d8f021d3e7e2e5454e210f4caccd4841f60e0bcd68f9d15adfb5c9b1dd355c", "office": "Shuttle timetable", "day": {"day": "thursday", "date": "2026-11-19"}, "answer": {"text": "Next shuttle on Thursday, November 19: 7:00 AM (Mid-Day Weekday Express Train), calling at
+Next shuttle on Thursday, November 19: 7:00 AM (Mid-Day Weekday Express Train), calling at Ramsey Rt 17 Train, back on campus at 7:20 AM; 7:00 AM (Weekday Roadrunner Express), calling at Garden State Plaza, back on campus at 7:55 AM. Every trip leaves from Ramapo College (Bradley Center).
+
+=== 12-s5 | shuttle to the mall over thanksgiving?
+--- by=model status=answered sec=5.51 err=None read: needs=[] limit=none topic=shuttle asked=read q='Is there a shuttle to the mall over Thanksgiving?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'shuttle', 'by': 'read'}
+--- lookups=[{"tool": "shuttle_lookup", "traversedBy": "code", "status": "ok", "result_count": 4, "arguments": {"stop": "Garden State Plaza", "route": null, "day": "2026-11-26", "which": "all", "after": null, "by": null, "times": false, "back": false}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "shuttle", "label": "Shuttle", "kind": "category"}], "as_of": "2026-11-18T10:06:09-05:00", "dataset_version": "v2-20261118051419", "identity_hash": "70d8f021d3e7e2e5454e210f4caccd4841f60e0bcd68f9d15adfb5c9b1dd355c", "office": "Shuttle timetable", "day": {"day": "2026-11-26", "date": "2026-11-26"}, "answer": {"text": "The posted timetable lists 9 shuttles to Garden State Plaza on Thursday
+The posted timetable lists 9 shuttles to Garden State Plaza on Thursday, November 26, the first leaving campus at 7:00 AM and the last at 9:40 PM. Every trip leaves from Ramapo College (Bradley Center).
+
+=== 13-s5 | how often does the shuttle go to ramsey station
+--- by=model status=answered sec=4.2 err=None read: needs=[] limit=none topic=shuttle asked=read q='how often does the shuttle go to ramsey station' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'shuttle', 'by': 'read'}
+--- lookups=[{"tool": "shuttle_lookup", "traversedBy": "code", "status": "ok", "result_count": 4, "arguments": {"stop": "Ramsey Rt 17 Train", "route": null, "day": null, "which": "all", "after": null, "by": null, "times": false, "back": false}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "shuttle", "label": "Shuttle", "kind": "category"}], "as_of": "2026-11-18T10:06:10-05:00", "dataset_version": "v2-20261118051419", "identity_hash": "70d8f021d3e7e2e5454e210f4caccd4841f60e0bcd68f9d15adfb5c9b1dd355c", "office": "Shuttle timetable", "day": {"day": "today", "date": "2026-11-18"}, "answer": {"text": "The posted timetable lists 22 shuttles to Ramsey Rt 17 Train on Wednesday, November 
+The posted timetable lists 22 shuttles to Ramsey Rt 17 Train on Wednesday, November 18, the first leaving campus at 7:00 AM and the last at 9:40 PM. The next leaves at 10:40 AM (15 still to come today). Every trip leaves from Ramapo College (Bradley Center).
+
+=== 14-s5 | any volunteering stuff this week or next
+--- by=code status=answered sec=2.05 err=None read: needs=[] limit=none topic=event asked=own_words q='Are there any volunteering activities this week or next?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+The calendar lists 2 volunteer and service events this week, Wednesday, November 18 to Sunday, November 22 (of 49 events then) [1]:
+
+Wednesday, November 18:
+- 11:45 AM to 2:15 PM: Service Opportunity: Technology Tutoring at the Mahwah Senior Center (Civic and Community Engagement Center) [2]
+
+Thursday, November 19:
+- 12 PM to 1 PM: Puerto Rico Alternative Spring Break Info Session (Civic and Community Engagement Center), at SC-213 [3]
+
+Sources: [1](https://archway.ramapo.edu/home/events/) [2](https://archway.ramapo.edu/rsvp_boot?id=1410880) [3](https://archway.ramapo.edu/rsvp_boot?id=1411533)
+
+=== 15-s5 | any comedy shows this wk n r they free
+--- by=code status=answered sec=1.44 err=None read: needs=[] limit=none topic=event asked=own_words q='Are there any comedy shows this week, and are they free?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+No event in the next 14 days, Wednesday, November 18 to Wednesday, December 2 is listed by name for what you asked; these are the closest in meaning (of 84 events then) [1]:
+
+Tuesday, November 24:
+- 8 PM to 11 PM: Open Mic Night (College Programming Board) [2]
+- 8 PM to 9:45 PM: Mission: Turkeys Off the Menu (College Park Apartments), at Laurel Hall 1st Floor Movie Theatre [3]
+
+Later on the calendar, only near it in meaning:
+
+Saturday, February 6:
+- 2 PM to 3:15 PM: Puppy Pals Live! (Berrie Center) [4]
+
+Sources: [1](https://archway.ramapo.edu/home/events/) [2](https://archway.ramapo.edu/rsvp_boot?id=1412139) [3](https://archway.ramapo.edu/rsvp_boot?id=1411745) [4](https://archway.ramapo.edu/rsvp_boot?id=1409393)
+
+=== 16-s5 | i failed my calc midterm and idk what to do
+--- by=one_call status=answered sec=3.88 err=None read: needs=['school_trouble'] limit=none topic=how_to asked=own_words q='What should I do about failing my calc midterm?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+That's stressful, but one bad grade doesn't decide everything. Talking with your professor and an advisor soon can really help.
+
+Sorry—that’s rough. For Calculus I, the STEM Center offers tutoring. Some sessions require an appointment through Connect; other listed sessions are walk-in. Its current schedule is on the STEM Center page. [21][23]
+
+If you end up failing the course with an F, you can retake up to two classes with an F. To remove the F from your transcript, fill out a Repeat Fail (RF) form with the Center for Student Success. After you retake the class, the new grade appears in addition to “RF,” and your GPA is adjusted. [27]
+
+For advice about your course and next steps, contact the Center for Student Success.
+
+- **STEM Center**: Phone: Tutoring Coordinator – STEM Center (201) 684-7345; Director – STEM Center & Programs (201) 684-7774. Office: G-131. [30]
+- **Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [30]
+
+Sources: [21](https://www.ramapo.edu/stem-center/) [23](https://www.ramapo.edu/stem-center/) [27](https://www.ramapo.edu/studentsuccess/faq/) [30](https://www.ramapo.edu/campus-directory/)
+
+=== 17-s5 | is financial aid open late any day
+--- by=model status=unavailable sec=4.51 err=None read: needs=[] limit=none topic=office asked=read q='is financial aid open late any day' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Financial Aid", "fields": ["hours"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:8e6d26cc-df5c-4644-9d1b-b0a4548cce9d", "label": "Financial Aid", "kind": "office", "entity_id": "8e6d26cc-df5c-4644-9d1b-b0a4548cce9d", "aliases": ["FAFSA", "Garden State Guarantee", "Satisfactory Academic Progress"]}], "as_of": "2026-11-18T10:06:15
+Financial Aid (Academic Year) hours: Monday to Friday: 8:30am-4:30pm; Saturday and Sunday: not published (checked November 17, 2026). Financial Aid (Summer) hours: Monday to Thursday: 8:00am-5:15pm; Friday: CLOSED; Saturday and Sunday: not published (checked November 17, 2026). [1]
+
+The page does not say which dates this schedule covers. [1]
+
+Sources: [1](https://www.ramapo.edu/finaid/)
+
+=== 18-s5 | what time does the bookstore close this saturday
+--- by=model status=unavailable sec=4.51 err=None read: needs=[] limit=none topic=office asked=read q='what time does the bookstore close this saturday' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Ramapo Bookstore", "fields": ["hours"], "day": "saturday", "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:79137ff1-e634-4785-bc52-2aa4e32237b1", "label": "Ramapo Bookstore", "kind": "office", "entity_id": "79137ff1-e634-4785-bc52-2aa4e32237b1", "aliases": ["Ramapo College Bookstore"]}], "as_of": "2026-11-18T10:06:16-05:00", "dataset_version": "
+Ramapo Bookstore lists Saturday hours of CLOSED. The page adds: "Normal Store Hours: Mon - Thu: 9am-5pm Fri: 9am - 4pm Sat: CLOSED Sun: CLOSED" [1]
+
+The page does not say which dates this schedule covers. [1]
+
+Sources: [1](https://www.ramapo.edu/about/campus-hours/)
+
+TOTAL spent $0.0147 in 98 calls
