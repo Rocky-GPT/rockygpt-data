@@ -231,8 +231,8 @@ jobs:
       # run collected, and CI already ran them on this same commit when it reached main or dev.
 
       # Each hours reader on tonight's copy of its page, which the office and school page
-      # collectors already downloaded: no extra request to Ramapo's sites. Hours are read weekly,
-      # so this names a page whose wording changed before that read has to keep its old hours.
+      # collectors already downloaded: no extra request to Ramapo's sites. It names a page whose
+      # wording changed before the weekly read of every hours page has to keep its old hours.
       # Report-only (data/review/hours-spot-check.md).
       - name: Spot check the hours pages
         continue-on-error: true
