@@ -4,6 +4,10 @@
  * Ramapo's varsity teams from the college's athletics site (src/data-v2/athletics.ts):
  *   npm run fetch:athletics-schedules   each team's schedule page (daily source)
  *   npm run fetch:athletics-coaches     each team's coaches page (weekly source)
+ *   npm run fetch:athletics-pages       the site's reviewed information pages (weekly source):
+ *                                       intramurals and Bradley Center memberships, read
+ *                                       into headed sections like the office pages, and published
+ *                                       as the Athletics office's own pages (office_sections)
  *
  * The site's robots.txt asks every robot for 30 seconds between requests, so this reads one page
  * at a time, ATHLETICS_GAP_MS apart: 16 schedule pages took about 8 minutes every night. A team
@@ -20,6 +24,8 @@ import path from 'node:path';
 import * as cheerio from 'cheerio';
 import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
 import { writeJsonFile, writeRawFileProvenance } from './pipeline-utils';
+import { buildRawPageFromHtml } from './raw-collector';
+import type { RawPageV1 } from './raw-types';
 import { noteSiteDownloads } from './site-guard';
 import reviewedTeams from '../src/reference/athletics-teams.json';
 import { ATHLETICS_COACHES_SOURCE, ATHLETICS_SCHEDULES_SOURCE, athleticsCapture, parseSchedule, type AthleticsCapture,
@@ -56,6 +62,8 @@ export function inSeasonOrDue(previous: AthleticsPage | undefined, now: Date): b
   const until = now.getTime() + SEASON_DAYS_AFTER * DAY_MS + DAY_MS;
   return dates.some(date => date >= from && date <= until);
 }
+
+export const ATHLETICS_PAGES_DATASET = 'athletics-pages';
 
 const PAGES = { schedules: { dataset: ATHLETICS_SCHEDULES_SOURCE, path: 'schedule' }, coaches: { dataset: ATHLETICS_COACHES_SOURCE, path: 'coaches' } } as const;
 
@@ -160,12 +168,73 @@ async function main(kind: keyof typeof PAGES): Promise<void> {
     + `${reused ? `, ${reused} out of season kept their copy under ${OFF_SEASON_KEEP_DAYS} days old` : ''} (${ATHLETICS_GAP_MS / 1000} s apart).`);
 }
 
+/** The site's reviewed information pages, read into headed sections (raw-collector's reader) and
+ * kept as athletics-pages.raw.json, which the publish reads with every other captured page. */
+export interface AthleticsPagesCapture { schemaVersion: 1; dataset: string; generatedAt: string; site: string; pages: RawPageV1[] }
+
+async function readInfoPages(): Promise<void> {
+  const reviewed = reviewedTeams as ReviewedAthletics;
+  const listed = reviewed.pages ?? [];
+  const rawFile = path.join(RAW_DIR, `${ATHLETICS_PAGES_DATASET}.raw.json`);
+  const previous = fs.existsSync(rawFile) ? (JSON.parse(fs.readFileSync(rawFile, 'utf8')) as AthleticsPagesCapture).pages ?? [] : [];
+  const get = (url: string) => fetchWithPolicy(url, { headers: { 'User-Agent': DEFAULT_USER_AGENT, Accept: 'text/html,text/plain' } },
+    { perHostConcurrency: 1, attempts: 2, timeoutMs: 30_000 });
+  const robots = await get(`${reviewed.site}/robots.txt`);
+  if (!robots.ok) throw new Error(`${reviewed.site}/robots.txt answered ${robots.status}; not reading the site without it.`);
+  const rules = robotsRules(robots.text());
+  if (rules.delaySeconds * 1000 > ATHLETICS_GAP_MS) {
+    throw new Error(`${reviewed.site} now asks for ${rules.delaySeconds} s between requests; ATHLETICS_GAP_MS is ${ATHLETICS_GAP_MS / 1000} s.`);
+  }
+  const pages: RawPageV1[] = [];
+  let read = 0;
+  let kept = 0;
+  for (const { url } of listed) {
+    const target = new URL(url);
+    if (!robotsAllows(rules, `${target.pathname}${target.search}`)) {
+      console.warn(`${reviewed.site}/robots.txt does not allow ${url}; not read.`);
+      continue;
+    }
+    await sleep(ATHLETICS_GAP_MS);
+    const fetchedAt = new Date().toISOString();
+    let page: RawPageV1 | undefined;
+    try {
+      const response = await get(url);
+      if (response.ok) {
+        page = buildRawPageFromHtml({ url, html: response.text(), sourceType: 'seed', fetchedAt, statusCode: response.status,
+          allowedHost: target.hostname });
+      } else console.warn(`${url} answered ${response.status}.`);
+    } catch (error) {
+      console.warn(`${url}: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    if (page?.sections.length) {
+      pages.push(page);
+      read += 1;
+      continue;
+    }
+    // Last capture's copy stands in for a page that failed tonight; it keeps its own date.
+    const old = previous.find(p => p.url === page?.url || p.url === url);
+    if (old) { pages.push(old); kept += 1; }
+    if (page && !page.sections.length) console.warn(`${url}: no section could be read${old ? '; kept the last copy' : ''}.`);
+  }
+  // No page read and no last copy writes an empty capture with a warning, not a stop: these pages
+  // add to the Athletics office's own and never hold up the night's publish.
+  if (listed.length && !read && !kept) console.warn(`::warning::No information page could be read from ${reviewed.site}.`);
+  const generatedAt = new Date().toISOString();
+  const capture: AthleticsPagesCapture = { schemaVersion: 1, dataset: ATHLETICS_PAGES_DATASET, generatedAt, site: reviewed.site, pages };
+  writeJsonFile(rawFile, capture);
+  writeRawFileProvenance(ATHLETICS_PAGES_DATASET, rawFile, { sourceUrl: reviewed.site, recordCount: pages.length, fetchedAt: generatedAt });
+  noteSiteDownloads(`${ATHLETICS_PAGES_DATASET}: read ${read} of ${listed.length} pages from ${reviewed.site}`
+    + `${kept ? `, kept last copy of ${kept}` : ''} (${ATHLETICS_GAP_MS / 1000} s apart).`);
+}
+
 if (process.argv[1]?.endsWith('athletics.ts')) {
   const kind = process.argv[2];
-  if (kind !== 'schedules' && kind !== 'coaches') {
-    console.error('Usage: tsx ingestion/athletics.ts schedules|coaches');
+  const fatal = (error: unknown) => { console.error('Fatal:', error instanceof Error ? error.message : error); process.exitCode = 1; };
+  if (kind === 'pages') readInfoPages().catch(fatal);
+  else if (kind !== 'schedules' && kind !== 'coaches') {
+    console.error('Usage: tsx ingestion/athletics.ts schedules|coaches|pages');
     process.exitCode = 1;
   } else {
-    main(kind).catch(error => { console.error('Fatal:', error instanceof Error ? error.message : error); process.exitCode = 1; });
+    main(kind).catch(fatal);
   }
 }

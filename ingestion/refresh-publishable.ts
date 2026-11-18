@@ -54,6 +54,8 @@ export const SOURCE_REFRESH_SCRIPTS: Record<string, string[]> = {
   // The athletics site, one page every 30 seconds (its robots.txt).
   'athletics-schedules': ['fetch:athletics-schedules'],
   'athletics-coaches': ['fetch:athletics-coaches'],
+  // Weekly: the site's information pages (intramurals, Bradley Center memberships).
+  'athletics-pages': ['fetch:athletics-pages'],
 };
 
 // The workflow runs daily. Renew a source that would cross its SLA before

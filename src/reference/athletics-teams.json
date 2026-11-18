@@ -19,6 +19,11 @@
     { "slug": "womens-track-and-field", "name": "Women's Track and Field" },
     { "slug": "womens-volleyball", "name": "Women's Volleyball" }
   ],
+  "pages": [
+    { "url": "https://ramapoathletics.com/sports/2018/9/26/intramurals-and-competitive-sports-clubs", "why": "Added 2026-11-18 by Claude under Dan's yes (blind-miss plan, 'not collected' item: intramurals), not reviewed by him: the intramural and club sports offered, when they meet, and who runs them. Not in anything else collected." },
+    { "url": "https://ramapoathletics.com/sports/2008/1/21/BradleyCenterMembershipInfo.aspx?id=5&tab=bradleymemberships", "why": "Added 2026-11-18 with the intramurals page: who may use the Bradley Center and how to get a membership. Already a checked page for the Athletics contact (office-contact-review.json)." },
+    { "url": "https://ramapoathletics.com/sports/2008/1/21/MembershipFAQ.aspx?id=7&tab=bradleymemberships", "why": "Added 2026-11-18 with the intramurals page: the Bradley Center membership questions (guests, IDs, fees). Already a checked page for the Athletics contact." }
+  ],
   "venues": {
     "Bradley Center": "building_bill-bradley-sports-and-recreation-center"
   }

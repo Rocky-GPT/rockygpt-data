@@ -15,7 +15,8 @@ export interface OfficeSection { heading: string; text: string }
 
 /** The reviewed site lists whose pages are published as sections: the student office sites, and
  * (11-18, blind-miss step 7) the 27 school, program and center sites, whose 562 pages were
- * downloaded every night but never searchable. */
+ * downloaded every night but never searchable. The athletics site (ATHLETICS_SITE_FOLDER) is
+ * added to them (11-18, blind-miss step 9: intramurals were in nothing the bot collects). */
 export const SECTION_SITE_FILES = ['src/reference/office-sites.json', 'src/reference/academic-sites.json'];
 
 /** The folders of those sites and their reviewed section cuts. */
@@ -30,6 +31,7 @@ export function sectionSites(files: readonly string[] = SECTION_SITE_FILES): {
     }
     for (const [key, cut] of readSkippedSections(file)) cuts.set(key, [...cuts.get(key) ?? [], ...cut]);
   }
+  folders.add(ATHLETICS_SITE_FOLDER);
   return { folders, cuts };
 }
 export interface OfficeSectionsPage {
@@ -52,10 +54,17 @@ export const MAX_SECTION_CHARS = 20000;
  * about; 300 keeps every captured page whole. */
 export const MAX_PAGE_SECTIONS = 300;
 
-/** The first folder of a www.ramapo.edu address ("counseling" for /counseling/faq/), or null. */
+/** The college's athletics site is one site of its own: its pages are the Athletics office's
+ * (the office's reviewed website is https://ramapoathletics.com/). Its information pages
+ * (intramurals, Bradley Center memberships) are collected weekly by ingestion/athletics.ts. */
+export const ATHLETICS_SITE_FOLDER = 'ramapoathletics';
+
+/** The first folder of a www.ramapo.edu address ("counseling" for /counseling/faq/), the
+ * athletics site's own folder for a ramapoathletics.com address, or null. */
 export function siteFolder(url: string): string | null {
   try {
     const parsed = new URL(url);
+    if (/^(www\.)?ramapoathletics\.com$/i.test(parsed.hostname)) return ATHLETICS_SITE_FOLDER;
     if (!/^(www\.)?ramapo\.edu$/i.test(parsed.hostname)) return null;
     const first = parsed.pathname.split('/').filter(Boolean)[0];
     return first ? first.toLowerCase() : null;

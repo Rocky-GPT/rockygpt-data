@@ -6,6 +6,8 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import {assertRawCollectionCandidate, buildRawPageFromHtml, collectRawDataset, createRequestPacer, isLikelyChallengeHtml, replayRawSourceCapture, sourceHtml, isMismatchedMailto, isPhoneNumber, ownNight, previousSourcePages, reuseTonight, withYear, downloadReason, downloadReasonsLine} from './raw-collector';
 import { type RawDatasetV1, validateRawDatasetV1 } from './raw-types';
+import { staffSpansInSection } from '../src/data-v2/office-staff';
+import { roomAfterAddress } from '../src/data-v2/person-links';
 
 const page = (statusCode = 200) => buildRawPageFromHtml({url:'https://example.edu/policy', html:'<main><h1>Policy</h1><p>Source content.</p></main>', sourceType:'seed', allowedHost:'example.edu',statusCode});
 const dataset = (good: number, bad: number): RawDatasetV1 => ({ version:'1.0', dataset:'test', collectedAt:'2026-09-23T12:00:00Z', seedUrls:[], stats:{pagesFetched:good,pagesFailed:bad,externalLinksSeen:0},pages:[...Array.from({length:good},()=>page()),...Array.from({length:bad},()=>page(404))]});
@@ -676,6 +678,23 @@ test('a section keeps its lines, and a bold label stays on each row under it', (
     'Walk-in — No Appointment Required: Wednesday 1:00–2:00 PM — Cy',
     'Walk-in — No Appointment Required: Friday 2:00–3:00 PM — Di',
     'Bring your notes', 'Arrive on time', 'Day | Room', 'Monday | G-131'].join('\n'));
+  // A staff card's bold name over its title, room and address is one person's lines, never a
+  // label carried onto each (the 11-18 production run lost 38 people's rooms that way).
+  const card = buildRawPageFromHtml({url:'https://example.edu/staff/',sourceType:'seed',allowedHost:'example.edu',
+    html:`<main><h1>Staff</h1><h2>Our Team</h2>
+      <p><strong>Amy Example</strong><br />Assistant Director<br />Office: E-210<br /><a href="mailto:aexample@ramapo.edu">aexample@ramapo.edu</a></p></main>`});
+  assert.equal(card.sections.find(s => s.heading === 'Our Team')?.shaped,
+    ['Amy Example', 'Assistant Director', 'Office: E-210', 'aexample@ramapo.edu (mailto:aexample@ramapo.edu)'].join('\n'));
+  // The staff reader still finds each person's room in the shaped text the office pages publish.
+  const team = buildRawPageFromHtml({url:'https://example.edu/grants/',sourceType:'seed',allowedHost:'example.edu',
+    html:`<main><h1>Grants</h1><h2>Staff</h2>
+      <p><strong>Bernadette Connors</strong><br />Director<br />E-mail: <a href="mailto:bconnors@ramapo.edu">bconnors@ramapo.edu</a><br />Phone: (201) 684-7616<br />Office: C105</p>
+      <p><strong>Julie Kossoy</strong><br />Grants Manager<br />E-mail: <a href="mailto:jkossoy@ramapo.edu">jkossoy@ramapo.edu</a><br />Phone: (201) 684-6215<br />Office: C 106</p></main>`});
+  const staff = team.sections.find(s => s.heading === 'Staff');
+  assert.ok(staff?.shaped);
+  const spans = staffSpansInSection(staff.heading, staff.shaped.replace(/\s+/g, ' '));
+  assert.deepEqual(spans.map(span => [span.email, roomAfterAddress(span.after, span.email)]),
+    [['bconnors@ramapo.edu', 'C-105'], ['jkossoy@ramapo.edu', 'C-106']]);
   // A one-block section with no line break has no shaped copy.
   const plain = buildRawPageFromHtml({url:'https://example.edu/a/',sourceType:'seed',allowedHost:'example.edu',
     html:'<main><h1>A</h1><h2>B</h2><p>One paragraph.</p></main>'});
