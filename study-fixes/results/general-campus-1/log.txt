@@ -1,0 +1,164 @@
+release v2-20261118051419 questions 14
+=== E18 | i got the tb test on monday and was supposed to come back so they can read it but i forgot. do i have to start over
+--- by=one_call status=answered sec=4.92 err=None read: needs=[] limit=none topic=how_to asked=read q='i got the tb test on monday and was supposed to come back so they can read it but i forgot. do i have to start over' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I don’t have verified information about whether you need to restart the TB test. Contact Health Promotion to confirm.
+
+**Health Promotion**: Email: studentwellness@ramapo.edu. Wellness Is Now office: E-211A. [26]
+
+Sources: [26](https://www.ramapo.edu/campus-directory/)
+
+=== E48 | advisor said my stats class from my last school only counts as an elective not for my major. i dont get it, its the same class. can i ask for someone to look at it again
+--- by=one_call status=answered sec=7.68 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Can I ask for someone to look at it again?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+Yes. If academic approval for a non-general education course equivalency has not yet been established, it may count as elective credit but not toward a particular degree program. You may contact the Convener of the appropriate program to review the course and its potential for transfer credit. If approved, the Convener sends the equivalency approval to the Office of Admissions, which designates someone to update the appropriate systems. [2]
+
+Contact the Center for Student Success (Academic Advising) for guidance on next steps. [20]
+
+- **Admissions**: Phone: (201) 684-7300. Email: admissions@ramapo.edu. Location: McBride House. [33]
+- **Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [33]
+
+Sources: [2](https://catalog.ramapo.edu/quicklinks/academicpolicies#transferring-academic-credit1) [20](https://www.ramapo.edu/studentsuccess/faq/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== F04 | what laptop should i get for school, mac or windows?
+--- by=one_call status=answered sec=6.58 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q='What does Ramapo recommend for student laptops?' general='What laptop should I get for school, a Mac or Windows?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_general', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): Neither is universally better. Choose a Mac if you value battery life, a polished build, and already use Apple devices; choose Windows for more price options, gaming, or software that specifically requires Windows. Check your course’s required apps and budget first, then compare models with at least 16 GB of RAM and enough storage for your work.
+
+Ramapo says business students should get a Windows computer because many applications are only available for Windows. Students in the Susan and Nick Vallario School of Arts, Humanities, and Education may want to consider a MacBook, as many applications for that program are Mac-based. For other students, either Windows or Mac is sufficient. [1]
+
+For sciences, math, computer science, animation, video editing, and other computer-intensive fields, consider a laptop that meets or exceeds the “High-end” recommendations. Ramapo does not recommend Chromebooks because they may not support the same applications as Windows and Mac laptops. [1]
+
+For a Mac, the recommended model is a 13” MacBook Air or 14″ MacBook Pro, with MacOS 15 Sequoia, MacOS 26 Tahoe, or MacOS 27 Golden Gate; M3/M4 or higher CPU; 16 GB or more RAM; and 512GB SSD. High-end: 14” MacBook Pro, M5/M5 Pro or higher, 16 GB or more RAM, and 1TB SSD. [2]
+
+See Ramapo’s [student laptop recommendations](https://www.ramapo.edu/its/student-laptop-recommendations/) for Windows specifications and suggested laptop manufacturers. [1]
+
+**School of Arts, Humanities, and Education Office**: Phone: (201) 684-7365. Email: AHEOffice@ramapo.edu. Office: B-224. [33]
+
+Sources: [1](https://www.ramapo.edu/its/student-laptop-recommendations/) [2](https://www.ramapo.edu/its/student-laptop-recommendations/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== F08 | can you just tell me everything is gonna be fine lol
+--- by=one_call status=answered sec=4.62 err=None read: needs=[] limit=none topic=how_to asked=own_words q='' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can’t promise everything, but you’re not alone, and Ramapo says it’s here for you during stressful times. [13] Take a few deep breaths to calm yourself. [1]
+
+**Dean of Students**: Phone: (201) 684-7457. Email: deanofstudents@ramapo.edu. Office: C-212. [32]
+
+Sources: [1](https://www.ramapo.edu/counseling/red-folder/) [13](https://www.ramapo.edu/student-affairs/student-communications/mental-health-and-well-being-resources-fall-2026/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== F09 | what should i get my roommate for christmas, she likes plants
+--- by=general status=answered sec=3.96 err=None read: needs=[] limit=opinion topic=how_to asked=own_words q='' general='What should I get my roommate for Christmas if she likes plants?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_general'] path=None
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): A small, easy-care houseplant in a cute pot is a safe bet. Other thoughtful options are a propagation station, a plant-care kit, or a gift card to a local nursery—especially if you’re unsure what she already owns.
+
+=== F28 | whats your favorite food
+--- by=general status=answered sec=2.89 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general='What is your favorite food?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_general'] path=None
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): I don’t eat, but if I had to pick, I’d go with fresh pizza—crispy crust and lots of options make it hard to beat.
+
+=== N01 | should i get an ipad or a laptop for college
+--- by=one_call status=answered sec=4.47 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q='What does Ramapo recommend for student laptops?' general='Should I get an iPad or a laptop for college?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_general', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): A laptop is the safer choice if you can only get one: it handles essays, spreadsheets, coding, and exam or course software more reliably. An iPad is great for handwritten notes, reading, and drawing, but may be limiting as your only device. If you already have access to a computer, an iPad can be a useful add-on.
+
+Ramapo’s recommendation depends on your program: business students should invest in a Windows computer; students in the Susan and Nick Vallario School of Arts, Humanities, and Education may want to consider an Apple computer such as a MacBook; for other students, either a Windows or Mac laptop is sufficient. Students in sciences, math, computer science, animation, video editing, and other computer-intensive fields should consider a computer meeting or exceeding the “High-end” recommendations. Ramapo does not recommend Chromebooks. [1]
+
+The recommendation is for a laptop, not an iPad. Ramapo’s page doesn’t say whether an iPad is sufficient for college, so I don’t have verified information about that. See Ramapo’s laptop recommendations: [https://www.ramapo.edu/its/student-laptop-recommendations/](https://www.ramapo.edu/its/student-laptop-recommendations/) [1]
+
+**School of Arts, Humanities, and Education Office**: Phone: (201) 684-7365. Email: AHEOffice@ramapo.edu. Office: B-224. [30]
+
+Sources: [1](https://www.ramapo.edu/its/student-laptop-recommendations/) [30](https://www.ramapo.edu/campus-directory/)
+
+=== N02 | is it better to buy textbooks or rent them
+--- by=one_call status=answered sec=4.01 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q='What does Ramapo publish about buying or renting textbooks?' general='Is it better to buy textbooks or rent them?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_general', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): Renting is usually cheaper if you only need the book for one class and don’t plan to keep it. Buying makes more sense if you’ll reuse it, need to write in it, or can resell it later. Compare the total rental cost and return deadlines with the used-book price and resale value.
+
+Ramapo says you can buy or rent textbooks; some are also available as eBooks for certain classes. It does not say which option is better. [1]
+
+To find your required books, log into web self-service, click “Student Services and Financial Aid,” select Registration, then select “Buy Books Now from efollett.com.” This generates the required textbook list based on your current course registration. You may choose to rent or buy books new or used, and pick them up at the bookstore or have them shipped to your home. [4]
+
+The Bookstore says renting textbooks can save up to 80% off the price of a new book. [15]
+
+**Financial Aid**: Phone: (201) 684-7549. Email: finaid@ramapo.edu. Office: E-210. [32]
+
+Sources: [1](https://www.ramapo.edu/orientation/families/faq/) [4](https://www.ramapo.edu/orientation/faq-2/) [15](https://www.ramapo.edu/bookstore/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== N03 | how do i get better at public speaking
+--- by=general status=answered sec=3.84 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general='How do I get better at public speaking?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_general'] path=None
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): Practice out loud in short, regular sessions, and record yourself to spot one thing to improve at a time. Organize each talk around a clear main point with a simple opening and ending. Slow down, pause between ideas, and look at a few friendly faces rather than trying to memorize every word. Start with low-pressure audiences and build up gradually.
+
+=== N04 | best way to find an internship as a sophomore
+--- by=one_call status=answered sec=3.76 err=None read: needs=[] limit=none topic=how_to asked=read q='What is the best way to find an internship as a sophomore?' general='What is the best way to find an internship as a sophomore?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+As a sophomore, update your resume and Handshake profile, attend career panels, workshops, and fairs, and connect with professionals through informational interviews and career programs. Explore job-shadowing and employer information sessions, and look for a summer internship on Handshake. [1]
+
+Handshake helps you explore career interests and find internships with alumni, companies, and organizations: [http://ramapo.joinhandshake.com/](http://ramapo.joinhandshake.com/) [2] The Career Center can assist with your job search and provide resources through Handshake and other job sources. [3]
+
+**Cahill Career Development Center**: Phone: Main Office (201) 684-7444; ASB Office (201) 684-7675. Email: careercenter@ramapo.edu. Main Office: C-209; ASB Office: ASB-513. [24]
+
+Sources: [1](https://www.ramapo.edu/careercenter/four-year-plan/) [2](https://www.ramapo.edu/careercenter/presidents-internship-list/) [3](https://www.ramapo.edu/careercenter/get-started/) [24](https://www.ramapo.edu/campus-directory/)
+
+=== N05 | i need my flu shot record for my clinical, where do i get it
+--- by=one_call status=answered sec=3.35 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Where do I get my flu shot record for my clinical?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+The pages don’t say specifically how to get a flu shot record for clinical. Health Services handles immunization and health paperwork; contact them to ask. Their immunization information page is [https://www.ramapo.edu/health/immunization-info/](https://www.ramapo.edu/health/immunization-info/) [13].
+
+**Health Services**: Phone: (201) 684-7536. Location: Near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road. [33]
+
+Sources: [13](https://www.ramapo.edu/adult-students/contacts/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== N06 | do i need a tb test for nursing clinicals n where do i get one
+--- by=one_call status=answered sec=11.43 err=None read: needs=[] limit=none topic=how_to asked=read q='Do I need a TB test for nursing clinicals, and where do I get one?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I don’t have verified information about whether nursing clinicals require a TB test or where to get one. Contact the Nursing Programs Office to ask.
+
+**Nursing Programs Office**: Phone: (201) 684-7749. Location: Adler Center for Nursing Excellence 215. [28]
+
+Sources: [28](https://www.ramapo.edu/campus-directory/)
+
+=== N07 | how many hours should i study per credit
+--- by=one_call status=answered sec=4.6 err=None read: needs=[] limit=none topic=how_to asked=read q='how many hours should i study per credit' general='How many hours should I study per credit?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Plan for about 2 hours of out-of-class preparation each week per credit hour during a 15-week semester [1].
+
+**Office of the Provost**: Phone: (201) 684-7330. Email: provost@ramapo.edu. Location: first floor of the Birch Mansion. [32]
+
+Sources: [1](https://catalog.ramapo.edu/quicklinks/academicpolicies#credit-hours1) [32](https://www.ramapo.edu/campus-directory/)
+
+=== N08 | whats a good laptop for graphic design classes
+--- by=one_call status=answered sec=7.52 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q='What does Ramapo recommend for student laptops?' general='What is a good laptop for graphic design classes?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_units', 'write_general', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): For graphic design classes, look for a laptop with at least 16 GB of RAM, a modern Core i5/Ryzen 5 or better processor, and a color-accurate screen (ideally close to full sRGB coverage). A 512 GB SSD is a useful minimum; choose 1 TB if you’ll store lots of large files. A dedicated graphics card helps with 3D or video work, but isn’t essential for most 2D design. Check your course software’s requirements before buying.
+
+Ramapo says students in certain majors, including animation, video editing and other computer-intensive fields, should consider a computer that meets or exceeds the “High-end” column. For other students, either Windows or Mac is sufficient. It does not specifically identify graphic design classes in the quoted guidance, so I can’t verify which category applies to you. Chromebooks are not recommended because they often do not support the same applications as Windows and Mac laptops. [2]
+
+The listed high-end specifications are Windows 11; Intel Core Ultra X7/X9 or AMD Ryzen AI 9 (HX-class); 32 GB or more RAM; 1TB SSD; and 1920 x 1080 or better screen resolution. For video/animation students, discrete graphics with at least 2GB GPU, 4GB GPU recommended. [3]
+
+Ramapo links to Apple, Dell, HP and Lenovo student/education vendor pages, and says discounts may change and education pricing is not always the lowest; research options before purchasing. [5]
+
+For questions about a purchase, contact the IT Help Desk at helpdesk@ramapo.edu. [2]
+
+- **Purchasing Department**: Phone: (201) 684-7496. Email: purchase@ramapo.edu. Office: D-118. [14]
+- **IT Help Desk**: Phone: (201) 684-7777. Email: helpdesk@ramapo.edu. Location: 4th floor of the Learning Commons. [14]
+
+Sources: [2](https://www.ramapo.edu/its/student-laptop-recommendations/) [3](https://www.ramapo.edu/its/student-laptop-recommendations/) [5](https://www.ramapo.edu/its/student-laptop-recommendations/) [14](https://www.ramapo.edu/campus-directory/)
+
+TOTAL spent $0.0160 in 91 calls

@@ -1,0 +1,1246 @@
+release v2-20261118051419 questions 90
+=== E01 | I missed the payment deadline because the transfer from my bank at home took 2 weeks. Will my classes be cancelled? How can I pay now
+--- by=one_call status=answered sec=9.15 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Will my classes be cancelled? How can I pay now?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Your classes could be deregistered, but an outstanding balance does not always result in deregistration. If deregistered, you will be notified by Student Accounts via your Ramapo email. [1][2] The current deadline listed is December 16, 2026; students registering or adjusting schedules after that date must pay on the day they register or adjust. Failure to pay may result in a $200 late fee and/or deregistration. [3][13]
+
+You can pay online by electronic debit from checking or savings (ACH), or by credit card; ACH payments can only be made online. [14][20] For an international tuition transfer, use PayMyTuition: [https://payment.paymytuition.com/paynow/ramapo](https://payment.paymytuition.com/paynow/ramapo). [12] You may also pay in person by cash, check, or money order at Student Accounts, first-floor D-wing, during academic-year business hours: Monday–Friday, 8:30 a.m.–4:30 p.m. [6]
+
+Contact Student Accounts about your late payment and whether your schedule is affected.
+
+**Student Accounts**: Phone: (201) 684-7495. Email: studentaccts@ramapo.edu. Location: D-Wing, First Floor. [28]
+
+Sources: [1](https://www.ramapo.edu/student-accounts/faq/) [2](https://www.ramapo.edu/student-accounts/payment-policies/) [3](https://www.ramapo.edu/student-accounts/deadlines/) [6](https://www.ramapo.edu/student-accounts/methods/) [12](https://www.ramapo.edu/student-accounts/paymytuition/) [13](https://www.ramapo.edu/student-accounts/) [14](https://www.ramapo.edu/student-accounts/methods/) [20](https://www.ramapo.edu/inter-students/orientation/) [28](https://www.ramapo.edu/campus-directory/)
+
+=== E02 | i need proof of the volunteer hours i did with a club last semester for a scholarship application. who signs that
+--- by=one_call status=answered sec=4.88 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Who signs proof of the volunteer hours I did with a club last semester for a scholarship application?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I don’t have verified information about who can certify past club volunteer hours for your scholarship application. Contact the Center for Student Involvement; your club’s leader may also be able to confirm your hours. [31]
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [32]
+
+Sources: [31](https://www.ramapo.edu/csi/leadership-directory/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== E03 | my landlord wants something that shows my financial aid for this semester bc im paying rent with the refund. can i get an award letter or something official
+--- by=one_call status=answered sec=5.43 err=None read: needs=[] limit=my_records topic=how_to asked=own_words_then_campus_side q='How can I get an award letter or something official that shows my financial aid for this semester?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't see your personal records, like your grades, balance, schedule or financial aid status.
+
+Financial Aid says students receive a College Financing Plan via email within a few weeks. Check your Ramapo College email; all financial aid correspondence is sent there. [2][4] The CFP provides an estimate of costs after your financial aid award. [5]
+
+The pages don’t explain how to obtain an official letter specifically for your landlord or whether it can document this semester’s refund. Contact Financial Aid for help.
+
+**Financial Aid**: Phone: (201) 684-7549. Email: finaid@ramapo.edu. Office: E-210. [32]
+
+Sources: [2](https://www.ramapo.edu/finaid/faqs/) [4](https://www.ramapo.edu/finaid/calendar/) [5](https://www.ramapo.edu/finaid/understanding-your-financial-aid-award/spring-admits/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== E04 | Are grad students allowed to go on the short winter break trips abroad? I'd like to sign up for one if there's still room
+--- by=one_call status=answered sec=4.82 err=None read: needs=[] limit=none topic=how_to asked=read q="Are grad students allowed to go on the short winter break trips abroad? I'd like to sign up for one if there's still room" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+The trip listing gives a capacity of 10 students, but applications closed on October 14, 2026, so it is no longer open for sign-up. [18] The page does not say whether graduate students are eligible or whether any spots remain. I don’t have verified information about that; contact the Civic and Community Engagement Center.
+
+**Civic and Community Engagement Center**: Phone: (201) 684-7586. Email: ccec@ramapo.edu. Office: SC-213. [26]
+
+Sources: [18](https://www.ramapo.edu/ccec/alternative/) [26](https://www.ramapo.edu/campus-directory/)
+
+=== E05 | i got a text with a login code when i tried to sign in over break, i never set that up?? is this a scam or do i need to do something
+--- by=one_call status=answered sec=4.35 err=None read: needs=[] limit=none topic=how_to asked=read q='i got a text with a login code when i tried to sign in over break, i never set that up?? is this a scam or do i need to do something' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+The Fall 2026 academic calendar lists [30]:
+- Monday, September 7, 2026: Labor Day (College Closed - No Classes) (already passed)
+- Wednesday, November 25, 2026: Thanksgiving Break (No Classes) (through November 29)
+- Tuesday, December 8, 2026: Reading Day (No Classes)
+
+Ramapo Gmail requires two-factor authentication. When you sign in from a new device, you may be prompted to verify your identity through the Gmail app; Google can also send a text message with a code as an authentication option. [9][6][4]
+
+If you didn’t initiate the login, don’t share the code or approve a prompt. Ramapo IT says never to provide your password for any reason, and advises contacting the Help Desk if you have any doubt. [1] I can’t verify whether the text you received was a genuine sign-in attempt; contact the IT Help Desk for help.
+
+**IT Help Desk**: Phone: (201) 684-7777. Email: helpdesk@ramapo.edu. Location: 4th floor of the Learning Commons. [31]
+
+Sources: [1](https://www.ramapo.edu/its/cybersafety/) [4](https://www.ramapo.edu/its/mfa/) [6](https://www.ramapo.edu/its/email-activation-and-information/) [9](https://www.ramapo.edu/its/mfa/) [30](https://www.ramapo.edu/academic-calendars/) [31](https://www.ramapo.edu/campus-directory/)
+
+=== E06 | is there like a career test i can take to figure out what to major in? i have to pick classes soon and have no clue
+--- by=one_call status=answered sec=7.67 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q='What does the college publish about career tests to help students figure out what to major in, and who helps students decide what to major in?' general='How can I figure out what to major in?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'write_general', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): Start by listing subjects and activities you genuinely enjoy, then look for majors that build on those interests and skills. Take introductory classes, try related projects or part-time work, and talk with students or professionals in fields you’re considering. Compare what the coursework is like, what kinds of jobs it can lead to, and practical factors such as cost and flexibility. You don’t need to have your whole career figured out—many people change majors or find paths that aren’t obvious at first.
+
+Yes. FOCUS 2 is an online, interactive career and education planning system that combines self-assessment, career exploration, and decision-making. It can help you map out a career path and select the right major area of study. Access code: ramapo430. [4]
+
+You can also visit the Cahill Career Development Center to ask about career assessments and speak with a Career Advisor. The college says the Center for Student Success specializes in helping students choose majors. [1][4]
+
+For choosing classes, the college suggests focusing on your top major choices, choosing classes that can help you decide, and talking with faculty in those majors. [1]
+
+- **Cahill Career Development Center**: Phone: Main Office (201) 684-7444; ASB Office (201) 684-7675. Email: careercenter@ramapo.edu. Main Office: C-209; ASB Office: ASB-513. [23]
+- **Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [23]
+
+Sources: [1](https://www.ramapo.edu/studentsuccess/major/) [4](https://www.ramapo.edu/careercenter/career-assessment/) [23](https://www.ramapo.edu/campus-directory/)
+
+=== E07 | the website where you join clubs keeps saying my account doesnt exist. i wanted to join a couple for spring
+--- by=one_call status=answered sec=5.39 err=None read: needs=[] limit=none topic=club asked=own_words q="Which website do I use to join clubs? It keeps saying my account doesn't exist. I wanted to join a couple for spring." general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+For regular clubs, try the club’s Archway page to join; for example, Animation Production Club says “Join us on Archway” [2]. Browse clubs at [https://www.ramapo.edu/clubs/](https://www.ramapo.edu/clubs/) or visit archway.ramapo.edu [3][16]. All clubs listed are open to all students and welcome new members [3]. If Archway still says your account doesn’t exist, I don’t have verified information about fixing that; contact the Center for Student Involvement [3].
+
+If by “clubs” you mean College Panhellenic Council (CPH) sororities, fill out the CPH Registration Form: [https://rcnjcph.mycampusdirector2.com/landing/](https://rcnjcph.mycampusdirector2.com/landing/). Spring 2027 Formal Recruitment registration is open and closes February 4, 2027 at 12 PM [14].
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [36]
+
+Sources: [2](https://www.ramapo.edu/clubs/organization/animation-production-club-2/) [3](https://www.ramapo.edu/clubs/) [14](https://www.ramapo.edu/greek/recruitment/) [16](https://www.ramapo.edu/orientation/faq-2/) [36](https://www.ramapo.edu/campus-directory/)
+
+=== E08 | got a note on my door about a health and safety inspection next week. what are they checking and do i have to be there
+--- by=one_call status=answered sec=5.02 err=None read: needs=[] limit=none topic=how_to asked=own_words q='What are they checking, and do I have to be there?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+They check for prohibited items, cleanliness, and damage. Remove recyclables and garbage; clean the bathroom, kitchen and living room (if applicable), appliances, and bedroom. Check the prohibited items list: [https://www.ramapo.edu/reslife/prohibited-items/](https://www.ramapo.edu/reslife/prohibited-items/) [2]
+
+Authorized College personnel can enter student rooms to conduct inspections; the exact date and time are not posted. The published Fall 2026 inspection weeks were 9/21/26–10/2/26 and 11/2/26–11/13/26, so those dates do not cover next week. The page says inspections are scheduled three times each fall semester and dates may change; I don't have verified information about a health and safety inspection next week or whether you must be there. Contact Housing & Residence Life to confirm. [1]
+
+**Housing & Residence Life**: Phone: (201) 684-7461. Email: reslife@ramapo.edu. [33]
+
+Sources: [1](https://www.ramapo.edu/reslife/gtcl/) [2](https://www.ramapo.edu/reslife/gtcl/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== E09 | they told me i still have to take a placement test even though i already passed english comp at my old school?? why and how do i get out of it
+--- by=one_call status=answered sec=4.18 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Why do I still have to take a placement test even though I already passed English comp at my old school, and how do I get out of it?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Passing a college English composition course that satisfies Ramapo’s General Education Requirements exempts transfer students from placement testing. If the course does not satisfy those requirements, the exemption may not apply. [17]
+
+Send your official transcript to Admissions for transfer credit review; Ramapo awards credit for a C or better in a college course. [23] The pages don’t specify how to appeal a placement-test requirement based on an English course, so contact the Testing Center to confirm whether your course qualifies for exemption.
+
+- **Testing Center**: Phone: (201) 684-7441. Email: testing@ramapo.edu. Location: Laurel Hall, North. [27]
+- **Admissions**: Phone: (201) 684-7300. Email: admissions@ramapo.edu. Location: McBride House. [27]
+
+Sources: [17](https://www.ramapo.edu/eof-program/eligibility/) [23](https://www.ramapo.edu/orientation/checklist-2/) [27](https://www.ramapo.edu/campus-directory/)
+
+=== E10 | my transfer orientation is on a day i have work and i cant get it off. is there another date i can switch to
+--- by=one_call status=answered sec=4.35 err=None read: needs=[] limit=none topic=how_to asked=read q="My transfer orientation is on a day I have work and I can't get it off. Is there another date I can switch to?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+Yes. Find your confirmation email and scroll to the bottom for a link to cancel and reschedule for another date. The email was sent to the personal email address you used when applying. [3]
+
+If you have not paid your deposit, you will be unable to register for an advisement appointment. Contact the Admissions Office to check your deposit status. If you recently submitted your deposit, allow 24–48 hours for processing before trying to register. [3]
+
+**Admissions**: Phone: (201) 684-7300. Email: admissions@ramapo.edu. Location: McBride House. [36]
+
+Sources: [3](https://www.ramapo.edu/orientation/welcome-ramapo/) [36](https://www.ramapo.edu/campus-directory/)
+
+=== E11 | just transferred here this fall and i want to study abroad next year. is it too soon to apply? what do i have to do first
+--- by=one_call status=answered sec=4.69 err=None read: needs=[] limit=none topic=how_to asked=read q='I just transferred here this fall and I want to study abroad next year. Is it too soon to apply? What do I have to do first?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+It isn’t too soon to start: first complete the [advisement questionnaire](http://ramapo.studioabroad.com/index.cfm?FuseAction=Applicants.EnterAdvising). Then meet with the study abroad advisor, research program options, talk to Global Roadrunners, and complete the study abroad application. [1]
+
+Each program has its own checklist. It may include an application fee, essay, official transcript, one academic recommendation, course approval and other forms and documents. Your materials will not be reviewed until your application is complete. [4]
+
+The page does not give study-abroad application timing or confirm whether being a transfer student affects eligibility; I don’t have verified information about those. Contact the Roukema Center for International Education.
+
+**Roukema Center for International Education**: Phone: (201) 684-7533. Location: C-wing, Suite 213. [25]
+
+Sources: [1](https://www.ramapo.edu/study-abroad/getting-started/) [4](https://www.ramapo.edu/study-abroad/application-process/) [25](https://www.ramapo.edu/campus-directory/)
+
+=== E12 | My classes go until almost 10 and every dining spot is closed by then. Can I change my meal plan to just dining dollars or something like that?
+--- by=one_call status=answered sec=6.78 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Can I change my meal plan to just dining dollars or something like that?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+Yes. Residents who wish to add a Block Plan or Flex Plan for Spring can do so beginning December 1, 2026. These plans do not automatically roll over from Fall, and are non-refundable. Email your request from your Ramapo College email account with your complete first and last name, Banner ID Number (R-Number), and plan of choice. [6]
+
+To change your meal plan, students may change their plan for Spring 2027 through January 25, 2027. Email mealplan@ramapo.edu from your Ramapo email account with your complete first and last name, R-Number, and meal plan choice. Requests take at least three business days to process; you’ll receive a confirmation email. Don’t submit multiple requests. [2][3]
+
+Residents in traditional residence halls are required to have a meal plan; residents in The Village and College Park Apartments are not. [2] Late Night Dining at the Birch Tree Inn runs 9 pm to 11pm Monday through Friday and 8 pm to 10pm Saturday and Sunday. You can use your Meal Plan or pay with Flex, Ramapo Dollars, cash or credit. [4]
+
+- **The Village**: Phone: (201) 684-7104. Email: village@ramapo.edu. Location: The Thomases Commons. [34]
+- **College Park Apartments**: Phone: (201) 684-7061. Email: cpa@ramapo.edu. Location: The Lodge. [34]
+
+Sources: [2](https://www.ramapo.edu/reslife/new-student-guide/) [3](https://www.ramapo.edu/reslife/fallcheckoutandwinter/) [4](https://www.ramapo.edu/reslife/gtcl/) [6](https://www.ramapo.edu/reslife/fallcheckoutandwinter/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== E13 | how do i set up direct deposit so my refund goes straight to my bank instead of a check
+--- by=one_call status=answered sec=4.75 err=None read: needs=[] limit=none topic=how_to asked=read q='how do i set up direct deposit so my refund goes straight to my bank instead of a check' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+1. Log into RCNJ Experience: [https://experience.elluciancloud.com/rconj/](https://experience.elluciancloud.com/rconj/) [1]
+2. Locate the Student Account Info card and click Bill & Payment Suite. [1]
+3. Click Electronic Refunds on the right-hand side under the My Profile Setup menu. [1]
+4. Enroll in Two-Step Verification. If you previously completed it, skip this step. Click Security Settings in My Profile, select a method to receive a passcode (text message, email or Google Authentication), click Send Code, enter the passcode and click Verify. [1]
+5. Click Payment Profile in My Profile. Edit an existing saved Payment Method or create a new one. In either case, check the box in the Refund Option section to designate the method as your direct-deposit refund account. [1]
+
+You’ll need your checking or savings account number and your bank’s nine-digit transit routing number; these are normally found at the bottom of checks and deposit slips. [2] Refunds are generally deposited within one to two weeks of submitting the application, if you’re eligible for a refund. [2]
+
+**Student Accounts**: Phone: (201) 684-7495. Email: studentaccts@ramapo.edu. Location: D-Wing, First Floor. [32]
+
+Sources: [1](https://www.ramapo.edu/student-accounts/direct-deposit/) [2](https://www.ramapo.edu/student-accounts/direct-deposit-questions-answers/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== E14 | does EOF have laptops we can borrow? mine died and finals are this week
+--- by=one_call status=answered sec=4.73 err=None read: needs=[] limit=none topic=how_to asked=read q='does EOF have laptops we can borrow? mine died and finals are this week' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+I don’t have verified information that EOF lends laptops. EOF’s page says students should bring their personal laptop and charger for academic work and program activities [6].
+
+The Library has five Lenovo PC wireless laptops for current Ramapo students. They’re for in-house use only and can be checked out at the Circulation Desk for 2 hours, renewable for another 2 hours depending on demand. Loaning stops 1 hour before library closing; return laptops 1 hour before closing. [1]
+
+For a longer-term option, currently enrolled Ramapo students may apply for a free laptop through the We Care Program Application Form. Eligibility requires being a current undergraduate or graduate student, enrolled part-time or full-time, in good standing with the Office of Student Conduct, and having financial need confirmed by the Office of Financial Aid. Applying does not guarantee a laptop. [17]
+
+- **Library**: Phone: (201) 684-7575. Email: circ@ramapo.edu. Location: Peter P. Mercer Learning Commons. [31]
+- **Office of Student Conduct**: Phone: (201) 684-7869. Email: studentconduct@ramapo.edu. Office: C-212. [31]
+
+Sources: [1](https://www.ramapo.edu/library/computers-and-laptops/) [6](https://www.ramapo.edu/eof-program/freshman/) [17](https://www.ramapo.edu/upcycle/request-device/) [31](https://www.ramapo.edu/campus-directory/)
+
+=== E15 | i missed my advising appointment yesterday 😬 and i think i need it before i can register. can i reschedule
+--- by=one_call status=answered sec=4.17 err=None read: needs=['school_trouble'] limit=none topic=how_to asked=own_words q='Can I reschedule my advising appointment?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+That's stressful, but one bad grade doesn't decide everything. Talking with your professor and an advisor soon can really help.
+
+Yes—you can reschedule in Connect. Find the appointment in Upcoming Appointments on the Connect home page, click the calendar icon at the beginning of the line, then choose edit from the menu [3]. To book a new time, open My Success Network, click your advisor’s name, choose an available time with a Sign Up link, complete the form, and click Save. You’ll get an email confirmation [2]. Go to web.ramapo.edu and click the red Connect button to log in [4].
+
+You generally do not have to meet with an advisor before registering, except if you are a Contemporary Arts or Environmental Science student; students in those majors must consult their assigned faculty advisor before registration each Spring. Advising is strongly recommended [7].
+
+**Connect Resource Center**: Email: connect@ramapo.edu. [32]
+
+This office can help:
+**Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [33]
+
+Sources: [2](https://www.ramapo.edu/connect/students/) [3](https://www.ramapo.edu/connect/students/frequently-asked-questions/) [4](https://www.ramapo.edu/connect/students/) [7](https://www.ramapo.edu/studentsuccess/faq/) [32](https://www.ramapo.edu/campus-directory/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== E16 | I have accommodations for extra time but my two summer finals are on the same day and both are long. Can I take one of them on a different day?
+--- by=one_call status=answered sec=4.33 err=None read: needs=['disability'] limit=none topic=how_to asked=own_words q='Can I take one of my two summer finals on a different day?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+You can ask for support with that.
+
+Having two finals on the same day does not by itself qualify under the policy to request a different day. Students are not expected to take more than two exams/other culminating assessments on any one day during the final exam period. If you are scheduled for more than two, you must take the earliest and latest exams at their assigned times and may request that middle exam(s) be rescheduled to another day during the final exam period. For summer terms, make the request by the end of the third class meeting. Faculty must accommodate requests made by that deadline. [22]
+
+The policy does not say whether extra time or the length of two exams is grounds for rescheduling; I don't have verified information about that. Contact the Office of Specialized Services.
+
+**Office of Specialized Services**: Phone: (201) 684-7514. Email: oss@ramapo.edu. Location: C-Wing, Room 205. [23]
+
+Sources: [22](https://catalog.ramapo.edu/quicklinks/academicpolicies#final-examinations-and-other-culminating-assessments) [23](https://www.ramapo.edu/campus-directory/)
+
+=== E17 | I'm back home in India for winter break. Can I still book a session with a counselor online from here?
+--- by=one_call status=answered sec=3.73 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Can I still book a session with a counselor online from here?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+The academic calendar doesn't list a winter break by name. Between the Fall 2026 and Spring 2027 semesters it lists [31]:
+- Tuesday, December 15, 2026: Full and Session II Courses - Last Day of the Semester
+- Thursday, December 17, 2026: First Day of Winter Classes
+- Tuesday, January 19, 2027: Full and Session I Courses - Classes Begin
+
+Yes. Uwill provides teletherapy with international coverage, including 50 states and international coverage [20]. Register/login at [https://app.uwill.com/](https://app.uwill.com/) and create your profile using your school email and current location. Then you can immediately schedule an appointment with a therapist of your choosing [1][2]. You can choose based on availability, issue, gender, language, and ethnicity, and select a time with day, night, and weekend availability [1]. Sessions are free [5][20].
+
+**Counseling Center**: Phone: (201) 684-7522. Office: D-216. [32]
+
+Sources: [1](https://www.ramapo.edu/counseling/uwill/) [2](https://www.ramapo.edu/counseling/uwill/) [5](https://www.ramapo.edu/counseling/uwill/) [20](https://www.ramapo.edu/student-affairs/access-to-mental-health-support/) [31](https://www.ramapo.edu/academic-calendars/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== E18 | i got the tb test on monday and was supposed to come back so they can read it but i forgot. do i have to start over
+--- by=one_call status=answered sec=3.52 err=None read: needs=[] limit=none topic=how_to asked=read q='i got the tb test on monday and was supposed to come back so they can read it but i forgot. do i have to start over' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+I don’t have verified information about whether you need to restart the TB test. Contact Health Promotion for guidance.
+
+**Health Promotion**: Email: studentwellness@ramapo.edu. Wellness Is Now office: E-211A. [26]
+
+Sources: [26](https://www.ramapo.edu/campus-directory/)
+
+=== E19 | my EOF counselor said the grant won't cover my summer class. i dont get why, isnt summer part of the year? is there anything i can do
+--- by=one_call status=answered sec=11.96 err=None read: needs=['money'] limit=none topic=how_to asked=own_words q='Is there anything I can do?' general="Isn't summer part of the year?"
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_general', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Money stress is really common, and you don't have to sort it out alone.
+
+**General answer** (from general knowledge, not Ramapo's pages): Yes—summer is one of the four seasons of the year.
+
+The EOF summer coverage described on the EOF page is for its Pre-Freshman Summer Studies Institute: it says 100% of the cost of that program is covered, and that students can earn up to six credits. That does not say every summer class is covered by the EOF grant. [2] The EOF State Grant is posted to a student’s account upon successfully completing the EOF Summer Program. [10]
+
+For other summer session tuition and fees, EOF students can apply for funding; other EOF scholarships may also be available. [3][9] For summer aid generally, Financial Aid says you must be matriculated and file a FAFSA for the prior aid year to receive Title IV aid. A Stafford or PLUS loan requires enrollment in 6 or more credits; alternative loans are also available. [12] Contact the Educational Opportunity Fund (EOF) Program about EOF funding options and Financial Aid about summer aid eligibility.
+
+- **Financial Aid**: Phone: (201) 684-7549. Email: finaid@ramapo.edu. Office: E-210. [24]
+- **Educational Opportunity Fund (EOF) Program**: Phone: (201) 684-7541. Email: EOFdesk@ramapo.edu. Office: D-101. [24]
+
+This office can help:
+**Student Accounts**: Phone: (201) 684-7495. Email: studentaccts@ramapo.edu. Location: D-Wing, First Floor. [25]
+
+Sources: [2](https://www.ramapo.edu/eof-program/financial/) [3](https://www.ramapo.edu/eof-program/financial/) [9](https://www.ramapo.edu/undergraduate/educational-opportunity-fund/faqs/) [10](https://www.ramapo.edu/undergraduate/educational-opportunity-fund/faqs/) [12](https://www.ramapo.edu/finaid/faqs/) [24](https://www.ramapo.edu/campus-directory/) [25](https://www.ramapo.edu/campus-directory/)
+
+=== E20 | signed up for the placement test on friday but i have work, how do i move it to another day
+--- by=one_call status=answered sec=2.58 err=None read: needs=[] limit=none topic=how_to asked=own_words q='How do I move my placement test to another day?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+You can move the appointment on your own through the appointment system or email the Testing Center and they can assist. [1]
+
+**Testing Center**: Phone: (201) 684-7441. Email: testing@ramapo.edu. Location: Laurel Hall, North. [20]
+
+Sources: [1](https://www.ramapo.edu/testing/clep/) [20](https://www.ramapo.edu/campus-directory/)
+
+=== E21 | my parents gave me a different car over break, how do i change the car on my parking permit before i come back
+--- by=one_call status=answered sec=3.64 err=None read: needs=[] limit=none topic=how_to asked=own_words q='How do I change the car on my parking permit before I come back?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+For a permanent change, remove the permit from the old car, affix it to the new vehicle, and email the updated vehicle information to parkingpermits@ramapo.edu. If the permit is damaged or will no longer adhere to the window, bring it to the Public Safety Parking and ID Office, Rm. C101, to swap it at no cost for a new permit. Lost permits are replaced for a fee. [1]
+
+If you need to use the new car temporarily, get a temporary one-day permit from the main entrance Public Safety booth, or the vehicle may be subject to citations. For a longer-term temporary permit, go to the Parking and ID Office, Rm. C101. [1]
+
+- **Public Safety (Non-Emergency)**: Phone: (201) 684-7432. Email: publicsafety@ramapo.edu. Office: C-102. [32]
+- **Public Safety (Emergency)**: Phone: (201) 684-6666. Email: publicsafety@ramapo.edu. Office: C-102. [32]
+
+Sources: [1](https://www.ramapo.edu/publicsafety/parking-regulations/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== E22 | Two of my classes overlap by 15 minutes on Tuesday. The system let me register but I can't be in both. I need to stay full time for my visa. What should I do?
+--- by=one_call status=answered sec=5.93 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q='What does the college publish about resolving overlapping classes, and who helps students decide how to stay full time for their visa?' general='What should I do if two of my classes overlap by 15 minutes on Tuesday and I need to stay full time for my visa?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_general', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): Contact both instructors and your academic adviser as soon as possible; ask whether one class has an approved alternate section or arrangement, and don’t assume you can miss part of either class. Before changing or dropping anything, check with your school’s international student adviser, since visa rules for full-time enrollment and schedule conflicts can be specific to your status. Get any approved plan in writing and confirm you’ll remain compliant.
+
+The Registrar publishes that an overlapping-time registration error means you should “Select another course.” [7]
+
+As an F-1 student, you must register for a complete full course load every semester: undergraduates must complete at least 12 credits, and graduate students are ordinarily required to complete 9 credits to be considered full-time. [1] Contact the Roukema Center for International Education / ISSS with questions or concerns about F-1 status; the college recommends consulting ISSS. [1]
+
+- **Registrar**: Phone: (201) 684-7695. Email: reg@ramapo.edu. Office: D-224. [34]
+- **Roukema Center for International Education**: Phone: (201) 684-7533. Location: C-wing, Suite 213. [34]
+
+Sources: [1](https://www.ramapo.edu/inter-students/current/) [7](https://www.ramapo.edu/registrar/registrationinfo/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== E23 | I work part time in the dining hall and my new landlord wants proof of my job and how much I make. Who in dining can write that?
+--- by=one_call status=answered sec=3.8 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Who in dining can write proof of my job and how much I make?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+People Operations and Employee Resources Department (POERD) is the only department authorized to respond to employment verification inquiries. Verification confirms dates of employment, salary, and position(s) held; it usually takes within 48 hours of receipt. A written authorization and release signed by you is required. [21]
+
+**People Operations and Employee Resources Department**: Phone: (201) 684-7506. Email: poer@ramapo.edu. Location: D-wing. [31]
+
+Sources: [21](https://www.ramapo.edu/poerd/employee-handbook/) [31](https://www.ramapo.edu/campus-directory/)
+
+=== E24 | My employer reimburses tuition but they need an official paper showing I finished my summer course with a grade. Where do I get that?
+--- by=one_call status=answered sec=5.83 err=None read: needs=[] limit=my_records topic=how_to asked=own_words_then_campus_side q='How do I get an official paper showing I finished my summer course with a grade?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't see your personal records, like your grades, balance, schedule or financial aid status.
+
+Order an official transcript through the National Student Clearinghouse: [https://tsorder.studentclearinghouse.org/school/select](https://tsorder.studentclearinghouse.org/school/select). It costs $4.90 per transcript request (nonrefundable). Orders are typically processed within 1–3 business days, and the recipient has 30 days to download it. You cannot change the recipient’s email or cancel after placing the order. [31]
+
+For an official paper copy, fill out the Official Transcript Request Form: [https://www.ramapo.edu/registrar/wp-content/uploads/sites/7/2025/02/Official-Transcript-Request-Form-FILLABLE.pdf](https://www.ramapo.edu/registrar/wp-content/uploads/sites/7/2025/02/Official-Transcript-Request-Form-FILLABLE.pdf) and email it to transcript@ramapo.edu. There is no charge. Processing takes 3–5 business days, with additional time possible during peak periods. Paper copies cannot be emailed or faxed; they can be mailed or picked up in person with photo ID. [31]
+
+**Registrar**: Phone: (201) 684-7695. Email: reg@ramapo.edu. Office: D-224. [35]
+
+Sources: [31](https://www.ramapo.edu/undergraduate/dual-enrollment/) [35](https://www.ramapo.edu/campus-directory/)
+
+=== E25 | is there scholarship money for grad students going abroad? i want to apply before the deadline if there is
+--- by=one_call status=answered sec=6.31 err=None read: needs=[] limit=none topic=how_to asked=read q='is there scholarship money for grad students going abroad? i want to apply before the deadline if there is' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Yes. Ramapo lists study-abroad financial resources, including the RCNJ Study Abroad Scholarship Fund and the William and Sandra Frech Scholarship Award. The fund descriptions do not give eligibility details or an application deadline. [12][13]
+
+The Fulbright U.S. Student Program supports graduate study and research in over 140 countries. It is open to graduating seniors or graduate students in the U.S. and provides grants for individually designed study/research projects or English Teaching Assistant Programs. Grants include book allowances, tuition, transportation, and a moderate dependence allowance. See [http://www.fulbrightonline.org/](http://www.fulbrightonline.org/) for details. [19]
+
+The general scholarship deadline for the 26/27 academic year was September 23, 2026, so it has passed. Applications are made through the General Application at [http://ramapo.academicworks.com/](http://ramapo.academicworks.com/). [18] I don't have verified information about a current deadline for the study-abroad scholarships; contact the Roukema Center for International Education to ask about current opportunities and deadlines.
+
+- **Transportation Services**: Phone: (201) 684-7432. Email: shuttle@ramapo.edu. [31]
+- **Roukema Center for International Education**: Phone: (201) 684-7533. Location: C-wing, Suite 213. [31]
+
+Sources: [12](https://www.ramapo.edu/scholarships/single/study-abroad-annual-scholarship/) [13](https://www.ramapo.edu/scholarships/single/william-sandra-frech-scholarship-award/) [18](https://www.ramapo.edu/scholarships/faqs/) [19](https://www.ramapo.edu/prestigious-fellowships-and-scholarships/single/fulbright-u-s-student-program/) [31](https://www.ramapo.edu/campus-directory/)
+
+=== E26 | I can't find a library book I borrowed and finals are here. What happens if I lost it, do I just pay for it?
+--- by=one_call status=answered sec=4.3 err=None read: needs=[] limit=none topic=how_to asked=own_words q='What happens if I lost a library book I borrowed, do I just pay for it?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+If you can’t find the book, ask Circulation staff for help. Complete the missing-book form available at the Circulation Desk; staff will search for it and notify you of the outcome. [3]
+
+If it is not returned 28 days after its due date, a $75.00 charge ($50 replacement fee and $25 processing fee) will be billed to your Office of Student Accounts account. Outstanding charges of $75 or more suspend borrowing privileges; transcripts and diplomas may also be held until charges are resolved. [1]
+
+For account questions, contact Madel Tisi at mtisi@ramapo.edu or Lili Pasaporte at lpasapor@ramapo.edu. [3]
+
+**Student Accounts**: Phone: (201) 684-7495. Email: studentaccts@ramapo.edu. Location: D-Wing, First Floor. [24]
+
+Sources: [1](https://www.ramapo.edu/library/circulation/) [3](https://www.ramapo.edu/library/circulation/) [24](https://www.ramapo.edu/campus-directory/)
+
+=== E27 | i got a bill from a lab for bloodwork the health center sent out. i thought it was free?? who do i ask about this
+--- by=one_call status=answered sec=6.13 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Who do I ask about this?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+Laboratory work is subject to normal deductibles and copays, even when drawn at Ramapo College Health Services. Services sent to other providers are not covered by the 100% waiver, so a bill may apply. [1]
+Ask Health Services about the lab referral and bill. The College recommends asking your provider whether a test will result in an additional charge under your insurance plan. [1]
+
+**Health Services**: Phone: (201) 684-7536. Location: Near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road. [33]
+
+Sources: [1](https://www.ramapo.edu/student-accounts/student-health-insurance/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== E28 | signed up for the career fair but now i have an exam that day. how do i cancel so i dont get marked as a no show
+--- by=one_call status=answered sec=2.98 err=None read: needs=[] limit=none topic=how_to asked=own_words q="How do I cancel my career fair signup so I don't get marked as a no-show?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I don’t have verified information about how to cancel your career fair registration or avoid being marked as a no-show. Contact the Cahill Career Development Center.
+
+**Cahill Career Development Center**: Phone: Main Office (201) 684-7444; ASB Office (201) 684-7675. Email: careercenter@ramapo.edu. Main Office: C-209; ASB Office: ASB-513. [33]
+
+Sources: [33](https://www.ramapo.edu/campus-directory/)
+
+=== E29 | I'm in EOF and signed up to be a peer mentor for the summer program but I just got a job offer. Can I do only part of it or do I have to drop out
+--- by=one_call status=answered sec=12.81 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q='Can I do only part of it or do I have to drop out?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't choose for you, but I can share what the college publishes.
+
+The EOF Program says students are expected to attend all classes, workshops, meetings, and activities unless otherwise approved by EOF staff. If you cannot fully participate, you can request to be admitted to Ramapo as a non-EOF student; once on campus, you can apply to be added to the EOF Internal Transfer waitlist. Students accepted via the waitlist do not receive the Ramapo College Grant. [7] The EOF Summer Program is a mandatory 5-week program for incoming first-year students admitted through EOF; incoming EOF transfers are not required to participate. [12][13] The page says students are expected to attend assigned classes, meetings, workshops, and required programs. [14]
+
+I don’t have verified information about whether you may do only part of your peer mentor commitment. Contact the Educational Opportunity Fund (EOF) Program for guidance. Its page says students may request approval from EOF staff if unable to attend all activities. [7]
+
+**Educational Opportunity Fund (EOF) Program**: Phone: (201) 684-7541. Email: EOFdesk@ramapo.edu. Office: D-101. [24]
+
+Sources: [7](https://www.ramapo.edu/eof-program/freshman/) [12](https://www.ramapo.edu/undergraduate/educational-opportunity-fund/faqs/) [13](https://www.ramapo.edu/undergraduate/educational-opportunity-fund/faqs/) [14](https://www.ramapo.edu/eof-program/freshman/) [24](https://www.ramapo.edu/campus-directory/)
+
+=== E30 | my bill says i owe for a meal plan but im a commuter and never picked one. the bill is due friday
+--- by=one_call status=answered sec=4.4 err=None read: needs=['money'] limit=none topic=how_to asked=own_words q='How can I dispute a meal plan charge on my bill if I’m a commuter and never picked one?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Money stress is really common, and you don't have to sort it out alone.
+
+Meal plans are not required for commuter students. If you did not select one, email mealplan@ramapo.edu from your Ramapo email account. Include your full name and R number, and explain the charge you want reviewed. [16][19]
+
+Your bill’s posted payment deadline is December 16, 2026, not Friday, November 20. [9] If you do not pay in full by the payment deadline, you may be subject to a $200 late fee and/or deregistration from your courses and de-housing. [4]
+
+Contact Student Accounts about the billed charge.
+
+**Student Accounts**: Phone: (201) 684-7495. Email: studentaccts@ramapo.edu. Location: D-Wing, First Floor. [33]
+
+This office can help:
+**Financial Aid**: Phone: (201) 684-7549. Email: finaid@ramapo.edu. Office: E-210. [34]
+
+Sources: [4](https://www.ramapo.edu/student-accounts/payment-policies/) [9](https://www.ramapo.edu/student-accounts/) [16](https://www.ramapo.edu/reslife/gtcl/) [19](https://www.ramapo.edu/reslife/gtcl/) [33](https://www.ramapo.edu/campus-directory/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== E31 | my friend from home wants to visit and stay over in my room this weekend. do i have to register her somewhere
+--- by=one_call status=answered sec=4.93 err=None read: needs=[] limit=none topic=how_to asked=read q='my friend from home wants to visit and stay over in my room this weekend. do i have to register her somewhere' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Yes. If your friend is 18 or older and not assigned to on-campus housing, she needs to complete Guest Registration if she’ll be on campus after 10 PM. She must have the approved registration email and valid ID, and stay with you at all times. [3]
+
+Registered guests may stay no more than three nights within any seven-day period; a night begins and ends at 10 PM. Residents may host up to two guests at once. [2] The last night overnight guests are permitted this semester is Monday, December 14, 2026. [6]
+
+Contact Housing & Residence Life for the registration process.
+
+**Housing & Residence Life**: Phone: (201) 684-7461. Email: reslife@ramapo.edu. [34]
+
+Sources: [2](https://www.ramapo.edu/reslife/gtcl/) [3](https://www.ramapo.edu/reslife/gtcl/) [6](https://www.ramapo.edu/reslife/fallcheckoutandwinter/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== E32 | i got charged a health center fee for summer but im only taking one online class. can that be taken off
+--- by=one_call status=answered sec=7.43 err=None read: needs=[] limit=do_it_for_me topic=how_to asked=own_words_then_campus_side q='How can I have the health center fee taken off?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't send messages or make changes for you, like registering, dropping a class or making a payment.
+
+The information provided covers the student health insurance fee, not a separate health center fee. One online class by itself is not listed as a reason to remove a health center fee. I don’t have verified information about whether that fee can be removed or how to request it; contact Student Accounts. [3][9]
+
+- **Health Services**: Phone: (201) 684-7536. Location: Near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road. [27]
+- **Student Accounts**: Phone: (201) 684-7495. Email: studentaccts@ramapo.edu. Location: D-Wing, First Floor. [27]
+
+Sources: [3](https://www.ramapo.edu/student-accounts/costinfo/) [9](https://www.ramapo.edu/student-accounts/student-health-insurance/) [27](https://www.ramapo.edu/campus-directory/)
+
+=== E33 | is there a way to do bachelors and masters together in 5 years? i'd want to sign up early if thats a thing
+--- by=one_call status=answered sec=4.49 err=None read: needs=[] limit=none topic=program asked=read q="Is there a way to do a bachelor's and master's together in 5 years? I'd want to sign up early if that's a thing." general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+Yes. Ramapo offers a 4+1 program to earn a bachelor’s and master’s degree in five years. Contact the graduate program director for enrollment information and guidelines. The 4+1 Declaration Form is here: [https://www.ramapo.edu/registrar/wp-content/uploads/sites/7/2026/04/41-Declaration-Form-FILLABLE.pdf](https://www.ramapo.edu/registrar/wp-content/uploads/sites/7/2026/04/41-Declaration-Form-FILLABLE.pdf) [1]
+
+Listed 4+1 programs include Accounting, Elementary/Special Education, Flex MBA, Social Work, and Public Policy. The Social Work listing links to a 2021–2022 catalog, so I can’t verify that it is currently offered. [9]
+
+**Registrar**: Phone: (201) 684-7695. Email: reg@ramapo.edu. Office: D-224. [32]
+
+Sources: [1](https://www.ramapo.edu/registrar/forms-transcripts/) [9](https://www.ramapo.edu/admitted-students/academics/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== E34 | Everyone keeps talking about Handshake but I don't know what it is. Do I need it to find a job on campus?
+--- by=one_call status=answered sec=4.41 err=None read: needs=[] limit=none topic=how_to asked=own_words q='What is Handshake, and do I need it to find a job on campus?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Handshake is Ramapo’s job bank and online career management system. You can use it to find jobs and internships, register for career fairs, and schedule career-center appointments. [3][8][9]
+
+Yes—for on-campus jobs, all positions are posted on Handshake, and you must register to view open positions. Search using the keyword “RCNJ,” follow each posting’s application instructions, and contact the listed supervisor. [24]
+
+**Cahill Career Development Center**: Phone: Main Office (201) 684-7444; ASB Office (201) 684-7675. Email: careercenter@ramapo.edu. Main Office: C-209; ASB Office: ASB-513. [30]
+
+Sources: [3](https://www.ramapo.edu/careercenter/faculty-staff/) [8](https://www.ramapo.edu/careercenter/career-tools/) [9](https://www.ramapo.edu/careercenter/employer/) [24](https://www.ramapo.edu/on-campus-employment/) [30](https://www.ramapo.edu/campus-directory/)
+
+=== E35 | i got into ramapo and another school and they both want deposits by january 15. can i get an extension on mine so i have more time to decide
+--- by=one_call status=answered sec=3.07 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Can I get an extension on my deposit so I have more time to decide?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+The current page says to submit your deposit by May 1 for priority consideration, not January 15. [10] It doesn’t confirm that an extension is available for your deposit. Contact Admissions to ask whether they can extend your deadline.
+
+**Admissions**: Phone: (201) 684-7300. Email: admissions@ramapo.edu. Location: McBride House. [33]
+
+Sources: [10](https://www.ramapo.edu/admitted-students/portal/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== E36 | how do i get assigned an advisor? im undeclared and nobody ever contacted me
+--- by=one_call status=answered sec=3.83 err=None read: needs=[] limit=none topic=how_to asked=read q="How do I get assigned an advisor? I'm undeclared and nobody ever contacted me." general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+As an undeclared student, you should be assigned a professional advisor through the Center for Student Success. Check your Connect network to find your assigned advisor; the advisor’s name is also at the bottom of your Degree Evaluation. [6][10]
+
+For appointment instructions, see the [how-to guides](https://www.ramapo.edu/myadvisor/how-to-guides/). [14] Since nobody has contacted you, contact the Center for Student Success for advisement.
+
+**Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [24]
+
+Sources: [6](https://www.ramapo.edu/studentsuccess/faq/) [10](https://www.ramapo.edu/myadvisor/advisement-by-year/) [14](https://www.ramapo.edu/myadvisor/how-to-guides/) [24](https://www.ramapo.edu/campus-directory/)
+
+=== E37 | I'm signed up for 2 classes in my masters program for spring but I want to go down to 1 because of work. Is that allowed? I'm afraid of losing my aid
+--- by=one_call status=answered sec=8.17 err=None read: needs=[] limit=opinion topic=how_to asked=read q="What does the college publish about reducing my course load from 2 classes to 1 in my master's program for spring, and who helps students decide?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Whether one class is allowed depends on how many credits those classes carry; the information I have doesn’t specify graduate-program enrollment rules. Federal aid requires at least 6 credits in a semester. Below full-time status, aid may be adjusted: federal Pell may be reduced, state aid may be canceled, and institutional grants or scholarships may be reduced or taken away. Federal loans can be kept when moving from 12 credits to 6 credits. [1]
+
+Please contact Financial Aid before changing your enrollment to discuss how it may affect your specific aid. [2]
+
+**Financial Aid**: Phone: (201) 684-7549. Email: finaid@ramapo.edu. Office: E-210. [35]
+
+Sources: [1](https://www.ramapo.edu/finaid/faqs/) [2](https://www.ramapo.edu/finaid/faqs/) [35](https://www.ramapo.edu/campus-directory/)
+
+=== E38 | never been to the gym here in 4 years lol. do i just walk in? do i need to sign something
+--- by=one_call status=answered sec=3.57 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Do I just walk in? Do I need to sign something?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Both fitness centers are open to all students with a valid college ID during the hours posted. The facilities are managed by the Department of Athletics. [17] Hours are posted at the fitness center entrance doors. [16]
+I don't have verified information about whether you can just walk in or need to sign something. Contact the Department of Athletics for those details.
+
+- **Facilities Management**: Phone: (201) 684-7660. Location: P-FAC. [35]
+- **Athletics**: Phone: (201) 684-7674. [35]
+
+Sources: [16](https://www.ramapo.edu/reslife/college-park-apartments-cpa/) [17](https://www.ramapo.edu/reslife/gtcl/) [35](https://www.ramapo.edu/campus-directory/)
+
+=== E39 | how do i give back my locker at the gym? im not going to use it next semester
+--- by=one_call status=answered sec=3.92 err=None read: needs=[] limit=none topic=how_to asked=read q="How do I give back my locker at the gym? I'm not going to use it next semester." general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+If it’s a Center for Student Involvement locker, return the key at the end of the semester. The lockers are rented through the Student Center Office. [1]
+
+The page doesn’t specify how to return the locker itself or a return deadline beyond the end of the semester. For those details, contact the Center for Student Involvement.
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [31]
+
+Sources: [1](https://www.ramapo.edu/csi/) [31](https://www.ramapo.edu/campus-directory/)
+
+=== E40 | i got charged for printing like 200 pages i never printed. i think someone is using my account. how do i fix it
+--- by=one_call status=answered sec=4.33 err=None read: needs=['money'] limit=none topic=how_to asked=own_words q='How do I fix being charged for printing like 200 pages I never printed?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Money stress is really common, and you don't have to sort it out alone.
+
+Check your printing usage at [http://print.ramapo.edu](http://print.ramapo.edu). [1] Each student receives 200 pages per academic year at no charge; the allowance resets at the beginning of each academic year (each fall semester), and unused allowance does not roll over. [2] If you believe someone is using your account, or want to dispute the charge, contact the IT Help Desk. I don't have verified information about how to secure your account or request a refund.
+
+**IT Help Desk**: Phone: (201) 684-7777. Email: helpdesk@ramapo.edu. Location: 4th floor of the Learning Commons. [35]
+
+These offices can help:
+- **Financial Aid**: Phone: (201) 684-7549. Email: finaid@ramapo.edu. Office: E-210. [36]
+- **Student Accounts**: Phone: (201) 684-7495. Email: studentaccts@ramapo.edu. Location: D-Wing, First Floor. [36]
+
+Sources: [1](https://www.ramapo.edu/its/mobile-printing/) [2](https://www.ramapo.edu/its/mobile-printing/) [35](https://www.ramapo.edu/campus-directory/) [36](https://www.ramapo.edu/campus-directory/)
+
+=== E41 | I lost my I-20 and I think my passport was in the same folder. What do I do first?
+--- by=one_call status=answered sec=3.37 err=None read: needs=[] limit=none topic=how_to asked=own_words q='What do I do first?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+Contact the Roukema Center for International Education first. Ramapo’s guidance says international students with questions about their status should speak with an advisor there. [21]
+
+**Roukema Center for International Education**: Phone: (201) 684-7533. Location: C-wing, Suite 213. [30]
+
+Sources: [21](https://www.ramapo.edu/publicsafety/public-safety-frequently-asked-questions/) [30](https://www.ramapo.edu/campus-directory/)
+
+=== E42 | my scholarship from my town wants a paper that shows how much housing costs if i move on campus next year. where do i get that
+--- by=one_call status=answered sec=3.8 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Where do I get a paper that shows how much housing costs if I move on campus next year?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Use Ramapo’s Housing & Dining Services Costs page for housing cost information: [https://www.ramapo.edu/reslife/housing-dining-costs/](https://www.ramapo.edu/reslife/housing-dining-costs/) [28]. I don’t have verified information about a paper or document to submit to your town scholarship. Contact Housing & Residence Life for the housing costs, or Financial Aid for help with the document.
+
+- **Dining Services**: Phone: (201) 684-7773. Location: Student Center, 1st Floor. [33]
+- **Housing & Residence Life**: Phone: (201) 684-7461. Email: reslife@ramapo.edu. [33]
+
+Sources: [28](https://www.ramapo.edu/reslife/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== E43 | My parking ticket was due last week and I forgot about it. Now there's a late fee. Can I still pay it online?
+--- by=one_call status=answered sec=3.89 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Can I still pay my parking ticket online?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+Yes. Pay online through the [Payment Portal](https://rcnjpublicsafety.omnigo.one/CESIReportExec/OCP/Main.aspx). Enter the Citation # and Fine Amount, search for the citation, select it and follow the required fields, then select a payment method. Once processed, your citation will be emailed to you to say it is paid. [4]
+
+Citations not paid or appealed within 20 days are subject to a $5 late fee. A second $5 late fee may be assessed after 28 days. [1]
+
+- **Public Safety (Non-Emergency)**: Phone: (201) 684-7432. Email: publicsafety@ramapo.edu. Office: C-102. [31]
+- **Public Safety (Emergency)**: Phone: (201) 684-6666. Email: publicsafety@ramapo.edu. Office: C-102. [31]
+
+Sources: [1](https://www.ramapo.edu/publicsafety/parking-regulations/) [4](https://www.ramapo.edu/publicsafety/vehicle-citation-information/) [31](https://www.ramapo.edu/campus-directory/)
+
+=== E44 | I am new international student starting in January. When should I arrive and who do I tell when I land?
+--- by=one_call status=answered sec=3.5 err=None read: needs=[] limit=none topic=how_to asked=own_words q='When should I arrive and who do I tell when I land?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Plan to arrive on or before the report date listed on your I-20 or DS-2019, and no more than 30 days before that reported date. Report to the Roukema Center for International Education no later than 15 days after the report date to complete mandatory check-in. [2][5]
+
+Tell the Office of International Students and Scholars as early as possible your airline, flight number(s), departure and arrival times, and departure and arrival airports. You can email iosawami@ramapo.edu. [4]
+
+**Roukema Center for International Education**: Phone: (201) 684-7533. Location: C-wing, Suite 213. [28]
+
+Sources: [2](https://www.ramapo.edu/inter-students/orientation/) [4](https://www.ramapo.edu/inter-students/transfer/) [5](https://www.ramapo.edu/inter-students/orientation/) [28](https://www.ramapo.edu/campus-directory/)
+
+=== E45 | I see a counselor on campus but I'm home in another state for break. Can we still meet on video or is that not allowed?
+--- by=one_call status=answered sec=3.65 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Can we still meet on video or is that not allowed?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+The Fall 2026 academic calendar lists [31]:
+- Monday, September 7, 2026: Labor Day (College Closed - No Classes) (already passed)
+- Wednesday, November 25, 2026: Thanksgiving Break (No Classes) (through November 29)
+- Tuesday, December 8, 2026: Reading Day (No Classes)
+
+Counseling appointments are conducted in person or via telehealth using a secure platform for audio/video communication between students and counselors. [3] The pages don’t say whether a counselor can meet with you while you’re physically in another state. Contact the Counseling Center to confirm. For individual counseling, call 201-684-7522 or stop by room D-216. [13]
+
+**Counseling Center**: Phone: (201) 684-7522. Office: D-216. [32]
+
+Sources: [3](https://www.ramapo.edu/counseling/faq/) [13](https://www.ramapo.edu/counseling/faq/) [31](https://www.ramapo.edu/academic-calendars/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== E46 | how do i get into the library databases from home? it keeps asking me to log in and my login doesnt work
+--- by=one_call status=answered sec=4.84 err=None read: needs=[] limit=none topic=how_to asked=read q="How do I get into the library databases from home? It keeps asking me to log in and my login doesn't work." general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+From home, open the library’s [Databases A–Z](https://libguides.ramapo.edu/az/databases) page and use its links; off-campus links need the library proxy prefix to authenticate. Log in with your Ramapo email username and password. Your username should not include “@ramapo.edu”; make sure the username and password are spelled correctly and Caps Lock is off. Access is for current students, faculty (including emeriti), and staff; alumni do not have off-campus access. Your browser must accept cookies. [1][2][4][6]
+
+If it still fails, check whether a firewall, antivirus, or browser security setting is blocking access; log out of a VPN and try again; clear your browser history, cache, and/or cookies; try another browser, device, or internet connection. [4]
+
+If you need to reset your password, visit [Password Reset](https://password.ramapo.edu/). [17] For technical problems, contact the IT Help Desk.
+
+- **Library**: Phone: (201) 684-7575. Email: circ@ramapo.edu. Location: Peter P. Mercer Learning Commons. [23]
+- **IT Help Desk**: Phone: (201) 684-7777. Email: helpdesk@ramapo.edu. Location: 4th floor of the Learning Commons. [23]
+
+Sources: [1](https://www.ramapo.edu/library/off-campus-access-instructions/) [2](https://www.ramapo.edu/library/off-campus-access-troubleshooting/) [4](https://www.ramapo.edu/library/off-campus-access-troubleshooting/) [6](https://www.ramapo.edu/library/off-campus-access-troubleshooting/) [17](https://www.ramapo.edu/resnet/faq/) [23](https://www.ramapo.edu/campus-directory/)
+
+=== E47 | the counseling appointment form wont submit, it just keeps spinning. is there another way to make an appointment
+--- by=one_call status=answered sec=4.21 err=None read: needs=[] limit=none topic=how_to asked=read q="The counseling appointment form won't submit; it just keeps spinning. Is there another way to make an appointment?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+For an initial triage appointment, call the Counseling Center at 201-684-7522. [1]
+
+You can also get brief, confidential drop-in support Monday-Friday, 1-3 pm in Academic Building D, room 216, in person or via telehealth. Call 201-684-7522 during drop-in hours; no appointment is necessary, and students are seen first-come, first-served. The last meeting begins at 2:40 pm. [4]
+
+For teletherapy, register at [https://app.uwill.com/](https://app.uwill.com/) using your school email, complete your profile with your current location, then schedule with a therapist. [2][3]
+
+**Counseling Center**: Phone: (201) 684-7522. Office: D-216. [32]
+
+Sources: [1](https://www.ramapo.edu/counseling/) [2](https://www.ramapo.edu/counseling/uwill/) [3](https://www.ramapo.edu/counseling/uwill/) [4](https://www.ramapo.edu/counseling/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== E48 | advisor said my stats class from my last school only counts as an elective not for my major. i dont get it, its the same class. can i ask for someone to look at it again
+--- by=one_call status=answered sec=7.09 err=None read: needs=['stress_or_sadness'] limit=none topic=how_to asked=own_words q='Can I ask for someone to look at it again?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I'm sorry you're going through that. It's okay to not be okay, and you don't have to handle it alone.
+
+Yes. If academic approval for a non-general education course equivalency has not yet been established, it may count as elective credit but not toward a particular degree program. Contact the Convener of the appropriate program to review the course and its potential for transfer credit. If approved, the approval is sent to the Office of Admissions, which designates someone to update the appropriate systems. [2]
+
+I don’t have verified information about how to find the appropriate Convener; the Office of the Provost may be able to help.
+
+- **Admissions**: Phone: (201) 684-7300. Email: admissions@ramapo.edu. Location: McBride House. [33]
+- **Office of the Provost**: Phone: (201) 684-7330. Email: provost@ramapo.edu. Location: first floor of the Birch Mansion. [33]
+
+This office can help:
+**Counseling Center**: Phone: (201) 684-7522. Office: D-216. [34]
+
+Sources: [2](https://catalog.ramapo.edu/quicklinks/academicpolicies#transferring-academic-credit1) [33](https://www.ramapo.edu/campus-directory/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== E49 | I graduate in May and just found out I should have applied for OPT already?? Is it too late and what do I do
+--- by=one_call status=answered sec=3.67 err=None read: needs=[] limit=none topic=how_to asked=read q='I graduate in May and just found out I should have applied for OPT already?? Is it too late and what do I do' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I don’t have verified information about whether it’s too late to apply or the OPT application deadlines and steps. Contact the Roukema Center for International Education as soon as possible. Its page says OPT eligibility requires valid F-1 status and at least one academic year (two semesters) of full-time study [1]. The Center lists an OPT Form here: [https://www.ramapo.edu/inter-students/wp-content/uploads/sites/232/2013/11/opt-form.pdf](https://www.ramapo.edu/inter-students/wp-content/uploads/sites/232/2013/11/opt-form.pdf) [3].
+
+**Roukema Center for International Education**: Phone: (201) 684-7533. Location: C-wing, Suite 213. [34]
+
+Sources: [1](https://www.ramapo.edu/inter-students/current/) [3](https://www.ramapo.edu/inter-students/forms/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== E50 | I stay on campus over winter break and my meal swipes don't work at the dining hall. How do I get food?
+--- by=one_call status=answered sec=4.54 err=None read: needs=[] limit=none topic=how_to asked=own_words q='How do I get food?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+Try the campus pantries: eleven satellite pantries have free ready-to-eat and grab-and-go items, including microwave soups and meals, granola and/or breakfast bars, and protein shakes. For a larger selection, go to the food pantry in ASB 130. The pantry outside the Civic and Community Engagement Center, SC 213, is stocked with frozen lunch and dinner meals. [12]
+
+You can also apply to the Swipe Out Hunger Program for 5 meals at the Birch Tree Inn. It is for currently enrolled students experiencing food insecurity, has limited availability, and excludes students with Ultimate or Maroon 14 meal plans. Apply here: [https://cglink.me/2fF/s60806](https://cglink.me/2fF/s60806). Questions: wecare@ramapo.edu. [10]
+
+If you need to add a spring Block or Flex Plan, requests begin December 1, 2026. Email mealpan@ramapo.edu from your Ramapo College email with your complete first and last name, Banner ID Number (R-Number), and plan of choice. Block and Flex plans do not automatically roll over to spring and are non-refundable. [3]
+
+**Civic and Community Engagement Center**: Phone: (201) 684-7586. Email: ccec@ramapo.edu. Office: SC-213. [32]
+
+Sources: [3](https://www.ramapo.edu/reslife/fallcheckoutandwinter/) [10](https://www.ramapo.edu/ccec/we-care-program/food-insecurity-resources/) [12](https://www.ramapo.edu/ccec/we-care-program/food-insecurity-resources/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== E51 | I want to drop one class but then I would have only 9 credits. Can I drop it and add a different one this week?
+--- by=one_call status=answered sec=7.45 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Can I drop one class and add a different one this week if I would then have only 9 credits?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+You can adjust your schedule through the last day of Add/Drop, and can add or drop courses before or within the first week of classes. After Add/Drop ends, you can no longer add classes. Make the changes in Web Self Service. [1][7][8]
+
+At 9 credits, you would be part-time; full-time is at least 12 credits. [20][29] Federal aid requires at least 6 credits, but dropping below full-time may adjust your aid; state aid and institutional grants or scholarships could be reduced or canceled. [3]
+
+Check the academic calendar for the current term’s add/drop deadline. If your financial aid may be affected, contact Financial Aid; for guidance about changing courses, contact the Center for Student Success (Academic Advising).
+
+- **Financial Aid**: Phone: (201) 684-7549. Email: finaid@ramapo.edu. Office: E-210. [35]
+- **Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [35]
+
+Sources: [1](https://www.ramapo.edu/studentsuccess/faq/) [3](https://www.ramapo.edu/finaid/faqs/) [7](https://www.ramapo.edu/registrar/registrationinfo/) [8](https://www.ramapo.edu/registrar/faq/) [20](https://www.ramapo.edu/orientation/faq-2/) [29](https://www.ramapo.edu/undergraduate/returning-student/) [35](https://www.ramapo.edu/campus-directory/)
+
+=== E52 | i need a letter showing ill be living on campus in the fall for my car insurance, they give a discount if the car is far from home. who does that
+--- by=one_call status=answered sec=6.12 err=None read: needs=[] limit=none topic=how_to asked=own_words q="Who can provide a letter showing I'll be living on campus in the fall for my car insurance?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+The Registrar handles enrollment verification requests for auto insurance discounts. You can use the Enrollment Verification Form: [DOC](https://www.ramapo.edu/registrar/wp-content/uploads/sites/7/2013/01/Enrollment-Verification-.doc) or [PDF](https://www.ramapo.edu/registrar/wp-content/uploads/sites/7/2013/01/Enrollment-Verification-.pdf). [1]
+
+**Registrar**: Phone: (201) 684-7695. Email: reg@ramapo.edu. Office: D-224. [36]
+
+Sources: [1](https://www.ramapo.edu/registrar/faq/) [36](https://www.ramapo.edu/campus-directory/)
+
+=== E53 | lost my phone and now i cant get the login code for my school account. how do i get back in
+--- by=one_call status=answered sec=4.38 err=None read: needs=[] limit=none topic=how_to asked=own_words q='How do I get back into my school account?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+Contact the IT Help Desk for help getting back into your account. Their page provides 2FA instructions: [https://www.ramapo.edu/its/mfa/](https://www.ramapo.edu/its/mfa/) [2].
+
+**IT Help Desk**: Phone: (201) 684-7777. Email: helpdesk@ramapo.edu. Location: 4th floor of the Learning Commons. [33]
+
+Sources: [2](https://www.ramapo.edu/its/mfa/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== E54 | my aid for spring looks way lower than fall and i didnt change anything. how do i find out why and fix it
+--- by=one_call status=answered sec=5.37 err=None read: needs=['money'] limit=my_records topic=how_to asked=own_words_then_campus_side q='How do I check why my aid for spring looks way lower than fall and fix it?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't see your personal records, like your grades, balance, schedule or financial aid status. Money stress is really common, and you don't have to sort it out alone.
+
+Compare your spring award with fall and check whether your enrollment changed: dropping below full-time can reduce aid. Federal aid requires at least 6 credits; going from 12 to 6 credits reduces federal Pell, though you can keep federal loans. State aid may be canceled, and institutional grants and scholarships could be reduced or taken away. [1] If you are still enrolled in 6 or more credits, federal aid should not be affected. NJ State aid (e.g., TAG, EOF) requires full-time enrollment when the aid is fully disbursed. [2]
+
+To find out why and discuss fixing it, email the Office of Financial Aid or use the chat on its website. If you or your family have financial hardships or changed circumstances, ask about the possibility of a re-evaluation of your award. Appointments can also be made by email or chat; in-person appointments are Monday through Friday, 8:30am to 4:30pm. [7]
+
+**Financial Aid**: Phone: (201) 684-7549. Email: finaid@ramapo.edu. Office: E-210. [33]
+
+This office can help:
+**Student Accounts**: Phone: (201) 684-7495. Email: studentaccts@ramapo.edu. Location: D-Wing, First Floor. [34]
+
+Sources: [1](https://www.ramapo.edu/finaid/faqs/) [2](https://www.ramapo.edu/finaid/faqs/) [7](https://www.ramapo.edu/finaid/) [33](https://www.ramapo.edu/campus-directory/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== E55 | I applied to the honors program and got rejected but they said I can reapply? I don't understand what I'm supposed to do differently or when
+--- by=one_call status=answered sec=7.0 err=None read: needs=['school_trouble'] limit=none topic=how_to asked=own_words q='What am I supposed to do differently or when to reapply to the honors program?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+That's stressful, but one bad grade doesn't decide everything. Talking with your professor and an advisor soon can really help.
+
+If you just completed your first semester at Ramapo, you can reapply between December 1 and January 8. You must have a 3.50 GPA from the fall semester. [7]
+
+Email PDFs of these materials with the subject “Honors Application”: [7]
+1. An admission essay of 800 words or less. The prompt asks you to choose a community you belong to and describe the community and your place in it. [7]
+2. One recommendation from a Ramapo faculty member. Ask them to submit it to Director Erin Augis at eaugis@ramapo.edu. It should demonstrate personal knowledge of your intellectual independence and capacity for engaged learning. [7]
+3. A previously completed essay or project from your first semester at Ramapo that shows the qualities required for admission. Include a description of the assignment and class. Attach it as a regular PDF, not an embedded link. [7]
+
+The catalog says continuing students should email these materials to honors@ramapo.edu; the current-student page lists eaugis@ramapo.edu as the address for the PDFs. [2][7] The materials are assessed on both academic performance and qualitative measures, including your essay, recommendation, and work sample. [7]
+
+Those not accepted in the initial process are welcome to reapply at the end of their first semester at Ramapo College. [1] Contact the Ramapo Honors Program if you need help with your specific rejection or what to strengthen.
+
+**Ramapo Honors Program**: Email: honors@ramapo.edu. [29]
+
+This office can help:
+**Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [30]
+
+Sources: [1](https://catalog.ramapo.edu/quicklinks/academicpolicies#college-honors-program1) [2](https://catalog.ramapo.edu/quicklinks/academicpolicies#college-honors-program1) [7](https://www.ramapo.edu/honors/applications/current-ramapo-students/) [29](https://www.ramapo.edu/campus-directory/) [30](https://www.ramapo.edu/campus-directory/)
+
+=== E56 | I went to the testing center to take my final with extra time and they said they have no request from my professor. My exam is tomorrow. What can I do?
+--- by=one_call status=answered sec=5.83 err=None read: needs=['disability'] limit=none topic=how_to asked=own_words q='What can I do about the testing center not having a request from my professor for my final with extra time?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+You can ask for support with that.
+
+Contact your instructor right away to confirm the arrangements. It is the faculty’s responsibility to make sure alternative testing arrangements are provided, and OSS can facilitate proctoring. [2] You should check with your instructor that your exam accommodations are set up. [3]
+
+Because your exam is tomorrow, the usual OSS reservation deadline for final exams (10 business days in advance, excluding weekends and holidays) has passed. [2] I don’t have verified information about whether they can arrange an exception on this short notice. Contact the Office of Specialized Services; its best testing contact is osstests@ramapo.edu. [4][5]
+
+- **Office of Specialized Services**: Phone: (201) 684-7514. Email: oss@ramapo.edu. Location: C-Wing, Room 205. [27]
+- **Testing Center**: Phone: (201) 684-7441. Email: testing@ramapo.edu. Location: Laurel Hall, North. [27]
+
+Sources: [2](https://www.ramapo.edu/oss/what-faculty-need-to-know-about-students-with-disabilities/) [3](https://www.ramapo.edu/oss/alternative-testing-for-students/) [4](https://www.ramapo.edu/oss/alternative-testing-for-faculty/) [5](https://www.ramapo.edu/oss/alternative-testing-for-faculty/) [27](https://www.ramapo.edu/campus-directory/)
+
+=== E57 | trying to sign up for a class for spring and it says prerequisite or test score error. i took the prereq as an AP class in high school. what do i do
+--- by=one_call status=answered sec=6.66 err=None read: needs=[] limit=none topic=how_to asked=own_words q="What do I do if I'm trying to sign up for a class for spring and it says prerequisite or test score error, and I took the prerequisite as an AP class in high school?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Check your transcript/DegreeWorks audit to ensure you have the prerequisite. [1] Ramapo awards credit for AP exams when you submit the official score report to the Office of Admissions. Send it to Ramapo College of New Jersey, Office of Admissions, 505 Ramapo Valley Road, Mahwah, NJ 07430. [27] If the prerequisite is satisfied but registration still fails, contact the instructor to request an electronic override; give them specific information about the kind of override needed. Overrides are entered by the instructor, and you must still register online after the override is entered. [18]
+
+**Admissions**: Phone: (201) 684-7300. Email: admissions@ramapo.edu. Location: McBride House. [33]
+
+Sources: [1](https://www.ramapo.edu/myadvisor/registration-faq/) [18](https://www.ramapo.edu/registrar/faq/) [27](https://www.ramapo.edu/orientation/checklist-2/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== E58 | the front desk at the gym said i cant bring my brother in even if i pay. is there a guest pass or something
+--- by=one_call status=answered sec=2.5 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Is there a guest pass or something?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+I don't have verified information about guest passes or whether your brother can use the gym. The Lodge Fitness Center is managed by Athletics [5].
+
+**Athletics**: Phone: (201) 684-7674. [32]
+
+Sources: [5](https://www.ramapo.edu/reslife/college-park-apartments-cpa/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== E59 | I already have extra test time from the disability office but now I also need help with notes because I hurt my hand. How do I add that?
+--- by=one_call status=answered sec=4.01 err=None read: needs=['health', 'disability'] limit=none topic=how_to asked=own_words q='How do I add help with notes?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I'm sorry you're dealing with that, and I hope you feel better soon.
+
+Contact the Office of Specialized Services to discuss adding notes help; accommodations are determined on a case-by-case basis [18]. Notetakers or scribes are examples of potential accommodations for health impairments [16]. All accommodation requests must be supported by submitted documentation from a qualified professional, and all students must complete an Affiliation Packet. Request a packet using the OSS Quick Response Form ([https://www.ramapo.edu/oss/oss-quick-response-form/](https://www.ramapo.edu/oss/oss-quick-response-form/)) or by contacting OSS at oss@ramapo.edu. Send completed packets and supporting documentation electronically to oss@ramapo.edu [21].
+
+**Office of Specialized Services**: Phone: (201) 684-7514. Email: oss@ramapo.edu. Location: C-Wing, Room 205. [30]
+
+This office can help:
+**Health Services**: Phone: (201) 684-7536. Location: Near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road. [31]
+
+Sources: [16](https://www.ramapo.edu/oss/disabilities-and-teaching-strategies-accommodations/) [18](https://www.ramapo.edu/oss/disabilities-and-teaching-strategies-accommodations/) [21](https://www.ramapo.edu/oss/documentation-requirements/) [30](https://www.ramapo.edu/campus-directory/) [31](https://www.ramapo.edu/campus-directory/)
+
+=== E60 | im the treasurer of our club and the form to request money for our event keeps giving an error. the event is in 2 weeks
+--- by=one_call status=answered sec=5.01 err=None read: needs=[] limit=none topic=how_to asked=own_words q='The form to request money for our event keeps giving an error.' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Sorry to hear that!
+
+For SGA co-sponsorship, fill out the co-sponsorship request form on Archway: [https://cglink.me/2fF/s60091](https://cglink.me/2fF/s60091) [1]
+
+I don't have verified information about what to do when the form errors or whether an event two weeks away can still be funded. Contact the Student Government Association.
+
+**Student Government Association**: Phone: (201) 684-7271. Email: sga@ramapo.edu. Office: SC-225. [34]
+
+Sources: [1](https://www.ramapo.edu/sga/faq/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== F01 | Is the health center open on Saturday during finals week?
+--- by=model status=partial sec=10.94 err=None read: needs=[] limit=none topic=office asked=read q='Is the health center open on Saturday during finals week?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', 'embedding', 'pick_sections', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Health Services", "fields": ["hours", "procedures"], "day": "saturday", "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": "Is the health center open on Saturday during finals week?", "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:1487b421-1a9d-4151-9326-16b744094308", "label": "Health Services", "kind": "office", "entity_id": "1487b421-1a9d-4151-9326-16b744094308", "aliases": ["Health Center", "Immu
+Health Services doesn't publish hours for Saturday, November 21 (checked November 17, 2026). [2]
+
+Health Services's page "Health Services" says: "Ramapo College has partnered with Valley Medical Group to manage our on-campus Health Services Center. This agreement ensures that students and employees have direct access to high-quality clinical care, virtual telehealth visits, and coordinated referrals to Valley specialists throughout northern New Jersey. View Valley Medical Group Health Services ([https://www.valleyhealth.com/ramapo-college-health-services](https://www.valleyhealth.com/ramapo-college-health-services))" [1]
+
+Dean of Students's page "Official Announcement: Health Services at Ramapo College" says: "From: The Dean of Students &lt;deanofstudents@ramapo.edu&gt; Date: Tue, Jul 14, 2026 at 2:03 PM Subject: Official Announcement: Health Services at Ramapo College Dear Student: Ramapo College has partnered with Valley Medical Group (VMG) to deliver high-quality, comprehensive, and compassionate medical care to students and employees right on campus. Located at the South Entrance, VMG will be open Monday through Friday from 8:30 a.m. to 4:30 p.m. in the Fall semester (summer hours are Monday through Thursday, 8:30 a.m. to 4:30 p.m.)." (more on its page) [3]
+
+I don't have verified information about that part.
+
+Sources: [1](https://www.ramapo.edu/health/) [2](https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/) [3](https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/)
+
+=== F02 | just graduated and i kinda miss it here already
+--- by=read status=answered sec=1.43 err=None read: needs=['lonely'] limit=none topic=how_to asked=own_words q='' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message'] path=None
+--- lookups=[]
+That sounds really hard, and a lot of students feel this way, especially at first. You're not the only one.
+
+These offices can help:
+- **Counseling Center**: Phone: (201) 684-7522. Office: D-216. [1]
+- **Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [1]
+
+Sources: [1](https://www.ramapo.edu/campus-directory/)
+
+=== F03 | do you guys do campus tours for high schoolers? my little sister wants to see it
+--- by=one_call status=answered sec=3.19 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Do you offer campus tours for high schoolers?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Yes—Ramapo offers on-campus tours on certain dates. Sign up here: [https://apply.ramapo.edu/portal/campus-tour](https://apply.ramapo.edu/portal/campus-tour) [3][4] Please plan to be at the Bradley Center at least 15 minutes before the tour starts. [7]
+
+**Admissions**: Phone: (201) 684-7300. Email: admissions@ramapo.edu. Location: McBride House. [24]
+
+Sources: [3](https://www.ramapo.edu/learn/explore/) [4](https://www.ramapo.edu/admitted-students/tours-events/) [7](https://www.ramapo.edu/campustours/) [24](https://www.ramapo.edu/campus-directory/)
+
+=== F04 | what laptop should i get for school, mac or windows?
+--- by=one_call status=answered sec=4.89 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q='What does Ramapo recommend for student laptops?' general='What laptop should I get for school, Mac or Windows?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_general', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): Either can work well. Choose a Mac if you value battery life, a polished build, and already use Apple devices; choose Windows if you need broader software compatibility, more hardware choices, or gaming. Check your program’s required software first, then compare price, battery life, weight, and warranty.
+
+Ramapo recommends Windows for students taking business courses because many applications are only available for Windows. Students in the Susan and Nick Vallario School of Arts, Humanities, and Education may want to consider a MacBook, since many applications for that program are Mac-based. For other students, either Windows or Mac is sufficient. [1]
+
+For science, math, computer science, animation, video editing, and other computer-intensive fields, consider a laptop that meets or exceeds the “High-end” specifications. Ramapo currently does not recommend Chromebooks. [1]
+
+If you choose a MacBook, Ramapo’s recommendations are: minimum, MacBook Neo with A18 Pro, 8 GB RAM and 256 GB SSD; recommended, 13” MacBook Air or 14″ MacBook Pro with M3/M4 or higher, 16 GB or more RAM and 512GB SSD; high-end, 14” MacBook Pro with M5/M5 Pro or higher, 16 GB or more RAM and 1TB SSD. [2]
+
+See Ramapo’s [student laptop recommendations](https://www.ramapo.edu/its/student-laptop-recommendations/) for the Windows specifications and suggested manufacturers. [1]
+
+**School of Arts, Humanities, and Education Office**: Phone: (201) 684-7365. Email: AHEOffice@ramapo.edu. Office: B-224. [33]
+
+Sources: [1](https://www.ramapo.edu/its/student-laptop-recommendations/) [2](https://www.ramapo.edu/its/student-laptop-recommendations/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== F05 | is it better to take 15 or 18 credits first semester
+--- by=one_call status=answered sec=6.96 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q='What does Ramapo publish about taking 15 or 18 credits first semester, and who helps students decide?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't choose for you, but I can share what the college publishes.
+
+Ramapo says students average 16 credits a semester: most take four courses, and 16 credits each semester for eight semesters allows students to meet the 128-credit graduation requirement. Tuition and tuition-related fees are a flat rate from 12 through 18 credits. [1]
+
+Ramapo places first-year students into four courses based on their declared major; your primary focus should be performing well academically. It does not specifically recommend 15 versus 18 credits for a first semester. [9]
+
+To decide, first-year students are assigned professional advisors in the Center for Student Success. Check Connect for your assigned advisor; meet with your advisor during your In Person Advisement session. [14][5]
+
+**Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [35]
+
+Sources: [1](https://www.ramapo.edu/orientation/faq-2/) [5](https://www.ramapo.edu/orientation/faq-2/) [9](https://www.ramapo.edu/myadvisor/advisement-by-year/) [14](https://www.ramapo.edu/myadvisor/advisement-by-year/) [35](https://www.ramapo.edu/campus-directory/)
+
+=== F06 | when do fall classes start
+--- by=code status=answered sec=0.07 err=None read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=[]
+The Fall 2026 academic calendar lists [1]:
+- Wednesday, August 26, 2026: Full and Session I Courses - Classes Begin (already passed)
+- Monday, October 19, 2026: Session II Courses – Classes Begin (already passed)
+- Thursday, December 17, 2026: First Day of Winter Classes (also on the Winter 2027 calendar)
+
+Sources: [1](https://www.ramapo.edu/academic-calendars/)
+
+=== F07 | where can i get coffee late at night on campus
+--- by=model status=partial sec=15.18 err=None read: needs=[] limit=none topic=dining asked=read q='where can i get coffee late at night on campus' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', 'embedding', 'pick_sections', '3-tools', '3-tools'] path={'topic': 'dining', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Dunkin'", "fields": ["hours", "procedures"], "day": "today", "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": "where can i get coffee late at night on campus", "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "dining", "label": "Dining", "kind": "category"}, {"id": "office:c276b7b9-f74b-473d-8409-b60df022b3c7", "label": "Dunkin'", "kind": "venue", "entity_id": "c276b7b9-f74b-473d-8409-b60df022b3c7", "aliases": []}], "as_of": "2026-11-18T11:33:26-05:00", "dataset_ver
+Dunkin' is open now (11:33am). [3] Dunkin' on Wednesday, November 18: 7:30am to 3:00pm. [3]
+
+Dunkin''s page "Dunkin" says: "The newly opened NextGen Dunkin’ restaurant on the Ramapo College campus is among the first next generation Dunkin’ locations to open in New Jersey. It features a modern atmosphere and innovative technologies to make “running on Dunkin’” faster and more convenient than ever before. Unique features include its cold beverage tap system to serve beverages such as iced coffees, iced teas, cold brew coffee and nitro-infused cold brew coffee. The location also includes a front-facing glass bakery case to display its iconic donuts." (more on its page) [2] Dunkin' is in Adler Center for Nursing Excellence. [1]
+
+We Proudly Serve Starbucks at Common Grounds is open now (11:33am). [3] We Proudly Serve Starbucks at Common Grounds on Wednesday, November 18: 10:00am to 8:00pm. [3]
+
+We Proudly Serve Starbucks at Common Grounds's page "Common Grounds" says: "We proudly serve Starbucks at Common Grounds. Beverage options include a variety of coffee, rich espressos, lattes, Refreshers, tea, and Frappuccinos. Along with your favorite Starbucks beverages, you can enjoy delicious bakery items like pastries and croissants." [2] We Proudly Serve Starbucks at Common Grounds is in Peter P. Mercer Learning Commons. [6]
+
+Birch Tree Inn on Wednesday, November 18: Breakfast: 08:00 AM - 10:30 AM; Continental: 10:30 AM - 11:00 AM; Lunch: 11:00 AM - 02:00 PM; Lite Lunch: 02:00 PM - 05:00 PM; Dinner: 05:00 PM - 08:00 PM; Late Night: 09:00 PM - 11:00 PM. [3] Late Night at Birch Tree Inn on Wednesday, November 18: 9:00pm to 11:00pm. [3]
+
+Birch Tree Inn's page "Birch Tree Inn" says: "Located in the Robert A. Scott Student Center, the Birch Tree Inn offers an all-you-care-to-eat dining program, complete with signature brands and menu selections that include just about every item you can imagine. Are you hungry? We featuring a wide variety of freshly-prepared food designed to satisfy everyone’s appetite with food choices to rival your favorite restaurants." [2] Nothing on Birch Tree Inn's late night menu for Wednesday, November 18 matches; its stations are Sizzle, Slices, Stacked, Twists. [9] Birch Tree Inn is in Robert A. Scott Student Center. [1]
+
+The Atrium is open now (11:33am). [3] The Atrium on Wednesday, November 18: 7:30am to 7:00pm. [3] The Atrium is in Robert A. Scott Student Center. [1]
+
+Housing & Residence Life's page "Late Night Dining" says: "Late Night Dining allows students to enjoy lighter fare such as pizza, pasta, ice cream, made to order deli sandwiches, quick service foods, fruit and assorted beverages at the Birch Tree Inn from 9 pm to 11pm Monday through Friday and 8 pm to 10pm Saturday and Sunday. Students may access “late night” as part of their Meal Plan or with Flex, Ramapo Dollars, cash or credit." [8]
+
+I don't have verified information about that part.
+
+Sources: [1](https://www.ramapo.edu/reslife/gtcl/) [2](https://www.ramapo.edu/tours/dining-shopping/) [3](https://ramapo.sodexomyway.com/) [6](https://www.ramapo.edu/reslife/gtcl/) [8](https://www.ramapo.edu/reslife/gtcl/) [9](https://ramapo.sodexomyway.com/)
+
+=== F08 | can you just tell me everything is gonna be fine lol
+--- by=one_call status=answered sec=2.6 err=None read: needs=[] limit=none topic=how_to asked=own_words q='' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Everyone goes through stressful times, and if you’re struggling, you’re not alone—we’re here for you. [13] Take a few deep breaths to calm yourself. [1]
+
+**Dean of Students**: Phone: (201) 684-7457. Email: deanofstudents@ramapo.edu. Office: C-212. [32]
+
+Sources: [1](https://www.ramapo.edu/counseling/red-folder/) [13](https://www.ramapo.edu/student-affairs/student-communications/mental-health-and-well-being-resources-fall-2026/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== F09 | what should i get my roommate for christmas, she likes plants
+--- by=general status=answered sec=4.09 err=None read: needs=[] limit=opinion topic=how_to asked=own_words q='' general='What should I get my roommate for Christmas if she likes plants?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_general'] path=None
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): A small, easy-care houseplant—like a pothos or a succulent—is a nice pick, especially in a cute pot. Other ideas: propagation tubes, a plant mister, decorative plant markers, or a gift card to a local nursery.
+
+=== F10 | Is there a club for international students, or for Indian students?
+--- by=one_call status=answered sec=4.1 err=None read: needs=[] limit=none topic=club asked=read q='Is there a club for international students, or for Indian students?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+Yes. The International Student Organization (ISO) welcomes students of all nationalities. It meets regularly and holds activities including international dinner nights, films, lectures, trips, and International Student Week. [21] [https://www.ramapo.edu/clubs/organization/international-student-organization-iso/](https://www.ramapo.edu/clubs/organization/international-student-organization-iso/)
+
+For Indian or South Asian students, the South Asian Club brings South Asians together and raises awareness of South Asian culture; it welcomes anyone interested in experiencing South Asian culture. [24][3] [https://www.ramapo.edu/clubs/organization/south-asians-ramapo/](https://www.ramapo.edu/clubs/organization/south-asians-ramapo/)
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [59]
+
+Sources: [3](https://archway.ramapo.edu/SAC/) [21](https://www.ramapo.edu/clubs/organization/international-student-organization-iso/) [24](https://www.ramapo.edu/clubs/organization/south-asians-ramapo/) [59](https://www.ramapo.edu/campus-directory/)
+
+=== F11 | do i still have a hold from the health center
+--- by=one_call status=answered sec=3.39 err=None read: needs=[] limit=my_records topic=how_to asked=own_words_then_campus_side q='How can I check whether I still have a hold from the health center?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't see your personal records, like your grades, balance, schedule or financial aid status.
+
+I don’t have verified information about how to check whether you still have a Health Center hold. Contact the Center for Health and Counseling Services; for hold concerns related to an alcohol or other drug educational sanction, email checkpnt@ramapo.edu [4].
+
+- **Health Services**: Phone: (201) 684-7536. Location: Near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road. [32]
+- **Counseling Center**: Phone: (201) 684-7522. Office: D-216. [32]
+
+Sources: [4](https://www.ramapo.edu/student-conduct/guide/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== F12 | are any buildings open 24 hours during finals
+--- by=model status=partial sec=9.98 err=None read: needs=[] limit=none topic=office asked=read q='are any buildings open 24 hours during finals' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Library", "fields": ["hours"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:00a23005-150e-4640-b07e-0cb350c4bb6f", "label": "Library", "kind": "office", "entity_id": "00a23005-150e-4640-b07e-0cb350c4bb6f", "aliases": ["Course Reserves", "Interlibrary Loan", "Potter Library", "Study Rooms"]}], "as_of": "2026-11-18T11:33:34-05:00",
+Library (Main Building) hours: Monday to Thursday: 7:45am-12:00am; Friday: 7:45am-6:00pm; Saturday: 10:00am-6:00pm; Sunday: 12:00pm-12:00am. The page adds: "Fall Semester (Aug. 26 - Dec. 15, 2026). Special Hours: Nov 25 - Nov 28: CLOSED; Nov 29: 4:00pm-12:00am. Please note that the front doors will be locked fifteen minutes before closing time. Circulation services will also cease at that time to give the staff a chance to perform proper closing procedures." [1]
+
+I don't have verified information about that part.
+
+Sources: [1](https://www.ramapo.edu/library/library-hours/)
+
+=== F13 | where is the student involvement office
+--- by=model status=answered sec=4.34 err=None read: needs=[] limit=none topic=office asked=read q='where is the student involvement office' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Center for Student Involvement", "fields": ["offices"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:9f4a8a53-67a1-4ce4-b4da-5d19630f135b", "label": "Center for Student Involvement", "kind": "office", "entity_id": "9f4a8a53-67a1-4ce4-b4da-5d19630f135b", "aliases": ["CSI", "Center for Student Involvement (CSI)", "Locker Rentals", 
+Center for Student Involvement is in SC-202. [1]
+
+Sources: [1](https://www.ramapo.edu/csi/)
+
+=== F14 | how many credits do i still need for my major
+--- by=one_call status=answered sec=5.83 err=None read: needs=[] limit=my_records topic=program asked=own_words_then_campus_side q='How do I check how many credits I still need for my major?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+I can't see your personal records, like your grades, balance, schedule or financial aid status.
+
+I can’t tell how many credits you still need without your degree evaluation. It outlines your class requirements for your major. [14]
+
+To check it:
+1. Visit web.ramapo.edu and click Web for Students.
+2. Click Web Registration. Enter the Secure Area and type in your Ramapo login and password.
+3. Click Student and Financial Aid, then Student Records, then Degree Evaluation.
+4. Select the current term and click enter. Click Generate New Evaluation, then the circle next to your major and Generate Request.
+5. Select detail requirements and click Submit. [14]
+
+Review your degree audit and meet with your adviser to ensure you have met all graduation requirements. [1]
+
+**Financial Aid**: Phone: (201) 684-7549. Email: finaid@ramapo.edu. Office: E-210. [36]
+
+Sources: [1](https://www.ramapo.edu/registrar/faq/) [14](https://www.ramapo.edu/studentsuccess/faq/) [36](https://www.ramapo.edu/campus-directory/)
+
+=== F15 | whats my school email address
+--- by=one_call status=answered sec=4.24 err=None read: needs=[] limit=my_records topic=how_to asked=own_words_then_campus_side q='How do I check my school email address?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't see your personal records, like your grades, balance, schedule or financial aid status.
+
+Your Ramapo email address is your Ramapo username followed by @ramapo.edu. To find your address, go to [https://g.ramapo.edu](https://g.ramapo.edu), log in, click Compose, and type your name in the “To” field; your email address should pop up. [17]
+
+To access your email, first activate your account at [https://password.ramapo.edu](https://password.ramapo.edu) and click “Activate E-mail Account.” [3] Then log in to Ramapo Gmail. Two-factor authentication is required to access Ramapo Gmail; set it up using the ITS instructions at [https://web.ramapo.edu/its/google-2fa-requirement/](https://web.ramapo.edu/its/google-2fa-requirement/). [16]
+
+**IT Help Desk**: Phone: (201) 684-7777. Email: helpdesk@ramapo.edu. Location: 4th floor of the Learning Commons. [34]
+
+Sources: [3](https://www.ramapo.edu/registrar/online-course-information/) [16](https://www.ramapo.edu/student-affairs/how-to-access-your-ramapo-e-mail-as-of-february-28th/) [17](https://www.ramapo.edu/reslife/new-student-guide/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== F16 | Where is the EOF office and are they open over break?
+--- by=model status=partial sec=4.63 err=None read: needs=[] limit=none topic=office asked=read q='Where is the EOF office and are they open over break?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Educational Opportunity Fund (EOF) Program", "fields": ["offices", "hours"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:f5e3961d-c56b-4b29-89f3-64488f464e64", "label": "Educational Opportunity Fund (EOF) Program", "kind": "office", "entity_id": "f5e3961d-c56b-4b29-89f3-64488f464e64", "aliases": ["EOF Summer Studies Institute", 
+Educational Opportunity Fund (EOF) Program is in D-101. [1] Educational Opportunity Fund (EOF) Program (Academic Year) hours: Monday to Friday: 8:30am-4:30pm; Saturday and Sunday: not published (checked November 17, 2026). [2] Educational Opportunity Fund (EOF) Program: For current students, please get in touch with your EOF Advisor or make an appointment in Connect. For general questions, please call our office or email us. [1]
+
+The page does not say which dates this schedule covers. [2]
+
+Sources: [1](https://www.ramapo.edu/eof-program/) [2](https://www.ramapo.edu/eof-program/)
+
+=== F17 | is it worth getting a masters right after graduating or should i work first
+--- by=one_call status=answered sec=7.24 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q="What does the college publish about getting a master's degree right after graduating versus working first, and who helps students decide?" general='Is it worth getting a master’s right after graduating, or should I work first?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_general', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): It depends on your field and goals. Go straight to a master’s if it’s required for the work you want, or if you have a clear specialization in mind and can manage the cost. Working first can help you test your interests, build experience, and choose a program with more confidence. Compare the degree’s likely career benefit with tuition, lost income, and any employer tuition support.
+
+Ramapo doesn’t compare whether it is better to start a master’s immediately after graduating or work first, so I don’t have verified information about which choice is worth it. Its published information says graduates may go on to graduate school or the workplace, and that work experience can make graduates more marketable to employers and graduate/professional schools. [3][19]
+
+For help deciding, the Center for Student Success specializes in helping students choose majors; its decision-making tips recommend gathering information, talking with professional advisors, and assessing risks and costs. [10] The Cahill Career Development Center can help you explore career choices and job-search plans. [14][16]
+
+- **Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [34]
+- **Cahill Career Development Center**: Phone: Main Office (201) 684-7444; ASB Office (201) 684-7675. Email: careercenter@ramapo.edu. Main Office: C-209; ASB Office: ASB-513. [34]
+
+Sources: [3](https://www.ramapo.edu/admitted-students/outcomes/) [10](https://www.ramapo.edu/studentsuccess/major/) [14](https://www.ramapo.edu/careercenter/get-started/) [16](https://www.ramapo.edu/careercenter/four-year-plan/) [19](https://www.ramapo.edu/careercenter/get-started/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== F18 | is there a health fair or any free screenings this month
+--- by=code status=answered sec=1.22 err=None read: needs=[] limit=none topic=event asked=read q='is there a health fair or any free screenings this month' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+The calendar lists 13 movie and film or health and wellness events this month, Wednesday, November 18 to Monday, November 30 (of 72 events then) [1]:
+
+Wednesday, November 18:
+- 1 PM to 2 PM: Coffee & T Couch Talk: Paps with Pride (Women's Center & LGBTQ+ Services), at C-220 [2]
+- 6 PM to 7 PM: WELLNESS WORKSHOP WITH ALPHA PHI OMEGA (Wellness Is Now), at D-215 [3]
+
+Thursday, November 19:
+- 1 PM to 2:30 PM: Great American Smokeout (Health Promotion), at Student Center 2nd Floor, 505 Ramapo Valley Rd, Building D, Rm 216, Mahwah, NJ 07430, United States [4]
+- 9 PM to 11 PM: Puppy Yoga (College Programming Board) [5]
+
+Friday, November 20:
+- 2 PM to 4 PM: Trans Community Care (Women's Center & LGBTQ+ Services), at Friends Hall [6]
+- 9 PM to 11 PM: Build Your Own Self Care Basket (College Programming Board) [7]
+
+Saturday, November 21:
+- 9 PM to 11 PM: Cozy Night (College Programming Board) [8]
+
+Sunday, November 22:
+- 2 PM to 3 PM: Friendsgiving Pie & Gratitude Lounge (The Village), at Thomases Commons [9]
+
+Monday, November 23:
+- 1 PM to 2 PM: Project FLOURISH Care Closet & Care Chest Ribbon Cutting Ceremony (Women's Center & LGBTQ+ Services), at Women’s Center and LGBTQ+ Services (C-220) [10]
+- 1 PM to 3 PM: Therapy Animal Visit (WELLNESS ROOM) (Health Promotion), at E-216 (Wellness Room) [11]
+- 4 PM to 4:30 PM: Meditation with Mindfulness Ambassador Sonny (Health Promotion), at The York Room - Mansion [12]
+
+Tuesday, November 24:
+- 6 PM to 7 PM: Wrap it Up! (Laurel Hall), at Laurel Hall, 1st Floor Lounge [13]
+
+Monday, November 30:
+- 7 PM to 8 PM: Let's Talk About Sex with RISE: Vibrator Bingo — HIV/AIDS Action Week (Women's Center & LGBTQ+ Services), at Alumni Lounge (SC158) [14]
+
+Sources: [1](https://archway.ramapo.edu/home/events/) [2](https://archway.ramapo.edu/rsvp_boot?id=1412103) [3](https://archway.ramapo.edu/rsvp_boot?id=1412141) [4](https://archway.ramapo.edu/rsvp_boot?id=1412132) [5](https://archway.ramapo.edu/rsvp_boot?id=1412065) [6](https://archway.ramapo.edu/rsvp_boot?id=1412133) [7](https://archway.ramapo.edu/rsvp_boot?id=1412136) [8](https://archway.ramapo.edu/rsvp_boot?id=1412138) [9](https://archway.ramapo.edu/rsvp_boot?id=1412021) [10](https://archway.ramapo.edu/rsvp_boot?id=1412134) [11](https://archway.ramapo.edu/rsvp_boot?id=1409991) [12](https://archway.ramapo.edu/rsvp_boot?id=1411776) [13](https://archway.ramapo.edu/rsvp_boot?id=1412048) [14](https://archway.ramapo.edu/rsvp_boot?id=1412100)
+
+=== F19 | Is there an application fee for grad school here?
+--- by=one_call status=answered sec=2.41 err=None read: needs=[] limit=none topic=how_to asked=read q='Is there an application fee for grad school here?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Yes. The graduate application has a non-refundable $65 fee or fee waiver. [1]
+
+**Graduate Admissions**: Phone: (201) 684-7270. Email: graduate@ramapo.edu. Location: McBride House. [31]
+
+Sources: [1](https://www.ramapo.edu/graduate/requirements/) [31](https://www.ramapo.edu/campus-directory/)
+
+=== F20 | Which clubs do you recommend to meet American students?
+--- by=one_call status=answered sec=5.31 err=None read: needs=[] limit=opinion topic=club asked=own_words_then_campus_side q='What clubs does Ramapo recommend to meet American students?' general='How can I meet American students?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_general', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): Try joining student clubs, study groups, sports, or campus events, and start conversations before or after class. You can also find language-exchange meetups or volunteer activities where people share interests. Be friendly and suggest a low-pressure follow-up, like studying together or grabbing coffee.
+
+Ramapo does not say which clubs are best specifically for meeting American students, but it says joining clubs can help students make interesting friends, and all listed clubs are open to all students. [6]
+
+For meeting people through shared interests, consider:
+- Ramapo Sports Club, which brings students together around sports and camaraderie. [11]
+- Ramapo Music Club, with open mics and jam sessions open to everyone, regardless of musical skill or experience. [15]
+- American Marketing Association, open to all majors, with networking events, hands-on projects, and leadership opportunities. [14]
+- International Student Organization, which seeks students of all nationalities and bridges international and domestic students. [10]
+
+Ramapo also lists the Black American Music Club, which creates opportunities to explore music rooted in Black American culture. [9]
+
+**Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [58]
+
+Sources: [6](https://www.ramapo.edu/clubs/) [9](https://www.ramapo.edu/clubs/organization/black-american-music-club-bam/) [10](https://www.ramapo.edu/clubs/organization/international-student-organization-iso/) [11](https://www.ramapo.edu/clubs/organization/sports-club/) [14](https://www.ramapo.edu/clubs/organization/american-marketing-association-ama/) [15](https://www.ramapo.edu/clubs/organization/ramapo-music-club/) [58](https://www.ramapo.edu/campus-directory/)
+
+=== F21 | Does Ramapo have a soccer team? When do they play?
+--- by=code status=answered sec=0.03 err=None read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=[]
+Men's Soccer has no more games on its 2026 schedule [1]. Men's Soccer's 2026 record is 8-7-3 (3-4-2 in the conference) [1]. Last games: Oct 31 (Sat): at #3 The College of NJ (NJAC Quarterfinals), Lion's Stadium, Ewing, NJ. Result: L, 0-1; Oct 28 (Wed): at New Paltz, North Turf Field, New Paltz, NY. Result: L, 1-4; Oct 24 (Sat): at The College of New Jersey, TCNJ Soccer Complex, Ewing, NJ. Result: L, 0-4 [1].
+
+Women's Soccer has no more games on its 2026 schedule [2]. Women's Soccer's 2026 record is 3-5-6 (0-5-4 in the conference) [2]. Last games: Oct 28 (Wed): vs New Paltz, Athletic Center Turf, Mahwah, NJ (home). Result: T, 0-0; Oct 24 (Sat): vs #7 The College of New Jersey, Athletic Center Turf, Mahwah, NJ (home). Result: L, 0-5; Oct 21 (Wed): at Rutgers-Newark, Frederick Douglass Field, Newark, NJ. Result: T, 0-0 [2].
+
+Sources: [1](https://ramapoathletics.com/sports/mens-soccer/schedule) [2](https://ramapoathletics.com/sports/womens-soccer/schedule)
+
+=== F22 | how many meal swipes do i have left
+--- by=one_call status=answered sec=2.63 err=None read: needs=[] limit=my_records topic=how_to asked=own_words_then_campus_side q='How to check how many meal swipes I have left?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't see your personal records, like your grades, balance, schedule or financial aid status.
+
+I don’t have verified information about how many meal swipes you have left or how to check your balance. Contact Dining Services.
+
+**Dining Services**: Phone: (201) 684-7773. Location: Student Center, 1st Floor. [32]
+
+Sources: [32](https://www.ramapo.edu/campus-directory/)
+
+=== F23 | which is better here, the MBA or the masters in accounting
+--- by=one_call status=answered sec=13.48 err=None read: needs=[] limit=opinion topic=program asked=own_words_then_campus_side q="What does Ramapo publish about the MBA and the master's in accounting, and who helps students decide between them?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer', 'embedding', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+I can't choose for you, but I can share what the college publishes.
+
+There isn’t verified information that one is “better”; the choice depends on your goals. The M.S. in Accounting prepares students for CPA and accounting/control careers; it is AACSB-accredited, 30 credits, and offers spring, summer and fall starts. [1][7] The MBA prepares students for management and senior-level business careers; it is AACSB-accredited, a 42-credit, 20-month cohort program, with fall start only. [2][8] The catalog describes the MBA as preparing leaders for commercial enterprises and nonprofits, with global business knowledge and ethical, socially responsible leadership skills. [2] It describes the Accounting M.S. as CPA-focused and notes that, combined with an undergraduate degree, students would attain the 150 credits required to sit for the CPA examination. [1]
+
+Graduate Admissions offers a personal appointment with a Graduate Admissions Counselor to discuss questions about a master’s degree and help you choose a career path. Email graduate@ramapo.edu to schedule. [13]
+
+**Graduate Admissions**: Phone: (201) 684-7270. Email: graduate@ramapo.edu. Location: McBride House. [26]
+
+Sources: [1](https://catalog.ramapo.edu/programs/SB-MS-MSAC) [2](https://catalog.ramapo.edu/programs/SB-MBA-MBAD) [7](https://www.ramapo.edu/graduate/home/) [8](https://www.ramapo.edu/graduate/home/) [13](https://www.ramapo.edu/learn/graduate/) [26](https://www.ramapo.edu/campus-directory/)
+
+=== F24 | did my professors get my accommodation letters
+--- by=one_call status=answered sec=4.78 err=None read: needs=['disability'] limit=my_records topic=how_to asked=own_words_then_campus_side q='How can I check whether my professors got my accommodation letters?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't see your personal records, like your grades, balance, schedule or financial aid status. You can ask for support with that.
+
+You can check OSSOnline to see whether your professors have access to your approved accommodations: use the Instructor Portal information page [https://www.ramapo.edu/oss/ossonline-instructor-portal-information/](https://www.ramapo.edu/oss/ossonline-instructor-portal-information/). Professors can view your approved accommodations by clicking “View” next to your name. If you don’t see your information, it may mean you haven’t requested an approved notice for release to them, or there are no such students in their course(s). [5]
+
+At the beginning of each semester, request that your accommodation notices be sent to your professors through OSSOnline. Notices are emailed to your professors after OSS approves your accommodations for their course. [9][13] If you’re unsure whether they received them, connect with your assigned OSS Counselor to activate your accommodations for each class. [6]
+
+**Office of Specialized Services**: Phone: (201) 684-7514. Email: oss@ramapo.edu. Location: C-Wing, Room 205. [27]
+
+Sources: [5](https://www.ramapo.edu/oss/ossonline-instructor-portal-information/) [6](https://www.ramapo.edu/oss/ossonline-info-tutorials/) [9](https://www.ramapo.edu/oss/frequently-asked-questions/) [13](https://www.ramapo.edu/oss/ossonline-instructor-portal-information/) [27](https://www.ramapo.edu/campus-directory/)
+
+=== F25 | when are the tests to get credit for spanish offered
+--- by=one_call status=answered sec=6.81 err=None read: needs=[] limit=none topic=program asked=read q='when are the tests to get credit for spanish offered' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+If you mean the Spanish CLEP exam for college credit, it is offered every Wednesday at Ramapo. The exam fee is $89 plus a $40 proctor fee. [2] To schedule, use the Testing Center’s [Schedule Test page](https://www.ramapo.edu/testing/schedule-test/). [4]
+
+**Testing Center**: Phone: (201) 684-7441. Email: testing@ramapo.edu. Location: Laurel Hall, North. [24]
+
+Sources: [2](https://www.ramapo.edu/testing/clep-highschool/) [4](https://www.ramapo.edu/testing/clep-highschool/) [24](https://www.ramapo.edu/campus-directory/)
+
+=== F26 | is my study abroad application approved yet
+--- by=one_call status=answered sec=3.83 err=None read: needs=[] limit=my_records topic=how_to asked=own_words_then_campus_side q='How can I check whether my study abroad application is approved yet?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't see your personal records, like your grades, balance, schedule or financial aid status.
+
+I can’t verify whether your application has been approved. The study abroad application information doesn’t say how to check its status. Contact the Roukema Center for International Education. Applications won’t be reviewed until complete; each program has a specific checklist. [1]
+
+**Roukema Center for International Education**: Phone: (201) 684-7533. Location: C-wing, Suite 213. [25]
+
+Sources: [1](https://www.ramapo.edu/study-abroad/application-process/) [25](https://www.ramapo.edu/campus-directory/)
+
+=== F27 | does the library have any workshops on writing research papers this semester
+--- by=code status=answered sec=1.44 err=None read: needs=[] limit=none topic=event asked=read q='does the library have any workshops on writing research papers this semester' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+The calendar lists 1 event for the rest of the semester, Wednesday, November 18 to Thursday, December 31 that matches what you asked (of 112 events then) [1]:
+
+Wednesday, November 18:
+- 11 AM to 11:45 AM: Writing about Research (Center for Reading and Writing) [2]
+
+These are only near it in meaning, not named by their listings:
+
+Thursday, December 3:
+- 1:15 PM to 2 PM: Avoiding Plagiarism (Center for Reading and Writing) [3]
+
+Sources: [1](https://archway.ramapo.edu/home/events/) [2](https://archway.ramapo.edu/rsvp_boot?id=1409536) [3](https://archway.ramapo.edu/rsvp_boot?id=1409556)
+
+=== F28 | whats your favorite food
+--- by=general status=answered sec=2.97 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general='What is your favorite food?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_general'] path=None
+--- lookups=[]
+**General answer** (from general knowledge, not Ramapo's pages): I don’t eat, but if I had to pick, I’d go with fresh pizza—crispy crust and plenty of toppings. Just for fun!
+
+=== F29 | is there a specific person in student accounts for me or do i just call the main number
+--- by=one_call status=answered sec=10.1 err=None read: needs=[] limit=none topic=how_to asked=read q='is there a specific person in student accounts for me or do i just call the main number' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+There are specific staff contacts listed. For general questions, you can call Student Accounts at (201) 684-7495 or email studentaccts@ramapo.edu. [8] Barbara Smith, Assistant Director, is listed at (201) 684-7484 and bsmith3@ramapo.edu. [9]
+
+**Student Accounts**: Phone: (201) 684-7495. Email: studentaccts@ramapo.edu. Location: D-Wing, First Floor. [32]
+
+Sources: [8](https://www.ramapo.edu/student-accounts/) [9](https://www.ramapo.edu/student-accounts/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== F30 | how long does the masters in education take
+--- by=one_call status=answered sec=2.97 err=None read: needs=[] limit=none topic=program asked=read q="How long does the master's in education take?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+Ramapo lists two education-related master’s programs: the Master of Arts in Special Education is 36 credits, and the Master of Science in Educational Technology is 34 credits. The pages don’t say how long either program takes. [1][2]
+
+**Graduate Admissions**: Phone: (201) 684-7270. Email: graduate@ramapo.edu. Location: McBride House. [35]
+
+Sources: [1](https://www.ramapo.edu/graduate/home/) [2](https://www.ramapo.edu/graduate/home/) [35](https://www.ramapo.edu/campus-directory/)
+
+TOTAL spent $0.1051 in 513 calls

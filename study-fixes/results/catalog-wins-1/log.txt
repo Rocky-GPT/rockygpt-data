@@ -1,0 +1,410 @@
+release v2-20261118162404 questions 38
+=== K01 | is there a screenwriting concentration
+--- by=one_call status=answered sec=7.58 err=None read: needs=[] limit=none topic=program asked=read q='is there a screenwriting concentration' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+Yes. Ramapo’s catalog lists a Screenwriting Concentration within the Filmmaking BA (Bachelor of Arts). It requires FILM 344 WRITING THE SCREENPLAY and FILM 391 TV WRITERS' ROOM. [14]
+
+Sources: [14](https://catalog.ramapo.edu/programs)
+
+=== K02 | do u guys have a music production major
+--- by=one_call status=answered sec=6.89 err=None read: needs=[] limit=none topic=program asked=own_words_spelled_out q='Do you have a music production major?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+No bachelor's major named “music production” is listed, but Music Production is offered as a concentration in the Music BA (Bachelor of Arts). [13]
+
+Sources: [13](https://catalog.ramapo.edu/programs)
+
+=== K03 | can i major in criminology here
+--- by=one_call status=answered sec=6.0 err=None read: needs=[] limit=none topic=program asked=read q='can i major in criminology here' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+Ramapo’s catalog lists no Criminology major. It offers a Law and Society BA, an interdisciplinary major that includes criminology, and a Crime and Justice Studies minor. [1][2] You can contact the School of Social Sciences and Social Work Office for guidance. [8]
+
+**School of Social Sciences and Social Work Office**: Phone: (201) 684-7625; (201) 684-7562. Email: SSSWOffice@ramapo.edu. Office: ASB-431. [16]
+
+Sources: [1](https://catalog.ramapo.edu/programs/SO-MN-CJS) [2](https://catalog.ramapo.edu/programs/SO-BA-LAWS) [8](https://www.ramapo.edu/sssw/law-and-society/) [16](https://www.ramapo.edu/campus-directory/)
+
+=== K04 | wat concentrations r in the music major
+--- by=error status=partial sec=12.38 err=None read: needs=[] limit=none topic=program asked=read q='What concentrations are in the music major?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', '3-tools', 'embedding', 'pick_sections'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "AHE Office", "fields": ["website", "procedures"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": "concentrations in the music major", "page_terms": ["music major", "concentration"]}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:5df98a7e-38c9-41dd-b36b-c286a4dfabf0", "label": "School of Arts, Humanities, and Education Office", "kind": "office", "entity_id": "5df98a7e-38c9-41dd-b36b-c286a4dfabf0", "ali
+**School of Arts, Humanities, and Education Office**
+
+Website: [https://www.ramapo.edu/ahe/](https://www.ramapo.edu/ahe/) [campus-directory](https://www.ramapo.edu/ahe/)
+
+How-to and policies (dated observation; current value unverified): Chamber Music: Chamber Music is directed by Dr. Jee Sun Lee and may be taken for two credits as the course, Intermediate Performing Ensemble, \(MUSI 364-04\), or, taken as a club. For more information or permission of instructor, contact jeesunvn@gmail.com.Chamber Music includes a wide variety of musical styles and instruments from strings and winds to guitar and piano. [https://www.ramapo.edu/ahe/hgs/wp-content/up…](https://www.ramapo.edu/ahe/hgs/wp-content/up…) (see [https://www.ramapo.edu/ahe/clubs-honor-societies-ensembles/](https://www.ramapo.edu/ahe/clubs-honor-societies-ensembles/)) [office-pages](https://www.ramapo.edu/ahe/clubs-honor-societies-ensembles/) (stale capture; captured 2026-09-26T14:32:15.537000+00:00)
+
+How-to and policies (dated observation; current value unverified): Ramapo College Concert Band: The Ramapo College Concert Band is directed by Dr. Chris Wilhjelm. The Concert Band welcomes students from all academic disciplines and performs a wide variety of repertoire, especially works by contemporary composers. Students may take Concert Band as Intermediate Performing Ensemble for 2 credits \(MUSI 364-02\), or, may participate as club members. Interested students should contact Chris Wilhjel… (see [https://www.ramapo.edu/ahe/clubs-honor-societies-ensembles/](https://www.ramapo.edu/ahe/clubs-honor-societies-ensembles/)) [office-pages](https://www.ramapo.edu/ahe/clubs-honor-societies-ensembles/) (stale capture; captured 2026-09-26T14:32:15.537000+00:00)
+
+How-to and policies: Academic Programs: M Major m Minor C Concentration G Graduate J Joint Degree O Other Programs Reset Filter (see [https://www.ramapo.edu/ahe/](https://www.ramapo.edu/ahe/)) [office-pages](https://www.ramapo.edu/ahe/)
+
+**Office of the Provost**
+
+How-to and policies: Integrity of Degree Programs: and the Provost’s Office\), and shall be reviewed on the accreditor’s cycle.
+For students with two majors, no more than half the courses can double-count in both majors. All writing-intensive courses required for the second major must be completed as well.
+Concentration: A concentration is a focused area of study within a major. The following criteria apply:
+A concentration is typically employed in… (see [https://catalog.ramapo.edu/quicklinks/academicpolicies\#integrity-of-degree-programs1](https://catalog.ramapo.edu/quicklinks/academicpolicies\#integrity-of-degree-programs1)) [catalog-policies](https://catalog.ramapo.edu/quicklinks/academicpolicies#integrity-of-degree-programs1)
+
+I found these details, but couldn't complete the rest of your request.
+
+=== K05 | is there an animation major
+--- by=one_call status=answered sec=5.34 err=None read: needs=[] limit=none topic=program asked=read q='is there an animation major' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The catalog lists no bachelor's major named “animation,” but animation is offered as the Electronic Arts and Animation Concentration in the Visual Arts BA. [1]
+
+Sources: [1](https://catalog.ramapo.edu/programs)
+
+=== K06 | does ramapo have a creative writing major
+--- by=one_call status=answered sec=6.13 err=None read: needs=[] limit=none topic=program asked=read q='does ramapo have a creative writing major' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+No. The catalog lists no bachelor's major in Creative Writing. It does list a Creative Writing Minor and a Creative Writing Concentration in the English & Literary Studies BA, including a Teacher Education Track with Creative Writing Concentration in that BA. [13] The English and Literary Studies page also says students may minor or concentrate in Creative Writing. [9] For more information, contact the School of Arts, Humanities, and Education Office. [2]
+
+**School of Arts, Humanities, and Education Office**: Phone: (201) 684-7365. Email: AHEOffice@ramapo.edu. Office: B-224. [14]
+
+Sources: [2](https://www.ramapo.edu/ahe/creative-writing-minor/) [9](https://www.ramapo.edu/ahe/convening-group-webs/english-literary-studies-major/about/) [13](https://catalog.ramapo.edu/programs) [14](https://www.ramapo.edu/campus-directory/)
+
+=== K07 | is there a photography concentration n what classes do u take
+--- by=one_call status=answered sec=11.21 err=None read: needs=[] limit=none topic=program asked=read q='Is there a photography concentration, and what classes do you take?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+Yes. The catalog lists a Photography Concentration in the Visual Arts BA (Bachelor of Arts). [19]
+
+Required courses: ARTS 202 BASIC SCULPTURE, ARTS 207 DIGITAL PHOTOGRAPHY, ARTS 211 BASIC ART & TECHNOLOGY; ARHT 214 PHOTOGRAPHY CONCEPTS AND HISTORIES and ARTS 206 BLACK AND WHITE PHOTOGRAPHY; CNTP 388 CO-OP/INTERNSHIP CONTEMPORARY ARTS; and ARTS 408 SENIOR THESIS EXHIBITION. [1]
+
+You also select at least 1 from ARTS 101 FUNDAMENTALS OF DRAWING or ARTS 201 BASIC PAINTING; complete the listed Art History requirement (ARHT 204 INTRODUCTION TO GLOBAL ART TRADITIONS or ARHT 245 MASTERPIECES IN WESTERN CIVILIZATION, plus 1 additional 300-level Art History (ARHT) Course); select 1 Arts Upper-level Elective; and select at least 3 Photography Electives from ARTS 312 INTERMEDIATE FILM PHOTOGRAPHY, ARTS 315 MEDIUM AND LARGE FORMAT PHOTOGRAPHY, ARTS 318 INTERMEDIATE DIGITAL PHOTOGRAPHY, ARTS 324 DOCUMENTARY PHOTOGRAPHY, ARTS 328 PORTRAIT PHOTOGRAPHY, or ARTS 406 ADVANCED PHOTOGRAPHY. [1]
+
+Course details: ARTS 207 DIGITAL PHOTOGRAPHY is 4 credits; it has no published prerequisites. [2] ARTS 312 INTERMEDIATE FILM PHOTOGRAPHY is 4 credits; prerequisite: Prerequisite Prerequisite Course complete all of: - ARTS 206 BLACK AND WHITE PHOTOGRAPHY. [4] ARTS 315 MEDIUM AND LARGE FORMAT PHOTOGRAPHY is 4 credits; prerequisite: Prerequisite Prerequisite Course complete all of: - ARTS 206 BLACK AND WHITE PHOTOGRAPHY. [5] ARTS 318 INTERMEDIATE DIGITAL PHOTOGRAPHY is 4 credits; prerequisite: Prerequisite Prerequisite Course complete all of: - ARTS 207 DIGITAL PHOTOGRAPHY. [3] ARTS 324 DOCUMENTARY PHOTOGRAPHY and ARTS 328 PORTRAIT PHOTOGRAPHY are each 4 credits; for either, prerequisite: Prerequisite Select 1 Course complete one of: - ARTS 206 BLACK AND WHITE PHOTOGRAPHY - ARTS 207 DIGITAL PHOTOGRAPHY. [6][7]
+
+Sources: [1](https://catalog.ramapo.edu/programs/AH-BA-ARTS) [2](https://catalog.ramapo.edu/courses/ARTS207) [3](https://catalog.ramapo.edu/courses/ARTS318) [4](https://catalog.ramapo.edu/courses/ARTS312) [5](https://catalog.ramapo.edu/courses/ARTS315) [6](https://catalog.ramapo.edu/courses/ARTS324) [7](https://catalog.ramapo.edu/courses/ARTS328) [19](https://catalog.ramapo.edu/programs)
+
+=== K08 | any marketing concentration in the business major
+--- by=one_call status=answered sec=6.73 err=None read: needs=[] limit=none topic=program asked=read q='Is there a marketing concentration in the business major?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The catalog does not list a “marketing concentration” in a general business major. It does list a Marketing Track within the International Business BA, and International Business BA is the catalog’s listed business bachelor’s major. [17]
+
+Sources: [17](https://catalog.ramapo.edu/programs)
+
+=== K09 | is there a cybersecurity concentration
+--- by=model status=partial sec=14.81 err=None read: needs=[] limit=none topic=program asked=read q='is there a cybersecurity concentration' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', '3-tools', '3-tools'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "School of Science, Nursing, and Health Office", "fields": ["email", "phones", "offices", "website"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:f0ae7925-8c43-457f-a687-9989020e77d2", "label": "School of Science, Nursing, and Health Office", "kind": "office", "entity_id": "f0ae7925-8c43-457f-a687-9989020e77d2", "aliases": ["SNH 
+School of Science, Nursing, and Health Office email: SNHOffice@ramapo.edu. School of Science, Nursing, and Health Office phone: (201) 684-7734; Fax: (201) 684-7637. School of Science, Nursing, and Health Office is in ASB-422. School of Science, Nursing, and Health Office website: [https://www.ramapo.edu/snh/](https://www.ramapo.edu/snh/). [1]
+
+I don't have verified information about that part. If the office above handles it, its contact details are the best way to ask.
+
+Sources: [1](https://www.ramapo.edu/snh/)
+
+=== K10 | what tracks does the math major have
+--- by=one_call status=answered sec=6.0 err=None read: needs=[] limit=none topic=program asked=read q='what tracks does the math major have' general=None
+--- tools=['embedding', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The Mathematics BS (Bachelor of Science) has two tracks: Teacher Education Track and Traditional Track. [12] The Teacher Education Track suits students pursuing a career teaching high school or middle school mathematics. [4] The Traditional Track suits students pursuing careers such as statistician, actuary, mathematics researcher, financial mathematician, data scientist, or applied/industrial mathematician. [6]
+
+**School of Science, Nursing, and Health Office**: Phone: (201) 684-7734. Email: SNHOffice@ramapo.edu. Office: ASB-422. [13]
+
+Sources: [4](https://www.ramapo.edu/snh/math/) [6](https://www.ramapo.edu/snh/math/) [12](https://catalog.ramapo.edu/programs) [13](https://www.ramapo.edu/campus-directory/)
+
+=== K11 | how many credits do i need to graduate
+--- by=one_call status=answered sec=4.37 err=None read: needs=[] limit=none topic=how_to asked=read q='how many credits do i need to graduate' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+You need a minimum of 128 credits that count toward graduation. Your specific degree program may require more. You must also complete at least 32 credits at Ramapo, with your final 32 credits in residence. [13]
+
+**Office of the Provost**: Phone: (201) 684-7330. Email: provost@ramapo.edu. Location: first floor of the Birch Mansion. [35]
+
+Sources: [13](https://catalog.ramapo.edu/quicklinks/academicpolicies#graduation-requirements) [35](https://www.ramapo.edu/campus-directory/)
+
+=== K12 | how many credits is the psych major
+--- by=error status=None sec=3.99 err=None read: needs=[] limit=none topic=program asked=read q='how many credits is the psych major' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+
+
+=== K13 | how many credits do u need for a bachelors here
+--- by=one_call status=answered sec=5.74 err=None read: needs=[] limit=none topic=program asked=read q="How many credits do you need for a bachelor's here?" general=None
+--- tools=['embedding', 'read_message', 'embedding', 'pick_catalog', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+A bachelor’s degree requires a minimum of 128 credits that count toward graduation. Some degree programs may require more. [27]
+
+**Office of the Provost**: Phone: (201) 684-7330. Email: provost@ramapo.edu. Location: first floor of the Birch Mansion. [35]
+
+Sources: [27](https://catalog.ramapo.edu/quicklinks/academicpolicies#graduation-requirements) [35](https://www.ramapo.edu/campus-directory/)
+
+=== K14 | how many credits is the accounting major
+--- by=error status=None sec=5.44 err=None read: needs=[] limit=none topic=program asked=read q='how many credits is the accounting major' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+
+
+=== K15 | if i transfer in how many credits do i have to take at ramapo
+--- by=error status=None sec=3.45 err=None read: needs=[] limit=none topic=how_to asked=read q='if i transfer in how many credits do i have to take at ramapo' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+
+
+=== K16 | how many credits is the film major
+--- by=one_call status=answered sec=6.17 err=None read: needs=[] limit=none topic=program asked=read q='how many credits is the film major' general=None
+--- tools=['embedding', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The catalog does not give a total credit count for the Filmmaking BA major; its requirement list names courses, so I can’t total the credits from that list. [1] The catalog lists two bachelor’s majors for “film”: Filmmaking BA and Theater and Film BA. [12] For the total credits required to graduate from Ramapo, students must complete a minimum of 128 graduation credits. [3]
+
+**Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [13]
+
+Sources: [1](https://catalog.ramapo.edu/programs/AH-BA-FILM) [3](https://www.ramapo.edu/studentsuccess/policies/) [12](https://catalog.ramapo.edu/programs) [13](https://www.ramapo.edu/campus-directory/)
+
+=== K17 | how many credits to graduate w a nursing degree
+--- by=model status=partial sec=13.04 err=None read: needs=[] limit=none topic=program asked=own_words q='How many credits are needed to graduate with a nursing degree?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', '3-tools', 'embedding', 'pick_sections', '3-tools'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Nursing Programs Office", "fields": ["procedures"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": "credits required to graduate with a nursing degree", "page_terms": ["nursing degree requirements", "graduation credits"]}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:0691dd1e-07c7-4189-bc7c-3bb469bda8e4", "label": "Nursing Programs Office", "kind": "office", "entity_id": "0691dd1e-07c7-4189-bc7c-3bb4
+**Nursing Programs Office**
+
+Diploma Program Students: For graduates of ACEN/CNEA accredited diploma programs, 30 Core credits are granted upon satisfactory completion of two RN/BSN nursing courses. If the diploma graduate received college credits as part of the diploma, these are granted in transfer. Academic credits are evaluated by the College’s transfer evaluator. RNs complete another 32 credits in nursing; complete the remaining general education… [Source](https://www.ramapo.edu/nursing/rn/)
+
+Graduation Plans: Bachelor of Science in Nursing – Generic \([https://www.ramapo.edu/recommended-graduation-plan-2025/tas/nursing/](https://www.ramapo.edu/recommended-graduation-plan-2025/tas/nursing/)\) – Graduation Plan Accelerated Bachelor of Science in Nursing \(ABSN\) \([https://www.ramapo.edu/recommended-graduation-plan-2025/tas/nursing-accelerated-bsn-program/](https://www.ramapo.edu/recommended-graduation-plan-2025/tas/nursing-accelerated-bsn-program/)\) – Graduation Plan Bachelor of Science in Nursing – RN/BSN \([https://www.ramapo.edu/recommended-graduation-plan-2025/tas/nursin…](https://www.ramapo.edu/recommended-graduation-plan-2025/tas/nursin…) [Source](https://www.ramapo.edu/nursing/current-nursing-students/)
+
+College Catalog: Bachelor of Science in Nursing \(BSN\) \([https://catalog.ramapo.edu/programs/TS-BSN-NURG](https://catalog.ramapo.edu/programs/TS-BSN-NURG)\) – College Catalog Accelerated Bachelor of Science in Nursing \(ABSN\) \([https://catalog.ramapo.edu/programs/TS-BSN-NURA](https://catalog.ramapo.edu/programs/TS-BSN-NURA)\) – College Catalog Bachelor of Science in Nursing – RN/BSN \([https://catalog.ramapo.edu/programs/TS-BSN-NURS](https://catalog.ramapo.edu/programs/TS-BSN-NURS)\) – College Catalog Master of Science in Nursing \(MSN\) \([https://catalog.ramapo.edu/progra…](https://catalog.ramapo.edu/progra…) [Source](https://www.ramapo.edu/nursing/current-nursing-students/)
+
+Curriculum Map: The BSN Program reflects interdisciplinary collaboration in the design of its curricula. The general education component provides students with a wide and varied knowledge base of the liberal arts, physical and social sciences, humanities, and multiculturalism. The nursing component provides knowledge from the art and science of nursing. The Ramapo BSN curriculum is aligned with the mission and fo… [Source](https://www.ramapo.edu/nursing/bsn-generic/curriculum-map/)
+
+Generic BSN Program: a seat in the Nursing sequence is reserved for the enrolling student in their junior year, at the point of admission, if all requirements are met within the first 2 years of the curriculum. The Generic partnership program allows the students to work primarily within recognized centers of Excellence in Nursing. Other health care facilities are used dependent upon course objectives and students’ lea… [Source](https://www.ramapo.edu/nursing/bsn-generic/)
+
+Associate Degree Students: For graduates of ACEN/CNEA accredited associate degree programs, transfer credits from the previous associated degree academic education are granted upon admission. [Source](https://www.ramapo.edu/nursing/rn/)
+
+**Registrar**
+
+Meet the credit requirements for a degree: 1. Complete at least 32 credits at Ramapo College; the overall number of credits required is 128, though program requirements differ. \(page: “A minimum of 32 credits must be completed at Ramapo College. Overall, the number of credits required to graduate from Ramapo College is 128 credits. However, every program has different credit requirements.”\) 2. Review the number of classes and credits requi… [Source](https://www.ramapo.edu/registrar/faq/)
+
+Meet undergraduate credit requirements for graduation: 1. Earn at least 128 credits to graduate. \(page: “Students must have a minimum of 128 credits in order to graduate.”\) 2. Complete at Ramapo at least half of the credits for your major, second major, or minor. \(page: “A minimum of one-half of the credits for majors/second majors/minors must have been completed at Ramapo College.”\) 3. Complete at least 48 credits at Ramapo, including your final 32 c… [Source](https://www.ramapo.edu/registrar/graduation-commencement/)
+
+**Orientation Programs**
+
+Plan credits toward graduation: 1. Ramapo courses are four credits, and most students take 4 courses per semester, averaging 16 credits. \(page: “Ramapo courses are four credits and most students take 4 courses a semester, so students average 16 credits a semester.”\) 2. Taking 16 credits per semester for eight semesters allows students to achieve the 128-credit graduation requirement. \(page: “Taking 16 credits a semester, for eig… [Source](https://www.ramapo.edu/orientation/families/faq/)
+
+Understand semester credit loads and full-time status: 1. Take at least 12 credits to be considered a full-time student. \(page: “To be considered a full time student, you must take at least 12 credits.”\) 2. Tuition and tuition-related fees are calculated at a flat rate between 12 and 18 credits. \(page: “Tuition and tuition related fees are calculated on a flat rate between 12 and 18 credits.”\) 3. Ramapo courses are four credits, and most students take… [Source](https://www.ramapo.edu/orientation/faq-2/)
+
+Meet the full-time credit requirement: 1. Take at least 12 credits to be considered full time. \(page: “To be considered a full time, students must take at least 12 credits.”\) 2. Tuition and tuition-related fees are calculated at a flat rate between 12 and 18 credits. \(page: “Tuition and tuition related fees are calculated on a flat rate between 12 and 18 credits.”\) [Source](https://www.ramapo.edu/orientation/families/faq/)
+
+I don't have verified information about that part.
+
+=== K18 | how many credits is the econ minor
+--- by=error status=None sec=4.73 err=None read: needs=[] limit=none topic=program asked=read q='how many credits is the econ minor' general=None
+--- tools=['embedding', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+
+
+=== S01 | what time is the trading lab open in the business school
+--- by=model status=answered sec=5.49 err=None read: needs=[] limit=none topic=office asked=read q='What time is the trading lab in the business school open?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Trading Lab", "fields": ["hours"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:6917efd3-3f23-4cd5-8ada-8330b2f2d00f", "label": "Anisfield School of Business", "kind": "office", "entity_id": "6917efd3-3f23-4cd5-8ada-8330b2f2d00f", "aliases": ["ASB", "Trading Lab"]}], "as_of": "2026-11-18T11:36:23-05:00", "dataset_version": "v2-20
+Anisfield School of Business hours: Monday to Friday: 8:30am-4:30pm; Saturday and Sunday: not published (checked November 17, 2026). [1]
+
+The page does not say which dates this schedule covers. [1]
+
+Sources: [1](https://www.ramapo.edu/asb/)
+
+=== S02 | can i use the photo lighting studio if im not in a photo class
+--- by=one_call status=answered sec=6.72 err=None read: needs=[] limit=none topic=how_to asked=read q="Can I use the photo lighting studio if I'm not in a photo class?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Use is restricted to students in the listed photography courses and other upper-level photo classes. Other CA courses may be approved case by case, as may Visual Arts majors and students who previously received training on the studio equipment. Students should make reservations for the Lighting Studio (BC 140A). [1][4]
+
+Since you’re not in a photo class, contact the Photography Lab to ask whether you qualify for an exception.
+
+**Photography Lab**: Phone: (201) 684-7235. Email: photolab@ramapo.edu. Location: Berrie Center 135. Eva Fazzari, Photography Lab Supervisor: Berrie Center 139; Lighting Studio: BC-140A. [33]
+
+Sources: [1](https://www.ramapo.edu/photolab/lightingstudio/) [4](https://www.ramapo.edu/photolab/hours/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== S03 | how do i book the lighting studio
+--- by=one_call status=answered sec=5.49 err=None read: needs=[] limit=none topic=how_to asked=read q='how do i book the lighting studio' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Book a 1-hour appointment using the [Google Appointment Schedule](https://calendar.app.google/33DPiufbdVyj9QRB6). Appointments may last up to 3 hours, and you may have two standing reservations at a time unless otherwise specified. You can also schedule by email or visit the Photography Lab (BC 135) during open lab hours. [1]
+
+**Photography Lab**: Phone: (201) 684-7235. Email: photolab@ramapo.edu. Location: Berrie Center 135. Eva Fazzari, Photography Lab Supervisor: Berrie Center 139; Lighting Studio: BC-140A. [29]
+
+Sources: [1](https://www.ramapo.edu/photolab/lightingstudio/) [29](https://www.ramapo.edu/campus-directory/)
+
+=== S04 | whats the grad certificate in business foundations n is it online
+--- by=one_call status=answered sec=8.68 err=None read: needs=[] limit=none topic=program asked=read q='What is the graduate certificate in Business Foundations, and is it online?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The Business Foundations Graduate Certificate is designed for students who are not business majors and want to learn business fundamentals; it can also be a path to an MBA. [2] It provides graduate-level foundational knowledge in Accounting, Economics, Marketing, Finance, Management, and Business Statistics. The certificate requires 12 credits: six 2-credit required courses—ACCT 510 FOUNDATIONS OF ACCOUNTING, BADM 510 FOUNDATION STATS FOR BUSINESS, ECON 510 FOUNDATIONS OF ECONOMICS, FINC 510 FOUNDATIONS OF FINANCE, MGMT 510 FOUNDATIONS OF MANAGEMENT, and MKTG 510 FOUNDATIONS OF MARKETING. [1] All classes are taken entirely online, and all courses are offered online in both fall and spring semesters. The certificate can be completed in one semester. [4][5]
+
+**Ramapo College Foundation**: Phone: (201) 684-6819. Institutional Advancement: Birch Mansion. [15]
+
+Sources: [1](https://catalog.ramapo.edu/programs/SB-GCR-BUFN) [2](https://www.ramapo.edu/asb/graduate-certificate-in-business-foundations/) [4](https://www.ramapo.edu/asb/graduate-certificate-in-business-foundations/) [5](https://www.ramapo.edu/asb/graduate-certificate-in-business-foundations/) [15](https://www.ramapo.edu/campus-directory/)
+
+=== S05 | when is the genetic genealogy conference next yr
+--- by=one_call status=answered sec=3.25 err=None read: needs=[] limit=none topic=event asked=read q='When is the genetic genealogy conference next year?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+RIGG 2027 will be held July 9-11, 2027 on our campus in Mahwah, New Jersey. Please note the date change. [1]
+
+**Investigative Genetic Genealogy Center**: Email: igg@ramapo.edu. [19]
+
+Sources: [1](https://www.ramapo.edu/igg/conference/) [19](https://www.ramapo.edu/campus-directory/)
+
+=== S06 | whats the igg bootcamp n who can go
+--- by=one_call status=answered sec=3.68 err=None read: needs=[] limit=none topic=event asked=read q='What is the IGG Bootcamp, and who can go?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+The IGG Bootcamp is a week-long summer program on Ramapo’s campus where students practice and expand their investigative genetic genealogy skills through intensive, focused casework in a secure lab. It also offers dynamic learning and team bonding. [1]
+
+It is for students who complete the Ramapo College IGG Certificate Program; they may apply, and a maximum of 15 participants will be accepted. [1]
+
+**Investigative Genetic Genealogy Center**: Email: igg@ramapo.edu. [21]
+
+Sources: [1](https://www.ramapo.edu/igg/bootcamp/) [21](https://www.ramapo.edu/campus-directory/)
+
+=== S07 | is bridging the gap a real class n when does it meet
+--- by=one_call status=answered sec=6.55 err=None read: needs=[] limit=none topic=program asked=read q='Is Bridging the Gap a real class, and when does it meet?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+Yes. CIVL 201 Bridging the Gap: Skills for Intercultural Dialogue is a 2-credit course with no published prerequisites. [1] For Spring Semester 2027, the page lists Tuesdays, 9:55–11:35 am, with Jacob Ari Labendz. [2]
+
+**RCNJ Center for Holocaust and Genocide Studies**: Phone: (201) 684-7409. Email: holgen@ramapo.edu. Office: LC-216. [14]
+
+Sources: [1](https://catalog.ramapo.edu/courses/CIVL201) [2](https://www.ramapo.edu/holocaust/for-students/btg/) [14](https://www.ramapo.edu/campus-directory/)
+
+=== S08 | where do nursing students do clinicals
+--- by=one_call status=answered sec=7.38 err=None read: needs=[] limit=none topic=program asked=read q='where do nursing students do clinicals' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+For accelerated and generic nursing students, clinical placements are scheduled in NJ within a 60 minute radius of campus. [11] Students spend much of their clinical time at The Valley Hospital; other affiliates include St. Joseph’s Regional Medical Center, Hackensack Meridian Health Network, New Bridge Medical Center, Valley Home Care, Township of Garfield, Bergen County Department of Public Health, and others. Students must provide their own transportation to clinical sites. [7][8] Faculty select and monitor facilities, which may include acute care institutions, long-term care facilities, community health agencies, outpatient/ambulatory care settings, professional organizations, and occupational health/industrial sites. [5] RN to BSN students complete clinical requirements at various hospitals and clinical settings throughout the state; a traditional clinical experience is not required in the RN/BSN program. [6]
+
+- **Transportation Services**: Phone: (201) 684-7432. Email: shuttle@ramapo.edu. [15]
+- **Facilities Management**: Phone: (201) 684-7660. Location: P-FAC. [15]
+
+Sources: [5](https://www.ramapo.edu/nursing/accelerated-bsn/clinical-unique-experiences/) [6](https://www.ramapo.edu/nursing/rn/clinical-unique-experiences/) [7](https://www.ramapo.edu/nursing/accelerated-bsn/clinical-unique-experiences/) [8](https://www.ramapo.edu/nursing/bsn-generic/clinical-unique-experiences/) [11](https://www.ramapo.edu/nursing/accelerated-bsn/faqs/) [15](https://www.ramapo.edu/campus-directory/)
+
+=== S09 | applying to the accelerated nursing program do i need to send transcripts if i went to ramapo
+--- by=one_call status=answered sec=7.51 err=None read: needs=[] limit=none topic=how_to asked=read q='When applying to the accelerated nursing program, do I need to send transcripts if I went to Ramapo?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+If you are a graduating Ramapo College student or alum, you do not need to submit your transcripts. You only need to submit and upload to your application: one letter of recommendation, a current resume, and ATI TEAS Exam results. [5] Official transcripts from all previously attended colleges/universities are otherwise required and must be sent directly from the college(s); send electronically to admissions@ramapo.edu or mail to Ramapo College of New Jersey – Attn: Admissions, 505 Ramapo Valley Road, Mahwah, NJ 07430. If you are currently taking courses, wait until your final grades are posted before sending transcripts. [4] Contact the Nursing Programs Office with questions about the accelerated BSN application. [5]
+
+- **Registrar**: Phone: (201) 684-7695. Email: reg@ramapo.edu. Office: D-224. [14]
+- **Admissions**: Phone: (201) 684-7300. Email: admissions@ramapo.edu. Location: McBride House. [14]
+
+Sources: [4](https://www.ramapo.edu/nursing/accelerated-bsn/application-instructions/) [5](https://www.ramapo.edu/nursing/accelerated-bsn/application-instructions/) [14](https://www.ramapo.edu/campus-directory/)
+
+=== S10 | is there a nursing honor society
+--- by=one_call status=answered sec=8.81 err=None read: needs=[] limit=none topic=club asked=read q='is there a nursing honor society' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+Yes. Sigma Theta Tau International, Ramapo College chapter, is the honor society of nursing. It recognizes students with outstanding achievements in nursing and invites students to apply once they earn a GPA in the Nursing sequence. [15] Contact the Nursing Programs Office. [15]
+
+**Nursing Programs Office**: Phone: (201) 684-7749. Location: Adler Center for Nursing Excellence 215. [27]
+
+Sources: [15](https://www.ramapo.edu/nursing/bsn-generic/clinical-unique-experiences/) [27](https://www.ramapo.edu/campus-directory/)
+
+=== S11 | when is as you like it at the berrie center
+--- by=one_call status=answered sec=3.39 err=None read: needs=[] limit=none topic=event asked=read q='when is as you like it at the berrie center' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+It’s at the Berrie Center on November 19, 20, and 21 at 7:30–10:00 pm, and November 15 at 2:00–4:30 pm. [4][3][1][6]
+
+**Berrie Center Box Office**: Phone: (201) 684-7844. Email: tickets@ramapo.edu. Location: first floor of the Berrie Center for Performing and Visual Arts. [17]
+
+Sources: [1](https://www.ramapo.edu/berriecenter/event/as-you-like-it/2026-11-21/) [3](https://www.ramapo.edu/berriecenter/event/as-you-like-it/2026-11-20/) [4](https://www.ramapo.edu/berriecenter/event/as-you-like-it/2026-11-19/) [6](https://www.ramapo.edu/berriecenter/event/as-you-like-it/2026-11-15/) [17](https://www.ramapo.edu/campus-directory/)
+
+=== S12 | r the holocaust center events free
+--- by=code status=answered sec=2.15 err=None read: needs=[] limit=none topic=event asked=read q='Are the Holocaust Center events free?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+No event in the next 14 days, Wednesday, November 18 to Wednesday, December 2 is listed by name for what you asked; these are the closest in meaning (of 84 events then) [1]:
+
+Wednesday, November 18:
+- 7 PM to 10 PM: La Familia Dinner (Association of Latinos Moving Ahead), at Student Center Friends Hall - SC219 [2]
+
+Sources: [1](https://archway.ramapo.edu/home/events/) [2](https://archway.ramapo.edu/rsvp_boot?id=1409945)
+
+=== S13 | what companies do comm arts majors intern at
+--- by=one_call status=answered sec=12.44 err=None read: needs=[] limit=none topic=program asked=read q='What companies do communication arts majors intern at?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The internship-opportunities page lists these examples:
+
+- Global Communication and Media: 181 Strategies, Akadema Pro Player, Ambrose io, LLC, American Diabetes Association, At&t, Atlantic Records, Awesomeness TV, Barneys New York, BCBGMAXAZRIA, Benzel Busch Mercedes Benz, Beyer Ford, Blk Beverage, Borough of Franklin Lakes, Bottega Veneta, Bray Entertainment, Brookville Park Music, Brother International Corporation, Camp Bow Wow, Carlo’s Bakery, Carolyn Izzo Integrated Communications, Caryl Communications, Cascadia Managing, Chardan Capital Markets, Children’s Specialized Hospital, Coach Bus USA, Coburn Communications, Coda Staffing, Coed Media Group, Colony Florist & Gifts, International Concepts TV, Coop and Spree, Cumulus Media, Doherty Enterprises, Dress Barn, Easterseals NJ, Eat Clean Bro, EBOOST, Farmers Insurance, Fredly Enterprises, LLC, Gale Branding, Gateway Realtors, GlamGuides.com, Glazer Promos, Gold Medical Marketing, Groupe a la Mode LLC, Health Monitor Network, Kitara Media, KK Entertainment, KPMG, Krupp Kommunications, Language Directions, LLC, Latina Media Ventures, Man of The Hour Magazine, Maracaibo Media Group, Martha Stewart Living Omnimedia, Maximum Exposure Public Relations, McCann Echo, Modern Domicile, Motor Media, MusicPlayers.com, NBC 4 New York, New Jersey Jackals, New York Jets, Nightingale Catering, Nine West, NJ MOM LLC, Palagiano Group, Paley Center, Paramount Pictures, Perfect Clicks, Pop2Life, PR Revolution, Prestige Management Services, Pure digital, Pure Platinum Party, Raker and Goldstein, Randi Rahm Studio, RCNJ – Marketing & Web Administration, RCNJ- The Roukema Center for International Education, Real Living Gateway Realtors, Ridgewood Medical Media, Rockland Boulder Stadium, Savvy Ladies, Sharp Electronics, SharpHat, SL Green Realty Corp., Smuggler, Sony Music Entertainment: Columbia Records, Spanish Broadcasting System, Starbucks, Steppin Out, Studio Center, TAP Into, TGA Premier Golf & Tennis, The Advance Group, The Belgian Boys, The Brickhouse Cigar Shop, The Bridge Alliance, The Capacity Group, The Cheer House, The DSM Group, The Game Plan Foundation, The Imagine Film List, The Joey Creative Agency, The Squeeze Juice Truck, The Wendy Williams Show, Today’s Business, TPS Financial Trackside Bar & Grill, Tranquility49 PR, UCB Studios, United Parcel Service, United Real Estate, V Squared Events, Vitamin Shoppe, Warner Music Group, WDHA=FM/WMTR-AM Greater Media New Jersey, We Fitness Gym, Wellness By Gale, LLC, WNBC News 4 New York, YouShallThrive, Inc. & 201 Marketing & Media, Zenith Media Services, and Zoco Productions. [2]
+- Bachelor’s: UCB Studios, Macy’s, NBCUniversal Media, LLC, Wainscot Media. [3]
+- Writing: ACIEM Studios, Action Lab Entertainment, Bray Entertainment, City Winery, Coburn Communication, Inc., COED Media Group, College Candy, Comic Frontline, Creative Content Studio, Entertainment Fuse, Fencing For The Edge, HarrisonRand, Ok! Good Records, Paste Magazine, Perfect Clicks LLC, Ridgefield Memorial High School, Sherwood Trading Group, SOCIALFLY, SunCity Paradise, Super Healthy Children, TAPinto.net, Tarqmax Solutions, The DSM Group, The WRAT, TheCelebrityCafe.com, Tranquility49, Trenton City Museum, Urban League for Bergen County, and Yon-Ka Paris. [4]
+
+- **Media Services**: Phone: (201) 684-7777. Email: mediahelpdesk@ramapo.edu. Office: H-205. [14]
+- **Roukema Center for International Education**: Phone: (201) 684-7533. Location: C-wing, Suite 213. [14]
+
+Sources: [2](https://www.ramapo.edu/ahe/internship-opportunities/) [3](https://www.ramapo.edu/ahe/internship-opportunities/) [4](https://www.ramapo.edu/ahe/internship-opportunities/) [14](https://www.ramapo.edu/campus-directory/)
+
+=== S14 | does the ms in accounting get me to 150 credits for the cpa
+--- by=one_call status=answered sec=6.35 err=None read: needs=[] limit=none topic=program asked=read q='does the ms in accounting get me to 150 credits for the cpa' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+Yes. The catalog says that in combination with an undergraduate degree, the Accounting MS (Master of Science) would attain the 150 credits required to sit for the CPA examination. [1] It lists the program as 30 credits. [2]
+
+**Graduate Admissions**: Phone: (201) 684-7270. Email: graduate@ramapo.edu. Location: McBride House. [13]
+
+Sources: [1](https://catalog.ramapo.edu/programs/SB-MS-MSAC) [2](https://www.ramapo.edu/msac/faqs/) [13](https://www.ramapo.edu/campus-directory/)
+
+=== S15 | how long does the mba take if i work full time
+--- by=one_call status=answered sec=6.15 err=None read: needs=[] limit=none topic=program asked=read q='how long does the mba take if i work full time' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+Students granted “Advanced Standing” can complete the program in as little as 12 months (30 credits). Students with a business undergraduate degree are automatically granted “Advanced Standing.” Students without it can complete the program in as little as 18 months, taking an additional 12 foundation credits. The page says students may choose their pace and create a work-life balance that suits their personal and professional needs. [2] Contact Graduate Admissions for guidance about balancing the MBA with full-time work. [2]
+
+- **Ramapo College Foundation**: Phone: (201) 684-6819. Institutional Advancement: Birch Mansion. [14]
+- **Graduate Admissions**: Phone: (201) 684-7270. Email: graduate@ramapo.edu. Location: McBride House. [14]
+
+Sources: [2](https://www.ramapo.edu/mba/faqs/) [14](https://www.ramapo.edu/campus-directory/)
+
+=== S16 | who do i talk to about getting teacher certification
+--- by=one_call status=answered sec=2.89 err=None read: needs=[] limit=none topic=how_to asked=read q='who do i talk to about getting teacher certification' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Talk to the Teacher Education and Certification Program Certification Officer, Joanne Caselli: jcaselli@ramapo.edu or (201) 684-7626. [1]
+
+**School of Arts, Humanities, and Education Office**: Phone: (201) 684-7365. Email: AHEOffice@ramapo.edu. Office: B-224. [26]
+
+Sources: [1](https://www.ramapo.edu/te/program-resources/) [26](https://www.ramapo.edu/campus-directory/)
+
+=== S17 | can i pick my own practicum site for social work
+--- by=one_call status=answered sec=9.2 err=None read: needs=[] limit=opinion topic=how_to asked=own_words_then_campus_side q='What does Ramapo publish about whether students can choose their own practicum site for social work, and who helps students decide?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+I can't choose for you, but I can share what the college publishes.
+
+You can discuss choosing a site with the Director of Practicum Education, but sites must meet criteria and be approved by the Practicum Education Department. [3] The Practicum Education team coordinates placements; agencies you mention inform the process and do not represent placement decisions. If you have pre-existing contact with an agency that does not currently partner with Ramapo, you may submit an Agency Information Form for consideration. The team works with you to identify placements based on your interests and learning goals. [4] Contact the School of Social Sciences and Social Work Office for help. [3]
+
+**School of Social Sciences and Social Work Office**: Phone: (201) 684-7625; (201) 684-7562. Email: SSSWOffice@ramapo.edu. Office: ASB-431. [15]
+
+Sources: [3](https://www.ramapo.edu/social-work/msw/faqs/) [4](https://www.ramapo.edu/social-work/practicum-education/practicum-sites-a-z/) [15](https://www.ramapo.edu/campus-directory/)
+
+=== S18 | how many credits is the dnp
+--- by=one_call status=answered sec=6.53 err=None read: needs=[] limit=none topic=program asked=read q='how many credits is the dnp' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The Nursing Practice DNP (Doctor of Nursing Practice) consists of 36 credits. [1]
+
+Sources: [1](https://catalog.ramapo.edu/programs/SN-DNP-NUPR)
+
+=== S19 | what grad certificates in data science r there
+--- by=one_call status=answered sec=5.3 err=None read: needs=[] limit=none topic=program asked=read q='What graduate certificates in data science are there?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The catalog lists three data-science graduate certificates: Data Analyst-Graduate Certificate, Data Modeler-Graduate Certificate, and Machine Learning Engineer-Graduate Certificate. [5]
+
+Sources: [5](https://catalog.ramapo.edu/programs)
+
+=== S20 | whos the director of the ms in data science
+--- by=one_call status=answered sec=6.59 err=None read: needs=[] limit=none topic=person asked=read q='Who is the director of the MS in data science?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'person', 'by': 'read'}
+--- lookups=[]
+Scott Frees is the Director of the MS in Data Science Program. [2]
+
+**Graduate Admissions**: Phone: (201) 684-7270. Email: graduate@ramapo.edu. Location: McBride House. [13]
+
+Sources: [2](https://www.ramapo.edu/dmc/programs/msds/) [13](https://www.ramapo.edu/campus-directory/)
+
+TOTAL spent $0.0466 in 311 calls

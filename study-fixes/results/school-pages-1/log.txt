@@ -1,0 +1,216 @@
+release v2-20261118162404 questions 20
+=== S01 | what time is the trading lab open in the business school
+--- by=model status=answered sec=4.46 err=None read: needs=[] limit=none topic=office asked=read q='What time is the trading lab in the business school open?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', '3-tools', '3-tools'] path={'topic': 'office', 'by': 'read'}
+--- lookups=[{"tool": "graph_lookup", "traversedBy": "code", "status": "ok", "result_count": 1, "arguments": {"query": "Trading Lab", "fields": ["hours"], "day": null, "phone_kind": null, "meal": null, "diet": null, "items": [], "with_allergens": [], "without_allergens": [], "details": [], "about": null, "page_terms": []}, "path": [{"id": "ramapo", "label": "Ramapo", "kind": "root"}, {"id": "offices", "label": "Offices", "kind": "category"}, {"id": "office:6917efd3-3f23-4cd5-8ada-8330b2f2d00f", "label": "Anisfield School of Business", "kind": "office", "entity_id": "6917efd3-3f23-4cd5-8ada-8330b2f2d00f", "aliases": ["ASB", "Trading Lab"]}], "as_of": "2026-11-18T11:27:45-05:00", "dataset_version": "v2-20
+Anisfield School of Business hours: Monday to Friday: 8:30am-4:30pm; Saturday and Sunday: not published (checked November 17, 2026). [1]
+
+The page does not say which dates this schedule covers. [1]
+
+Sources: [1](https://www.ramapo.edu/asb/)
+
+=== S02 | can i use the photo lighting studio if im not in a photo class
+--- by=one_call status=answered sec=7.44 err=None read: needs=[] limit=none topic=how_to asked=read q="Can I use the photo lighting studio if I'm not in a photo class?" general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Not necessarily. Use is restricted to students in specified photography courses; other CA courses may be approved case-by-case, as may Visual Arts majors and students who previously received training on the studio equipment. [1] Students should make reservations for the Lighting Studio (BC 140A). [4] Contact the Photography Lab about your eligibility.
+
+**Photography Lab**: Phone: (201) 684-7235. Email: photolab@ramapo.edu. Location: Berrie Center 135. Eva Fazzari, Photography Lab Supervisor: Berrie Center 139; Lighting Studio: BC-140A. [33]
+
+Sources: [1](https://www.ramapo.edu/photolab/lightingstudio/) [4](https://www.ramapo.edu/photolab/hours/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== S03 | how do i book the lighting studio
+--- by=one_call status=answered sec=4.44 err=None read: needs=[] limit=none topic=how_to asked=read q='how do i book the lighting studio' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Book a 1-hour appointment using the [Google Appointment Schedule](https://calendar.app.google/33DPiufbdVyj9QRB6). Appointments may last up to 3 hours, and you may have two standing reservations at a time unless otherwise specified. [1]
+
+You can also schedule by email or phone, or visit the Photography Lab (BC 135) during open lab hours. [1]
+
+**Photography Lab**: Phone: (201) 684-7235. Email: photolab@ramapo.edu. Location: Berrie Center 135. Eva Fazzari, Photography Lab Supervisor: Berrie Center 139; Lighting Studio: BC-140A. [29]
+
+Sources: [1](https://www.ramapo.edu/photolab/lightingstudio/) [29](https://www.ramapo.edu/campus-directory/)
+
+=== S04 | whats the grad certificate in business foundations n is it online
+--- by=one_call status=answered sec=9.69 err=None read: needs=[] limit=none topic=program asked=read q='What is the graduate certificate in Business Foundations, and is it online?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The Anisfield School of Business Graduate Certificate in Business Foundations is designed for students who are not business majors and want to learn business fundamentals. It builds foundational knowledge in accounting, economics, marketing, finance, management, and business statistics; earning it requires six 2-credit courses (12 credits): ACCT 510, BADM 510, ECON 510, FINC 510, MGMT 510, and MKTG 510. [2][4]
+Yes. All classes are taken entirely online, and courses are offered online in both fall and spring semesters. The certificate can be completed in one semester. [4][5]
+
+**Anisfield School of Business**: Phone: Phone (201) 684-7379; Phone (201) 684-7380; Phone (201) 684-7378; Fax (201) 684-7957. Email: asb@ramapo.edu. Office: ASB-333. [15]
+
+Sources: [2](https://www.ramapo.edu/asb/graduate-certificate-in-business-foundations/) [4](https://www.ramapo.edu/asb/graduate-certificate-in-business-foundations/) [5](https://www.ramapo.edu/asb/graduate-certificate-in-business-foundations/) [15](https://www.ramapo.edu/campus-directory/)
+
+=== S05 | when is the genetic genealogy conference next yr
+--- by=one_call status=answered sec=3.2 err=None read: needs=[] limit=none topic=event asked=read q='When is the genetic genealogy conference next year?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+RIGG 2027 will be held July 9-11, 2027 on our campus in Mahwah, New Jersey. Please note the date change. [1]
+
+**Investigative Genetic Genealogy Center**: Email: igg@ramapo.edu. [19]
+
+Sources: [1](https://www.ramapo.edu/igg/conference/) [19](https://www.ramapo.edu/campus-directory/)
+
+=== S06 | whats the igg bootcamp n who can go
+--- by=one_call status=answered sec=4.18 err=None read: needs=[] limit=none topic=event asked=read q='What is the IGG bootcamp, and who can go?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'write_answer'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+The IGG Bootcamp is a week-long summer program on Ramapo’s campus where students practice their IGG skills, work intensively on casework in a secure lab, learn as case roadblocks arise, and build connections with teammates. Students who complete the Ramapo College IGG Certificate Program may apply. [1]
+
+The next Bootcamp is July 6–9, 2027. It costs $2,000, includes an on-campus dorm room and meals, and accepts a maximum of 15 participants. [1]
+
+**Investigative Genetic Genealogy Center**: Email: igg@ramapo.edu. [21]
+
+Sources: [1](https://www.ramapo.edu/igg/bootcamp/) [21](https://www.ramapo.edu/campus-directory/)
+
+=== S07 | is bridging the gap a real class n when does it meet
+--- by=one_call status=answered sec=8.03 err=None read: needs=[] limit=none topic=program asked=read q='Is Bridging the Gap a real class, and when does it meet?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+Yes. CIVL 201, “BRIDGING THE GAP: SKILLS FOR INTERCULTURAL DIALOGUE,” is a 2-credit course with no published prerequisites. [1] The BtG course meets Tuesdays, 9:55–11:35 am, in Spring Semester 2027. [2] For more information, contact Dr. Jacob Ari Labendz at holgen@ramapo.edu. [2]
+
+**RCNJ Center for Holocaust and Genocide Studies**: Phone: (201) 684-7409. Email: holgen@ramapo.edu. Office: LC-216. [14]
+
+Sources: [1](https://catalog.ramapo.edu/courses/CIVL201) [2](https://www.ramapo.edu/holocaust/for-students/btg/) [14](https://www.ramapo.edu/campus-directory/)
+
+=== S08 | where do nursing students do clinicals
+--- by=one_call status=answered sec=7.23 err=None read: needs=[] limit=none topic=program asked=read q='where do nursing students do clinicals' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+It depends on the program. Accelerated and generic nursing students spend much of their clinical time at The Valley Hospital. Other affiliates include St. Joseph’s Regional Medical Center, Hackensack Meridian Health Network, New Bridge Medical Center, Valley Home Care, Township of Garfield, Bergen County Department of Public Health, and other local community agencies. Students provide their own transportation to clinical sites. [7][8] Clinical placements for the accelerated program are scheduled in New Jersey within a 60-minute radius of campus. [11] RN-to-BSN students complete clinical requirements at various hospitals and clinical settings throughout the state; a traditional clinical experience is not required in that program. [6] Faculty select and monitor clinical facilities; other facilities may be used depending on course objectives and students’ learning needs. [5]
+
+- **Transportation Services**: Phone: (201) 684-7432. Email: shuttle@ramapo.edu. [15]
+- **Facilities Management**: Phone: (201) 684-7660. Location: P-FAC. [15]
+
+Sources: [5](https://www.ramapo.edu/nursing/accelerated-bsn/clinical-unique-experiences/) [6](https://www.ramapo.edu/nursing/rn/clinical-unique-experiences/) [7](https://www.ramapo.edu/nursing/accelerated-bsn/clinical-unique-experiences/) [8](https://www.ramapo.edu/nursing/bsn-generic/clinical-unique-experiences/) [11](https://www.ramapo.edu/nursing/accelerated-bsn/faqs/) [15](https://www.ramapo.edu/campus-directory/)
+
+=== S09 | applying to the accelerated nursing program do i need to send transcripts if i went to ramapo
+--- by=one_call status=answered sec=7.42 err=None read: needs=[] limit=none topic=how_to asked=read q='When applying to the accelerated nursing program, do I need to send transcripts if I went to Ramapo?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+If you are a graduating Ramapo College student or alum, you do not need to submit your transcripts for the accelerated BSN application. You only need to submit and upload to your application: one letter of recommendation, a current resume, and ATI TEAS Exam results. [5] The Nursing Programs Office page also says current or former Ramapo students who have not completed a non-Nursing Bachelor’s or Associate’s Degree at Ramapo or elsewhere are not eligible for the Accelerated BSN Program at this time. [6]
+
+**Nursing Programs Office**: Phone: (201) 684-7749. Location: Adler Center for Nursing Excellence 215. [14]
+
+Sources: [5](https://www.ramapo.edu/nursing/accelerated-bsn/application-instructions/) [6](https://www.ramapo.edu/nursing/accelerated-bsn/faqs/) [14](https://www.ramapo.edu/campus-directory/)
+
+=== S10 | is there a nursing honor society
+--- by=one_call status=answered sec=9.61 err=None read: needs=[] limit=none topic=club asked=read q='is there a nursing honor society' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'club', 'by': 'read'}
+--- lookups=[]
+Yes. Sigma Theta Tau International, Ramapo College chapter, is the honor society of nursing. It recognizes students with outstanding achievements in nursing; students are invited to apply once they earn a GPA in the Nursing sequence. [14] The club directory lists Sigma Theta Tau as an Honor Society: [https://archway.ramapo.edu/SigmaThetaTau/](https://archway.ramapo.edu/SigmaThetaTau/). [5]
+
+**Nursing Programs Office**: Phone: (201) 684-7749. Location: Adler Center for Nursing Excellence 215. [26]
+
+Sources: [5](https://archway.ramapo.edu/SigmaThetaTau/) [14](https://www.ramapo.edu/nursing/bsn-generic/clinical-unique-experiences/) [26](https://www.ramapo.edu/campus-directory/)
+
+=== S11 | when is as you like it at the berrie center
+--- by=one_call status=answered sec=3.34 err=None read: needs=[] limit=none topic=event asked=read q='when is as you like it at the berrie center' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+The remaining performance is Saturday, November 21, 2026, from 7:30 to 10:00 p.m. in Sharp Theater at the Berrie Center for the Arts. [1]
+
+**Berrie Center Box Office**: Phone: (201) 684-7844. Email: tickets@ramapo.edu. Location: first floor of the Berrie Center for Performing and Visual Arts. [17]
+
+Sources: [1](https://www.ramapo.edu/berriecenter/event/as-you-like-it/2026-11-21/) [17](https://www.ramapo.edu/campus-directory/)
+
+=== S12 | r the holocaust center events free
+--- by=code status=answered sec=2.47 err=None read: needs=[] limit=none topic=event asked=read q='Are the Holocaust Center events free?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding'] path={'topic': 'event', 'by': 'read'}
+--- lookups=[]
+No event in the next 14 days, Wednesday, November 18 to Wednesday, December 2 is listed by name for what you asked; these are the closest in meaning (of 84 events then) [1]:
+
+Wednesday, November 18:
+- 7 PM to 10 PM: La Familia Dinner (Association of Latinos Moving Ahead), at Student Center Friends Hall - SC219 [2]
+
+Sources: [1](https://archway.ramapo.edu/home/events/) [2](https://archway.ramapo.edu/rsvp_boot?id=1409945)
+
+=== S13 | what companies do comm arts majors intern at
+--- by=one_call status=answered sec=12.48 err=None read: needs=[] limit=none topic=program asked=read q='What companies do communication arts majors intern at?' general='What companies do communication arts majors intern at?'
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The School of Arts, Humanities, and Education Office lists these internship organizations for Communication Arts:
+
+- Global Communication and Media: 181 Strategies, Akadema Pro Player, Ambrose io, LLC, American Diabetes Association, At&t, Atlantic Records, Awesomeness TV, Barneys New York, BCBGMAXAZRIA, Benzel Busch Mercedes Benz, Beyer Ford, Blk Beverage, Borough of Franklin Lakes, Bottega Veneta, Bray Entertainment, Brookville Park Music, Brother International Corporation, Camp Bow Wow, Carlo’s Bakery, Carolyn Izzo Integrated Communications, Caryl Communications, Cascadia Managing, Chardan Capital Markets, Children’s Specialized Hospital, Coach Bus USA, Coburn Communications, Coda Staffing, Coed Media Group, Colony Florist & Gifts International Concepts TV, Coop and Spree, Cumulus Media, Doherty Enterprises, Dress Barn, Easterseals NJ, Eat Clean Bro, EBOOST, Farmers Insurance, Fredly Enterprises, LLC, Gale Branding, Gateway Realtors, GlamGuides.com, Glazer Promos, Gold Medical Marketing, Groupe a la Mode LLC, Health Monitor Network, Kitara Media, KK Entertainment, KPMG, Krupp Kommunications, Language Directions, LLC, Latina Media Ventures, Man of The Hour Magazine, Maracaibo Media Group, Martha Stewart Living Omnimedia, Maximum Exposure Public Relations, McCann Echo, Modern Domicile, Motor Media, MusicPlayers.com, NBC 4 New York, New Jersey Jackals, New York Jets, Nightingale Catering, Nine West, NJ MOM LLC, Palagiano Group, Paley Center, Paramount Pictures, Perfect Clicks, Pop2Life, PR Revolution, Prestige Management Services, Pure digital, Pure Platinum Party, Raker and Goldstein, Randi Rahm Studio, RCNJ – Marketing & Web Administration, RCNJ- The Roukema Center for International Education, Real Living Gateway Realtors, Ridgewood Medical Media, Rockland Boulder Stadium, Savvy Ladies, Sharp Electronics, SharpHat, SL Green Realty Corp., Smuggler, Sony Music Entertainment: Columbia Records, Spanish Broadcasting System, Starbucks, Steppin Out, Studio Center, TAP Into, TGA Premier Golf & Tennis, The Advance Group, The Belgian Boys, The Brickhouse Cigar Shop, The Bridge Alliance, The Capacity Group, The Cheer House, The DSM Group, The Game Plan Foundation, The Imagine Film List, The Joey Creative Agency, The Squeeze Juice Truck, The Wendy Williams Show, Today’s Business, TPS Financial, Trackside Bar & Grill, Tranquility49 PR, UCB Studios, United Parcel Service, United Real Estate, V Squared Events, Vitamin Shoppe, Warner Music Group, WDHA=FM/WMTR-AM Greater Media New Jersey, We Fitness Gym, Wellness By Gale, LLC, WNBC News 4 New York, YouShallThrive, Inc. & 201 Marketing & Media, Zenith Media Services, and Zoco Productions. [2]
+- Bachelor’s: UCB Studios, Macy’s, NBCUniversal Media, LLC, and Wainscot Media. [3]
+- Writing: ACIEM Studios, Action Lab Entertainment, Bray Entertainment, City Winery, Coburn Communication, Inc., COED Media Group, College Candy, Comic Frontline, Creative Content Studio, Entertainment Fuse, Fencing For The Edge, HarrisonRand, Ok! Good Records, Paste Magazine, Perfect Clicks LLC, Ridgefield Memorial High School, Sherwood Trading Group, SOCIALFLY, SunCity Paradise, Super Healthy Children, TAPinto.net, Tarqmax Solutions, The DSM Group, The WRAT, TheCelebrityCafe.com, Tranquility49, Trenton City Museum, Urban League for Bergen County, and Yon-Ka Paris. [4]
+
+These are lists under different Communication Arts headings on the same page; check the applicable category. [2][3][4]
+
+- **School of Arts, Humanities, and Education Office**: Phone: (201) 684-7365. Email: AHEOffice@ramapo.edu. Office: B-224. [14]
+- **Media Services**: Phone: (201) 684-7777. Email: mediahelpdesk@ramapo.edu. Office: H-205. [14]
+
+Sources: [2](https://www.ramapo.edu/ahe/internship-opportunities/) [3](https://www.ramapo.edu/ahe/internship-opportunities/) [4](https://www.ramapo.edu/ahe/internship-opportunities/) [14](https://www.ramapo.edu/campus-directory/)
+
+=== S14 | does the ms in accounting get me to 150 credits for the cpa
+--- by=one_call status=answered sec=7.79 err=None read: needs=[] limit=none topic=program asked=read q='does the ms in accounting get me to 150 credits for the cpa' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+Yes. The catalog says the Accounting MS (Master of Science) in combination with an undergraduate degree provides the 150 credits required to sit for the CPA examination [1]. The program is 30 credits and is designed to build on an undergraduate accounting degree to meet the 150-credit requirement for New Jersey CPA certification [2].
+
+**Graduate Admissions**: Phone: (201) 684-7270. Email: graduate@ramapo.edu. Location: McBride House. [13]
+
+Sources: [1](https://catalog.ramapo.edu/programs/SB-MS-MSAC) [2](https://www.ramapo.edu/msac/faqs/) [13](https://www.ramapo.edu/campus-directory/)
+
+=== S15 | how long does the mba take if i work full time
+--- by=one_call status=answered sec=6.42 err=None read: needs=[] limit=none topic=program asked=read q='how long does the mba take if i work full time' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The MBA FAQ says students with “Advanced Standing” can complete the program in as little as 12 months (30 credits); students with a business undergraduate degree are automatically granted “Advanced Standing.” Without Advanced Standing, it can take as little as 18 months and requires an additional 12 credits in foundation courses. [2] Enrollees choose the pace and create a work-life balance that suits their personal and professional needs. [7]
+
+**Ramapo College Foundation**: Phone: (201) 684-6819. Institutional Advancement: Birch Mansion. [14]
+
+Sources: [2](https://www.ramapo.edu/mba/faqs/) [7](https://www.ramapo.edu/mba/faqs/) [14](https://www.ramapo.edu/campus-directory/)
+
+=== S16 | who do i talk to about getting teacher certification
+--- by=one_call status=answered sec=3.39 err=None read: needs=[] limit=none topic=how_to asked=read q='who do i talk to about getting teacher certification' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+Talk to Joanne Caselli, Teacher Education and Certification Program Certification Officer: jcaselli@ramapo.edu or (201) 684-7626. [1]
+
+**School of Arts, Humanities, and Education Office**: Phone: (201) 684-7365. Email: AHEOffice@ramapo.edu. Office: B-224. [26]
+
+Sources: [1](https://www.ramapo.edu/te/program-resources/) [26](https://www.ramapo.edu/campus-directory/)
+
+=== S17 | can i pick my own practicum site for social work
+--- by=one_call status=answered sec=6.71 err=None read: needs=[] limit=none topic=how_to asked=read q='can i pick my own practicum site for social work' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'how_to', 'by': 'read'}
+--- lookups=[]
+You can discuss choosing your own practicum site with the Director of Practicum Education. Sites must meet certain criteria and be approved by the Practicum Education Department. [3]
+
+Placements are assignments, not a choice among multiple interviews: the BSW page says not to interview at several agencies and then expect to pick one. [5] The placement process considers your interests, experience and location, appropriate assignments, and adequate supervision. [4][7] Contact the School of Social Sciences and Social Work Office for guidance. [3]
+
+**School of Social Sciences and Social Work Office**: Phone: (201) 684-7625; (201) 684-7562. Email: SSSWOffice@ramapo.edu. Office: ASB-431. [15]
+
+Sources: [3](https://www.ramapo.edu/social-work/msw/faqs/) [4](https://www.ramapo.edu/social-work/bsw/practicum-education/theory-and-practice/) [5](https://www.ramapo.edu/social-work/bsw/practicum-education/agencies-communities/) [7](https://www.ramapo.edu/social-work/bsw/practicum-education/agencies-communities/) [15](https://www.ramapo.edu/campus-directory/)
+
+=== S18 | how many credits is the dnp
+--- by=one_call status=answered sec=7.42 err=None read: needs=[] limit=none topic=program asked=read q='how many credits is the dnp' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The Doctor of Nursing Practice (DNP) is 36 credits. [1]
+
+Sources: [1](https://catalog.ramapo.edu/programs/SN-DNP-NUPR)
+
+=== S19 | what grad certificates in data science r there
+--- by=one_call status=answered sec=7.26 err=None read: needs=[] limit=none topic=program asked=read q='What graduate certificates in data science are there?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'program', 'by': 'read'}
+--- lookups=[]
+The catalog lists these graduate certificates: Business Foundations-Graduate Certificate; Data Analyst-Graduate Certificate; Data Modeler-Graduate Certificate; and Machine Learning Engineer-Graduate Certificate. [2] The Data Analyst certificate focuses on interpreting and presenting data, and the Data Modeler certificate on statistics and predictive modeling. [3][5] The Center supports three Data Science graduate certificates—Data Analyst, Data Modeler, and Machine Learning Engineer. Each is a three-course sequence with two required courses and one elective. [6][7]
+
+**Graduate Admissions**: Phone: (201) 684-7270. Email: graduate@ramapo.edu. Location: McBride House. [15]
+
+Sources: [2](https://catalog.ramapo.edu/programs) [3](https://www.ramapo.edu/dmc/graduate-certificates-in-data-science/) [5](https://www.ramapo.edu/dmc/graduate-certificates-in-data-science/) [6](https://www.ramapo.edu/dmc/curriculum/) [7](https://www.ramapo.edu/dmc/curriculum/) [15](https://www.ramapo.edu/campus-directory/)
+
+=== S20 | whos the director of the ms in data science
+--- by=one_call status=answered sec=6.11 err=None read: needs=[] limit=none topic=person asked=read q='Who is the director of the MS in Data Science?' general=None
+--- tools=['embedding', 'read_message', 'read_message', 'read_message', 'embedding', 'pick_catalog', 'pick_units', 'pick_units', 'pick_units', 'write_answer'] path={'topic': 'person', 'by': 'read'}
+--- lookups=[]
+Scott Frees is the Director of the MS in Data Science Program. Schedule an Advisor Session with the Data Science Director: [https://calendar.app.google/VucjixVHZmY4d8AQ6](https://calendar.app.google/VucjixVHZmY4d8AQ6) [2]
+
+**Graduate Admissions**: Phone: (201) 684-7270. Email: graduate@ramapo.edu. Location: McBride House. [13]
+
+Sources: [2](https://www.ramapo.edu/dmc/programs/msds/) [13](https://www.ramapo.edu/campus-directory/)
+
+TOTAL spent $0.0250 in 159 calls
