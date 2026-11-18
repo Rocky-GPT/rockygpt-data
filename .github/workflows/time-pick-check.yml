@@ -1,0 +1,32 @@
+name: One-off check, the read's time picks
+
+# Temporary (tools review 2026-11-18): removed once its result is read. About $0.01 of Luna
+# reads. See scripts/review/time_pick_check.py.
+on:
+  push:
+    branches: [claude/project-thread-uhq1n6]
+    paths: ['.github/workflows/time-pick-check.yml', 'scripts/review/time_pick_check.py']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-brain, ref: claude/project-thread-uhq1n6, path: brain }
+      - uses: actions/setup-python@v6
+        with: { python-version: '3.13' }
+      - name: Install the Brain
+        run: |
+          python -m venv venv
+          venv/bin/pip install --quiet --require-hashes -r brain/requirements.lock
+          venv/bin/pip install --quiet --no-deps -e ./brain
+      - name: The read's time picks against a person's
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_PROJECT: proj_aMhXgndK2e9EUQZpXbLFh4yV
+        run: venv/bin/python scripts/review/time_pick_check.py scripts/review/time-pick-messages.json
