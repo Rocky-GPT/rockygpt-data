@@ -30,7 +30,31 @@ jobs:
       - name: Read the run settings
         run: cat data/study-fixes/run.env >> "$GITHUB_ENV"
 
+      - name: Setup Node.js
+        if: endsWith(env.JOB, '.ts')
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: data/package-lock.json
+
+      - name: Run a data-side job (TypeScript) on the archived captures
+        if: endsWith(env.JOB, '.ts')
+        working-directory: data
+        env:
+          RAW_ARTIFACT_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          RAW_ARTIFACT_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          RAW_ARTIFACT_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          RAW_ARTIFACT_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          RAW_ARTIFACT_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: |
+          npm ci --silent
+          mkdir -p "$GITHUB_WORKSPACE/out"
+          set -o pipefail
+          npx tsx study-fixes/$JOB 2>&1 | tee "$GITHUB_WORKSPACE/out/log.txt"
+
       - name: Checkout the Brain
+        if: ${{ !endsWith(env.JOB, '.ts') }}
         uses: actions/checkout@v7
         with:
           repository: Rocky-GPT/rockygpt-brain
@@ -46,16 +70,19 @@ jobs:
           path: before
 
       - name: Setup Python
+        if: ${{ !endsWith(env.JOB, '.ts') }}
         uses: actions/setup-python@v6
         with:
           python-version: '3.13'
 
       - name: Install the Brain
+        if: ${{ !endsWith(env.JOB, '.ts') }}
         run: |
           pip install --quiet --require-hashes -r brain/requirements.lock
           pip install --quiet --no-deps -e './brain[graph]'
 
       - name: Download the live graph (read only)
+        if: ${{ !endsWith(env.JOB, '.ts') }}
         env:
           BRAIN_GRAPH_STORE_PREFIX: ${{ env.GRAPH_PREFIX || 'brain-graph/' }}
           BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
@@ -66,6 +93,7 @@ jobs:
         run: python -m rockygpt_brain.retrieval.graph_sync .published > /dev/null
 
       - name: Run the job
+        if: ${{ !endsWith(env.JOB, '.ts') }}
         env:
           BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OUT_DIR: ${{ github.workspace }}/out
