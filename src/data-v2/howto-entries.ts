@@ -71,9 +71,12 @@ export function pageInput(url: string, sections: readonly OfficeSection[]): stri
   return JSON.stringify({ page: url, sections: sections.map(section => ({ heading: section.heading, text: section.text })) });
 }
 
-/** The cache key of a page's entries: the prompt and the page's sections, so either changing reads it again. */
+/** The cache key of a page's entries: the prompt and the page's sections, so either changing reads it
+ * again. The sections' words count, not how they are spaced: a page published with its lines kept
+ * (11-18) holds the words it held on one line, and its entries stand. */
 export function entriesKey(url: string, sections: readonly OfficeSection[]): string {
-  return createHash('sha256').update(HOWTO_PROMPT).update(pageInput(url, sections)).digest('hex');
+  const words = sections.map(section => ({ heading: section.heading, text: section.text.replace(/\s+/g, ' ').trim() }));
+  return createHash('sha256').update(HOWTO_PROMPT).update(pageInput(url, words)).digest('hex');
 }
 
 const folded = (text: string) => text.normalize('NFKC').replace(/[‘’]/g, "'").replace(/[“”]/g, '"')

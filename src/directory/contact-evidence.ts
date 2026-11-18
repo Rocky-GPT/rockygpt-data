@@ -44,7 +44,8 @@ export interface ContactEvidence {
   fields: ContactField[];
 }
 
-export interface CapturedSection { heading: string; text: string; questions?: Array<{ question: string; answer: string }> }
+export interface CapturedSection { heading: string; text: string; shaped?: string;
+  questions?: Array<{ question: string; answer: string; shaped?: string }> }
 export interface CapturedPage {
   url: string; fetchedAt: string; sections: CapturedSection[];
   /** When the page says it was last changed, as an ISO time, when it says so. */

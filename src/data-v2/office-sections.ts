@@ -7,10 +7,31 @@
  * from the Registrar's pages, never from a search across the whole site.
  */
 import { createHash } from 'crypto';
-import { cutSections, type SkippedSection } from '../../ingestion/folder-sites';
+import fs from 'node:fs';
+import { cutSections, readSkippedSections, type SkippedSection } from '../../ingestion/folder-sites';
 import { type CapturedPage, type CapturedSection, pageKey } from '../directory/contact-evidence';
 
 export interface OfficeSection { heading: string; text: string }
+
+/** The reviewed site lists whose pages are published as sections: the student office sites, and
+ * (11-18, blind-miss step 7) the 27 school, program and center sites, whose 562 pages were
+ * downloaded every night but never searchable. */
+export const SECTION_SITE_FILES = ['src/reference/office-sites.json', 'src/reference/academic-sites.json'];
+
+/** The folders of those sites and their reviewed section cuts. */
+export function sectionSites(files: readonly string[] = SECTION_SITE_FILES): {
+  folders: Set<string>; cuts: Map<string, SkippedSection[]>;
+} {
+  const folders = new Set<string>();
+  const cuts = new Map<string, SkippedSection[]>();
+  for (const file of files) {
+    for (const site of (JSON.parse(fs.readFileSync(file, 'utf8')) as { sites: Array<{ folder: string }> }).sites) {
+      folders.add(site.folder);
+    }
+    for (const [key, cut] of readSkippedSections(file)) cuts.set(key, [...cuts.get(key) ?? [], ...cut]);
+  }
+  return { folders, cuts };
+}
 export interface OfficeSectionsPage {
   /** The page key: host and path, the same key the evidence checks use. */
   key: string;
@@ -50,11 +71,14 @@ export function siteFolder(url: string): string | null {
  */
 function faqItems(section: CapturedSection): OfficeSection[] {
   const asked = section.questions ?? [];
-  if (!asked.length) return [{ heading: section.heading, text: section.text }];
-  const first = section.text.indexOf(asked[0].question);
-  const intro = first > 0 ? section.text.slice(0, first).trim() : '';
+  // A section is published with its lines when the capture kept them (raw-collector shapedText):
+  // a schedule's rows stay rows, each under its own label (11-18 blind misses, root cause 9).
+  const body = section.shaped ?? section.text;
+  if (!asked.length) return [{ heading: section.heading, text: body }];
+  const first = body.indexOf(asked[0].question);
+  const intro = first > 0 ? body.slice(0, first).trim() : '';
   return [...intro ? [{ heading: section.heading, text: intro }] : [],
-    ...asked.map(entry => ({ heading: entry.question, text: entry.answer }))];
+    ...asked.map(entry => ({ heading: entry.question, text: entry.shaped ?? entry.answer }))];
 }
 
 /** The captured pages of the reviewed office sites, each with its sections less the cuts. */
