@@ -163,6 +163,15 @@ def main(argv: list[str] | None = None) -> int:
     print(f"{'ok   ' if library else 'FAIL '} must Library (Main Building) hours for {today}: "
           + ("; ".join(library) if library else "none cover today"))
 
+    # Dated closures the library's page lists ("Special Hours: Nov 25 - Nov 28: CLOSED"), read
+    # into the hours notes since 11-17. Report-only: the page lists none outside its breaks.
+    specials = sorted({part.strip() for name, collection, doc in held if collection == "campus_hours"
+                       and (name.lower() == LIBRARY or str(doc.get("name") or "").lower() == LIBRARY)
+                       for part in str(doc.get("notes") or "").split(". ")
+                       if part.strip().lower().startswith("special hours")})
+    print(f"{'ok   ' if specials else 'note '} library special hours: "
+          + ("; ".join(specials) if specials else "none in its hours notes"))
+
     # Hours no office holds reach no answer: on 11-17 the Multicultural Center's and the Veterans
     # Lounge's hours were collected but their offices, named from an old club list, were gone.
     held_hours = {str(doc.get("name") or "") for _, collection, doc in held
