@@ -465,8 +465,12 @@ export interface OfficeHoursPage {
     season?: string;
     /** The label is the page's term heading (TERM_HEADING), and the term it names is the season. */
     termHeading?: boolean;
+    /** The page's own term announcement; group 1 is the term ("Fall 2026"), used as the season. */
+    seasonFrom?: RegExp;
     /** Explicit date statement on the same source page; never the academic calendar. */
     starts?: RegExp;
+    /** The date statement is an announcement that comes and goes: without it the record is undated. */
+    startsOptional?: boolean;
     /** A reviewed service clause inside a longer paragraph; never another service's clock. */
     extract?: RegExp;
     /** Same-page qualifiers that must remain attached to the service schedule. */
@@ -516,9 +520,12 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         season: 'Early arrival period',
         applicabilityIssue: { status: 'unknown', reason: 'Residence Life early-arrival guidance does not establish dates for this ID-room timetable; do not assume it is the routine schedule.' } },
     { name: 'Nursing Programs Office', url: 'https://www.ramapo.edu/nursing/', label: /^Hours:/i },
-    // Different times on different days (read 2026-10-07).
+    // Different times on different days (read 2026-10-07). The term and the opening date come from
+    // the page's own announcement ("ANNOUNCEMENTS - Fall 2026", "The CRW will open on August 31 at
+    // 10 AM."), so a new term's announcement, or none, still reads.
     { name: 'Center for Reading and Writing', url: 'https://www.ramapo.edu/crw/', kind: 'week', label: /^Hours$/i,
-        season: 'Fall 2026', starts: /The CRW will open on (August) (31) at 10 AM\./i },
+        seasonFrom: /ANNOUNCEMENTS\s*-\s*((?:Fall|Spring|Summer|Winter)(?: Semester)? 20\d{2})/i,
+        starts: /The CRW will open on ([A-Z][a-z]+) (\d{1,2}) at \d{1,2}(?::\d{2})? ?[AP]\.?M\.?/i, startsOptional: true },
     { name: 'Center for Student Involvement', url: 'https://www.ramapo.edu/csi/', kind: 'week',
         label: /^CSI Hours of Operation$/i },
     { name: 'Roadrunner Central', url: 'https://www.ramapo.edu/csi/roadrunner-central/', kind: 'week',
@@ -630,8 +637,8 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         season: 'Fall & Spring Semester' },
     { name: 'The Village (Summer)', url: 'https://www.ramapo.edu/reslife/village/', kind: 'week', label: /^Summer Hours:$/i, season: 'Summer' },
     { name: 'Berrie Center Box Office', url: 'https://www.ramapo.edu/berriecenter/tickets-seating/', kind: 'week',
-        label: /^As of August 26, 2026 the Box Office is open:$/i,
-        starts: /As of (August) (26), (2026) the Box Office is open:/i },
+        label: /^As of [A-Z][a-z]+ \d{1,2}, 20\d{2} the Box Office is open:$/i,
+        starts: /As of ([A-Z][a-z]+) (\d{1,2}), (20\d{2}) the Box Office is open:/i },
     { name: 'Health Services (Fall)',
         url: 'https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/',
         label: /VMG will be open/i, season: 'Fall 2026' },
@@ -916,7 +923,7 @@ export function parseConflictingOfficeHours(name: string, label: RegExp, against
             season: 'Fall/Spring', source_statements: [first, second] } } } };
 }
 
-function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedAt: string): LocationHours {
+export function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedAt: string): LocationHours {
     let scheduleText = text;
     if (office.extract) {
         scheduleText = text.match(office.extract)?.[0] ?? '';
@@ -939,7 +946,9 @@ function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedA
         : office.kind === 'conflict' ? parseConflictingOfficeHours(office.name, office.label, office.against!, scheduleText)
         : office.kind === 'days-unstated' ? parseUnstatedDayHours(office.name, office.label, scheduleText)
         : parseOfficeHours(office.name, office.label, scheduleText, collectedAt, []);
-    const season = office.termHeading ? termOfHeading(scheduleText) : office.season;
+    const announced = office.seasonFrom ? text.match(office.seasonFrom)?.[1] : undefined;
+    const season = office.termHeading ? termOfHeading(scheduleText)
+        : announced ? announced.toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase()) : office.season;
     if (season) {
         record.normalization_metadata = { evidence: { schedule: {
             ...record.normalization_metadata?.evidence?.schedule, season,
@@ -957,9 +966,9 @@ function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedA
         if (!statement) throw new Error(`Reviewed service hours qualifier changed: ${office.name}`);
         record.notes += `. ${statement}`;
     }
-    if (office.starts) {
-        const statement = text.match(office.starts);
-        const year = statement?.[3] ?? text.match(/ANNOUNCEMENTS\s*-\s*Fall (20\d{2})/i)?.[1];
+    const statement = office.starts ? text.match(office.starts) : null;
+    if (office.starts && (statement || !office.startsOptional)) {
+        const year = statement?.[3] ?? announced?.match(/(20\d{2})$/)?.[1];
         if (!statement || !year) throw new Error(`Explicit opening date unavailable for ${office.name}`);
         const opened = new Date(`${statement[1]} ${statement[2]}, ${year} 12:00:00 GMT`);
         if (!Number.isFinite(opened.getTime())) throw new Error(`Invalid opening date for ${office.name}`);
