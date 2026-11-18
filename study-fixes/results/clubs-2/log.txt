@@ -1,0 +1,458 @@
+bytes 255952
+============================== 162442
+00w, https://www.ramapo.edu/stem-center/wp-content/uploads/sites/390/2024/04/Intranet-buttons.png 722w" sizes="(max-width: 316px) 100vw, 316px" /></p>
+<p><a href="https://ramapo.starfishsolutions.com/starfish-ops/instructor/index.html?tenantId=552" target="_blank" rel="noopener">Connect</a></p>
+<ul>
+<li>One-stop shopping for students seeking tutoring services</li>
+<li>Students can schedule appointments or view walk-in hours</li>
+<li><a href="https://www.ramapo.edu/connect/wp-content/uploads/sites/248/2023/10/Instructions-fot-student-STEM-Center-Appointments-Fa23.pdf" target="_blank" rel="noopener">Instructions</a> for scheduling STEM Center appointments in Connect</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div class="divider"><img decoding="async" src="/wp-content/themes/rcnjrd/images/icons/ramapo-arch-icom_rule.png" alt="Ramapo" /></div>
+<h2>FALL 2026 STEM CENTER TUTORING SCHEDULE</h2>
+<h3>BIOLOGY TUTORING</h3>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"><div class="accordions"></span></p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"><div class="item"><p class="question" tabindex="0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-plus fa-stack-1x fa-inverse"></i><i class="fa fa-minus fa-stack-1x fa-inverse"></i></span> Fundamentals of Biology I</p><div></span></p>
+<p class="isSelectedEnd"><strong>1-on-3 — Appointment Required through Connect</strong><br />
+Monday 4:15–6:15 PM — John Cutrone<br />
+Wednesday 12:00–1:00 PM — John Cutrone<br />
+Wednesday 1:00–3:00 PM — Demiana Ghattas<br />
+Friday 12:00–1:00 PM — Sultan Alhaddad<br />
+Friday 1:00–3:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><strong>Walk-in — No Appointment Required</strong><br />
+Monday 1:00–2:00 PM — Abdulrazag Alhaddad<br />
+Monday 7:00–8:00 PM — Zachary Martone<br />
+Wednesday 11:00 AM–12:00 PM — John Cutrone<br />
+Wednesday 3:00–4:00 PM — Demiana Ghattas<br />
+<span style="color: #800000">Thursday 10:00–11:00 AM — Abdulrazag Alhaddad on 11/19 ONLY</span><br />
+<span style="color: #800000"><span style="color: #000000">Thursday 1:00–2:00 PM — Abdulrazag Alhaddad</span> (cancelled on 11/19;rescheduled for 10-11am)<br />
+</span>Thursday 7:00–8:00 PM — Zachary Martone<br />
+Saturday 11:00 AM–1:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"></div></div></span></p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"><div class="item"><p class="question" tabindex="0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-plus fa-stack-1x fa-inverse"></i><i class="fa fa-minus fa-stack-1x fa-inverse"></i></span> Fundamentals of Biology II</p><div></span></p>
+<p class="isSelectedEnd"><strong>1-on-3 — Appointment Required through Connect</strong><br />
+Monday 4:15–6:15 PM — John Cutrone<br />
+Wednesday 12:00–1:00 PM — John Cutrone<br />
+Wednesday 1:00–3:00 PM — Demiana Ghattas<br />
+Friday 12:00–1:00 PM — Sultan Alhaddad<br />
+Friday 1:00–3:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><strong>Walk-in — No Appointment Required</strong><br />
+Monday 1:00–2:00 PM — Abdulrazag Alhaddad<br />
+Monday 7:00–8:00 PM — Zachary Martone<br />
+Wednesday 11:00 AM–12:00 PM — John Cutrone<br />
+Wednesday 3:00–4:00 PM — Demiana Ghattas<br />
+<span style="color: #800000">Thursday 10:00–11:00 AM — Abdulrazag Alhaddad on 11/19 ONLY</span><br />
+<span style="color: #800000"><span style="color: #000000">Thursday 1:00–2:00 PM — Abdulrazag Alhaddad</span> (cancelled on 11/19;rescheduled for 10-11am)</span><br />
+Thursday 7:00–8:00 PM — Zachary Martone<br />
+Saturday 11:00 AM–1:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"></div></div>
+============================== 162759
+pping for students seeking tutoring services</li>
+<li>Students can schedule appointments or view walk-in hours</li>
+<li><a href="https://www.ramapo.edu/connect/wp-content/uploads/sites/248/2023/10/Instructions-fot-student-STEM-Center-Appointments-Fa23.pdf" target="_blank" rel="noopener">Instructions</a> for scheduling STEM Center appointments in Connect</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div class="divider"><img decoding="async" src="/wp-content/themes/rcnjrd/images/icons/ramapo-arch-icom_rule.png" alt="Ramapo" /></div>
+<h2>FALL 2026 STEM CENTER TUTORING SCHEDULE</h2>
+<h3>BIOLOGY TUTORING</h3>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"><div class="accordions"></span></p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"><div class="item"><p class="question" tabindex="0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-plus fa-stack-1x fa-inverse"></i><i class="fa fa-minus fa-stack-1x fa-inverse"></i></span> Fundamentals of Biology I</p><div></span></p>
+<p class="isSelectedEnd"><strong>1-on-3 — Appointment Required through Connect</strong><br />
+Monday 4:15–6:15 PM — John Cutrone<br />
+Wednesday 12:00–1:00 PM — John Cutrone<br />
+Wednesday 1:00–3:00 PM — Demiana Ghattas<br />
+Friday 12:00–1:00 PM — Sultan Alhaddad<br />
+Friday 1:00–3:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><strong>Walk-in — No Appointment Required</strong><br />
+Monday 1:00–2:00 PM — Abdulrazag Alhaddad<br />
+Monday 7:00–8:00 PM — Zachary Martone<br />
+Wednesday 11:00 AM–12:00 PM — John Cutrone<br />
+Wednesday 3:00–4:00 PM — Demiana Ghattas<br />
+<span style="color: #800000">Thursday 10:00–11:00 AM — Abdulrazag Alhaddad on 11/19 ONLY</span><br />
+<span style="color: #800000"><span style="color: #000000">Thursday 1:00–2:00 PM — Abdulrazag Alhaddad</span> (cancelled on 11/19;rescheduled for 10-11am)<br />
+</span>Thursday 7:00–8:00 PM — Zachary Martone<br />
+Saturday 11:00 AM–1:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"></div></div></span></p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"><div class="item"><p class="question" tabindex="0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-plus fa-stack-1x fa-inverse"></i><i class="fa fa-minus fa-stack-1x fa-inverse"></i></span> Fundamentals of Biology II</p><div></span></p>
+<p class="isSelectedEnd"><strong>1-on-3 — Appointment Required through Connect</strong><br />
+Monday 4:15–6:15 PM — John Cutrone<br />
+Wednesday 12:00–1:00 PM — John Cutrone<br />
+Wednesday 1:00–3:00 PM — Demiana Ghattas<br />
+Friday 12:00–1:00 PM — Sultan Alhaddad<br />
+Friday 1:00–3:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><strong>Walk-in — No Appointment Required</strong><br />
+Monday 1:00–2:00 PM — Abdulrazag Alhaddad<br />
+Monday 7:00–8:00 PM — Zachary Martone<br />
+Wednesday 11:00 AM–12:00 PM — John Cutrone<br />
+Wednesday 3:00–4:00 PM — Demiana Ghattas<br />
+<span style="color: #800000">Thursday 10:00–11:00 AM — Abdulrazag Alhaddad on 11/19 ONLY</span><br />
+<span style="color: #800000"><span style="color: #000000">Thursday 1:00–2:00 PM — Abdulrazag Alhaddad</span> (cancelled on 11/19;rescheduled for 10-11am)</span><br />
+Thursday 7:00–8:00 PM — Zachary Martone<br />
+Saturday 11:00 AM–1:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"></div></div></span></p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"><div class="item"><p class="question" tabindex="0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-plus fa-stack-1x fa-inverse"></i><i class="fa fa-minus fa-sbrain_warm_failed step=procedures error=AttributeError
+
+============================== 163911
+sSelectedEnd"><strong>1-on-3 — Appointment Required through Connect</strong><br />
+Monday 4:15–6:15 PM — John Cutrone<br />
+Wednesday 12:00–1:00 PM — John Cutrone<br />
+Wednesday 1:00–3:00 PM — Demiana Ghattas<br />
+Friday 12:00–1:00 PM — Sultan Alhaddad<br />
+Friday 1:00–3:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><strong>Walk-in — No Appointment Required</strong><br />
+Monday 1:00–2:00 PM — Abdulrazag Alhaddad<br />
+Monday 7:00–8:00 PM — Zachary Martone<br />
+Wednesday 11:00 AM–12:00 PM — John Cutrone<br />
+Wednesday 3:00–4:00 PM — Demiana Ghattas<br />
+<span style="color: #800000">Thursday 10:00–11:00 AM — Abdulrazag Alhaddad on 11/19 ONLY</span><br />
+<span style="color: #800000"><span style="color: #000000">Thursday 1:00–2:00 PM — Abdulrazag Alhaddad</span> (cancelled on 11/19;rescheduled for 10-11am)<br />
+</span>Thursday 7:00–8:00 PM — Zachary Martone<br />
+Saturday 11:00 AM–1:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"></div></div></span></p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"><div class="item"><p class="question" tabindex="0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-plus fa-stack-1x fa-inverse"></i><i class="fa fa-minus fa-stack-1x fa-inverse"></i></span> Fundamentals of Biology II</p><div></span></p>
+<p class="isSelectedEnd"><strong>1-on-3 — Appointment Required through Connect</strong><br />
+Monday 4:15–6:15 PM — John Cutrone<br />
+Wednesday 12:00–1:00 PM — John Cutrone<br />
+Wednesday 1:00–3:00 PM — Demiana Ghattas<br />
+Friday 12:00–1:00 PM — Sultan Alhaddad<br />
+Friday 1:00–3:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><strong>Walk-in — No Appointment Required</strong><br />
+Monday 1:00–2:00 PM — Abdulrazag Alhaddad<br />
+Monday 7:00–8:00 PM — Zachary Martone<br />
+Wednesday 11:00 AM–12:00 PM — John Cutrone<br />
+Wednesday 3:00–4:00 PM — Demiana Ghattas<br />
+<span style="color: #800000">Thursday 10:00–11:00 AM — Abdulrazag Alhaddad on 11/19 ONLY</span><br />
+<span style="color: #800000"><span style="color: #000000">Thursday 1:00–2:00 PM — Abdulrazag Alhaddad</span> (cancelled on 11/19;rescheduled for 10-11am)</span><br />
+Thursday 7:00–8:00 PM — Zachary Martone<br />
+Saturday 11:00 AM–1:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"></div></div></span></p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"><div class="item"><p class="question" tabindex="0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-plus fa-stack-1x fa-inverse"></i><i class="fa fa-minus fa-stack-1x fa-inverse"></i></span> Genetics</p><div></span></p>
+<p class="isSelectedEnd"><strong>1-on-3 — Appointment Required through Connect</strong><br />
+Monday 4:15–6:15 PM — John Cutrone<br />
+Wednesday 12:00–1:00 PM — John Cutrone<br />
+Wednesday 1:00–3:00 PM — Demiana Ghattas<br />
+Friday 12:00–1:00 PM — Sultan Alhaddad<br />
+Friday 1:00–3:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><strong>Walk-in — No Appointment Required</strong><br />
+Monday 1:00–2:00 PM — Abdulrazag Alhaddad<br />
+Wednesday 11:00 AM–12:00 PM — John Cutrone<br />
+Wednesday 3:00–4:00 PM — Demiana Ghattas<br />
+Saturday 11:00 AM–1:00 PM — Ossiris Garcia</p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"></div></div></span></p>
+<p class="isSelectedEnd"><span class="text-token-text-primary cursor-text rounded-sm" data-placeholder-token="true"><div class="item"><p class="question" tabindex="0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-plus fa-stack-1x fa-inverse"></i><i class="fa fa-minus fa-stack-1x fa-inverse"></i></span> Cell and Molecular</p><div><
+release v2-20261118051419 questions 8
+FAILED 03-c ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/asyncio/threads.py", line 26, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4022, in _published_venues
+    return self._per_release("_venues_cache", key, read)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 1589, in _per_release
+    value = build()
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4007, in read
+    buildings = {venue["entity_id"]: places(venue["entity_id"])
+                                     ~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 3996, in places
+    facts = self.facts.get_office_facts(entity_id, ["offices"], key[0],
+                                        identity_hash=key[1])
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 3003, in get_office_facts
+    properties = canonical_properties(
+        rows,
+    ...<4 lines>...
+        now=now,
+    )
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in canonical_properties
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in <genexpr>
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+                                   ~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/projection.py", line 35, in clean
+    return " ".join(html.unescape(value).split())
+                    ^^^^^^^^^^^^^
+AttributeError: module 'html' has no attribute 'unescape' (consider renaming '/home/runner/work/rockygpt-data/rockygpt-data/data/study-fixes/html.py' since it has the same name as the standard library module named 'html' and prevents importing that standard library module)
+
+FAILED 01-c ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/asyncio/threads.py", line 26, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4022, in _published_venues
+    return self._per_release("_venues_cache", key, read)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 1589, in _per_release
+    value = build()
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4007, in read
+    buildings = {venue["entity_id"]: places(venue["entity_id"])
+                                     ~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 3996, in places
+    facts = self.facts.get_office_facts(entity_id, ["offices"], key[0],
+                                        identity_hash=key[1])
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 3003, in get_office_facts
+    properties = canonical_properties(
+        rows,
+    ...<4 lines>...
+        now=now,
+    )
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in canonical_properties
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in <genexpr>
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+                                   ~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/projection.py", line 35, in clean
+    return " ".join(html.unescape(value).split())
+                    ^^^^^^^^^^^^^
+AttributeError: module 'html' has no attribute 'unescape' (consider renaming '/home/runner/work/rockygpt-data/rockygpt-data/data/study-fixes/html.py' since it has the same name as the standard library module named 'html' and prevents importing that standard library module)
+
+FAILED 02-c ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/asyncio/threads.py", line 26, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4022, in _published_venues
+    return self._per_release("_venues_cache", key, read)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 1589, in _per_release
+    value = build()
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4007, in read
+    buildings = {venue["entity_id"]: places(venue["entity_id"])
+                                     ~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 3996, in places
+    facts = self.facts.get_office_facts(entity_id, ["offices"], key[0],
+                                        identity_hash=key[1])
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 3003, in get_office_facts
+    properties = canonical_properties(
+        rows,
+    ...<4 lines>...
+        now=now,
+    )
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in canonical_properties
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in <genexpr>
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+                                   ~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/projection.py", line 35, in clean
+    return " ".join(html.unescape(value).split())
+                    ^^^^^^^^^^^^^
+AttributeError: module 'html' has no attribute 'unescape' (consider renaming '/home/runner/work/rockygpt-data/rockygpt-data/data/study-fixes/html.py' since it has the same name as the standard library module named 'html' and prevents importing that standard library module)
+
+FAILED 04-c ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/asyncio/threads.py", line 26, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4022, in _published_venues
+    return self._per_release("_venues_cache", key, read)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 1589, in _per_release
+    value = build()
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4007, in read
+    buildings = {venue["entity_id"]: places(venue["entity_id"])
+                                     ~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 3996, in places
+    facts = self.facts.get_office_facts(entity_id, ["offices"], key[0],
+                                        identity_hash=key[1])
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 3003, in get_office_facts
+    properties = canonical_properties(
+        rows,
+    ...<4 lines>...
+        now=now,
+    )
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in canonical_properties
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in <genexpr>
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+                                   ~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/projection.py", line 35, in clean
+    return " ".join(html.unescape(value).split())
+                    ^^^^^^^^^^^^^
+AttributeError: module 'html' has no attribute 'unescape' (consider renaming '/home/runner/work/rockygpt-data/rockygpt-data/data/study-fixes/html.py' since it has the same name as the standard library module named 'html' and prevents importing that standard library module)
+
+FAILED 05-c ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/asyncio/threads.py", line 26, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4022, in _published_venues
+    return self._per_release("_venues_cache", key, read)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 1589, in _per_release
+    value = build()
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4007, in read
+    buildings = {venue["entity_id"]: places(venue["entity_id"])
+                                     ~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 3996, in places
+    facts = self.facts.get_office_facts(entity_id, ["offices"], key[0],
+                                        identity_hash=key[1])
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 3003, in get_office_facts
+    properties = canonical_properties(
+        rows,
+    ...<4 lines>...
+        now=now,
+    )
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in canonical_properties
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in <genexpr>
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+                                   ~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/projection.py", line 35, in clean
+    return " ".join(html.unescape(value).split())
+                    ^^^^^^^^^^^^^
+AttributeError: module 'html' has no attribute 'unescape' (consider renaming '/home/runner/work/rockygpt-data/rockygpt-data/data/study-fixes/html.py' since it has the same name as the standard library module named 'html' and prevents importing that standard library module)
+
+FAILED 06-c ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/asyncio/threads.py", line 26, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4022, in _published_venues
+    return self._per_release("_venues_cache", key, read)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 1589, in _per_release
+    value = build()
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4007, in read
+    buildings = {venue["entity_id"]: places(venue["entity_id"])
+                                     ~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 3996, in places
+    facts = self.facts.get_office_facts(entity_id, ["offices"], key[0],
+                                        identity_hash=key[1])
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 3003, in get_office_facts
+    properties = canonical_properties(
+        rows,
+    ...<4 lines>...
+        now=now,
+    )
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in canonical_properties
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in <genexpr>
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+                                   ~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/projection.py", line 35, in clean
+    return " ".join(html.unescape(value).split())
+                    ^^^^^^^^^^^^^
+AttributeError: module 'html' has no attribute 'unescape' (consider renaming '/home/runner/work/rockygpt-data/rockygpt-data/data/study-fixes/html.py' since it has the same name as the standard library module named 'html' and prevents importing that standard library module)
+
+FAILED 07-c ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/asyncio/threads.py", line 26, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4022, in _published_venues
+    return self._per_release("_venues_cache", key, read)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 1589, in _per_release
+    value = build()
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4007, in read
+    buildings = {venue["entity_id"]: places(venue["entity_id"])
+                                     ~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 3996, in places
+    facts = self.facts.get_office_facts(entity_id, ["offices"], key[0],
+                                        identity_hash=key[1])
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 3003, in get_office_facts
+    properties = canonical_properties(
+        rows,
+    ...<4 lines>...
+        now=now,
+    )
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in canonical_properties
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in <genexpr>
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+                                   ~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/projection.py", line 35, in clean
+    return " ".join(html.unescape(value).split())
+                    ^^^^^^^^^^^^^
+AttributeError: module 'html' has no attribute 'unescape' (consider renaming '/home/runner/work/rockygpt-data/rockygpt-data/data/study-fixes/html.py' since it has the same name as the standard library module named 'html' and prevents importing that standard library module)
+
+FAILED 08-c ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/asyncio/threads.py", line 26, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4022, in _published_venues
+    return self._per_release("_venues_cache", key, read)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 1589, in _per_release
+    value = build()
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 4007, in read
+    buildings = {venue["entity_id"]: places(venue["entity_id"])
+                                     ~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/engine.py", line 3996, in places
+    facts = self.facts.get_office_facts(entity_id, ["offices"], key[0],
+                                        identity_hash=key[1])
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 3003, in get_office_facts
+    properties = canonical_properties(
+        rows,
+    ...<4 lines>...
+        now=now,
+    )
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in canonical_properties
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/entity_facts.py", line 720, in <genexpr>
+    canonical_name_published = any(clean(row.get("name")) == registry_name for row in rows)
+                                   ~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/rockygpt-data/rockygpt-data/brain/src/rockygpt_brain/retrieval/projection.py", line 35, in clean
+    return " ".join(html.unescape(value).split())
+                    ^^^^^^^^^^^^^
+AttributeError: module 'html' has no attribute 'unescape' (consider renaming '/home/runner/work/rockygpt-data/rockygpt-data/data/study-fixes/html.py' since it has the same name as the standard library module named 'html' and prevents importing that standard library module)
+
+=== 01-c | wen does hillel meet
+--- by=None status=None sec=0.22 err=AttributeError read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=null
+
+
+=== 02-c | what time does the black student union meet
+--- by=None status=None sec=0.22 err=AttributeError read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=null
+
+
+=== 03-c | when does the investment club meet
+--- by=None status=None sec=0.19 err=AttributeError read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=null
+
+
+=== 04-c | where does the hiking club meet
+--- by=None status=None sec=0.03 err=AttributeError read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=null
+
+
+=== 05-c | what time is the poetry club
+--- by=None status=None sec=0.02 err=AttributeError read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=null
+
+
+=== 06-c | when does the gaming club meet n where
+--- by=None status=None sec=0.03 err=AttributeError read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=null
+
+
+=== 07-c | does the jewish student union have meetings
+--- by=None status=None sec=0.02 err=AttributeError read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=null
+
+
+=== 08-c | when do the dance team practice
+--- by=None status=None sec=0.03 err=AttributeError read: needs=None limit=None topic=None asked=None q=None general=None
+--- tools=[] path=None
+--- lookups=null
+
+
+TOTAL spent $0.0000 in 0 calls
