@@ -1,0 +1,102 @@
+# Temporary, on this work branch only: the one run of the 2026-11-18 blind set (77 questions).
+# Dan said "run" 2026-11-18 13:33Z. Production's Brain (main) answers the frozen set once against
+# the live graph file (read only), two questions at a time, capped at $0.40. A free dry pass on
+# five questions runs first. Rows are committed to this branch for grading. Never merged.
+name: Study blind set 2026-11-18
+
+on:
+  push:
+    branches: [claude/project-thread-7ls37i]
+    paths: ['.github/workflows/study-blind-1118.yml', 'blind1118/blind.py']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: study-blind-1118
+  cancel-in-progress: false
+
+jobs:
+  ask:
+    name: Blind 77 (live)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout the Brain
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: main
+          path: brain
+          fetch-depth: 0
+
+      - name: Checkout the frozen blind set
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-evals
+          ref: da5c0c547ab4415a98651d06c70a07d708bfa0aa
+          path: evals
+          sparse-checkout: blind-2026-11-18
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install the Brain
+        run: |
+          pip install --quiet --require-hashes -r brain/requirements.lock
+          pip install --quiet --no-deps -e './brain[graph]'
+
+      - name: Download the live graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: python -m rockygpt_brain.retrieval.graph_sync .published > /dev/null
+
+      - name: Checkout this branch's test script
+        uses: actions/checkout@v7
+        with:
+          path: data
+
+      - name: Dry pass, no model calls (5 questions)
+        env:
+          DRY: '1'
+          LIMIT: '5'
+          ARMS: live
+          AT_ONCE: '2'
+          ROWS: '0'
+          QUESTIONS: ${{ github.workspace }}/evals/blind-2026-11-18/questions-frozen.json
+          OUT: ${{ github.workspace }}/dry.json
+        run: set -o pipefail; python data/blind1118/blind.py 2>&1 | grep -v '^provider_failure\|^brain_'
+
+      - name: Ask the 77 questions once
+        env:
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DRY: '0'
+          CAP_USD: '0.40'
+          ARMS: live
+          TRIES: '1'
+          AT_ONCE: '2'
+          ROWS: '0'
+          QUESTIONS: ${{ github.workspace }}/evals/blind-2026-11-18/questions-frozen.json
+          OUT: ${{ github.workspace }}/blind-live.json
+        run: set -o pipefail; python data/blind1118/blind.py 2>&1 | grep -v '^provider_failure\|^brain_'
+
+      - name: Commit the rows to this branch
+        run: |
+          cd data
+          mkdir -p blind1118/results
+          cp "$GITHUB_WORKSPACE/blind-live.json" blind1118/results/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add blind1118/results
+          git commit -m "Study rows: blind 2026-11-18 live"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin claude/project-thread-7ls37i && git push origin HEAD:claude/project-thread-7ls37i && break
+            sleep $((i * 5))
+          done
