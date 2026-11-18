@@ -1,0 +1,59 @@
+release v2-20261118051419
+International Business BA: ['Tracks - Select 1 and Complete 3 Courses']
+  NO PLAN: SB-BA-Matric Undeclared
+  NO PLAN: SB-BS-Matric Undeclared
+Communication Arts BA: ['Digital Journalism and Writing Concentration', 'Global Communication and Media Concentration']
+  NO PLAN: Communication Arts BA
+Filmmaking BA: ['Directing Concentration', 'Postproduction Concentration', 'Screenwriting Concentration']
+  NO PLAN: Filmmaking BA
+Music BA: ['Music Education Concentration', 'Music Industry Concentration', 'Music Performance Concentration', 'Music Production Concentration', 'Music Studies Concentration']
+  NO PLAN: Music BA
+Theater and Film BA: ['Acting Concentration', 'Production/Design Concentration', 'Theater Studies Concentration']
+  NO PLAN: Theater and Film BA
+Visual Arts BA: ['Art History Concentration', 'Art Therapy Joint Degree Option', 'Drawing and Painting Concentration', 'Electronic Arts and Animation Concentration', 'Photography Concentration', 'Sculpture Concentration']
+  NO PLAN: Visual Arts BA
+Visual Communication Design BA: ['Game Design and Immersive Media Concentration', 'Graphic Design Concentration', 'Motion and Interaction Design Concentration']
+  NO PLAN: Visual Communication Design BA
+  NO PLAN: Africana Studies BA
+  NO PLAN: American Studies BA
+English  & Literary Studies BA: ['Creative Writing Concentration', 'Specialized Studies Concentration', 'Teacher Education Track', 'Teacher Education Track with Creative Writing Concentration', 'Teacher Education Track with Specialized Studies Concentration']
+  NO PLAN: English  & Literary Studies BA
+  NO PLAN: History BA
+  NO PLAN: International Studies BA
+  NO PLAN: Philosophy BA
+  NO PLAN: Political Science BA
+  NO PLAN: Spanish Language Studies BA
+  NO PLAN: Elementary Education BS
+Law and Society BA: ['Criminal Justice Concentration', 'Social Justice Concentration']
+  NO PLAN: Law and Society BA
+  NO PLAN: Neuroscience BS
+  NO PLAN: Psychology BA
+Social Science BA: ['Community Mental Health Concentration', 'Education Studies Concentration', 'Ethnicity and Race Studies Concentration', 'Gender and Sexuality Studies Concentration', 'Labor, Work, and Organizations Concentration', 'Society and Culture Concentration - for Degree Completion Program students only']
+  NO PLAN: Social Science BA
+  NO PLAN: Social Work BSW
+Social Work MSW: ['MSW Advanced Standing Track - 30 credit program', 'MSW Traditional Track - 60 credit program']
+Sociology BA: ['Criminology Concentration', 'Social Inequality Concentration']
+  NO PLAN: Sociology BA
+  NO PLAN: Sustainability BA
+  NO PLAN: Biochemistry BS
+Bioinformatics BS: ['Organic Chemistry Requirement - Select 1 Option']
+  NO PLAN: Bioinformatics BS
+Biology BS: ['Organic Chemistry Requirement - Select 1 Option']
+  NO PLAN: Biology BS
+  NO PLAN: Chemistry BS
+  NO PLAN: Clinical Lab Sciences BS
+  NO PLAN: Computer Science BS
+  NO PLAN: Cybersecurity BS
+  NO PLAN: Data Science BS
+  NO PLAN: Engineering Physics BS
+  NO PLAN: Environmental Science BS
+  NO PLAN: Healthcare Administration BS
+Mathematics BS: ['Teacher Education Track', 'Traditional Track']
+  NO PLAN: Mathematics BS
+Natural Sciences BS: ['Business Studies Concentration', 'Life Sciences Concentration', 'Physical Sciences Concentration', 'Public Policy/Administration Concentration', 'Science Journalism Concentration', 'Science and Society Concentration']
+  NO PLAN: Natural Sciences BS
+  NO PLAN: Nursing Accelerated BSN
+  NO PLAN: Nursing Generic BSN
+  NO PLAN: Nursing RN to BSN
+  NO PLAN: Interdisciplinary Studies BA
+words: {'track': 8, 'concentration': 39, 'option': 3} | programs with plans: 7 | bachelor's without: 41
