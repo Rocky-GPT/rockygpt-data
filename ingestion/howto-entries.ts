@@ -14,9 +14,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import pLimit from 'p-limit';
 import { writeJsonFile, writeRawFileProvenance } from './pipeline-utils';
-import { readSkippedSections } from './folder-sites';
 import { loadCapturedPages } from '../src/directory/contact-evidence';
-import { officeSectionPages, type OfficeSectionsPage } from '../src/data-v2/office-sections';
+import { officeSectionPages, sectionSites, type OfficeSectionsPage } from '../src/data-v2/office-sections';
 import { catalogPolicyPages, type CatalogPoliciesCapture } from '../src/data-v2/catalog-policies';
 import { HOWTO_PROMPT, HOWTO_SCHEMA, entriesKey, pageInput, verifiedEntries, type HowtoEntry } from '../src/data-v2/howto-entries';
 
@@ -30,10 +29,9 @@ export interface HowtoCapture {
 
 /** The pages publish writes to office_sections, built the same way. */
 export function howtoPages(): OfficeSectionsPage[] {
-  const sites = JSON.parse(fs.readFileSync('src/reference/office-sites.json', 'utf8')).sites as Array<{ folder: string }>;
-  const officeFolders = new Set<string>(sites.map(site => site.folder));
+  const { folders: officeFolders, cuts } = sectionSites();
   const catalog = JSON.parse(fs.readFileSync('data/raw/catalog-policies.raw.json', 'utf8')) as CatalogPoliciesCapture;
-  return [...officeSectionPages(loadCapturedPages(), officeFolders, readSkippedSections('src/reference/office-sites.json')),
+  return [...officeSectionPages(loadCapturedPages(), officeFolders, cuts),
     ...catalogPolicyPages(catalog)];
 }
 

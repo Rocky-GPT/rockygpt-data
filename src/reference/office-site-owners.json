@@ -4,7 +4,10 @@
     "captured pages are also linked to this office (compile-campus-identities.ts). The evidence quote",
     "is the site's own words naming the office; the publish re-checks it against the capture and",
     "stops when it is gone. Reviewed October 19, 2026 against the October 15 capture. Folders where",
-    "two offices are plausible, a college-wide site, or an office not in the graph have no owner."
+    "two offices are plausible, a college-wide site, or an office not in the graph have no owner.",
+    "School and program sites (academic-sites.json) were added 2026-11-18 (blind-miss step 7):",
+    "their pages publish as sections, and a page no office or topic links is never read. Each owner",
+    "was checked against the 2026-11-18 05:11Z archived capture."
   ],
   "reviewed_on": "2026-10-19",
   "sites": [
@@ -224,6 +227,90 @@
       "evidence_url": "https://www.ramapo.edu/adult-students/contacts/",
       "evidence_quote": "Ramapo College Office of Admissions Nora McCarthy Adult Transfer Specialist",
       "note": "Added 2026-10-20 by Claude under Dan's standing goal (how-to answers solid), not reviewed by him: every captured Adult Students page carries the Office of Admissions block, and its Contacts page lists the Admissions adult transfer specialist first. The site's FAQ (attendance set by each instructor; who to contact) was unreachable because the folder linked to no office. Caveat: the FAQ also names other offices (Student Success, Reading and Writing, Degree Completion Program); those are said as that page says them."
+    },
+    {
+      "folder": "dnp",
+      "owner": "Graduate Admissions",
+      "evidence_url": "https://www.ramapo.edu/dnp/faqs/",
+      "evidence_quote": "Ramapo College Office of Graduate Admissions",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The Doctor of Nursing Practice site: every page of this graduate program's site carries the 'Ramapo College Office of Graduate Admissions' contact block (McBride House, graduate@ramapo.edu). The program director named on the site is said as the pages say it. Caveat: its team page also lists the Nursing Programs contacts."
+    },
+    {
+      "folder": "mase",
+      "owner": "Graduate Admissions",
+      "evidence_url": "https://www.ramapo.edu/mase/",
+      "evidence_quote": "Ramapo College Office of Graduate Admissions",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The MA in Special Education site: every page of this graduate program's site carries the 'Ramapo College Office of Graduate Admissions' contact block (McBride House, graduate@ramapo.edu). The program director named on the site is said as the pages say it."
+    },
+    {
+      "folder": "mba",
+      "owner": "Graduate Admissions",
+      "evidence_url": "https://www.ramapo.edu/mba/faqs/",
+      "evidence_quote": "Ramapo College Office of Graduate Admissions",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The MBA site: every page of this graduate program's site carries the 'Ramapo College Office of Graduate Admissions' contact block (McBride House, graduate@ramapo.edu). The program director named on the site is said as the pages say it. The program is hosted by the Anisfield School of Business."
+    },
+    {
+      "folder": "mpp",
+      "owner": "Graduate Admissions",
+      "evidence_url": "https://www.ramapo.edu/mpp/",
+      "evidence_quote": "Ramapo College Office of Graduate Admissions",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The Master of Public Policy site: every page of this graduate program's site carries the 'Ramapo College Office of Graduate Admissions' contact block (McBride House, graduate@ramapo.edu). The program director named on the site is said as the pages say it."
+    },
+    {
+      "folder": "msac",
+      "owner": "Graduate Admissions",
+      "evidence_url": "https://www.ramapo.edu/msac/faqs/",
+      "evidence_quote": "Ramapo College Office of Graduate Admissions",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The MS in Accounting site: every page of this graduate program's site carries the 'Ramapo College Office of Graduate Admissions' contact block (McBride House, graduate@ramapo.edu). The program director named on the site is said as the pages say it."
+    },
+    {
+      "folder": "msn",
+      "owner": "Graduate Admissions",
+      "evidence_url": "https://www.ramapo.edu/msn/",
+      "evidence_quote": "Ramapo College Office of Graduate Admissions",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The MS in Nursing site: every page of this graduate program's site carries the 'Ramapo College Office of Graduate Admissions' contact block (McBride House, graduate@ramapo.edu). The program director named on the site is said as the pages say it."
+    },
+    {
+      "folder": "mals",
+      "owner": "Graduate Admissions",
+      "evidence_url": "https://www.ramapo.edu/mals/",
+      "evidence_quote": "Any questions or inquiries may be referred to the Office of Graduate Admissions",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The MA in Liberal Studies site, which says it is not accepting applications for future semesters and sends questions to Graduate Admissions."
+    },
+    {
+      "folder": "dmc",
+      "owner": "Graduate Admissions",
+      "evidence_url": "https://www.ramapo.edu/dmc/faq/",
+      "evidence_quote": "Email us at graduate@ramapo.edu",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The Center for Data, Mathematical and Computational Sciences site is mostly its MS programs (Applied Mathematics, Computer Science, Data Science) and their graduate certificates; its FAQ sends questions to Graduate Admissions. Caveat: its community projects and ROADS scholarship pages name the center's director (Scott Frees) instead, and are said as written."
+    },
+    {
+      "folder": "social-work",
+      "owner": "School of Social Sciences and Social Work Office",
+      "evidence_url": "https://www.ramapo.edu/social-work/bsw/curriculum/",
+      "evidence_quote": "Social work students also must complete a School of Social Sciences and Social Work (SSSW) core curriculum",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The Social Work Program (BSW and MSW) is in the School of Social Sciences and Social Work, as its curriculum page says. Caveat: MSW admission questions go to graduate@ramapo.edu, as its FAQ says."
+    },
+    {
+      "folder": "te",
+      "owner": "School of Arts, Humanities, and Education Office",
+      "evidence_url": "https://www.ramapo.edu/te/post-baccalaureate-programs/",
+      "evidence_quote": "The Teacher Education Program at Ramapo College of New Jersey is offered through the Susan and Nick Vallario School of Arts, Humanities, and Education",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The Teacher Education and Certification Program. Caveat: two of its older pages still say the School of Social Science and Human Services (the name before the schools merged); the post-baccalaureate page gives the current school. Its own offices (Teacher Education and Certification, Clinical Experiences) are not in the graph, so their contacts are said as the pages give them."
+    },
+    {
+      "folder": "sabrincenter",
+      "owner": "Anisfield School of Business",
+      "evidence_url": "https://www.ramapo.edu/sabrincenter/about-the-center/",
+      "evidence_quote": "the Sabrin Center for Free Enterprise in the Anisfield School of Business",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: The Sabrin Center for Free Enterprise is a center of the Anisfield School of Business, as its About page says."
+    },
+    {
+      "folder": "scholarsday",
+      "owner": "Office of the Provost",
+      "evidence_url": "https://www.ramapo.edu/scholarsday/",
+      "evidence_quote": "Sponsored by the Office of the Provost",
+      "note": "Added 2026-11-18 by Claude under Dan's go on the blind-miss fix plan (step 7), not reviewed by him: Scholars' Day is sponsored by the Office of the Provost, as its home page says."
     }
   ]
 }

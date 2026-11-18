@@ -16,11 +16,11 @@ import { normalizeOpeningHours } from '../../src/data-v2/opening-hours';
 import { courseSubjectsInput } from '../../src/data-v2/course-subjects';
 import { validateCampusIdentities, type CampusIdentities } from '../../src/data-v2/campus-identities';
 import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
-import { checkSiteOwners, officeSectionPages, withoutSiteFrame, type SiteOwners } from '../../src/data-v2/office-sections';
+import { checkSiteOwners, officeSectionPages, sectionSites, withoutSiteFrame, type SiteOwners } from '../../src/data-v2/office-sections';
 import { pageEntries, readHowtoCapture } from '../../ingestion/howto-entries';
 import { catalogPolicyPages, checkCatalogPoliciesOwner, type CatalogPoliciesCapture,
   type CatalogPoliciesOwner } from '../../src/data-v2/catalog-policies';
-import { pageKey as folderPageKey, readSkippedSections } from '../../ingestion/folder-sites';
+import { pageKey as folderPageKey } from '../../ingestion/folder-sites';
 import { pagesLeftOut } from '../../ingestion/page-check';
 import { dietaryLabels } from '../../src/data-v2/dietary-labels';
 import { seasonalPublicationRows } from '../../src/data-v2/dining-seasons';
@@ -244,15 +244,14 @@ async function insertStructured(
   }
   // What each office's own site says, page by page, for "how do I" questions. The compile links
   // an office to the pages of the folder its reviewed website names.
-  const officeSites = readJson<{ sites: Array<{ folder: string }> }>('src/reference/office-sites.json').sites;
-  const officeFolders = new Set(officeSites.map(site => site.folder));
+  const { folders: officeFolders, cuts: sectionCuts } = sectionSites();
   const capturedPages = loadCapturedPages();
   // Reviewed owners of sites no website claim names: their quotes must still be on the pages.
   checkSiteOwners(readJson<SiteOwners>('src/reference/office-site-owners.json'), capturedPages, officeFolders);
   // The how-to entries a model listed from each page, used only when read from this very content.
   // Entries were listed from the whole page; the page's sections are published less the site frame.
   const howto = readHowtoCapture();
-  const officePages = officeSectionPages(capturedPages, officeFolders, readSkippedSections('src/reference/office-sites.json'));
+  const officePages = officeSectionPages(capturedPages, officeFolders, sectionCuts);
   const unframed = new Map(withoutSiteFrame(officePages).map(page => [page.key, page]));
   // Pages the last page check called clear cases (a test copy, a past event, out of date, a
   // placeholder, "not found" or a login page, 90% sure or more) are not published; the review

@@ -38,6 +38,10 @@ test('a quote matches a page that writes its links with their addresses in brack
 test('a page is read again when its sections or the instructions change', () => {
   assert.equal(entriesKey('u', sections), entriesKey('u', sections));
   assert.notEqual(entriesKey('u', sections), entriesKey('u', [sections[0]]));
+  // Its words count, not their spacing: a page published with its lines kept is not read again.
+  const lined = sections.map(section => ({ ...section, text: section.text.replace(/\. /g, '.\n') }));
+  assert.ok(lined.some((section, k) => section.text !== sections[k].text));
+  assert.equal(entriesKey('u', lined), entriesKey('u', sections));
 });
 
 test('a page has entries only when the model read this very content', async () => {
