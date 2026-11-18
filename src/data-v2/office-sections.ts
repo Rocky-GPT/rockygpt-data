@@ -50,11 +50,14 @@ export function siteFolder(url: string): string | null {
  */
 function faqItems(section: CapturedSection): OfficeSection[] {
   const asked = section.questions ?? [];
-  if (!asked.length) return [{ heading: section.heading, text: section.text }];
-  const first = section.text.indexOf(asked[0].question);
-  const intro = first > 0 ? section.text.slice(0, first).trim() : '';
+  // A section is published with its lines when the capture kept them (raw-collector shapedText):
+  // a schedule's rows stay rows, each under its own label (11-18 blind misses, root cause 9).
+  const body = section.shaped ?? section.text;
+  if (!asked.length) return [{ heading: section.heading, text: body }];
+  const first = body.indexOf(asked[0].question);
+  const intro = first > 0 ? body.slice(0, first).trim() : '';
   return [...intro ? [{ heading: section.heading, text: intro }] : [],
-    ...asked.map(entry => ({ heading: entry.question, text: entry.answer }))];
+    ...asked.map(entry => ({ heading: entry.question, text: entry.shaped ?? entry.answer }))];
 }
 
 /** The captured pages of the reviewed office sites, each with its sections less the cuts. */
