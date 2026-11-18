@@ -12,6 +12,14 @@ import { writeJsonFile, writeRawProvenance } from './pipeline-utils';
 import { replayRawSourceCapture, type RawSourceCaptureV1 } from './raw-collector';
 import { validateRawDatasetV1 } from './raw-types';
 
+/**
+ * The page datasets whose collectors keep each page's HTML beside its parsed copy (the
+ * `-sources` twin). Every build reads them again with this checkout's reader (replayPageDatasets),
+ * so a reader change reaches every page at once, not only the sources collected since.
+ */
+export const PAGE_DATASETS = ['transportation', 'directory', 'reviewed-contacts', 'housing', 'health', 'counseling',
+  'safety', 'major-page-links', 'office-pages', 'academic-sites'] as const;
+
 export function replayRaw(name: string, rawDir = path.join(process.cwd(), 'data', 'raw')): number {
   const read = (file: string): unknown => JSON.parse(fs.readFileSync(path.join(rawDir, file), 'utf8'));
   const original = validateRawDatasetV1(read(`${name}.raw.json`));
@@ -27,6 +35,16 @@ export function replayRaw(name: string, rawDir = path.join(process.cwd(), 'data'
   writeRawProvenance(name, { fetchedAt: provenance.fetchedAt, sourceUrl: provenance.sourceUrl,
     recordCount: provenance.recordCount, payload: JSON.parse(fs.readFileSync(path.join(rawDir, `${name}.raw.json`), 'utf8')) }, rawDir);
   return replayed.pages.length;
+}
+
+/**
+ * Read every page dataset again from its saved HTML (replayRaw), before any reader of the parsed
+ * pages runs. A source that was not collected tonight, or was collected by a run that could not
+ * publish, otherwise keeps the sections an older reader made: on November 18, 2026 the Registrar
+ * page's staff cards kept a bold-name carry a later fix had removed, and four people lost their room.
+ */
+export function replayPageDatasets(rawDir = path.join(process.cwd(), 'data', 'raw')): string[] {
+  return PAGE_DATASETS.map(name => `${name}: ${replayRaw(name, rawDir)} pages read again from the saved HTML.`);
 }
 
 if (process.argv[1]?.endsWith('replay-raw.ts')) {
