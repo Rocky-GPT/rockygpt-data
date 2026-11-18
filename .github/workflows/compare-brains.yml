@@ -148,7 +148,22 @@ jobs:
           cd evals/compare
           export SET="$GITHUB_WORKSPACE/evals/$SET"
           "$GITHUB_WORKSPACE/tools/node_modules/.bin/promptfoo" eval -c promptfooconfig.yaml \
-            --repeat "$REPEAT" --no-cache --no-table --no-write -o "$GITHUB_WORKSPACE/results.json"
+            --repeat "$REPEAT" --no-cache --no-table --no-write -o "$GITHUB_WORKSPACE/results.json" \
+            || [ $? -eq 100 ]  # 100 = some answers graded wrong, which is a result, not a broken run
+
+      - name: Each answer and its grade
+        if: always()
+        run: |
+          python - <<'PY' | tee answers.txt
+          import json
+          data = json.load(open("results.json"))["results"]
+          for row in sorted(data.get("results", data), key=lambda r: (r["testCase"]["vars"]["id"], r["provider"].get("label", ""))):
+              answer = ((row.get("response") or {}).get("output") or row.get("error") or "")
+              reason = (row.get("gradingResult") or {}).get("reason") or ""
+              print(f"{row['testCase']['vars']['id']} {row['provider'].get('label')}: {'PASS' if row['success'] else 'FAIL'}")
+              print("  answer:", " ".join(str(answer).split())[:400])
+              print("  grade: ", " ".join(str(reason).split())[:400])
+          PY
 
       - name: Old vs new, paired
         if: always()
@@ -169,5 +184,6 @@ jobs:
             results.json
             summary.json
             paired.txt
+            answers.txt
             brain-*.log
           retention-days: 30
