@@ -13,7 +13,6 @@ import { normalizeMenuWeek } from '../../ingestion/menu-data';
 import { parseEventStart } from '../../src/data-v2/event-time';
 import { berrieEventId } from '../../src/berrie-event-url';
 import { normalizeOpeningHours } from '../../src/data-v2/opening-hours';
-import { calendarConcept } from '../../src/data-v2/calendar-concepts';
 import { courseSubjectsInput } from '../../src/data-v2/course-subjects';
 import { validateCampusIdentities, type CampusIdentities } from '../../src/data-v2/campus-identities';
 import { insertCampusIdentityArtifacts, verifyIdentityContinuity } from '../campus-identity-artifacts';
@@ -317,26 +316,6 @@ async function insertStructured(
     }
   }
 
-  const terms = readJson<Array<{ name: string; events?: Array<{ date: string; title: string; description?: string }> }>>('data/normalized/calendar.json');
-  for (const term of terms) {
-    for (const event of term.events || []) {
-      const concept = calendarConcept(term.name, event);
-      const recordKey = `${term.name}:${event.date}:${event.title}`;
-      await client.query(
-        `INSERT INTO rockygpt_v2.academic_dates
-         (dataset_version_id, source_id, source_record_key, family, kind, term, term_id,
-          session, session_id, date_label, starts_at, title, description, collected_at, content_hash)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
-        [datasetId, sources.get('academic-calendar'), recordKey, concept.family, concept.kind,
-          term.name, concept.termId, concept.session || null, concept.sessionId || null, event.date,
-          concept.startsAt || null, cleanText(event.title), cleanText(event.description) || null,
-          collectedAtFor('academic-calendar'),
-          sha256(`${recordKey}:${concept.family}:${concept.kind}:${concept.sessionId || ''}:${concept.startsAt || ''}`)]
-      );
-      counts.academic_dates = (counts.academic_dates || 0) + 1;
-    }
-  }
-
   const events = readJson<JsonRecord[]>('data/normalized/events.json');
   for (const event of events) {
     const title = cleanText(event.title);
@@ -608,7 +587,7 @@ async function verifyStagingDataset(
     dining_hours: string;
     menu_items: string;
     shuttle_trips: string;
-    academic_dates: string;
+    calendar_dates: string;
     campus_events: string;
     clubs: string;
     programs: string;
@@ -621,7 +600,10 @@ async function verifyStagingDataset(
        (SELECT count(*) FROM rockygpt_v2.dining_hours WHERE dataset_version_id = $1::uuid) AS dining_hours,
        (SELECT count(*) FROM rockygpt_v2.menu_items WHERE dataset_version_id = $1::uuid) AS menu_items,
        (SELECT count(*) FROM rockygpt_v2.shuttle_trips WHERE dataset_version_id = $1::uuid) AS shuttle_trips,
-       (SELECT count(*) FROM rockygpt_v2.academic_dates WHERE dataset_version_id = $1::uuid) AS academic_dates,
+       (SELECT coalesce(sum(jsonb_array_length(term->'events')), 0) FROM rockygpt_v2.release_artifacts r,
+          jsonb_array_elements(CASE WHEN jsonb_typeof(r.payload) = 'array' THEN r.payload ELSE '[]'::jsonb END) term
+        WHERE r.dataset_version_id = $1::uuid AND r.artifact_key = 'calendar'
+          AND jsonb_typeof(term->'events') = 'array') AS calendar_dates,
        (SELECT count(*) FROM rockygpt_v2.campus_events WHERE dataset_version_id = $1::uuid) AS campus_events,
        (SELECT count(*) FROM rockygpt_v2.clubs WHERE dataset_version_id = $1::uuid) AS clubs,
        (SELECT count(*) FROM rockygpt_v2.programs WHERE dataset_version_id = $1::uuid) AS programs,
@@ -640,7 +622,8 @@ async function verifyStagingDataset(
     dining_hours: 7,
     menu_items: 1,
     shuttle_trips: 10,
-    academic_dates: 20,
+    // The calendar dates the graph reads come from the release's calendar artifact.
+    calendar_dates: 20,
     campus_events: 1,
     clubs: 100,
     programs: 50,
@@ -656,7 +639,7 @@ async function verifyStagingDataset(
     campus_contacts: string;
     clubs: string;
     programs: string;
-    academic_dates: string;
+    calendar_dates: string;
     howto_pages: string;
   }>(
     `SELECT
@@ -669,15 +652,18 @@ async function verifyStagingDataset(
         ON v.id = c.dataset_version_id WHERE v.status = 'active') AS clubs,
        (SELECT count(*) FROM rockygpt_v2.programs p JOIN rockygpt_v2.dataset_versions v
         ON v.id = p.dataset_version_id WHERE v.status = 'active') AS programs,
-       (SELECT count(*) FROM rockygpt_v2.academic_dates a JOIN rockygpt_v2.dataset_versions v
-        ON v.id = a.dataset_version_id WHERE v.status = 'active') AS academic_dates`
+       (SELECT coalesce(sum(jsonb_array_length(term->'events')), 0) FROM rockygpt_v2.release_artifacts r
+          JOIN rockygpt_v2.dataset_versions v ON v.id = r.dataset_version_id,
+          jsonb_array_elements(CASE WHEN jsonb_typeof(r.payload) = 'array' THEN r.payload ELSE '[]'::jsonb END) term
+        WHERE v.status = 'active' AND r.artifact_key = 'calendar'
+          AND jsonb_typeof(term->'events') = 'array') AS calendar_dates`
   );
   const previous = active.rows[0];
   const floors: Record<string, number> = {
     campus_contacts: 0.7,
     clubs: 0.7,
     programs: 0.8,
-    academic_dates: 0.7,
+    calendar_dates: 0.7,
   };
   for (const [key, ratio] of Object.entries(floors)) {
     const oldCount = Number(previous?.[key as keyof typeof previous] || 0);
