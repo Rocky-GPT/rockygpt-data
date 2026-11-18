@@ -1,0 +1,283 @@
+release v2-20261118051419 questions 30
+=== 01-s1 | lowkey nervous for my first college exam, where is the testing center
+--- by=code status=answered sec=1.8 err=None read: needs=[] limit=none topic=office asked=read q='Where is the testing center?' general=None
+Testing Center is in Laurel Hall, North. [1]
+
+Sources: [1](https://www.ramapo.edu/testing/)
+
+=== 02-s1 | kinda scared to ask but how do i drop a class
+--- by=one_call status=answered sec=6.45 err=None read: needs=[] limit=none topic=how_to asked=own_words q='How do I drop a class?' general=None
+It’s okay to ask. If you’re in the add/drop period, you can drop the course online through Web Self Service; courses dropped by the last day of Add/Drop won’t appear on your transcript. [17]
+
+During the 50% refund period, you can drop in Web Self Service or submit a 50% Drop Form to the Registrar. Check the academic calendar for the deadline. [17]
+
+After the refund period, you can withdraw through Web Self Service. The course will show a “W” on your transcript, there’s no refund, and you can’t withdraw after the published deadline. [20]
+
+Check the academic calendar for the dates: [https://www.ramapo.edu/academic-calendars/](https://www.ramapo.edu/academic-calendars/). Dropping or withdrawing can affect financial aid and other things, so it’s a good idea to seek advice from your instructor or academic advisor. [1]
+
+**Registrar**: Phone: (201) 684-7695. Email: reg@ramapo.edu. Office: D-224. [31]
+
+Sources: [1](https://catalog.ramapo.edu/quicklinks/academicpolicies#dropping-or-withdrawing-from-a-course1) [17](https://www.ramapo.edu/registrar/registrationinfo/) [20](https://www.ramapo.edu/registrar/withdrawing-leave-of-absence/) [31](https://www.ramapo.edu/campus-directory/)
+
+=== 03-s1 | wheres the testing center n do i need an appt 4 a makeup exam
+--- by=one_call status=answered sec=6.41 err=None read: needs=[] limit=none topic=how_to asked=read q='Where is the testing center, and do I need an appointment for a makeup exam?' general=None
+The Testing Center is on the Ramapo College campus in Mahwah, New Jersey. Parking information and directions are provided when you schedule your appointment. [3]
+Yes, you need to schedule an appointment for an exam. Choose Schedule Test; distance learning exams are available in person or remotely. [9]
+
+**Testing Center**: Phone: (201) 684-7441. Email: testing@ramapo.edu. Location: Laurel Hall, North. [21]
+
+Sources: [3](https://www.ramapo.edu/testing/clep/) [9](https://www.ramapo.edu/testing/schedule-test/) [21](https://www.ramapo.edu/campus-directory/)
+
+=== 04-s1 | transferring in next fall, how do i send my transcripts
+--- by=one_call status=answered sec=3.96 err=None read: needs=[] limit=none topic=how_to asked=own_words q='How do I send my transcripts?' general=None
+Have each college you attended send its official transcript directly to Admissions. It can be sent electronically to admissions@ramapo.edu or mailed to: Ramapo College of New Jersey, Attn: Admissions, 505 Ramapo Valley Road, Mahwah, NJ 07430. [2]
+
+If you are currently enrolled in college courses when you apply, submit your final transcript before enrolling. [2] If you have attempted fewer than 45 college credits, you also need to submit an official high school transcript. [2][5]
+
+For transcripts from outside the United States, submit a course-by-course evaluation from a current NACES member. [2]
+
+**Admissions**: Phone: (201) 684-7300. Email: admissions@ramapo.edu. Location: McBride House. [34]
+
+Sources: [2](https://www.ramapo.edu/undergraduate/transfer/admission-requirements/) [5](https://www.ramapo.edu/undergraduate/transfer/faqs/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== 05-s1 | ugh i always forget, when does the library close
+--- by=code status=answered sec=1.82 err=None read: needs=[] limit=none topic=office asked=read q='When does the library close?' general=None
+Sorry to hear that!
+
+Library (Main Building) hours: Monday to Thursday: 7:45am-12:00am; Friday: 7:45am-6:00pm; Saturday: 10:00am-6:00pm; Sunday: 12:00pm-12:00am. The page adds: "Fall Semester (Aug. 26 - Dec. 15, 2026). Special Hours: Nov 25 - Nov 28: CLOSED; Nov 29: 4:00pm-12:00am. Please note that the front doors will be locked fifteen minutes before closing time. Circulation services will also cease at that time to give the staff a chance to perform proper closing procedures." [1]
+
+Sources: [1](https://www.ramapo.edu/library/library-hours/)
+
+=== 06-s1 | my friend is transferring here, can she tour campus first
+--- by=one_call status=answered sec=5.02 err=None read: needs=[] limit=none topic=how_to asked=own_words q='Can my friend who is transferring here tour campus first?' general=None
+Yes. Ramapo offers on-campus tours on certain dates; register for a Campus Tour here: [https://apply.ramapo.edu/portal/campus-tour](https://apply.ramapo.edu/portal/campus-tour). [12] It also offers virtual tours and live, guided virtual tour dates. [11]
+
+**Admissions**: Phone: (201) 684-7300. Email: admissions@ramapo.edu. Location: McBride House. [28]
+
+Sources: [11](https://www.ramapo.edu/learn/explore/) [12](https://www.ramapo.edu/admitted-students/tours-events/) [28](https://www.ramapo.edu/campus-directory/)
+
+=== 07-s1 | i failed my calc midterm and idk what to do
+--- by=one_call status=answered sec=6.59 err=None read: needs=['school_trouble'] limit=none topic=how_to asked=own_words q='What should I do?' general='What should I do?'
+That's stressful, but one bad grade doesn't decide everything. Talking with your professor and an advisor soon can really help.
+
+**General answer** (from general knowledge, not Ramapo's pages): What’s going on? Tell me a little about the situation, and I’ll help you figure out a next step.
+
+A bad midterm doesn’t necessarily mean you’ve failed the course. If you need help with Calculus I, the STEM Center offers tutoring: 1-on-2 by appointment through Connect, Saturday 11:00 AM–12:00 PM with Olivia Pettinelli; 1-on-3 by appointment through Connect, Monday 9:00–10:00 AM with Eva Avagyan; Monday 4:00–5:00 PM with Catherine Bardzell; Tuesday 9:00–10:00 AM with Catherine Bardzell; Tuesday 12:00–1:00 PM with Mateo Roman; Wednesday 4:00–5:00 PM with Em Dickstein; Thursday 9:00–10:00 AM with Eva Avagyan; Friday 12:00–1:00 PM with Mateo Roman (Cancelled on 11/6). [21] The STEM Center is open to students to walk in and study. [23]
+
+If you failed the class, you can retake up to two classes with an F. To have the F removed from your transcript, fill out a Repeat Fail (RF) form with the Center for Student Success. After you retake the class, the new grade appears on your transcript in addition to the RF, and your GPA will be adjusted accordingly. [27] I don’t have verified information about what your midterm score means for your final course grade; your instructor is most likely to help.
+
+- **STEM Center**: Phone: Tutoring Coordinator – STEM Center (201) 684-7345; Director – STEM Center & Programs (201) 684-7774. Office: G-131. [30]
+- **Center for Student Success (Academic Advising)**: Phone: (201) 684-7441. Email: success@ramapo.edu. Office: D-207. [30]
+
+Sources: [21](https://www.ramapo.edu/stem-center/) [23](https://www.ramapo.edu/stem-center/) [27](https://www.ramapo.edu/studentsuccess/faq/) [30](https://www.ramapo.edu/campus-directory/)
+
+=== 08-s1 | im so homesick its my first semester
+--- by=read status=answered sec=1.53 err=None read: needs=['lonely'] limit=none topic=how_to asked=own_words q='' general=None
+That sounds really hard, and a lot of students feel this way, especially at first. You're not the only one.
+
+These offices can help:
+- **Counseling Center**: Phone: (201) 684-7522. Office: D-216. [1]
+- **Center for Student Involvement**: Phone: (201) 684-7593. Email: csi@ramapo.edu. Office: SC-202. [1]
+
+Sources: [1](https://www.ramapo.edu/campus-directory/)
+
+=== 09-s1 | my roommate keeps bringing people over at 3am and wont stop
+--- by=read status=answered sec=1.79 err=None read: needs=['roommate_trouble'] limit=none topic=how_to asked=own_words q='' general=None
+Roommate problems are really common, and they can be worked out. Your RA is a good first step.
+
+These offices can help:
+- **Housing & Residence Life**: Phone: (201) 684-7461. Email: reslife@ramapo.edu. [1]
+- **Ombuds Office**: Phone: (201) 684-7804. Email: jwoods1@ramapo.edu. [1]
+
+Sources: [1](https://www.ramapo.edu/campus-directory/)
+
+=== 10-s1 | i cant afford my textbooks this semester is there any help
+--- by=one_call status=answered sec=4.98 err=None read: needs=['money'] limit=none topic=how_to asked=read q="Is there any help if I can't afford my textbooks this semester?" general=None
+Money stress is really common, and you don't have to sort it out alone.
+
+Yes. If you receive financial aid that will create a credit balance on your College account, you may be eligible for a Book Advance to buy textbooks and course-related materials and supplies before aid is disbursed. First, go to the Office of Financial Aid to check eligibility. If approved, the advance is posted to your account; purchases can be made at the Bookstore the following day. You need valid picture ID. EOF students must first see their EOF counselor. [15]
+
+Ramapo also has the Follett Bookstore Scholarship for students with few financial resources to purchase books; bookstore staff select recipients. [26]
+
+Contact Financial Aid or Scholarships for help with these options.
+
+**Financial Aid**: Phone: (201) 684-7549. Email: finaid@ramapo.edu. Office: E-210. [29]
+
+This office can help:
+**Student Accounts**: Phone: (201) 684-7495. Email: studentaccts@ramapo.edu. Location: D-Wing, First Floor. [30]
+
+Sources: [15](https://www.ramapo.edu/finaid/fin-edu/) [26](https://www.ramapo.edu/scholarships/single/bookstore-scholarship/) [29](https://www.ramapo.edu/campus-directory/) [30](https://www.ramapo.edu/campus-directory/)
+
+=== 11-s1 | ive been really stressed n cant sleep, is there counseling
+--- by=one_call status=answered sec=4.53 err=None read: needs=['stress_or_sadness'] limit=none topic=how_to asked=own_words_spelled_out q='Is there counseling?' general=None
+I'm sorry you're going through that. It's okay to not be okay, and you don't have to handle it alone.
+
+Yes. Ramapo offers free, confidential individual counseling, in person or via telehealth. Counseling can help with stress, anxiety, and depressed moods. Call to schedule or stop by Counseling Services in D-216. [1][15]
+
+Free, immediate teletherapy and wellness programming are also available through Uwill. [9]
+
+For sleep, RISE Science is a sleep app available free to Ramapo students for four years upon signing up. [20]
+
+**Counseling Center**: Phone: (201) 684-7522. Office: D-216. [32]
+
+Sources: [1](https://www.ramapo.edu/counseling/) [9](https://www.ramapo.edu/counseling/uwill/) [15](https://www.ramapo.edu/counseling/faq/) [20](https://www.ramapo.edu/student-affairs/student-communications/mental-health-and-well-being-resources-fall-2026/) [32](https://www.ramapo.edu/campus-directory/)
+
+=== 12-g8 | how many cups are in a quart
+--- by=general status=answered sec=2.28 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general='How many cups are in a quart?'
+**General answer** (from general knowledge, not Ramapo's pages): There are 4 cups in a U.S. quart.
+
+=== 13-g8 | whats the difference between their there and theyre
+--- by=general status=answered sec=3.13 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general='What is the difference between “their,” “there,” and “they’re”?'
+**General answer** (from general knowledge, not Ramapo's pages): “Their” shows possession: “Their books are on the desk.” “There” refers to a place or introduces a statement: “Put it there”; “There is a book.” “They’re” is short for “they are”: “They’re ready.”
+
+=== 14-g8 | who would win a race, a cheetah or a horse
+--- by=general status=answered sec=4.11 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general='Who would win a race, a cheetah or a horse?'
+**General answer** (from general knowledge, not Ramapo's pages): In a short sprint, the cheetah would likely win—it’s built for explosive speed. Over a longer race, a horse would have the advantage; just for fun, it depends on the course!
+
+=== 15-g8 | tips for not being nervous during presentations?
+--- by=general status=answered sec=4.08 err=None read: needs=[] limit=none topic=how_to asked=own_words q='' general='Tips for not being nervous during presentations?'
+**General answer** (from general knowledge, not Ramapo's pages):
+- Practice aloud a few times, ideally with one person listening, so the opening feels familiar.
+- Take a slow breath before you begin, and pause between points; you don’t need to rush.
+- Use brief notes with key ideas rather than memorizing every word.
+- Look at a few friendly faces or just above the audience, and remember they’re there to hear your ideas—not judge every stumble.
+- If you lose your place, pause, check your notes, and continue.
+
+=== 16-g8 | how do i save money as a broke college student
+--- by=general status=answered sec=4.95 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general='How do I save money as a broke college student?'
+**General answer** (from general knowledge, not Ramapo's pages): Track spending for a week, then set a small weekly limit for flexible costs. Plan cheap meals, use a grocery list, and compare unit prices; cancel subscriptions you rarely use. Check for student discounts, borrow or buy used textbooks, and automate even a tiny savings transfer when money comes in. Avoid high-interest debt when you can, and focus first on essentials and bills.
+
+=== 17-g8 | how long do i boil eggs for hard boiled
+--- by=general status=answered sec=2.88 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general='How long should I boil eggs for hard-boiled eggs?'
+**General answer** (from general knowledge, not Ramapo's pages): For hard-boiled eggs, simmer them for about 10–12 minutes once the water is boiling. Cool them in an ice bath or cold water to stop cooking and make peeling easier.
+
+=== 18-g8 | whats a good way to memorize spanish vocab
+--- by=general status=answered sec=3.36 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general='What is a good way to memorize Spanish vocabulary?'
+**General answer** (from general knowledge, not Ramapo's pages): Use spaced repetition: review a small set of words today, then again tomorrow, in a few days, and a week later. Make flashcards with the Spanish word on one side and a short phrase or image on the other, and test yourself both ways. Practice using each new word in your own simple sentence so you remember how it works in context.
+
+=== 19-g8 | is it bad to pull an all nighter before an exam
+--- by=general status=answered sec=3.41 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general='Is it bad to pull an all-nighter before an exam?'
+**General answer** (from general knowledge, not Ramapo's pages): Usually, yes—an all-nighter can hurt attention, memory, and problem-solving, which you need for an exam. If you’re short on time, review the most important material, then get as much sleep as you can; even a shorter night is generally better than none.
+
+=== 20-g8 | best way to stay awake in an 8am class lol
+--- by=general status=answered sec=3.63 err=None read: needs=[] limit=none topic=how_to asked=own_words q='' general='What is the best way to stay awake in an 8 a.m. class?'
+**General answer** (from general knowledge, not Ramapo's pages): The most reliable fix is getting enough sleep the night before and keeping a consistent bedtime. In class, sit near the front, take notes, and sip water; a little daylight and a brief walk beforehand can also help. If you use caffeine, keep it moderate and avoid it late in the day so it doesn’t disrupt your next night’s sleep.
+
+=== 21-g8 | can u do my stats hw: find the mean of 4 6 8
+--- by=one_call status=answered sec=7.77 err=None read: needs=[] limit=homework topic=how_to asked=read q='Where can I get tutoring in statistics?' general=None
+I can't do homework, quizzes or tests for you, but I can help you find help on campus.
+
+The STEM Center lists tutoring for Elementary Probability and Statistics [2]. For appointment-required 1-on-3 tutoring, book through Connect. Walk-in tutoring is also available. Its page lists the times and tutors [2]. To sign up for a STEM Center appointment, follow the “Signing up for STEM Center Appointments” guide [7].
+
+The Office of Specialized Services lists free, no-appointment mathematics tutoring at G Wing, Room 131. Its schedule of tutors and courses is posted in the display case to the right of the G Wing, Room 131 entry door. Contact supervisor Prof. Sara Kuplinsky at skuplins@ramapo.edu; office G131A [4].
+
+TRiO tutoring requests use the Tutor Request Form. Discuss your idea with your professor first, if possible get recommended student names, and request a tutor between the 2nd and 6th week of the course, or in the first week of a summer course [5].
+
+- **STEM Center**: Phone: Tutoring Coordinator – STEM Center (201) 684-7345; Director – STEM Center & Programs (201) 684-7774. Office: G-131. [13]
+- **Office of Specialized Services**: Phone: (201) 684-7514. Email: oss@ramapo.edu. Location: C-Wing, Room 205. [13]
+
+Sources: [2](https://www.ramapo.edu/stem-center/) [4](https://www.ramapo.edu/oss/campus-resources/) [5](https://www.ramapo.edu/oss/trio-student-support-services/oss-tutoring/) [7](https://www.ramapo.edu/connect/students/) [13](https://www.ramapo.edu/campus-directory/)
+
+=== 22-g8 | write my essay on climate change for me
+--- by=one_call status=answered sec=3.79 err=None read: needs=[] limit=writing topic=how_to asked=read q='Where can I get help writing my essay on climate change?' general=None
+I can't write essays, statements or letters for you, but I can help you find help on campus.
+
+For one-on-one, face-to-face help writing your essay, contact the Center for Reading and Writing. It offers consultations to Ramapo College students on all academic levels and encourages students to seek reader responses from consultants. [11]
+
+The Center’s online writing resources include guides on prewriting, developing an argument and thesis, understanding an essay prompt, and writing in different disciplines. [5][6][7][8][10]
+
+**Center for Reading and Writing**: Phone: (201) 684-7557. Email: crw@ramapo.edu. Location: Peter P. Mercer Learning Commons, Room 420. Outreach Coordinator: LC-424; Developmental Writing Specialist: LC-425; Reading Specialist: LC-423. [34]
+
+Sources: [5](https://www.ramapo.edu/crw/student-res/) [6](https://www.ramapo.edu/crw/writing/) [7](https://www.ramapo.edu/crw/writing/) [8](https://www.ramapo.edu/crw/writing/) [10](https://www.ramapo.edu/crw/student-res/) [11](https://www.ramapo.edu/crw/faculty-res/) [34](https://www.ramapo.edu/campus-directory/)
+
+=== 23-g8 | is it ok to take advil and tylenol together
+--- by=read status=answered sec=1.62 err=None read: needs=['health'] limit=none topic=how_to asked=own_words q='' general=None
+I can't give medical advice, so please ask a doctor or pharmacist. If it's an emergency, call 911.
+
+This office can help:
+**Health Services**: Phone: (201) 684-7536. Location: Near the campus South Gate entrance at the corner of Route 202 and Hornbeam Road. [1]
+
+Sources: [1](https://www.ramapo.edu/campus-directory/)
+
+=== 24-g8 | whos gonna win the knicks game tonight
+--- by=read status=unavailable sec=1.48 err=None read: needs=[] limit=off_topic topic=how_to asked=own_words q='' general=None
+I only know about Ramapo College, so I can't help with that one. I can help with office hours and contacts, dining menus, the shuttle, events and clubs, programs and professors, and the academic calendar.
+
+=== 25-g8 | is pizza actually unhealthy lol n when does the atrium close tonight
+--- by=code status=answered sec=2.97 err=None read: needs=[] limit=off_topic topic=office asked=read q='When does the Atrium close tonight?' general='Is pizza actually unhealthy?'
+**General answer** (from general knowledge, not Ramapo's pages): Not inherently—it depends on the portion and toppings. Pizza can be high in sodium, saturated fat, and refined carbs, but adding vegetables and choosing a reasonable portion can make it fit into a balanced diet. What you eat overall and how often matters more than labeling one food “healthy” or “unhealthy.”
+
+The Atrium is open now (9:54am). The Atrium on Wednesday, November 18: 7:30am to 7:00pm. [1]
+
+Sources: [1](https://ramapo.sodexomyway.com/)
+
+=== 26-s3 | any comedy shows this wk n r they free
+--- by=one_call status=answered sec=5.61 err=None read: needs=[] limit=none topic=event asked=read q='Are there any comedy shows this week, and are they free?' general=None
+The calendar lists no event this week, Wednesday, November 18 to Sunday, November 22 that matches what you asked [1].
+
+Later on the calendar:
+
+Tuesday, November 24:
+- 8 PM to 11 PM: Open Mic Night (College Programming Board) [17]
+
+Saturday, February 6:
+- 2 PM to 3:15 PM: Puppy Pals Live! (Berrie Center) [18]
+
+All 49 events this week, Wednesday, November 18 to Sunday, November 22, the first 15 by time:
+
+Wednesday, November 18:
+- 11 AM to 11:45 AM: Writing about Research (Center for Reading and Writing) [2]
+- 11:45 AM to 2:15 PM: Service Opportunity: Technology Tutoring at the Mahwah Senior Center (Civic and Community Engagement Center) [3]
+- 12 PM to 1 PM: The Best Career Workshop Ever! (Accounting Club), at 505 Ramapo Valley Road, Mahwah, NJ 07430, United States [4]
+- 12 PM to 1 PM: First-Gen Takes Flight - Roukema Center for International Education (Roukema Center for International Education), at D-215 [5]
+- 12 PM to 1 PM: First-Gen Takes Flight 🌍 (First Generation Student Center), at D-215 [6]
+- 12 PM to 1 PM: Your Odyssey Starts Here: Study in Greece - Roukema Center for International Education (Roukema Center for International Education), at Fish Bowl [7]
+- 1 PM to 2 PM: Coffee & T Couch Talk: Paps with Pride (Women's Center & LGBTQ+ Services), at C-220 [8]
+- 1 PM to 2 PM: Are Nordic Countries Actually Happier? A Global Literacy Discussion (Roukema Center for International Education), at Multicultural Center- D-215 [9]
+- 1 PM to 2 PM: RA Interest Meeting \#5 (Ramapo College Residence Life) [10]
+- 2 PM to 3 PM: Social Hour with SGA, BSU and CPB (College Programming Board) [11]
+- 2:30 PM to 4:30 PM: Honey & Hues (Ramapo College Beekeeping Club) [12]
+- 4 PM to 5 PM: RGG General Meeting (Ramapo Girls in Gaming), at A-225 [13]
+- 4:30 PM to 5:30 PM: BridgeRCNJ Thanksgiving Discussion (Bridge Ramapo College of New Jersey), at Multicultural center [14]
+- 6 PM to 7 PM: WELLNESS WORKSHOP WITH ALPHA PHI OMEGA (Wellness Is Now), at D-215 [15]
+- 6 PM to 7:30 PM: HHAW Exhibit (Civic and Community Engagement Center), at SC-158 (Alumni Lounges) [16]
+
+The next comedy-related event is Open Mic Night on Tuesday, November 24, 2026, 8 PM to 11 PM—after this week. The calendar does not state whether it is free [17].
+
+Sources: [1](https://archway.ramapo.edu/home/events/) [2](https://archway.ramapo.edu/rsvp_boot?id=1409536) [3](https://archway.ramapo.edu/rsvp_boot?id=1410880) [4](https://archway.ramapo.edu/rsvp_boot?id=1411941) [5](https://archway.ramapo.edu/rsvp_boot?id=1411719) [6](https://archway.ramapo.edu/rsvp_boot?id=1411448) [7](https://archway.ramapo.edu/rsvp_boot?id=1411718) [8](https://archway.ramapo.edu/rsvp_boot?id=1412103) [9](https://archway.ramapo.edu/rsvp_boot?id=1411720) [10](https://archway.ramapo.edu/rsvp_boot?id=1410400) [11](https://archway.ramapo.edu/rsvp_boot?id=1412137) [12](https://archway.ramapo.edu/rsvp_boot?id=1412077) [13](https://archway.ramapo.edu/rsvp_boot?id=1410959) [14](https://archway.ramapo.edu/rsvp_boot?id=1412068) [15](https://archway.ramapo.edu/rsvp_boot?id=1412141) [16](https://archway.ramapo.edu/rsvp_boot?id=1411860) [17](https://archway.ramapo.edu/rsvp_boot?id=1412139) [18](https://archway.ramapo.edu/rsvp_boot?id=1409393)
+
+=== 27-s3 | whens the next basketball game n can i bring a friend
+--- by=code status=answered sec=0.04 err=None read: needs=None limit=None topic=None asked=None q=None general=None
+Men's Basketball's next games: Nov 18 (Wed), 7:30 PM: vs Sarah Lawrence College, Bradley Center, Mahwah, NJ (home); Nov 21 (Sat), 2:00 PM: vs Farmingdale State College, Bradley Center, Mahwah, NJ (home); Dec 2 (Wed), 7:30 PM: vs New Paltz, Bradley Center, Mahwah, NJ (home) [1].
+
+Women's Basketball's next games: Nov 18 (Wed), 6:00 PM: at Manhattanville University, Kennedy Gym, Purchase, NY; Nov 23 (Mon), 5:00 PM: at John Jay College, The Doghouse, New York, NY; Dec 2 (Wed), 5:30 PM: vs New Paltz, Bradley Center, Mahwah, NJ (home) [2].
+
+Sources: [1](https://ramapoathletics.com/sports/mens-basketball/schedule) [2](https://ramapoathletics.com/sports/womens-basketball/schedule)
+
+=== 28-s4 | where can i get help w my resume, do i need to book or can i just show up
+--- by=one_call status=answered sec=4.02 err=None read: needs=[] limit=none topic=how_to asked=read q='Where can I get help with my resume, and do I need to book or can I just show up?' general=None
+The Cahill Career Development Center can help with your resume. Create a VMock account at vmock.com/rcnj, upload your resume for instant feedback, incorporate the feedback and upload again (10 uploads max per academic year), then upload a resume with a score of 85 or better to Handshake for review. You can also make an appointment with your Career Advisor to tailor your resume to your job or internship search. [10]
+
+To book an appointment, create your Handshake profile and schedule with your career advisor. [18] The pages do not say whether you can just show up; I don’t have verified information about walk-ins. Contact the Cahill Career Development Center.
+
+**Cahill Career Development Center**: Phone: Main Office (201) 684-7444; ASB Office (201) 684-7675. Email: careercenter@ramapo.edu. Main Office: C-209; ASB Office: ASB-513. [33]
+
+Sources: [10](https://www.ramapo.edu/careercenter/vmock/) [18](https://www.ramapo.edu/careercenter/four-year-plan/) [33](https://www.ramapo.edu/campus-directory/)
+
+=== 29-s4 | is there tutoring for chem 1, do i need an appointment
+--- by=one_call status=answered sec=7.21 err=None read: needs=[] limit=none topic=how_to asked=read q='Is there tutoring for Chem 1, and do I need an appointment?' general=None
+The STEM Center offers General Chemistry I tutoring. Appointment-required 1-on-3 sessions are booked through Connect; walk-in sessions do not require an appointment. The STEM Center page lists the session times [4].
+
+**STEM Center**: Phone: Tutoring Coordinator – STEM Center (201) 684-7345; Director – STEM Center & Programs (201) 684-7774. Office: G-131. [15]
+
+Sources: [4](https://www.ramapo.edu/stem-center/) [15](https://www.ramapo.edu/campus-directory/)
+
+=== 30-s4 | wheres the writing center n is it open sundays
+--- by=model status=partial sec=5.04 err=None read: needs=[] limit=none topic=office asked=read q='Where is the Writing Center, and is it open Sundays?' general=None
+Center for Reading and Writing lists Sunday hours of By virtual appointment. [2] The page adds: "The CRW will open on August 31 at 10 AM. Fall 2026: Hours Monday - Thursday, 10 AM - 8:00 PM Friday - 10:00 AM - 4:00 PM Weekends - by virtual appointment" [2] Center for Reading and Writing is in Peter P. Mercer Learning Commons, Room 420. [1] Outreach Coordinator: LC-424; Developmental Writing Specialist: LC-425; Reading Specialist: LC-423. [1] Center for Reading and Writing: To make an appointment, click on Schedule an Appointment here or on the CRW homepage. Select the day and time, and whether you want an in-person or an online session. Appointments can be scheduled up to one hour before the requested time. for questions regarding the CRW contact Susan Auger at sauger@ramapo.edu, Ramon Reyes at rreyes@ramapo.edu, or Priscilla Tovey at ptovey@ramapo.edu for questions about workshops, please contact Priscilla Tovey at ptovey@ramapo.edu Writing Intensive Courses: crw@ramapo.edu Outreach Coordinator: ptovey@ramapo.edu Developmental Writing Specialist: rreyes@ramapo.edu Reading Specialist: sauger@ramapo.edu [1]
+
+The page gives when this schedule starts but not when it ends. [2]
+
+Sources: [1](https://www.ramapo.edu/crw/) [2](https://www.ramapo.edu/crw/)
+
+TOTAL spent $0.0206 in 160 calls
