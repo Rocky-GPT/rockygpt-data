@@ -1,0 +1,92 @@
+[
+ {
+  "id": "K01",
+  "group": "inside",
+  "question": "is there a screenwriting concentration"
+ },
+ {
+  "id": "K02",
+  "group": "inside",
+  "question": "do u guys have a music production major"
+ },
+ {
+  "id": "K03",
+  "group": "inside",
+  "question": "can i major in criminology here"
+ },
+ {
+  "id": "K04",
+  "group": "inside",
+  "question": "wat concentrations r in the music major"
+ },
+ {
+  "id": "K05",
+  "group": "inside",
+  "question": "is there an animation major"
+ },
+ {
+  "id": "K06",
+  "group": "inside",
+  "question": "does ramapo have a creative writing major"
+ },
+ {
+  "id": "K07",
+  "group": "inside",
+  "question": "is there a photography concentration n what classes do u take"
+ },
+ {
+  "id": "K08",
+  "group": "inside",
+  "question": "any marketing concentration in the business major"
+ },
+ {
+  "id": "K09",
+  "group": "inside",
+  "question": "is there a cybersecurity concentration"
+ },
+ {
+  "id": "K10",
+  "group": "inside",
+  "question": "what tracks does the math major have"
+ },
+ {
+  "id": "K11",
+  "group": "credits",
+  "question": "how many credits do i need to graduate"
+ },
+ {
+  "id": "K12",
+  "group": "credits",
+  "question": "how many credits is the psych major"
+ },
+ {
+  "id": "K13",
+  "group": "credits",
+  "question": "how many credits do u need for a bachelors here"
+ },
+ {
+  "id": "K14",
+  "group": "credits",
+  "question": "how many credits is the accounting major"
+ },
+ {
+  "id": "K15",
+  "group": "credits",
+  "question": "if i transfer in how many credits do i have to take at ramapo"
+ },
+ {
+  "id": "K16",
+  "group": "credits",
+  "question": "how many credits is the film major"
+ },
+ {
+  "id": "K17",
+  "group": "credits",
+  "question": "how many credits to graduate w a nursing degree"
+ },
+ {
+  "id": "K18",
+  "group": "credits",
+  "question": "how many credits is the econ minor"
+ }
+]

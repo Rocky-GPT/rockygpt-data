@@ -27,7 +27,7 @@ async function main() {
       for (const s of page.sections) console.log(`   [${s.heading}] ${s.text.slice(0, 300).replace(/\s+/g, ' ')}`);
     }
   }
-  const want = /school of|office of|anisfield|graduate admissions|dean|convener|director|@ramapo\.edu/i;
+  const want = /school of|office of|anisfield|graduate admissions|graduate@|dean|director/i;
   for (const folder of FOLDERS) {
     const mine = pages.filter(p => new URL(p.url).pathname.split('/')[1] === folder);
     console.log(`##### ${folder}: ${mine.length} pages`);
