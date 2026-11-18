@@ -35,7 +35,10 @@ async def main() -> None:
         print(f"=== {r['id']} | {r['question']}\n--- by={r['by']} status={r['status']} "
               f"sec={r['sec']} err={r['err']} read: needs={read.get('needs')} "
               f"limit={read.get('limit')} topic={read.get('topic')} asked={read.get('asked')} "
-              f"q={read.get('question')!r} general={read.get('general')!r}\n{r['answer']}\n")
+              f"q={read.get('question')!r} general={read.get('general')!r}\n"
+              f"--- tools={[c.get('tool') for c in r.get('calls') or []]} path={r.get('path')!r}"
+              f"\n--- lookups={json.dumps(r.get('lookups'), default=str)[:700]}\n"
+              f"{r['answer']}\n")
     (OUT / "rows.json").write_text(json.dumps(done, ensure_ascii=False))
     await gateway.close()
     print(f"TOTAL spent ${ledger.spent / 1e9:.4f} in {ledger.calls} calls")
