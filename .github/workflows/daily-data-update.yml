@@ -532,6 +532,13 @@ jobs:
         continue-on-error: true
         run: cat data/review/site-downloads.txt 2>/dev/null || echo 'No collector wrote a download note.'
 
+      # What robots.txt and sign-in walls keep the bot from reading (Dan, 2026-11-18): each Ramapo
+      # site's rules as read this run, any page refused, and the reviewed list.
+      - name: Show what the bot is blocked from reading
+        if: ${{ always() }}
+        continue-on-error: true
+        run: npx tsx scripts/review/show-blocked-pages.ts
+
       # How many office pages the model read for how-to tasks this run, and what that cost.
       - name: Show what the how-to read did
         if: ${{ always() }}

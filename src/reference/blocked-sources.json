@@ -1,0 +1,55 @@
+{
+  "about": "What RockyGPT cannot read on Ramapo's sites, and why. Reviewed by hand (the robots.txt part is also checked automatically every night: data/review/blocked-pages.md). A source moves off this list only when the site itself allows it.",
+  "reviewedAt": "2026-11-18",
+  "sources": [
+    {
+      "site": "myssb.ramapo.edu",
+      "what": "Banner Self-Service class search: class sections, open seats, meeting times, rooms and instructors",
+      "why": "robots",
+      "detail": "Its robots.txt refuses every robot for the whole site (checked 2026-11-02 and 2026-11-18).",
+      "effect": "The bot cannot say which sections are open, when a class meets or who teaches a section. It points students to the class search."
+    },
+    {
+      "site": "archway.ramapo.edu",
+      "what": "Archway's phone-app event feeds (/mobile_ws/v17/, /mobile_ws/v18/)",
+      "why": "robots",
+      "detail": "Disallowed by Archway's robots.txt (2026-11-03).",
+      "effect": "None: events come from the groups' calendar files and Archway's public events list instead."
+    },
+    {
+      "site": "archway.ramapo.edu",
+      "what": "Files clubs post on Archway (/upload/, /student_docs/, /downloads/) and its widget pages (ajax_widget_new)",
+      "why": "robots",
+      "detail": "Disallowed by Archway's robots.txt (2026-11-05).",
+      "effect": "Flyers and documents clubs upload are not read."
+    },
+    {
+      "site": "archway.ramapo.edu",
+      "what": "Events Archway shows only to signed-in students (sign-in or registration required)",
+      "why": "sign-in",
+      "detail": "The public events list hides their names and places; RockyGPT never signs in (about 15 events on 2026-11-05).",
+      "effect": "The bot knows such an event exists but not its name or place."
+    },
+    {
+      "site": "ramapoathletics.com",
+      "what": "The athletics site's feeds and files: /services/ (schedule feeds, text schedules), /documents/ (PDF guides), print views, /images/, /common/, /site/, /hidden/",
+      "why": "robots",
+      "detail": "Disallowed for every robot by its robots.txt, which also asks for 30 seconds between pages (2026-11-03).",
+      "effect": "Team schedules are read from each team's schedule page, one page every 30 seconds, about 8 minutes a night."
+    },
+    {
+      "site": "www.ramapo.edu",
+      "what": "The 2005-06 online catalog (/catalog_05_06/)",
+      "why": "robots",
+      "detail": "The only path ramapo.edu's robots.txt disallows (2026-11-18).",
+      "effect": "None: today's catalog is catalog.ramapo.edu."
+    },
+    {
+      "site": "Student-only systems (the Ramapo portal, Canvas, student email, student records)",
+      "what": "Anything behind a student's own sign-in: grades, schedules, bills, financial aid status",
+      "why": "sign-in",
+      "detail": "RockyGPT reads only public pages and never signs in as anyone.",
+      "effect": "The bot cannot answer about one student's own records. It says where to look."
+    }
+  ]
+}
