@@ -137,10 +137,11 @@ test('the www.ramapo.edu sites read by edit date are collected every night, even
     { key: 'office-pages', status: 'fresh' as const, ageHours: 24, maxAgeHours: week },
     { key: 'academic-sites', status: 'fresh' as const, ageHours: 24, maxAgeHours: week },
   ];
-  // Hours and the directory stay weekly: their pages change without an edit. Office pages come
-  // after the smaller site sources and before the schools: each skips the pages the earlier ones keep.
+  // The directory stays weekly: its pages change without an edit. Office pages come after the
+  // smaller site sources and before the schools: each skips the pages the earlier ones keep. Hours
+  // come last, from the pages they saved (campus-hours-copies.test.ts).
   assert.deepEqual(refreshScriptsForStates(collectedLastNight),
-    ['fetch:safety:raw', 'fetch:office-pages', 'fetch:academic-sites']);
+    ['fetch:safety:raw', 'fetch:office-pages', 'fetch:academic-sites', 'fetch:hours']);
   // Their window stays a week, so one failed night keeps the last copy instead of stopping the publish.
   for (const key of NIGHTLY_SOURCES) {
     assert.equal(SOURCES.find(source => source.key === key)?.freshnessHours, week);
@@ -156,10 +157,11 @@ test('a run started by hand can collect named sources tonight, however fresh the
     { key: 'archway-clubs', status: 'fresh' as const, ageHours: 2_950, maxAgeHours: halfYear },
     { key: 'faculty', status: 'fresh' as const, ageHours: 600, maxAgeHours: halfYear },
   ];
-  assert.deepEqual(refreshScriptsForStates(states), []);
+  // Hours run every night anyway, from tonight's page copies; named by hand, they read every page.
+  assert.deepEqual(refreshScriptsForStates(states), ['fetch:hours']);
   const forced = forcedSources(' campus-hours,archway-clubs ');
   assert.deepEqual([...forced], ['campus-hours', 'archway-clubs']);
-  assert.deepEqual(refreshScriptsForStates(states, 24, forced), ['fetch:hours', 'fetch:clubs']);
+  assert.deepEqual(refreshScriptsForStates(states, 24, forced), ['fetch:clubs', 'fetch:hours']);
   // Spaces work as separators too, and nothing named means nothing forced.
   assert.deepEqual([...forcedSources('campus-hours archway-clubs')], ['campus-hours', 'archway-clubs']);
   assert.equal(forcedSources('').size, 0);

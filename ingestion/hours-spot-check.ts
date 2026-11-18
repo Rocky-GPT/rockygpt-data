@@ -1,12 +1,10 @@
 /**
  * Nightly spot check of the hours pages, with no extra request to Ramapo's sites.
  *
- * Hours are read weekly (campus-hours.ts), so a page whose wording changed could go up to a week
- * before its reader fails and keeps the last good read (audit 2026-11-17, "a nightly spot check
- * of the hours pages"). Most hours pages are also office or school pages, which the nightly job
- * already collects (office-pages, academic-sites and the other page sources). This runs each
- * hours reader on tonight's copy of its page and names every page that no longer reads, so a
- * person can fix the reader before the weekly read keeps old hours.
+ * Hours are read from every hours page weekly, and on other nights only from the pages whose
+ * nightly copy changed (campus-hours.ts, HOURS_READ_ENV). This runs each hours reader on tonight's
+ * copy of every page, changed or not, and names every page that no longer reads, so a person can
+ * fix the reader before the weekly read has to keep that page's old hours.
  *
  *     npx tsx ingestion/hours-spot-check.ts     # writes data/review/hours-spot-check.md
  *
@@ -17,7 +15,10 @@ import path from 'node:path';
 import {
   BERRIE_SEASON_URL, GENERAL_CAMPUS_HOURS_URL, LIBRARY_HOURS_URL, OFFICE_HOURS_PAGES, readHoursCapture,
 } from './campus-hours';
-import { sourceHtml, type RawSourceCaptureV1 } from './raw-collector';
+import { type RawSourceCaptureV1 } from './raw-collector';
+import { pageCopies, pageKey, readPageCaptures } from './page-copies';
+
+export { pageKey } from './page-copies';
 
 export const SPOT_CHECK_REPORT = path.join('data', 'review', 'hours-spot-check.md');
 
@@ -25,16 +26,6 @@ export const SPOT_CHECK_REPORT = path.join('data', 'review', 'hours-spot-check.m
 export function hoursPageUrls(): string[] {
   return [...new Set([LIBRARY_HOURS_URL, GENERAL_CAMPUS_HOURS_URL, BERRIE_SEASON_URL,
     ...OFFICE_HOURS_PAGES.map((office) => office.url)])];
-}
-
-/** One spelling per address: no scheme, host in lower case, no query or fragment, no trailing slash. */
-export function pageKey(url: string): string {
-  try {
-    const parsed = new URL(url);
-    return `${parsed.host.toLowerCase().replace(/^www\./, '')}${parsed.pathname.replace(/\/+$/, '')}`;
-  } catch {
-    return url.replace(/\/+$/, '');
-  }
 }
 
 export interface SpotCheckResult {
@@ -45,19 +36,7 @@ export interface SpotCheckResult {
 }
 
 export function spotCheck(captures: readonly RawSourceCaptureV1[], urls: readonly string[]): SpotCheckResult {
-  const copies = new Map<string, { html: string; fetchedAt: string }>();
-  for (const capture of captures) {
-    for (const page of capture.pages) {
-      if (page.statusCode !== 200 || page.failure) continue;
-      const copy = { html: sourceHtml(page), fetchedAt: page.downloadedAt || page.fetchedAt };
-      if (!copy.html.trim()) continue;
-      for (const url of [page.url, page.requestedUrl]) {
-        const key = pageKey(url);
-        const known = copies.get(key);
-        if (!known || Date.parse(copy.fetchedAt) > Date.parse(known.fetchedAt)) copies.set(key, copy);
-      }
-    }
-  }
+  const copies = pageCopies(captures);
   const result: SpotCheckResult = { checked: 0, failed: [], unseen: [] };
   for (const url of urls) {
     const copy = copies.get(pageKey(url));
@@ -92,22 +71,8 @@ export function spotCheckReport(result: SpotCheckResult): string {
   return `${lines.join('\n')}\n`;
 }
 
-function readCaptures(rawDir: string): RawSourceCaptureV1[] {
-  if (!fs.existsSync(rawDir)) return [];
-  const captures: RawSourceCaptureV1[] = [];
-  for (const file of fs.readdirSync(rawDir).filter((name) => name.endsWith('-sources.raw.json')).sort()) {
-    try {
-      const value = JSON.parse(fs.readFileSync(path.join(rawDir, file), 'utf8')) as Partial<RawSourceCaptureV1>;
-      if (value.schemaVersion === 1 && Array.isArray(value.pages)) captures.push(value as RawSourceCaptureV1);
-    } catch {
-      // Not a page capture (the hours collector keeps its own pages in another shape).
-    }
-  }
-  return captures;
-}
-
 function main(): void {
-  const result = spotCheck(readCaptures(path.join(process.cwd(), 'data', 'raw')), hoursPageUrls());
+  const result = spotCheck(readPageCaptures(), hoursPageUrls());
   const report = spotCheckReport(result);
   fs.mkdirSync(path.dirname(SPOT_CHECK_REPORT), { recursive: true });
   fs.writeFileSync(SPOT_CHECK_REPORT, report);

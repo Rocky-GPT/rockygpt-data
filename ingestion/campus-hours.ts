@@ -12,6 +12,7 @@ import { publicPath } from '../src/paths';
 import { partitionHoursForPublication, readValidityFromNotes } from '../src/data-v2/validity';
 import { withheldHoursRecord } from './unverified-hours';
 import { attachReviewedHoursAbsences, CHANGED_HOURS_REPORT, changedHoursReport } from './reviewed-hours-absence';
+import { pageCopies, pageKey, readPageCaptures, type PageCopy } from './page-copies';
 
 const RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'hours.raw.json');
 const PUBLIC_JSON_PATH = publicPath('data', 'hours.json');
@@ -465,8 +466,12 @@ export interface OfficeHoursPage {
     season?: string;
     /** The label is the page's term heading (TERM_HEADING), and the term it names is the season. */
     termHeading?: boolean;
+    /** The page's own term announcement; group 1 is the term ("Fall 2026"), used as the season. */
+    seasonFrom?: RegExp;
     /** Explicit date statement on the same source page; never the academic calendar. */
     starts?: RegExp;
+    /** The date statement is an announcement that comes and goes: without it the record is undated. */
+    startsOptional?: boolean;
     /** A reviewed service clause inside a longer paragraph; never another service's clock. */
     extract?: RegExp;
     /** Same-page qualifiers that must remain attached to the service schedule. */
@@ -516,9 +521,12 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         season: 'Early arrival period',
         applicabilityIssue: { status: 'unknown', reason: 'Residence Life early-arrival guidance does not establish dates for this ID-room timetable; do not assume it is the routine schedule.' } },
     { name: 'Nursing Programs Office', url: 'https://www.ramapo.edu/nursing/', label: /^Hours:/i },
-    // Different times on different days (read 2026-10-07).
+    // Different times on different days (read 2026-10-07). The term and the opening date come from
+    // the page's own announcement ("ANNOUNCEMENTS - Fall 2026", "The CRW will open on August 31 at
+    // 10 AM."), so a new term's announcement, or none, still reads.
     { name: 'Center for Reading and Writing', url: 'https://www.ramapo.edu/crw/', kind: 'week', label: /^Hours$/i,
-        season: 'Fall 2026', starts: /The CRW will open on (August) (31) at 10 AM\./i },
+        seasonFrom: /ANNOUNCEMENTS\s*-\s*((?:Fall|Spring|Summer|Winter)(?: Semester)? 20\d{2})/i,
+        starts: /The CRW will open on ([A-Z][a-z]+) (\d{1,2}) at \d{1,2}(?::\d{2})? ?[AP]\.?M\.?/i, startsOptional: true },
     { name: 'Center for Student Involvement', url: 'https://www.ramapo.edu/csi/', kind: 'week',
         label: /^CSI Hours of Operation$/i },
     { name: 'Roadrunner Central', url: 'https://www.ramapo.edu/csi/roadrunner-central/', kind: 'week',
@@ -630,8 +638,8 @@ export const OFFICE_HOURS_PAGES: ReadonlyArray<OfficeHoursPage> = [
         season: 'Fall & Spring Semester' },
     { name: 'The Village (Summer)', url: 'https://www.ramapo.edu/reslife/village/', kind: 'week', label: /^Summer Hours:$/i, season: 'Summer' },
     { name: 'Berrie Center Box Office', url: 'https://www.ramapo.edu/berriecenter/tickets-seating/', kind: 'week',
-        label: /^As of August 26, 2026 the Box Office is open:$/i,
-        starts: /As of (August) (26), (2026) the Box Office is open:/i },
+        label: /^As of [A-Z][a-z]+ \d{1,2}, 20\d{2} the Box Office is open:$/i,
+        starts: /As of ([A-Z][a-z]+) (\d{1,2}), (20\d{2}) the Box Office is open:/i },
     { name: 'Health Services (Fall)',
         url: 'https://www.ramapo.edu/student-affairs/student-communications/official-announcement-health-services-at-ramapo-college-july-14-2026/',
         label: /VMG will be open/i, season: 'Fall 2026' },
@@ -916,7 +924,7 @@ export function parseConflictingOfficeHours(name: string, label: RegExp, against
             season: 'Fall/Spring', source_statements: [first, second] } } } };
 }
 
-function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedAt: string): LocationHours {
+export function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedAt: string): LocationHours {
     let scheduleText = text;
     if (office.extract) {
         scheduleText = text.match(office.extract)?.[0] ?? '';
@@ -939,7 +947,9 @@ function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedA
         : office.kind === 'conflict' ? parseConflictingOfficeHours(office.name, office.label, office.against!, scheduleText)
         : office.kind === 'days-unstated' ? parseUnstatedDayHours(office.name, office.label, scheduleText)
         : parseOfficeHours(office.name, office.label, scheduleText, collectedAt, []);
-    const season = office.termHeading ? termOfHeading(scheduleText) : office.season;
+    const announced = office.seasonFrom ? text.match(office.seasonFrom)?.[1] : undefined;
+    const season = office.termHeading ? termOfHeading(scheduleText)
+        : announced ? announced.toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase()) : office.season;
     if (season) {
         record.normalization_metadata = { evidence: { schedule: {
             ...record.normalization_metadata?.evidence?.schedule, season,
@@ -957,9 +967,9 @@ function configuredOfficeHours(office: OfficeHoursPage, text: string, collectedA
         if (!statement) throw new Error(`Reviewed service hours qualifier changed: ${office.name}`);
         record.notes += `. ${statement}`;
     }
-    if (office.starts) {
-        const statement = text.match(office.starts);
-        const year = statement?.[3] ?? text.match(/ANNOUNCEMENTS\s*-\s*Fall (20\d{2})/i)?.[1];
+    const statement = office.starts ? text.match(office.starts) : null;
+    if (office.starts && (statement || !office.startsOptional)) {
+        const year = statement?.[3] ?? announced?.match(/(20\d{2})$/)?.[1];
         if (!statement || !year) throw new Error(`Explicit opening date unavailable for ${office.name}`);
         const opened = new Date(`${statement[1]} ${statement[2]}, ${year} 12:00:00 GMT`);
         if (!Number.isFinite(opened.getTime())) throw new Error(`Invalid opening date for ${office.name}`);
@@ -1138,15 +1148,70 @@ async function fetchOrNote(sourceUrl: string): Promise<HoursSourceCapture> {
     }
 }
 
-async function fetchCampusHours() {
-    const fresh = await Promise.all([
-        fetchOrNote(ATHLETICS_HOURS_URL), fetchOrNote(LIBRARY_HOURS_URL), fetchOrNote(GENERAL_CAMPUS_HOURS_URL),
-    ]);
-    // Two offices can share one page; it is fetched and archived once.
-    for (const url of new Set([...OFFICE_HOURS_PAGES.map((office) => office.url), BERRIE_SEASON_URL])) {
-        fresh.push(await fetchOrNote(url));
-    }
-    const { captures, kept } = keepReadableCaptures(fresh, previousCaptures());
+/**
+ * The environment variable the nightly refresh sets to "changed-pages" on a night campus hours are
+ * not due: the collector then downloads nothing and re-reads only the hours pages whose nightly
+ * copy changed (audit 2026-11-17, item 9). Unset, it reads every hours page from Ramapo's sites.
+ */
+export const HOURS_READ_ENV = 'HOURS_READ';
+
+export interface PageCopyReread {
+    /** The saved captures, with tonight's copy in place of each changed page that still reads. */
+    captures: HoursSourceCapture[];
+    /** Pages whose nightly copy changed and still reads. */
+    changed: string[];
+    /** Pages whose nightly copy changed but no longer reads: they keep their last read. */
+    kept: KeptHoursPage[];
+}
+
+/**
+ * Re-reads each hours page whose nightly copy (office-pages, academic-sites and the other page
+ * collectors) is newer than its saved capture and reads differently. 70 of the 87 hours records
+ * come from such pages, so an office's new hours reach the bot the night its page changes,
+ * without one more request to Ramapo's sites. The other pages keep their saved capture until the
+ * weekly read.
+ */
+export function rereadFromPageCopies(previous: readonly HoursSourceCapture[],
+    copies: ReadonlyMap<string, PageCopy>): PageCopyReread {
+    const changed: string[] = [];
+    const kept: KeptHoursPage[] = [];
+    const captures = previous.map((capture) => {
+        const copy = copies.get(pageKey(capture.sourceUrl));
+        if (!copy || !(Date.parse(copy.fetchedAt) > Date.parse(capture.collectedAt))) return capture;
+        if (hoursPageText(copy.html) === hoursPageText(capture.html)) return capture;
+        const tonight = { sourceUrl: capture.sourceUrl, collectedAt: copy.fetchedAt, html: copy.html };
+        try {
+            readHoursCapture(tonight);
+        } catch (error) {
+            kept.push({ url: capture.sourceUrl, error: error instanceof Error ? error.message : String(error),
+                keptFrom: capture.collectedAt });
+            return capture;
+        }
+        changed.push(capture.sourceUrl);
+        return tonight;
+    });
+    return { captures, changed, kept };
+}
+
+/** Records with their capture times taken out, to tell whether a re-read changed any hours. */
+function hoursWithoutTimes(records: readonly LocationHours[]): string {
+    return JSON.stringify(records.map((record) => ({ ...record, collectedAt: '' })));
+}
+
+function savedFetchedAt(): string | null {
+    const times = ['hours-sources', 'hours'].map((dataset) => {
+        try {
+            const saved = JSON.parse(readFileSync(path.join(process.cwd(), 'data', 'raw', `${dataset}.provenance.json`),
+                'utf8')) as { fetchedAt?: unknown };
+            return typeof saved.fetchedAt === 'string' ? Date.parse(saved.fetchedAt) : NaN;
+        } catch {
+            return NaN;
+        }
+    });
+    return times.every(Number.isFinite) ? new Date(Math.min(...times)).toISOString() : null;
+}
+
+function writeKeptReport(kept: readonly KeptHoursPage[]): void {
     const keptReport = keptHoursReport(kept);
     rmSync(KEPT_HOURS_REPORT, { force: true });
     if (keptReport) {
@@ -1154,9 +1219,14 @@ async function fetchCampusHours() {
         mkdirSync(path.dirname(KEPT_HOURS_REPORT), { recursive: true });
         writeFileSync(KEPT_HOURS_REPORT, keptReport);
     }
-    // When tonight's read ran. A page that kept an earlier read keeps that read's own time on its
-    // records, and the report above names it every night until its reader is fixed.
-    const fetchedAt = new Date(Math.min(...fresh.map((capture) => Date.parse(capture.collectedAt)))).toISOString();
+}
+
+/**
+ * Builds and writes the hours from one set of captures. fetchedAt is the read the source's age
+ * counts from: tonight's on a full read, the last full read's when only changed pages were re-read,
+ * so the weekly read of every page stays on schedule.
+ */
+function writeCampusHours(captures: HoursSourceCapture[], fetchedAt: string): void {
     const capturedSources = { version: 1, captures };
     const locations = campusHoursFromCaptures(captures, true);
     const publication = campusHoursPublication(locations);
@@ -1175,6 +1245,46 @@ async function fetchCampusHours() {
     writeJsonFile(PUBLIC_JSON_PATH, normalizedHours);
     writeJsonFile(RAG_JSON_PATH, normalizedHours);
     writeJsonFile(OMISSIONS_PATH, { version: 1, collectedAt: fetchedAt, omitted: publication.omitted });
+}
+
+/** A night campus hours are not due: re-read only the pages whose nightly copy changed. */
+function rereadChangedPages(): boolean {
+    const previous = previousCaptures();
+    const fetchedAt = savedFetchedAt();
+    if (!previous.length || !fetchedAt) {
+        console.log('No saved hours captures to compare tonight\'s page copies with; reading every hours page.');
+        return false;
+    }
+    const { captures, changed, kept } = rereadFromPageCopies(previous, pageCopies(readPageCaptures()));
+    writeKeptReport(kept);
+    // Tonight's reading first: the saved read's, second, leaves the review note of reviewed absences
+    // as the saved read has it when nothing is written.
+    const after = changed.length ? hoursWithoutTimes(campusHoursFromCaptures(captures, true)) : null;
+    if (after === null || after === hoursWithoutTimes(campusHoursFromCaptures(previous, true))) {
+        console.log(`Hours from tonight's page copies: ${changed.length} page(s) changed, no hours changed, `
+            + `${kept.length} no longer read. Kept the read of ${fetchedAt.slice(0, 10)}.`);
+        return true;
+    }
+    console.log(`Hours from tonight's page copies: re-read ${changed.length} changed page(s): ${changed.join(', ')}.`);
+    writeCampusHours(captures, fetchedAt);
+    return true;
+}
+
+async function fetchCampusHours() {
+    if (process.env[HOURS_READ_ENV] === 'changed-pages' && rereadChangedPages()) return;
+    const fresh = await Promise.all([
+        fetchOrNote(ATHLETICS_HOURS_URL), fetchOrNote(LIBRARY_HOURS_URL), fetchOrNote(GENERAL_CAMPUS_HOURS_URL),
+    ]);
+    // Two offices can share one page; it is fetched and archived once.
+    for (const url of new Set([...OFFICE_HOURS_PAGES.map((office) => office.url), BERRIE_SEASON_URL])) {
+        fresh.push(await fetchOrNote(url));
+    }
+    const { captures, kept } = keepReadableCaptures(fresh, previousCaptures());
+    writeKeptReport(kept);
+    // When tonight's read ran. A page that kept an earlier read keeps that read's own time on its
+    // records, and the report above names it every night until its reader is fixed.
+    const fetchedAt = new Date(Math.min(...fresh.map((capture) => Date.parse(capture.collectedAt)))).toISOString();
+    writeCampusHours(captures, fetchedAt);
 }
 
 if (process.argv[1]?.endsWith('campus-hours.ts')) {

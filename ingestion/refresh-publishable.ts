@@ -14,6 +14,7 @@ import {
 import { validateFacultyProfiles } from './schema';
 import { partitionHoursForPublication } from '../src/data-v2/validity';
 import { hoursSourceErrors } from '../pipeline/quality/hours-coverage';
+import { HOURS_READ_ENV } from './campus-hours';
 import {
   groupScriptsBySource,
   KEPT_SOURCES_REPORT,
@@ -81,11 +82,19 @@ export function mustRefreshTonight(state: RefreshState, refreshHorizonHours = RE
  */
 export const NIGHTLY_SOURCES: ReadonlySet<string> = new Set([
   'office-pages', 'academic-sites',
-  // The smaller www.ramapo.edu sources read the same sitemap dates (page-dates.ts, 11-18). Campus hours
-  // and the directory stay on their weekly window: their pages show hours and names from other
-  // systems, which change without an edit to the page.
+  // The smaller www.ramapo.edu sources read the same sitemap dates (page-dates.ts, 11-18). The
+  // directory stays on its weekly window: its pages show names from another system, which change
+  // without an edit to the page. Campus hours are PAGE_COPY_SOURCES below.
   'public-safety', 'housing', 'counseling', 'transportation', 'health',
 ]);
+
+/**
+ * Sources read every night from the pages the collectors above just saved, with no download of
+ * their own unless they are due (audit 2026-11-17, item 9): campus hours re-reads each hours page
+ * whose nightly copy changed, and reads every hours page from Ramapo's sites once its weekly
+ * window comes due, because some pages show hours from other systems without an edit.
+ */
+export const PAGE_COPY_SOURCES: ReadonlySet<string> = new Set(['campus-hours']);
 
 /** The environment variable a run started by hand sets to collect named sources tonight, fresh or not. */
 export const FORCE_SOURCES_ENV = 'REFRESH_FORCE_SOURCES';
@@ -117,7 +126,7 @@ export function refreshScriptsForStates(
 ): string[] {
   const scripts = states
     .filter((state) => mustRefreshTonight(state, refreshHorizonHours) || NIGHTLY_SOURCES.has(state.key)
-      || forced.has(state.key))
+      || PAGE_COPY_SOURCES.has(state.key) || forced.has(state.key))
     .flatMap((state) => {
       const configured = SOURCE_REFRESH_SCRIPTS[state.key];
       if (!configured) {
@@ -125,7 +134,27 @@ export function refreshScriptsForStates(
       }
       return configured;
     });
-  return [...new Set(scripts)];
+  // The sources that read tonight's page copies run after every collector that saves them.
+  const readsCopies = new Set([...PAGE_COPY_SOURCES].flatMap((key) => SOURCE_REFRESH_SCRIPTS[key] ?? []));
+  const unique = [...new Set(scripts)];
+  return [...unique.filter((script) => !readsCopies.has(script)), ...unique.filter((script) => readsCopies.has(script))];
+}
+
+/**
+ * Whether a page-copy source reads only tonight's page copies: true unless it is due (stale, unknown,
+ * or about to be), named by hand, or its saved files no longer replay with the current code.
+ */
+export function readsPageCopiesOnly(
+  key: string,
+  states: ReadonlyArray<RefreshState>,
+  forced: ReadonlySet<string>,
+  compatibilityScripts: readonly string[],
+  refreshHorizonHours = REFRESH_HORIZON_HOURS
+): boolean {
+  if (!PAGE_COPY_SOURCES.has(key) || forced.has(key)) return false;
+  const state = states.find((candidate) => candidate.key === key);
+  if (!state || mustRefreshTonight(state, refreshHorizonHours)) return false;
+  return !(SOURCE_REFRESH_SCRIPTS[key] ?? []).some((script) => compatibilityScripts.includes(script));
 }
 
 /**
@@ -243,7 +272,7 @@ function restoredArtifactCompatibilityScripts(cwd = process.cwd()): string[] {
   });
 }
 
-function runNpmScript(script: string, rawOnly: boolean): void {
+function runNpmScript(script: string, rawOnly: boolean, extraEnv: Record<string, string> = {}): void {
   console.log(`\n=== npm run ${script} ===`);
   const result = spawnSync('npm', ['run', script], {
     cwd: process.cwd(),
@@ -254,6 +283,7 @@ function runNpmScript(script: string, rawOnly: boolean): void {
       ...process.env,
       ...(rawOnly ? { RAW_ONLY: '1' } : {}),
       ...(script === 'fetch:events:live' ? { EVENTS_FORCE_SCRAPE: '1' } : {}),
+      ...extraEnv,
     },
   });
   const stderr = result.stderr?.toString() ?? '';
@@ -320,6 +350,10 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
     );
   }
   const scripts = [...new Set([...provenanceScripts, ...compatibilityScripts])];
+  const hoursFromCopies = readsPageCopiesOnly('campus-hours', before, forced, compatibilityScripts);
+  if (hoursFromCopies) {
+    console.log('Campus hours are not due: re-reading only the hours pages whose nightly copy changed.');
+  }
   let kept: KeptSource[] = [];
 
   if (scripts.length && !siteFetchAllowed()) {
@@ -342,7 +376,9 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
     kept = runIsolatedRefresh({
       rootDir: process.cwd(),
       groups: groupScriptsBySource(scripts, SOURCE_REFRESH_SCRIPTS),
-      runScript: (script) => runNpmScript(script, false),
+      runScript: (script) => runNpmScript(script, false,
+        hoursFromCopies && SOURCE_REFRESH_SCRIPTS['campus-hours'].includes(script)
+          ? { [HOURS_READ_ENV]: 'changed-pages' } : {}),
       // A kept copy of unknown age can never publish, so the run stops there instead of
       // downloading every later source from Ramapo's sites for nothing. A kept copy that is only
       // past its window publishes with the rest (keptPastWindowKeys below).

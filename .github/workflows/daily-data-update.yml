@@ -263,8 +263,8 @@ jobs:
       # run collected, and CI already ran them on this same commit when it reached main or dev.
 
       # Each hours reader on tonight's copy of its page, which the office and school page
-      # collectors already downloaded: no extra request to Ramapo's sites. Hours are read weekly,
-      # so this names a page whose wording changed before that read has to keep its old hours.
+      # collectors already downloaded: no extra request to Ramapo's sites. It names a page whose
+      # wording changed before the weekly read of every hours page has to keep its old hours.
       # Report-only (data/review/hours-spot-check.md).
       - name: Spot check the hours pages
         continue-on-error: true
@@ -659,6 +659,20 @@ jobs:
       - name: Check the graph's must-have answers and freshness
         continue-on-error: true
         run: python .github/scripts/graph_check.py .published
+
+      # The published clubs no node holds, and why, from the release's identity coverage report:
+      # on 11-18 the release had 254 clubs and the graph 251. Report-only.
+      - name: List the published clubs the graph leaves out
+        continue-on-error: true
+        run: |
+          docker exec campus-db psql -v ON_ERROR_STOP=1 -tAq -U postgres -d campus -c "
+            SELECT coalesce(item->>'record', '?') || ': ' || coalesce(item->>'reason', '')
+            FROM rockygpt_v2.release_artifacts a
+            JOIN rockygpt_v2.dataset_versions v ON v.id = a.dataset_version_id AND v.status = 'active',
+                 jsonb_array_elements(a.payload->'unresolved') item
+            WHERE a.artifact_key = 'campus-identity-coverage' AND item->>'collection' = 'clubs'
+              AND item->>'kind' = 'unlinked_record'
+            ORDER BY 1" | sed 's/^/  club left out: /'
 
       - name: Save the embedding and question caches
         if: ${{ always() && hashFiles('.meaning-cache/questions.json') != '' }}
