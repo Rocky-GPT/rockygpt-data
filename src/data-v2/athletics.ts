@@ -32,6 +32,9 @@ export interface ReviewedAthletics {
   site: string;
   office: string;
   teams: Array<{ slug: string; name: string }>;
+  /** The site's information pages read weekly into sections (ingestion/athletics.ts pages), each
+   * with why it is read. Never a roster or a player's page. */
+  pages?: Array<{ url: string; why: string }>;
   /** Home venues as the schedules print them, to the campus map building they are. */
   venues: Record<string, string>;
 }
