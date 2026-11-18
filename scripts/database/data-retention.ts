@@ -6,8 +6,6 @@ interface RetentionSummary {
   retiredDatasetsDeleted: number;
   sourceSnapshotsDeleted: number;
   ingestionRunsDeleted: number;
-  ledgerOperationsDeleted: number;
-  ledgerTurnsDeleted: number;
   /** pg_database_size after cleanup; the free Neon plan stops writes at 0.5 GB. */
   databaseBytes: number;
   dryRun: boolean;
@@ -24,12 +22,10 @@ export const RETIRED_VERSIONS_KEPT = 1;
 /** A publish takes under an hour; a version still staging or validating a day later was abandoned. */
 const ABANDONED_AFTER = '1 day';
 
-/**
- * Settled Brain spending-ledger rows older than this are history only: the monthly cap reads the
- * current month's settled rows and every unsettled one, which are never deleted here.
+/*
+ * The Brain's spending ledger (brain_ops) is trimmed by the Brain's own scripts/trim_ledger.py,
+ * run weekly from rockygpt-infra's Ledger trim workflow (audit 2026-11-17, item 15), not here.
  */
-const LEDGER_KEPT = '60 days';
-const LEDGER_BATCH = 5000;
 
 async function tableExists(pool: Pool, table: string, schema = 'rockygpt_v2'): Promise<boolean> {
   const result = await pool.query<{ present: boolean }>(
@@ -37,29 +33,6 @@ async function tableExists(pool: Pool, table: string, schema = 'rockygpt_v2'): P
     [`${schema}.${table}`]
   );
   return result.rows[0]?.present === true;
-}
-
-/** Deletes the rows `where` selects, a batch per statement so each stays inside the timeout. */
-async function deleteInBatches(
-  pool: Pool,
-  table: string,
-  where: string,
-  dryRun: boolean
-): Promise<number> {
-  if (dryRun) {
-    const result = await pool.query<{ count: number }>(
-      `SELECT count(*)::integer AS count FROM ${table} WHERE ${where}`
-    );
-    return Number(result.rows[0]?.count || 0);
-  }
-  let deleted = 0;
-  for (;;) {
-    const result = await pool.query(
-      `DELETE FROM ${table} WHERE ctid IN (SELECT ctid FROM ${table} WHERE ${where} LIMIT ${LEDGER_BATCH})`
-    );
-    deleted += result.rowCount || 0;
-    if ((result.rowCount || 0) < LEDGER_BATCH) return deleted;
-  }
 }
 
 export async function runDataRetention(
@@ -161,28 +134,6 @@ export async function runDataRetention(
       : Number(result.rowCount || 0);
   }
 
-  // The Brain's spending ledger shares this database and gains a row per model call; October
-  // 2026 alone added 45 MB. Only settled rows past the window go; reserved and uncertain rows
-  // still count against the cap and stay.
-  let ledgerOperationsDeleted = 0;
-  if (await tableExists(pool, 'operations', 'brain_ops')) {
-    ledgerOperationsDeleted = await deleteInBatches(
-      pool,
-      'brain_ops.operations',
-      `state = 'settled' AND created_at < now() - interval '${LEDGER_KEPT}'`,
-      dryRun
-    );
-  }
-  let ledgerTurnsDeleted = 0;
-  if (await tableExists(pool, 'turns', 'brain_ops')) {
-    ledgerTurnsDeleted = await deleteInBatches(
-      pool,
-      'brain_ops.turns',
-      `created_at < now() - interval '${LEDGER_KEPT}'`,
-      dryRun
-    );
-  }
-
   const size = await pool.query<{ bytes: string }>(
     `SELECT pg_database_size(current_database())::text AS bytes`
   );
@@ -192,8 +143,6 @@ export async function runDataRetention(
     retiredDatasetsDeleted,
     sourceSnapshotsDeleted,
     ingestionRunsDeleted,
-    ledgerOperationsDeleted,
-    ledgerTurnsDeleted,
     databaseBytes: Number(size.rows[0]?.bytes || 0),
     dryRun,
   };
@@ -214,7 +163,7 @@ export async function vacuumFull(pool: Pool): Promise<{ before: number; after: n
   const tables = await pool.query<{ name: string; bytes: string }>(
     `SELECT format('%I.%I', n.nspname, c.relname) AS name, pg_total_relation_size(c.oid)::text AS bytes
      FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
-     WHERE c.relkind = 'r' AND n.nspname IN ('rockygpt_v2', 'brain_ops')
+     WHERE c.relkind = 'r' AND n.nspname = 'rockygpt_v2'
        AND pg_total_relation_size(c.oid) > 1048576
      ORDER BY pg_total_relation_size(c.oid)`
   );
