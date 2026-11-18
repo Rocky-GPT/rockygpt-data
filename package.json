@@ -50,6 +50,7 @@
     "fetch:academic-sites": "tsx ingestion/academic-sites.ts",
     "fetch:athletics-schedules": "tsx ingestion/athletics.ts schedules",
     "fetch:athletics-coaches": "tsx ingestion/athletics.ts coaches",
+    "fetch:athletics-pages": "tsx ingestion/athletics.ts pages",
     "check:contacts": "tsx scripts/check-contact-evidence.ts",
     "normalize:raw": "npm run normalize:reviewed-contact-documents && tsx ingestion/normalize-raw.ts",
     "quality:raw": "tsx scripts/database/quality-gates.ts --raw",

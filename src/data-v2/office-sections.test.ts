@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { pageKey, type CapturedPage } from '../directory/contact-evidence';
-import { SITE_FRAME_PAGES, officeSectionPages, siteFolder, withoutSiteFrame } from './office-sections';
+import { ATHLETICS_SITE_FOLDER, SITE_FRAME_PAGES, officeSectionPages, sectionSites, siteFolder, withoutSiteFrame } from './office-sections';
 
 const page = (url: string, sections: CapturedPage['sections']): [string, CapturedPage] =>
   [pageKey(url), { url, fetchedAt: '2026-10-15T14:00:00.000Z', sections }];
@@ -9,7 +9,9 @@ const page = (url: string, sections: CapturedPage['sections']): [string, Capture
 test('a page belongs to the site its first folder on www.ramapo.edu names', () => {
   assert.equal(siteFolder('https://www.ramapo.edu/registrar/transcripts/'), 'registrar');
   assert.equal(siteFolder('https://ramapo.edu/Counseling/'), 'counseling');
-  assert.equal(siteFolder('https://www.ramapoathletics.com/news/'), null);
+  assert.equal(siteFolder('https://www.ramapoathletics.com/news/'), 'ramapoathletics');
+  assert.equal(siteFolder('https://ramapoathletics.com/sports/2008/1/21/MembershipFAQ.aspx?id=7'), 'ramapoathletics');
+  assert.equal(siteFolder('https://notramapoathletics.com/news/'), null);
   assert.equal(siteFolder('https://www.ramapo.edu/'), null);
 });
 
@@ -28,6 +30,15 @@ test('only reviewed office sites are kept, each page with its sections less the 
   assert.deepEqual(rows[0].sections, [
     { heading: 'How do I request a transcript?', text: 'Order it online through Parchment.' }]);
   assert.match(rows[0].contentHash, /^[0-9a-f]{64}$/);
+});
+
+test("the athletics site's information pages are published as one site of their own", () => {
+  const { folders } = sectionSites();
+  assert.ok(folders.has(ATHLETICS_SITE_FOLDER));
+  const url = 'https://ramapoathletics.com/sports/2018/9/26/intramurals-and-competitive-sports-clubs';
+  const rows = officeSectionPages(new Map([page(url, [{ heading: 'Intramurals', text: 'Volleyball meets on Tuesdays.' }])]),
+    folders, new Map());
+  assert.deepEqual(rows.map(row => [row.folder, row.url]), [[ATHLETICS_SITE_FOLDER, url]]);
 });
 
 test('a page whose reviewed cut is no longer on it is left out rather than published uncut', () => {

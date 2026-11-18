@@ -68,5 +68,8 @@ export const SOURCES: SourceSeed[] = [
   // The college's athletics site: each varsity team's schedule (daily) and coaches page (weekly).
   { key: 'athletics-schedules', title: 'Ramapo Athletics Schedules', url: 'https://ramapoathletics.com/', trustTier: 'official_primary', freshnessHours: DAILY_SOURCE_FRESHNESS_HOURS, domain: 'athletics', addedOn: '2026-11-03' },
   { key: 'athletics-coaches', title: 'Ramapo Athletics Coaches', url: 'https://ramapoathletics.com/', trustTier: 'official_primary', freshnessHours: 168, domain: 'athletics', addedOn: '2026-11-03' },
+  // The athletics site's reviewed information pages (athletics-teams.json pages): intramurals and
+  // Bradley Center memberships, published as the Athletics office's pages (11-18, Dan's yes).
+  { key: 'athletics-pages', title: 'Ramapo Athletics Information Pages', url: 'https://ramapoathletics.com/', trustTier: 'official_primary', freshnessHours: 168, domain: 'athletics', addedOn: '2026-11-18' },
   { key: 'academic-sites', title: 'Ramapo College School, Program and Center Sites', url: 'https://www.ramapo.edu/', trustTier: 'official_primary', freshnessHours: 168, domain: 'academics' },
 ];
