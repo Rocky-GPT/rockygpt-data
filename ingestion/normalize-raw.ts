@@ -14,6 +14,7 @@ import { rebuildClubsFromRaw } from './archway-clubs';
 import { normalizeCatalogCapture, parseBooleanEnv } from './scrape-catalog-api';
 import { replayFacultySources, type FacultySourceCapture } from './replay-faculty';
 import { replayRawSourceCapture, type RawSourceCaptureV1 } from './raw-collector';
+import { PAGE_DATASETS } from './replay-raw';
 import { berrieEventsFromCapture, withBerrieEvents } from './berrie-events';
 
 export interface NormalizationOptions {
@@ -63,7 +64,7 @@ export function normalizeRaw(cwd = process.cwd(), options: NormalizationOptions 
   const collectedAt = new Date(Math.min(...hours.map(record => Date.parse(record.collectedAt!)))).toISOString();
   stage('hours-omissions', { version: 1, collectedAt, omitted: publication.omitted });
 
-  for (const name of ['transportation', 'directory', 'reviewed-contacts', 'housing', 'health', 'counseling', 'safety', 'major-page-links', 'office-pages', 'academic-sites']) {
+  for (const name of PAGE_DATASETS) {
     const original = validateRawDatasetV1(read(`${name}.raw.json`));
     const dataset = validateRawDatasetV1(replayRawSourceCapture(read(`${name}-sources.raw.json`) as RawSourceCaptureV1));
     const pageIdentities = (pages: typeof dataset.pages) => pages.map(page =>
