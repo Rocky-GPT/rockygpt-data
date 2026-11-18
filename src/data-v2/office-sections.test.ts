@@ -90,3 +90,16 @@ test('a page keeps the date it says it was last changed, and a page that says no
     ['www.ramapo.edu/healthservices/faq/', '2025-01-29T21:09:46.000Z'],
     ['www.ramapo.edu/healthservices/old/', undefined]]);
 });
+
+test('a section is published with its lines when the capture kept them', () => {
+  const pages = new Map([page('https://www.ramapo.edu/tutoring/', [
+    { heading: 'Calculus I', text: 'Walk-in Monday 1 PM Friday 2 PM',
+      shaped: 'Walk-in: Monday 1 PM\nWalk-in: Friday 2 PM' },
+    { heading: 'FAQ', text: 'Intro. Is it free? Yes. It is.', shaped: 'Intro.\nIs it free?\nYes.\nIt is.',
+      questions: [{ question: 'Is it free?', answer: 'Yes. It is.', shaped: 'Yes.\nIt is.' }] }])]);
+  const rows = officeSectionPages(pages, new Set(['tutoring']), new Map());
+  assert.deepEqual(rows[0].sections, [
+    { heading: 'Calculus I', text: 'Walk-in: Monday 1 PM\nWalk-in: Friday 2 PM' },
+    { heading: 'FAQ', text: 'Intro.' },
+    { heading: 'Is it free?', text: 'Yes.\nIt is.' }]);
+});

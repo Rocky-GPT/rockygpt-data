@@ -92,7 +92,7 @@ export function catalogPolicyPages(capture: CatalogPoliciesCapture): OfficeSecti
     const parsed = buildRawPageFromHtml({ url: base, html: `<main>${policy.html}</main>`, sourceType: 'seed',
       allowedHost: 'catalog.ramapo.edu' });
     const sections = parsed.sections
-      .map(section => ({ heading: section.heading.replace(/\s+/g, ' ').trim(), text: section.text.trim().slice(0, MAX_SECTION_CHARS) }))
+      .map(section => ({ heading: section.heading.replace(/\s+/g, ' ').trim(), text: (section.shaped ?? section.text).trim().slice(0, MAX_SECTION_CHARS) }))
       .filter(section => section.text)
       .map(section => (section.heading === policy.name || !section.heading || section.heading === 'Overview'
         ? { ...section, heading: policy.name } : { ...section, heading: `${policy.name}: ${section.heading}` }))

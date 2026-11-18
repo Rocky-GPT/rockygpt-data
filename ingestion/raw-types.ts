@@ -17,7 +17,10 @@ export type RawPageV1 = {
   externalLinks: string[];
   /** parents: the headings and tab a section sits under, outermost first. */
   /** questions: the FAQ items (accordion question and answer) inside the section's text. */
-  sections: { heading: string; text: string; parents?: string[]; questions?: { question: string; answer: string }[] }[];
+  /** shaped: the text with its lines kept (one block per line, a paragraph's line breaks, a bold
+   * label carried onto each row under it), when that differs; `text` is the same words on one line. */
+  sections: { heading: string; text: string; shaped?: string; parents?: string[];
+    questions?: { question: string; answer: string; shaped?: string }[] }[];
   lists: string[][];
   tables: { headers: string[]; rows: string[][] }[];
   contacts: { name?: string; email?: string; phone?: string; office?: string }[];
@@ -79,11 +82,13 @@ function validateRawPageV1(page: unknown, index: number): RawPageV1 {
       return section.questions.map((entry, entryIndex) => {
         assert(isRecord(entry) && typeof entry.question === 'string' && typeof entry.answer === 'string',
           `${pathPrefix}.sections[${sectionIndex}].questions[${entryIndex}] needs a question and an answer`);
-        return { question: entry.question, answer: entry.answer };
+        return { question: entry.question, answer: entry.answer,
+          ...typeof entry.shaped === 'string' ? { shaped: entry.shaped } : {} };
       });
     })();
-    return { heading: section.heading, text: section.text, ...parents?.length ? { parents } : {},
-      ...questions?.length ? { questions } : {} };
+    return { heading: section.heading, text: section.text,
+      ...typeof section.shaped === 'string' ? { shaped: section.shaped } : {},
+      ...parents?.length ? { parents } : {}, ...questions?.length ? { questions } : {} };
   });
 
   assert(Array.isArray(page.lists), `${pathPrefix}.lists must be an array`);

@@ -282,6 +282,30 @@ function isLikelyDocument(url: string): boolean {
 
 /** Keep a source label next to its destination, including section anchors. */
 function textWithLinks($: ReturnType<typeof load>, element: AnyNode, baseUrl: string): string {
+  return cleanText(linkedCopy($, element, baseUrl).text());
+}
+
+/**
+ * An element's text as its lines: each line break (<br>) starts a new line. A paragraph that opens
+ * with a bold label over three or more lines ("<strong>Walk-in — No Appointment Required</strong>"
+ * then a row per tutor) keeps that label on each row under it, so a row is never read under the
+ * label before it (11-18 blind misses, root cause 9: a STEM Center walk-in row was said as
+ * appointment-only once the schedule was one run-on line).
+ */
+function shapedText($: ReturnType<typeof load>, element: AnyNode, baseUrl: string): string {
+  const copy = linkedCopy($, element, baseUrl);
+  copy.find('br').replaceWith('\n');
+  const lines = copy.text().split('\n').map(cleanText).filter(Boolean);
+  const first = copy.contents().toArray().find(child => child.type !== 'text' || cleanText((child as unknown as { data?: string }).data || ''));
+  const label = first && $(first).is('strong, b') ? cleanText($(first).text()) : '';
+  if (label && lines.length >= 3 && lines[0] === label) {
+    const name = label.replace(/[:\s]+$/, '');
+    return lines.slice(1).map(line => `${name}: ${line}`).join('\n');
+  }
+  return lines.join('\n');
+}
+
+function linkedCopy($: ReturnType<typeof load>, element: AnyNode, baseUrl: string) {
   const copy = $(element).clone();
   copy.find('a[href]').addBack('a[href]').each((_, anchor) => {
     const link = $(anchor);
@@ -295,7 +319,7 @@ function textWithLinks($: ReturnType<typeof load>, element: AnyNode, baseUrl: st
       || link.find('img[alt]').first().attr('alt') || '');
     link.text(label && label !== resolved ? `${label} (${resolved})` : resolved);
   });
-  return cleanText(copy.text());
+  return copy;
 }
 
 // A tab widget shows one panel at a time, and only the tab names what the panel is about:
@@ -355,24 +379,34 @@ function headingLevel(node: ReturnType<ReturnType<typeof load>>): number {
  * Locations" under Faculty Printing lists printers only faculty can use; without its parents it
  * read as every printer on campus (09-29). The page's h1 is its title, which is written anyway.
  */
+/** The row with `shaped` (its blocks one per line) when that says more than its one-line field. */
+function withShape<T extends Record<string, unknown>>(row: T, field: keyof T & string, blocks: string[]): T & { shaped?: string } {
+  const shaped = blocks.join('\n');
+  return shaped.includes('\n') || shaped !== row[field] ? { ...row, shaped } : row;
+}
+
 function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHeading: string): RawPageV1['sections'] {
   const sections: RawPageV1['sections'] = [];
   let heading = cleanText($('h1').first().text()) || initialHeading || 'Overview';
   let parents: string[] = [];
   let parts: string[] = [];
+  // The same blocks with their lines kept: one block per line, a table's rows and a paragraph's
+  // line breaks as lines (shapedText). `text` stays one line for every reader of it.
+  let shapedParts: string[] = [];
   // The headings open at this point, and the tab panel they belong to (none outside a panel).
   let open: Array<{ level: number; label: string; panel?: AnyNode }> = [];
   let panel: { node: AnyNode; label: string } | undefined;
   const labels = (entries = open) => entries.filter(entry => entry.level !== 1).map(entry => entry.label);
   // The FAQ items in the section being read (a WordPress accordion's question and its answer). The
   // section's own text is unchanged; its questions let a reader name the one asked.
-  let questions: Array<{ question: string; answer: string[]; item: AnyNode }> = [];
+  let questions: Array<{ question: string; answer: string[]; shaped: string[]; item: AnyNode }> = [];
   const flush = () => {
     const asked = questions.filter(entry => entry.answer.length)
-      .map(entry => ({ question: entry.question, answer: entry.answer.join(' ') }));
-    if (parts.length) sections.push({ heading, text: parts.join(' '), ...parents.length ? { parents } : {},
-      ...asked.length ? { questions: asked } : {} });
+      .map(entry => withShape({ question: entry.question, answer: entry.answer.join(' ') }, 'answer', entry.shaped));
+    if (parts.length) sections.push(withShape({ heading, text: parts.join(' '), ...parents.length ? { parents } : {},
+      ...asked.length ? { questions: asked } : {} }, 'text', shapedParts));
     parts = [];
+    shapedParts = [];
     questions = [];
   };
   // Walk in document order, including tables and nested content wrappers.
@@ -403,7 +437,10 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
         heading = panel.label;
         open.push({ level: 0, label: panel.label, panel: panel.node });
         const intro = panelIntro($, panel.node);
-        if (intro) parts.push(intro);
+        if (intro) {
+          parts.push(intro);
+          shapedParts.push(intro);
+        }
       } else {
         heading = open.at(-1)?.label || initialHeading || 'Overview';
         parents = labels(open.slice(0, -1));
@@ -425,7 +462,7 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
     if (node.is(FAQ_QUESTION)) {
       const question = cleanText(node.text());
       const item = node.closest('.item')[0];
-      if (question && item) questions.push({ question, answer: [], item });
+      if (question && item) questions.push({ question, answer: [], shaped: [], item });
     }
     if (node.parents('li, table').length) return;
     // An anchor already represented in a text block must not become a duplicate
@@ -435,9 +472,19 @@ function extractSections($: ReturnType<typeof load>, baseUrl: string, initialHea
       ? node.find('tr').toArray().map((row) => $(row).find('th, td').toArray()
         .map((cell) => textWithLinks($, cell, baseUrl)).join(' | ')).join('; ')
       : textWithLinks($, element, baseUrl);
-    if (text && !parts.includes(text)) parts.push(text);
+    const shaped = node.is('table')
+      ? node.find('tr').toArray().map((row) => $(row).find('th, td').toArray()
+        .map((cell) => textWithLinks($, cell, baseUrl)).join(' | ')).join('\n')
+      : shapedText($, element, baseUrl);
+    if (text && !parts.includes(text)) {
+      parts.push(text);
+      shapedParts.push(shaped || text);
+    }
     const asking = questions.at(-1);
-    if (text && asking && !node.is(FAQ_QUESTION) && node.closest('.item')[0] === asking.item) asking.answer.push(text);
+    if (text && asking && !node.is(FAQ_QUESTION) && node.closest('.item')[0] === asking.item) {
+      asking.answer.push(text);
+      asking.shaped.push(shaped || text);
+    }
   });
   flush();
   if (!sections.length) {

@@ -382,7 +382,8 @@ test("a WordPress FAQ accordion's questions are kept with its section, whose tex
   ]);
   assert.deepEqual(result.sections[0].questions, [
     { question: 'Will my credits be accepted?', answer: 'We accept up to 65 credits from a two-year school.' },
-    { question: 'Is there an application fee?', answer: 'The fee is $65. Waivers exist.' },
+    { question: 'Is there an application fee?', answer: 'The fee is $65. Waivers exist.',
+      shaped: 'The fee is $65.\nWaivers exist.' },
   ]);
 });
 
@@ -650,4 +651,40 @@ test('each download is counted by why it was asked', () => {
   assert.equal(downloadReason({ downloadedAt: recent }, undefined, true), 'dead');
   assert.equal(downloadReasonsLine({ edited: 3, undated: 2 }), '3 edited since the last download, 2 no edit date, on their night');
   assert.equal(downloadReasonsLine({}), 'none');
+});
+
+test('a section keeps its lines, and a bold label stays on each row under it', () => {
+  // 11-18 blind misses, root cause 9: the STEM Center's walk-in rows were read as appointment-only
+  // once a course's schedule was stored as one run-on line.
+  const result = buildRawPageFromHtml({url:'https://example.edu/tutoring/',sourceType:'seed',allowedHost:'example.edu',
+    html:`<main><h1>Tutoring</h1><h2>Calculus I</h2>
+      <p><strong>1-on-3 — Appointment Required</strong><br />
+      Monday 4:00–5:00 PM — Ana<br />
+      Tuesday 9:00–10:00 AM — Ben</p>
+      <p><strong>Walk-in — No Appointment Required</strong><br />Wednesday 1:00–2:00 PM — Cy<br />Friday 2:00–3:00 PM — Di</p>
+      <ul><li>Bring your notes</li><li>Arrive on time</li></ul>
+      <table><tr><th>Day</th><th>Room</th></tr><tr><td>Monday</td><td>G-131</td></tr></table></main>`});
+  const section = result.sections.find(s => s.heading === 'Calculus I');
+  assert.ok(section);
+  // The one-line text is what it always was, so every reader of it is unchanged.
+  assert.equal(section.text, '1-on-3 — Appointment Required Monday 4:00–5:00 PM — Ana Tuesday 9:00–10:00 AM — Ben '
+    + 'Walk-in — No Appointment RequiredWednesday 1:00–2:00 PM — CyFriday 2:00–3:00 PM — Di '
+    + 'Bring your notes Arrive on time Day | Room; Monday | G-131');
+  assert.equal(section.shaped, [
+    '1-on-3 — Appointment Required: Monday 4:00–5:00 PM — Ana',
+    '1-on-3 — Appointment Required: Tuesday 9:00–10:00 AM — Ben',
+    'Walk-in — No Appointment Required: Wednesday 1:00–2:00 PM — Cy',
+    'Walk-in — No Appointment Required: Friday 2:00–3:00 PM — Di',
+    'Bring your notes', 'Arrive on time', 'Day | Room', 'Monday | G-131'].join('\n'));
+  // A one-block section with no line break has no shaped copy.
+  const plain = buildRawPageFromHtml({url:'https://example.edu/a/',sourceType:'seed',allowedHost:'example.edu',
+    html:'<main><h1>A</h1><h2>B</h2><p>One paragraph.</p></main>'});
+  assert.equal(plain.sections.find(s => s.heading === 'B')?.shaped, undefined);
+});
+
+test('a checked dataset keeps each section\'s lines', () => {
+  const lined = buildRawPageFromHtml({url:'https://example.edu/t/',sourceType:'seed',allowedHost:'example.edu',
+    html:'<main><h1>T</h1><h2>Hours</h2><p>Monday 9-5</p><p>Friday 9-4</p></main>'});
+  const checked = validateRawDatasetV1({ ...dataset(0, 0), pages: [lined] });
+  assert.equal(checked.pages[0].sections.find(s => s.heading === 'Hours')?.shaped, 'Monday 9-5\nFriday 9-4');
 });
