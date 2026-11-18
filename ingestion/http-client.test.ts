@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { MENU_ATTEMPTS } from './birch-menu';
-import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
+import { DEFAULT_USER_AGENT, fetchWithPolicy, UnexpectedContentTypeError } from './http-client';
 
 test('a request without its own user agent sends a browser one that does not name the project', async () => {
   const original = globalThis.fetch;
@@ -45,6 +45,24 @@ test('a request that hangs is asked again, as many times as its caller allows', 
     calls = 0;
     await assert.rejects(ask(), /HTTP collection failed for GET https:\/\/menus\.example\.test\/day: Request timed out after 15ms\./);
     assert.equal(calls, 3);
+  } finally {
+    globalThis.fetch = original;
+  }
+});
+
+test('an answer of the wrong type is not asked for again: the same address gives the same answer', async () => {
+  const original = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async () => {
+    calls += 1;
+    return new Response('PNG', { headers: { 'content-type': 'image/png' } });
+  };
+  try {
+    await assert.rejects(
+      fetchWithPolicy('https://example.edu/home/pic/', {}, { attempts: 3, backoffBaseMs: 1, expectedContentTypes: ['text/html'] }),
+      (error: unknown) => error instanceof UnexpectedContentTypeError && /Unexpected content type "image\/png"/.test(error.message)
+    );
+    assert.equal(calls, 1);
   } finally {
     globalThis.fetch = original;
   }

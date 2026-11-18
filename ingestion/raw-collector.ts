@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { gunzipSync, gzipSync } from 'node:zlib';
 import { load } from 'cheerio';
 import type { AnyNode } from 'domhandler';
-import { DEFAULT_USER_AGENT, fetchWithPolicy } from './http-client';
+import { DEFAULT_USER_AGENT, fetchWithPolicy, UnexpectedContentTypeError } from './http-client';
 import { limit } from './limit';
 import { noteSiteDownloads, SiteFetchBlockedError } from './site-guard';
 import { writeJsonFile, writeRawProvenance } from './pipeline-utils';
@@ -74,6 +74,19 @@ export interface RawCollectorOptions {
    * Without it, such a page is downloaded on every collection.
    */
   undatedReuseDays?: number;
+  /**
+   * Nights between asks of a page that last answered "not found" (404 or 410) or was not a page at
+   * all (an image or file at an address without an extension), with retainSourceHtml. Such a page
+   * has nothing to read, so it is asked again only once a cycle, on its own night, in case it came
+   * back. Without it, such a page is asked on every collection.
+   */
+  deadReuseDays?: number;
+  /**
+   * Other collectors' captures whose pages this one takes without a request: a successful page that
+   * capture confirmed current within maxAgeHours (its fetchedAt). Two collectors that read the same
+   * page then ask the site for it once (11-18: the reviewed contact pages are office pages).
+   */
+  sharedCaptures?: ReadonlyArray<{ path: string; maxAgeHours: number }>;
 }
 
 /** Nights between downloads of a page its sitemap says nobody edited (listedReuseDays), by default. */
@@ -153,6 +166,8 @@ interface FetchHtmlResult {
   unchanged?: boolean;
   /** For a page reused on its sitemap's word: when its HTML was last downloaded (else fetchedAt). */
   downloadedAt?: string;
+  /** Why no page came back: 'not-html' when the address holds an image or a file, not a page. */
+  failure?: 'not-html';
 }
 
 /** The last capture's copy of a page, sent as validators and reused when the site says it has not changed. */
@@ -165,6 +180,7 @@ export interface PreviousSourcePage {
   lastModified?: string;
   /** When this HTML was downloaded: the capture's downloadedAt, else its fetchedAt. */
   downloadedAt?: string;
+  failure?: 'not-html';
 }
 
 export interface RawSourceCaptureV1 {
@@ -769,6 +785,109 @@ export function previousSourcePages(capturePath: string): Map<string, PreviousSo
   return pages;
 }
 
+/** Whether a captured page answered "not found", or was an image or a file, not a page. */
+export function deadPage(page: { statusCode: number | null; failure?: string }): boolean {
+  return page.statusCode === 404 || page.statusCode === 410 || (page.statusCode === null && page.failure === 'not-html');
+}
+
+/**
+ * The last capture's pages that answered "not found" or were not a page (deadPage), by requested
+ * URL, with when they were last asked. A missing or unreadable capture gives none.
+ */
+export function previousDeadPages(capturePath: string): Map<string, PreviousSourcePage> {
+  const pages = new Map<string, PreviousSourcePage>();
+  let capture: RawSourceCaptureV1;
+  try {
+    capture = JSON.parse(fs.readFileSync(capturePath, 'utf8')) as RawSourceCaptureV1;
+  } catch {
+    return pages;
+  }
+  if (capture?.schemaVersion !== 1 || !Array.isArray(capture.pages)) return pages;
+  for (const page of capture.pages) {
+    if (!deadPage(page)) continue;
+    let html: string;
+    try {
+      html = sourceHtml(page);
+    } catch {
+      continue;
+    }
+    const downloadedAt = page.downloadedAt ?? page.fetchedAt;
+    pages.set(page.requestedUrl, { url: page.url, statusCode: page.statusCode, html, contentType: page.contentType,
+      ...(downloadedAt ? { downloadedAt } : {}), ...(page.failure ? { failure: page.failure } : {}) });
+  }
+  return pages;
+}
+
+/**
+ * Other captures' successful pages confirmed current within their maxAgeHours of `now`, by
+ * requested URL; the first capture listed wins. Missing or unreadable captures give none.
+ */
+export function sharedSourcePages(captures: ReadonlyArray<{ path: string; maxAgeHours: number }>, now: number):
+  Map<string, PreviousSourcePage> {
+  const pages = new Map<string, PreviousSourcePage>();
+  for (const { path: capturePath, maxAgeHours } of captures) {
+    let capture: RawSourceCaptureV1;
+    try {
+      capture = JSON.parse(fs.readFileSync(capturePath, 'utf8')) as RawSourceCaptureV1;
+    } catch {
+      continue;
+    }
+    if (capture?.schemaVersion !== 1 || !Array.isArray(capture.pages)) continue;
+    for (const page of capture.pages) {
+      if (pages.has(page.requestedUrl)) continue;
+      if (page.statusCode === null || page.statusCode < 200 || page.statusCode >= 300) continue;
+      const confirmed = Date.parse(page.fetchedAt);
+      if (!Number.isFinite(confirmed) || now - confirmed > maxAgeHours * 3_600_000 || confirmed > now) continue;
+      let html: string;
+      try {
+        html = sourceHtml(page);
+      } catch {
+        continue;
+      }
+      if (!html || createHash('sha256').update(html).digest('hex') !== page.contentHash) continue;
+      const downloadedAt = page.downloadedAt ?? page.fetchedAt;
+      pages.set(page.requestedUrl, { url: page.url, statusCode: page.statusCode, html, contentType: page.contentType,
+        ...(downloadedAt ? { downloadedAt } : {}) });
+    }
+  }
+  return pages;
+}
+
+/** Why tonight's collection asks the site for a page, for the run's note of what was read. */
+export type DownloadReason = 'edited' | 'scheduled' | 'undated' | 'dead' | 'new';
+
+/**
+ * Why a page reuseTonight did not reuse is asked tonight: its sitemap says it was edited since the
+ * last download, it is its night in its cycle (dated or undated), it was dead (deadPage) and is
+ * asked again on its night, or there is no usable last copy (new, failed last time, or a source
+ * that keeps none).
+ */
+export function downloadReason(previous: { downloadedAt?: string } | undefined, editedAt: string | undefined,
+  dead: boolean): DownloadReason {
+  if (dead) return 'dead';
+  const downloaded = previous?.downloadedAt ? Date.parse(previous.downloadedAt) : NaN;
+  if (!previous || !Number.isFinite(downloaded)) return 'new';
+  const edited = editedAt ? Date.parse(editedAt) : NaN;
+  if (Number.isFinite(edited)) return edited >= downloaded ? 'edited' : 'scheduled';
+  return 'undated';
+}
+
+const DOWNLOAD_REASON_WORDS: Record<DownloadReason, string> = {
+  edited: 'edited since the last download',
+  scheduled: 'unedited, on their night to be downloaded again',
+  undated: 'no edit date, on their night',
+  dead: '"not found" or not a page, asked again on their night',
+  new: 'no usable last copy',
+};
+
+/** The downloads of a collection by reason, as the run's note says them; reasons with none are left out. */
+export function downloadReasonsLine(counts: Readonly<Partial<Record<DownloadReason, number>>>): string {
+  const parts = (Object.keys(DOWNLOAD_REASON_WORDS) as DownloadReason[])
+    .filter(reason => (counts[reason] ?? 0) > 0)
+    .map(reason => `${counts[reason]} ${DOWNLOAD_REASON_WORDS[reason]}`);
+  return parts.length ? parts.join(', ') : 'none';
+}
+
 async function fetchHtmlWithRetry(
   url: string,
   timeoutMs: number,
@@ -817,7 +936,8 @@ async function fetchHtmlWithRetry(
     if (error instanceof SiteFetchBlockedError) throw error;
     // Say why, so a failed collection names the page and the reason instead of only a count.
     console.warn(`${url}: no usable page (${error instanceof Error ? error.message : String(error)})`);
-    return { url, statusCode: null, html: '', contentType: '' };
+    return { url, statusCode: null, html: '', contentType: '',
+      ...(error instanceof UnexpectedContentTypeError ? { failure: 'not-html' as const } : {}) };
   }
 }
 
@@ -961,22 +1081,44 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
   // the last capture is reused instead of downloaded again.
   const capturePath = path.join(path.dirname(options.outputPath), `${options.dataset}-sources.raw.json`);
   const previousPages = options.retainSourceHtml ? previousSourcePages(capturePath) : new Map<string, PreviousSourcePage>();
+  const deadPages = options.retainSourceHtml && options.deadReuseDays
+    ? previousDeadPages(capturePath) : new Map<string, PreviousSourcePage>();
+  const sharedPages = options.retainSourceHtml && options.sharedCaptures?.length
+    ? sharedSourcePages(options.sharedCaptures, Date.now()) : new Map<string, PreviousSourcePage>();
   let unchangedPages = 0;
   let reusedPages = 0;
+  let sharedReused = 0;
+  let deadReused = 0;
+  const downloadReasons: Partial<Record<DownloadReason, number>> = {};
   const reuseDays = options.listedReuseDays ?? LISTED_REUSE_DAYS;
   async function fetchSource(url: string, sourceType: 'seed' | 'detail'): Promise<FetchHtmlResult & { fetchedAt: string }> {
     const previous = previousPages.get(url);
+    const dead = previous ? undefined : deadPages.get(url);
+    const shared = sharedPages.get(url);
     let fetched: FetchHtmlResult;
     const editedAt = options.listedEditedAt?.(url);
+    const now = Date.now();
     if (previous && reuseTonight({ url, downloadedAt: previous.downloadedAt, ...(editedAt ? { editedAt } : {}) },
-      Date.now(), reuseDays, options.undatedReuseDays)) {
+      now, reuseDays, options.undatedReuseDays)) {
       // Not edited since the last download, and not this page's night to be downloaded again: no request at all.
       fetched = { url: previous.url, statusCode: previous.statusCode, html: previous.html,
         contentType: previous.contentType, ...(previous.etag ? { etag: previous.etag } : {}),
         ...(previous.lastModified ? { lastModified: previous.lastModified } : {}),
         unchanged: true, downloadedAt: previous.downloadedAt };
       reusedPages += 1;
+    } else if (shared) {
+      // Another collector read this page and confirmed it current recently: its copy, no request.
+      fetched = { url: shared.url, statusCode: shared.statusCode, html: shared.html, contentType: shared.contentType,
+        unchanged: true, downloadedAt: shared.downloadedAt };
+      sharedReused += 1;
+    } else if (dead && reuseTonight({ url, downloadedAt: dead.downloadedAt }, now, reuseDays, options.deadReuseDays)) {
+      // "Not found" or not a page last time, and not its night to be asked again: the same answer, no request.
+      fetched = { url: dead.url, statusCode: dead.statusCode, html: dead.html, contentType: dead.contentType,
+        downloadedAt: dead.downloadedAt, ...(dead.failure ? { failure: dead.failure } : {}) };
+      deadReused += 1;
     } else {
+      const reason = downloadReason(previous ?? dead, editedAt, Boolean(dead));
+      downloadReasons[reason] = (downloadReasons[reason] ?? 0) + 1;
       await pace();
       fetched = await fetchHtmlWithRetry(url, timeoutMs, attempts, previous);
     }
@@ -1095,10 +1237,12 @@ export async function collectRawDataset(options: RawCollectorOptions): Promise<R
     }, path.dirname(options.outputPath));
     collectionSucceeded = true;
     if (options.retainSourceHtml) {
-      noteSiteDownloads(`${options.dataset}: ${unchangedPages} of ${sourcePages.length} pages unchanged since the last capture ` +
-        `(${reusedPages} not edited since and not on their night to be downloaded again, not asked; ` +
-        `${unchangedPages - reusedPages} asked, not downloaded again); ` +
-        `${sourcePages.length - unchangedPages} downloaded.`);
+      const asked = sourcePages.length - reusedPages - sharedReused - deadReused;
+      noteSiteDownloads(`${options.dataset}: ${sourcePages.length} pages; ${asked} asked of the site ` +
+        `(${downloadReasonsLine(downloadReasons)}); not asked: ${reusedPages} not edited since and not on their night` +
+        (sharedReused ? `, ${sharedReused} taken from another collector's copy` : '') +
+        (deadReused ? `, ${deadReused} "not found" or not a page last time` : '') +
+        `; ${unchangedPages - reusedPages - sharedReused} asked but not changed (304).`);
     }
     return dataset;
   } finally {

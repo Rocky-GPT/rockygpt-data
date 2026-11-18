@@ -126,16 +126,21 @@ test('a course catalog captured before courses carried requisites is recollected
   assert.equal(coursesArtifactRequiresRefresh({}), true);
 });
 
-test('the office and school sites are collected every night, even when fresh, and keep their week-long window', () => {
-  assert.deepEqual([...NIGHTLY_SOURCES].sort(), ['academic-sites', 'office-pages']);
+test('the www.ramapo.edu sites read by edit date are collected every night, even when fresh, and keep their week-long window', () => {
+  assert.deepEqual([...NIGHTLY_SOURCES].sort(),
+    ['academic-sites', 'counseling', 'health', 'housing', 'office-pages', 'public-safety', 'transportation']);
   const week = 168;
   const collectedLastNight = [
+    { key: 'public-safety', status: 'fresh' as const, ageHours: 24, maxAgeHours: week },
+    { key: 'campus-hours', status: 'fresh' as const, ageHours: 24, maxAgeHours: week },
+    { key: 'campus-directory', status: 'fresh' as const, ageHours: 24, maxAgeHours: week },
     { key: 'office-pages', status: 'fresh' as const, ageHours: 24, maxAgeHours: week },
     { key: 'academic-sites', status: 'fresh' as const, ageHours: 24, maxAgeHours: week },
-    { key: 'public-safety', status: 'fresh' as const, ageHours: 24, maxAgeHours: week },
   ];
-  // Office pages come first: the school collector skips the pages the office collector keeps.
-  assert.deepEqual(refreshScriptsForStates(collectedLastNight), ['fetch:office-pages', 'fetch:academic-sites']);
+  // Hours and the directory stay weekly: their pages change without an edit. Office pages come
+  // after the smaller site sources and before the schools: each skips the pages the earlier ones keep.
+  assert.deepEqual(refreshScriptsForStates(collectedLastNight),
+    ['fetch:safety:raw', 'fetch:office-pages', 'fetch:academic-sites']);
   // Their window stays a week, so one failed night keeps the last copy instead of stopping the publish.
   for (const key of NIGHTLY_SOURCES) {
     assert.equal(SOURCES.find(source => source.key === key)?.freshnessHours, week);
