@@ -1,6 +1,6 @@
 import path from 'path';
 import { fetchWithPolicy } from './http-client';
-import { isRawOnlyMode, runGeneratorScript, writeJsonFile, writeRawProvenance } from './pipeline-utils';
+import { isRawOnlyMode, writeJsonFile, writeRawProvenance } from './pipeline-utils';
 import { collectMenuDates, normalizeMenuWeek } from './menu-data';
 
 const DEFAULT_API_URL = 'https://api-prd.sodexomyway.net/v0.2/data/menu/97508001/1411019';
@@ -19,7 +19,6 @@ const NORMALIZED_WEEK_JSON_OUTPUT_PATH = path.join(
   'normalized',
   'menu-week.json'
 );
-const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-menu-md.ts');
 
 async function resolveActiveMenuApiUrl(): Promise<string> {
   try {
@@ -153,7 +152,6 @@ async function fetchBirchMenu() {
     writeJsonFile(NORMALIZED_JSON_OUTPUT_PATH, normalizedMenuData);
     console.log(`Saved normalized menu data to ${NORMALIZED_JSON_OUTPUT_PATH}`);
 
-    runGeneratorScript(MARKDOWN_GENERATOR_PATH);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Error fetching menu:', message);

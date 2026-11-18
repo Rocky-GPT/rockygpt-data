@@ -1,6 +1,6 @@
 import path from 'path';
 import { fetchWithPolicy } from './http-client';
-import { isRawOnlyMode, runGeneratorScript, writeJsonFile, writeRawProvenance } from './pipeline-utils';
+import { isRawOnlyMode, writeJsonFile, writeRawProvenance } from './pipeline-utils';
 import { validateDiningHoursState } from './schema';
 import { chromium } from 'playwright';
 import { applyRenderedClosures, captureRenderedDiningHours, type RenderedDiningHours } from './dining-rendered';
@@ -9,7 +9,6 @@ const URL = 'https://ramapo.sodexomyway.com/en-us/locations/hours';
 const RAW_JSON_OUTPUT_PATH = path.join(process.cwd(), 'data', 'raw', 'dining-hours.raw.json');
 const RENDERED_JSON_OUTPUT_PATH = path.join(process.cwd(), 'data', 'raw', 'dining-hours-rendered.raw.json');
 const NORMALIZED_JSON_OUTPUT_PATH = path.join(process.cwd(), 'data', 'normalized', 'dining-hours.json');
-const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-dining-hours-md.ts');
 
 function extractPreloadedState(html: string): unknown {
   const marker = 'window.__PRELOADED_STATE__ =';
@@ -100,7 +99,6 @@ async function fetchDiningHours() {
     writeJsonFile(NORMALIZED_JSON_OUTPUT_PATH, normalizedState);
     console.log(`Saved normalized dining-hours data to ${NORMALIZED_JSON_OUTPUT_PATH}`);
 
-    runGeneratorScript(MARKDOWN_GENERATOR_PATH);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Error fetching dining data:', message);

@@ -14,7 +14,6 @@ import { RELEASE_ARTIFACT_FILES } from './release-artifact-files';
 import {
   RELEASE_SNAPSHOT_FILE,
   inJsonbKeyOrder,
-  md5,
   readReleaseSnapshot,
   sha256,
   type ReleaseSnapshot,
@@ -32,11 +31,6 @@ export interface ActiveReleaseArtifact {
   payload: unknown;
 }
 
-export interface ActiveReleaseDocument {
-  content: string;
-  metadata: unknown;
-}
-
 interface ActiveSourceArtifact {
   sourceKey: string;
   rawUri: string | null;
@@ -47,10 +41,9 @@ interface ActiveSourceArtifact {
 interface LoadedActiveRelease {
   release: ActiveReleaseIdentity;
   artifacts: ActiveReleaseArtifact[];
-  documents: ActiveReleaseDocument[];
   rawArtifacts: ActiveSourceArtifact[];
-  /** How many artifacts and documents came from the database rather than the saved copy. */
-  downloaded: { artifacts: number; documents: number };
+  /** How many artifacts came from the database rather than the saved copy. */
+  downloaded: { artifacts: number };
 }
 
 export interface RestoreActiveReleaseOptions {
@@ -84,10 +77,8 @@ export interface RestoreActiveReleaseSummary {
   version: string;
   artifactsRestored: number;
   artifactFilesWritten: number;
-  documentsRestored: number;
-  /** Artifacts and documents read from the database; the rest matched the saved copy. */
+  /** Artifacts read from the database; the rest matched the saved copy. */
   artifactsDownloaded: number;
-  documentsDownloaded: number;
   rawRestoreEnabled: boolean;
   rawSourcesRestored: number;
   rawFilesRestored: number;
@@ -98,7 +89,7 @@ export interface RestoreActiveReleaseSummary {
 
 /**
  * Sources a run may restore from an archived capture the active release does not hold. Each is
- * collected as pages only (raw-collector.ts), and normalize:raw and generate:context rebuild all
+ * collected as pages only (raw-collector.ts), and normalize:raw rebuilds all
  * it publishes from those pages, so the archived bundle is everything its collector wrote. They
  * are also nearly all of a night's requests to Ramapo's sites (3,631 pages on November 10, 2026).
  */
@@ -173,19 +164,6 @@ const RAW_ARTIFACT_ENV_KEYS = [
   'RAW_ARTIFACT_SECRET_ACCESS_KEY',
 ] as const;
 
-function writeTextFile(filePath: string, content: string): void {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const temporaryPath = `${filePath}.tmp-${process.pid}-${Date.now()}-${Math.random()
-    .toString(16)
-    .slice(2)}`;
-  try {
-    fs.writeFileSync(temporaryPath, content, 'utf8');
-    fs.renameSync(temporaryPath, filePath);
-  } finally {
-    if (fs.existsSync(temporaryPath)) fs.rmSync(temporaryPath, { force: true });
-  }
-}
-
 export function rawArtifactRestoreEnabled(
   env: RestoreEnvironment,
   requireRawArtifacts: boolean
@@ -200,33 +178,6 @@ export function rawArtifactRestoreEnabled(
     );
   }
   return true;
-}
-
-export function safeDocumentSourcePath(metadata: unknown): string {
-  if (!metadata || typeof metadata !== 'object') {
-    throw new Error('Active release document is missing metadata.');
-  }
-  const sourcePath = (metadata as { sourcePath?: unknown }).sourcePath;
-  if (typeof sourcePath !== 'string' || !sourcePath.trim()) {
-    throw new Error('Active release document is missing metadata.sourcePath.');
-  }
-  if (
-    sourcePath.includes('\\') ||
-    sourcePath.includes('\0') ||
-    path.posix.isAbsolute(sourcePath)
-  ) {
-    throw new Error(`Unsafe active release document path: ${sourcePath}`);
-  }
-  const normalized = path.posix.normalize(sourcePath);
-  if (
-    normalized !== sourcePath ||
-    normalized === '.' ||
-    normalized.startsWith('../') ||
-    !normalized.endsWith('.md')
-  ) {
-    throw new Error(`Unsafe active release document path: ${sourcePath}`);
-  }
-  return normalized;
 }
 
 function validatedArtifactMap(
@@ -245,33 +196,13 @@ function validatedArtifactMap(
   return byKey;
 }
 
-function validatedDocuments(
-  documents: ReadonlyArray<ActiveReleaseDocument>
-): Array<{ sourcePath: string; content: string }> {
-  if (!documents.length) throw new Error('Active release has no context documents.');
-  const seen = new Set<string>();
-  return documents.map((document) => {
-    const sourcePath = safeDocumentSourcePath(document.metadata);
-    if (seen.has(sourcePath)) {
-      throw new Error(`Active release contains duplicate document path: ${sourcePath}.`);
-    }
-    seen.add(sourcePath);
-    if (typeof document.content !== 'string' || !document.content.trim()) {
-      throw new Error(`Active release document is empty: ${sourcePath}.`);
-    }
-    return { sourcePath, content: document.content };
-  });
-}
-
 export function restoreActiveReleaseFiles(input: {
   rootDir: string;
   release: ActiveReleaseIdentity;
   artifacts: ReadonlyArray<ActiveReleaseArtifact>;
-  documents: ReadonlyArray<ActiveReleaseDocument>;
-}): { artifactsRestored: number; artifactFilesWritten: number; documentsRestored: number } {
+}): { artifactsRestored: number; artifactFilesWritten: number } {
   const rootDir = path.resolve(input.rootDir);
   const artifacts = validatedArtifactMap(input.artifacts);
-  const documents = validatedDocuments(input.documents);
   let artifactFilesWritten = 0;
 
   for (const [key, relativePaths] of Object.entries(RELEASE_ARTIFACT_TARGETS)) {
@@ -291,21 +222,8 @@ export function restoreActiveReleaseFiles(input: {
     }
   }
 
-  const contextRoot = path.join(rootDir, 'data', 'context');
-  fs.rmSync(contextRoot, { recursive: true, force: true });
-  fs.mkdirSync(contextRoot, { recursive: true });
-  for (const document of documents) {
-    const destination = path.resolve(contextRoot, document.sourcePath);
-    if (!destination.startsWith(`${contextRoot}${path.sep}`)) {
-      throw new Error(`Unsafe active release document path: ${document.sourcePath}`);
-    }
-    writeTextFile(destination, document.content);
-  }
-
   writeJsonFile(path.join(rootDir, 'data', 'cache', 'corpus-version.json'), {
     updatedAt: input.release.activatedAt,
-    contextIngestedAt: input.release.activatedAt,
-    contextSourceCount: documents.length,
     datasetVersion: input.release.version,
     datasetVersionId: input.release.datasetId,
   });
@@ -313,24 +231,21 @@ export function restoreActiveReleaseFiles(input: {
   return {
     artifactsRestored: Object.keys(RELEASE_ARTIFACT_TARGETS).filter((key) => artifacts.has(key)).length,
     artifactFilesWritten,
-    documentsRestored: documents.length,
   };
 }
 
 /**
- * The artifacts and documents the saved copy holds with the database's exact hashes. An artifact
+ * The artifacts the saved copy holds with the database's exact hashes. An artifact
  * is parsed as the database would return its jsonb payload, so either way the same files are
  * written.
  */
 export function fromSnapshot(
   snapshot: ReleaseSnapshot | null,
-  artifactHashes: ReadonlyArray<{ artifact_key: string; content_hash: string }>,
-  documentHashes: ReadonlyArray<{ source_path: string | null; content_md5: string }>
+  artifactHashes: ReadonlyArray<{ artifact_key: string; content_hash: string }>
 ): {
   artifacts: Array<{ key: string; payload: unknown }>;
-  documents: Array<{ sourcePath: string; content: string }>;
 } {
-  if (!snapshot) return { artifacts: [], documents: [] };
+  if (!snapshot) return { artifacts: [] };
   const artifacts: Array<{ key: string; payload: unknown }> = [];
   for (const { artifact_key: key, content_hash: hash } of artifactHashes) {
     const text = snapshot.artifacts[key];
@@ -344,13 +259,7 @@ export function fromSnapshot(
       // Unreadable here: read from the database instead.
     }
   }
-  const documents: Array<{ sourcePath: string; content: string }> = [];
-  for (const { source_path: sourcePath, content_md5: hash } of documentHashes) {
-    if (sourcePath === null) continue;
-    const content = snapshot.documents[sourcePath];
-    if (content !== undefined && md5(content) === hash) documents.push({ sourcePath, content });
-  }
-  return { artifacts, documents };
+  return { artifacts };
 }
 
 async function loadActiveRelease(
@@ -386,35 +295,22 @@ async function loadActiveRelease(
       activatedAt: new Date(row.activated_at).toISOString(),
     };
 
-    // Only the hashes first: an artifact or document the saved copy already holds (same hash)
-    // is not downloaded again; the rest are read in this same snapshot of the database.
+    // Only the hashes first: an artifact the saved copy already holds (same hash) is not
+    // downloaded again; the rest are read in this same snapshot of the database.
     const restoredKeys = Object.keys(RELEASE_ARTIFACT_TARGETS);
-    const [artifactHashes, documentHashes] = await Promise.all([
-      client.query<{ artifact_key: string; content_hash: string }>(
-        `SELECT artifact_key, content_hash
-         FROM rockygpt_v2.release_artifacts
-         WHERE dataset_version_id = $1::uuid AND artifact_key = ANY($2::text[])
-         ORDER BY artifact_key`,
-        [release.datasetId, restoredKeys]
-      ),
-      client.query<{ source_path: string | null; content_md5: string }>(
-        `SELECT metadata->>'sourcePath' AS source_path, md5(content) AS content_md5
-         FROM rockygpt_v2.documents
-         WHERE dataset_version_id = $1::uuid
-         ORDER BY metadata->>'sourcePath'`,
-        [release.datasetId]
-      ),
-    ]);
-    const kept = fromSnapshot(snapshot, artifactHashes.rows, documentHashes.rows);
+    const artifactHashes = await client.query<{ artifact_key: string; content_hash: string }>(
+      `SELECT artifact_key, content_hash
+       FROM rockygpt_v2.release_artifacts
+       WHERE dataset_version_id = $1::uuid AND artifact_key = ANY($2::text[])
+       ORDER BY artifact_key`,
+      [release.datasetId, restoredKeys]
+    );
+    const kept = fromSnapshot(snapshot, artifactHashes.rows);
     const missingKeys = artifactHashes.rows
       .map((row) => row.artifact_key)
       .filter((key) => !kept.artifacts.some((artifact) => artifact.key === key));
-    const keptPaths = new Set(kept.documents.map((document) => document.sourcePath));
-    const missingPaths = documentHashes.rows
-      .filter((row) => row.source_path === null || !keptPaths.has(row.source_path))
-      .map((row) => row.source_path);
 
-    const [artifactResult, documentResult, rawResult] = await Promise.all([
+    const [artifactResult, rawResult] = await Promise.all([
       missingKeys.length
         ? client.query<{ artifact_key: string; payload: unknown }>(
             `SELECT artifact_key, payload
@@ -422,16 +318,6 @@ async function loadActiveRelease(
              WHERE dataset_version_id = $1::uuid AND artifact_key = ANY($2::text[])
              ORDER BY artifact_key`,
             [release.datasetId, missingKeys]
-          )
-        : { rows: [] },
-      missingPaths.length
-        ? client.query<{ content: string; metadata: unknown }>(
-            `SELECT content, metadata
-             FROM rockygpt_v2.documents
-             WHERE dataset_version_id = $1::uuid
-               AND (metadata->>'sourcePath' = ANY($2::text[]) OR metadata->>'sourcePath' IS NULL)
-             ORDER BY metadata->>'sourcePath'`,
-            [release.datasetId, missingPaths.filter((sourcePath) => sourcePath !== null)]
           )
         : { rows: [] },
       client.query<{
@@ -468,11 +354,7 @@ async function loadActiveRelease(
           payload: artifact.payload,
         })),
       ],
-      documents: [
-        ...kept.documents.map(({ sourcePath, content }) => ({ content, metadata: { sourcePath } })),
-        ...documentResult.rows,
-      ],
-      downloaded: { artifacts: artifactResult.rows.length, documents: documentResult.rows.length },
+      downloaded: { artifacts: artifactResult.rows.length },
       rawArtifacts: rawResult.rows.map((artifact) => ({
         sourceKey: artifact.source_key,
         rawUri: artifact.raw_uri,
@@ -624,7 +506,6 @@ export async function restoreActiveRelease(
       rootDir,
       release: loaded.release,
       artifacts: loaded.artifacts,
-      documents: loaded.documents,
     });
 
     let rawFilesRestored = 0;
@@ -647,7 +528,6 @@ export async function restoreActiveRelease(
       version: loaded.release.version,
       ...restored,
       artifactsDownloaded: loaded.downloaded.artifacts,
-      documentsDownloaded: loaded.downloaded.documents,
       rawRestoreEnabled,
       rawSourcesRestored: downloadedRaw.length - rawSourcesRequiringRefresh.length,
       rawFilesRestored,

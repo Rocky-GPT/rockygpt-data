@@ -4,7 +4,6 @@ import { load } from 'cheerio';
 import { fetchWithPolicy } from './http-client';
 import {
     isRawOnlyMode,
-    runGeneratorScript,
     writeJsonFile,
     writeRawProvenance,
 } from './pipeline-utils';
@@ -17,7 +16,6 @@ import { attachReviewedHoursAbsences, CHANGED_HOURS_REPORT, changedHoursReport }
 const RAW_JSON_PATH = path.join(process.cwd(), 'data', 'raw', 'hours.raw.json');
 const PUBLIC_JSON_PATH = publicPath('data', 'hours.json');
 const RAG_JSON_PATH = path.join(process.cwd(), 'data', 'normalized', 'hours.json');
-const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-hours-md.ts');
 export const ATHLETICS_HOURS_URL = 'https://ramapoathletics.com/sports/2008/1/21/bradleycenterhours.aspx';
 
 export const LIBRARY_HOURS_URL = 'https://www.ramapo.edu/library/library-hours/';
@@ -1177,7 +1175,6 @@ async function fetchCampusHours() {
     writeJsonFile(PUBLIC_JSON_PATH, normalizedHours);
     writeJsonFile(RAG_JSON_PATH, normalizedHours);
     writeJsonFile(OMISSIONS_PATH, { version: 1, collectedAt: fetchedAt, omitted: publication.omitted });
-    runGeneratorScript(MARKDOWN_GENERATOR_PATH);
 }
 
 if (process.argv[1]?.endsWith('campus-hours.ts')) {

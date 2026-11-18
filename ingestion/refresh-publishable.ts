@@ -298,10 +298,10 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
     requireRawArtifacts: true, allowIncompleteRawArtifacts: true, reuseUnpublishedCaptures: true,
   });
   console.log(
-    `Bootstrapped ${restored.version}: ${restored.artifactFilesWritten} release artifact file(s), ` +
-      `${restored.documentsRestored} context document(s), and ${restored.rawFilesRestored} raw file(s) ` +
+    `Bootstrapped ${restored.version}: ${restored.artifactFilesWritten} release artifact file(s) ` +
+      `and ${restored.rawFilesRestored} raw file(s) ` +
       `for ${restored.rawSourcesRestored} source(s); downloaded from the database: ` +
-      `${restored.artifactsDownloaded} artifact(s) and ${restored.documentsDownloaded} document(s) ` +
+      `${restored.artifactsDownloaded} artifact(s) ` +
       `(the rest matched the last publish's saved copy).`
   );
   startSiteDownloadsNote();
@@ -406,7 +406,6 @@ function rebuildProjections(): void {
   // event/club detail pages; never relabel old normalized content as fresh.
   runNpmScript('quality:raw', false);
   runNpmScript('normalize:raw', false);
-  runNpmScript('generate:context', false);
 }
 
 async function rebuildFromCapturedPages(): Promise<void> {
@@ -414,7 +413,7 @@ async function rebuildFromCapturedPages(): Promise<void> {
   console.log(
     `Dev build from production's ${restored.version}: ${restored.rawFilesRestored} raw file(s) for ` +
       `${restored.rawSourcesRestored} source(s); downloaded from the database: ` +
-      `${restored.artifactsDownloaded} artifact(s) and ${restored.documentsDownloaded} document(s) ` +
+      `${restored.artifactsDownloaded} artifact(s) ` +
       `(the rest matched the last publish's saved copy).`
   );
   startSiteDownloadsNote();

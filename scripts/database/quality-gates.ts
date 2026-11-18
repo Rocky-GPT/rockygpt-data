@@ -35,12 +35,6 @@ interface SourceGate<T> {
   quality?: (data: T) => string[];
 }
 
-interface MarkdownGate {
-  name: string;
-  filePath: string;
-  minBytes: number;
-}
-
 interface RawGate {
   name: string;
   filePath: string;
@@ -124,20 +118,6 @@ function runSourceGate<T>(gate: SourceGate<T>, errors: string[], warnings: strin
     // Optional means absence/staleness is tolerated. If an optional artifact
     // is present, invalid or contaminated content must still fail closed.
     errors.push(formatted);
-  }
-}
-
-function runMarkdownGate(gate: MarkdownGate, errors: string[]): void {
-  if (!fs.existsSync(gate.filePath)) {
-    errors.push(`${gate.name}: missing markdown output ${gate.filePath}`);
-    return;
-  }
-
-  const bytes = fs.statSync(gate.filePath).size;
-  if (bytes < gate.minBytes) {
-    errors.push(
-      `${gate.name}: markdown output is too small (${bytes} bytes, expected >= ${gate.minBytes})`
-    );
   }
 }
 
@@ -491,36 +471,7 @@ export function runDataQualityGates(cwd = process.cwd(), options: DataQualityOpt
     },
   ];
 
-  const markdownGates: MarkdownGate[] = [
-    {
-      name: 'menu.md',
-      filePath: path.join(cwd, 'data', 'context', 'dining', 'menu.md'),
-      minBytes: 100,
-    },
-    {
-      name: 'dining hours.md',
-      filePath: path.join(cwd, 'data', 'context', 'dining', 'hours.md'),
-      minBytes: 100,
-    },
-    {
-      name: 'live-events.md',
-      filePath: path.join(cwd, 'data', 'context', 'campus', 'live-events.md'),
-      minBytes: 50,
-    },
-    {
-      name: 'campus hours.md',
-      filePath: path.join(cwd, 'data', 'context', 'campus', 'hours.md'),
-      minBytes: 100,
-    },
-    {
-      name: 'clubs.md',
-      filePath: path.join(cwd, 'data', 'context', 'campus', 'clubs.md'),
-      minBytes: 100,
-    },
-  ];
-
   sourceGates.forEach((gate) => runSourceGate(gate, errors, warnings));
-  markdownGates.forEach((gate) => runMarkdownGate(gate, errors));
   errors.push(...collectPublishableArtifactErrors(cwd));
 
   if (options.includeRaw !== false) {

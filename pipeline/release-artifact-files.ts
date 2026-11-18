@@ -19,9 +19,6 @@ export const RELEASE_ARTIFACT_FILES: Readonly<Record<string, string>> = {
   'major-pages': 'public/data/major-pages.json',
   menu: 'data/normalized/menu.json',
   'menu-week': 'data/normalized/menu-week.json',
-  'menu-context': 'data/context/dining/menu.md',
   'dining-hours': 'data/normalized/dining-hours.json',
   faculty: 'data/normalized/faculty.json',
-  transportation: 'data/context/campus/transportation.md',
-  'dining-hours-context': 'data/context/dining/hours.md',
 };

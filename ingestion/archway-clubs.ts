@@ -8,7 +8,6 @@ import { fetchWithPolicy } from './http-client';
 import {
   assertCollectionCount,
   isRawOnlyMode,
-  runGeneratorScript,
   writeJsonFile,
   writeRawProvenance,
 } from './pipeline-utils';
@@ -28,7 +27,6 @@ const GROUPME_DIRECTORY_RAW_JSON_PATH = path.join(
 );
 const PUBLIC_JSON_PATH = publicPath('data', 'clubs.json');
 const RAG_JSON_PATH = path.join(process.cwd(), 'data', 'normalized', 'clubs.json');
-const MARKDOWN_GENERATOR_PATH = path.join(__dirname, 'generate-clubs-md.ts');
 
 const DEFAULT_USER_AGENT =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
@@ -1191,7 +1189,6 @@ async function fetchArchwayClubs() {
     writeJsonFile(RAG_JSON_PATH, normalizedClubs);
     console.log(`Saved normalized clubs to ${PUBLIC_JSON_PATH} and ${RAG_JSON_PATH}`);
 
-    runGeneratorScript(MARKDOWN_GENERATOR_PATH);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Fatal error:', message);

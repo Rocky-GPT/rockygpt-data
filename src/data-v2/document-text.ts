@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-import path from 'node:path';
 
 /**
  * Ingestion bookkeeping written into context markdown by the generators.
@@ -99,12 +97,4 @@ export function chunkDocumentSections(text: string): SectionChunk[] {
     }
   }
   return chunks;
-}
-
-export function listMarkdownFiles(root: string): string[] {
-  return fs
-    .readdirSync(root, { recursive: true })
-    .map(String)
-    .filter((entry) => entry.endsWith('.md'))
-    .map((entry) => path.join(root, entry));
 }

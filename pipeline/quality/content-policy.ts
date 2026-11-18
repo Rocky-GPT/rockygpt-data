@@ -7,7 +7,6 @@ type UnknownRecord = Record<string, unknown>;
 
 const PUBLISHABLE_ARTIFACT_ROOTS = [
   { relativePath: 'data/normalized', extensions: new Set(['.json']) },
-  { relativePath: 'data/context', extensions: new Set(['.md']) },
   { relativePath: 'public/data', extensions: new Set(['.json']) },
 ] as const;
 
