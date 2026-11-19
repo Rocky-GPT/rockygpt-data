@@ -66,9 +66,12 @@ class Live:
         self._events: dict[str, list[dict[str, Any]]] = {}
 
     def events(self, now: datetime) -> list[dict[str, Any]]:
+        """Every event from the start of the day asked on: "today before 2", asked in the
+        evening, is held to the morning's events too."""
         key = now.date().isoformat()
         if key not in self._events:
-            self._events[key] = self.engine._upcoming_events(now)
+            self._events[key] = self.engine._upcoming_events(
+                datetime.combine(now.date(), time(0, 0), tzinfo=now.tzinfo))
         return self._events[key]
 
     def breaks(self, now: datetime) -> list[tuple[str, date, date]]:
