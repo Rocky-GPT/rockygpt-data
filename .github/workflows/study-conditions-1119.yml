@@ -22,6 +22,11 @@ concurrency:
 env:
   EVALS_REF: afc55b8c6e942d7a7a7da97a0519cb2999265ac3
   BRANCH: claude/project-thread-859850
+  # Run 2 (after the fixes the first run found): both arms again, every question asked at
+  # 10 AM campus time today, rows in results2/. The first run's rows stay in results/ and are
+  # rescored by the same checker into results/rescore/.
+  RESULTS: conditions1119/results2
+  ASKED_AT: '10:00'
 
 jobs:
   ask:
@@ -109,11 +114,11 @@ jobs:
       - name: Commit the rows to this branch
         run: |
           cd data
-          mkdir -p conditions1119/results
-          cp "$GITHUB_WORKSPACE/${{ matrix.arm }}.json" conditions1119/results/
+          mkdir -p "$RESULTS"
+          cp "$GITHUB_WORKSPACE/${{ matrix.arm }}.json" "$RESULTS/"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add conditions1119/results
+          git add "$RESULTS"
           git commit -m "Study rows: condition pairs ${{ matrix.arm }}"
           for i in 1 2 3 4 5; do
             git pull --rebase origin "$BRANCH" && git push origin "HEAD:$BRANCH" && break
@@ -161,15 +166,17 @@ jobs:
 
       - name: Check every answer and pair
         run: |
+          python data/conditions1119/check.py "data/$RESULTS/before.json" \
+            "data/$RESULTS/after.json" "data/$RESULTS"
           python data/conditions1119/check.py data/conditions1119/results/before.json \
-            data/conditions1119/results/after.json data/conditions1119/results
+            data/conditions1119/results/after.json data/conditions1119/results/rescore
 
       - name: Commit the report to this branch
         run: |
           cd data
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add conditions1119/results
+          git add "$RESULTS" conditions1119/results/rescore
           git commit -m "Study report: condition pairs"
           for i in 1 2 3 4 5; do
             git pull --rebase origin "$BRANCH" && git push origin "HEAD:$BRANCH" && break

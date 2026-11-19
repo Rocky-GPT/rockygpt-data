@@ -31,6 +31,43 @@ NONE_SAID = re.compile(
     r"\b(?:doesn't|does not|don't|do not) (?:list|show|see|have)\b|\bnone\b|"
     r"\bisn't (?:listed|any)\b|\bno (?:\w+ ){0,2}listed\b", re.I)
 CANT_CHECK = re.compile(r"can't check|cannot check|can't tell|not narrowed|wasn't sure", re.I)
+# What an answer gives as outside the conditions, labelled so: a team's next game after "has no
+# game listed ...", every team's next one after "None of the team schedules lists ...", and the
+# calendar's "Later on the calendar:" block. Items there are not held to the conditions (the plan:
+# "say none, then the next game labelled as away, or as another day").
+TEAM_NEXT = re.compile(r"(?:Its|The) next (?:home |away )?game: .*?\[\d+\]\.")
+LATER = re.compile(r"Later on the calendar:\s*\n(?:[ \t]*(?:\w+day, \w+ \d+:|- .*)?\n)*", re.I)
+# The words of a labelled topic that say nothing of it.
+TOPIC_STOP = frozenset("""events event stuff things thing type types like classes class sessions
+session shows show activities activity any some or and the a an fun on campus for of to in at
+""".split())
+
+
+def plain(text: str) -> str:
+    return text.replace("\u2019", "'")
+
+
+def labelled_outside(text: str) -> str:
+    """The answer without the parts it labels as outside the conditions."""
+    return LATER.sub("\n", TEAM_NEXT.sub(" ", text + "\n"))
+
+
+def singular(word: str) -> str:
+    return word[:-1] if word.endswith("s") and not word.endswith("ss") else word
+
+
+def topic_pieces(about: str) -> list[list[str]]:
+    """A labelled topic ("yoga or fitness classes", "art, gallery") as the words each of its
+    pieces must have in an event's title, singular."""
+    pieces = re.split(r",|\bor\b|/|&", about.casefold())
+    found = [[singular(w) for w in re.findall(r"[a-z]+", p) if w not in TOPIC_STOP]
+             for p in pieces]
+    return [p for p in found if p]
+
+
+def on_topic(title: str, pieces: list[list[str]]) -> bool:
+    words = {singular(w) for w in re.findall(r"[a-z]+", title.casefold())}
+    return any(all(w in words for w in piece) for piece in pieces)
 
 
 def record(slots: Mapping[str, Any]) -> AskedTime | None:
@@ -94,9 +131,19 @@ def items(row: Mapping[str, Any], live: Live) -> tuple[list[str], list[str], lis
         return None
     now = datetime.fromisoformat(row["asked_at"])
     window = asked_window(picked, now, live.breaks(now)) if timed(row["slots"]) else None
-    text = row["answer"]
-    fit, unfit, expected = [], [], []
+    text = labelled_outside(plain(row["answer"]))
+    fit: list[str] = []
+    unfit: list[str] = []
+    expected: list[str] = []
+
+    def add(into: list[str], key: str) -> None:
+        if key not in into:
+            into.append(key)
     if row["area"] == "teams":
+        # As the Brain does: the days asked count from the start of the day, so a game today
+        # with no result yet is still today's.
+        first = datetime.combine(now.date(), time(0, 0), tzinfo=now.tzinfo)
+        window = asked_window(picked, first, live.breaks(now)) if timed(row["slots"]) else None
         named = teams_module.teams_named(row["question"], live.teams) or live.teams
         for team in named:
             for game in team.get("games") or []:
@@ -107,10 +154,11 @@ def items(row: Mapping[str, Any], live: Live) -> tuple[list[str], list[str], lis
                     window is None or teams_module._fits(game, window))
                 key = f"{team.get('name')}|{game.get('date')}|{game.get('opponent')}"
                 if ok:
-                    expected.append(key)
+                    add(expected, key)
                 if _game_said(game, text):
-                    (fit if ok else unfit).append(key)
+                    add(fit if ok else unfit, key)
         return fit, unfit, expected
+    pieces = topic_pieces(str(row["slots"].get("about") or ""))
     by_title: dict[str, list[dict[str, Any]]] = {}
     horizon = now + timedelta(days=90)
     for value in live.events(now):
@@ -124,10 +172,12 @@ def items(row: Mapping[str, Any], live: Live) -> tuple[list[str], list[str], lis
             from rockygpt_brain import events as events_module
             return bool(events_module.in_window([value], use.start, use.end, use))
         ok = any(holds(v) for v in values)
-        if ok:
-            expected.append(title)
+        # A script can't judge a topic, so a listed event is held to the days and times only;
+        # but saying none is wrong when an event in them has the topic's words in its title.
+        if ok and (not pieces or on_topic(title, pieces)):
+            add(expected, title)
         if len(title) >= 6 and title in text:
-            (fit if ok else unfit).append(title)
+            add(fit if ok else unfit, title)
     return fit, unfit, expected
 
 
@@ -135,7 +185,13 @@ def keeps(row: Mapping[str, Any], found: tuple[list[str], list[str], list[str]])
     """"kept": every item named fits and some do, or none fit and it says none (the next one
     outside, once, allowed); else why not."""
     fit, unfit, expected = found
-    none = bool(NONE_SAID.search(row["answer"]))
+    answer = plain(row["answer"])
+    none = bool(NONE_SAID.search(answer))
+    others = row["slots"].get("other") or []
+    if others and fit and not (CANT_CHECK.search(answer) or any(
+            p.casefold() in answer.casefold() for p in others)):
+        # A condition no list holds ("for commuters") must be named when items are listed.
+        return "dropped_other"
     if not unfit and fit:
         return "kept"
     if not expected and none and len(unfit) <= 1:
@@ -209,7 +265,7 @@ def score(name: str, rows: Sequence[dict[str, Any]], live: Live) -> dict[str, An
             pairs[gid] = "pass" if each_kept else "not_kept"
     other_rows = [r for r in rows if r["slots"].get("other")]
     other_named = sum(1 for r in other_rows
-                      if CANT_CHECK.search(r["answer"])
+                      if CANT_CHECK.search(plain(r["answer"]))
                       or any(p.casefold() in r["answer"].casefold() for p in r["slots"]["other"]))
     return {"name": name, "rows": len(rows), "unusable": unusable,
             "kept": sum(1 for v in verdicts.values() if v == "kept"),
@@ -289,7 +345,8 @@ def real_teams(live: Live, now: datetime) -> dict[str, Any]:
             if found is None:
                 continue
             checked += 1
-            window = asked_window(picked, now)
+            window = asked_window(picked, datetime.combine(now.date(), time(0, 0),
+                                                           tzinfo=now.tzinfo))
             head = found[0].split(" [1].")[0]
             for game in ahead:
                 if _game_said(game, head) and not teams_module._fits(game, window) \

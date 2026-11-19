@@ -1,1 +1,2 @@
 go 2026-11-19T00:59:01Z: before (main) and after (claude/project-thread-859850 1492196) on condition pairs
+Run 2, 2026-11-19: after the four Brain fixes (46fded6) and the checker fixes; every question asked at 10 AM campus time.

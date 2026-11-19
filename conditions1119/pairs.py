@@ -30,6 +30,7 @@ from rockygpt_brain.spending import Reservation, SpendingError
 from rockygpt_brain.turn import intake
 
 CAP_NUSD = int(float(os.environ.get("CAP_USD", "0.30")) * 1_000_000_000)  # This job's most.
+ASKED_AT = os.environ.get("ASKED_AT", "")  # "HH:MM" campus time today; empty: when asked.
 AT_ONCE = int(os.environ.get("AT_ONCE", "3") or 3)
 DRY = os.environ.get("DRY") == "1"
 ARMS = [a for a in os.environ.get("ARMS", "live").split(",") if a]
@@ -223,6 +224,11 @@ async def ask(engine: ChatEngine, row: dict[str, Any], arm: str) -> dict[str, An
                                                         "content": row["question"]}]})
     started = time.monotonic()
     asked_at = datetime.datetime.now(CAMPUS)
+    if ASKED_AT:
+        # Every question asked at one campus time today ("10:00"), so "today before noon" is
+        # still ahead and both arms see the same day.
+        hour, minute = (int(x) for x in ASKED_AT.split(":"))
+        asked_at = asked_at.replace(hour=hour, minute=minute, second=0, microsecond=0)
     try:
         result = await engine.answer(intake(request, now=asked_at), request)
         body, trace = result.body, result.trace or {}
