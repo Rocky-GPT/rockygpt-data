@@ -1,0 +1,705 @@
+{
+ "how": "each answer read by hand against its labelled conditions (Step 3, 2026-11-19); kept = answers the condition; whole = gives the whole day/menu so the student must work it out; lost = the condition is dropped or answered wrongly; asked = asked the student back",
+ "by_area": {
+  "hours": {
+   "kept": 8,
+   "whole": 7,
+   "lost": 2
+  },
+  "shuttle": {
+   "kept": 15,
+   "whole": 1
+  },
+  "menus": {
+   "kept": 11,
+   "lost": 5,
+   "asked": 1,
+   "whole": 1
+  },
+  "academic_dates": {
+   "kept": 15,
+   "lost": 1
+  },
+  "people": {
+   "lost": 4,
+   "kept": 12
+  }
+ },
+ "all": {
+  "kept": 61,
+  "whole": 9,
+  "lost": 12,
+  "asked": 1
+ },
+ "where_not_kept": {
+  "lookup": 14,
+  "data": 6,
+  "read": 1
+ },
+ "rows": [
+  {
+   "id": "w01a",
+   "area": "hours",
+   "question": "is the lib open sunday after 10pm i need somewhere quiet to study for my orgo exam",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w01b",
+   "area": "hours",
+   "question": "is the lib open sunday b4 10am i need somewhere quiet to study for my orgo exam",
+   "result": "whole",
+   "where": "lookup",
+   "note": "Sunday hours given; 'before 10am' not answered"
+  },
+  {
+   "id": "w01c",
+   "area": "hours",
+   "question": "is the lib open sunday til 2am i need somewhere quiet to study for my orgo exam",
+   "result": "whole",
+   "where": "lookup",
+   "note": "Sunday hours given; 'until 2am' not answered"
+  },
+  {
+   "id": "w02a",
+   "area": "hours",
+   "question": "is the bookstore open today? need a blue book for my exam",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w02b",
+   "area": "hours",
+   "question": "is the bookstore open tmrw? need a blue book for my exam",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w03a",
+   "area": "hours",
+   "question": "can i still make it to the registrar by 5 today to drop off a form or do they close earlier",
+   "result": "whole",
+   "where": "lookup",
+   "note": "Thursday hours given; 'by 5' not answered"
+  },
+  {
+   "id": "w03b",
+   "area": "hours",
+   "question": "can i still make it to financial aid by 5 today to drop off a form or do they close earlier",
+   "result": "whole",
+   "where": "lookup",
+   "note": "Thursday hours given; 'by 5' not answered"
+  },
+  {
+   "id": "w04a",
+   "area": "hours",
+   "question": "is the pool open this sat in the morning? ngl i just wanna swim a few laps",
+   "result": "whole",
+   "where": "lookup",
+   "note": "whole week given; Saturday morning not answered"
+  },
+  {
+   "id": "w04b",
+   "area": "hours",
+   "question": "is the pool open this sat at night? ngl i just wanna swim a few laps",
+   "result": "whole",
+   "where": "lookup",
+   "note": "Saturday hours given; 'at night' not answered"
+  },
+  {
+   "id": "w05a",
+   "area": "hours",
+   "question": "is the gym open over thanksgiving break or does everything shut down",
+   "result": "lost",
+   "where": "lookup",
+   "note": "normal fall hours shown for Thanksgiving break, break not named"
+  },
+  {
+   "id": "w05b",
+   "area": "hours",
+   "question": "is the gym open over winter break or does everything shut down",
+   "result": "lost",
+   "where": "lookup",
+   "note": "normal fall hours shown for winter break, break not named"
+  },
+  {
+   "id": "w06a",
+   "area": "hours",
+   "question": "does the lib stay open past 11pm tonight",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w06b",
+   "area": "hours",
+   "question": "Hello, could you tell me whether the library is open after 11 p.m. tonight?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w07a",
+   "area": "hours",
+   "question": "is the student center open tmrw at 7am, got an early club meeting",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w07b",
+   "area": "hours",
+   "question": "Hi, will the student center be open at 7:00 a.m. tomorrow? I have an early club meeting.",
+   "result": "kept",
+   "where": "",
+   "note": "read missed the 7am, the hours code still answered it"
+  },
+  {
+   "id": "w08a",
+   "area": "hours",
+   "question": "is the gym open at 4am tmrw i wanna lift b4 my shift",
+   "result": "whole",
+   "where": "lookup",
+   "note": "Friday hours given; 4am not answered"
+  },
+  {
+   "id": "w08b",
+   "area": "hours",
+   "question": "can i get into the fitness center at 4am during finals week?",
+   "result": "kept",
+   "where": "",
+   "note": "read topic how_to; says it can't verify 4am during finals"
+  },
+  {
+   "id": "w09a",
+   "area": "shuttle",
+   "question": "is there a shuttle to the ramsey train station after 9pm friday, tryna go home for the weekend",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w09b",
+   "area": "shuttle",
+   "question": "is there a shuttle to the ramsey train station b4 9am friday, tryna go home for the weekend",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w10a",
+   "area": "shuttle",
+   "question": "when does the shuttle leave campus for ramsey station sat",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w10b",
+   "area": "shuttle",
+   "question": "when does the shuttle leave ramsey station back to campus sat",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w11a",
+   "area": "shuttle",
+   "question": "does the shuttle go to the shopping center this weekend? tryna get off campus for a bit",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w11b",
+   "area": "shuttle",
+   "question": "Does the shuttle go to the Ramsey train station this weekend? I'd like to get off campus for a bit.",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w12a",
+   "area": "shuttle",
+   "question": "What time is the last shuttle back to campus from the Ramsey train station on Sunday?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w12b",
+   "area": "shuttle",
+   "question": "whats the last shuttle back to campus from ramsey station on saturday",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w13a",
+   "area": "shuttle",
+   "question": "any shuttles to ramsey station between 7 and 9 tmrw morning? got a train to catch",
+   "result": "whole",
+   "where": "lookup",
+   "note": "'between 7 and 9 tmrw morning': every trip of the day listed"
+  },
+  {
+   "id": "w13b",
+   "area": "shuttle",
+   "question": "any shuttles to ramsey station between 7 and 9 tmrw night? got a train to catch",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w14a",
+   "area": "shuttle",
+   "question": "what time does the last shuttle leave campus tonight",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w14b",
+   "area": "shuttle",
+   "question": "Hello, what time does the final shuttle depart from campus tonight?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w15a",
+   "area": "shuttle",
+   "question": "can i catch a shuttle back to campus from the ramsey train station around 8pm sat",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w15b",
+   "area": "shuttle",
+   "question": "is there a bus from the ramsey stop back to ramapo around 8 at night this saturday",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w16a",
+   "area": "shuttle",
+   "question": "is there a shuttle to the ramsey train station at 3am tonight lol",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w16b",
+   "area": "shuttle",
+   "question": "any shuttle back to campus from ramsey at like 3 in the morning? my train gets in super late",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w17a",
+   "area": "menus",
+   "question": "whats for lunch at the caf tmrw lowkey hoping its not pasta again",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w17b",
+   "area": "menus",
+   "question": "whats for dinner at the caf tmrw lowkey hoping its not pasta again",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w17c",
+   "area": "menus",
+   "question": "whats for breakfast at the caf tmrw lowkey hoping its not pasta again",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w18a",
+   "area": "menus",
+   "question": "any vegan options at the caf for dinner tonight",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w18b",
+   "area": "menus",
+   "question": "any halal options at the caf for dinner tonight",
+   "result": "lost",
+   "where": "data",
+   "note": "halal: whole dinner menu, only 'I don't have verified information about that part'"
+  },
+  {
+   "id": "w19a",
+   "area": "menus",
+   "question": "What's on the brunch menu at the dining hall this Saturday?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w19b",
+   "area": "menus",
+   "question": "whats on the brunch menu at the dining hall this sunday",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w20a",
+   "area": "menus",
+   "question": "is there anything gluten free for lunch at the student center cafe today",
+   "result": "asked",
+   "where": "",
+   "note": "asked which place (Birch Tree Inn or The Atrium)"
+  },
+  {
+   "id": "w20b",
+   "area": "menus",
+   "question": "is there anything gluten free for lunch at the main dining hall today",
+   "result": "lost",
+   "where": "data",
+   "note": "gluten free: whole lunch menu, no word that gluten free can't be checked"
+  },
+  {
+   "id": "w21a",
+   "area": "menus",
+   "question": "anything vegetarian at late night tonight? starving after practice",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w21b",
+   "area": "menus",
+   "question": "anything vegetarian at late night tmrw? gonna be starving after practice",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w22a",
+   "area": "menus",
+   "question": "whats for breakfast in the caf monday",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w22b",
+   "area": "menus",
+   "question": "Could you tell me what the main dining hall is serving for breakfast on Monday?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w23a",
+   "area": "menus",
+   "question": "anything gf for dinner at the caf tonight? i have celiac",
+   "result": "lost",
+   "where": "data",
+   "note": "gluten free (celiac): whole dinner menu, no warning"
+  },
+  {
+   "id": "w23b",
+   "area": "menus",
+   "question": "gluten free options for dinner tonight in the dining hall??",
+   "result": "lost",
+   "where": "data",
+   "note": "gluten free: whole dinner menu, no warning"
+  },
+  {
+   "id": "w23c",
+   "area": "menus",
+   "question": "wat can i eat at dinner tonight in the caf if i cant have gluten",
+   "result": "lost",
+   "where": "data",
+   "note": "gluten free: whole dinner menu, no warning"
+  },
+  {
+   "id": "w24a",
+   "area": "menus",
+   "question": "can i still get breakfast at the caf at 2pm today",
+   "result": "whole",
+   "where": "lookup",
+   "note": "breakfast hours given; 'at 2pm' not answered"
+  },
+  {
+   "id": "w24b",
+   "area": "menus",
+   "question": "is the caf doing brunch this tuesday? slept thru breakfast lol",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w25a",
+   "area": "academic_dates",
+   "question": "When does add/drop end for the spring semester?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w25b",
+   "area": "academic_dates",
+   "question": "when is the last day to withdraw for spring semester",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w26a",
+   "area": "academic_dates",
+   "question": "when does summer 1 start, tryna knock out a gen ed",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w26b",
+   "area": "academic_dates",
+   "question": "when does summer 2 start, tryna knock out a gen ed",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w27a",
+   "area": "academic_dates",
+   "question": "when r finals this fall im tryna book my flight home",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w27b",
+   "area": "academic_dates",
+   "question": "when r finals this spring im tryna book my flight home",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w28a",
+   "area": "academic_dates",
+   "question": "when do fall finals end n when do grades get posted",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w28b",
+   "area": "academic_dates",
+   "question": "when do fall finals start n when do grades get posted",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w29a",
+   "area": "academic_dates",
+   "question": "When does registration open for spring classes?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w29b",
+   "area": "academic_dates",
+   "question": "when does registration open for summer classes",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w30a",
+   "area": "academic_dates",
+   "question": "when do finals end this semester n when do spring classes start",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w30b",
+   "area": "academic_dates",
+   "question": "Hi! What's the last day of final exams this semester, and when is the first day of classes for spring?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w31a",
+   "area": "academic_dates",
+   "question": "when is commencement this spring my parents need to book a hotel asap",
+   "result": "lost",
+   "where": "read",
+   "note": "'this spring' read as the rest of this semester; answer opens with 'no event matches', then gives May 13"
+  },
+  {
+   "id": "w31b",
+   "area": "academic_dates",
+   "question": "whats the date for graduation this spring? parents gotta book a hotel",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w32a",
+   "area": "academic_dates",
+   "question": "does winter session have a reading day b4 finals",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w32b",
+   "area": "academic_dates",
+   "question": "when is reading day for summer 1",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w33a",
+   "area": "people",
+   "question": "whos teaching calc based physics this spring",
+   "result": "lost",
+   "where": "lookup",
+   "note": "'calc based physics' answered with calculus professors"
+  },
+  {
+   "id": "w33b",
+   "area": "people",
+   "question": "Who is teaching algebra-based physics this spring?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w34a",
+   "area": "people",
+   "question": "who teaches the online section of intro psych",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w34b",
+   "area": "people",
+   "question": "who teaches the in person section of intro psych",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w35a",
+   "area": "people",
+   "question": "Who is the chair of the Biology department?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w35b",
+   "area": "people",
+   "question": "whos the academic advisor for bio majors",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w36a",
+   "area": "people",
+   "question": "who teaches stats, the nursing one? need to know b4 i register",
+   "result": "lost",
+   "where": "lookup",
+   "note": "'stats, the nursing one' answered with all nursing faculty"
+  },
+  {
+   "id": "w36b",
+   "area": "people",
+   "question": "who teaches stats, the psych one? need to know b4 i register",
+   "result": "lost",
+   "where": "lookup",
+   "note": "'stats, the psych one' answered with all psychology faculty"
+  },
+  {
+   "id": "w37a",
+   "area": "people",
+   "question": "whos in charge of study abroad? i wanna set up a meeting w them",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w37b",
+   "area": "people",
+   "question": "whos in charge of the career center? i wanna set up a meeting w them",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w38a",
+   "area": "people",
+   "question": "who teaches orgo 1",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w38b",
+   "area": "people",
+   "question": "Could you tell me who the instructor is for Organic Chemistry I?",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w39a",
+   "area": "people",
+   "question": "whos the head of the nursing dept",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w39b",
+   "area": "people",
+   "question": "who chairs nursing",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  },
+  {
+   "id": "w40a",
+   "area": "people",
+   "question": "who teaches the 7am saturday section of calc 1",
+   "result": "lost",
+   "where": "data",
+   "note": "'7am saturday section' not named; section times are not in the data"
+  },
+  {
+   "id": "w40b",
+   "area": "people",
+   "question": "is there an orgo 1 section that meets sunday nights? who teaches it",
+   "result": "kept",
+   "where": "",
+   "note": ""
+  }
+ ]
+}
