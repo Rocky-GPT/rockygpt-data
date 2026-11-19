@@ -139,6 +139,9 @@ def items(row: Mapping[str, Any], live: Live) -> tuple[list[str], list[str], lis
     def add(into: list[str], key: str) -> None:
         if key not in into:
             into.append(key)
+    # A condition no list holds ("pet friendly", "for commuters") can't be judged by a script:
+    # which items fit it is unknown, so saying none is never counted wrong for it.
+    unknown = bool(row["slots"].get("other"))
     if row["area"] == "teams":
         # As the Brain does: the days asked count from the start of the day, so a game today
         # with no result yet is still today's.
@@ -153,7 +156,7 @@ def items(row: Mapping[str, Any], live: Live) -> tuple[list[str], list[str], lis
                 ok = (picked.home_away == "any" or game.get("site") == picked.home_away) and (
                     window is None or teams_module._fits(game, window))
                 key = f"{team.get('name')}|{game.get('date')}|{game.get('opponent')}"
-                if ok:
+                if ok and not unknown:
                     add(expected, key)
                 if _game_said(game, text):
                     add(fit if ok else unfit, key)
@@ -174,7 +177,7 @@ def items(row: Mapping[str, Any], live: Live) -> tuple[list[str], list[str], lis
         ok = any(holds(v) for v in values)
         # A script can't judge a topic, so a listed event is held to the days and times only;
         # but saying none is wrong when an event in them has the topic's words in its title.
-        if ok and (not pieces or on_topic(title, pieces)):
+        if ok and not unknown and (not pieces or on_topic(title, pieces)):
             add(expected, title)
         if len(title) >= 6 and title in text:
             add(fit if ok else unfit, title)
@@ -188,9 +191,10 @@ def keeps(row: Mapping[str, Any], found: tuple[list[str], list[str], list[str]])
     answer = plain(row["answer"])
     none = bool(NONE_SAID.search(answer))
     others = row["slots"].get("other") or []
-    if others and fit and not (CANT_CHECK.search(answer) or any(
+    if others and fit and not none and not (CANT_CHECK.search(answer) or any(
             p.casefold() in answer.casefold() for p in others)):
-        # A condition no list holds ("for commuters") must be named when items are listed.
+        # A condition no list holds ("for commuters") must be named when items are listed as
+        # the answer; listed after "no event ... matches what you asked", they are labelled.
         return "dropped_other"
     if not unfit and fit:
         return "kept"

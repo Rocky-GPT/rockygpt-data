@@ -25,7 +25,9 @@ env:
   # Run 2 (after the fixes the first run found): both arms again, every question asked at
   # 10 AM campus time today, rows in results2/. The first run's rows stay in results/ and are
   # rescored by the same checker into results/rescore/.
-  RESULTS: conditions1119/results2
+  # Run 3 (after the read fixes from run 2, e20bda4): rows in results3/, same 10 AM ask time.
+  # Runs 1 and 2 are rescored by the same checker into results/rescore/ and results2/rescore/.
+  RESULTS: conditions1119/results3
   ASKED_AT: '10:00'
 
 jobs:
@@ -170,13 +172,15 @@ jobs:
             "data/$RESULTS/after.json" "data/$RESULTS"
           python data/conditions1119/check.py data/conditions1119/results/before.json \
             data/conditions1119/results/after.json data/conditions1119/results/rescore
+          python data/conditions1119/check.py data/conditions1119/results2/before.json \
+            data/conditions1119/results2/after.json data/conditions1119/results2/rescore
 
       - name: Commit the report to this branch
         run: |
           cd data
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "$RESULTS" conditions1119/results/rescore
+          git add "$RESULTS" conditions1119/results/rescore conditions1119/results2/rescore
           git commit -m "Study report: condition pairs"
           for i in 1 2 3 4 5; do
             git pull --rebase origin "$BRANCH" && git push origin "HEAD:$BRANCH" && break
