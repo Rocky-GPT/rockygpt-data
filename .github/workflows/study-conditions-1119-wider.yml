@@ -1,0 +1,165 @@
+# Temporary, on this work branch only: Step 3 of the plan "Keep student conditions in answers"
+# (Dan: "Do the other steps", 2026-11-19 14:46Z). The dev Brain (the conditions build) answers
+# the frozen wider pair set (hours, shuttle, menus, academic dates, people; written by a blind
+# writer) once against the live graph file (read only), every question asked at 10 AM campus
+# time today. Capped at $0.20. A free dry pass runs first. Rows are committed to this branch and
+# checked by script (conditions1119/check_wider.py), counts only. Never merged.
+name: Study condition pairs, wider areas 2026-11-19
+
+on:
+  push:
+    branches: [claude/project-thread-859850]
+    paths: ['conditions1119/wider.txt']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: study-conditions-1119
+  cancel-in-progress: false
+
+env:
+  BRANCH: claude/project-thread-859850
+  BRAIN_REF: 0115059e070bc1993faeadb34fb36a7be2e4256b
+  EVALS_REF: claude/project-thread-859850
+  RESULTS: conditions1119/results-wider
+  ASKED_AT: '10:00'
+
+jobs:
+  ask:
+    name: Ask (dev)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout the Brain
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: ${{ env.BRAIN_REF }}
+          path: brain
+
+      - name: Checkout the frozen pair sets
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-evals
+          ref: ${{ env.EVALS_REF }}
+          path: evals
+          sparse-checkout: condition-pairs
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install the Brain
+        run: |
+          pip install --quiet --require-hashes -r brain/requirements.lock
+          pip install --quiet --no-deps -e './brain[graph]'
+
+      - name: Download the live graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: python -m rockygpt_brain.retrieval.graph_sync .published > /dev/null
+
+      - name: Checkout this branch's scripts
+        uses: actions/checkout@v7
+        with:
+          path: data
+
+      - name: Dry pass, no model calls (5 questions)
+        env:
+          DRY: '1'
+          LIMIT: '5'
+          ARMS: after
+          AT_ONCE: '2'
+          OUT: ${{ github.workspace }}/dry.json
+          SETS: ${{ github.workspace }}/evals/condition-pairs/wider-40.json
+        run: |
+          set -o pipefail
+          python data/conditions1119/pairs.py 2>&1 | grep -v '^provider_failure\|^brain_'
+
+      - name: Ask every pair question once
+        env:
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DRY: '0'
+          CAP_USD: '0.20'
+          ARMS: after
+          AT_ONCE: '2'
+          OUT: ${{ github.workspace }}/after.json
+          SETS: ${{ github.workspace }}/evals/condition-pairs/wider-40.json
+        run: |
+          set -o pipefail
+          python data/conditions1119/pairs.py 2>&1 | grep -v '^provider_failure\|^brain_'
+
+      - name: Commit the rows to this branch
+        run: |
+          cd data
+          mkdir -p "$RESULTS"
+          cp "$GITHUB_WORKSPACE/after.json" "$RESULTS/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$RESULTS"
+          git commit -m "Study rows: wider condition pairs (dev)"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "$BRANCH" && git push origin "HEAD:$BRANCH" && break
+            sleep $((i * 5))
+          done
+
+  check:
+    name: Check by script (free)
+    needs: ask
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout the Brain
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: ${{ env.BRAIN_REF }}
+          path: brain
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install the Brain
+        run: |
+          pip install --quiet --require-hashes -r brain/requirements.lock
+          pip install --quiet --no-deps -e './brain[graph]'
+
+      - name: Download the live graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: python -m rockygpt_brain.retrieval.graph_sync .published > /dev/null
+
+      - name: Checkout this branch with the rows
+        uses: actions/checkout@v7
+        with:
+          ref: claude/project-thread-859850
+          path: data
+
+      - name: Check every answer and pair
+        run: PYTHONPATH=data/conditions1119 python data/conditions1119/check_wider.py "data/$RESULTS"
+
+      - name: Commit the report to this branch
+        run: |
+          cd data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$RESULTS"
+          git commit -m "Study report: wider condition pairs"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "$BRANCH" && git push origin "HEAD:$BRANCH" && break
+            sleep $((i * 5))
+          done

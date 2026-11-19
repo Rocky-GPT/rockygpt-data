@@ -1,0 +1,97 @@
+{
+ "misses": {
+  "after_same_set": [
+   {
+    "id": "g10a",
+    "verdict": "named_nothing",
+    "where": "lookup: asked, not used",
+    "by": "one_call",
+    "question": "any games between 12 and 3 on sat? free then"
+   },
+   {
+    "id": "g15b",
+    "verdict": "dropped_other",
+    "where": "read: conditions",
+    "by": "code",
+    "question": "is there anything for grad students tmrw"
+   },
+   {
+    "id": "g18a",
+    "verdict": "named_nothing",
+    "where": "error",
+    "by": "error",
+    "question": "free food anywhere on campus today?? meal swipes running low"
+   },
+   {
+    "id": "g20b",
+    "verdict": "named_nothing",
+    "where": "read: topic (how_to)",
+    "by": "one_call",
+    "question": "any volunteering i can do after thanksgiving break? need hrs for my club"
+   },
+   {
+    "id": "g30b",
+    "verdict": "listed_only_ones_that_do_not_fit",
+    "where": "reply: labelled in prose",
+    "by": "one_call",
+    "question": "any trivia or game night type stuff around 10 tonight"
+   },
+   {
+    "id": "g46a",
+    "verdict": "named_nothing",
+    "where": "read: topic (how_to)",
+    "by": "one_call",
+    "question": "anything between 12 and 3 tmrw"
+   },
+   {
+    "id": "g59b",
+    "verdict": "listed_only_ones_that_do_not_fit",
+    "where": "reply: labelled in prose",
+    "by": "one_call",
+    "question": "trivia going on next saturday b4 9 am??"
+   }
+  ],
+  "after_unseen": [
+   {
+    "id": "u14b",
+    "verdict": "dropped_other",
+    "where": "read: conditions",
+    "by": "code",
+    "question": "anything for international students this month? still dont rly know anyone here"
+   },
+   {
+    "id": "u17a",
+    "verdict": "listed_only_ones_that_do_not_fit",
+    "where": "reply: labelled in prose",
+    "by": "one_call",
+    "question": "is there a movie screening tonight, need a break from studying fr"
+   },
+   {
+    "id": "u23b",
+    "verdict": "said_none_wrongly",
+    "where": "read: topic (event)",
+    "by": "one_call",
+    "question": "Is there a swim meet on Saturday before 12pm?"
+   },
+   {
+    "id": "u37b",
+    "verdict": "dropped_other",
+    "where": "read: conditions",
+    "by": "code",
+    "question": "tonight is there anything i can bring my dog to"
+   }
+  ]
+ },
+ "read_differed_but_kept": [
+  "g44b",
+  "g44c",
+  "g48c",
+  "g54b",
+  "u14a",
+  "u19a",
+  "u19b",
+  "u37a",
+  "u38a",
+  "u38b"
+ ]
+}
