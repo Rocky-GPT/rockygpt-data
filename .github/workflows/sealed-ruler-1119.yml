@@ -1,0 +1,162 @@
+# Temporary, on this work branch only, never merged: Step 4 of the plan "Keep student conditions
+# in answers" (Dan, 2026-11-19 14:46Z: "Do the other steps"). The live Brain (main) and the
+# conditions build (dev 0115059) each answer the SEALED half of the steady ruler once, against the
+# same live graph file (read only), all at one campus time. Each arm is capped at $0.35.
+#
+# The sealed questions never appear in plain text in any repo, log or artifact:
+# 1. this job makes a one-time key pair on the runner and commits only its public half;
+# 2. the run thread encrypts the 150 questions to that key and pushes the ciphertext;
+# 3. the runner decrypts them in its temp folder (gone with the runner), asks both Brains with all
+#    output sent to files, and prints counts only;
+# 4. answers, cited pages and what the writer was shown are encrypted to the run thread's key
+#    (sealed1119/me.pub) and committed as ciphertext. Grading happens in the run thread.
+name: Sealed ruler run 2026-11-19
+
+on:
+  push:
+    branches: [claude/project-thread-ngt5rt]
+    paths: ['sealed1119/go.txt']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sealed-ruler-1119
+  cancel-in-progress: false
+
+env:
+  BRANCH: claude/project-thread-ngt5rt
+  OLD_REF: bd7eaa5be610f4d2808d95d03fa575e135247d70
+  NEW_REF: 0115059e070bc1993faeadb34fb36a7be2e4256b
+  ASKED_AT: '12:00'
+  CAP_USD: '0.35'
+  GRAPH_DIR: ${{ github.workspace }}/.published
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - name: Checkout this branch
+        uses: actions/checkout@v7
+        with: { path: data }
+      - name: Checkout the live Brain (main)
+        uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-brain, ref: main, path: brain-old }
+      - name: Checkout the conditions build (dev)
+        uses: actions/checkout@v7
+        with: { repository: Rocky-GPT/rockygpt-brain, ref: dev, path: brain-new, fetch-depth: 0 }
+      - name: Pin both Brains to the commits under test
+        run: |
+          git -C brain-old fetch -q origin "$OLD_REF" && git -C brain-old checkout -q "$OLD_REF"
+          git -C brain-new checkout -q "$NEW_REF"
+          echo "old $(git -C brain-old rev-parse --short HEAD), new $(git -C brain-new rev-parse --short HEAD)"
+
+      - uses: actions/setup-python@v6
+        with: { python-version: '3.13' }
+
+      - name: Install both Brains, each in its own environment
+        run: |
+          for side in old new; do
+            python -m venv "venv-$side"
+            "venv-$side/bin/pip" install --quiet --require-hashes -r "brain-$side/requirements.lock"
+            "venv-$side/bin/pip" install --quiet --no-deps -e "./brain-$side[graph]"
+          done
+
+      - name: Download the live graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: venv-new/bin/python -m rockygpt_brain.retrieval.graph_sync .published > /dev/null
+
+      - name: Make a one-time key pair and publish its public half
+        run: |
+          umask 077
+          openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:3072 -out "$RUNNER_TEMP/run.pem" 2>/dev/null
+          cd data
+          mkdir -p sealed1119/inbox
+          openssl pkey -in "$RUNNER_TEMP/run.pem" -pubout -out "sealed1119/inbox/$GITHUB_RUN_ID.pub"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sealed1119/inbox && git commit -q -m "Sealed run: one-time public key"
+          for i in 1 2 3 4 5; do
+            git pull -q --rebase origin "$BRANCH" && git push -q origin "HEAD:$BRANCH" && break
+            sleep $((i * 5))
+          done
+
+      - name: Wait for the encrypted questions (up to 30 minutes)
+        run: |
+          umask 077
+          cd data
+          for i in $(seq 1 120); do
+            git pull -q --rebase origin "$BRANCH" 2>/dev/null || true
+            [ -f "sealed1119/inbox/$GITHUB_RUN_ID.key" ] && [ -f "sealed1119/inbox/$GITHUB_RUN_ID.enc" ] && break
+            sleep 15
+          done
+          openssl pkeyutl -decrypt -inkey "$RUNNER_TEMP/run.pem" -pkeyopt rsa_padding_mode:oaep \
+            -pkeyopt rsa_oaep_md:sha256 -in <(base64 -d "sealed1119/inbox/$GITHUB_RUN_ID.key") \
+            -out "$RUNNER_TEMP/q.pass"
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -md sha256 \
+            -in "sealed1119/inbox/$GITHUB_RUN_ID.enc" -out "$RUNNER_TEMP/q.json" -pass "file:$RUNNER_TEMP/q.pass"
+          want=$(cat sealed1119/questions.sha256)
+          got=$(sha256sum "$RUNNER_TEMP/q.json" | cut -d' ' -f1)
+          [ "$want" = "$got" ] || { echo "question file hash does not match"; exit 1; }
+          python -c "import json,sys; print('questions', len(json.load(open(sys.argv[1]))))" "$RUNNER_TEMP/q.json"
+
+      - name: Dry pass on both, no model calls (3 questions each)
+        env: { DRY: '1', LIMIT: '3', AT_ONCE: '2' }
+        run: |
+          for side in old new; do
+            (ARMS=$side QUESTIONS="$RUNNER_TEMP/q.json" OUT="$RUNNER_TEMP/dry-$side.json" \
+              "$GITHUB_WORKSPACE/venv-$side/bin/python" "$GITHUB_WORKSPACE/data/sealed1119/ask.py" \
+              > "$RUNNER_TEMP/dry-$side.log" 2>&1) || { echo "dry $side failed"; exit 1; }
+            grep -E '^(release|done in|TOTAL)' "$RUNNER_TEMP/dry-$side.log" | sed "s/^/$side: /"
+          done
+
+      - name: Ask every sealed question once on each Brain (main first, then dev)
+        env:
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DRY: '0'
+          AT_ONCE: '2'
+        run: |
+          for side in old new; do
+            (ARMS=$side QUESTIONS="$RUNNER_TEMP/q.json" OUT="$RUNNER_TEMP/$side.json" \
+              "$GITHUB_WORKSPACE/venv-$side/bin/python" "$GITHUB_WORKSPACE/data/sealed1119/ask.py" \
+              > "$RUNNER_TEMP/$side.log" 2>&1) || echo "$side exited with an error (details in the bundle)"
+            grep -E '^(release|done in|TOTAL)' "$RUNNER_TEMP/$side.log" | sed "s/^/$side: /" || true
+          done
+
+      - name: The calendar events of Nov 19-30 from this morning's release (for the graders)
+        run: |
+          OUT="$RUNNER_TEMP/events.json" venv-new/bin/python data/sealed1119/events.py \
+            > "$RUNNER_TEMP/events.log" 2>&1 || echo "events dump failed (details in the bundle)"
+          grep -E '^events dated' "$RUNNER_TEMP/events.log" || true
+
+      - name: Encrypt everything to the run thread's key and commit only the ciphertext
+        if: always()
+        run: |
+          umask 077
+          cd "$RUNNER_TEMP"
+          rm -f q.json q.pass
+          tar czf bundle.tgz $(ls old.json new.json events.json *.log 2>/dev/null)
+          openssl rand -hex 32 > out.pass
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -md sha256 -salt -in bundle.tgz \
+            -out bundle.enc -pass file:out.pass
+          openssl pkeyutl -encrypt -pubin -inkey "$GITHUB_WORKSPACE/data/sealed1119/me.pub" \
+            -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256 -in out.pass | base64 -w0 > out.key
+          rm -f bundle.tgz out.pass old.json new.json events.json *.log
+          cd "$GITHUB_WORKSPACE/data"
+          git pull -q --rebase origin "$BRANCH" || true
+          mkdir -p sealed1119/out
+          cp "$RUNNER_TEMP/bundle.enc" "sealed1119/out/$GITHUB_RUN_ID.enc"
+          cp "$RUNNER_TEMP/out.key" "sealed1119/out/$GITHUB_RUN_ID.key"
+          git add sealed1119/out && git commit -q -m "Sealed run: encrypted answers"
+          for i in 1 2 3 4 5; do
+            git pull -q --rebase origin "$BRANCH" && git push -q origin "HEAD:$BRANCH" && break
+            sleep $((i * 5))
+          done
+          rm -f "$RUNNER_TEMP/run.pem"
