@@ -1,0 +1,177 @@
+# Temporary, on this work branch only: the condition-pair runs of the plan "Keep student
+# conditions in answers" (Dan chose "Build Steps 0 to 2 on dev", 2026-11-19 00:24Z). Production's
+# Brain (main, the "before") and the build branch (the "after") each answer the frozen pair set
+# once against the live graph file (read only); the after run also answers the 40 unseen pairs
+# written after the build. Each run is capped below $1. A free dry pass runs first. A script, not
+# a grader, then holds every listed game or event to the labelled conditions. Rows and the report
+# are committed to this branch. Never merged.
+name: Study condition pairs 2026-11-19
+
+on:
+  push:
+    branches: [claude/project-thread-859850]
+    paths: ['conditions1119/go.txt']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: study-conditions-1119
+  cancel-in-progress: false
+
+env:
+  EVALS_REF: afc55b8c6e942d7a7a7da97a0519cb2999265ac3
+  BRANCH: claude/project-thread-859850
+
+jobs:
+  ask:
+    name: Ask (${{ matrix.arm }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arm: before
+            brain_ref: main
+            sets: pair-set.json
+            cap: '0.40'
+          - arm: after
+            brain_ref: claude/project-thread-859850
+            sets: pair-set.json,unseen-40.json
+            cap: '0.55'
+    steps:
+      - name: Checkout the Brain
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: ${{ matrix.brain_ref }}
+          path: brain
+
+      - name: Checkout the frozen pair sets
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-evals
+          ref: ${{ env.EVALS_REF }}
+          path: evals
+          sparse-checkout: condition-pairs
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install the Brain
+        run: |
+          pip install --quiet --require-hashes -r brain/requirements.lock
+          pip install --quiet --no-deps -e './brain[graph]'
+
+      - name: Download the live graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: python -m rockygpt_brain.retrieval.graph_sync .published > /dev/null
+
+      - name: Checkout this branch's scripts
+        uses: actions/checkout@v7
+        with:
+          path: data
+
+      - name: Dry pass, no model calls (5 questions)
+        env:
+          DRY: '1'
+          LIMIT: '5'
+          ARMS: ${{ matrix.arm }}
+          AT_ONCE: '2'
+          OUT: ${{ github.workspace }}/dry.json
+        run: |
+          set -o pipefail
+          SETS=$(echo "${{ matrix.sets }}" | sed "s#\([^,]*\)#$GITHUB_WORKSPACE/evals/condition-pairs/\1#g")
+          SETS="$SETS" python data/conditions1119/pairs.py 2>&1 | grep -v '^provider_failure\|^brain_'
+
+      - name: Ask every pair question once
+        env:
+          BRAIN_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DRY: '0'
+          CAP_USD: ${{ matrix.cap }}
+          ARMS: ${{ matrix.arm }}
+          AT_ONCE: '2'
+          OUT: ${{ github.workspace }}/${{ matrix.arm }}.json
+        run: |
+          set -o pipefail
+          SETS=$(echo "${{ matrix.sets }}" | sed "s#\([^,]*\)#$GITHUB_WORKSPACE/evals/condition-pairs/\1#g")
+          SETS="$SETS" python data/conditions1119/pairs.py 2>&1 | grep -v '^provider_failure\|^brain_'
+
+      - name: Commit the rows to this branch
+        run: |
+          cd data
+          mkdir -p conditions1119/results
+          cp "$GITHUB_WORKSPACE/${{ matrix.arm }}.json" conditions1119/results/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add conditions1119/results
+          git commit -m "Study rows: condition pairs ${{ matrix.arm }}"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "$BRANCH" && git push origin "HEAD:$BRANCH" && break
+            sleep $((i * 5))
+          done
+
+  check:
+    name: Check by script (free)
+    needs: ask
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout the build branch's Brain
+        uses: actions/checkout@v7
+        with:
+          repository: Rocky-GPT/rockygpt-brain
+          ref: claude/project-thread-859850
+          path: brain
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install the Brain
+        run: |
+          pip install --quiet --require-hashes -r brain/requirements.lock
+          pip install --quiet --no-deps -e './brain[graph]'
+
+      - name: Download the live graph (read only)
+        env:
+          BRAIN_GRAPH_STORE_PREFIX: brain-graph/
+          BRAIN_GRAPH_STORE_BUCKET: ${{ vars.RAW_ARTIFACT_BUCKET }}
+          BRAIN_GRAPH_STORE_REGION: ${{ vars.RAW_ARTIFACT_REGION }}
+          BRAIN_GRAPH_STORE_ENDPOINT: ${{ vars.RAW_ARTIFACT_ENDPOINT }}
+          BRAIN_GRAPH_STORE_ACCESS_KEY_ID: ${{ secrets.RAW_ARTIFACT_ACCESS_KEY_ID }}
+          BRAIN_GRAPH_STORE_SECRET_ACCESS_KEY: ${{ secrets.RAW_ARTIFACT_SECRET_ACCESS_KEY }}
+        run: python -m rockygpt_brain.retrieval.graph_sync .published > /dev/null
+
+      - name: Checkout this branch with both runs' rows
+        uses: actions/checkout@v7
+        with:
+          ref: claude/project-thread-859850
+          path: data
+
+      - name: Check every answer and pair
+        run: |
+          python data/conditions1119/check.py data/conditions1119/results/before.json \
+            data/conditions1119/results/after.json data/conditions1119/results
+
+      - name: Commit the report to this branch
+        run: |
+          cd data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add conditions1119/results
+          git commit -m "Study report: condition pairs"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "$BRANCH" && git push origin "HEAD:$BRANCH" && break
+            sleep $((i * 5))
+          done
