@@ -83,7 +83,11 @@ const MAX_AGE_HOURS: Partial<Record<(typeof REQUIRED_FILES)[number], number>> = 
 };
 
 const MIN_RECORD_COUNTS: Partial<Record<(typeof REQUIRED_FILES)[number], number>> = {
-  'data/normalized/menu.json': 1,
+  // Today's menu is empty on a day Dining publishes none: on Thanksgiving 2026 (November 26) the
+  // menu service answered with no menu, and this minimum of 1 stopped the whole publish twice.
+  // The dated week (menu-week.json, checked below) already treats such a day as unavailable, and
+  // a request that fails still fails the collector; it never writes an empty menu.
+  'data/normalized/menu.json': 0,
   // Coverage is checked against the captured records and omission manifest.
   // A fabricated schedule must never be needed to meet a count threshold.
   'data/normalized/hours.json': 1,
@@ -149,7 +153,7 @@ function schemaErrors(
   };
 
   if (relativePath === 'data/normalized/menu.json') {
-    requireArrayPreservation(validateMenuData, 'Menu');
+    if (!(Array.isArray(value) && value.length === 0)) requireArrayPreservation(validateMenuData, 'Menu');
   } else if (relativePath === 'data/normalized/hours.json') {
     requireArrayPreservation(validateCampusHours, 'Campus hours');
   } else if (relativePath === 'data/normalized/calendar.json') {
